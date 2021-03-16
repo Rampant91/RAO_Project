@@ -13,7 +13,7 @@ using Avalonia.Controls.Templates;
 using Models.Client_Model;
 using Avalonia.Data.Converters;
 
-namespace Client_App.Short_Visual
+namespace Client_App.Long_Visual
 {
     public class Form1_Visual
     { 

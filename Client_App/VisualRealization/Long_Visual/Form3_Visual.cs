@@ -12,7 +12,7 @@ using Avalonia.Media;
 using Avalonia.Controls.Templates;
 using Models.Client_Model;
 
-namespace Client_App.Short_Visual
+namespace Client_App.Long_Visual
 {
     public class Form3_Visual
     {

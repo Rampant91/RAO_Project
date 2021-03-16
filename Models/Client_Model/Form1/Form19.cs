@@ -5,8 +5,9 @@ namespace Models.Client_Model
 {
     [Serializable]
     [Attributes.FormVisual_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
-    public class Form19: Form
+    public class Form19: Form1
     {
+        public override string FormNum { get { return "1.9"; } }
         public override void Object_Validation()
         {
 

@@ -13,9 +13,7 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.1: Сведения о ЗРИ")]
     public class Form11 : Form1
     {
-        [Attributes.FormVisual("Форма")]
-        public string FormNum { get { return "1.1"; } }
-
+        public override string FormNum { get { return "1.1"; } }
         public override void Object_Validation()
         {
 
@@ -41,19 +39,6 @@ namespace Models.Client_Model
                 _correctionNumber = value;
                 CorrectionNumber_Validation(value);
                 OnPropertyChanged("CorrectionNumber");
-            }
-        }
-
-        private int _numberInOrder = -1;
-
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
             }
         }
 

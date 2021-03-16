@@ -99,17 +99,21 @@ namespace Models.LocalStorage
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public LocalDictionary Forms { get; set; }
+
         /// <summary>
         /// Дает итератор с фильтрованными и сортированными формами
         /// </summary>
-        //Сделать
         public IEnumerable<Client_Model.Form> GetFilteredStorage
         {
             get
             {
-                foreach (var item in Filters.CheckAndSort(Storage))
+                if (Storage.Count > 0)
                 {
-                    yield return item;
+                    foreach (var item in Filters.CheckAndSort(Storage))
+                    {
+                        yield return item;
+                    }
                 }
             }
         }

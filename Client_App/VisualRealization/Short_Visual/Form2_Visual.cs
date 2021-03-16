@@ -16,36 +16,11 @@ namespace Client_App.Short_Visual
 {
     public class Form2_Visual
     {
-        public static Grid FormF_Visual()
+        public static void FormF_Visual(in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
-            Grid grd = new Grid();
-
-            //1
-            grd.RowDefinitions.Add(new RowDefinition());
-            Grid gd = new Grid();
-            gd.SetValue(Grid.RowProperty, 0);
-
-            //1.1
-            gd.ColumnDefinitions.Add(new ColumnDefinition());
-            var item1 = Form0_Visual();
-            item1.SetValue(Grid.ColumnProperty, 0);
-            gd.Children.Add(item1);
-
-            //1.2
-            gd.ColumnDefinitions.Add(new ColumnDefinition());
-            var item2 = FormB_Visual();
-            item2.SetValue(Grid.ColumnProperty, 0);
-            gd.Children.Add(item2);
-
-            //1
-            grd.Children.Add(gd);
-
-            //2
-            var item3 = FormX_Visual();
-            item3.SetValue(Grid.RowProperty, 1);
-            grd.Children.Add(item3);
-
-            return grd;
+            pnl0.Children.Add(Form0_Visual());
+            pnlx.Children.Add(FormX_Visual());
+            pnlb.Children.Add(FormB_Visual());
         }
 
         //Форма 10
@@ -67,9 +42,9 @@ namespace Client_App.Short_Visual
         //Кнопки создания или изменения формы
         static Panel FormB_Visual()
         {
-            Panel grd = new Panel();
+            Panel panel = new Panel();
 
-            return grd;
+            return panel;
         }
     }
 }

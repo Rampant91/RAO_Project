@@ -5,8 +5,9 @@ namespace Models.Client_Model
 {
     [Serializable]
     [Attributes.FormVisual_Class("Форма 1.3: Сведения об ОРИ в виде отдельных изделий")]
-    public class Form13: Form
+    public class Form13: Form1
     {
+        public override string FormNum { get { return "1.3"; } }
         public override void Object_Validation()
         {
 

@@ -68,7 +68,6 @@ namespace Models.LocalStorage
         }
 
         object locker = new object();
-
         public async Task SaveForms()
         {
             lock (locker)
@@ -110,6 +109,55 @@ namespace Models.LocalStorage
             }
         }
 
+        int _ChooseTab = 1;
+        public int ChooseTab 
+        {
+            get
+            {
+                return _ChooseTab - 1;
+            }
+            set
+            {
+                _ChooseTab = value+1;
+            }
+        }
+
+        /// <summary>
+        /// Дает итератор с фильтрованными и сортированными формами
+        /// </summary>
+        public IEnumerable<Client_Model.Form> GetFilteredDictionary
+        {
+            get
+            {
+                var Storage = Forms[_ChooseTab.ToString()+"1"];
+                if (Storage.Storage.Count > 0)
+                {
+                    var tp = Storage.Storage[0].GetType().Name.Replace("Form", "")[0];
+                    foreach (var item in Storage.Filters.CheckAndSort(GetFullStorage(tp)))
+                    {
+                        yield return item;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Дает итератор с фильтрованными и сортированными формами
+        /// </summary>
+        IEnumerable<Client_Model.Form> GetFullStorage(char TP)
+        {
+            foreach (var i in Forms)
+            {
+                if (i.Key[0] == TP)
+                {
+                    foreach (var item in i.Value.Storage)
+                    {
+                        yield return item;
+                    }
+                }
+            }
+        }
+
         public List<List<Form>> ToList()
         {
             List<List<Form>> lst = new List<List<Form>>();
@@ -123,6 +171,11 @@ namespace Models.LocalStorage
                 lst.Add(lt);
             }
             return lst;
+        }
+
+        public void FormsChanged(object sender,EventArgs e)
+        {
+            NotifyPropertyChanged("GetFilteredDictionary");
         }
 
         /// <summary>
@@ -144,7 +197,10 @@ namespace Models.LocalStorage
                     try
                     {
                         int num = Convert.ToInt32(name.Replace("Form",""));
-                        Forms.Add(num.ToString(),new LocalStorage(_Path + "/Forms"+num.ToString()+".raodb"));
+                        var lc = new LocalStorage(_Path + "/Forms" + num.ToString() + ".raodb");
+                        lc.Forms = this;
+                        lc.Storage.CollectionChanged += FormsChanged;
+                        Forms.Add(num.ToString(),lc);
                     }
                     catch { }
                 }
@@ -167,7 +223,10 @@ namespace Models.LocalStorage
                     try
                     {
                         int num = Convert.ToInt32(name.Replace("Form", ""));
-                        Forms.Add(num.ToString(), new LocalStorage());
+                        var lc = new LocalStorage();
+                        lc.Forms = this;
+                        lc.Storage.CollectionChanged += FormsChanged;
+                        Forms.Add(num.ToString(), lc);
                     }
                     catch { }
                 }

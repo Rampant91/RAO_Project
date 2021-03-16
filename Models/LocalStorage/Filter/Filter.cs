@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Models;
 
 namespace Models.LocalStorage.Filter
 {
@@ -15,7 +16,7 @@ namespace Models.LocalStorage.Filter
         /// </summary>
         public List<Filter_Item<T>> Filter_List { get; set; }
 
-        bool CheckObject(T obj)
+        bool CheckObject(Client_Model.Form obj)
         {
             bool flag = true;
             foreach(var item in Filter_List)
@@ -29,40 +30,46 @@ namespace Models.LocalStorage.Filter
             return flag;
         }
 
-        public IEnumerable<T> CheckAndSort(Storage_Observable<T> Storage)
+        public IEnumerable<Client_Model.Form> CheckAndSort(IEnumerable<Client_Model.Form> Storage)
         {
-            var prop = typeof(T).GetProperty(SortPath);
-            IEnumerable<T> str = Storage;
-
-            if (SortPath != "")
+            if (Storage.Count() > 0)
             {
-                if (prop != null)
-                {
-                    str = Storage.OrderByDescending(i => prop.GetValue(i));
-                }
-                else
-                {
-                    throw new Exception("Не найдено соответствующее свойство");
-                }
-            }
+                IEnumerable<Client_Model.Form> str = Storage;
 
-            if(str!=null)
-            {
-                if (Filter_List.Count != 0)
+                if (SortPath != "")
                 {
-                    foreach(var item in str)
+                    str = Storage.OrderByDescending(i =>
                     {
-                        if (CheckObject(item))
+                        var prop = i.GetType().GetProperty(SortPath);
+                        if (prop != null)
+                        {
+                            return prop.GetValue(i);
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    });
+                }
+
+                if (str != null)
+                {
+                    if (Filter_List.Count != 0)
+                    {
+                        foreach (var item in str)
+                        {
+                            if (CheckObject(item))
+                            {
+                                yield return item;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in str)
                         {
                             yield return item;
                         }
-                    }
-                }
-                else
-                {
-                    foreach (var item in str)
-                    {
-                        yield return item;
                     }
                 }
             }

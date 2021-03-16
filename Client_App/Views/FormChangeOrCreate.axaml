@@ -4,8 +4,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignHeight="300"
         x:Class="Client_App.Views.FormChangeOrCreate"
+        xmlns:vm="using:Client_App.ViewModels"
         Title="FormChangeOrCreate"
         SizeToContent="Width">
+  <Design.DataContext>
+    <vm:ChangeOrCreateVM/>
+  </Design.DataContext>
   <ScrollViewer>
     <Panel Margin="10,10,10,10" x:Name="ChangingPanel" VerticalAlignment="Top" HorizontalAlignment="Left">
       

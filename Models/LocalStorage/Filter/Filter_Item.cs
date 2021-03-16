@@ -31,10 +31,10 @@
             this.Type = Type;
         }
 
-        public bool CheckObject(T obj)
+        public bool CheckObject(Client_Model.Form obj)
         {
             bool flag = true;
-            var prop = typeof(T).GetProperty(Path);
+            var prop = obj.GetType().GetProperty(Path);
             if (prop != null)
             {
                 var val = prop.GetValue(obj);
