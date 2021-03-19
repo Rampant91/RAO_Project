@@ -60,15 +60,15 @@ namespace Models.Client_Model
             }
         }
 
-        private DateTime _operationDate = DateTime.MinValue;
+        private DateTimeOffset _operationDate = DateTimeOffset.Now;
 
-        private void OperationDate_Validation(DateTime value)//Ready
+        private void OperationDate_Validation(DateTimeOffset value)//Ready
         {
 
         }
 
         [Attributes.FormVisual("Дата")]
-        public DateTime OperationDate
+        public DateTimeOffset OperationDate
         {
             get { return _operationDate; }
             set

@@ -51,5 +51,16 @@ namespace Client_App.ViewModels
                 }
             }
         }
+
+        public ReactiveCommand<string, Unit> AddSort { get; }
+
+        public ChangeOrCreateVM()
+        {
+            AddSort = ReactiveCommand.Create<string>(_AddSort);
+        }
+        void _AddSort(string param)
+        {
+            Storage.Filters.SortPath = param;
+        }
     }
 }

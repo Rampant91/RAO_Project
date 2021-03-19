@@ -157,7 +157,7 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Forms[param]);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Forms[param],param);
                 await frm.ShowDialog(desktop.MainWindow);
             }
         }
@@ -183,7 +183,7 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Forms[param]);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Forms[param],param);
                 await frm.ShowDialog(desktop.MainWindow);
             }
         }
