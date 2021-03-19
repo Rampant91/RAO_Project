@@ -6,11 +6,16 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="5.0.4" />
     <PackageReference Include="ReactiveUI.Validation" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Helpers\Helpers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="LocalStorage_SQLite\" />
   </ItemGroup>
 
 </Project>

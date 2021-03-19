@@ -31,8 +31,21 @@ namespace Client_App.Long_Visual
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
             grd.Bind(DataGrid.ItemsProperty, new Binding("Storage.GetFilteredStorage"));
 
+            DataGridTemplateColumn clm0 = new DataGridTemplateColumn();
+            clm0.Width = new DataGridLength(0.1, DataGridLengthUnitType.Star);
+            clm0.Header = new TextBlock
+            {
+
+            };
+            clm0.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+                    new TextBlock
+                    {
+
+                    });
+            grd.Columns.Add(clm0);
+
             DataGridTemplateColumn clm1 = new DataGridTemplateColumn();
-            clm1.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+            clm1.Width = new DataGridLength(3, DataGridLengthUnitType.Star);
             clm1.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -44,12 +57,13 @@ namespace Client_App.Long_Visual
             clm1.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBox
                     {
+                        Foreground = new SolidColorBrush(Color.Parse("Black")),
                         [!TextBox.TextProperty] = new Binding("NumberInOrder"),
-                    });
+                    }) ;
             grd.Columns.Add(clm1);
 
             DataGridTemplateColumn clm2 = new DataGridTemplateColumn();
-            clm2.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+            clm2.Width = new DataGridLength(3, DataGridLengthUnitType.Star);
             clm2.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -61,12 +75,13 @@ namespace Client_App.Long_Visual
             clm2.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBox
                     {
+                        Foreground = new SolidColorBrush(Color.Parse("Black")),
                         [!TextBox.TextProperty] = new Binding("OperationCode"),
                     });
             grd.Columns.Add(clm2);
 
             DataGridTemplateColumn clm3 = new DataGridTemplateColumn();
-            clm3.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+            clm3.Width = new DataGridLength(3, DataGridLengthUnitType.Star);
             clm3.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -78,13 +93,15 @@ namespace Client_App.Long_Visual
             clm3.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new DatePicker
                     {
-                        [!DatePicker.SelectedDateProperty] = new Binding("OperationDate",BindingMode.TwoWay),
+                        Height = 30,
+                        Margin = Thickness.Parse("0,-4,0,0"),
+                        [!DatePicker.SelectedDateProperty] = new Binding("OperationDate", BindingMode.TwoWay),
 
                     }) ;
             grd.Columns.Add(clm3);
 
             DataGridTemplateColumn clm4 = new DataGridTemplateColumn();
-            clm4.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+            clm4.Width = new DataGridLength(3, DataGridLengthUnitType.Star);
             clm4.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -96,13 +113,14 @@ namespace Client_App.Long_Visual
             clm4.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBox
                     {
+                        Foreground = new SolidColorBrush(Color.Parse("Black")),
                         [!TextBox.TextProperty] = new Binding("PassportNumber"),
 
                     });
             grd.Columns.Add(clm4);
 
             DataGridTemplateColumn clm5 = new DataGridTemplateColumn();
-            clm5.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+            clm5.Width = new DataGridLength(3, DataGridLengthUnitType.Star);
             clm5.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -114,10 +132,12 @@ namespace Client_App.Long_Visual
             clm5.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBox
                     {
+                        Foreground = new SolidColorBrush(Color.Parse("Black")),
                         [!TextBox.TextProperty] = new Binding("Type"),
 
                     });
             grd.Columns.Add(clm5);
+
             return grd;
         }
         public static DataGrid Form12_Visual()
