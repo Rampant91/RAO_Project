@@ -16,23 +16,36 @@ namespace Models.Client_Model
         }
         public int NumberOfFields { get; } = 15;
 
-        private string _passportNumber = "";
-
-        private void PassportNumber_Validation(string value)//Ready
-        {
-            ClearErrors(nameof(PassportNumber));
-        }
-
+        //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]
         public string PassportNumber
         {
-            get { return _passportNumber; }
+            get
+            {
+                if (GetErrors(nameof(PassportNumber)) != null)
+                {
+                    return _PassportNumber;
+                }
+                else
+                {
+                    return _PassportNumber_Not_Valid;
+                }
+            }
             set
             {
-                _passportNumber = value;
-                PassportNumber_Validation(value);
-                OnPropertyChanged("PassportNumber");
+                _PassportNumber_Not_Valid = value;
+                if (PassportNumber_Validation())
+                {
+                    _PassportNumber = _PassportNumber_Not_Valid;
+                }
+                OnPropertyChanged(nameof(PassportNumber));
             }
+        }
+        private string _PassportNumber = "";
+        private string _PassportNumber_Not_Valid = "";
+        private bool PassportNumber_Validation()
+        {
+            return true;
         }
 
         private string _passportNumberNote = "";

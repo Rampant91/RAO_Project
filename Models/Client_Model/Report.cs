@@ -78,21 +78,36 @@ namespace Models.Client_Model
         [Attributes.FormVisual("Номер корректировки")]
         public byte CorrectionNumber
         {
-            get { return _correctionNumber; }
+            get
+            {
+                if (GetErrors(nameof(CorrectionNumber)) != null)
+                {
+                    return _correctionNumber;
+                }
+                else
+                {
+                    return _correctionNumber_Not_Valid;
+                }
+            }
             set
             {
-                _correctionNumber = value;
-                CorrectionNumber_Validation(value);
-                OnPropertyChanged("CorrectionNumber");
+                _correctionNumber_Not_Valid = value;
+                if (CorrectionNumber_Validation())
+                {
+                    _correctionNumber = _correctionNumber_Not_Valid;
+                }
+                OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
         private byte _correctionNumber = 255;
-        private void CorrectionNumber_Validation(byte value)
+        private byte _correctionNumber_Not_Valid = 255;
+        private bool CorrectionNumber_Validation()
         {
-            ClearErrors(nameof(CorrectionNumber));
-            //Пример
-            if (value < 10)
-                AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
+            return true;
+            //ClearErrors(nameof(CorrectionNumber));
+            ////Пример
+            //if (value < 10)
+            //    AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
         }
         //CorrectionNumber
 

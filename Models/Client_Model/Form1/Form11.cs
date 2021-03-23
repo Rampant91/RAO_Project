@@ -20,75 +20,134 @@ namespace Models.Client_Model
         }
         public int NumberOfFields { get; } = 37;
 
-        private byte _correctionNumber = 255;
-
-        private void CorrectionNumber_Validation(byte value)//TODO
-        {
-            ClearErrors(nameof(CorrectionNumber));
-            //Пример
-            if (value < 10)
-                AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
-        }
-
         [Attributes.FormVisual("Номер корректировки")]
         public byte CorrectionNumber
         {
-            get { return _correctionNumber; }
+            get
+            {
+                if (GetErrors(nameof(CorrectionNumber)) != null)
+                {
+                    return _correctionNumber;
+                }
+                else
+                {
+                    return _correctionNumber_Not_Valid;
+                }
+            }
             set
             {
-                _correctionNumber = value;
-                CorrectionNumber_Validation(value);
-                OnPropertyChanged("CorrectionNumber");
+                _correctionNumber_Not_Valid = value;
+                if (CorrectionNumber_Validation())
+                {
+                    _correctionNumber = _correctionNumber_Not_Valid;
+                }
+                OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-
-        private short _operationCode = -1;
-
-        private void OperationCode_Validation(short value)//TODO
+        private byte _correctionNumber = 255;
+        private byte _correctionNumber_Not_Valid = 255;
+        private bool CorrectionNumber_Validation()
         {
+            return true;
+            //ClearErrors(nameof(CorrectionNumber));
+            ////Пример
+            //if (value < 10)
+            //    AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
         }
 
         [Attributes.FormVisual("Код")]
         public short OperationCode
         {
-            get { return _operationCode; }
+            get
+            {
+                if (GetErrors(nameof(OperationCode)) != null)
+                {
+                    return _OperationCode;
+                }
+                else
+                {
+                    return _OperationCode_Not_Valid;
+                }
+            }
             set
             {
-                _operationCode = value;
-                OperationCode_Validation(value);
-                OnPropertyChanged("OperationCode");
+                _OperationCode_Not_Valid = value;
+                if (OperationCode_Validation())
+                {
+                    _OperationCode = _OperationCode_Not_Valid;
+                }
+                OnPropertyChanged(nameof(OperationCode));
             }
         }
-
-        private DateTimeOffset _operationDate = DateTimeOffset.Now;
-
-        private void OperationDate_Validation(DateTimeOffset value)//Ready
+        private short _OperationCode = -1;
+        private short _OperationCode_Not_Valid = -1;
+        private bool OperationCode_Validation()
         {
-
+            return true;
         }
 
-        [Attributes.FormVisual("Дата")]
-        public DateTimeOffset OperationDate
+        //OperationDate property
+        [Attributes.FormVisual("Дата операции")]
+        public DateTime OperationDate
         {
-            get { return _operationDate; }
+            get
+            {
+                if (GetErrors(nameof(OperationDate)) != null)
+                {
+                    return _OperationDate;
+                }
+                else
+                {
+                    return _OperationDate_Not_Valid;
+                }
+            }
             set
             {
-                _operationDate = value;
-                OperationDate_Validation(value);
-                OnPropertyChanged("OperationDate");
+                _OperationDate_Not_Valid = value;
+                if (OperationDate_Validation())
+                {
+                    _OperationDate = _OperationDate_Not_Valid;
+                }
+                OnPropertyChanged(nameof(OperationDate));
             }
         }
+        private DateTime _OperationDate = DateTime.MinValue;
+        private DateTime _OperationDate_Not_Valid = DateTime.MinValue;
+        private bool OperationDate_Validation()
+        {
+            return true;
+        }
 
-        private string _passportNumber = "test_1";
+        //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]
         public string PassportNumber
         {
-            get { return _passportNumber; }
+            get
+            {
+                if (GetErrors(nameof(PassportNumber)) != null)
+                {
+                    return _PassportNumber;
+                }
+                else
+                {
+                    return _PassportNumber_Not_Valid;
+                }
+            }
             set
             {
-                _passportNumber = value;
-                OnPropertyChanged("PassportNumber");
+                _PassportNumber_Not_Valid = value;
+                if (PassportNumber_Validation())
+                {
+                    _PassportNumber = _PassportNumber_Not_Valid;
+                }
+                OnPropertyChanged(nameof(PassportNumber));
             }
+        }
+        private string _PassportNumber = "";
+        private string _PassportNumber_Not_Valid = "";
+        private bool PassportNumber_Validation()
+        {
+            return true;
         }
 
         private string _passportNumberNote = "";
