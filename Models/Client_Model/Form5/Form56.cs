@@ -16,6 +16,7 @@ namespace Models.Client_Model
         }
         public int NumberOfFields { get; } = 5;
 
+        //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]
         public byte CorrectionNumber
         {
@@ -23,33 +24,30 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    return _correctionNumber;
+                    return (byte)_CorrectionNumber.Get();
                 }
                 else
                 {
-                    return _correctionNumber_Not_Valid;
+                    return _CorrectionNumber_Not_Valid;
                 }
             }
             set
             {
-                _correctionNumber_Not_Valid = value;
-                if (CorrectionNumber_Validation())
+                _CorrectionNumber_Not_Valid = value;
+                if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    _correctionNumber = _correctionNumber_Not_Valid;
+                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        private byte _correctionNumber = 255;
-        private byte _correctionNumber_Not_Valid = 255;
-        private bool CorrectionNumber_Validation()
+        private IDataLoadEngine _CorrectionNumber;
+        private byte _CorrectionNumber_Not_Valid = 255;
+        private void CorrectionNumber_Validation()
         {
-            return true;
-            //ClearErrors(nameof(CorrectionNumber));
-            ////Пример
-            //if (value < 10)
-            //    AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
+            ClearErrors(nameof(CorrectionNumber));
         }
+        //CorrectionNumber property
 
         private int _numberInOrder = -1;
         [Attributes.FormVisual("№ п/п")]
@@ -81,26 +79,40 @@ namespace Models.Client_Model
             }
         }
 
-        private int _quantity = -1;  // positive int.
-
+        //Quantity property
+        [Attributes.FormVisual("Количество, шт.")]
+        public int Quantity
+        {
+            get
+            {
+                if (GetErrors(nameof(Quantity)) != null)
+                {
+                    return (int)_Quantity.Get();
+                }
+                else
+                {
+                    return _Quantity_Not_Valid;
+                }
+            }
+            set
+            {
+                _Quantity_Not_Valid = value;
+                if (GetErrors(nameof(Quantity)) != null)
+                {
+                    _Quantity.Set(_Quantity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Quantity));
+            }
+        }
+        private IDataLoadEngine _Quantity;  // positive int.
+        private int _Quantity_Not_Valid = -1;
         private void Quantity_Validation(int value)//Ready
         {
             ClearErrors(nameof(Quantity));
             if (value <= 0)
                 AddError(nameof(Quantity), "Недопустимое значение");
         }
-
-        [Attributes.FormVisual("Количество, шт.")]
-        public int Quantity
-        {
-            get { return _quantity; }
-            set
-            {
-                _quantity = value;
-                Quantity_Validation(value);
-                OnPropertyChanged("Quantity");
-            }
-        }
+        //Quantity property
 
         private double _mass = -1;
         private void Mass_Validation(double value)//TODO

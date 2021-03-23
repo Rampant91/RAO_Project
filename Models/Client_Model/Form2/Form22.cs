@@ -13,6 +13,7 @@ namespace Models.Client_Model
         }
         public int NumberOfFields { get; } = 25;
 
+        //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]
         public byte CorrectionNumber
         {
@@ -20,33 +21,30 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    return _correctionNumber;
+                    return (byte)_CorrectionNumber.Get();
                 }
                 else
                 {
-                    return _correctionNumber_Not_Valid;
+                    return _CorrectionNumber_Not_Valid;
                 }
             }
             set
             {
-                _correctionNumber_Not_Valid = value;
-                if (CorrectionNumber_Validation())
+                _CorrectionNumber_Not_Valid = value;
+                if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    _correctionNumber = _correctionNumber_Not_Valid;
+                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        private byte _correctionNumber = 255;
-        private byte _correctionNumber_Not_Valid = 255;
-        private bool CorrectionNumber_Validation()
+        private IDataLoadEngine _CorrectionNumber;
+        private byte _CorrectionNumber_Not_Valid = 255;
+        private void CorrectionNumber_Validation()
         {
-            return true;
-            //ClearErrors(nameof(CorrectionNumber));
-            ////Пример
-            //if (value < 10)
-            //    AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
+            ClearErrors(nameof(CorrectionNumber));
         }
+        //CorrectionNumber property
 
         private int _numberInOrder = -1;
 
@@ -122,18 +120,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _packName = "";
-
+        //PackName property
         [Attributes.FormVisual("Наименование упаковки")]
         public string PackName
         {
-            get { return _packName; }
+            get
+            {
+                if (GetErrors(nameof(PackName)) != null)
+                {
+                    return (string)_PackName.Get();
+                }
+                else
+                {
+                    return _PackName_Not_Valid;
+                }
+            }
             set
             {
-                _packName = value;
-                OnPropertyChanged("PackName");
+                _PackName_Not_Valid = value;
+                if (GetErrors(nameof(PackName)) != null)
+                {
+                    _PackName.Set(_PackName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackName));
             }
         }
+        private IDataLoadEngine _PackName;
+        private string _PackName_Not_Valid = "";
+        private void PackName_Validation()
+        {
+            ClearErrors(nameof(PackName));
+        }
+        //PackName property
 
         private string _packNameNote = "";
         public string PackNameNote
@@ -146,23 +164,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _packType = "";//If change this change validation
-        private void PackType_Validation(string value)//Ready
-        {
-            ClearErrors(nameof(PackType));
-        }
-
+        //PackType property
         [Attributes.FormVisual("Тип упаковки")]
         public string PackType
         {
-            get { return _packType; }
+            get
+            {
+                if (GetErrors(nameof(PackType)) != null)
+                {
+                    return (string)_PackType.Get();
+                }
+                else
+                {
+                    return _PackType_Not_Valid;
+                }
+            }
             set
             {
-                _packType = value;
-                PackType_Validation(value);
-                OnPropertyChanged("PackType");
+                _PackType_Not_Valid = value;
+                if (GetErrors(nameof(PackType)) != null)
+                {
+                    _PackType.Set(_PackType_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackType));
             }
         }
+        private IDataLoadEngine _PackType;//If change this change validation
+        private string _PackType_Not_Valid = "";
+        private void PackType_Validation()//Ready
+        {
+            ClearErrors(nameof(PackType));
+        }
+        //PackType property
 
         private string _packTypeRecoded = "";
         public string PackTypeRecoded
@@ -332,8 +365,33 @@ namespace Models.Client_Model
             }
         }
 
-        private string _tritiumActivity = "";
-
+        //TritiumActivity property
+        [Attributes.FormVisual("Активность трития, Бк")]
+        public string TritiumActivity
+        {
+            get
+            {
+                if (GetErrors(nameof(TritiumActivity)) != null)
+                {
+                    return (string)_TritiumActivity.Get();
+                }
+                else
+                {
+                    return _TritiumActivity_Not_Valid;
+                }
+            }
+            set
+            {
+                _TritiumActivity_Not_Valid = value;
+                if (GetErrors(nameof(TritiumActivity)) != null)
+                {
+                    _TritiumActivity.Set(_TritiumActivity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(TritiumActivity));
+            }
+        }
+        private IDataLoadEngine _TritiumActivity;
+        private string _TritiumActivity_Not_Valid = "";
         private void TritiumActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(TritiumActivity));
@@ -356,20 +414,35 @@ namespace Models.Client_Model
                 AddError(nameof(TritiumActivity), "Недопустимое значение");
             }
         }
+        //TritiumActivity property
 
-        [Attributes.FormVisual("Активность трития, Бк")]
-        public string TritiumActivity
+        //BetaGammaActivity property
+        [Attributes.FormVisual("Активность бета-, гамма-излучающих, кроме трития, Бк")]
+        public string BetaGammaActivity
         {
-            get { return _tritiumActivity; }
+            get
+            {
+                if (GetErrors(nameof(BetaGammaActivity)) != null)
+                {
+                    return (string)_BetaGammaActivity.Get();
+                }
+                else
+                {
+                    return _BetaGammaActivity_Not_Valid;
+                }
+            }
             set
             {
-                _tritiumActivity = value;
-                TritiumActivity_Validation(value);
-                OnPropertyChanged("TritiumActivity");
+                _BetaGammaActivity_Not_Valid = value;
+                if (GetErrors(nameof(BetaGammaActivity)) != null)
+                {
+                    _BetaGammaActivity.Set(_BetaGammaActivity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(BetaGammaActivity));
             }
         }
-
-        private string _betaGammaActivity = "";
+        private IDataLoadEngine _BetaGammaActivity;
+        private string _BetaGammaActivity_Not_Valid = "";
         private void BetaGammaActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(BetaGammaActivity));
@@ -392,20 +465,35 @@ namespace Models.Client_Model
                 AddError(nameof(BetaGammaActivity), "Недопустимое значение");
             }
         }
+        //BetaGammaActivity property
 
-        [Attributes.FormVisual("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public string BetaGammaActivity
+        //AlphaActivity property
+        [Attributes.FormVisual("Активность альфа-излучающих, кроме трансурановых, Бк")]
+        public string AlphaActivity
         {
-            get { return _betaGammaActivity; }
+            get
+            {
+                if (GetErrors(nameof(AlphaActivity)) != null)
+                {
+                    return (string)_AlphaActivity.Get();
+                }
+                else
+                {
+                    return _AlphaActivity_Not_Valid;
+                }
+            }
             set
             {
-                _betaGammaActivity = value;
-                BetaGammaActivity_Validation(value);
-                OnPropertyChanged("BetaGammaActivity");
+                _AlphaActivity_Not_Valid = value;
+                if (GetErrors(nameof(AlphaActivity)) != null)
+                {
+                    _AlphaActivity.Set(_AlphaActivity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(AlphaActivity));
             }
         }
-
-        private string _alphaActivity = "";
+        private IDataLoadEngine _AlphaActivity;
+        private string _AlphaActivity_Not_Valid = "";
         private void AlphaActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(AlphaActivity));
@@ -428,20 +516,35 @@ namespace Models.Client_Model
                 AddError(nameof(AlphaActivity), "Недопустимое значение");
             }
         }
+        //AlphaActivity property
 
-        [Attributes.FormVisual("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public string AlphaActivity
+        //TransuraniumActivity property
+        [Attributes.FormVisual("Активность трансурановых, Бк")]
+        public string TransuraniumActivity
         {
-            get { return _alphaActivity; }
+            get
+            {
+                if (GetErrors(nameof(TransuraniumActivity)) != null)
+                {
+                    return (string)_TransuraniumActivity.Get();
+                }
+                else
+                {
+                    return _TransuraniumActivity_Not_Valid;
+                }
+            }
             set
             {
-                _alphaActivity = value;
-                AlphaActivity_Validation(value);
-                OnPropertyChanged("AlphaActivity");
+                _TransuraniumActivity_Not_Valid = value;
+                if (GetErrors(nameof(TransuraniumActivity)) != null)
+                {
+                    _TransuraniumActivity.Set(_TransuraniumActivity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(TransuraniumActivity));
             }
         }
-
-        private string _transuraniumActivity = "";
+        private IDataLoadEngine _TransuraniumActivity;
+        private string _TransuraniumActivity_Not_Valid = "";
         private void TransuraniumActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransuraniumActivity));
@@ -464,37 +567,40 @@ namespace Models.Client_Model
                 AddError(nameof(TransuraniumActivity), "Недопустимое значение");
             }
         }
+        //TransuraniumActivity property
 
-        [Attributes.FormVisual("Активность трансурановых, Бк")]
-        public string TransuraniumActivity
+        //MainRadionuclids property
+        [Attributes.FormVisual("Радионуклиды")]
+        public string MainRadionuclids
         {
-            get { return _transuraniumActivity; }
+            get
+            {
+                if (GetErrors(nameof(MainRadionuclids)) != null)
+                {
+                    return (string)_MainRadionuclids.Get();
+                }
+                else
+                {
+                    return _MainRadionuclids_Not_Valid;
+                }
+            }
             set
             {
-                _transuraniumActivity = value;
-                TransuraniumActivity_Validation(value);
-                OnPropertyChanged("TransuraniumActivity");
+                _MainRadionuclids_Not_Valid = value;
+                if (GetErrors(nameof(MainRadionuclids)) != null)
+                {
+                    _MainRadionuclids.Set(_MainRadionuclids_Not_Valid);
+                }
+                OnPropertyChanged(nameof(MainRadionuclids));
             }
         }
-
-        private string _mainRadionuclids = "";//if change this change validation
-
-        private void MainRadionuclids_Validation(string value)//TODO
+        private IDataLoadEngine _MainRadionuclids;//If change this change validation
+        private string _MainRadionuclids_Not_Valid = "";
+        private void MainRadionuclids_Validation()//TODO
         {
             ClearErrors(nameof(MainRadionuclids));
         }
-
-        [Attributes.FormVisual("Основные адионуклиды")]
-        public string MainRadionuclids
-        {
-            get { return _mainRadionuclids; }
-            set
-            {
-                _mainRadionuclids = value;
-                MainRadionuclids_Validation(value);
-                OnPropertyChanged("MainRadionuclids");
-            }
-        }
+        //MainRadionuclids property
 
         private string _subsidy = "";
 

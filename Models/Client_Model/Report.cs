@@ -74,7 +74,7 @@ namespace Models.Client_Model
         }
         //IsCorrection
 
-        //CorrectionNumber (пример не правильной реализации)
+        //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]
         public byte CorrectionNumber
         {
@@ -82,34 +82,30 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    return _correctionNumber;
+                    return (byte)_CorrectionNumber.Get();
                 }
                 else
                 {
-                    return _correctionNumber_Not_Valid;
+                    return _CorrectionNumber_Not_Valid;
                 }
             }
             set
             {
-                _correctionNumber_Not_Valid = value;
-                if (CorrectionNumber_Validation())
+                _CorrectionNumber_Not_Valid = value;
+                if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    _correctionNumber = _correctionNumber_Not_Valid;
+                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        private byte _correctionNumber = 255;
-        private byte _correctionNumber_Not_Valid = 255;
-        private bool CorrectionNumber_Validation()
+        private IDataLoadEngine _CorrectionNumber;
+        private byte _CorrectionNumber_Not_Valid = 255;
+        private void CorrectionNumber_Validation()
         {
-            return true;
-            //ClearErrors(nameof(CorrectionNumber));
-            ////Пример
-            //if (value < 10)
-            //    AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
+            ClearErrors(nameof(CorrectionNumber));
         }
-        //CorrectionNumber
+        //CorrectionNumber property
 
         //Comments
         [Attributes.FormVisual("Комментарий")]

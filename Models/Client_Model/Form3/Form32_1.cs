@@ -24,7 +24,7 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(PassportNumber)) != null)
                 {
-                    return _PassportNumber;
+                    return (string)_PassportNumber.Get();
                 }
                 else
                 {
@@ -34,18 +34,18 @@ namespace Models.Client_Model
             set
             {
                 _PassportNumber_Not_Valid = value;
-                if (PassportNumber_Validation())
+                if (GetErrors(nameof(PassportNumber)) != null)
                 {
-                    _PassportNumber = _PassportNumber_Not_Valid;
+                    _PassportNumber.Set(_PassportNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
         }
-        private string _PassportNumber = "";
+        private IDataLoadEngine _PassportNumber;
         private string _PassportNumber_Not_Valid = "";
-        private bool PassportNumber_Validation()
+        private void PassportNumber_Validation()
         {
-            return true;
+            ClearErrors(nameof(PassportNumber));
         }
 
         private string _passportNumberNote = "";
@@ -78,17 +78,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _type = "";
-
+        //Type property
+        [Attributes.FormVisual("Тип")]
         public string Type
         {
-            get { return _type; }
+            get
+            {
+                if (GetErrors(nameof(Type)) != null)
+                {
+                    return (string)_Type.Get();
+                }
+                else
+                {
+                    return _Type_Not_Valid;
+                }
+            }
             set
             {
-                _type = value;
-                OnPropertyChanged("Type");
+                _Type_Not_Valid = value;
+                if (GetErrors(nameof(Type)) != null)
+                {
+                    _Type.Set(_Type_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Type));
             }
         }
+        private IDataLoadEngine _Type;
+        private string _Type_Not_Valid = "";
+        private void Type_Validation()
+        {
+            ClearErrors(nameof(Type));
+        }
+        //Type property
 
         private string _typeRecoded = "";
         public string TypeRecoded
@@ -101,42 +122,71 @@ namespace Models.Client_Model
             }
         }
 
-        private string _radionuclids = "";//If change this change validation
-
-        private void Radionuclids_Validation(string value)//TODO
-        {
-            ClearErrors(nameof(Radionuclids));
-        }
-
+        //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]
         public string Radionuclids
         {
-            get { return _radionuclids; }
+            get
+            {
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    return (string)_Radionuclids.Get();
+                }
+                else
+                {
+                    return _Radionuclids_Not_Valid;
+                }
+            }
             set
             {
-                _radionuclids = value;
-                Radionuclids_Validation(value);
-                OnPropertyChanged("Radionuclids");
+                _Radionuclids_Not_Valid = value;
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    _Radionuclids.Set(_Radionuclids_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }
-
-        private string _factoryNumber = "";//If change this change validation
-        private void FactoryNumber_Validation(string value)//Ready
+        private IDataLoadEngine _Radionuclids;//If change this change validation
+        private string _Radionuclids_Not_Valid = "";
+        private void Radionuclids_Validation()//TODO
         {
-            ClearErrors(nameof(FactoryNumber));
+            ClearErrors(nameof(Radionuclids));
         }
+        //Radionuclids property
 
+        //FactoryNumber property
         [Attributes.FormVisual("Заводской номер")]
         public string FactoryNumber
         {
-            get { return _factoryNumber; }
+            get
+            {
+                if (GetErrors(nameof(FactoryNumber)) != null)
+                {
+                    return (string)_FactoryNumber.Get();
+                }
+                else
+                {
+                    return _FactoryNumber_Not_Valid;
+                }
+            }
             set
             {
-                _factoryNumber = value;
-                FactoryNumber_Validation(value);
-                OnPropertyChanged("FactoryNumber");
+                _FactoryNumber_Not_Valid = value;
+                if (GetErrors(nameof(FactoryNumber)) != null)
+                {
+                    _FactoryNumber.Set(_FactoryNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FactoryNumber));
             }
         }
+        private IDataLoadEngine _FactoryNumber;
+        private string _FactoryNumber_Not_Valid = "";
+        private void FactoryNumber_Validation()
+        {
+            ClearErrors(nameof(FactoryNumber));
+        }
+        //FactoryNumber property
 
         private string _factoryNumberRecoded = "";
         public string FactoryNumberRecoded

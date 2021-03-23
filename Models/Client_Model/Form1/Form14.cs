@@ -14,6 +14,7 @@ namespace Models.Client_Model
         }
         public int NumberOfFields { get; } = 32;
 
+        //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]
         public byte CorrectionNumber
         {
@@ -21,33 +22,30 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    return _correctionNumber;
+                    return (byte)_CorrectionNumber.Get();
                 }
                 else
                 {
-                    return _correctionNumber_Not_Valid;
+                    return _CorrectionNumber_Not_Valid;
                 }
             }
             set
             {
-                _correctionNumber_Not_Valid = value;
-                if (CorrectionNumber_Validation())
+                _CorrectionNumber_Not_Valid = value;
+                if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    _correctionNumber = _correctionNumber_Not_Valid;
+                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        private byte _correctionNumber = 255;
-        private byte _correctionNumber_Not_Valid = 255;
-        private bool CorrectionNumber_Validation()
+        private IDataLoadEngine _CorrectionNumber;
+        private byte _CorrectionNumber_Not_Valid = 255;
+        private void CorrectionNumber_Validation()
         {
-            return true;
-            //ClearErrors(nameof(CorrectionNumber));
-            ////Пример
-            //if (value < 10)
-            //    AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
+            ClearErrors(nameof(CorrectionNumber));
         }
+        //CorrectionNumber property
 
         private int _numberInOrder = -1;
         [Attributes.FormVisual("№ п/п")]
@@ -69,7 +67,7 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(OperationCode)) != null)
                 {
-                    return _OperationCode;
+                    return (short)_OperationCode.Get();
                 }
                 else
                 {
@@ -79,18 +77,18 @@ namespace Models.Client_Model
             set
             {
                 _OperationCode_Not_Valid = value;
-                if (OperationCode_Validation())
+                if (GetErrors(nameof(OperationCode)) != null)
                 {
-                    _OperationCode = _OperationCode_Not_Valid;
+                    _OperationCode.Set(_OperationCode_Not_Valid);
                 }
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        private short _OperationCode = -1;
+        private IDataLoadEngine _OperationCode;
         private short _OperationCode_Not_Valid = -1;
-        private bool OperationCode_Validation()
+        private void OperationCode_Validation()
         {
-            return true;
+            ClearErrors(nameof(OperationCode));
         }
 
         //OperationDate property
@@ -101,7 +99,7 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(OperationDate)) != null)
                 {
-                    return _OperationDate;
+                    return (DateTime)_OperationDate.Get();
                 }
                 else
                 {
@@ -111,18 +109,18 @@ namespace Models.Client_Model
             set
             {
                 _OperationDate_Not_Valid = value;
-                if (OperationDate_Validation())
+                if (GetErrors(nameof(OperationDate)) != null)
                 {
-                    _OperationDate = _OperationDate_Not_Valid;
+                    _OperationDate.Set(_OperationDate_Not_Valid);
                 }
                 OnPropertyChanged(nameof(OperationDate));
             }
         }
-        private DateTime _OperationDate = DateTime.MinValue;
+        private IDataLoadEngine _OperationDate;
         private DateTime _OperationDate_Not_Valid = DateTime.MinValue;
-        private bool OperationDate_Validation()
+        private void OperationDate_Validation()
         {
-            return true;
+            ClearErrors(nameof(OperationDate));
         }
 
         //PassportNumber property
@@ -133,7 +131,7 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(PassportNumber)) != null)
                 {
-                    return _PassportNumber;
+                    return (string)_PassportNumber.Get();
                 }
                 else
                 {
@@ -143,18 +141,18 @@ namespace Models.Client_Model
             set
             {
                 _PassportNumber_Not_Valid = value;
-                if (PassportNumber_Validation())
+                if (GetErrors(nameof(PassportNumber)) != null)
                 {
-                    _PassportNumber = _PassportNumber_Not_Valid;
+                    _PassportNumber.Set(_PassportNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
         }
-        private string _PassportNumber = "";
+        private IDataLoadEngine _PassportNumber;
         private string _PassportNumber_Not_Valid = "";
-        private bool PassportNumber_Validation()
+        private void PassportNumber_Validation()
         {
-            return true;
+            ClearErrors(nameof(PassportNumber));
         }
 
         private string _passportNumberNote = "";
@@ -215,27 +213,66 @@ namespace Models.Client_Model
             }
         }
 
-        private string _radionuclids = "";//If change this change validation
-
-        private void Radionuclids_Validation(string value)//TODO
-        {
-            ClearErrors(nameof(Radionuclids));
-        }
-
+        //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]
         public string Radionuclids
         {
-            get { return _radionuclids; }
+            get
+            {
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    return (string)_Radionuclids.Get();
+                }
+                else
+                {
+                    return _Radionuclids_Not_Valid;
+                }
+            }
             set
             {
-                _radionuclids = value;
-                Radionuclids_Validation(value);
-                OnPropertyChanged("Radionuclids");
+                _Radionuclids_Not_Valid = value;
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    _Radionuclids.Set(_Radionuclids_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }
+        private IDataLoadEngine _Radionuclids;//If change this change validation
+        private string _Radionuclids_Not_Valid = "";
+        private void Radionuclids_Validation()//TODO
+        {
+            ClearErrors(nameof(Radionuclids));
+        }
+        //Radionuclids property
 
-        private string _activity = "";
-
+        //Activity property
+        [Attributes.FormVisual("Активность, Бк")]
+        public string Activity
+        {
+            get
+            {
+                if (GetErrors(nameof(Activity)) != null)
+                {
+                    return (string)_Activity.Get();
+                }
+                else
+                {
+                    return _Activity_Not_Valid;
+                }
+            }
+            set
+            {
+                _Activity_Not_Valid = value;
+                if (GetErrors(nameof(Activity)) != null)
+                {
+                    _Activity.Set(_Activity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Activity));
+            }
+        }
+        private IDataLoadEngine _Activity;
+        private string _Activity_Not_Valid = "";
         private void Activity_Validation(string value)//Ready
         {
             ClearErrors(nameof(Activity));
@@ -251,18 +288,7 @@ namespace Models.Client_Model
                 AddError(nameof(Activity), "Недопустимое значение");
             }
         }
-
-        [Attributes.FormVisual("Активность, Бк")]
-        public string Activity
-        {
-            get { return _activity; }
-            set
-            {
-                _activity = value;
-                Activity_Validation(value);
-                OnPropertyChanged("Activity");
-            }
-        }
+        //Activity property
 
         private DateTime _activityMeasurementDate = DateTime.MinValue;//if change this change validation
 
@@ -447,23 +473,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _providerOrRecieverOKPO = "";
-
-        private void ProviderOrRecieverOKPO_Validation(string value)//TODO
-        {
-        }
-
+        //ProviderOrRecieverOKPO property
         [Attributes.FormVisual("ОКПО поставщика/получателя")]
         public string ProviderOrRecieverOKPO
         {
-            get { return _providerOrRecieverOKPO; }
+            get
+            {
+                if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
+                {
+                    return (string)_ProviderOrRecieverOKPO.Get();
+                }
+                else
+                {
+                    return _ProviderOrRecieverOKPO_Not_Valid;
+                }
+            }
             set
             {
-                _providerOrRecieverOKPO = value;
-                ProviderOrRecieverOKPO_Validation(value);
-                OnPropertyChanged("ProviderOrRecieverOKPO");
+                _ProviderOrRecieverOKPO_Not_Valid = value;
+                if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
+                {
+                    _ProviderOrRecieverOKPO.Set(_ProviderOrRecieverOKPO_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
+        private IDataLoadEngine _ProviderOrRecieverOKPO;
+        private string _ProviderOrRecieverOKPO_Not_Valid = "";
+        private void ProviderOrRecieverOKPO_Validation()//TODO
+        {
+            ClearErrors(nameof(ProviderOrRecieverOKPO));
+        }
+        //ProviderOrRecieverOKPO property
 
         private string _providerOrRecieverOKPONote = "";
         public string ProviderOrRecieverOKPONote
@@ -476,23 +517,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _transporterOKPO = "";
-
-        private void TransporterOKPO_Validation(string value)//TODO
-        {
-        }
-
+        //TransporterOKPO property
         [Attributes.FormVisual("ОКПО перевозчика")]
         public string TransporterOKPO
         {
-            get { return _transporterOKPO; }
+            get
+            {
+                if (GetErrors(nameof(TransporterOKPO)) != null)
+                {
+                    return (string)_TransporterOKPO.Get();
+                }
+                else
+                {
+                    return _TransporterOKPO_Not_Valid;
+                }
+            }
             set
             {
-                _transporterOKPO = value;
-                TransporterOKPO_Validation(value);
-                OnPropertyChanged("TransporterOKPO");
+                _TransporterOKPO_Not_Valid = value;
+                if (GetErrors(nameof(TransporterOKPO)) != null)
+                {
+                    _TransporterOKPO.Set(_TransporterOKPO_Not_Valid);
+                }
+                OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
+        private IDataLoadEngine _TransporterOKPO;
+        private string _TransporterOKPO_Not_Valid = "";
+        private void TransporterOKPO_Validation(string value)//TODO
+        {
+            ClearErrors(nameof(TransporterOKPO));
+        }
+        //TransporterOKPO property
 
         private string _transporterOKPONote = "";
         public string TransporterOKPONote
@@ -505,18 +561,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _packName = "";
-
+        //PackName property
         [Attributes.FormVisual("Наименование упаковки")]
         public string PackName
         {
-            get { return _packName; }
+            get
+            {
+                if (GetErrors(nameof(PackName)) != null)
+                {
+                    return (string)_PackName.Get();
+                }
+                else
+                {
+                    return _PackName_Not_Valid;
+                }
+            }
             set
             {
-                _packName = value;
-                OnPropertyChanged("PackName");
+                _PackName_Not_Valid = value;
+                if (GetErrors(nameof(PackName)) != null)
+                {
+                    _PackName.Set(_PackName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackName));
             }
         }
+        private IDataLoadEngine _PackName;
+        private string _PackName_Not_Valid = "";
+        private void PackName_Validation()
+        {
+            ClearErrors(nameof(PackName));
+        }
+        //PackName property
 
         private string _packNameNote = "";
         public string PackNameNote
@@ -529,23 +605,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _packType = "";//If change this change validation
-        private void PackType_Validation(string value)//Ready
-        {
-            ClearErrors(nameof(PackType));
-        }
-
+        //PackType property
         [Attributes.FormVisual("Тип упаковки")]
         public string PackType
         {
-            get { return _packType; }
+            get
+            {
+                if (GetErrors(nameof(PackType)) != null)
+                {
+                    return (string)_PackType.Get();
+                }
+                else
+                {
+                    return _PackType_Not_Valid;
+                }
+            }
             set
             {
-                _packType = value;
-                PackType_Validation(value);
-                OnPropertyChanged("PackType");
+                _PackType_Not_Valid = value;
+                if (GetErrors(nameof(PackType)) != null)
+                {
+                    _PackType.Set(_PackType_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackType));
             }
         }
+        private IDataLoadEngine _PackType;//If change this change validation
+        private string _PackType_Not_Valid = "";
+        private void PackType_Validation()//Ready
+        {
+            ClearErrors(nameof(PackType));
+        }
+        //PackType property
 
         private string _packTypeRecoded = "";
         public string PackTypeRecoded

@@ -26,6 +26,7 @@ namespace Models.Client_Model
             }
         }
 
+        //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]
         public byte CorrectionNumber
         {
@@ -33,34 +34,32 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    return _correctionNumber;
+                    return (byte)_CorrectionNumber.Get();
                 }
                 else
                 {
-                    return _correctionNumber_Not_Valid;
+                    return _CorrectionNumber_Not_Valid;
                 }
             }
             set
             {
-                _correctionNumber_Not_Valid = value;
-                if (CorrectionNumber_Validation())
+                _CorrectionNumber_Not_Valid = value;
+                if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    _correctionNumber = _correctionNumber_Not_Valid;
+                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        private byte _correctionNumber = 255;
-        private byte _correctionNumber_Not_Valid = 255;
-        private bool CorrectionNumber_Validation()
+        private IDataLoadEngine _CorrectionNumber;
+        private byte _CorrectionNumber_Not_Valid = 255;
+        private void CorrectionNumber_Validation()
         {
-            return true;
-            //ClearErrors(nameof(CorrectionNumber));
-            ////Пример
-            //if (value < 10)
-            //    AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
+            ClearErrors(nameof(CorrectionNumber));
         }
+        //CorrectionNumber property
 
+        //OperationCode property
         [Attributes.FormVisual("Код")]
         public short OperationCode
         {
@@ -68,7 +67,7 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(OperationCode)) != null)
                 {
-                    return _OperationCode;
+                    return (short)_OperationCode.Get();
                 }
                 else
                 {
@@ -78,18 +77,18 @@ namespace Models.Client_Model
             set
             {
                 _OperationCode_Not_Valid = value;
-                if (OperationCode_Validation())
+                if (GetErrors(nameof(OperationCode)) != null)
                 {
-                    _OperationCode = _OperationCode_Not_Valid;
+                    _OperationCode.Set(_OperationCode_Not_Valid);
                 }
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        private short _OperationCode = -1;
+        private IDataLoadEngine _OperationCode;
         private short _OperationCode_Not_Valid = -1;
-        private bool OperationCode_Validation()
+        private void OperationCode_Validation()
         {
-            return true;
+            ClearErrors(nameof(OperationCode));
         }
 
         private string _objectTypeCode = ""; //2 digit code
@@ -110,24 +109,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _radionuclids = "";//If change this change validation
-
-        private void Radionuclids_Validation(string value)//TODO
-        {
-            ClearErrors(nameof(Radionuclids));
-        }
-
+        //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]
         public string Radionuclids
         {
-            get { return _radionuclids; }
+            get
+            {
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    return (string)_Radionuclids.Get();
+                }
+                else
+                {
+                    return _Radionuclids_Not_Valid;
+                }
+            }
             set
             {
-                _radionuclids = value;
-                Radionuclids_Validation(value);
-                OnPropertyChanged("Radionuclids");
+                _Radionuclids_Not_Valid = value;
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    _Radionuclids.Set(_Radionuclids_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }
+        private IDataLoadEngine _Radionuclids;//If change this change validation
+        private string _Radionuclids_Not_Valid = "";
+        private void Radionuclids_Validation()//TODO
+        {
+            ClearErrors(nameof(Radionuclids));
+        }
+        //Radionuclids property
 
         private double _activity = -1;
 
@@ -150,23 +163,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _providerOrRecieverOKPO = "";
-
-        private void ProviderOrRecieverOKPO_Validation(string value)//TODO
-        {
-        }
-
+        //ProviderOrRecieverOKPO property
         [Attributes.FormVisual("ОКПО поставщика/получателя")]
         public string ProviderOrRecieverOKPO
         {
-            get { return _providerOrRecieverOKPO; }
+            get
+            {
+                if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
+                {
+                    return (string)_ProviderOrRecieverOKPO.Get();
+                }
+                else
+                {
+                    return _ProviderOrRecieverOKPO_Not_Valid;
+                }
+            }
             set
             {
-                _providerOrRecieverOKPO = value;
-                ProviderOrRecieverOKPO_Validation(value);
-                OnPropertyChanged("ProviderOrRecieverOKPO");
+                _ProviderOrRecieverOKPO_Not_Valid = value;
+                if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
+                {
+                    _ProviderOrRecieverOKPO.Set(_ProviderOrRecieverOKPO_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
+        private IDataLoadEngine _ProviderOrRecieverOKPO;
+        private string _ProviderOrRecieverOKPO_Not_Valid = "";
+        private void ProviderOrRecieverOKPO_Validation()//TODO
+        {
+            ClearErrors(nameof(ProviderOrRecieverOKPO));
+        }
+        //ProviderOrRecieverOKPO property
 
         private string _providerOrRecieverOKPONote = "";
         public string ProviderOrRecieverOKPONote

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
@@ -28,6 +29,7 @@ namespace Models.Client_Model
             }
         }
 
+        //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]
         public byte CorrectionNumber
         {
@@ -35,33 +37,30 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    return _correctionNumber;
+                    return (byte)_CorrectionNumber.Get();
                 }
                 else
                 {
-                    return _correctionNumber_Not_Valid;
+                    return _CorrectionNumber_Not_Valid;
                 }
             }
             set
             {
-                _correctionNumber_Not_Valid = value;
-                if (CorrectionNumber_Validation())
+                _CorrectionNumber_Not_Valid = value;
+                if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    _correctionNumber = _correctionNumber_Not_Valid;
+                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        private byte _correctionNumber = 255;
-        private byte _correctionNumber_Not_Valid = 255;
-        private bool CorrectionNumber_Validation()
+        private IDataLoadEngine _CorrectionNumber;
+        private byte _CorrectionNumber_Not_Valid = 255;
+        private void CorrectionNumber_Validation()
         {
-            return true;
-            //ClearErrors(nameof(CorrectionNumber));
-            ////Пример
-            //if (value < 10)
-            //    AddError(nameof(CorrectionNumber), "Значение должно быть больше 10.");
+            ClearErrors(nameof(CorrectionNumber));
         }
+        //CorrectionNumber property
 
         private string _plotName = "";
         [Attributes.FormVisual("Наименование участка")]
@@ -133,40 +132,136 @@ namespace Models.Client_Model
             }
         }
 
-        private string _specificActivityOfPlot = "";
-        [Attributes.FormVisual("Удельная активность земельного участка, Бк/г")]
+        //SpecificActivityOfPlot property
+        [Attributes.FormVisual("Удельная активность, Бк/г")]
         public string SpecificActivityOfPlot
         {
-            get { return _specificActivityOfPlot; }
+            get
+            {
+                if (GetErrors(nameof(SpecificActivityOfPlot)) != null)
+                {
+                    return (string)_SpecificActivityOfPlot.Get();
+                }
+                else
+                {
+                    return _SpecificActivityOfPlot_Not_Valid;
+                }
+            }
             set
             {
-                _specificActivityOfPlot = value;
-                OnPropertyChanged("SpecificActivityOfPlot");
+                _SpecificActivityOfPlot_Not_Valid = value;
+                if (GetErrors(nameof(SpecificActivityOfPlot)) != null)
+                {
+                    _SpecificActivityOfPlot.Set(_SpecificActivityOfPlot_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SpecificActivityOfPlot));
             }
         }
+        private IDataLoadEngine _SpecificActivityOfPlot;
+        private string _SpecificActivityOfPlot_Not_Valid = "";
+        private void SpecificActivityOfPlot_Validation(string value)//TODO
+        {
+            //ClearErrors(nameof(SpecificActivityOfPlot));
+            //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            //   NumberStyles.AllowExponent;
+            //try
+            //{
+            //    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+            //        AddError(nameof(SpecificActivityOfPlot), "Число должно быть больше нуля");
+            //}
+            //catch
+            //{
+            //    AddError(nameof(SpecificActivityOfPlot), "Недопустимое значение");
+            //}
+        }
+        //SpecificActivityOfPlot property
 
-        private string _specificActivityOfLiquidPart = "";
-        [Attributes.FormVisual("Удельная активность жидкой фазы водного объекта, Бк/г")]
+        //SpecificActivityOfLiquidPart property
+        [Attributes.FormVisual("Удельная активность жидкой части, Бк/г")]
         public string SpecificActivityOfLiquidPart
         {
-            get { return _specificActivityOfLiquidPart; }
+            get
+            {
+                if (GetErrors(nameof(SpecificActivityOfLiquidPart)) != null)
+                {
+                    return (string)_SpecificActivityOfLiquidPart.Get();
+                }
+                else
+                {
+                    return _SpecificActivityOfLiquidPart_Not_Valid;
+                }
+            }
             set
             {
-                _specificActivityOfLiquidPart = value;
-                OnPropertyChanged("SpecificActivityOfLiquidPart");
+                _SpecificActivityOfLiquidPart_Not_Valid = value;
+                if (GetErrors(nameof(SpecificActivityOfLiquidPart)) != null)
+                {
+                    _SpecificActivityOfLiquidPart.Set(_SpecificActivityOfLiquidPart_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SpecificActivityOfLiquidPart));
             }
         }
+        private IDataLoadEngine _SpecificActivityOfLiquidPart;
+        private string _SpecificActivityOfLiquidPart_Not_Valid = "";
+        private void SpecificActivityOfLiquidPart_Validation(string value)//TODO
+        {
+            //ClearErrors(nameof(SpecificActivityOfLiquidPart));
+            //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            //   NumberStyles.AllowExponent;
+            //try
+            //{
+            //    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+            //        AddError(nameof(SpecificActivityOfLiquidPart), "Число должно быть больше нуля");
+            //}
+            //catch
+            //{
+            //    AddError(nameof(SpecificActivityOfLiquidPart), "Недопустимое значение");
+            //}
+        }
+        //SpecificActivityOfLiquidPart property
 
-        private string _specificActivityOfDensePart = "";
-        [Attributes.FormVisual("Удельная активность донных отложений водного объекта, Бк/г")]
+        //SpecificActivityOfDensePart property
+        [Attributes.FormVisual("Удельная активность твердой части, Бк/г")]
         public string SpecificActivityOfDensePart
         {
-            get { return _specificActivityOfDensePart; }
+            get
+            {
+                if (GetErrors(nameof(SpecificActivityOfDensePart)) != null)
+                {
+                    return (string)_SpecificActivityOfDensePart.Get();
+                }
+                else
+                {
+                    return _SpecificActivityOfDensePart_Not_Valid;
+                }
+            }
             set
             {
-                _specificActivityOfDensePart = value;
-                OnPropertyChanged("SpecificActivityOfDensePart");
+                _SpecificActivityOfDensePart_Not_Valid = value;
+                if (GetErrors(nameof(SpecificActivityOfDensePart)) != null)
+                {
+                    _SpecificActivityOfDensePart.Set(_SpecificActivityOfDensePart_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SpecificActivityOfDensePart));
             }
         }
+        private IDataLoadEngine _SpecificActivityOfDensePart;
+        private string _SpecificActivityOfDensePart_Not_Valid = "";
+        private void SpecificActivityOfDensePart_Validation(string value)//TODO
+        {
+            //ClearErrors(nameof(SpecificActivityOfDensePart));
+            //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            //   NumberStyles.AllowExponent;
+            //try
+            //{
+            //    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+            //        AddError(nameof(SpecificActivityOfDensePart), "Число должно быть больше нуля");
+            //}
+            //catch
+            //{
+            //    AddError(nameof(SpecificActivityOfDensePart), "Недопустимое значение");
+            //}
+        }
+        //SpecificActivityOfDensePart property
     }
 }

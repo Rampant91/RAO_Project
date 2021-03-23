@@ -16,36 +16,71 @@ namespace Models.Client_Model
         }
         public int NumberOfFields { get; } = 6;
 
-        private string _packName = "";
-
+        //PackName property
         [Attributes.FormVisual("Наименование упаковки")]
         public string PackName
         {
-            get { return _packName; }
+            get
+            {
+                if (GetErrors(nameof(PackName)) != null)
+                {
+                    return (string)_PackName.Get();
+                }
+                else
+                {
+                    return _PackName_Not_Valid;
+                }
+            }
             set
             {
-                _packName = value;
-                OnPropertyChanged("PackName");
+                _PackName_Not_Valid = value;
+                if (GetErrors(nameof(PackName)) != null)
+                {
+                    _PackName.Set(_PackName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackName));
             }
         }
-
-        private string _packType = "";//If change this change validation
-        private void PackType_Validation(string value)//Ready
+        private IDataLoadEngine _PackName;
+        private string _PackName_Not_Valid = "";
+        private void PackName_Validation()
         {
-            ClearErrors(nameof(PackType));
+            ClearErrors(nameof(PackName));
         }
+        //PackName property
 
+        //PackType property
         [Attributes.FormVisual("Тип упаковки")]
         public string PackType
         {
-            get { return _packType; }
+            get
+            {
+                if (GetErrors(nameof(PackType)) != null)
+                {
+                    return (string)_PackType.Get();
+                }
+                else
+                {
+                    return _PackType_Not_Valid;
+                }
+            }
             set
             {
-                _packType = value;
-                PackType_Validation(value);
-                OnPropertyChanged("PackType");
+                _PackType_Not_Valid = value;
+                if (GetErrors(nameof(PackType)) != null)
+                {
+                    _PackType.Set(_PackType_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackType));
             }
         }
+        private IDataLoadEngine _PackType;//If change this change validation
+        private string _PackType_Not_Valid = "";
+        private void PackType_Validation()//Ready
+        {
+            ClearErrors(nameof(PackType));
+        }
+        //PackType property
 
         private string _packTypeRecoded = "";
         public string PackTypeRecoded

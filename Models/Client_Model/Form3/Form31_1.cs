@@ -13,47 +13,101 @@ namespace Models.Client_Model
         }
         public int NumberOfFields { get; } = 3;
 
-        private string _radionuclids = "";//If change this change validation
-
-        private void Radionuclids_Validation(string value)//TODO
-        {
-            ClearErrors(nameof(Radionuclids));
-        }
-
+        //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]
         public string Radionuclids
         {
-            get { return _radionuclids; }
+            get
+            {
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    return (string)_Radionuclids.Get();
+                }
+                else
+                {
+                    return _Radionuclids_Not_Valid;
+                }
+            }
             set
             {
-                _radionuclids = value;
-                Radionuclids_Validation(value);
-                OnPropertyChanged("Radionuclids");
+                _Radionuclids_Not_Valid = value;
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    _Radionuclids.Set(_Radionuclids_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }
+        private IDataLoadEngine _Radionuclids;//If change this change validation
+        private string _Radionuclids_Not_Valid = "";
+        private void Radionuclids_Validation()//TODO
+        {
+            ClearErrors(nameof(Radionuclids));
+        }
+        //Radionuclids property
 
-        private int _quantity = -1;  // positive int.
-
+        //Quantity property
+        [Attributes.FormVisual("Количество, шт.")]
+        public int Quantity
+        {
+            get
+            {
+                if (GetErrors(nameof(Quantity)) != null)
+                {
+                    return (int)_Quantity.Get();
+                }
+                else
+                {
+                    return _Quantity_Not_Valid;
+                }
+            }
+            set
+            {
+                _Quantity_Not_Valid = value;
+                if (GetErrors(nameof(Quantity)) != null)
+                {
+                    _Quantity.Set(_Quantity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Quantity));
+            }
+        }
+        private IDataLoadEngine _Quantity;  // positive int.
+        private int _Quantity_Not_Valid = -1;
         private void Quantity_Validation(int value)//Ready
         {
             ClearErrors(nameof(Quantity));
             if (value <= 0)
                 AddError(nameof(Quantity), "Недопустимое значение");
         }
+        //Quantity property
 
-        [Attributes.FormVisual("Количество, шт.")]
-        public int Quantity
+        //SummaryActivity property
+        [Attributes.FormVisual("Суммарная активность, Бк")]
+        public string SummaryActivity
         {
-            get { return _quantity; }
+            get
+            {
+                if (GetErrors(nameof(SummaryActivity)) != null)
+                {
+                    return (string)_SummaryActivity.Get();
+                }
+                else
+                {
+                    return _SummaryActivity_Not_Valid;
+                }
+            }
             set
             {
-                _quantity = value;
-                Quantity_Validation(value);
-                OnPropertyChanged("Quantity");
+                _SummaryActivity_Not_Valid = value;
+                if (GetErrors(nameof(SummaryActivity)) != null)
+                {
+                    _SummaryActivity.Set(_SummaryActivity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SummaryActivity));
             }
         }
-
-        private string _summaryActivity = "";
+        private IDataLoadEngine _SummaryActivity;
+        private string _SummaryActivity_Not_Valid = "";
         private void SummaryActivity_Validation(string value)//Ready
         {
             ClearErrors(nameof(SummaryActivity));
@@ -76,17 +130,8 @@ namespace Models.Client_Model
                 AddError(nameof(SummaryActivity), "Недопустимое значение");
             }
         }
+        //SummaryActivity property
 
-        [Attributes.FormVisual("Суммарная активность, Бк")]
-        public string SummaryActivity
-        {
-            get { return _summaryActivity; }
-            set
-            {
-                _summaryActivity = value;
-                SummaryActivity_Validation(value);
-                OnPropertyChanged("SummaryActivity");
-            }
-        }
+        private string _documentNumber = "";
     }
 }
