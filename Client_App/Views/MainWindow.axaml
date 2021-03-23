@@ -31,11 +31,6 @@
       <MenuItem Header="_Экспорт">
         <MenuItem Header="В excel" Command="{Binding Excel_Export}"/>
       </MenuItem>
-      <MenuItem Header="_Добавление">
-        <MenuItem Header="Test0" Command="{Binding AddTestForm0}"/>
-        <MenuItem Header="Test1" Command="{Binding AddTestForm1}"/>
-        <MenuItem Header="Test2" Command="{Binding AddTestForm2}"/>
-      </MenuItem>
     </Menu>
     <Panel Margin="5,5,5,5" x:Name="MainPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
       <TabControl SelectedIndex="{Binding FormModel_Local.ChooseTab}">

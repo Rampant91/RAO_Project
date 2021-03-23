@@ -22,7 +22,6 @@
     <PackageReference Include="MessageBox.Avalonia" Version="1.0.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Excel_Export_Import\Excel_Export_Import.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
   <ItemGroup>

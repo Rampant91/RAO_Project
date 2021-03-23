@@ -21,8 +21,7 @@ using Avalonia.Collections;
 using Avalonia.Markup.Xaml;
 using System.Collections;
 using Models.Attributes;
-using Excel_Export_Import;
-using Models.LocalStorage;
+using Models.Storage;
 using System.IO;
 
 namespace Client_App.ViewModels
@@ -77,17 +76,67 @@ namespace Client_App.ViewModels
 
             Save_Local = ReactiveCommand.CreateFromTask(SaveForms);
             Load_Local = ReactiveCommand.CreateFromTask(LoadForms);
-            Save_ToFile = ReactiveCommand.Create(_SaveToFile);
+            Save_ToFile = ReactiveCommand.CreateFromTask(_SaveToFile);
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 ;
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
-            AddTestForm0 = ReactiveCommand.CreateFromTask(_AddTestForm0);
-            AddTestForm1 = ReactiveCommand.CreateFromTask(_AddTestForm1);
-            AddTestForm2 = ReactiveCommand.CreateFromTask(_AddTestForm2);
             ChangeForm = ReactiveCommand.CreateFromTask<string>(_ChangeForm);
             DeleteForm = ReactiveCommand.Create<Form>(_DeleteForm);
 
             Excel_Export= ReactiveCommand.CreateFromTask(_Excel_Export);
+        }
+
+        public async Task SaveForms()
+        {
+            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                SaveFileDialog dial = new SaveFileDialog();
+                var filter = new FileDialogFilter();
+                filter.Name = "Excel";
+                filter.Extensions.Add("*.xlsx");
+                dial.Filters.Add(filter);
+                var res = await dial.ShowAsync(desktop.MainWindow);
+                if (res.Count() != 0)
+                {
+                    Models.Storage.File fl = new Models.Storage.File();
+                    await fl.Save(FormModel_Local, res);
+                }
+            }
+        }
+        public async Task LoadForms()
+        {
+            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                OpenFileDialog dial = new OpenFileDialog();
+                var filter = new FileDialogFilter();
+                filter.Name = "Excel";
+                filter.Extensions.Add("*.xlsx");
+                dial.Filters.Add(filter);
+                dial.AllowMultiple = false;
+                var res = await dial.ShowAsync(desktop.MainWindow);
+                if (res.Count() != 0)
+                {
+                    Models.Storage.File fl = new Models.Storage.File();
+                    FormModel_Local=(await fl.Load(res[0]));
+                }
+            }
+        }
+        public async Task _SaveToFile()
+        {
+            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                SaveFileDialog dial = new SaveFileDialog();
+                var filter = new FileDialogFilter();
+                filter.Name = "Excel";
+                filter.Extensions.Add("*.xlsx");
+                dial.Filters.Add(filter);
+                var res = await dial.ShowAsync(desktop.MainWindow);
+                if (res.Count() != 0)
+                {
+                    Models.Storage.File fl = new Models.Storage.File();
+                    await fl.Save(FormModel_Local, res);
+                }
+            }
         }
 
         void _AddSort(string param)
@@ -119,40 +168,6 @@ namespace Client_App.ViewModels
             }
         }
 
-        void _SaveToFile()
-        {
-            FormModel_Local.Path = "";
-            Save_Local.Execute().Subscribe();
-        }
-
-        public async Task SaveForms()
-        {
-            if (FormModel_Local.Path != "" && Directory.Exists(FormModel_Local.Path))
-            {
-                await FormModel_Local.SaveForms();
-            }
-            else
-            {
-                if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    OpenFolderDialog dial = new OpenFolderDialog();
-                    var res = await dial.ShowAsync(desktop.MainWindow);
-                    FormModel_Local.Path = res;
-                    await FormModel_Local.SaveForms();
-                }
-            }
-        }
-        public async Task LoadForms()
-        {
-            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                OpenFolderDialog dial = new OpenFolderDialog();
-                var res = await dial.ShowAsync(desktop.MainWindow);
-                FormModel_Local.Path = res;
-                await FormModel_Local.LoadForms();
-            }
-        }
-
         async Task _AddForm(string param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -160,23 +175,6 @@ namespace Client_App.ViewModels
                 Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Forms[param],param);
                 await frm.ShowDialog(desktop.MainWindow);
             }
-        }
-
-        async Task _AddTestForm0()
-        {
-            Form10 frm = new Form10();
-            frm.RegistrNumber = "test_1";
-            FormModel_Local.Forms["10"].Storage.Add(frm);
-        }
-        async Task _AddTestForm1()
-        {
-            Form11 frm = new Form11();
-            FormModel_Local.Forms["11"].Storage.Add(frm);
-        }
-        async Task _AddTestForm2()
-        {
-            Form12 frm = new Form12();
-            FormModel_Local.Forms["12"].Storage.Add(frm);
         }
 
         async Task _ChangeForm(string param)
@@ -204,16 +202,16 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var res = "";
-                OpenFolderDialog dial = new OpenFolderDialog();
-                res = await dial.ShowAsync(desktop.MainWindow);
-                res += "\\export.xlsx";
-                //var res = "file.xlsx";
-
-                if (res != "")
+                SaveFileDialog dial = new SaveFileDialog();
+                var filter = new FileDialogFilter();
+                filter.Name = "Excel";
+                filter.Extensions.Add("*.xlsx");
+                dial.Filters.Add(filter);
+                var res = await dial.ShowAsync(desktop.MainWindow);
+                if (res.Count()!=0)
                 {
-                    Export exp = new Export(FormModel_Local.ToList());
-                    exp.DoExport(res);
+                    Excel exp = new Excel();
+                    await exp.Save(FormModel_Local,res);
                 }
             }
         }

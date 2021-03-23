@@ -10,7 +10,7 @@ namespace Client_App.Views
     public class FormChangeOrCreate : Window
     {
         string _param = "";
-        public FormChangeOrCreate(Models.LocalStorage.LocalStorage _Storage,string param)
+        public FormChangeOrCreate(Models.Storage.LocalStorage _Storage,string param)
         {
             this.DataContext = new ViewModels.ChangeOrCreateVM();
             ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage= _Storage;

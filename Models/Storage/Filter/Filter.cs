@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Models;
 
-namespace Models.LocalStorage.Filter
+namespace Models.Storage.Filter
 {
     /// <summary>
     ///  Хранилище для фильтра
@@ -16,7 +16,7 @@ namespace Models.LocalStorage.Filter
         /// </summary>
         public List<Filter_Item<T>> Filter_List { get; set; }
 
-        bool CheckObject(Client_Model.Form obj)
+        bool CheckObject(Client_Model.Report obj)
         {
             bool flag = true;
             foreach(var item in Filter_List)
@@ -30,11 +30,11 @@ namespace Models.LocalStorage.Filter
             return flag;
         }
 
-        public IEnumerable<Client_Model.Form> CheckAndSort(IEnumerable<Client_Model.Form> Storage)
+        public IEnumerable<Client_Model.Report> CheckAndSort(IEnumerable<Client_Model.Report> Storage)
         {
             if (Storage.Count() > 0)
             {
-                IEnumerable<Client_Model.Form> str = Storage;
+                IEnumerable<Client_Model.Report> str = Storage;
 
                 if (SortPath != "")
                 {

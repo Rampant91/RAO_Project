@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Models.LocalStorage;
+using Models.Storage;
 using Avalonia.Data;
 using Avalonia;
 using Models.Attributes;

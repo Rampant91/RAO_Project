@@ -1,4 +1,4 @@
-﻿namespace Models.LocalStorage.Filter
+﻿namespace Models.Storage.Filter
 {
     /// <summary>
     ///  Элемент фильтра, для хранения значения и типа сравнения.
@@ -31,7 +31,7 @@
             this.Type = Type;
         }
 
-        public bool CheckObject(Client_Model.Form obj)
+        public bool CheckObject(Client_Model.Report obj)
         {
             bool flag = true;
             var prop = obj.GetType().GetProperty(Path);

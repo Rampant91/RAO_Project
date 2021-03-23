@@ -12,7 +12,7 @@ namespace Models.Client_Model
     {
         
         //Для валидации
-        public LocalStorage.LocalDictionary Forms { get; set; }
+        public Storage.LocalDictionary Forms { get; set; }
         public abstract void Object_Validation();
         //Для валидации
 
