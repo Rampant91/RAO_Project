@@ -7,56 +7,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.1: Сведения о ЗРИ, полученных/переданных подведомственными организациями сторонним организациям и переведенных в РАО")]
     public class Form51 : Form5
     {
+        public override string FormNum { get { return "5.1"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 9;
-
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private int _numberInOrder = -1;
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
+        public override int NumberOfFields { get; } = 9;
 
         //OperationCode property
         [Attributes.FormVisual("Код")]
@@ -123,23 +79,38 @@ namespace Models.Client_Model
         }
         //Radionuclids property
 
-        private short _kategory = -1;
-
-        private void Kategory_Validation(short value)//TODO
-        {
-        }
-
+        //Kategory property
         [Attributes.FormVisual("Категория")]
         public short Kategory
         {
-            get { return _kategory; }
+            get
+            {
+                if (GetErrors(nameof(Kategory)) != null)
+                {
+                    return (short)_Kategory.Get();
+                }
+                else
+                {
+                    return _Kategory_Not_Valid;
+                }
+            }
             set
             {
-                _kategory = value;
-                Kategory_Validation(value);
-                OnPropertyChanged("Kategory");
+                _Kategory_Not_Valid = value;
+                if (GetErrors(nameof(Kategory)) != null)
+                {
+                    _Kategory.Set(_Kategory_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Kategory));
             }
         }
+        private IDataLoadEngine _Kategory;
+        private short _Kategory_Not_Valid = -1;
+        private void Kategory_Validation(short value)//TODO
+        {
+            ClearErrors(nameof(Kategory));
+        }
+        //Kategory property
 
         //Activity property
         [Attributes.FormVisual("Активность, Бк")]

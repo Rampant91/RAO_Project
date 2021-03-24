@@ -8,55 +8,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 3.2: Отчет об отправке радиоактивных источников 1 и 2 категории")]
     public class Form32 : Form3
     {
+        public override string FormNum { get { return "3.2"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 17;
-
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private DateTime _notificationDate = DateTime.MinValue;
-        public DateTime NotificationDate
-        {
-            get { return _notificationDate; }
-            set
-            {
-                _notificationDate = value;
-                OnPropertyChanged("NotificationDate");
-            }
-        }
+        public override int NumberOfFields { get; } = 17;
 
         private string _uniqueAgreementId = "";
         public string UniqueAgreementId
@@ -275,8 +232,6 @@ namespace Models.Client_Model
             }
         }
         //SummaryActivity property
-
-        private string _documentNumber = "";
 
         private List<Form32_1> _zriInfo = new List<Form32_1>();
         public List<Form32_1> ZriInfo

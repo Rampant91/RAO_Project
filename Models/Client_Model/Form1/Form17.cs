@@ -12,118 +12,7 @@ namespace Models.Client_Model
         {
 
         }
-        public int NumberOfFields { get; } = 41;
-
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private int _numberInOrder = -1;
-
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
-
-        //OperationCode property
-        [Attributes.FormVisual("Код")]
-        public short OperationCode
-        {
-            get
-            {
-                if (GetErrors(nameof(OperationCode)) != null)
-                {
-                    return (short)_OperationCode.Get();
-                }
-                else
-                {
-                    return _OperationCode_Not_Valid;
-                }
-            }
-            set
-            {
-                _OperationCode_Not_Valid = value;
-                if (GetErrors(nameof(OperationCode)) != null)
-                {
-                    _OperationCode.Set(_OperationCode_Not_Valid);
-                }
-                OnPropertyChanged(nameof(OperationCode));
-            }
-        }
-        private IDataLoadEngine _OperationCode;
-        private short _OperationCode_Not_Valid = -1;
-        private void OperationCode_Validation()
-        {
-            ClearErrors(nameof(OperationCode));
-        }
-
-        //OperationDate property
-        [Attributes.FormVisual("Дата операции")]
-        public DateTime OperationDate
-        {
-            get
-            {
-                if (GetErrors(nameof(OperationDate)) != null)
-                {
-                    return (DateTime)_OperationDate.Get();
-                }
-                else
-                {
-                    return _OperationDate_Not_Valid;
-                }
-            }
-            set
-            {
-                _OperationDate_Not_Valid = value;
-                if (GetErrors(nameof(OperationDate)) != null)
-                {
-                    _OperationDate.Set(_OperationDate_Not_Valid);
-                }
-                OnPropertyChanged(nameof(OperationDate));
-            }
-        }
-        private IDataLoadEngine _OperationDate;
-        private DateTime _OperationDate_Not_Valid = DateTime.MinValue;
-        private void OperationDate_Validation()
-        {
-            ClearErrors(nameof(OperationDate));
-        }
-        //OperationDate property
+        public override int NumberOfFields { get; } = 41;
 
         //PackName property
         [Attributes.FormVisual("Наименование упаковки")]
@@ -224,24 +113,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _packNumber = "";//If change this change validation
-
+        //PackNumber property
+        [Attributes.FormVisual("Номер упаковки")]
+        public string PackNumber
+        {
+            get
+            {
+                if (GetErrors(nameof(PackNumber)) != null)
+                {
+                    return (string)_PackNumber.Get();
+                }
+                else
+                {
+                    return _PackNumber_Not_Valid;
+                }
+            }
+            set
+            {
+                _PackNumber_Not_Valid = value;
+                if (GetErrors(nameof(PackNumber)) != null)
+                {
+                    _PackNumber.Set(_PackNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackNumber));
+            }
+        }
+        private IDataLoadEngine _PackNumber;//If change this change validation
+        private string _PackNumber_Not_Valid = "";
         private void PackNumber_Validation(string value)//Ready
         {
             ClearErrors(nameof(PackNumber));
         }
-
-        [Attributes.FormVisual("Номер упаковки")]
-        public string PackNumber
-        {
-            get { return _packNumber; }
-            set
-            {
-                _packNumber = value;
-                PackNumber_Validation(value);
-                OnPropertyChanged("PackNumber");
-            }
-        }
+        //PackNumber property
 
         private string _packNumberRecoded = "";
         public string PackNumberRecoded
@@ -254,73 +157,137 @@ namespace Models.Client_Model
             }
         }
 
-        private string _packFactoryNumber = "";
-
-
+        //PackFactoryNumber property
         [Attributes.FormVisual("Заводской номер упаковки")]
         public string PackFactoryNumber
         {
-            get { return _packFactoryNumber; }
+            get
+            {
+                if (GetErrors(nameof(PackFactoryNumber)) != null)
+                {
+                    return (string)_PackFactoryNumber.Get();
+                }
+                else
+                {
+                    return _PackFactoryNumber_Not_Valid;
+                }
+            }
             set
             {
-                _packFactoryNumber = value;
-                OnPropertyChanged("FactoryNumber");
+                _PackFactoryNumber_Not_Valid = value;
+                if (GetErrors(nameof(PackFactoryNumber)) != null)
+                {
+                    _PackFactoryNumber.Set(_PackFactoryNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackFactoryNumber));
             }
         }
-
-        private DateTime _formingDate = DateTime.MinValue;
-
-        private void FormingDate_Validation(DateTime value)//TODO
+        private IDataLoadEngine _PackFactoryNumber;
+        private string _PackFactoryNumber_Not_Valid = "";
+        private void PackFactoryNumber_Validation()//TODO
         {
+            ClearErrors(nameof(PackFactoryNumber));
         }
+        //PackFactoryNumber property
 
+        //FormingDate property
         [Attributes.FormVisual("Дата формирования")]
         public DateTime FormingDate
         {
-            get { return _formingDate; }
+            get
+            {
+                if (GetErrors(nameof(FormingDate)) != null)
+                {
+                    return (DateTime)_FormingDate.Get();
+                }
+                else
+                {
+                    return _FormingDate_Not_Valid;
+                }
+            }
             set
             {
-                _formingDate = value;
-                FormingDate_Validation(value);
-                OnPropertyChanged("FormingDate");
+                _FormingDate_Not_Valid = value;
+                if (GetErrors(nameof(FormingDate)) != null)
+                {
+                    _FormingDate.Set(_FormingDate_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FormingDate));
             }
         }
-
-        private string _volume = "";
-
-        private void Volume_Validation(string value)//TODO
+        private IDataLoadEngine _FormingDate;
+        private DateTime _FormingDate_Not_Valid = DateTime.MinValue;
+        private void FormingDate_Validation(DateTime value)//TODO
         {
+            ClearErrors(nameof(FormingDate));
         }
+        //FormingDate property
 
+        //Volume property
         [Attributes.FormVisual("Объем, куб. м")]
         public string Volume
         {
-            get { return _volume; }
+            get
+            {
+                if (GetErrors(nameof(Volume)) != null)
+                {
+                    return (string)_Volume.Get();
+                }
+                else
+                {
+                    return _Volume_Not_Valid;
+                }
+            }
             set
             {
-                _volume = value;
-                Volume_Validation(value);
-                OnPropertyChanged("Volume");
+                _Volume_Not_Valid = value;
+                if (GetErrors(nameof(Volume)) != null)
+                {
+                    _Volume.Set(_Volume_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Volume));
             }
         }
-
-        private string _mass = "";
-
-        private void Mass_Validation(string value)//TODO
+        private IDataLoadEngine _Volume;
+        private string _Volume_Not_Valid = "-1";
+        private void Volume_Validation()//TODO
         {
+            ClearErrors(nameof(Volume));
         }
+        //Volume property
 
+        //Mass Property
         [Attributes.FormVisual("Масса брутто, т")]
         public string Mass
         {
-            get { return _mass; }
+            get
+            {
+                if (GetErrors(nameof(Mass)) != null)
+                {
+                    return (string)_Mass.Get();
+                }
+                else
+                {
+                    return _Mass_Not_Valid;
+                }
+            }
             set
             {
-                _mass = value;
-                Mass_Validation(value);
-                OnPropertyChanged("Mass");
+                _Mass_Not_Valid = value;
+                if (GetErrors(nameof(Mass)) != null)
+                {
+                    _Mass.Set(_Mass_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Mass));
             }
         }
+        private IDataLoadEngine _Mass;
+        private string _Mass_Not_Valid = "";
+        private void Mass_Validation(string value)//TODO
+        {
+            ClearErrors(nameof(Mass));
+        }
+        //Mass Property
 
         //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]
@@ -353,24 +320,40 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(PassportNumber));
         }
+        //PassportNumber property
 
-        private string _nuclidName = "";
-
-        private void NuclidName_Validation(string value)//TODO
-        {
-        }
-
+        //Radionuclids property
         [Attributes.FormVisual("Наименования радионуклидов")]
-        public string NuclidName
+        public string Radionuclids
         {
-            get { return _nuclidName; }
+            get
+            {
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    return (string)_Radionuclids.Get();
+                }
+                else
+                {
+                    return _Radionuclids_Not_Valid;
+                }
+            }
             set
             {
-                _nuclidName = value;
-                NuclidName_Validation(value);
-                OnPropertyChanged("NuclidName");
+                _Radionuclids_Not_Valid = value;
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    _Radionuclids.Set(_Radionuclids_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }
+        private IDataLoadEngine _Radionuclids;//If change this change validation
+        private string _Radionuclids_Not_Valid = "";
+        private void Radionuclids_Validation()//TODO
+        {
+            ClearErrors(nameof(Radionuclids));
+        }
+        //Radionuclids property
 
         //SpecificActivity property
         [Attributes.FormVisual("Удельная активность, Бк/г")]
@@ -415,73 +398,6 @@ namespace Models.Client_Model
             }
         }
         //SpecificActivity property
-
-        private byte _documentVid = 255;
-
-        private void DocumentVid_Validation(byte value)//TODO
-        {
-        }
-
-        [Attributes.FormVisual("Вид документа")]
-        public byte DocumentVid
-        {
-            get { return _documentVid; }
-            set
-            {
-                _documentVid = value;
-                DocumentVid_Validation(value);
-                OnPropertyChanged("DocumentVid");
-            }
-        }
-
-        private string _documentNumber = "";
-
-        private void DocumentNumber_Validation(string value)//Ready
-        {
-            ClearErrors(nameof(DocumentNumber));
-        }
-
-        [Attributes.FormVisual("Номер документа")]
-        public string DocumentNumber
-        {
-            get { return _documentNumber; }
-            set
-            {
-                _documentNumber = value;
-                DocumentNumber_Validation(value);
-                OnPropertyChanged("DocumentNumber");
-            }
-        }
-
-        private string _documentNumberRecoded = "";
-        public string DocumentNumberRecoded
-        {
-            get { return _documentNumberRecoded; }
-            set
-            {
-                _documentNumberRecoded = value;
-                OnPropertyChanged("DocumentNumberRecoded");
-            }
-        }
-
-        private DateTime _documentDate = DateTime.MinValue;//if change this change validation
-
-        private void DocumentDate_Validation(DateTime value)//Ready
-        {
-            ClearErrors(nameof(DocumentDate));
-        }
-
-        [Attributes.FormVisual("Дата документа")]
-        public DateTime DocumentDate
-        {
-            get { return _documentDate; }
-            set
-            {
-                _documentDate = value;
-                DocumentDate_Validation(value);
-                OnPropertyChanged("DocumentDate");
-            }
-        }
 
         //ProviderOrRecieverOKPO property
         [Attributes.FormVisual("ОКПО поставщика/получателя")]
@@ -571,24 +487,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _storagePlaceName = "";//If change this change validation
-
+        //StoragePlaceName property
+        [Attributes.FormVisual("Наименование ПХ")]
+        public string StoragePlaceName
+        {
+            get
+            {
+                if (GetErrors(nameof(StoragePlaceName)) != null)
+                {
+                    return (string)_StoragePlaceName.Get();
+                }
+                else
+                {
+                    return _StoragePlaceName_Not_Valid;
+                }
+            }
+            set
+            {
+                _StoragePlaceName_Not_Valid = value;
+                if (GetErrors(nameof(StoragePlaceName)) != null)
+                {
+                    _StoragePlaceName.Set(_StoragePlaceName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(StoragePlaceName));
+            }
+        }
+        private IDataLoadEngine _StoragePlaceName;//If change this change validation
+        private string _StoragePlaceName_Not_Valid = "";
         private void StoragePlaceName_Validation(string value)//Ready
         {
             ClearErrors(nameof(StoragePlaceName));
         }
-
-        [Attributes.FormVisual("Наименование ПХ")]
-        public string StoragePlaceName
-        {
-            get { return _storagePlaceName; }
-            set
-            {
-                _storagePlaceName = value;
-                StoragePlaceName_Validation(value);
-                OnPropertyChanged("StoragePlaceName");
-            }
-        }
+        //StoragePlaceName property
 
         private string _storagePlaceNameNote = "";
         public string StoragePlaceNameNote
@@ -601,8 +531,33 @@ namespace Models.Client_Model
             }
         }
 
-        private string _storagePlaceCode = "";//if change this change validation
-
+        //StoragePlaceCode property
+        [Attributes.FormVisual("Код ПХ")]
+        public string StoragePlaceCode //8 cyfer code or - .
+        {
+            get
+            {
+                if (GetErrors(nameof(StoragePlaceCode)) != null)
+                {
+                    return (string)_StoragePlaceCode.Get();
+                }
+                else
+                {
+                    return _StoragePlaceCode_Not_Valid;
+                }
+            }
+            set
+            {
+                _StoragePlaceCode_Not_Valid = value;
+                if (GetErrors(nameof(StoragePlaceCode)) != null)
+                {
+                    _StoragePlaceCode.Set(_StoragePlaceCode_Not_Valid);
+                }
+                OnPropertyChanged(nameof(StoragePlaceCode));
+            }
+        }
+        private IDataLoadEngine _StoragePlaceCode;//if change this change validation
+        private string _StoragePlaceCode_Not_Valid = "";
         private void StoragePlaceCode_Validation(string value)//TODO
         {
             ClearErrors(nameof(StoragePlaceCode));
@@ -619,21 +574,35 @@ namespace Models.Client_Model
                         }
                     }
         }
+        //StoragePlaceCode property
 
-        [Attributes.FormVisual("Код ПХ")]
-        public string StoragePlaceCode //8 cyfer code or - .
+        //Subsidy property
+        [Attributes.FormVisual("Субсидия, %")]
+        public string Subsidy // 0<number<=100 or empty.
         {
-            get { return _storagePlaceCode; }
+            get
+            {
+                if (GetErrors(nameof(Subsidy)) != null)
+                {
+                    return (string)_Subsidy.Get();
+                }
+                else
+                {
+                    return _Subsidy_Not_Valid;
+                }
+            }
             set
             {
-                _storagePlaceCode = value;
-                StoragePlaceCode_Validation(value);
-                OnPropertyChanged("StoragePlaceCode");
+                _Subsidy_Not_Valid = value;
+                if (GetErrors(nameof(Subsidy)) != null)
+                {
+                    _Subsidy.Set(_Subsidy_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Subsidy));
             }
         }
-
-        private string _subsidy = "";
-
+        private IDataLoadEngine _Subsidy;
+        private string _Subsidy_Not_Valid = "";
         private void Subsidy_Validation(string value)//Ready
         {
             ClearErrors(nameof(Subsidy));
@@ -648,109 +617,172 @@ namespace Models.Client_Model
                 AddError(nameof(Subsidy), "Недопустимое значение");
             }
         }
+        //Subsidy property
 
-        [Attributes.FormVisual("Субсидия, %")]
-        public string Subsidy // 0<number<=100 or empty.
+        //FcpNumber property
+        [Attributes.FormVisual("Номер мероприятия ФЦП")]
+        public string FcpNumber
         {
-            get { return _subsidy; }
+            get
+            {
+                if (GetErrors(nameof(FcpNumber)) != null)
+                {
+                    return (string)_FcpNumber.Get();
+                }
+                else
+                {
+                    return _FcpNumber_Not_Valid;
+                }
+            }
             set
             {
-                _subsidy = value;
-                Subsidy_Validation(value);
-                OnPropertyChanged("Subsidy");
+                _FcpNumber_Not_Valid = value;
+                if (GetErrors(nameof(FcpNumber)) != null)
+                {
+                    _FcpNumber.Set(_FcpNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FcpNumber));
             }
         }
-
-        private string _fcpNumber = "";
-
+        private IDataLoadEngine _FcpNumber;
+        private string _FcpNumber_Not_Valid = "";
         private void FcpNuber_Validation(string value)//TODO
         {
             ClearErrors(nameof(FcpNumber));
         }
+        //FcpNumber property
 
-        [Attributes.FormVisual("Номер мероприятия ФЦП")]
-        public string FcpNumber
-        {
-            get { return _fcpNumber; }
-            set
-            {
-                _fcpNumber = value;
-                FcpNuber_Validation(value);
-                OnPropertyChanged("FcpNumber");
-            }
-        }
-
-        private string _codeRAO = "";
-
-        private void CodeRAO_Validation(string value)//TODO
-        {
-        }
-
+        //CodeRAO property
         [Attributes.FormVisual("Код РАО")]
         public string CodeRAO
         {
-            get { return _codeRAO; }
+            get
+            {
+                if (GetErrors(nameof(CodeRAO)) != null)
+                {
+                    return (string)_CodeRAO.Get();
+                }
+                else
+                {
+                    return _CodeRAO_Not_Valid;
+                }
+            }
             set
             {
-                _codeRAO = value;
-                CodeRAO_Validation(value);
-                OnPropertyChanged("CodeRAO");
+                _CodeRAO_Not_Valid = value;
+                if (GetErrors(nameof(CodeRAO)) != null)
+                {
+                    _CodeRAO.Set(_CodeRAO_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CodeRAO));
             }
         }
-
-        private string _statusRAO = "";
-
-        private void StatusRAO_Validation(string value)//TODO
+        private IDataLoadEngine _CodeRAO;
+        private string _CodeRAO_Not_Valid = "";
+        private void CodeRAO_Validation(string value)//TODO
         {
+            ClearErrors(nameof(CodeRAO));
         }
+        //CodeRAO property
 
+        //StatusRAO property
         [Attributes.FormVisual("Статус РАО")]
         public string StatusRAO  //1 cyfer or OKPO.
         {
-            get { return _statusRAO; }
+            get
+            {
+                if (GetErrors(nameof(StatusRAO)) != null)
+                {
+                    return (string)_StatusRAO.Get();
+                }
+                else
+                {
+                    return _StatusRAO_Not_Valid;
+                }
+            }
             set
             {
-                _statusRAO = value;
-                StatusRAO_Validation(value);
-                OnPropertyChanged("StatusRAO");
+                _StatusRAO_Not_Valid = value;
+                if (GetErrors(nameof(StatusRAO)) != null)
+                {
+                    _StatusRAO.Set(_StatusRAO_Not_Valid);
+                }
+                OnPropertyChanged(nameof(StatusRAO));
             }
         }
-
-        private double _volumeOutOfPack = -1;
-
-        private void VolumeOutOfPack_Validation(double value)//TODO
+        private IDataLoadEngine _StatusRAO;
+        private string _StatusRAO_Not_Valid = "";
+        private void StatusRAO_Validation(string value)//TODO
         {
+            ClearErrors(nameof(StatusRAO));
         }
+        //StatusRAO property
 
+        //VolumeOutOfPack property
         [Attributes.FormVisual("Объем без упаковки, куб. м")]
         public double VolumeOutOfPack
         {
-            get { return _volumeOutOfPack; }
+            get
+            {
+                if (GetErrors(nameof(VolumeOutOfPack)) != null)
+                {
+                    return (double)_VolumeOutOfPack.Get();
+                }
+                else
+                {
+                    return _VolumeOutOfPack_Not_Valid;
+                }
+            }
             set
             {
-                _volumeOutOfPack = value;
-                VolumeOutOfPack_Validation(value);
-                OnPropertyChanged("VolumeOutOfPack");
+                _VolumeOutOfPack_Not_Valid = value;
+                if (GetErrors(nameof(VolumeOutOfPack)) != null)
+                {
+                    _VolumeOutOfPack.Set(_VolumeOutOfPack_Not_Valid);
+                }
+                OnPropertyChanged(nameof(VolumeOutOfPack));
             }
         }
-
-        private double _massOutOfPack = -1;
-
-        private void MassOutOfPack_Validation(double value)//TODO
+        private IDataLoadEngine _VolumeOutOfPack;
+        private double _VolumeOutOfPack_Not_Valid = -1;
+        private void VolumeOutOfPack_Validation(double value)//TODO
         {
+            ClearErrors(nameof(VolumeOutOfPack));
         }
+        //VolumeOutOfPack property
 
-        [Attributes.FormVisual("Масса без упаковки, куб. м")]
+        //MassOutOfPack Property
+        [Attributes.FormVisual("Масса без упаковки, т")]
         public double MassOutOfPack
         {
-            get { return _massOutOfPack; }
+            get
+            {
+                if (GetErrors(nameof(MassOutOfPack)) != null)
+                {
+                    return (double)_MassOutOfPack.Get();
+                }
+                else
+                {
+                    return _MassOutOfPack_Not_Valid;
+                }
+            }
             set
             {
-                _massOutOfPack = value;
-                MassOutOfPack_Validation(value);
-                OnPropertyChanged("MassOutOfPack");
+                _MassOutOfPack_Not_Valid = value;
+                if (GetErrors(nameof(MassOutOfPack)) != null)
+                {
+                    _MassOutOfPack.Set(_MassOutOfPack_Not_Valid);
+                }
+                OnPropertyChanged(nameof(MassOutOfPack));
             }
         }
+        private IDataLoadEngine _MassOutOfPack;
+        private double _MassOutOfPack_Not_Valid = -1;
+        private void MasOutOfPack_Validation()//TODO
+        {
+            ClearErrors(nameof(MassOutOfPack));
+        }
+        //MassOutOfPack Property
 
         //Quantity property
         [Attributes.FormVisual("Количество, шт.")]
@@ -991,8 +1023,33 @@ namespace Models.Client_Model
         }
         //TransuraniumActivity property
 
-        private string _refineOrSortRAOCode = "";//If change this change validation
-
+        //RefineOrSortRAOCode property
+        [Attributes.FormVisual("Код переработки/сортировки РАО")]
+        public string RefineOrSortRAOCode //2 cyfer code or empty.
+        {
+            get
+            {
+                if (GetErrors(nameof(RefineOrSortRAOCode)) != null)
+                {
+                    return (string)_RefineOrSortRAOCode.Get();
+                }
+                else
+                {
+                    return _RefineOrSortRAOCode_Not_Valid;
+                }
+            }
+            set
+            {
+                _RefineOrSortRAOCode_Not_Valid = value;
+                if (GetErrors(nameof(RefineOrSortRAOCode)) != null)
+                {
+                    _RefineOrSortRAOCode.Set(_RefineOrSortRAOCode_Not_Valid);
+                }
+                OnPropertyChanged(nameof(RefineOrSortRAOCode));
+            }
+        }
+        private IDataLoadEngine _RefineOrSortRAOCode;//If change this change validation
+        private string _RefineOrSortRAOCode_Not_Valid = "";
         private void RefineOrSortRAOCode_Validation(string value)//TODO
         {
             ClearErrors(nameof(RefineOrSortRAOCode));
@@ -1008,17 +1065,6 @@ namespace Models.Client_Model
                     }
                 }
         }
-
-        [Attributes.FormVisual("Код переработки/сортировки РАО")]
-        public string RefineOrSortRAOCode //2 cyfer code or empty.
-        {
-            get { return _refineOrSortRAOCode; }
-            set
-            {
-                _refineOrSortRAOCode = value;
-                RefineOrSortRAOCode_Validation(value);
-                OnPropertyChanged("RefineOrSortRAOCode");
-            }
-        }
+        //RefineOrSortRAOCode property
     }
 }

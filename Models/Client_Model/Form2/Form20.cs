@@ -8,7 +8,7 @@ namespace Models.Client_Model
 {
     [Serializable]
     [Attributes.FormVisual_Class("Форма 2.0: Титульный лист годового отчета организации")]
-    public class Form20 : Form2
+    public class Form20 : Form
     {
         public override void Object_Validation()
         {

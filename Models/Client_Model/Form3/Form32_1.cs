@@ -10,11 +10,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("")]
     public class Form32_1: Form3
     {
+        public override string FormNum { get { return "3.2_1"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 15;
+        public override int NumberOfFields { get; } = 15;
 
         //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]
@@ -47,6 +48,7 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(PassportNumber));
         }
+        //PassportNumber property
 
         private string _passportNumberNote = "";
         public string PassportNumberNote
@@ -59,24 +61,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _creatorOKPO = "";  //If change this change validation
-
+        //CreatorOKPO property
+        [Attributes.FormVisual("ОКПО изготовителя")]
+        public string CreatorOKPO
+        {
+            get
+            {
+                if (GetErrors(nameof(CreatorOKPO)) != null)
+                {
+                    return (string)_CreatorOKPO.Get();
+                }
+                else
+                {
+                    return _CreatorOKPO_Not_Valid;
+                }
+            }
+            set
+            {
+                _CreatorOKPO_Not_Valid = value;
+                if (GetErrors(nameof(CreatorOKPO)) != null)
+                {
+                    _CreatorOKPO.Set(_CreatorOKPO_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CreatorOKPO));
+            }
+        }
+        private IDataLoadEngine _CreatorOKPO;  //If change this change validation
+        private string _CreatorOKPO_Not_Valid = "";
         private void CreatorOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(CreatorOKPO));
         }
-
-        [Attributes.FormVisual("ОКПО изготовителя")]
-        public string CreatorOKPO
-        {
-            get { return _creatorOKPO; }
-            set
-            {
-                _creatorOKPO = value;
-                CreatorOKPO_Validation(value);
-                OnPropertyChanged("CreatorOKPO");
-            }
-        }
+        //CreatorOKPO property
 
         //Type property
         [Attributes.FormVisual("Тип")]
@@ -210,23 +226,38 @@ namespace Models.Client_Model
             }
         }
 
-        private DateTime _creationDate = DateTime.MinValue;//If change this change validation
-
+        //CreationDate property
+        [Attributes.FormVisual("Дата изготовления")]
+        public DateTime CreationDate
+        {
+            get
+            {
+                if (GetErrors(nameof(CreationDate)) != null)
+                {
+                    return (DateTime)_CreationDate.Get();
+                }
+                else
+                {
+                    return _CreationDate_Not_Valid;
+                }
+            }
+            set
+            {
+                _CreationDate_Not_Valid = value;
+                if (GetErrors(nameof(CreationDate)) != null)
+                {
+                    _CreationDate.Set(_CreationDate_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CreationDate));
+            }
+        }
+        private IDataLoadEngine _CreationDate;//If change this change validation
+        private DateTime _CreationDate_Not_Valid = DateTime.MinValue;
         private void CreationDate_Validation(DateTime value)//Ready
         {
             ClearErrors(nameof(CreationDate));
         }
-
-        public DateTime CreationDate
-        {
-            get { return _creationDate; }
-            set
-            {
-                _creationDate = value;
-                CreationDate_Validation(value);
-                OnPropertyChanged("CreationDate");
-            }
-        }
+        //CreationDate property
 
         private string _creatorOKPONote = "";
         public string CreatorOKPONote
@@ -239,16 +270,38 @@ namespace Models.Client_Model
             }
         }
 
-        private short _kategory = -1;
+        //Kategory property
+        [Attributes.FormVisual("Категория")]
         public short Kategory
         {
-            get { return _kategory; }
+            get
+            {
+                if (GetErrors(nameof(Kategory)) != null)
+                {
+                    return (short)_Kategory.Get();
+                }
+                else
+                {
+                    return _Kategory_Not_Valid;
+                }
+            }
             set
             {
-                _kategory = value;
-                OnPropertyChanged("Kategory");
+                _Kategory_Not_Valid = value;
+                if (GetErrors(nameof(Kategory)) != null)
+                {
+                    _Kategory.Set(_Kategory_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Kategory));
             }
         }
+        private IDataLoadEngine _Kategory;
+        private short _Kategory_Not_Valid = -1;
+        private void Kategory_Validation(short value)//TODO
+        {
+            ClearErrors(nameof(Kategory));
+        }
+        //Kategory property
 
         private double _nuclearMaterialPresence = -1;
         public double NuclearMaterialPresence

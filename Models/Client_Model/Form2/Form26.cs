@@ -10,92 +10,113 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]
     public class Form26 : Form2
     {
+        public override string FormNum { get { return "2.6"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 11;
+        public override int NumberOfFields { get; } = 11;
 
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private int _sourcesQuantity = -1;
+        //SourcesQuantity property
         [Attributes.FormVisual("Количество источников, шт.")]
         public int SourcesQuantity
         {
-            get { return _sourcesQuantity; }
+            get
+            {
+                if (GetErrors(nameof(SourcesQuantity)) != null)
+                {
+                    return (int)_SourcesQuantity.Get();
+                }
+                else
+                {
+                    return _SourcesQuantity_Not_Valid;
+                }
+            }
             set
             {
-                _sourcesQuantity = value;
-                OnPropertyChanged("SourcesQuantity");
+                _SourcesQuantity_Not_Valid = value;
+                if (GetErrors(nameof(SourcesQuantity)) != null)
+                {
+                    _SourcesQuantity.Set(_SourcesQuantity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SourcesQuantity));
             }
         }
-
-        private int _numberInOrder = -1;
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
+        private IDataLoadEngine _SourcesQuantity;  // positive int.
+        private int _SourcesQuantity_Not_Valid = -1;
+        private void SourcesQuantity_Validation(int value)//Ready
         {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
+            ClearErrors(nameof(SourcesQuantity));
+            if (value <= 0)
+                AddError(nameof(SourcesQuantity), "Недопустимое значение");
         }
+        //SourcesQuantity property
 
-        private string _observedSourceNumber = "";
+        //ObservedSourceNumber property
         [Attributes.FormVisual("Номер наблюдательной скважины")]
         public string ObservedSourceNumber
         {
-            get { return _observedSourceNumber; }
+            get
+            {
+                if (GetErrors(nameof(ObservedSourceNumber)) != null)
+                {
+                    return (string)_ObservedSourceNumber.Get();
+                }
+                else
+                {
+                    return _ObservedSourceNumber_Not_Valid;
+                }
+            }
             set
             {
-                _observedSourceNumber = value;
-                OnPropertyChanged("ObservedSourceNumber");
+                _ObservedSourceNumber_Not_Valid = value;
+                if (GetErrors(nameof(ObservedSourceNumber)) != null)
+                {
+                    _ObservedSourceNumber.Set(_ObservedSourceNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ObservedSourceNumber));
             }
         }
+        private IDataLoadEngine _ObservedSourceNumber;//If change this change validation
+        private string _ObservedSourceNumber_Not_Valid = "";
+        private void ObservedSourceNumber_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(ObservedSourceNumber));
+        }
+        //ObservedSourceNumber property
 
-        private string _controlledAreaName = "";
+        //ControlledAreaName property
         [Attributes.FormVisual("Наименование зоны контроля")]
         public string ControlledAreaName
         {
-            get { return _controlledAreaName; }
+            get
+            {
+                if (GetErrors(nameof(ControlledAreaName)) != null)
+                {
+                    return (string)_ControlledAreaName.Get();
+                }
+                else
+                {
+                    return _ControlledAreaName_Not_Valid;
+                }
+            }
             set
             {
-                _controlledAreaName = value;
-                OnPropertyChanged("ControlledAreaName");
+                _ControlledAreaName_Not_Valid = value;
+                if (GetErrors(nameof(ControlledAreaName)) != null)
+                {
+                    _ControlledAreaName.Set(_ControlledAreaName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ControlledAreaName));
             }
         }
+        private IDataLoadEngine _ControlledAreaName;//If change this change validation
+        private string _ControlledAreaName_Not_Valid = "";
+        private void ControlledAreaName_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(ControlledAreaName));
+        }
+        //ControlledAreaName property
 
         private string _supposedWasteSource = "";
         [Attributes.FormVisual("Предполагаемый источник поступления радиоактивных веществ")]

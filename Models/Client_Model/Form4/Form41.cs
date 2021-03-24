@@ -10,11 +10,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 4.1: Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне")]
     public class Form41 : Form4
     {
+        public override string FormNum { get { return "4.1"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 9;
+        public override int NumberOfFields { get; } = 9;
 
         private int _numberInOrder = -1;
         [Attributes.FormVisual("№ п/п")]
@@ -76,41 +77,110 @@ namespace Models.Client_Model
             }
         }
 
-        private int _quantityOfFormsInv = -1;
-        [Attributes.FormVisual("Количество отчетных форм по инвентаризации")]
+        //QuantityOfFormsInv property
+        [Attributes.FormVisual("Количество отчетных форм по инвентаризации, шт.")]
         public int QuantityOfFormsInv
         {
-            get { return _quantityOfFormsInv; }
+            get
+            {
+                if (GetErrors(nameof(QuantityOfFormsInv)) != null)
+                {
+                    return (int)_QuantityOfFormsInv.Get();
+                }
+                else
+                {
+                    return _QuantityOfFormsInv_Not_Valid;
+                }
+            }
             set
             {
-                _quantityOfFormsInv = value;
-                OnPropertyChanged("QuantityOfFormsInv");
+                _QuantityOfFormsInv_Not_Valid = value;
+                if (GetErrors(nameof(QuantityOfFormsInv)) != null)
+                {
+                    _QuantityOfFormsInv.Set(_QuantityOfFormsInv_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityOfFormsInv));
             }
         }
+        private IDataLoadEngine _QuantityOfFormsInv;  // positive int.
+        private int _QuantityOfFormsInv_Not_Valid = -1;
+        private void QuantityOfFormsInv_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityOfFormsInv));
+            if (value <= 0)
+                AddError(nameof(QuantityOfFormsInv), "Недопустимое значение");
+        }
+        //QuantityOfFormsInv property
 
-        private int _quantityOfFormsOper = -1;
-        [Attributes.FormVisual("Количество форм оперативных отчетов")]
+        //QuantityOfFormsOper property
+        [Attributes.FormVisual("Количество форм оперативных отчетов, шт.")]
         public int QuantityOfFormsOper
         {
-            get { return _quantityOfFormsOper; }
+            get
+            {
+                if (GetErrors(nameof(QuantityOfFormsOper)) != null)
+                {
+                    return (int)_QuantityOfFormsOper.Get();
+                }
+                else
+                {
+                    return _QuantityOfFormsOper_Not_Valid;
+                }
+            }
             set
             {
-                _quantityOfFormsOper = value;
-                OnPropertyChanged("QuantityOfFormsOper");
+                _QuantityOfFormsOper_Not_Valid = value;
+                if (GetErrors(nameof(QuantityOfFormsOper)) != null)
+                {
+                    _QuantityOfFormsOper.Set(_QuantityOfFormsOper_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityOfFormsOper));
             }
         }
+        private IDataLoadEngine _QuantityOfFormsOper;  // positive int.
+        private int _QuantityOfFormsOper_Not_Valid = -1;
+        private void QuantityOfFormsOper_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityOfFormsOper));
+            if (value <= 0)
+                AddError(nameof(QuantityOfFormsOper), "Недопустимое значение");
+        }
+        //QuantityOfFormsOper property
 
-        private int _quantityOfFormsYear = -1;
-        [Attributes.FormVisual("Количество форм годового отчета")]
+        //QuantityOfFormsYear property
+        [Attributes.FormVisual("Количество форм годовых отчетов, шт.")]
         public int QuantityOfFormsYear
         {
-            get { return _quantityOfFormsYear; }
+            get
+            {
+                if (GetErrors(nameof(QuantityOfFormsYear)) != null)
+                {
+                    return (int)_QuantityOfFormsYear.Get();
+                }
+                else
+                {
+                    return _QuantityOfFormsYear_Not_Valid;
+                }
+            }
             set
             {
-                _quantityOfFormsYear = value;
-                OnPropertyChanged("QuantityOfFormsYear");
+                _QuantityOfFormsYear_Not_Valid = value;
+                if (GetErrors(nameof(QuantityOfFormsYear)) != null)
+                {
+                    _QuantityOfFormsYear.Set(_QuantityOfFormsYear_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityOfFormsYear));
             }
         }
+        private IDataLoadEngine _QuantityOfFormsYear;  // positive int.
+        private int _QuantityOfFormsYear_Not_Valid = -1;
+        private void QuantityOfFormsYear_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityOfFormsYear));
+            if (value <= 0)
+                AddError(nameof(QuantityOfFormsYear), "Недопустимое значение");
+        }
+        //QuantityOfFormsYear property
 
         private string _notes = "";
         [Attributes.FormVisual("Примечания")]

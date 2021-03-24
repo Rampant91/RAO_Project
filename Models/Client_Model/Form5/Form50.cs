@@ -8,7 +8,7 @@ namespace Models.Client_Model
 {
     [Serializable]
     [Attributes.FormVisual_Class("Форма 5.0: Титульный лист годового отчета СГУК РВ и РАО")]
-    public class Form50 : Form5
+    public class Form50 : Form
     {
         public override void Object_Validation()
         {

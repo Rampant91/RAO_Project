@@ -10,56 +10,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.7: Перечень подведомственных организаций ведомственного информационно-аналитического центра федерального органа исполнительной власти")]
     public class Form57: Form5
     {
+        public override string FormNum { get { return "5.7"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 9;
-
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private int _numberInOrder = -1;
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
+        public override int NumberOfFields { get; } = 9;
 
         private string _regNo = "";
         [Attributes.FormVisual("Регистрационный номер")]

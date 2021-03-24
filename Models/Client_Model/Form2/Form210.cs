@@ -10,56 +10,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.10: Территории, загрязненные радионуклидами")]
     public class Form210 : Form2
     {
+        public override string FormNum { get { return "2.10"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 12;
-
-        private int _numberInOrder = -1;
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
-
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
+        public override int NumberOfFields { get; } = 12;
 
         private string _indicatorName = "";
         [Attributes.FormVisual("Наименование показателя")]
@@ -211,23 +167,37 @@ namespace Models.Client_Model
             }
         }
 
-        private string _fcpNumber = "";
-
+        //FcpNumber property
+        [Attributes.FormVisual("Номер мероприятия ФЦП")]
+        public string FcpNumber
+        {
+            get
+            {
+                if (GetErrors(nameof(FcpNumber)) != null)
+                {
+                    return (string)_FcpNumber.Get();
+                }
+                else
+                {
+                    return _FcpNumber_Not_Valid;
+                }
+            }
+            set
+            {
+                _FcpNumber_Not_Valid = value;
+                if (GetErrors(nameof(FcpNumber)) != null)
+                {
+                    _FcpNumber.Set(_FcpNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FcpNumber));
+            }
+        }
+        private IDataLoadEngine _FcpNumber;
+        private string _FcpNumber_Not_Valid = "";
         private void FcpNuber_Validation(string value)//TODO
         {
             ClearErrors(nameof(FcpNumber));
         }
-
-        [Attributes.FormVisual("Номер мероприятия ФЦП")]
-        public string FcpNumber
-        {
-            get { return _fcpNumber; }
-            set
-            {
-                _fcpNumber = value;
-                FcpNuber_Validation(value);
-                OnPropertyChanged("FcpNumber");
-            }
-        }
+        //FcpNumber property
     }
 }

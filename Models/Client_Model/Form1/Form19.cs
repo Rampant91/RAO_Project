@@ -12,202 +12,40 @@ namespace Models.Client_Model
         {
 
         }
-        public int NumberOfFields { get; } = 11;
+        public override int NumberOfFields { get; } = 11;
 
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private int _numberInOrder = -1;
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
-
-        //OperationCode property
-        [Attributes.FormVisual("Код")]
-        public short OperationCode
-        {
-            get
-            {
-                if (GetErrors(nameof(OperationCode)) != null)
-                {
-                    return (short)_OperationCode.Get();
-                }
-                else
-                {
-                    return _OperationCode_Not_Valid;
-                }
-            }
-            set
-            {
-                _OperationCode_Not_Valid = value;
-                if (GetErrors(nameof(OperationCode)) != null)
-                {
-                    _OperationCode.Set(_OperationCode_Not_Valid);
-                }
-                OnPropertyChanged(nameof(OperationCode));
-            }
-        }
-        private IDataLoadEngine _OperationCode;
-        private short _OperationCode_Not_Valid = -1;
-        private void OperationCode_Validation()
-        {
-            ClearErrors(nameof(OperationCode));
-        }
-        //OprationCode property
-
-        //OperationDate property
-        [Attributes.FormVisual("Дата операции")]
-        public DateTime OperationDate
-        {
-            get
-            {
-                if (GetErrors(nameof(OperationDate)) != null)
-                {
-                    return (DateTime)_OperationDate.Get();
-                }
-                else
-                {
-                    return _OperationDate_Not_Valid;
-                }
-            }
-            set
-            {
-                _OperationDate_Not_Valid = value;
-                if (GetErrors(nameof(OperationDate)) != null)
-                {
-                    _OperationDate.Set(_OperationDate_Not_Valid);
-                }
-                OnPropertyChanged(nameof(OperationDate));
-            }
-        }
-        private IDataLoadEngine _OperationDate;
-        private DateTime _OperationDate_Not_Valid = DateTime.MinValue;
-        private void OperationDate_Validation()
-        {
-            ClearErrors(nameof(OperationDate));
-        }
-
-        private byte _documentVid = 255;
-
-        private void DocumentVid_Validation(byte value)//TODO
-        {
-        }
-
-        [Attributes.FormVisual("Вид документа")]
-        public byte DocumentVid
-        {
-            get { return _documentVid; }
-            set
-            {
-                _documentVid = value;
-                DocumentVid_Validation(value);
-                OnPropertyChanged("DocumentVid");
-            }
-        }
-
-        private string _documentNumber = "";
-
-        private void DocumentNumber_Validation(string value)//Ready
-        {
-            ClearErrors(nameof(DocumentNumber));
-        }
-
-        [Attributes.FormVisual("Номер документа")]
-        public string DocumentNumber
-        {
-            get { return _documentNumber; }
-            set
-            {
-                _documentNumber = value;
-                DocumentNumber_Validation(value);
-                OnPropertyChanged("DocumentNumber");
-            }
-        }
-
-        private string _documentNumberRecoded = "";
-        public string DocumentNumberRecoded
-        {
-            get { return _documentNumberRecoded; }
-            set
-            {
-                _documentNumberRecoded = value;
-                OnPropertyChanged("DocumentNumberRecoded");
-            }
-        }
-
-        private DateTime _documentDate = DateTime.MinValue;//if change this change validation
-
-        private void DocumentDate_Validation(DateTime value)//Ready
-        {
-            ClearErrors(nameof(DocumentDate));
-        }
-
-        [Attributes.FormVisual("Дата документа")]
-        public DateTime DocumentDate
-        {
-            get { return _documentDate; }
-            set
-            {
-                _documentDate = value;
-                DocumentDate_Validation(value);
-                OnPropertyChanged("DocumentDate");
-            }
-        }
-
-        private short _codeTypeAccObject = 0;
-
-        private void CodeTypeAccObject_Validation(short value)//TODO
-        {
-        }
-
+        //CodeTypeAccObject property
         [Attributes.FormVisual("Код типа объектов учета")]
         public short CodeTypeAccObject
         {
-            get { return _codeTypeAccObject; }
+            get
+            {
+                if (GetErrors(nameof(CodeTypeAccObject)) != null)
+                {
+                    return (short)_CodeTypeAccObject.Get();
+                }
+                else
+                {
+                    return _CodeTypeAccObject_Not_Valid;
+                }
+            }
             set
             {
-                _codeTypeAccObject = value;
-                CodeTypeAccObject_Validation(value);
-                OnPropertyChanged("CodeTypeAccObject");
+                _CodeTypeAccObject_Not_Valid = value;
+                if (GetErrors(nameof(CodeTypeAccObject)) != null)
+                {
+                    _CodeTypeAccObject.Set(_CodeTypeAccObject_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CodeTypeAccObject));
             }
         }
+        private IDataLoadEngine _CodeTypeAccObject;
+        private short _CodeTypeAccObject_Not_Valid = 0;
+        private void CodeTypeAccObject_Validation(short value)//TODO
+        {
+            ClearErrors(nameof(CodeTypeAccObject));
+        }
+        //CodeTypeAccObject property
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]

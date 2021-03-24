@@ -10,11 +10,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Сведения о поставляемых ЗРИ:")]
     public class Form32_2: Form3
     {
+        public override string FormNum { get { return "3.2_2"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 6;
+        public override int NumberOfFields { get; } = 6;
 
         //PackName property
         [Attributes.FormVisual("Наименование упаковки")]

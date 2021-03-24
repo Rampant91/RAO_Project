@@ -7,215 +7,312 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
     public class Form21: Form2
     {
+        public override string FormNum { get { return "2.1"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 24;
 
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
+        public override int NumberOfFields { get; } = 22;
 
-        private int _numberInOrder = -1;
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
-
-        private string _refineMachineName = "";
-
+        //RefineMachineName property
         [Attributes.FormVisual("Наименование установки переработки")]
         public string RefineMachineName
         {
-            get { return _refineMachineName; }
+            get
+            {
+                if (GetErrors(nameof(RefineMachineName)) != null)
+                {
+                    return (string)_RefineMachineName.Get();
+                }
+                else
+                {
+                    return _RefineMachineName_Not_Valid;
+                }
+            }
             set
             {
-                _refineMachineName = value;
-                OnPropertyChanged("RefineMachineName");
+                _RefineMachineName_Not_Valid = value;
+                if (GetErrors(nameof(RefineMachineName)) != null)
+                {
+                    _RefineMachineName.Set(_RefineMachineName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(RefineMachineName));
             }
         }
-
-        private short _machineCode = 0;
-        private void MachineCode_Validation(short value)//TODO
+        private IDataLoadEngine _RefineMachineName;
+        private string _RefineMachineName_Not_Valid = "";
+        private void RefineMachineName_Validation()
         {
-
+            ClearErrors(nameof(RefineMachineName));
         }
+        //RefineMachineName property
 
+        //MachineCode property
         [Attributes.FormVisual("Код установки переработки")]
         public short MachineCode
         {
-            get { return _machineCode; }
+            get
+            {
+                if (GetErrors(nameof(MachineCode)) != null)
+                {
+                    return (short)_MachineCode.Get();
+                }
+                else
+                {
+                    return _MachineCode_Not_Valid;
+                }
+            }
             set
             {
-                _machineCode = value;
-                MachineCode_Validation(value);
-                OnPropertyChanged("MachineCode");
+                _MachineCode_Not_Valid = value;
+                if (GetErrors(nameof(MachineCode)) != null)
+                {
+                    _MachineCode.Set(_MachineCode_Not_Valid);
+                }
+                OnPropertyChanged(nameof(MachineCode));
             }
         }
-
-        private string _machinePower = "";
-        private void MachinePower_Validation(string value)//TODO
+        private IDataLoadEngine _MachineCode;
+        private short _MachineCode_Not_Valid = 0;
+        private void MachineCode_Validation(short value)//TODO
         {
-
+            ClearErrors(nameof(MachineCode));
         }
+        //MachineCode property
 
+        //MachinePower property
         [Attributes.FormVisual("Мощность, куб. м/год")]
         public string MachinePower
         {
-            get { return _machinePower; }
+            get
+            {
+                if (GetErrors(nameof(MachinePower)) != null)
+                {
+                    return (string)_MachinePower.Get();
+                }
+                else
+                {
+                    return _MachinePower_Not_Valid;
+                }
+            }
             set
             {
-                _machinePower = value;
-                MachinePower_Validation(value);
-                OnPropertyChanged("MachinePower");
+                _MachinePower_Not_Valid = value;
+                if (GetErrors(nameof(MachinePower)) != null)
+                {
+                    _MachinePower.Set(_MachinePower_Not_Valid);
+                }
+                OnPropertyChanged(nameof(MachinePower));
             }
         }
-
-        private int _numberOfHoursPerYear = -1;
-        private void NumberOfHoursPerYear_Validation(int value)//TODO
+        private IDataLoadEngine _MachinePower;
+        private string _MachinePower_Not_Valid = "";
+        private void MachinePower_Validation(string value)//TODO
         {
-
+            ClearErrors(nameof(MachinePower));
         }
+        //MachinePower property
 
+        //NumberOfHoursPerYear property
         [Attributes.FormVisual("Количество часов работы за год")]
         public int NumberOfHoursPerYear
         {
-            get { return _numberOfHoursPerYear; }
+            get
+            {
+                if (GetErrors(nameof(NumberOfHoursPerYear)) != null)
+                {
+                    return (int)_NumberOfHoursPerYear.Get();
+                }
+                else
+                {
+                    return _NumberOfHoursPerYear_Not_Valid;
+                }
+            }
             set
             {
-                _numberOfHoursPerYear = value;
-                NumberOfHoursPerYear_Validation(value);
-                OnPropertyChanged("NumberOfHoursPerYear");
+                _NumberOfHoursPerYear_Not_Valid = value;
+                if (GetErrors(nameof(NumberOfHoursPerYear)) != null)
+                {
+                    _NumberOfHoursPerYear.Set(_NumberOfHoursPerYear_Not_Valid);
+                }
+                OnPropertyChanged(nameof(NumberOfHoursPerYear));
             }
         }
-
-        private string _codeRAOin = "";
-        private void CodeRAOin_Validation(string value)//TODO
+        private IDataLoadEngine _NumberOfHoursPerYear;
+        private int _NumberOfHoursPerYear_Not_Valid = -1;
+        private void NumberOfHoursPerYear_Validation(int value)//TODO
         {
-
+            ClearErrors(nameof(NumberOfHoursPerYear));
         }
+        //NumberOfHoursPerYear property
 
+        //CodeRAOIn property
         [Attributes.FormVisual("Код РАО")]
-        public string CodeRAOin
+        public string CodeRAOIn
         {
-            get { return _codeRAOin; }
+            get
+            {
+                if (GetErrors(nameof(CodeRAOIn)) != null)
+                {
+                    return (string)_CodeRAOIn.Get();
+                }
+                else
+                {
+                    return _CodeRAOIn_Not_Valid;
+                }
+            }
             set
             {
-                _codeRAOin = value;
-                CodeRAOin_Validation(value);
-                OnPropertyChanged("CodeRAOin");
+                _CodeRAOIn_Not_Valid = value;
+                if (GetErrors(nameof(CodeRAOIn)) != null)
+                {
+                    _CodeRAOIn.Set(_CodeRAOIn_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CodeRAOIn));
             }
         }
-
-        private string _statusRAOin = "";
-        private void StatusRAOin_Validation(double value)//TODO
+        private IDataLoadEngine _CodeRAOIn;
+        private string _CodeRAOIn_Not_Valid = "";
+        private void CodeRAOIn_Validation(string value)//TODO
         {
-
+            ClearErrors(nameof(CodeRAOIn));
         }
+        //CodeRAOIn property
 
+        //StatusRAOIn property
         [Attributes.FormVisual("Статус РАО")]
-        public string StatusRAOin  //1 cyfer or OKPO.
+        public string StatusRAOIn  //1 cyfer or OKPO.
         {
-            get { return _statusRAOin; }
+            get
+            {
+                if (GetErrors(nameof(StatusRAOIn)) != null)
+                {
+                    return (string)_StatusRAOIn.Get();
+                }
+                else
+                {
+                    return _StatusRAOIn_Not_Valid;
+                }
+            }
             set
             {
-                _statusRAOin = value;
-                StatusRAOin_Validation(VolumeIn);
-                OnPropertyChanged("StatusRAOin");
+                _StatusRAOIn_Not_Valid = value;
+                if (GetErrors(nameof(StatusRAOIn)) != null)
+                {
+                    _StatusRAOIn.Set(_StatusRAOIn_Not_Valid);
+                }
+                OnPropertyChanged(nameof(StatusRAOIn));
             }
         }
-
-        private double _volumeIn = -1;
-        private void VolumeIn_Validation(double value)//TODO
+        private IDataLoadEngine _StatusRAOIn;
+        private string _StatusRAOIn_Not_Valid = "";
+        private void StatusRAO_Validation(string value)//TODO
         {
-
+            ClearErrors(nameof(StatusRAOIn));
         }
+        //StatusRAOIn property
 
-        [Attributes.FormVisual("куб. м")]
+        //VolumeIn property
+        [Attributes.FormVisual("Объем, куб. м")]
         public double VolumeIn
         {
-            get { return _volumeIn; }
+            get
+            {
+                if (GetErrors(nameof(VolumeIn)) != null)
+                {
+                    return (double)_VolumeIn.Get();
+                }
+                else
+                {
+                    return _VolumeIn_Not_Valid;
+                }
+            }
             set
             {
-                _volumeIn = value;
-                VolumeIn_Validation(value);
-                OnPropertyChanged("VolumeIn");
+                _VolumeIn_Not_Valid = value;
+                if (GetErrors(nameof(VolumeIn)) != null)
+                {
+                    _VolumeIn.Set(_VolumeIn_Not_Valid);
+                }
+                OnPropertyChanged(nameof(VolumeIn));
             }
         }
-
-        private double _massIn = -1;
-        private void MassIn_Validation(double value)//TODO
+        private IDataLoadEngine _VolumeIn;
+        private double _VolumeIn_Not_Valid = -1;
+        private void VolumeIn_Validation(double value)//TODO
         {
-
+            ClearErrors(nameof(VolumeIn));
         }
+        //VolumeIn property
 
-        [Attributes.FormVisual("т")]
+        //MassIn Property
+        [Attributes.FormVisual("Масса, т")]
         public double MassIn
         {
-            get { return _massIn; }
+            get
+            {
+                if (GetErrors(nameof(MassIn)) != null)
+                {
+                    return (double)_MassIn.Get();
+                }
+                else
+                {
+                    return _MassIn_Not_Valid;
+                }
+            }
             set
             {
-                _massIn = value;
-                MassIn_Validation(value);
-                OnPropertyChanged("MassIn");
+                _MassIn_Not_Valid = value;
+                if (GetErrors(nameof(MassIn)) != null)
+                {
+                    _MassIn.Set(_MassIn_Not_Valid);
+                }
+                OnPropertyChanged(nameof(MassIn));
             }
         }
-
-        private int _quantityOZIIIin = -1;
-        private void QuantityOZIIIin_Validation(int value)//Ready
+        private IDataLoadEngine _MassIn;
+        private double _MassIn_Not_Valid = -1;
+        private void MassIn_Validation()//TODO
         {
-            ClearErrors(nameof(QuantityOZIIIin));
-            if (value <= 0)
-                AddError(nameof(QuantityOZIIIin), "Недопустимое значение");
+            ClearErrors(nameof(MassIn));
         }
+        //MassIn Property
 
+        //QuantityIn property
         [Attributes.FormVisual("Количество ОЗИИИ, шт.")]
-        public int QuantityOZIIIin
+        public int QuantityIn
         {
-            get { return _quantityOZIIIin; }
+            get
+            {
+                if (GetErrors(nameof(QuantityIn)) != null)
+                {
+                    return (int)_QuantityIn.Get();
+                }
+                else
+                {
+                    return _QuantityIn_Not_Valid;
+                }
+            }
             set
             {
-                _quantityOZIIIin = value;
-                QuantityOZIIIin_Validation(value);
-                OnPropertyChanged("QuantityOZIIIin");
+                _QuantityIn_Not_Valid = value;
+                if (GetErrors(nameof(QuantityIn)) != null)
+                {
+                    _QuantityIn.Set(_QuantityIn_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityIn));
             }
         }
+        private IDataLoadEngine _QuantityIn;  // positive int.
+        private int _QuantityIn_Not_Valid = -1;
+        private void QuantityIn_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityIn));
+            if (value <= 0)
+                AddError(nameof(QuantityIn), "Недопустимое значение");
+        }
+        //QuantityIn property
 
         //TritiumActivityIn property
         [Attributes.FormVisual("Активность трития, Бк")]
@@ -421,97 +518,172 @@ namespace Models.Client_Model
         }
         //TransuraniumActivityIn property
 
-        private string _codeRAOout = "";
-        private void CodeRAOout_Validation(string value)//TODO
-        {
-
-        }
-
+        //CodeRAOout property
         [Attributes.FormVisual("Код РАО")]
         public string CodeRAOout
         {
-            get { return _codeRAOout; }
+            get
+            {
+                if (GetErrors(nameof(CodeRAOout)) != null)
+                {
+                    return (string)_CodeRAOout.Get();
+                }
+                else
+                {
+                    return _CodeRAOout_Not_Valid;
+                }
+            }
             set
             {
-                _codeRAOout = value;
-                CodeRAOout_Validation(value);
-                OnPropertyChanged("CodeRAOout");
+                _CodeRAOout_Not_Valid = value;
+                if (GetErrors(nameof(CodeRAOout)) != null)
+                {
+                    _CodeRAOout.Set(_CodeRAOout_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CodeRAOout));
             }
         }
-
-        private string _statusRAOout = "";
-        private void StatusRAOout_Validation(string value)//TODO
+        private IDataLoadEngine _CodeRAOout;
+        private string _CodeRAOout_Not_Valid = "";
+        private void CodeRAOout_Validation(string value)//TODO
         {
-
+            ClearErrors(nameof(CodeRAOout));
         }
+        //CodeRAOout property
 
+        //StatusRAOout property
         [Attributes.FormVisual("Статус РАО")]
         public string StatusRAOout  //1 cyfer or OKPO.
         {
-            get { return _statusRAOout; }
+            get
+            {
+                if (GetErrors(nameof(StatusRAOout)) != null)
+                {
+                    return (string)_StatusRAOout.Get();
+                }
+                else
+                {
+                    return _StatusRAOout_Not_Valid;
+                }
+            }
             set
             {
-                _statusRAOout = value;
-                StatusRAOout_Validation(value);
-                OnPropertyChanged("StatusRAOout");
+                _StatusRAOout_Not_Valid = value;
+                if (GetErrors(nameof(StatusRAOout)) != null)
+                {
+                    _StatusRAOout.Set(_StatusRAOout_Not_Valid);
+                }
+                OnPropertyChanged(nameof(StatusRAOout));
             }
         }
-
-        private double _volumeOut = -1;
-        private void VolumeOut_Validation(double value)//TODO
+        private IDataLoadEngine _StatusRAOout;
+        private string _StatusRAOout_Not_Valid = "";
+        private void StatusRAOout_Validation(string value)//TODO
         {
-
+            ClearErrors(nameof(StatusRAOout));
         }
+        //StatusRAOout property
 
-        [Attributes.FormVisual("куб. м")]
+        //VolumeOut property
+        [Attributes.FormVisual("Объем, куб. м")]
         public double VolumeOut
         {
-            get { return _volumeOut; }
+            get
+            {
+                if (GetErrors(nameof(VolumeOut)) != null)
+                {
+                    return (double)_VolumeOut.Get();
+                }
+                else
+                {
+                    return _VolumeOut_Not_Valid;
+                }
+            }
             set
             {
-                _volumeOut = value;
-                VolumeOut_Validation(value);
-                OnPropertyChanged("VolumeOut");
+                _VolumeOut_Not_Valid = value;
+                if (GetErrors(nameof(VolumeOut)) != null)
+                {
+                    _VolumeOut.Set(_VolumeOut_Not_Valid);
+                }
+                OnPropertyChanged(nameof(VolumeOut));
             }
         }
-
-        private double _massOut = -1;
-        private void MassOut_Validation(double value)//TODO
+        private IDataLoadEngine _VolumeOut;
+        private double _VolumeOut_Not_Valid = -1;
+        private void VolumeOut_Validation(double value)//TODO
         {
-
+            ClearErrors(nameof(VolumeOut));
         }
+        //VolumeOut property
 
-        [Attributes.FormVisual("т")]
+        //MassOut Property
+        [Attributes.FormVisual("Масса, т")]
         public double MassOut
         {
-            get { return _massOut; }
+            get
+            {
+                if (GetErrors(nameof(MassOut)) != null)
+                {
+                    return (double)_MassOut.Get();
+                }
+                else
+                {
+                    return _MassOut_Not_Valid;
+                }
+            }
             set
             {
-                _massOut = value;
-                MassOut_Validation(value);
-                OnPropertyChanged("MassOut");
+                _MassOut_Not_Valid = value;
+                if (GetErrors(nameof(MassOut)) != null)
+                {
+                    _MassOut.Set(_MassOut_Not_Valid);
+                }
+                OnPropertyChanged(nameof(MassOut));
             }
         }
+        private IDataLoadEngine _MassOut;
+        private double _MassOut_Not_Valid = -1;
+        private void MassOut_Validation()//TODO
+        {
+            ClearErrors(nameof(MassOut));
+        }
+        //MassOut Property
 
-        private int _quantityOZIIIout = -1;
+        //QuantityOZIIIout property
+        [Attributes.FormVisual("Количество ОЗИИИ, шт.")]
+        public int QuantityOZIIIout
+        {
+            get
+            {
+                if (GetErrors(nameof(QuantityOZIIIout)) != null)
+                {
+                    return (int)_QuantityOZIIIout.Get();
+                }
+                else
+                {
+                    return _QuantityOZIIIout_Not_Valid;
+                }
+            }
+            set
+            {
+                _QuantityOZIIIout_Not_Valid = value;
+                if (GetErrors(nameof(QuantityOZIIIout)) != null)
+                {
+                    _QuantityOZIIIout.Set(_QuantityOZIIIout_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityOZIIIout));
+            }
+        }
+        private IDataLoadEngine _QuantityOZIIIout;  // positive int.
+        private int _QuantityOZIIIout_Not_Valid = -1;
         private void QuantityOZIIIout_Validation(int value)//Ready
         {
             ClearErrors(nameof(QuantityOZIIIout));
             if (value <= 0)
                 AddError(nameof(QuantityOZIIIout), "Недопустимое значение");
         }
-
-        [Attributes.FormVisual("Количество ОЗИИИ, шт.")]
-        public int QuantityOZIIIout
-        {
-            get { return _quantityOZIIIout; }
-            set
-            {
-                _quantityOZIIIout = value;
-                QuantityOZIIIout_Validation(value);
-                OnPropertyChanged("QuantityOZIIIout");
-            }
-        }
+        //QuantityOZIIIout property
 
         //TritiumActivityOut property
         [Attributes.FormVisual("Активность трития, Бк")]

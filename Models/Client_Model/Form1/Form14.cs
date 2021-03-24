@@ -12,116 +12,7 @@ namespace Models.Client_Model
         {
 
         }
-        public int NumberOfFields { get; } = 32;
-
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private int _numberInOrder = -1;
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
-
-        //OperationCode property
-        [Attributes.FormVisual("Код")]
-        public short OperationCode
-        {
-            get
-            {
-                if (GetErrors(nameof(OperationCode)) != null)
-                {
-                    return (short)_OperationCode.Get();
-                }
-                else
-                {
-                    return _OperationCode_Not_Valid;
-                }
-            }
-            set
-            {
-                _OperationCode_Not_Valid = value;
-                if (GetErrors(nameof(OperationCode)) != null)
-                {
-                    _OperationCode.Set(_OperationCode_Not_Valid);
-                }
-                OnPropertyChanged(nameof(OperationCode));
-            }
-        }
-        private IDataLoadEngine _OperationCode;
-        private short _OperationCode_Not_Valid = -1;
-        private void OperationCode_Validation()
-        {
-            ClearErrors(nameof(OperationCode));
-        }
-
-        //OperationDate property
-        [Attributes.FormVisual("Дата операции")]
-        public DateTime OperationDate
-        {
-            get
-            {
-                if (GetErrors(nameof(OperationDate)) != null)
-                {
-                    return (DateTime)_OperationDate.Get();
-                }
-                else
-                {
-                    return _OperationDate_Not_Valid;
-                }
-            }
-            set
-            {
-                _OperationDate_Not_Valid = value;
-                if (GetErrors(nameof(OperationDate)) != null)
-                {
-                    _OperationDate.Set(_OperationDate_Not_Valid);
-                }
-                OnPropertyChanged(nameof(OperationDate));
-            }
-        }
-        private IDataLoadEngine _OperationDate;
-        private DateTime _OperationDate_Not_Valid = DateTime.MinValue;
-        private void OperationDate_Validation()
-        {
-            ClearErrors(nameof(OperationDate));
-        }
+        public override int NumberOfFields { get; } = 32;
 
         //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]
@@ -154,6 +45,7 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(PassportNumber));
         }
+        //PassportNumber property
 
         private string _passportNumberNote = "";
         public string PassportNumberNote
@@ -177,41 +69,71 @@ namespace Models.Client_Model
             }
         }
 
-        private string _name = "";
-
-        private void Name_Validation(string value)//TODO
-        {
-        }
-
+        //Name property
         [Attributes.FormVisual("Наименование")]
         public string Name
         {
-            get { return _name; }
+            get
+            {
+                if (GetErrors(nameof(Name)) != null)
+                {
+                    return (string)_Name.Get();
+                }
+                else
+                {
+                    return _Name_Not_Valid;
+                }
+            }
             set
             {
-                _name = value;
-                Name_Validation(value);
-                OnPropertyChanged("Name");
+                _Name_Not_Valid = value;
+                if (GetErrors(nameof(Name)) != null)
+                {
+                    _Name.Set(_Name_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Name));
             }
         }
+        private IDataLoadEngine _Name;
+        private string _Name_Not_Valid = "";
+        private void Name_Validation(string value)//TODO
+        {
+            ClearErrors(nameof(Name));
+        }
+        //Name property
 
-        private byte _sort = 255;//If change this change validation
+        //Sort property
+        [Attributes.FormVisual("Вид")]
+        public byte Sort
+        {
+            get
+            {
+                if (GetErrors(nameof(Sort)) != null)
+                {
+                    return (byte)_Sort.Get();
+                }
+                else
+                {
+                    return _Sort_Not_Valid;
+                }
+            }
+            set
+            {
+                _Sort_Not_Valid = value;
+                if (GetErrors(nameof(Sort)) != null)
+                {
+                    _Sort.Set(_Sort_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Sort));
+            }
+        }
+        private IDataLoadEngine _Sort;//If change this change validation
+        private byte _Sort_Not_Valid = 255;
         private void Sort_Validation(byte value)//TODO
         {
             ClearErrors(nameof(Sort));
         }
-
-        [Attributes.FormVisual("Вид")]
-        public byte Sort
-        {
-            get { return _sort; }
-            set
-            {
-                _sort = value;
-                Sort_Validation(value);
-                OnPropertyChanged("Sort");
-            }
-        }
+        //Sort property
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]
@@ -290,188 +212,207 @@ namespace Models.Client_Model
         }
         //Activity property
 
-        private DateTime _activityMeasurementDate = DateTime.MinValue;//if change this change validation
-
+        //ActivityMeasurementDate property
+        [Attributes.FormVisual("Дата измерения активности")]
+        public DateTime ActivityMeasurementDate
+        {
+            get
+            {
+                if (GetErrors(nameof(ActivityMeasurementDate)) != null)
+                {
+                    return (DateTime)_ActivityMeasurementDate.Get();
+                }
+                else
+                {
+                    return _ActivityMeasurementDate_Not_Valid;
+                }
+            }
+            set
+            {
+                _ActivityMeasurementDate_Not_Valid = value;
+                if (GetErrors(nameof(ActivityMeasurementDate)) != null)
+                {
+                    _ActivityMeasurementDate.Set(_ActivityMeasurementDate_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ActivityMeasurementDate));
+            }
+        }
+        private IDataLoadEngine _ActivityMeasurementDate;//if change this change validation
+        private DateTime _ActivityMeasurementDate_Not_Valid = DateTime.MinValue;
         private void ActivityMeasurementDate_Validation(DateTime value)//Ready
         {
             ClearErrors(nameof(ActivityMeasurementDate));
         }
+        //ActivityMeasurementDate property
 
-        [Attributes.FormVisual("Дата измерения активности")]
-        public DateTime ActivityMeasurementDate
-        {
-            get { return _activityMeasurementDate; }
-            set
-            {
-                _activityMeasurementDate = value;
-                ActivityMeasurementDate_Validation(value);
-                OnPropertyChanged("ActivityMeasurementDate");
-            }
-        }
-
-        private double _volume = -1;
-
-        private void Volume_Validation(double value)//TODO
-        {
-        }
-
+        //Volume property
         [Attributes.FormVisual("Объем, куб. м")]
         public double Volume
         {
-            get { return _volume; }
+            get
+            {
+                if (GetErrors(nameof(Volume)) != null)
+                {
+                    return (double)_Volume.Get();
+                }
+                else
+                {
+                    return _Volume_Not_Valid;
+                }
+            }
             set
             {
-                _volume = value;
-                Volume_Validation(value);
-                OnPropertyChanged("Volume");
+                _Volume_Not_Valid = value;
+                if (GetErrors(nameof(Volume)) != null)
+                {
+                    _Volume.Set(_Volume_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Volume));
             }
         }
-
-        private double _mass = -1;
-
-        private void Mass_Validation(double value)//TODO
+        private IDataLoadEngine _Volume;
+        private double _Volume_Not_Valid = -1;
+        private void Volume_Validation(double value)//TODO
         {
+            ClearErrors(nameof(Volume));
         }
+        //Volume property
 
+        //Mass Property
         [Attributes.FormVisual("Масса, кг")]
         public double Mass
         {
-            get { return _mass; }
+            get
+            {
+                if (GetErrors(nameof(Mass)) != null)
+                {
+                    return (double)_Mass.Get();
+                }
+                else
+                {
+                    return _Mass_Not_Valid;
+                }
+            }
             set
             {
-                _mass = value;
-                Mass_Validation(value);
-                OnPropertyChanged("Mass");
+                _Mass_Not_Valid = value;
+                if (GetErrors(nameof(Mass)) != null)
+                {
+                    _Mass.Set(_Mass_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Mass));
             }
         }
+        private IDataLoadEngine _Mass;
+        private double _Mass_Not_Valid = -1;
+        private void Mass_Validation()//TODO
+        {
+            ClearErrors(nameof(Mass));
+        }
+        //Mass Property
 
-        private byte _aggregateState = 0;
-
+        //AggregateState property
+        [Attributes.FormVisual("Агрегатное состояние")]
+        public byte AggregateState//1 2 3
+        {
+            get
+            {
+                if (GetErrors(nameof(AggregateState)) != null)
+                {
+                    return (byte)_AggregateState.Get();
+                }
+                else
+                {
+                    return _AggregateState_Not_Valid;
+                }
+            }
+            set
+            {
+                _AggregateState_Not_Valid = value;
+                if (GetErrors(nameof(AggregateState)) != null)
+                {
+                    _AggregateState.Set(_AggregateState_Not_Valid);
+                }
+                OnPropertyChanged(nameof(AggregateState));
+            }
+        }
+        private IDataLoadEngine _AggregateState;
+        private byte _AggregateState_Not_Valid = 0;
         private void AggregateState_Validation(byte value)//Ready
         {
             ClearErrors(nameof(AggregateState));
-            if (!((value >= 1) && (value <= 3)))
+            if ((value != 1) && (value != 2) && (value != 3))
                 AddError(nameof(AggregateState), "Недопустимое значение");
         }
+        //AggregateState property
 
-        [Attributes.FormVisual("Агрегатное состояние")]
-        public byte AggregateState
+        //PropertyCode property
+        [Attributes.FormVisual("Код собственности")]
+        public byte PropertyCode
         {
-            get { return _aggregateState; }
+            get
+            {
+                if (GetErrors(nameof(PropertyCode)) != null)
+                {
+                    return (byte)_PropertyCode.Get();
+                }
+                else
+                {
+                    return _PropertyCode_Not_Valid;
+                }
+            }
             set
             {
-                _aggregateState = value;
-                AggregateState_Validation(value);
-                OnPropertyChanged("AggregateState");
+                _PropertyCode_Not_Valid = value;
+                if (GetErrors(nameof(PropertyCode)) != null)
+                {
+                    _PropertyCode.Set(_PropertyCode_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PropertyCode));
             }
         }
-
-        private byte _propertyCode = 255;
-
+        private IDataLoadEngine _PropertyCode;
+        private byte _PropertyCode_Not_Valid = 255;
         private void PropertyCode_Validation(byte value)//Ready
         {
             ClearErrors(nameof(PropertyCode));
             if (!((value >= 1) && (value <= 9)))
                 AddError(nameof(PropertyCode), "Недопустимое значение");
         }
+        //PropertyCode property
 
-        [Attributes.FormVisual("Код собственности")]
-        public byte PropertyCode
+        //Owner property
+        [Attributes.FormVisual("Владелец")]
+        public string Owner
         {
-            get { return _propertyCode; }
+            get
+            {
+                if (GetErrors(nameof(Owner)) != null)
+                {
+                    return (string)_Owner.Get();
+                }
+                else
+                {
+                    return _Owner_Not_Valid;
+                }
+            }
             set
             {
-                _propertyCode = value;
-                PropertyCode_Validation(value);
-                OnPropertyChanged("PropertyCode");
+                _Owner_Not_Valid = value;
+                if (GetErrors(nameof(Owner)) != null)
+                {
+                    _Owner.Set(_Owner_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Owner));
             }
         }
-
-        private string _owner = "";//if change this change validation
-
+        private IDataLoadEngine _Owner;//if change this change validation
+        private string _Owner_Not_Valid = "";
         private void Owner_Validation(string value)//Ready
         {
             ClearErrors(nameof(Owner));
         }
-
-        [Attributes.FormVisual("Владелец")]
-        public string Owner
-        {
-            get { return _owner; }
-            set
-            {
-                _owner = value;
-                Owner_Validation(value);
-                OnPropertyChanged("Owner");
-            }
-        }
-
-        private byte _documentVid = 255;
-
-        private void DocumentVid_Validation(byte value)//TODO
-        {
-        }
-
-        [Attributes.FormVisual("Вид документа")]
-        public byte DocumentVid
-        {
-            get { return _documentVid; }
-            set
-            {
-                _documentVid = value;
-                DocumentVid_Validation(value);
-                OnPropertyChanged("DocumentVid");
-            }
-        }
-
-        private string _documentNumber = "";
-
-        private void DocumentNumber_Validation(string value)//Ready
-        {
-            ClearErrors(nameof(DocumentNumber));
-        }
-
-        [Attributes.FormVisual("Номер документа")]
-        public string DocumentNumber
-        {
-            get { return _documentNumber; }
-            set
-            {
-                _documentNumber = value;
-                DocumentNumber_Validation(value);
-                OnPropertyChanged("DocumentNumber");
-            }
-        }
-
-        private string _documentNumberRecoded = "";
-        public string DocumentNumberRecoded
-        {
-            get { return _documentNumberRecoded; }
-            set
-            {
-                _documentNumberRecoded = value;
-                OnPropertyChanged("DocumentNumberRecoded");
-            }
-        }
-
-        private DateTime _documentDate = DateTime.MinValue;//if change this change validation
-
-        private void DocumentDate_Validation(DateTime value)//Ready
-        {
-            ClearErrors(nameof(DocumentDate));
-        }
-
-        [Attributes.FormVisual("Дата документа")]
-        public DateTime DocumentDate
-        {
-            get { return _documentDate; }
-            set
-            {
-                _documentDate = value;
-                DocumentDate_Validation(value);
-                OnPropertyChanged("DocumentDate");
-            }
-        }
+        //Owner property
 
         //ProviderOrRecieverOKPO property
         [Attributes.FormVisual("ОКПО поставщика/получателя")]
@@ -660,24 +601,38 @@ namespace Models.Client_Model
             }
         }
 
-        private string _packNumber = "";//If change this change validation
-
+        //PackNumber property
+        [Attributes.FormVisual("Номер упаковки")]
+        public string PackNumber
+        {
+            get
+            {
+                if (GetErrors(nameof(PackNumber)) != null)
+                {
+                    return (string)_PackNumber.Get();
+                }
+                else
+                {
+                    return _PackNumber_Not_Valid;
+                }
+            }
+            set
+            {
+                _PackNumber_Not_Valid = value;
+                if (GetErrors(nameof(PackNumber)) != null)
+                {
+                    _PackNumber.Set(_PackNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackNumber));
+            }
+        }
+        private IDataLoadEngine _PackNumber;//If change this change validation
+        private string _PackNumber_Not_Valid = "";
         private void PackNumber_Validation(string value)//Ready
         {
             ClearErrors(nameof(PackNumber));
         }
-
-        [Attributes.FormVisual("Номер упаковки")]
-        public string PackNumber
-        {
-            get { return _packNumber; }
-            set
-            {
-                _packNumber = value;
-                PackNumber_Validation(value);
-                OnPropertyChanged("PackNumber");
-            }
-        }
+        //PackNumber property
 
         private string _packNumberRecoded = "";
         public string PackNumberRecoded

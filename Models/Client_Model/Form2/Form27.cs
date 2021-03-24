@@ -10,11 +10,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.7: Поступление радионуклидов в атмосферный воздух")]
     public class Form27 : Form2
     {
+        public override string FormNum { get { return "2.7"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 15;
+        public override int NumberOfFields { get; } = 15;
 
         private string _permissionNumber = "";
         public string PermissionNumber
@@ -69,75 +70,6 @@ namespace Models.Client_Model
             {
                 _validThru = value;
                 OnPropertyChanged("ValidThru");
-            }
-        }
-
-        private int _numberInOrder = -1;
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
-
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private string _wasteSourceName = "";
-        [Attributes.FormVisual("Наименование, номер источника выбросов")]
-        public string WasteSourceName
-        {
-            get { return _wasteSourceName; }
-            set
-            {
-                _wasteSourceName = value;
-                OnPropertyChanged("WasteSourceName");
-            }
-        }
-
-        private string _radionuclidName = "";
-        [Attributes.FormVisual("Наименование радионуклида")]
-        public string RadionuclidName
-        {
-            get { return _radionuclidName; }
-            set
-            {
-                _radionuclidName = value;
-                OnPropertyChanged("RadionuclidName");
             }
         }
 

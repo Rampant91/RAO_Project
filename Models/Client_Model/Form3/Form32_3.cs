@@ -10,11 +10,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Идентификаторы:")]
     public class Form32_3: Form3
     {
+        public override string FormNum { get { return "3.2_3"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 2;
+        public override int NumberOfFields { get; } = 2;
 
         private string _idName = "";
         public string IdName

@@ -7,56 +7,12 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.4: Сведения о наличии в подведомственных организациях ОРИ")]
     public class Form54 : Form5
     {
+        public override string FormNum { get { return "5.4"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 10;
-
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private int _numberInOrder = -1;
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
+        public override int NumberOfFields { get; } = 10;
 
         private int _typeOfAccountedParts = -1; //1 or 2
 
@@ -97,26 +53,40 @@ namespace Models.Client_Model
             }
         }
 
-        private byte _aggregateState = 0;//1 2 3
-
+        //AggregateState property
+        [Attributes.FormVisual("Агрегатное состояние")]
+        public byte AggregateState//1 2 3
+        {
+            get
+            {
+                if (GetErrors(nameof(AggregateState)) != null)
+                {
+                    return (byte)_AggregateState.Get();
+                }
+                else
+                {
+                    return _AggregateState_Not_Valid;
+                }
+            }
+            set
+            {
+                _AggregateState_Not_Valid = value;
+                if (GetErrors(nameof(AggregateState)) != null)
+                {
+                    _AggregateState.Set(_AggregateState_Not_Valid);
+                }
+                OnPropertyChanged(nameof(AggregateState));
+            }
+        }
+        private IDataLoadEngine _AggregateState;
+        private byte _AggregateState_Not_Valid = 0;
         private void AggregateState_Validation(byte value)//Ready
         {
             ClearErrors(nameof(AggregateState));
             if ((value != 1) && (value != 2) && (value != 3))
                 AddError(nameof(AggregateState), "Недопустимое значение");
         }
-
-        [Attributes.FormVisual("Агрегатное состояние")]
-        public byte AggregateState
-        {
-            get { return _aggregateState; }
-            set
-            {
-                _aggregateState = value;
-                AggregateState_Validation(value);
-                OnPropertyChanged("AggregateState");
-            }
-        }
+        //AggregateState property
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]
@@ -230,40 +200,70 @@ namespace Models.Client_Model
         }
         //Quantity property
 
-        private double _volume = -1;
-
-        private void Volume_Validation(double value)//TODO
-        {
-        }
-
+        //Volume property
         [Attributes.FormVisual("Объем, куб. м")]
         public double Volume
         {
-            get { return _volume; }
+            get
+            {
+                if (GetErrors(nameof(Volume)) != null)
+                {
+                    return (double)_Volume.Get();
+                }
+                else
+                {
+                    return _Volume_Not_Valid;
+                }
+            }
             set
             {
-                _volume = value;
-                Volume_Validation(value);
-                OnPropertyChanged("Volume");
+                _Volume_Not_Valid = value;
+                if (GetErrors(nameof(Volume)) != null)
+                {
+                    _Volume.Set(_Volume_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Volume));
             }
         }
-
-        private double _mass = -1;
-
-        private void Mass_Validation(double value)//TODO
+        private IDataLoadEngine _Volume;
+        private double _Volume_Not_Valid = -1;
+        private void Volume_Validation(double value)//TODO
         {
+            ClearErrors(nameof(Volume));
         }
+        //Volume property
 
+        //Mass Property
         [Attributes.FormVisual("Масса, кг")]
         public double Mass
         {
-            get { return _mass; }
+            get
+            {
+                if (GetErrors(nameof(Mass)) != null)
+                {
+                    return (double)_Mass.Get();
+                }
+                else
+                {
+                    return _Mass_Not_Valid;
+                }
+            }
             set
             {
-                _mass = value;
-                Mass_Validation(value);
-                OnPropertyChanged("Mass");
+                _Mass_Not_Valid = value;
+                if (GetErrors(nameof(Mass)) != null)
+                {
+                    _Mass.Set(_Mass_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Mass));
             }
         }
+        private IDataLoadEngine _Mass;
+        private double _Mass_Not_Valid = -1;
+        private void Mass_Validation()//TODO
+        {
+            ClearErrors(nameof(Mass));
+        }
+        //Mass Property
     }
 }

@@ -10,75 +10,45 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.5: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций и переводе в РАО изделий из обедненного урана")]
     public class Form55 : Form5
     {
+        public override string FormNum { get { return "5.5"; } }
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 8;
+        public override int NumberOfFields { get; } = 8;
 
-        //CorrectionNumber property
-        [Attributes.FormVisual("Номер корректировки")]
-        public byte CorrectionNumber
-        {
-            get
-            {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    return (byte)_CorrectionNumber.Get();
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
-            }
-            set
-            {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
-                {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
-                }
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
-        private IDataLoadEngine _CorrectionNumber;
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
-        //CorrectionNumber property
-
-        private int _numberInOrder = -1;
-
-        [Attributes.FormVisual("№ п/п")]
-        public int NumberInOrder
-        {
-            get { return _numberInOrder; }
-            set
-            {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
-            }
-        }
-
-        private string _name = "";
-
-        private void Name_Validation(string value)//TODO
-        {
-        }
-
+        //Name property
         [Attributes.FormVisual("Наименование")]
         public string Name
         {
-            get { return _name; }
+            get
+            {
+                if (GetErrors(nameof(Name)) != null)
+                {
+                    return (string)_Name.Get();
+                }
+                else
+                {
+                    return _Name_Not_Valid;
+                }
+            }
             set
             {
-                _name = value;
-                Name_Validation(value);
-                OnPropertyChanged("Name");
+                _Name_Not_Valid = value;
+                if (GetErrors(nameof(Name)) != null)
+                {
+                    _Name.Set(_Name_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Name));
             }
         }
+        private IDataLoadEngine _Name;
+        private string _Name_Not_Valid = "";
+        private void Name_Validation(string value)//TODO
+        {
+            ClearErrors(nameof(Name));
+        }
+        //Name property
 
         //OperationCode property
         [Attributes.FormVisual("Код")]
@@ -191,22 +161,37 @@ namespace Models.Client_Model
             }
         }
 
-        private double _mass = -1;
-
-        private void Mass_Validation(double value)//TODO
-        {
-        }
-
+        //Mass Property
         [Attributes.FormVisual("Масса, кг")]
         public double Mass
         {
-            get { return _mass; }
+            get
+            {
+                if (GetErrors(nameof(Mass)) != null)
+                {
+                    return (double)_Mass.Get();
+                }
+                else
+                {
+                    return _Mass_Not_Valid;
+                }
+            }
             set
             {
-                _mass = value;
-                Mass_Validation(value);
-                OnPropertyChanged("Mass");
+                _Mass_Not_Valid = value;
+                if (GetErrors(nameof(Mass)) != null)
+                {
+                    _Mass.Set(_Mass_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Mass));
             }
         }
+        private IDataLoadEngine _Mass;
+        private double _Mass_Not_Valid = -1;
+        private void Mass_Validation()//TODO
+        {
+            ClearErrors(nameof(Mass));
+        }
+        //Mass Property
     }
 }
