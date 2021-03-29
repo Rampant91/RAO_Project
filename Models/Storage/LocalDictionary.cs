@@ -43,11 +43,11 @@ namespace Models.Storage
             }
         }
 
-        Filter.Filter<Client_Model.Form> _Filters;
+        Filter.Filter<Client_Model.Report> _Filters;
         /// <summary>
         /// Фильтры
         /// </summary>
-        public Filter.Filter<Client_Model.Form> Filters
+        public Filter.Filter<Client_Model.Report> Filters
         {
             get
             {
@@ -97,14 +97,9 @@ namespace Models.Storage
         {
             get
             {
-                var Storage = Forms[_ChooseTab.ToString()+"1"];
-                if (Storage.Storage.Count > 0)
+                foreach (var item in Filters.CheckAndSort(GetFullStorage(_ChooseTab.ToString()[0])))
                 {
-                    var tp = Storage.Storage[0].GetType().Name.Replace("Form", "")[0];
-                    foreach (var item in Storage.Filters.CheckAndSort(GetFullStorage(tp)))
-                    {
-                        yield return item;
-                    }
+                    yield return item;
                 }
             }
         }
@@ -152,7 +147,8 @@ namespace Models.Storage
         /// </summary>
         public LocalDictionary()
         {
-            Forms = new ObservableConcurrentDictionary<string, LocalStorage>();
+            _Forms = new ObservableConcurrentDictionary<string, LocalStorage>();
+            _Filters = new Filter.Filter<Report>();
 
             Init_1();
             Init_2();

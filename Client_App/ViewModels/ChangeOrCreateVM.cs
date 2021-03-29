@@ -34,8 +34,8 @@ namespace Client_App.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        LocalStorage _Storage;
-        public LocalStorage Storage
+        Report _Storage;
+        public Report Storage
         {
             get
             {
@@ -46,7 +46,24 @@ namespace Client_App.ViewModels
                 if (_Storage != value)
                 {
                     _Storage = value;
-                    NotifyPropertyChanged("FormModel_Local");
+                    NotifyPropertyChanged("Storage");
+                }
+            }
+        }
+
+        Models.Storage.LocalDictionary _Forms;
+        public Models.Storage.LocalDictionary Forms
+        {
+            get
+            {
+                return _Forms;
+            }
+            set
+            {
+                if (_Forms != value)
+                {
+                    _Forms = value;
+                    NotifyPropertyChanged("Forms");
                 }
             }
         }
@@ -56,10 +73,12 @@ namespace Client_App.ViewModels
         public ChangeOrCreateVM()
         {
             AddSort = ReactiveCommand.Create<string>(_AddSort);
+            _Storage = new Report();
+            _Forms = new LocalDictionary();
         }
         void _AddSort(string param)
         {
-            Storage.Filters.SortPath = param;
+            //Storage.Filters.SortPath = param;
         }
     }
 }

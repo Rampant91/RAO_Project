@@ -16,7 +16,7 @@ namespace Models.Storage.Filter
         /// </summary>
         public List<Filter_Item<T>> Filter_List { get; set; }
 
-        bool CheckObject(Client_Model.Report obj)
+        bool CheckObject(T obj)
         {
             bool flag = true;
             foreach(var item in Filter_List)
@@ -30,11 +30,11 @@ namespace Models.Storage.Filter
             return flag;
         }
 
-        public IEnumerable<Client_Model.Report> CheckAndSort(IEnumerable<Client_Model.Report> Storage)
+        public IEnumerable<T> CheckAndSort(IEnumerable<T> Storage)
         {
             if (Storage.Count() > 0)
             {
-                IEnumerable<Client_Model.Report> str = Storage;
+                IEnumerable<T> str = Storage;
 
                 if (SortPath != "")
                 {

@@ -31,7 +31,7 @@
             this.Type = Type;
         }
 
-        public bool CheckObject(Client_Model.Report obj)
+        public bool CheckObject(T obj)
         {
             bool flag = true;
             var prop = obj.GetType().GetProperty(Path);

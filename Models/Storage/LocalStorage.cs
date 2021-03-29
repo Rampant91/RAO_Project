@@ -40,11 +40,11 @@ namespace Models.Storage
             }
         }
 
-        Filter.Filter<Client_Model.Form> _Filters;
+        Filter.Filter<Client_Model.Report> _Filters;
         /// <summary>
         /// Фильтры
         /// </summary>
-        public Filter.Filter<Client_Model.Form> Filters 
+        public Filter.Filter<Client_Model.Report> Filters 
         {
             get
             {
@@ -100,7 +100,7 @@ namespace Models.Storage
         public LocalStorage()
         {
             _Storage = new Report_Observable();
-            _Filters = new Filter.Filter<Client_Model.Form>();
+            _Filters = new Filter.Filter<Client_Model.Report>();
             Storage.CollectionChanged += StorageChanged;
         }
     }

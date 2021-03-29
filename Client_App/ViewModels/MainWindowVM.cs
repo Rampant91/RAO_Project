@@ -60,8 +60,8 @@ namespace Client_App.ViewModels
         public ReactiveCommand<Unit, Unit> AddTestForm0 { get; }
         public ReactiveCommand<Unit, Unit> AddTestForm1 { get; }
         public ReactiveCommand<Unit, Unit> AddTestForm2 { get; }
-        public ReactiveCommand<string, Unit> ChangeForm { get; }
-        public ReactiveCommand<Form, Unit> DeleteForm { get; }
+        public ReactiveCommand<Report, Unit> ChangeForm { get; }
+        public ReactiveCommand<Report, Unit> DeleteForm { get; }
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -78,12 +78,25 @@ namespace Client_App.ViewModels
             Load_Local = ReactiveCommand.CreateFromTask(LoadForms);
             Save_ToFile = ReactiveCommand.CreateFromTask(_SaveToFile);
             AddSort = ReactiveCommand.Create<string>(_AddSort);
-;
+
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
-            ChangeForm = ReactiveCommand.CreateFromTask<string>(_ChangeForm);
-            DeleteForm = ReactiveCommand.Create<Form>(_DeleteForm);
+            ChangeForm = ReactiveCommand.CreateFromTask<Report>(_ChangeForm);
+            DeleteForm = ReactiveCommand.Create<Report>(_DeleteForm);
 
             Excel_Export= ReactiveCommand.CreateFromTask(_Excel_Export);
+
+            _FormModel_Local = new LocalDictionary();
+
+
+            Report rep = new Report();
+            rep.CorrectionNumber = 1;
+            rep.ExportDate = DateTime.Now;
+            rep.Rows = new Row_Observable<Form>();
+            rep.Rows.Add(new Form11());
+
+            LocalStorage str = new LocalStorage();
+            str.Storage.Add(rep);
+            _FormModel_Local.Forms["11"]=str;
         }
 
         public async Task SaveForms()
@@ -172,20 +185,20 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Forms[param],param);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local, null,param);
                 await frm.ShowDialog(desktop.MainWindow);
             }
         }
 
-        async Task _ChangeForm(string param)
+        async Task _ChangeForm(Report param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Forms[param],param);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local,param, null);
                 await frm.ShowDialog(desktop.MainWindow);
             }
         }
-        void _DeleteForm(Form param)
+        void _DeleteForm(Report param)
         {
             if (param != null)
             {

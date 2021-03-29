@@ -4,17 +4,28 @@ using Avalonia.Markup.Xaml;
 using Models.Client_Model;
 using Models.Attributes;
 using Avalonia.Data;
+using Models;
 
 namespace Client_App.Views
 {
     public class FormChangeOrCreate : Window
     {
         string _param = "";
-        public FormChangeOrCreate(Models.Storage.LocalStorage _Storage,string param)
+        public FormChangeOrCreate(in Models.Storage.LocalDictionary dict,in Models.Client_Model.Report _Storage,string param)
         {
             this.DataContext = new ViewModels.ChangeOrCreateVM();
-            ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage= _Storage;
+            if (_Storage != null)
+            {
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = _Storage;
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).Forms = dict;
+            }
+            else
+            {
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = new Report(); ;
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).Forms = dict;
+            }
             _param = param;
+
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();

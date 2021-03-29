@@ -56,21 +56,11 @@ namespace Client_App.Long_Visual
             topPnl1.Children.Add(new TextBlock
             {
                 Height = 30,
-                Margin = Thickness.Parse("5,12,0,0"),
+                Margin = Thickness.Parse("5,13,0,0"),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Text = "Период:",
+                Text = "Дата конца периода:",
                 [Grid.ColumnProperty] = 0,
-            });
-            topPnl1.Children.Add(new DatePicker
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,0,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment=Avalonia.Layout.HorizontalAlignment.Center,
-                [!DatePicker.SelectedDateProperty] = new Binding("StartPeriod", BindingMode.TwoWay),
-                [Grid.ColumnProperty] = 1,
-
             });
             topPnl1.Children.Add(new DatePicker
             {
@@ -86,7 +76,16 @@ namespace Client_App.Long_Visual
 
             var topPnl2 = new Grid();
             column = new ColumnDefinition();
-            column.Width = new GridLength(0.3, GridUnitType.Star);
+            column.Width = new GridLength(1, GridUnitType.Star);
+            topPnl2.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition();
+            column.Width = new GridLength(1, GridUnitType.Star);
+            topPnl2.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition();
+            column.Width = new GridLength(1, GridUnitType.Star);
+            topPnl2.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition();
+            column.Width = new GridLength(1, GridUnitType.Star);
             topPnl2.ColumnDefinitions.Add(column);
             column = new ColumnDefinition();
             column.Width = new GridLength(1, GridUnitType.Star);
@@ -101,7 +100,7 @@ namespace Client_App.Long_Visual
             topPnl2.Children.Add(new TextBlock
             {
                 Height = 30,
-                Margin = Thickness.Parse("5,12,0,0"),
+                Margin = Thickness.Parse("5,15,0,0"),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 Text = "Номер корректировки:",
@@ -111,17 +110,37 @@ namespace Client_App.Long_Visual
             topPnl2.Children.Add(new TextBox
             {
                 Height = 30,
-                Width=300,
+                Width=70,
                 Margin = Thickness.Parse("5,12,0,0"),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!TextBox.TextProperty] = new Binding("CorrectionNumber"),
+                [!TextBox.TextProperty] = new Binding("Storage.CorrectionNumber"),
                 [Grid.ColumnProperty] = 1,
-            }) ;
+            });
+
+            topPnl2.Children.Add(new Button
+            {
+                Height = 30,
+                Margin = Thickness.Parse("5,12,0,0"),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                Content = "Проверить",
+                [Grid.ColumnProperty] = 2,
+            });
+            topPnl2.Children.Add(new Button
+            {
+                Height = 30,
+                Margin = Thickness.Parse("5,12,0,0"),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                Content = "Сохранить",
+                [Grid.ColumnProperty] = 3,
+            });
 
             maingrid.Children.Add(topPnl2);
 
             DataGrid grd = new DataGrid();
+            grd.CanUserResizeColumns = true;
             maingrid.Children.Add(grd);
             grd.SetValue(Grid.RowProperty,2);
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;

@@ -41,6 +41,9 @@ namespace Models.Client_Model
             }
         }
 
+        [Attributes.FormVisual("Форма")]
+        public string FormNum { get; }
+
         //IsCorrection  (пример идеальной реализации свойства)
         [Attributes.FormVisual("Корректирующий отчет")]
         public bool IsCorrection
@@ -106,6 +109,39 @@ namespace Models.Client_Model
             ClearErrors(nameof(CorrectionNumber));
         }
         //CorrectionNumber property
+
+        //Comments
+        [Attributes.FormVisual("Номер")]
+        public string NumberInOrder
+        {
+            get
+            {
+                if (GetErrors(nameof(EndPeriod)) != null)
+                {
+                    return _NumberInOrder;
+                }
+                else
+                {
+                    return _NumberInOrder_Not_Valid;
+                }
+            }
+            set
+            {
+                _NumberInOrder_Not_Valid = value;
+                if (NumberInOrder_Validation())
+                {
+                    _NumberInOrder = _NumberInOrder_Not_Valid;
+                }
+                OnPropertyChanged(nameof(NumberInOrder));
+            }
+        }
+        private string _NumberInOrder = "";
+        private string _NumberInOrder_Not_Valid = "";
+        private bool NumberInOrder_Validation()
+        {
+            return true;
+        }
+        //Comments
 
         //Comments
         [Attributes.FormVisual("Комментарий")]
