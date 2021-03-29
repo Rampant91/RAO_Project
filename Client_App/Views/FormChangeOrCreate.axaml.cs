@@ -16,12 +16,14 @@ namespace Client_App.Views
             this.DataContext = new ViewModels.ChangeOrCreateVM();
             if (_Storage != null)
             {
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage = _Storage;
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = _Storage;
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).Forms = dict;
             }
             else
             {
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = new Report(); ;
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage = new Report(); ;
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = new Report();
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).Forms = dict;
             }
             _param = param;

@@ -41,6 +41,26 @@ namespace Models.Client_Model
             }
         }
 
+        Storage.Filter.Filter<Client_Model.Report> _Filters;
+        public Storage.Filter.Filter<Client_Model.Report> Filters
+        {
+            get
+            {
+                return _Filters;
+            }
+            set
+            {
+                if (value.GetType() == _Filters.GetType())
+                {
+                    if (value != _Filters)
+                    {
+                        _Filters = value;
+                        OnPropertyChanged("Filters");
+                    }
+                }
+            }
+        }
+
         [Attributes.FormVisual("Форма")]
         public string FormNum { get; }
 

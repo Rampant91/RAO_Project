@@ -359,34 +359,34 @@ namespace Models.Client_Model
 
         //Kategory property
         [Attributes.FormVisual("Категория")]
-        public short Kategory
+        public short Сategory
         {
             get
             {
-                if (GetErrors(nameof(Kategory)) != null)
+                if (GetErrors(nameof(Сategory)) != null)
                 {
-                    return (short)_Kategory.Get();
+                    return (short)_Сategory.Get();
                 }
                 else
                 {
-                    return _Kategory_Not_Valid;
+                    return _Сategory_Not_Valid;
                 }
             }
             set
             {
-                _Kategory_Not_Valid = value;
-                if (GetErrors(nameof(Kategory)) != null)
+                _Сategory_Not_Valid = value;
+                if (GetErrors(nameof(Сategory)) != null)
                 {
-                    _Kategory.Set(_Kategory_Not_Valid);
+                    _Сategory.Set(_Сategory_Not_Valid);
                 }
-                OnPropertyChanged(nameof(Kategory));
+                OnPropertyChanged(nameof(Сategory));
             }
         }
-        private IDataLoadEngine _Kategory;
-        private short _Kategory_Not_Valid = -1;
-        private void Kategory_Validation(short value)//TODO
+        private IDataLoadEngine _Сategory;
+        private short _Сategory_Not_Valid = -1;
+        private void Сategory_Validation(short value)//TODO
         {
-            ClearErrors(nameof(Kategory));
+            ClearErrors(nameof(Сategory));
         }
         //Kategory property
 

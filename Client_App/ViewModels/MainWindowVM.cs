@@ -57,9 +57,6 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> ChooseForm { get;}
 
         public ReactiveCommand<string, Unit> AddForm { get; }
-        public ReactiveCommand<Unit, Unit> AddTestForm0 { get; }
-        public ReactiveCommand<Unit, Unit> AddTestForm1 { get; }
-        public ReactiveCommand<Unit, Unit> AddTestForm2 { get; }
         public ReactiveCommand<Report, Unit> ChangeForm { get; }
         public ReactiveCommand<Report, Unit> DeleteForm { get; }
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }

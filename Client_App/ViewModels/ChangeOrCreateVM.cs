@@ -34,6 +34,23 @@ namespace Client_App.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        Report _SavingStorage;
+        public Report SavingStorage
+        {
+            get
+            {
+                return _SavingStorage;
+            }
+            set
+            {
+                if (_SavingStorage != value)
+                {
+                    _SavingStorage = value;
+                    NotifyPropertyChanged("SavingStorage");
+                }
+            }
+        }
+
         Report _Storage;
         public Report Storage
         {
@@ -68,17 +85,36 @@ namespace Client_App.ViewModels
             }
         }
 
+        public string FormType{get;set;}
+
         public ReactiveCommand<string, Unit> AddSort { get; }
+        public ReactiveCommand<Unit, Unit> AddRow { get; }
+        public ReactiveCommand<Form, Unit> DeleteRow { get; }
 
         public ChangeOrCreateVM()
         {
             AddSort = ReactiveCommand.Create<string>(_AddSort);
+            AddRow= ReactiveCommand.Create(_AddRow);
+            DeleteRow = ReactiveCommand.Create<Form>(_DeleteRow);
+
             _Storage = new Report();
             _Forms = new LocalDictionary();
         }
+
+        void _AddRow()
+        {
+            //switch()
+            //Storage.Rows.Add(form);
+        }
+
+        void _DeleteRow(Form param)
+        {
+            Storage.Rows.Remove(param);
+        }
+
         void _AddSort(string param)
         {
-            //Storage.Filters.SortPath = param;
+            Storage.Filters.SortPath = param;
         }
     }
 }
