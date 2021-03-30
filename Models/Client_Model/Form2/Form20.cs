@@ -16,40 +16,92 @@ namespace Models.Client_Model
         }
         public int NumberOfFields { get; } = 19;
 
-        private string _registrNumber = "";
-
-        [Attributes.FormVisual("рег.№")]
-        public string RegistrNumber
+        //RegNo property
+        [Attributes.FormVisual("Рег. №")]
+        public string RegNo
         {
-            get { return _registrNumber; }
+            get
+            {
+                if (GetErrors(nameof(RegNo)) != null)
+                {
+                    return (string)_RegNo.Get();
+                }
+                else
+                {
+                    return _RegNo_Not_Valid;
+                }
+            }
             set
             {
-                _registrNumber = value;
-                OnPropertyChanged("RegistrNumber");
+                _RegNo_Not_Valid = value;
+                if (GetErrors(nameof(RegNo)) != null)
+                {
+                    _RegNo.Set(_RegNo_Not_Valid);
+                }
+                OnPropertyChanged(nameof(RegNo));
             }
         }
+        private IDataLoadEngine _RegNo;
+        private string _RegNo_Not_Valid = "";
+        //RegNo property
 
-        private string _organUprav = "";
+        //OrganUprav property
+        [Attributes.FormVisual("Орган управления")]
         public string OrganUprav
         {
-            get { return _organUprav; }
+            get
+            {
+                if (GetErrors(nameof(OrganUprav)) != null)
+                {
+                    return (string)_OrganUprav.Get();
+                }
+                else
+                {
+                    return _OrganUprav_Not_Valid;
+                }
+            }
             set
             {
-                _organUprav = value;
-                OnPropertyChanged("OrganUprav");
+                _OrganUprav_Not_Valid = value;
+                if (GetErrors(nameof(OrganUprav)) != null)
+                {
+                    _OrganUprav.Set(_OrganUprav_Not_Valid);
+                }
+                OnPropertyChanged(nameof(OrganUprav));
             }
         }
+        private IDataLoadEngine _OrganUprav;
+        private string _OrganUprav_Not_Valid = "";
+        //OrganUprav property
 
-        private string _subjectRF = "";
+        //SubjectRF property
+        [Attributes.FormVisual("Субъект РФ")]
         public string SubjectRF
         {
-            get { return _subjectRF; }
+            get
+            {
+                if (GetErrors(nameof(SubjectRF)) != null)
+                {
+                    return (string)_SubjectRF.Get();
+                }
+                else
+                {
+                    return _SubjectRF_Not_Valid;
+                }
+            }
             set
             {
-                _subjectRF = value;
-                OnPropertyChanged("SubjectRF");
+                _SubjectRF_Not_Valid = value;
+                if (GetErrors(nameof(SubjectRF)) != null)
+                {
+                    _SubjectRF.Set(_SubjectRF_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SubjectRF));
             }
         }
+        private IDataLoadEngine _SubjectRF;
+        private string _SubjectRF_Not_Valid = "";
+        //SubjectRF property
 
         private string _jurLico = "";
         public string JurLico

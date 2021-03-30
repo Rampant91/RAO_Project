@@ -43,15 +43,33 @@ namespace Models.Client_Model
         }
         //CorrectionNumber property
 
-        private DateTime _notificationDate = DateTime.MinValue;
+        //NotificationDate property
+        [Attributes.FormVisual("Дата уведомления")]
         public DateTime NotificationDate
         {
-            get { return _notificationDate; }
+            get
+            {
+                if (GetErrors(nameof(NotificationDate)) != null)
+                {
+                    return (DateTime)_NotificationDate.Get();
+                }
+                else
+                {
+                    return _NotificationDate_Not_Valid;
+                }
+            }
             set
             {
-                _notificationDate = value;
-                OnPropertyChanged("NotificationDate");
+                _NotificationDate_Not_Valid = value;
+                if (GetErrors(nameof(NotificationDate)) != null)
+                {
+                    _NotificationDate.Set(_NotificationDate_Not_Valid);
+                }
+                OnPropertyChanged(nameof(NotificationDate));
             }
         }
+        private IDataLoadEngine _NotificationDate;
+        private DateTime _NotificationDate_Not_Valid = DateTime.MinValue;
+        //NotificationDate property
     }
 }

@@ -15,17 +15,35 @@ namespace Models.Client_Model
 
         }
         public int NumberOfFields { get; } = 18;
-        
-        private string _subjectRf = "";
-        public string SubjectRf
+
+        //SubjectRF property
+        [Attributes.FormVisual("Субъект РФ")]
+        public string SubjectRF
         {
-            get { return _subjectRf; }
+            get
+            {
+                if (GetErrors(nameof(SubjectRF)) != null)
+                {
+                    return (string)_SubjectRF.Get();
+                }
+                else
+                {
+                    return _SubjectRF_Not_Valid;
+                }
+            }
             set
             {
-                _subjectRf = value;
-                OnPropertyChanged("SubjectRf");
+                _SubjectRF_Not_Valid = value;
+                if (GetErrors(nameof(SubjectRF)) != null)
+                {
+                    _SubjectRF.Set(_SubjectRF_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SubjectRF));
             }
         }
+        private IDataLoadEngine _SubjectRF;
+        private string _SubjectRF_Not_Valid = "";
+        //SubjectRF property
 
         private int _year = -1;
         public int Year

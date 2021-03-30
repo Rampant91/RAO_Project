@@ -18,64 +18,170 @@ namespace Models.Client_Model
         }
         public override int NumberOfFields { get; } = 11;
 
-        private string _plotName = "";
+        //PlotName property
         [Attributes.FormVisual("Наименование участка")]
         public string PlotName
         {
-            get { return _plotName; }
+            get
+            {
+                if (GetErrors(nameof(PlotName)) != null)
+                {
+                    return (string)_PlotName.Get();
+                }
+                else
+                {
+                    return _PlotName_Not_Valid;
+                }
+            }
             set
             {
-                _plotName = value;
-                OnPropertyChanged("PlotName");
+                _PlotName_Not_Valid = value;
+                if (GetErrors(nameof(PlotName)) != null)
+                {
+                    _PlotName.Set(_PlotName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PlotName));
             }
         }
+        private IDataLoadEngine _PlotName;
+        private string _PlotName_Not_Valid = "";
+        private void PlotName_Validation(string value)//TODO
+        {
+            ClearErrors(nameof(PlotName));
+        }
+        //PlotName property
 
-        private string _plotKadastrNumber = "";
+        //PlotKadastrNumber property
         [Attributes.FormVisual("Кадастровый номер участка")]
         public string PlotKadastrNumber
         {
-            get { return _plotKadastrNumber; }
+            get
+            {
+                if (GetErrors(nameof(PlotKadastrNumber)) != null)
+                {
+                    return (string)_PlotKadastrNumber.Get();
+                }
+                else
+                {
+                    return _PlotKadastrNumber_Not_Valid;
+                }
+            }
             set
             {
-                _plotKadastrNumber = value;
-                OnPropertyChanged("PlotKadastrNumber");
+                _PlotKadastrNumber_Not_Valid = value;
+                if (GetErrors(nameof(PlotKadastrNumber)) != null)
+                {
+                    _PlotKadastrNumber.Set(_PlotKadastrNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PlotKadastrNumber));
             }
         }
+        private IDataLoadEngine _PlotKadastrNumber;
+        private string _PlotKadastrNumber_Not_Valid = "";
+        private void PlotKadastrNumber_Validation(string value)//TODO
+        {
+            ClearErrors(nameof(PlotKadastrNumber));
+        }
+        //PlotKadastrNumber property
 
-        private string _plotCode = ""; //6 symbols code
+        //PlotCode property
+        [Attributes.FormVisual("Код участка")]
         public string PlotCode
         {
-            get { return _plotCode; }
+            get
+            {
+                if (GetErrors(nameof(PlotCode)) != null)
+                {
+                    return (string)_PlotCode.Get();
+                }
+                else
+                {
+                    return _PlotCode_Not_Valid;
+                }
+            }
             set
             {
-                _plotCode = value;
-                OnPropertyChanged("PlotCode");
+                _PlotCode_Not_Valid = value;
+                if (GetErrors(nameof(PlotCode)) != null)
+                {
+                    _PlotCode.Set(_PlotCode_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PlotCode));
             }
         }
+        private IDataLoadEngine _PlotCode; //6 symbols code
+        private string _PlotCode_Not_Valid = ""; //6 symbols code
+        private void PlotCode_Validation(string value)//TODO
+        {
+            ClearErrors(nameof(PlotCode));
+        }
+        //PlotCode property
 
-        private int _infectedArea = -1;
+        //InfectedArea property
         [Attributes.FormVisual("Площадь загрязненной территории, кв. м")]
         public int InfectedArea
         {
-            get { return _infectedArea; }
+            get
+            {
+                if (GetErrors(nameof(InfectedArea)) != null)
+                {
+                    return (int)_InfectedArea.Get();
+                }
+                else
+                {
+                    return _InfectedArea_Not_Valid;
+                }
+            }
             set
             {
-                _infectedArea = value;
-                OnPropertyChanged("InfectedArea");
+                _InfectedArea_Not_Valid = value;
+                if (GetErrors(nameof(InfectedArea)) != null)
+                {
+                    _InfectedArea.Set(_InfectedArea_Not_Valid);
+                }
+                OnPropertyChanged(nameof(InfectedArea));
             }
         }
-
-        private string _radionuclidName = "";
-        [Attributes.FormVisual("Наименования радионуклидов")]
-        public string RadionuclidName
+        private IDataLoadEngine _InfectedArea;
+        private int _InfectedArea_Not_Valid = -1;
+        private void InfectedArea_Validation(int value)//TODO
         {
-            get { return _radionuclidName; }
+            ClearErrors(nameof(InfectedArea));
+        }
+        //InfectedArea property
+
+        //Radionuclids property
+        [Attributes.FormVisual("Наименования радионуклидов")]
+        public string Radionuclids
+        {
+            get
+            {
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    return (string)_Radionuclids.Get();
+                }
+                else
+                {
+                    return _Radionuclids_Not_Valid;
+                }
+            }
             set
             {
-                _radionuclidName = value;
-                OnPropertyChanged("RadionuclidName");
+                _Radionuclids_Not_Valid = value;
+                if (GetErrors(nameof(Radionuclids)) != null)
+                {
+                    _Radionuclids.Set(_Radionuclids_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }
+        private IDataLoadEngine _Radionuclids;//If change this change validation
+        private string _Radionuclids_Not_Valid = "";
+        private void Radionuclids_Validation()//TODO
+        {
+            ClearErrors(nameof(Radionuclids));
+        }
+        //Radionuclids property
 
         private string _radionuclidNameNote = "";
         public string RadionuclidNameNote

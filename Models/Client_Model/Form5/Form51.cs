@@ -45,6 +45,7 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(OperationCode));
         }
+        //OperationCode property
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]

@@ -81,6 +81,7 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(OperationCode));
         }
+        //OperationCode property
 
         //Quantity property
         [Attributes.FormVisual("Количество, шт.")]

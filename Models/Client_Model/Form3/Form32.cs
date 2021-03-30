@@ -15,104 +15,266 @@ namespace Models.Client_Model
         }
         public override int NumberOfFields { get; } = 17;
 
-        private string _uniqueAgreementId = "";
+        //UniqueAgreementId property
+        [Attributes.FormVisual("Уникльный номер соглашения")]
         public string UniqueAgreementId
         {
-            get { return _uniqueAgreementId; }
+            get
+            {
+                if (GetErrors(nameof(UniqueAgreementId)) != null)
+                {
+                    return (string)_UniqueAgreementId.Get();
+                }
+                else
+                {
+                    return _UniqueAgreementId_Not_Valid;
+                }
+            }
             set
             {
-                _uniqueAgreementId = value;
-                OnPropertyChanged("UniqueAgreementId");
+                _UniqueAgreementId_Not_Valid = value;
+                if (GetErrors(nameof(UniqueAgreementId)) != null)
+                {
+                    _UniqueAgreementId.Set(_UniqueAgreementId_Not_Valid);
+                }
+                OnPropertyChanged(nameof(UniqueAgreementId));
             }
         }
+        private IDataLoadEngine _UniqueAgreementId;
+        private string _UniqueAgreementId_Not_Valid = "";
+        //UniqueAgreementId property
 
-        private DateTime _supplyDate = DateTime.MinValue;
+        //SupplyDate property
+        [Attributes.FormVisual("Дата поступления")]
         public DateTime SupplyDate
         {
-            get { return _supplyDate; }
+            get
+            {
+                if (GetErrors(nameof(SupplyDate)) != null)
+                {
+                    return (DateTime)_SupplyDate.Get();
+                }
+                else
+                {
+                    return _SupplyDate_Not_Valid;
+                }
+            }
             set
             {
-                _supplyDate = value;
-                OnPropertyChanged("SupplyDate");
+                _SupplyDate_Not_Valid = value;
+                if (GetErrors(nameof(SupplyDate)) != null)
+                {
+                    _SupplyDate.Set(_SupplyDate_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SupplyDate));
             }
         }
+        private IDataLoadEngine _SupplyDate;
+        private DateTime _SupplyDate_Not_Valid = DateTime.MinValue;
+        //SupplyDate property
 
-        private string _recieverName = "";
+        //RecieverName property
+        [Attributes.FormVisual("Наименование получателя")]
         public string RecieverName
         {
-            get { return _recieverName; }
+            get
+            {
+                if (GetErrors(nameof(RecieverName)) != null)
+                {
+                    return (string)_RecieverName.Get();
+                }
+                else
+                {
+                    return _RecieverName_Not_Valid;
+                }
+            }
             set
             {
-                _recieverName = value;
-                OnPropertyChanged("RecieverName");
+                _RecieverName_Not_Valid = value;
+                if (GetErrors(nameof(RecieverName)) != null)
+                {
+                    _RecieverName.Set(_RecieverName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(RecieverName));
             }
         }
+        private IDataLoadEngine _RecieverName;
+        private string _RecieverName_Not_Valid = "";
+        //RecieverName property
 
-        private byte _fieldsOfWorking = 0;
+        //FieldsOfWorking property
+        [Attributes.FormVisual("Вид деятельности")]
         public byte FieldsOfWorking
         {
-            get { return _fieldsOfWorking; }
+            get
+            {
+                if (GetErrors(nameof(FieldsOfWorking)) != null)
+                {
+                    return (byte)_FieldsOfWorking.Get();
+                }
+                else
+                {
+                    return _FieldsOfWorking_Not_Valid;
+                }
+            }
             set
             {
-                _fieldsOfWorking = value;
-                OnPropertyChanged("FieldsOfWorking");
+                _FieldsOfWorking_Not_Valid = value;
+                if (GetErrors(nameof(FieldsOfWorking)) != null)
+                {
+                    _FieldsOfWorking.Set(_FieldsOfWorking_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FieldsOfWorking));
             }
         }
+        private IDataLoadEngine _FieldsOfWorking;
+        private byte _FieldsOfWorking_Not_Valid = 0;
+        //FieldsOfWorking property
 
-        private string _licenseIdRv = "";
+        //LicenseIdRv property
+        [Attributes.FormVisual("Номер лицензии на обращение с РВ")]
         public string LicenseIdRv
         {
-            get { return _licenseIdRv; }
+            get
+            {
+                if (GetErrors(nameof(LicenseIdRv)) != null)
+                {
+                    return (string)_LicenseIdRv.Get();
+                }
+                else
+                {
+                    return _LicenseIdRv_Not_Valid;
+                }
+            }
             set
             {
-                _licenseIdRv = value;
-                OnPropertyChanged("LicenseIdRv");
+                _LicenseIdRv_Not_Valid = value;
+                if (GetErrors(nameof(LicenseIdRv)) != null)
+                {
+                    _LicenseIdRv.Set(_LicenseIdRv_Not_Valid);
+                }
+                OnPropertyChanged(nameof(LicenseIdRv));
             }
         }
+        private IDataLoadEngine _LicenseIdRv;
+        private string _LicenseIdRv_Not_Valid = "";
+        //LicenseIdRv property
 
-        private DateTime _validThruRv = DateTime.MinValue;
+        //ValidThruRv property
+        [Attributes.FormVisual("Лицензия истекает(РВ)")]
         public DateTime ValidThruRv
         {
-            get { return _validThruRv; }
+            get
+            {
+                if (GetErrors(nameof(ValidThruRv)) != null)
+                {
+                    return (DateTime)_ValidThruRv.Get();
+                }
+                else
+                {
+                    return _ValidThruRv_Not_Valid;
+                }
+            }
             set
             {
-                _validThruRv = value;
-                OnPropertyChanged("ValidThruRv");
+                _ValidThruRv_Not_Valid = value;
+                if (GetErrors(nameof(ValidThruRv)) != null)
+                {
+                    _ValidThruRv.Set(_ValidThruRv_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ValidThruRv));
             }
         }
+        private IDataLoadEngine _ValidThruRv;
+        private DateTime _ValidThruRv_Not_Valid = DateTime.MinValue;
+        //ValidThruRv property
 
-        private string _licenseIdRao = "";
+        //LicenseIdRao property
+        [Attributes.FormVisual("Номер лицензии на обращение с РАО")]
         public string LicenseIdRao
         {
-            get { return _licenseIdRao; }
+            get
+            {
+                if (GetErrors(nameof(LicenseIdRao)) != null)
+                {
+                    return (string)_LicenseIdRao.Get();
+                }
+                else
+                {
+                    return _LicenseIdRao_Not_Valid;
+                }
+            }
             set
             {
-                _licenseIdRao = value;
-                OnPropertyChanged("LicenseIdRao");
+                _LicenseIdRao_Not_Valid = value;
+                if (GetErrors(nameof(LicenseIdRao)) != null)
+                {
+                    _LicenseIdRao.Set(_LicenseIdRao_Not_Valid);
+                }
+                OnPropertyChanged(nameof(LicenseIdRao));
             }
         }
+        private IDataLoadEngine _LicenseIdRao;
+        private string _LicenseIdRao_Not_Valid = "";
+        //LicenseIdRao property
 
-        private DateTime _validThruRao = DateTime.MinValue;
+        //ValidThruRao property
+        [Attributes.FormVisual("Лицензия истекает(РАО)")]
         public DateTime ValidThruRao
         {
-            get { return _validThruRao; }
+            get
+            {
+                if (GetErrors(nameof(ValidThruRao)) != null)
+                {
+                    return (DateTime)_ValidThruRao.Get();
+                }
+                else
+                {
+                    return _ValidThruRao_Not_Valid;
+                }
+            }
             set
             {
-                _validThruRao = value;
-                OnPropertyChanged("ValidThruRao");
+                _ValidThruRao_Not_Valid = value;
+                if (GetErrors(nameof(ValidThruRao)) != null)
+                {
+                    _ValidThruRao.Set(_ValidThruRao_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ValidThruRao));
             }
         }
+        private IDataLoadEngine _ValidThruRao;
+        private DateTime _ValidThruRao_Not_Valid = DateTime.MinValue;
+        //ValidThruRao property
 
-        private string _supplyAddress = "";
+        //SupplyAddress property
+        [Attributes.FormVisual("Адрес поставки")]
         public string SupplyAddress
         {
-            get { return _supplyAddress; }
+            get
+            {
+                if (GetErrors(nameof(SupplyAddress)) != null)
+                {
+                    return (string)_SupplyAddress.Get();
+                }
+                else
+                {
+                    return _SupplyAddress_Not_Valid;
+                }
+            }
             set
             {
-                _supplyAddress = value;
-                OnPropertyChanged("SupplyAddress");
+                _SupplyAddress_Not_Valid = value;
+                if (GetErrors(nameof(SupplyAddress)) != null)
+                {
+                    _SupplyAddress.Set(_SupplyAddress_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SupplyAddress));
             }
         }
+        private IDataLoadEngine _SupplyAddress;
+        private string _SupplyAddress_Not_Valid = "";
+        //SupplyAddress property
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]

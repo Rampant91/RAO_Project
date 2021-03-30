@@ -17,155 +17,302 @@ namespace Models.Client_Model
         }
         public override int NumberOfFields { get; } = 12;
 
-        private string _indicatorName = "";
+        //IndicatorName property
         [Attributes.FormVisual("Наименование показателя")]
         public string IndicatorName
         {
-            get { return _indicatorName; }
+            get
+            {
+                if (GetErrors(nameof(IndicatorName)) != null)
+                {
+                    return (string)_IndicatorName.Get();
+                }
+                else
+                {
+                    return _IndicatorName_Not_Valid;
+                }
+            }
             set
             {
-                _indicatorName = value;
-                OnPropertyChanged("IndicatorName");
+                _IndicatorName_Not_Valid = value;
+                if (GetErrors(nameof(IndicatorName)) != null)
+                {
+                    _IndicatorName.Set(_IndicatorName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(IndicatorName));
             }
         }
+        private IDataLoadEngine _IndicatorName;
+        private string _IndicatorName_Not_Valid = "";
+        private void IndicatorName_Validation(string value)//TODO
+        {
+            ClearErrors(nameof(IndicatorName));
+        }
+        //IndicatorName property
 
-        private string _plotName = "";
+        //PlotName property
         [Attributes.FormVisual("Наименование участка")]
         public string PlotName
         {
-            get { return _plotName; }
+            get
+            {
+                if (GetErrors(nameof(PlotName)) != null)
+                {
+                    return (string)_PlotName.Get();
+                }
+                else
+                {
+                    return _PlotName_Not_Valid;
+                }
+            }
             set
             {
-                _plotName = value;
-                OnPropertyChanged("PlotName");
+                _PlotName_Not_Valid = value;
+                if (GetErrors(nameof(PlotName)) != null)
+                {
+                    _PlotName.Set(_PlotName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PlotName));
             }
         }
-
-        private string _plotKadastrNumber = "";
-        private void PlotKadastrNumber_Validation(string value)//TODO
+        private IDataLoadEngine _PlotName;
+        private string _PlotName_Not_Valid = "";
+        private void PlotName_Validation(string value)//TODO
         {
-
+            ClearErrors(nameof(PlotName));
         }
+        //PlotName property
 
+        //PlotKadastrNumber property
         [Attributes.FormVisual("Кадастровый номер участка")]
         public string PlotKadastrNumber
         {
-            get { return _plotKadastrNumber; }
+            get
+            {
+                if (GetErrors(nameof(PlotKadastrNumber)) != null)
+                {
+                    return (string)_PlotKadastrNumber.Get();
+                }
+                else
+                {
+                    return _PlotKadastrNumber_Not_Valid;
+                }
+            }
             set
             {
-                _plotKadastrNumber = value;
-                PlotKadastrNumber_Validation(value);
-                OnPropertyChanged("PlotKadastrNumber");
+                _PlotKadastrNumber_Not_Valid = value;
+                if (GetErrors(nameof(PlotKadastrNumber)) != null)
+                {
+                    _PlotKadastrNumber.Set(_PlotKadastrNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PlotKadastrNumber));
             }
         }
-
-        private string _plotCode = ""; //6 symbols code
-        private void PlotCode_Validation(string value)//TODO
+        private IDataLoadEngine _PlotKadastrNumber;
+        private string _PlotKadastrNumber_Not_Valid = "";
+        private void PlotKadastrNumber_Validation(string value)//TODO
         {
-
+            ClearErrors(nameof(PlotKadastrNumber));
         }
+        //PlotKadastrNumber property
 
+        //PlotCode property
         [Attributes.FormVisual("Код участка")]
         public string PlotCode
         {
-            get { return _plotCode; }
+            get
+            {
+                if (GetErrors(nameof(PlotCode)) != null)
+                {
+                    return (string)_PlotCode.Get();
+                }
+                else
+                {
+                    return _PlotCode_Not_Valid;
+                }
+            }
             set
             {
-                _plotCode = value;
-                PlotCode_Validation(value);
-                OnPropertyChanged("PlotCode");
+                _PlotCode_Not_Valid = value;
+                if (GetErrors(nameof(PlotCode)) != null)
+                {
+                    _PlotCode.Set(_PlotCode_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PlotCode));
             }
         }
-
-        private int _infectedArea = -1;
-        private void InfectedArea_Validation(int value)//TODO
+        private IDataLoadEngine _PlotCode; //6 symbols code
+        private string _PlotCode_Not_Valid = ""; //6 symbols code
+        private void PlotCode_Validation(string value)//TODO
         {
-
+            ClearErrors(nameof(PlotCode));
         }
+        //PlotCode property
 
+        //InfectedArea property
         [Attributes.FormVisual("Площадь загрязненной территории, кв. м")]
         public int InfectedArea
         {
-            get { return _infectedArea; }
+            get
+            {
+                if (GetErrors(nameof(InfectedArea)) != null)
+                {
+                    return (int)_InfectedArea.Get();
+                }
+                else
+                {
+                    return _InfectedArea_Not_Valid;
+                }
+            }
             set
             {
-                _infectedArea = value;
-                InfectedArea_Validation(value);
-                OnPropertyChanged("InfectedArea");
+                _InfectedArea_Not_Valid = value;
+                if (GetErrors(nameof(InfectedArea)) != null)
+                {
+                    _InfectedArea.Set(_InfectedArea_Not_Valid);
+                }
+                OnPropertyChanged(nameof(InfectedArea));
             }
         }
-
-        private double _avgGammaRaysDosePower = -1;
-        private void AvgGammaRaysDosePower_Validation(double value)//TODO
+        private IDataLoadEngine _InfectedArea;
+        private int _InfectedArea_Not_Valid = -1;
+        private void InfectedArea_Validation(int value)//TODO
         {
-
+            ClearErrors(nameof(InfectedArea));
         }
+        //InfectedArea property
 
+        //AvgGammaRaysDosePower property
         [Attributes.FormVisual("Средняя мощность дозы гамма-излучения, мкЗв/час")]
         public double AvgGammaRaysDosePower
         {
-            get { return _avgGammaRaysDosePower; }
+            get
+            {
+                if (GetErrors(nameof(AvgGammaRaysDosePower)) != null)
+                {
+                    return (double)_AvgGammaRaysDosePower.Get();
+                }
+                else
+                {
+                    return _AvgGammaRaysDosePower_Not_Valid;
+                }
+            }
             set
             {
-                _avgGammaRaysDosePower = value;
-                AvgGammaRaysDosePower_Validation(value);
-                OnPropertyChanged("AvgGammaRaysDosePower");
+                _AvgGammaRaysDosePower_Not_Valid = value;
+                if (GetErrors(nameof(AvgGammaRaysDosePower)) != null)
+                {
+                    _AvgGammaRaysDosePower.Set(_AvgGammaRaysDosePower_Not_Valid);
+                }
+                OnPropertyChanged(nameof(AvgGammaRaysDosePower));
             }
         }
-
-        private double _maxGammaRaysDosePower = -1;
-        private void MaxGammaRaysDosePower_Validation(double value)//TODO
+        private IDataLoadEngine _AvgGammaRaysDosePower;
+        private double _AvgGammaRaysDosePower_Not_Valid = -1;
+        private void AvgGammaRaysDosePower_Validation(double value)//TODO
         {
-
+            ClearErrors(nameof(AvgGammaRaysDosePower));
         }
+        //AvgGammaRaysDosePower property
 
+        //MaxGammaRaysDosePower property
         [Attributes.FormVisual("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
         public double MaxGammaRaysDosePower
         {
-            get { return _maxGammaRaysDosePower; }
+            get
+            {
+                if (GetErrors(nameof(MaxGammaRaysDosePower)) != null)
+                {
+                    return (double)_MaxGammaRaysDosePower.Get();
+                }
+                else
+                {
+                    return _MaxGammaRaysDosePower_Not_Valid;
+                }
+            }
             set
             {
-                _maxGammaRaysDosePower = value;
-                MaxGammaRaysDosePower_Validation(value);
-                OnPropertyChanged("MaxGammaRaysDosePower");
+                _MaxGammaRaysDosePower_Not_Valid = value;
+                if (GetErrors(nameof(MaxGammaRaysDosePower)) != null)
+                {
+                    _MaxGammaRaysDosePower.Set(_MaxGammaRaysDosePower_Not_Valid);
+                }
+                OnPropertyChanged(nameof(MaxGammaRaysDosePower));
             }
         }
-
-        private double _wasteDensityAlpha = -1;
-        private void WasteDensityAlpha_Validation(double value)//TODO
+        private IDataLoadEngine _MaxGammaRaysDosePower;
+        private double _MaxGammaRaysDosePower_Not_Valid = -1;
+        private void MaxGammaRaysDosePower_Validation(double value)//TODO
         {
-
+            ClearErrors(nameof(MaxGammaRaysDosePower));
         }
+        //MaxGammaRaysDosePower property
 
+        //WasteDensityAlpha property
         [Attributes.FormVisual("Средняя плотность загрязнения альфа-излучающими радионуклидами, Бк/кв. м")]
         public double WasteDensityAlpha
         {
-            get { return _wasteDensityAlpha; }
+            get
+            {
+                if (GetErrors(nameof(WasteDensityAlpha)) != null)
+                {
+                    return (double)_WasteDensityAlpha.Get();
+                }
+                else
+                {
+                    return _WasteDensityAlpha_Not_Valid;
+                }
+            }
             set
             {
-                _wasteDensityAlpha = value;
-                WasteDensityAlpha_Validation(value);
-                OnPropertyChanged("WasteDensityAlpha");
+                _WasteDensityAlpha_Not_Valid = value;
+                if (GetErrors(nameof(WasteDensityAlpha)) != null)
+                {
+                    _WasteDensityAlpha.Set(_WasteDensityAlpha_Not_Valid);
+                }
+                OnPropertyChanged(nameof(WasteDensityAlpha));
             }
         }
-
-        private double _wasteDensityBeta = -1;
-        private void WasteDensityBeta_Validation(double value)//TODO
+        private IDataLoadEngine _WasteDensityAlpha;
+        private double _WasteDensityAlpha_Not_Valid = -1;
+        private void WasteDensityAlpha_Validation(double value)//TODO
         {
-
+            ClearErrors(nameof(WasteDensityAlpha));
         }
+        //WasteDensityAlpha property
 
+        //WasteDensityBeta property
         [Attributes.FormVisual("Средняя плотность загрязнения бета-излучающими радионуклидами, Бк/кв. м")]
         public double WasteDensityBeta
         {
-            get { return _wasteDensityBeta; }
+            get
+            {
+                if (GetErrors(nameof(WasteDensityBeta)) != null)
+                {
+                    return (double)_WasteDensityBeta.Get();
+                }
+                else
+                {
+                    return _WasteDensityBeta_Not_Valid;
+                }
+            }
             set
             {
-                _wasteDensityBeta = value;
-                WasteDensityBeta_Validation(value);
-                OnPropertyChanged("WasteDensityBeta");
+                _WasteDensityBeta_Not_Valid = value;
+                if (GetErrors(nameof(WasteDensityBeta)) != null)
+                {
+                    _WasteDensityBeta.Set(_WasteDensityBeta_Not_Valid);
+                }
+                OnPropertyChanged(nameof(WasteDensityBeta));
             }
         }
+        private IDataLoadEngine _WasteDensityBeta;
+        private double _WasteDensityBeta_Not_Valid = -1;
+        private void WasteDensityBeta_Validation(double value)//TODO
+        {
+            ClearErrors(nameof(WasteDensityBeta));
+        }
+        //WasteDensityBeta property
 
         //FcpNumber property
         [Attributes.FormVisual("Номер мероприятия ФЦП")]

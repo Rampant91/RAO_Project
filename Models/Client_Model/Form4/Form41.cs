@@ -17,65 +17,154 @@ namespace Models.Client_Model
         }
         public override int NumberOfFields { get; } = 9;
 
-        private int _numberInOrder = -1;
+        //NumberInOrder property
         [Attributes.FormVisual("№ п/п")]
         public int NumberInOrder
         {
-            get { return _numberInOrder; }
+            get
+            {
+                if (GetErrors(nameof(NumberInOrder)) != null)
+                {
+                    return (int)_NumberInOrder.Get();
+                }
+                else
+                {
+                    return _NumberInOrder_Not_Valid;
+                }
+            }
             set
             {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
+                _NumberInOrder_Not_Valid = value;
+                if (GetErrors(nameof(NumberInOrder)) != null)
+                {
+                    _NumberInOrder.Set(_NumberInOrder_Not_Valid);
+                }
+                OnPropertyChanged(nameof(NumberInOrder));
             }
         }
+        private IDataLoadEngine _NumberInOrder;
+        private int _NumberInOrder_Not_Valid = -1;
+        private void NumberInOrder_Validation()
+        {
+            ClearErrors(nameof(NumberInOrder));
+        }
+        //NumberInOrder property
 
-        private string _regNo = "";
+        //RegNo property
         [Attributes.FormVisual("Регистрационный номер")]
         public string RegNo
         {
-            get { return _regNo; }
+            get
+            {
+                if (GetErrors(nameof(RegNo)) != null)
+                {
+                    return (string)_RegNo.Get();
+                }
+                else
+                {
+                    return _RegNo_Not_Valid;
+                }
+            }
             set
             {
-                _regNo = value;
-                OnPropertyChanged("RegNo");
+                _RegNo_Not_Valid = value;
+                if (GetErrors(nameof(RegNo)) != null)
+                {
+                    _RegNo.Set(_RegNo_Not_Valid);
+                }
+                OnPropertyChanged(nameof(RegNo));
             }
         }
+        private IDataLoadEngine _RegNo;
+        private string _RegNo_Not_Valid = "";
+        //RegNo property
 
-        private string _okpo = "";
+        //Okpo property
         [Attributes.FormVisual("ОКПО")]
         public string Okpo
         {
-            get { return _okpo; }
+            get
+            {
+                if (GetErrors(nameof(Okpo)) != null)
+                {
+                    return (string)_Okpo.Get();
+                }
+                else
+                {
+                    return _Okpo_Not_Valid;
+                }
+            }
             set
             {
-                _okpo = value;
-                OnPropertyChanged("Okpo");
+                _Okpo_Not_Valid = value;
+                if (GetErrors(nameof(Okpo)) != null)
+                {
+                    _Okpo.Set(_Okpo_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Okpo));
             }
         }
+        private IDataLoadEngine _Okpo;
+        private string _Okpo_Not_Valid = "";
+        //Okpo property
 
-        private string _orgName = "";
+        //OrgName property
         [Attributes.FormVisual("Наименование организации")]
         public string OrgName
         {
-            get { return _orgName; }
+            get
+            {
+                if (GetErrors(nameof(OrgName)) != null)
+                {
+                    return (string)_OrgName.Get();
+                }
+                else
+                {
+                    return _OrgName_Not_Valid;
+                }
+            }
             set
             {
-                _orgName = value;
-                OnPropertyChanged("OrgName");
+                _OrgName_Not_Valid = value;
+                if (GetErrors(nameof(OrgName)) != null)
+                {
+                    _OrgName.Set(_OrgName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(OrgName));
             }
         }
+        private IDataLoadEngine _OrgName;
+        private string _OrgName_Not_Valid = "";
+        //OrgName property
 
-        private string _licenseInfo = "";
+        //LicenseInfo property
         [Attributes.FormVisual("Сведения о лицензии")]
         public string LicenseInfo
         {
-            get { return _licenseInfo; }
+            get
+            {
+                if (GetErrors(nameof(LicenseInfo)) != null)
+                {
+                    return (string)_LicenseInfo.Get();
+                }
+                else
+                {
+                    return _LicenseInfo_Not_Valid;
+                }
+            }
             set
             {
-                _licenseInfo = value;
-                OnPropertyChanged("LicenseInfo");
+                _LicenseInfo_Not_Valid = value;
+                if (GetErrors(nameof(LicenseInfo)) != null)
+                {
+                    _LicenseInfo.Set(_LicenseInfo_Not_Valid);
+                }
+                OnPropertyChanged(nameof(LicenseInfo));
             }
         }
+        private IDataLoadEngine _LicenseInfo;
+        private string _LicenseInfo_Not_Valid = "";
+        //LicenseInfo property
 
         //QuantityOfFormsInv property
         [Attributes.FormVisual("Количество отчетных форм по инвентаризации, шт.")]
@@ -182,16 +271,33 @@ namespace Models.Client_Model
         }
         //QuantityOfFormsYear property
 
-        private string _notes = "";
+        //Notes property
         [Attributes.FormVisual("Примечания")]
         public string Notes
         {
-            get { return _notes; }
+            get
+            {
+                if (GetErrors(nameof(Notes)) != null)
+                {
+                    return (string)_Notes.Get();
+                }
+                else
+                {
+                    return _Notes_Not_Valid;
+                }
+            }
             set
             {
-                _notes = value;
-                OnPropertyChanged("Notes");
+                _Notes_Not_Valid = value;
+                if (GetErrors(nameof(Notes)) != null)
+                {
+                    _Notes.Set(_Notes_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Notes));
             }
         }
+        private IDataLoadEngine _Notes;
+        private string _Notes_Not_Valid = "";
+        //Notes property
     }
 }

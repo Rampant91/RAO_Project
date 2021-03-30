@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -215,16 +215,49 @@ namespace Models.Client_Model
             }
         }
 
-        private string _activityOnCreation = "";
+        //ActivityOnCreation property
+        [Attributes.FormVisual("Активность на дату создания, Бк")]
         public string ActivityOnCreation
         {
-            get { return _activityOnCreation; }
+            get
+            {
+                if (GetErrors(nameof(ActivityOnCreation)) != null)
+                {
+                    return (string)_ActivityOnCreation.Get();
+                }
+                else
+                {
+                    return _ActivityOnCreation_Not_Valid;
+                }
+            }
             set
             {
-                _activityOnCreation = value;
-                OnPropertyChanged("ActivityOnCreation");
+                _ActivityOnCreation_Not_Valid = value;
+                if (GetErrors(nameof(ActivityOnCreation)) != null)
+                {
+                    _ActivityOnCreation.Set(_ActivityOnCreation_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ActivityOnCreation));
             }
         }
+        private IDataLoadEngine _ActivityOnCreation;
+        private string _ActivityOnCreation_Not_Valid = "";
+        private void ActivityOnCreation_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(ActivityOnCreation));
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(ActivityOnCreation), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(ActivityOnCreation), "Недопустимое значение");
+            }
+        }
+        //ActivityOnCreation property
 
         //CreationDate property
         [Attributes.FormVisual("Дата изготовления")]
@@ -303,37 +336,91 @@ namespace Models.Client_Model
         }
         //Kategory property
 
-        private double _nuclearMaterialPresence = -1;
+        //NuclearMaterialPresence property
+        [Attributes.FormVisual("Содержание ядерных материалов")]
         public double NuclearMaterialPresence
         {
-            get { return _nuclearMaterialPresence; }
+            get
+            {
+                if (GetErrors(nameof(NuclearMaterialPresence)) != null)
+                {
+                    return (double)_NuclearMaterialPresence.Get();
+                }
+                else
+                {
+                    return _NuclearMaterialPresence_Not_Valid;
+                }
+            }
             set
             {
-                _nuclearMaterialPresence = value;
-                OnPropertyChanged("NuclearMaterialPresence");
+                _NuclearMaterialPresence_Not_Valid = value;
+                if (GetErrors(nameof(NuclearMaterialPresence)) != null)
+                {
+                    _NuclearMaterialPresence.Set(_NuclearMaterialPresence_Not_Valid);
+                }
+                OnPropertyChanged(nameof(NuclearMaterialPresence));
             }
         }
+        private IDataLoadEngine _NuclearMaterialPresence;
+        private double _NuclearMaterialPresence_Not_Valid = -1;
+        //NuclearMaterialPresence property
 
-        private string _certificateId = "";
+        //CertificateId property
+        [Attributes.FormVisual("Номер сертификата")]
         public string CertificateId
         {
-            get { return _certificateId; }
+            get
+            {
+                if (GetErrors(nameof(CertificateId)) != null)
+                {
+                    return (string)_CertificateId.Get();
+                }
+                else
+                {
+                    return _CertificateId_Not_Valid;
+                }
+            }
             set
             {
-                _certificateId = value;
-                OnPropertyChanged("CertificateId");
+                _CertificateId_Not_Valid = value;
+                if (GetErrors(nameof(CertificateId)) != null)
+                {
+                    _CertificateId.Set(_CertificateId_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CertificateId));
             }
         }
+        private IDataLoadEngine _CertificateId;
+        private string _CertificateId_Not_Valid = "";
+        //CertificateId property
 
-        private DateTime _validThru = DateTime.MinValue;
+        //ValidThru property
+        [Attributes.FormVisual("Действует по")]
         public DateTime ValidThru
         {
-            get { return _validThru; }
+            get
+            {
+                if (GetErrors(nameof(ValidThru)) != null)
+                {
+                    return (DateTime)_ValidThru.Get();
+                }
+                else
+                {
+                    return _ValidThru_Not_Valid;
+                }
+            }
             set
             {
-                _validThru = value;
-                OnPropertyChanged("ValidThru");
+                _ValidThru_Not_Valid = value;
+                if (GetErrors(nameof(ValidThru)) != null)
+                {
+                    _ValidThru.Set(_ValidThru_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ValidThru));
             }
         }
+        private IDataLoadEngine _ValidThru;
+        private DateTime _ValidThru_Not_Valid = DateTime.MinValue;
+        //ValidThru property
     }
 }

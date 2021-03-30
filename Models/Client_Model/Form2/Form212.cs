@@ -46,24 +46,40 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(OperationCode));
         }
-
-        private string _objectTypeCode = ""; //2 digit code
-
-        private void ObjectTypeCode_Validation(string value)//TODO
-        {
-        }
-
+        //OperationCode property
+        
+        //ObjectTypeCode property
         [Attributes.FormVisual("Код типа объектов учета")]
         public string ObjectTypeCode
         {
-            get { return _objectTypeCode; }
+            get
+            {
+                if (GetErrors(nameof(ObjectTypeCode)) != null)
+                {
+                    return (string)_ObjectTypeCode.Get();
+                }
+                else
+                {
+                    return _ObjectTypeCode_Not_Valid;
+                }
+            }
             set
             {
-                _objectTypeCode = value;
-                ObjectTypeCode_Validation(value);
-                OnPropertyChanged("ObjectTypeCode");
+                _ObjectTypeCode_Not_Valid = value;
+                if (GetErrors(nameof(ObjectTypeCode)) != null)
+                {
+                    _ObjectTypeCode.Set(_ObjectTypeCode_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ObjectTypeCode));
             }
         }
+        private IDataLoadEngine _ObjectTypeCode; //2 digit code
+        private string _ObjectTypeCode_Not_Valid = ""; //2 digit code
+        private void ObjectTypeCode_Validation(string value)//TODO
+        {
+            ClearErrors(ObjectTypeCode);
+        }
+        //ObjectTypeCode property
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]
@@ -98,26 +114,40 @@ namespace Models.Client_Model
         }
         //Radionuclids property
 
-        private double _activity = -1;
-
+        //Activity property
+        [Attributes.FormVisual("Активность, Бк")]
+        public double Activity
+        {
+            get
+            {
+                if (GetErrors(nameof(Activity)) != null)
+                {
+                    return (double)_Activity.Get();
+                }
+                else
+                {
+                    return _Activity_Not_Valid;
+                }
+            }
+            set
+            {
+                _Activity_Not_Valid = value;
+                if (GetErrors(nameof(Activity)) != null)
+                {
+                    _Activity.Set(_Activity_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Activity));
+            }
+        }
+        private IDataLoadEngine _Activity;
+        private double _Activity_Not_Valid = -1;
         private void Activity_Validation(double value)//Ready
         {
             ClearErrors(nameof(Activity));
             if (!(value > 0))
-                    AddError(nameof(Activity), "Число должно быть больше нуля");
+                AddError(nameof(Activity), "Число должно быть больше нуля");
         }
-
-        [Attributes.FormVisual("Активность, Бк")]
-        public double Activity
-        {
-            get { return _activity; }
-            set
-            {
-                _activity = value;
-                Activity_Validation(value);
-                OnPropertyChanged("Activity");
-            }
-        }
+        //Activity property
 
         //ProviderOrRecieverOKPO property
         [Attributes.FormVisual("ОКПО поставщика/получателя")]

@@ -17,61 +17,170 @@ namespace Models.Client_Model
         }
         public override int NumberOfFields { get; } = 15;
 
-        private string _permissionNumber = "";
+        //PermissionNumber property
+        [Attributes.FormVisual("Номер разрешительного документа")]
         public string PermissionNumber
         {
-            get { return _permissionNumber; }
+            get
+            {
+                if (GetErrors(nameof(PermissionNumber)) != null)
+                {
+                    return (string)_PermissionNumber.Get();
+                }
+                else
+                {
+                    return _PermissionNumber_Not_Valid;
+                }
+            }
             set
             {
-                _permissionNumber = value;
-                OnPropertyChanged("PermissionNumber");
+                _PermissionNumber_Not_Valid = value;
+                if (GetErrors(nameof(PermissionNumber)) != null)
+                {
+                    _PermissionNumber.Set(_PermissionNumber_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PermissionNumber));
             }
         }
+        private IDataLoadEngine _PermissionNumber;
+        private string _PermissionNumber_Not_Valid = "";
+        private void PermissionNumber_Validation()
+        {
+            ClearErrors(nameof(PermissionNumber));
+        }
+        //PermissionNumber property
 
-        private string _permissionIssueDate = "";
+        //PermissionIssueDate property
+        [Attributes.FormVisual("Дата выпуска разрешительного документа")]
         public string PermissionIssueDate
         {
-            get { return _permissionIssueDate; }
+            get
+            {
+                if (GetErrors(nameof(PermissionIssueDate)) != null)
+                {
+                    return (string)_PermissionIssueDate.Get();
+                }
+                else
+                {
+                    return _PermissionIssueDate_Not_Valid;
+                }
+            }
             set
             {
-                _permissionIssueDate = value;
-                OnPropertyChanged("PermissionIssueDate");
+                _PermissionIssueDate_Not_Valid = value;
+                if (GetErrors(nameof(PermissionIssueDate)) != null)
+                {
+                    _PermissionIssueDate.Set(_PermissionIssueDate_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PermissionIssueDate));
             }
         }
-
-        private string _permissionDocumentName = "";
+        private IDataLoadEngine _PermissionIssueDate;
+        private string _PermissionIssueDate_Not_Valid = "";
+        private void PermissionIssueDate_Validation()
+        {
+            ClearErrors(nameof(PermissionIssueDate));
+        }
+        //PermissionIssueDate property
+        
+        //PermissionDocumentName property
         [Attributes.FormVisual("Наименование разрешительного документа")]
         public string PermissionDocumentName
         {
-            get { return _permissionDocumentName; }
+            get
+            {
+                if (GetErrors(nameof(PermissionDocumentName)) != null)
+                {
+                    return (string)_PermissionDocumentName.Get();
+                }
+                else
+                {
+                    return _PermissionDocumentName_Not_Valid;
+                }
+            }
             set
             {
-                _permissionDocumentName = value;
-                OnPropertyChanged("PermissionDocumentName");
+                _PermissionDocumentName_Not_Valid = value;
+                if (GetErrors(nameof(PermissionDocumentName)) != null)
+                {
+                    _PermissionDocumentName.Set(_PermissionDocumentName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PermissionDocumentName));
             }
         }
+        private IDataLoadEngine _PermissionDocumentName;
+        private string _PermissionDocumentName_Not_Valid = "";
+        private void PermissionDocumentName_Validation()
+        {
+            ClearErrors(nameof(PermissionDocumentName));
+        }
+        //PermissionDocumentName property
 
-        private DateTime _validBegin = DateTime.MinValue;
+        //ValidBegin property
+        [Attributes.FormVisual("Действует с")]
         public DateTime ValidBegin
         {
-            get { return _validBegin; }
+            get
+            {
+                if (GetErrors(nameof(ValidBegin)) != null)
+                {
+                    return (DateTime)_ValidBegin.Get();
+                }
+                else
+                {
+                    return _ValidBegin_Not_Valid;
+                }
+            }
             set
             {
-                _validBegin = value;
-                OnPropertyChanged("ValidBegin");
+                _ValidBegin_Not_Valid = value;
+                if (GetErrors(nameof(ValidBegin)) != null)
+                {
+                    _ValidBegin.Set(_ValidBegin_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ValidBegin));
             }
         }
+        private IDataLoadEngine _ValidBegin;
+        private DateTime _ValidBegin_Not_Valid = DateTime.MinValue;
+        private void ValidBegin_Validation()
+        {
+            ClearErrors(nameof(ValidBegin));
+        }
+        //ValidBegin property
 
-        private DateTime _validThru = DateTime.MinValue;
+        //ValidThru property
+        [Attributes.FormVisual("Действует по")]
         public DateTime ValidThru
         {
-            get { return _validThru; }
+            get
+            {
+                if (GetErrors(nameof(ValidThru)) != null)
+                {
+                    return (DateTime)_ValidThru.Get();
+                }
+                else
+                {
+                    return _ValidThru_Not_Valid;
+                }
+            }
             set
             {
-                _validThru = value;
-                OnPropertyChanged("ValidThru");
+                _ValidThru_Not_Valid = value;
+                if (GetErrors(nameof(ValidThru)) != null)
+                {
+                    _ValidThru.Set(_ValidThru_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ValidThru));
             }
         }
+        private IDataLoadEngine _ValidThru;
+        private DateTime _ValidThru_Not_Valid = DateTime.MinValue;
+        private void ValidThru_Validation()
+        {
+            ClearErrors(nameof(ValidThru));
+        }
+        //ValidThru property
 
         private string _radionuclidNameNote = "";
         public string RadionuclidNameNote
@@ -83,18 +192,39 @@ namespace Models.Client_Model
                 OnPropertyChanged("RadionuclidNameNote");
             }
         }
-
-        private string _allowedWasteValue = "";
+        
+        //AllowedWasteValue property
         [Attributes.FormVisual("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]
         public string AllowedWasteValue
         {
-            get { return _allowedWasteValue; }
+            get
+            {
+                if (GetErrors(nameof(AllowedWasteValue)) != null)
+                {
+                    return (string)_AllowedWasteValue.Get();
+                }
+                else
+                {
+                    return _AllowedWasteValue_Not_Valid;
+                }
+            }
             set
             {
-                _allowedWasteValue = value;
-                OnPropertyChanged("AllowedWasteValue");
+                _AllowedWasteValue_Not_Valid = value;
+                if (GetErrors(nameof(AllowedWasteValue)) != null)
+                {
+                    _AllowedWasteValue.Set(_AllowedWasteValue_Not_Valid);
+                }
+                OnPropertyChanged(nameof(AllowedWasteValue));
             }
         }
+        private IDataLoadEngine _AllowedWasteValue;
+        private string _AllowedWasteValue_Not_Valid = "";
+        private void AllowedWasteValue_Validation()
+        {
+            ClearErrors(nameof(AllowedWasteValue));
+        }
+        //AllowedWasteValue property
 
         private string _allowedWasteValueNote = "";
         public string AllowedWasteValueNote
@@ -106,18 +236,39 @@ namespace Models.Client_Model
                 OnPropertyChanged("AllowedWasteValueNote");
             }
         }
-
-        private string _factedWasteValue = "";
+        
+        //FactedWasteValue property
         [Attributes.FormVisual("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]
         public string FactedWasteValue
         {
-            get { return _factedWasteValue; }
+            get
+            {
+                if (GetErrors(nameof(FactedWasteValue)) != null)
+                {
+                    return (string)_FactedWasteValue.Get();
+                }
+                else
+                {
+                    return _FactedWasteValue_Not_Valid;
+                }
+            }
             set
             {
-                _factedWasteValue = value;
-                OnPropertyChanged("FactedWasteValue");
+                _FactedWasteValue_Not_Valid = value;
+                if (GetErrors(nameof(FactedWasteValue)) != null)
+                {
+                    _FactedWasteValue.Set(_FactedWasteValue_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FactedWasteValue));
             }
         }
+        private IDataLoadEngine _FactedWasteValue;
+        private string _FactedWasteValue_Not_Valid = "";
+        private void FactedWasteValue_Validation()
+        {
+            ClearErrors(nameof(FactedWasteValue));
+        }
+        //FactedWasteValue property
 
         private string _factedWasteValueNote = "";
         public string FactedWasteValueNote
@@ -130,16 +281,37 @@ namespace Models.Client_Model
             }
         }
 
-        private string _wasteOutbreakPreviousYear = "";
+        //WasteOutbreakPreviousYear property
         [Attributes.FormVisual("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]
         public string WasteOutbreakPreviousYear
         {
-            get { return _wasteOutbreakPreviousYear; }
+            get
+            {
+                if (GetErrors(nameof(WasteOutbreakPreviousYear)) != null)
+                {
+                    return (string)_WasteOutbreakPreviousYear.Get();
+                }
+                else
+                {
+                    return _WasteOutbreakPreviousYear_Not_Valid;
+                }
+            }
             set
             {
-                _wasteOutbreakPreviousYear = value;
-                OnPropertyChanged("WasteOutbreakPreviousYear");
+                _WasteOutbreakPreviousYear_Not_Valid = value;
+                if (GetErrors(nameof(WasteOutbreakPreviousYear)) != null)
+                {
+                    _WasteOutbreakPreviousYear.Set(_WasteOutbreakPreviousYear_Not_Valid);
+                }
+                OnPropertyChanged(nameof(WasteOutbreakPreviousYear));
             }
         }
+        private IDataLoadEngine _WasteOutbreakPreviousYear;
+        private string _WasteOutbreakPreviousYear_Not_Valid = "";
+        private void WasteOutbreakPreviousYear_Validation()
+        {
+            ClearErrors(nameof(WasteOutbreakPreviousYear));
+        }
+        //WasteOutbreakPreviousYear property
     }
 }

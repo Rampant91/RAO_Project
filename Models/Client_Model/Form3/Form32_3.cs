@@ -17,26 +17,62 @@ namespace Models.Client_Model
         }
         public override int NumberOfFields { get; } = 2;
 
-        private string _idName = "";
+        //IdName property
+        [Attributes.FormVisual("Идентификатор")]
         public string IdName
         {
-            get { return _idName; }
+            get
+            {
+                if (GetErrors(nameof(IdName)) != null)
+                {
+                    return (string)_IdName.Get();
+                }
+                else
+                {
+                    return _IdName_Not_Valid;
+                }
+            }
             set
             {
-                _idName = value;
-                OnPropertyChanged("IdName");
+                _IdName_Not_Valid = value;
+                if (GetErrors(nameof(IdName)) != null)
+                {
+                    _IdName.Set(_IdName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(IdName));
             }
         }
+        private IDataLoadEngine _IdName;
+        private string _IdName_Not_Valid = "";
+        //IdName Property
 
-        private string _value = "";
+        //Value property
+        [Attributes.FormVisual("Значение")]
         public string Value
         {
-            get { return _value; }
+            get
+            {
+                if (GetErrors(nameof(Value)) != null)
+                {
+                    return (string)_Value.Get();
+                }
+                else
+                {
+                    return _Value_Not_Valid;
+                }
+            }
             set
             {
-                _value = value;
-                OnPropertyChanged("Value");
+                _Value_Not_Valid = value;
+                if (GetErrors(nameof(Value)) != null)
+                {
+                    _Value.Set(_Value_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Value));
             }
         }
+        private IDataLoadEngine _Value;
+        private string _Value_Not_Valid = "";
+        //Value property
     }
 }

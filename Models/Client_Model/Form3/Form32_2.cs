@@ -94,37 +94,91 @@ namespace Models.Client_Model
             }
         }
 
-        private string _id = "";
+        //Id property
+        [Attributes.FormVisual("Идентификационный номер")]
         public string Id
         {
-            get { return _id; }
+            get
+            {
+                if (GetErrors(nameof(Id)) != null)
+                {
+                    return (string)_Id.Get();
+                }
+                else
+                {
+                    return _Id_Not_Valid;
+                }
+            }
             set
             {
-                _id = value;
-                OnPropertyChanged("Id");
+                _Id_Not_Valid = value;
+                if (GetErrors(nameof(Id)) != null)
+                {
+                    _Id.Set(_Id_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Id));
             }
         }
+        private IDataLoadEngine _Id;
+        private string _Id_Not_Valid = "";
+        //Id property
 
-        private int _creationYear = -1;
+        //CreationYear property
+        [Attributes.FormVisual("Год изготовления")]
         public int CreationYear
         {
-            get { return _creationYear; }
+            get
+            {
+                if (GetErrors(nameof(CreationYear)) != null)
+                {
+                    return (int)_CreationYear.Get();
+                }
+                else
+                {
+                    return _CreationYear_Not_Valid;
+                }
+            }
             set
             {
-                _creationYear = value;
-                OnPropertyChanged("CreationYear");
+                _CreationYear_Not_Valid = value;
+                if (GetErrors(nameof(CreationYear)) != null)
+                {
+                    _CreationYear.Set(_CreationYear_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CreationYear));
             }
         }
+        private IDataLoadEngine _CreationYear;
+        private int _CreationYear_Not_Valid = -1;
+        //CreationYear property
 
-        private double _depletedUraniumMass = -1;
+        //DepletedUraniumMass property
+        [Attributes.FormVisual("Масса обедненного урана")]
         public double DepletedUraniumMass
         {
-            get { return _depletedUraniumMass; }
+            get
+            {
+                if (GetErrors(nameof(DepletedUraniumMass)) != null)
+                {
+                    return (double)_DepletedUraniumMass.Get();
+                }
+                else
+                {
+                    return _DepletedUraniumMass_Not_Valid;
+                }
+            }
             set
             {
-                _depletedUraniumMass = value;
-                OnPropertyChanged("DepletedUraniumMass");
+                _DepletedUraniumMass_Not_Valid = value;
+                if (GetErrors(nameof(DepletedUraniumMass)) != null)
+                {
+                    _DepletedUraniumMass.Set(_DepletedUraniumMass_Not_Valid);
+                }
+                OnPropertyChanged(nameof(DepletedUraniumMass));
             }
         }
+        private IDataLoadEngine _DepletedUraniumMass;
+        private double _DepletedUraniumMass_Not_Valid = -1;
+        //DepletedUraniumMass property
     }
 }

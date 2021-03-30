@@ -117,42 +117,105 @@ namespace Models.Client_Model
             ClearErrors(nameof(ControlledAreaName));
         }
         //ControlledAreaName property
-
-        private string _supposedWasteSource = "";
+        
+        //SupposedWasteSource property
         [Attributes.FormVisual("Предполагаемый источник поступления радиоактивных веществ")]
         public string SupposedWasteSource
         {
-            get { return _supposedWasteSource; }
+            get
+            {
+                if (GetErrors(nameof(SupposedWasteSource)) != null)
+                {
+                    return (string)_SupposedWasteSource.Get();
+                }
+                else
+                {
+                    return _SupposedWasteSource_Not_Valid;
+                }
+            }
             set
             {
-                _supposedWasteSource = value;
-                OnPropertyChanged("SupposedWasteSource");
+                _SupposedWasteSource_Not_Valid = value;
+                if (GetErrors(nameof(SupposedWasteSource)) != null)
+                {
+                    _SupposedWasteSource.Set(_SupposedWasteSource_Not_Valid);
+                }
+                OnPropertyChanged(nameof(SupposedWasteSource));
             }
         }
+        private IDataLoadEngine _SupposedWasteSource;
+        private string _SupposedWasteSource_Not_Valid = "";
+        private void SupposedWasteSource_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(SupposedWasteSource));
+        }
+        //SupposedWasteSource property
 
-        private int _distanceToWasteSource = -1;
+        //DistanceToWasteSource property
         [Attributes.FormVisual("Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м")]
         public int DistanceToWasteSource
         {
-            get { return _distanceToWasteSource; }
+            get
+            {
+                if (GetErrors(nameof(DistanceToWasteSource)) != null)
+                {
+                    return (int)_DistanceToWasteSource.Get();
+                }
+                else
+                {
+                    return _DistanceToWasteSource_Not_Valid;
+                }
+            }
             set
             {
-                _distanceToWasteSource = value;
-                OnPropertyChanged("DistanceToWasteSource");
+                _DistanceToWasteSource_Not_Valid = value;
+                if (GetErrors(nameof(DistanceToWasteSource)) != null)
+                {
+                    _DistanceToWasteSource.Set(_DistanceToWasteSource_Not_Valid);
+                }
+                OnPropertyChanged(nameof(DistanceToWasteSource));
             }
         }
+        private IDataLoadEngine _DistanceToWasteSource;
+        private int _DistanceToWasteSource_Not_Valid = -1;
+        private void DistanceToWasteSource_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(DistanceToWasteSource));
+        }
+        //DistanceToWasteSource property
 
-        private int _testDepth = -1;
+        //TestDepth property
         [Attributes.FormVisual("Глубина отбора проб, м")]
         public int TestDepth
         {
-            get { return _testDepth; }
+            get
+            {
+                if (GetErrors(nameof(TestDepth)) != null)
+                {
+                    return (int)_TestDepth.Get();
+                }
+                else
+                {
+                    return _TestDepth_Not_Valid;
+                }
+            }
             set
             {
-                _testDepth = value;
-                OnPropertyChanged("TestDepth");
+                _TestDepth_Not_Valid = value;
+                if (GetErrors(nameof(TestDepth)) != null)
+                {
+                    _TestDepth.Set(_TestDepth_Not_Valid);
+                }
+                OnPropertyChanged(nameof(TestDepth));
             }
         }
+        private IDataLoadEngine _TestDepth;
+        private int _TestDepth_Not_Valid = -1;
+        private void TestDepth_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(TestDepth));
+        }
+        //TestDepth property
 
         private int _testDepthNote = -1;
         public int TestDepthNote
@@ -165,28 +228,70 @@ namespace Models.Client_Model
             }
         }
 
-        private string _radionuclidName = "";
-        [Attributes.FormVisual("Наименование радионуклида")]
+        //RadionuclidName property
+        [Attributes.FormVisual("Радионуклид")]
         public string RadionuclidName
         {
-            get { return _radionuclidName; }
+            get
+            {
+                if (GetErrors(nameof(RadionuclidName)) != null)
+                {
+                    return (string)_RadionuclidName.Get();
+                }
+                else
+                {
+                    return _RadionuclidName_Not_Valid;
+                }
+            }
             set
             {
-                _radionuclidName = value;
-                OnPropertyChanged("RadionuclidName");
+                _RadionuclidName_Not_Valid = value;
+                if (GetErrors(nameof(RadionuclidName)) != null)
+                {
+                    _RadionuclidName.Set(_RadionuclidName_Not_Valid);
+                }
+                OnPropertyChanged(nameof(RadionuclidName));
             }
         }
+        private IDataLoadEngine _RadionuclidName;//If change this change validation
+        private string _RadionuclidName_Not_Valid = "";
+        private void RadionuclidName_Validation()//TODO
+        {
+            ClearErrors(nameof(RadionuclidName));
+        }
+        //RadionuclidName property
 
-        private double _averageYearConcentration = -1;
+        //AverageYearConcentration property
         [Attributes.FormVisual("Среднегодовое содержание радионуклида, Бк/кг")]
         public double AverageYearConcentration
         {
-            get { return _averageYearConcentration; }
+            get
+            {
+                if (GetErrors(nameof(AverageYearConcentration)) != null)
+                {
+                    return (double)_AverageYearConcentration.Get();
+                }
+                else
+                {
+                    return _AverageYearConcentration_Not_Valid;
+                }
+            }
             set
             {
-                _averageYearConcentration = value;
-                OnPropertyChanged("AverageYearConcentration");
+                _AverageYearConcentration_Not_Valid = value;
+                if (GetErrors(nameof(AverageYearConcentration)) != null)
+                {
+                    _AverageYearConcentration.Set(_AverageYearConcentration_Not_Valid);
+                }
+                OnPropertyChanged(nameof(AverageYearConcentration));
             }
         }
+        private IDataLoadEngine _AverageYearConcentration;
+        private double _AverageYearConcentration_Not_Valid = -1;
+        private void AverageYearConcentration_Validation()//TODO
+        {
+            ClearErrors(nameof(AverageYearConcentration));
+        }
+        //AverageYearConcentration property
     }
 }

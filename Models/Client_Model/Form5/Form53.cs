@@ -45,45 +45,74 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(OperationCode));
         }
+        //OperationCode property
 
-        private int _typeOfAccountedParts = -1; //1 or 2
-
+        //TypeOfAccountedParts property
+        [Attributes.FormVisual("Тип учетных единиц")]
+        public int TypeOfAccountedParts
+        {
+            get
+            {
+                if (GetErrors(nameof(TypeOfAccountedParts)) != null)
+                {
+                    return (int)_TypeOfAccountedParts.Get();
+                }
+                else
+                {
+                    return _TypeOfAccountedParts_Not_Valid;
+                }
+            }
+            set
+            {
+                _TypeOfAccountedParts_Not_Valid = value;
+                if (GetErrors(nameof(TypeOfAccountedParts)) != null)
+                {
+                    _TypeOfAccountedParts.Set(_TypeOfAccountedParts_Not_Valid);
+                }
+                OnPropertyChanged(nameof(TypeOfAccountedParts));
+            }
+        }
+        private IDataLoadEngine _TypeOfAccountedParts; //1 or 2
+        private int _TypeOfAccountedParts_Not_Valid = -1; //1 or 2
         private void TypeOfAccountedParts_Validation(int value)//Ready
         {
             ClearErrors(nameof(TypeOfAccountedParts));
             if ((value != 1) && (value != 2))
                 AddError(nameof(TypeOfAccountedParts), "Недопустимое значение");
         }
+        //TypeOfAccountedParts property
 
-        [Attributes.FormVisual("Тип учетных единиц")]
-        public int TypeOfAccountedParts
-        {
-            get { return _typeOfAccountedParts; }
-            set
-            {
-                _typeOfAccountedParts = value;
-                TypeOfAccountedParts_Validation(value);
-                OnPropertyChanged("TypeOfAccountedParts");
-            }
-        }
-
-        private int _kindOri = -1;
-
-        private void KindOri_Validation(int value)//TODO
-        {
-        }
-
+        //KindOri property
         [Attributes.FormVisual("Вид ОРИ")]
         public int KindOri
         {
-            get { return _kindOri; }
+            get
+            {
+                if (GetErrors(nameof(KindOri)) != null)
+                {
+                    return (int)_KindOri.Get();
+                }
+                else
+                {
+                    return _KindOri_Not_Valid;
+                }
+            }
             set
             {
-                _kindOri = value;
-                KindOri_Validation(value);
-                OnPropertyChanged("KindOri");
+                _KindOri_Not_Valid = value;
+                if (GetErrors(nameof(KindOri)) != null)
+                {
+                    _KindOri.Set(_KindOri_Not_Valid);
+                }
+                OnPropertyChanged(nameof(KindOri));
             }
         }
+        private IDataLoadEngine _KindOri;
+        private int _KindOri_Not_Valid = -1;
+        private void KindOri_Validation(int value)//TODO
+        {
+        }
+        //KindOri property
 
         //AggregateState property
         [Attributes.FormVisual("Агрегатное состояние")]

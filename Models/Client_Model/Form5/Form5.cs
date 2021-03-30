@@ -10,17 +10,38 @@ namespace Models.Client_Model
         public abstract string FormNum { get; }
         public abstract int NumberOfFields { get; }
 
-        private int _numberInOrder = -1;
+        //NumberInOrder property
         [Attributes.FormVisual("№ п/п")]
         public int NumberInOrder
         {
-            get { return _numberInOrder; }
+            get
+            {
+                if (GetErrors(nameof(NumberInOrder)) != null)
+                {
+                    return (int)_NumberInOrder.Get();
+                }
+                else
+                {
+                    return _NumberInOrder_Not_Valid;
+                }
+            }
             set
             {
-                _numberInOrder = value;
-                OnPropertyChanged("NumberInOrder");
+                _NumberInOrder_Not_Valid = value;
+                if (GetErrors(nameof(NumberInOrder)) != null)
+                {
+                    _NumberInOrder.Set(_NumberInOrder_Not_Valid);
+                }
+                OnPropertyChanged(nameof(NumberInOrder));
             }
         }
+        private IDataLoadEngine _NumberInOrder;
+        private int _NumberInOrder_Not_Valid = -1;
+        private void NumberInOrder_Validation()
+        {
+            ClearErrors(nameof(NumberInOrder));
+        }
+        //NumberInOrder property
 
         //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]
