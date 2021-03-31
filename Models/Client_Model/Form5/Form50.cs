@@ -23,125 +23,323 @@ namespace Models.Client_Model
         }
         public int NumberOfFields { get; } = 11;
 
-        private Authority _authority1 = Authority.None;
+        //Authority1 property
+        [Attributes.FormVisual("ВИАЦ")]
         public Authority Authority1
         {
-            get { return _authority1; }
+            get
+            {
+                if (GetErrors(nameof(Authority1)) != null)
+                {
+                    return (Authority)_Authority1.Get();
+                }
+                else
+                {
+                    return _Authority1_Not_Valid;
+                }
+            }
             set
             {
-                _authority1 = value;
-                OnPropertyChanged("Authority1");
+                _Authority1_Not_Valid = value;
+                if (GetErrors(nameof(Authority1)) != null)
+                {
+                    _Authority1.Set(_Authority1_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Authority1));
             }
         }
+        private IDataLoadEngine _Authority1;
+        private Authority _Authority1_Not_Valid = Authority.None;
+        //Authority1 property
 
-        private int _year = -1;
+        //Year property
+        [Attributes.FormVisual("Год")]
         public int Year
         {
-            get { return _year; }
+            get
+            {
+                if (GetErrors(nameof(Year)) != null)
+                {
+                    return (int)_Year.Get();
+                }
+                else
+                {
+                    return _Year_Not_Valid;
+                }
+            }
             set
             {
-                _year = value;
-                OnPropertyChanged("Year");
+                _Year_Not_Valid = value;
+                if (GetErrors(nameof(Year)) != null)
+                {
+                    _Year.Set(_Year_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Year));
             }
         }
+        private IDataLoadEngine _Year;
+        private int _Year_Not_Valid = -1;
+        //Year property
 
-        private string _jurLico = "";
+        //JurLico property
+        [Attributes.FormVisual("Юр. лицо")]
         public string JurLico
         {
-            get { return _jurLico; }
+            get
+            {
+                if (GetErrors(nameof(JurLico)) != null)
+                {
+                    return (string)_JurLico.Get();
+                }
+                else
+                {
+                    return _JurLico_Not_Valid;
+                }
+            }
             set
             {
-                _jurLico = value;
-                OnPropertyChanged("JurLico");
+                _JurLico_Not_Valid = value;
+                if (GetErrors(nameof(JurLico)) != null)
+                {
+                    _JurLico.Set(_JurLico_Not_Valid);
+                }
+                OnPropertyChanged(nameof(JurLico));
             }
         }
+        private IDataLoadEngine _JurLico;
+        private string _JurLico_Not_Valid = "";
+        //JurLico property
 
-        private string _shortJurLico = "";
+        //ShortJurLico property
+        [Attributes.FormVisual("Краткое наименование юр. лица")]
         public string ShortJurLico
         {
-            get { return _shortJurLico; }
+            get
+            {
+                if (GetErrors(nameof(ShortJurLico)) != null)
+                {
+                    return (string)_ShortJurLico.Get();
+                }
+                else
+                {
+                    return _ShortJurLico_Not_Valid;
+                }
+            }
             set
             {
-                _shortJurLico = value;
-                OnPropertyChanged("ShortJurLico");
+                _ShortJurLico_Not_Valid = value;
+                if (GetErrors(nameof(ShortJurLico)) != null)
+                {
+                    _ShortJurLico.Set(_ShortJurLico_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ShortJurLico));
             }
         }
+        private IDataLoadEngine _ShortJurLico;
+        private string _ShortJurLico_Not_Valid = "";
+        //ShortJurLico property
 
-        private string _jurLicoAddress = "";
+        //JurLicoAddress property
+        [Attributes.FormVisual("Адрес юр. лица")]
         public string JurLicoAddress
         {
-            get { return _jurLicoAddress; }
+            get
+            {
+                if (GetErrors(nameof(JurLicoAddress)) != null)
+                {
+                    return (string)_JurLicoAddress.Get();
+                }
+                else
+                {
+                    return _JurLicoAddress_Not_Valid;
+                }
+            }
             set
             {
-                _jurLicoAddress = value;
-                OnPropertyChanged("JurLicoAddress");
+                _JurLicoAddress_Not_Valid = value;
+                if (GetErrors(nameof(JurLicoAddress)) != null)
+                {
+                    _JurLicoAddress.Set(_JurLicoAddress_Not_Valid);
+                }
+                OnPropertyChanged(nameof(JurLicoAddress));
             }
         }
+        private IDataLoadEngine _JurLicoAddress;
+        private string _JurLicoAddress_Not_Valid = "";
+        //JurLicoAddress property
 
-        private string _jurLicoFactAddress = "";
+        //JurLicoFactAddress property
+        [Attributes.FormVisual("Фактический адрес юр. лица")]
         public string JurLicoFactAddress
         {
-            get { return _jurLicoFactAddress; }
+            get
+            {
+                if (GetErrors(nameof(JurLicoFactAddress)) != null)
+                {
+                    return (string)_JurLicoFactAddress.Get();
+                }
+                else
+                {
+                    return _JurLicoFactAddress_Not_Valid;
+                }
+            }
             set
             {
-                _jurLicoFactAddress = value;
-                OnPropertyChanged("JurLicoFactAddress");
+                _JurLicoFactAddress_Not_Valid = value;
+                if (GetErrors(nameof(JurLicoFactAddress)) != null)
+                {
+                    _JurLicoFactAddress.Set(_JurLicoFactAddress_Not_Valid);
+                }
+                OnPropertyChanged(nameof(JurLicoFactAddress));
             }
         }
+        private IDataLoadEngine _JurLicoFactAddress;
+        private string _JurLicoFactAddress_Not_Valid = "";
+        //JurLicoFactAddress property
 
-        private string _gradeFIO = "";
+        //GradeFIO property
+        [Attributes.FormVisual("ФИО, должность")]
         public string GradeFIO
         {
-            get { return _gradeFIO; }
+            get
+            {
+                if (GetErrors(nameof(GradeFIO)) != null)
+                {
+                    return (string)_GradeFIO.Get();
+                }
+                else
+                {
+                    return _GradeFIO_Not_Valid;
+                }
+            }
             set
             {
-                _gradeFIO = value;
-                OnPropertyChanged("GradeFIO");
+                _GradeFIO_Not_Valid = value;
+                if (GetErrors(nameof(GradeFIO)) != null)
+                {
+                    _GradeFIO.Set(_GradeFIO_Not_Valid);
+                }
+                OnPropertyChanged(nameof(GradeFIO));
             }
         }
+        private IDataLoadEngine _GradeFIO;
+        private string _GradeFIO_Not_Valid = "";
+        //GradeFIO property
 
-        private string _gradeFIOresponsibleExecutor = "";
+        //GradeFIOresponsibleExecutor property
+        [Attributes.FormVisual("ФИО, должность ответственного исполнителя")]
         public string GradeFIOresponsibleExecutor
         {
-            get { return _gradeFIOresponsibleExecutor; }
+            get
+            {
+                if (GetErrors(nameof(GradeFIOresponsibleExecutor)) != null)
+                {
+                    return (string)_GradeFIOresponsibleExecutor.Get();
+                }
+                else
+                {
+                    return _GradeFIOresponsibleExecutor_Not_Valid;
+                }
+            }
             set
             {
-                _gradeFIOresponsibleExecutor = value;
-                OnPropertyChanged("GradeFIOresponsibleExecutor");
+                _GradeFIOresponsibleExecutor_Not_Valid = value;
+                if (GetErrors(nameof(GradeFIOresponsibleExecutor)) != null)
+                {
+                    _GradeFIOresponsibleExecutor.Set(_GradeFIOresponsibleExecutor_Not_Valid);
+                }
+                OnPropertyChanged(nameof(GradeFIOresponsibleExecutor));
             }
         }
+        private IDataLoadEngine _GradeFIOresponsibleExecutor;
+        private string _GradeFIOresponsibleExecutor_Not_Valid = "";
+        //GradeFIOresponsibleExecutor property
 
-        private string _telephone = "";
+        //Telephone property
+        [Attributes.FormVisual("Телефон")]
         public string Telephone
         {
-            get { return _telephone; }
+            get
+            {
+                if (GetErrors(nameof(Telephone)) != null)
+                {
+                    return (string)_Telephone.Get();
+                }
+                else
+                {
+                    return _Telephone_Not_Valid;
+                }
+            }
             set
             {
-                _telephone = value;
-                OnPropertyChanged("Telephone");
+                _Telephone_Not_Valid = value;
+                if (GetErrors(nameof(Telephone)) != null)
+                {
+                    _Telephone.Set(_Telephone_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Telephone));
             }
         }
+        private IDataLoadEngine _Telephone;
+        private string _Telephone_Not_Valid = "";
+        //Telephone property
 
-        private string _fax = "";
+        //Fax property
+        [Attributes.FormVisual("Факс")]
         public string Fax
         {
-            get { return _fax; }
+            get
+            {
+                if (GetErrors(nameof(Fax)) != null)
+                {
+                    return (string)_Fax.Get();
+                }
+                else
+                {
+                    return _Fax_Not_Valid;
+                }
+            }
             set
             {
-                _fax = value;
-                OnPropertyChanged("Fax");
+                _Fax_Not_Valid = value;
+                if (GetErrors(nameof(Fax)) != null)
+                {
+                    _Fax.Set(_Fax_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Fax));
             }
         }
+        private IDataLoadEngine _Fax;
+        private string _Fax_Not_Valid = "";
+        //Fax property
 
-        private string _email = "";
+        //Email property
+        [Attributes.FormVisual("Эл. почта")]
         public string Email
         {
-            get { return _email; }
+            get
+            {
+                if (GetErrors(nameof(Email)) != null)
+                {
+                    return (string)_Email.Get();
+                }
+                else
+                {
+                    return _Email_Not_Valid;
+                }
+            }
             set
             {
-                _email = value;
-                OnPropertyChanged("Email");
+                _Email_Not_Valid = value;
+                if (GetErrors(nameof(Email)) != null)
+                {
+                    _Email.Set(_Email_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Email));
             }
         }
+        private IDataLoadEngine _Email;
+        private string _Email_Not_Valid = "";
+        //Email property
     }
 }

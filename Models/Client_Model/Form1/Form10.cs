@@ -134,173 +134,439 @@ namespace Models.Client_Model
         private string _JurLico_Not_Valid = "";
         //JurLico property
 
-        private string _shortJurLico = "";
-
-        [Attributes.FormVisual("Краткое наименование")]
+        //ShortJurLico property
+        [Attributes.FormVisual("Краткое наименование юр. лица")]
         public string ShortJurLico
         {
-            get { return _shortJurLico; }
+            get
+            {
+                if (GetErrors(nameof(ShortJurLico)) != null)
+                {
+                    return (string)_ShortJurLico.Get();
+                }
+                else
+                {
+                    return _ShortJurLico_Not_Valid;
+                }
+            }
             set
             {
-                _shortJurLico = value;
-                OnPropertyChanged("ShortJurLico");
+                _ShortJurLico_Not_Valid = value;
+                if (GetErrors(nameof(ShortJurLico)) != null)
+                {
+                    _ShortJurLico.Set(_ShortJurLico_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ShortJurLico));
             }
         }
+        private IDataLoadEngine _ShortJurLico;
+        private string _ShortJurLico_Not_Valid = "";
+        //ShortJurLico property
 
-        private string _jurLicoAddress = "";
+        //JurLicoAddress property
+        [Attributes.FormVisual("Адрес юр. лица")]
         public string JurLicoAddress
         {
-            get { return _jurLicoAddress; }
+            get
+            {
+                if (GetErrors(nameof(JurLicoAddress)) != null)
+                {
+                    return (string)_JurLicoAddress.Get();
+                }
+                else
+                {
+                    return _JurLicoAddress_Not_Valid;
+                }
+            }
             set
             {
-                _jurLicoAddress = value;
-                OnPropertyChanged("JurLicoAddress");
+                _JurLicoAddress_Not_Valid = value;
+                if (GetErrors(nameof(JurLicoAddress)) != null)
+                {
+                    _JurLicoAddress.Set(_JurLicoAddress_Not_Valid);
+                }
+                OnPropertyChanged(nameof(JurLicoAddress));
             }
         }
+        private IDataLoadEngine _JurLicoAddress;
+        private string _JurLicoAddress_Not_Valid = "";
+        //JurLicoAddress property
 
-        private string _jurLicoFactAddress = "";
+        //JurLicoFactAddress property
+        [Attributes.FormVisual("Фактический адрес юр. лица")]
         public string JurLicoFactAddress
         {
-            get { return _jurLicoFactAddress; }
+            get
+            {
+                if (GetErrors(nameof(JurLicoFactAddress)) != null)
+                {
+                    return (string)_JurLicoFactAddress.Get();
+                }
+                else
+                {
+                    return _JurLicoFactAddress_Not_Valid;
+                }
+            }
             set
             {
-                _jurLicoFactAddress = value;
-                OnPropertyChanged("JurLicoFactAddress");
+                _JurLicoFactAddress_Not_Valid = value;
+                if (GetErrors(nameof(JurLicoFactAddress)) != null)
+                {
+                    _JurLicoFactAddress.Set(_JurLicoFactAddress_Not_Valid);
+                }
+                OnPropertyChanged(nameof(JurLicoFactAddress));
             }
         }
+        private IDataLoadEngine _JurLicoFactAddress;
+        private string _JurLicoFactAddress_Not_Valid = "";
+        //JurLicoFactAddress property
 
-        private string _gradeFIO = "";
+        //GradeFIO property
+        [Attributes.FormVisual("ФИО, должность")]
         public string GradeFIO
         {
-            get { return _gradeFIO; }
+            get
+            {
+                if (GetErrors(nameof(GradeFIO)) != null)
+                {
+                    return (string)_GradeFIO.Get();
+                }
+                else
+                {
+                    return _GradeFIO_Not_Valid;
+                }
+            }
             set
             {
-                _gradeFIO = value;
-                OnPropertyChanged("GradeFIO");
+                _GradeFIO_Not_Valid = value;
+                if (GetErrors(nameof(GradeFIO)) != null)
+                {
+                    _GradeFIO.Set(_GradeFIO_Not_Valid);
+                }
+                OnPropertyChanged(nameof(GradeFIO));
             }
         }
+        private IDataLoadEngine _GradeFIO;
+        private string _GradeFIO_Not_Valid = "";
+        //GradeFIO property
 
-        private string _telephone = "";
+        //Telephone property
+        [Attributes.FormVisual("Телефон")]
         public string Telephone
         {
-            get { return _telephone; }
+            get
+            {
+                if (GetErrors(nameof(Telephone)) != null)
+                {
+                    return (string)_Telephone.Get();
+                }
+                else
+                {
+                    return _Telephone_Not_Valid;
+                }
+            }
             set
             {
-                _telephone = value;
-                OnPropertyChanged("Telephone");
+                _Telephone_Not_Valid = value;
+                if (GetErrors(nameof(Telephone)) != null)
+                {
+                    _Telephone.Set(_Telephone_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Telephone));
             }
         }
+        private IDataLoadEngine _Telephone;
+        private string _Telephone_Not_Valid = "";
+        //Telephone property
 
-        private string _fax = "";
+        //Fax property
+        [Attributes.FormVisual("Факс")]
         public string Fax
         {
-            get { return _fax; }
+            get
+            {
+                if (GetErrors(nameof(Fax)) != null)
+                {
+                    return (string)_Fax.Get();
+                }
+                else
+                {
+                    return _Fax_Not_Valid;
+                }
+            }
             set
             {
-                _fax = value;
-                OnPropertyChanged("Fax");
+                _Fax_Not_Valid = value;
+                if (GetErrors(nameof(Fax)) != null)
+                {
+                    _Fax.Set(_Fax_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Fax));
             }
         }
+        private IDataLoadEngine _Fax;
+        private string _Fax_Not_Valid = "";
+        //Fax property
 
-        private string _email = "";
+        //Email property
+        [Attributes.FormVisual("Эл. почта")]
         public string Email
         {
-            get { return _email; }
+            get
+            {
+                if (GetErrors(nameof(Email)) != null)
+                {
+                    return (string)_Email.Get();
+                }
+                else
+                {
+                    return _Email_Not_Valid;
+                }
+            }
             set
             {
-                _email = value;
-                OnPropertyChanged("Email");
+                _Email_Not_Valid = value;
+                if (GetErrors(nameof(Email)) != null)
+                {
+                    _Email.Set(_Email_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Email));
             }
         }
+        private IDataLoadEngine _Email;
+        private string _Email_Not_Valid = "";
+        //Email property
 
-        private string _okpo = "";
-
+        //Okpo property
         [Attributes.FormVisual("ОКПО")]
         public string Okpo
         {
-            get { return _okpo; }
+            get
+            {
+                if (GetErrors(nameof(Okpo)) != null)
+                {
+                    return (string)_Okpo.Get();
+                }
+                else
+                {
+                    return _Okpo_Not_Valid;
+                }
+            }
             set
             {
-                _okpo = value;
-                OnPropertyChanged("Okpo");
+                _Okpo_Not_Valid = value;
+                if (GetErrors(nameof(Okpo)) != null)
+                {
+                    _Okpo.Set(_Okpo_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Okpo));
             }
         }
+        private IDataLoadEngine _Okpo;
+        private string _Okpo_Not_Valid = "";
+        //Okpo property
 
-        private string _okved = "";
+        //Okved property
+        [Attributes.FormVisual("ОКВЭД")]
         public string Okved
         {
-            get { return _okved; }
+            get
+            {
+                if (GetErrors(nameof(Okved)) != null)
+                {
+                    return (string)_Okved.Get();
+                }
+                else
+                {
+                    return _Okved_Not_Valid;
+                }
+            }
             set
             {
-                _okved = value;
-                OnPropertyChanged("Okved");
+                _Okved_Not_Valid = value;
+                if (GetErrors(nameof(Okved)) != null)
+                {
+                    _Okved.Set(_Okved_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Okved));
             }
         }
+        private IDataLoadEngine _Okved;
+        private string _Okved_Not_Valid = "";
+        //Okved property
 
-        private string _okogu = "";
+        //Okogu property
+        [Attributes.FormVisual("ОКОГУ")]
         public string Okogu
         {
-            get { return _okogu; }
+            get
+            {
+                if (GetErrors(nameof(Okogu)) != null)
+                {
+                    return (string)_Okogu.Get();
+                }
+                else
+                {
+                    return _Okogu_Not_Valid;
+                }
+            }
             set
             {
-                _okogu = value;
-                OnPropertyChanged("Okogu");
+                _Okogu_Not_Valid = value;
+                if (GetErrors(nameof(Okved)) != null)
+                {
+                    _Okogu.Set(_Okogu_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Okogu));
             }
         }
+        private IDataLoadEngine _Okogu;
+        private string _Okogu_Not_Valid = "";
+        //Okogu property
 
-        private string _oktmo = "";
+        //Oktmo property
+        [Attributes.FormVisual("ОКТМО")]
         public string Oktmo
         {
-            get { return _oktmo; }
+            get
+            {
+                if (GetErrors(nameof(Oktmo)) != null)
+                {
+                    return (string)_Oktmo.Get();
+                }
+                else
+                {
+                    return _Oktmo_Not_Valid;
+                }
+            }
             set
             {
-                _oktmo = value;
-                OnPropertyChanged("Oktmo");
+                _Oktmo_Not_Valid = value;
+                if (GetErrors(nameof(Oktmo)) != null)
+                {
+                    _Oktmo.Set(_Oktmo_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Oktmo));
             }
         }
+        private IDataLoadEngine _Oktmo;
+        private string _Oktmo_Not_Valid = "";
+        //Oktmo property
 
-        private string _inn = "";
+        //Inn property
+        [Attributes.FormVisual("ИНН")]
         public string Inn
         {
-            get { return _inn; }
+            get
+            {
+                if (GetErrors(nameof(Inn)) != null)
+                {
+                    return (string)_Inn.Get();
+                }
+                else
+                {
+                    return _Inn_Not_Valid;
+                }
+            }
             set
             {
-                _inn = value;
-                OnPropertyChanged("Inn");
+                _Inn_Not_Valid = value;
+                if (GetErrors(nameof(Inn)) != null)
+                {
+                    _Inn.Set(_Inn_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Inn));
             }
         }
+        private IDataLoadEngine _Inn;
+        private string _Inn_Not_Valid = "";
+        //Inn property
 
-        private string _kpp = "";
+        //Kpp property
+        [Attributes.FormVisual("КПП")]
         public string Kpp
         {
-            get { return _kpp; }
+            get
+            {
+                if (GetErrors(nameof(Kpp)) != null)
+                {
+                    return (string)_Kpp.Get();
+                }
+                else
+                {
+                    return _Kpp_Not_Valid;
+                }
+            }
             set
             {
-                _kpp = value;
-                OnPropertyChanged("Kpp");
+                _Kpp_Not_Valid = value;
+                if (GetErrors(nameof(Kpp)) != null)
+                {
+                    _Kpp.Set(_Kpp_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Kpp));
             }
         }
+        private IDataLoadEngine _Kpp;
+        private string _Kpp_Not_Valid = "";
+        //Kpp property
 
-        private string _okopf = "";
+        //Okopf property
+        [Attributes.FormVisual("ОКОПФ")]
         public string Okopf
         {
-            get { return _okopf; }
+            get
+            {
+                if (GetErrors(nameof(Okopf)) != null)
+                {
+                    return (string)_Okopf.Get();
+                }
+                else
+                {
+                    return _Okopf_Not_Valid;
+                }
+            }
             set
             {
-                _okopf = value;
-                OnPropertyChanged("Okopf");
+                _Okopf_Not_Valid = value;
+                if (GetErrors(nameof(Okopf)) != null)
+                {
+                    _Okopf.Set(_Okopf_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Okopf));
             }
         }
+        private IDataLoadEngine _Okopf;
+        private string _Okopf_Not_Valid = "";
+        //Okopf property
 
-        private string _okfs = "";
+        //Okfs property
+        [Attributes.FormVisual("ОКФС")]
         public string Okfs
         {
-            get { return _okfs; }
+            get
+            {
+                if (GetErrors(nameof(Okfs)) != null)
+                {
+                    return (string)_Okfs.Get();
+                }
+                else
+                {
+                    return _Okfs_Not_Valid;
+                }
+            }
             set
             {
-                _okfs = value;
-                OnPropertyChanged("Okfs");
+                _Okfs_Not_Valid = value;
+                if (GetErrors(nameof(Okfs)) != null)
+                {
+                    _Okfs.Set(_Okfs_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Okfs));
             }
         }
+        private IDataLoadEngine _Okfs;
+        private string _Okfs_Not_Valid = "";
+        //Okfs property
     }
 }
