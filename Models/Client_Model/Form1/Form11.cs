@@ -357,7 +357,7 @@ namespace Models.Client_Model
             }
         }
 
-        //Kategory property
+        //Category property
         [Attributes.FormVisual("Категория")]
         public short Сategory
         {
@@ -388,7 +388,7 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(Сategory));
         }
-        //Kategory property
+        //Category property
 
         //SignedServicePeriod property
         [Attributes.FormVisual("НСС, мес.")]

@@ -40,14 +40,14 @@ namespace Client_App.Short_Visual
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Form10,Models").
-                GetProperty("RegistrNumber").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                GetProperty("RegNo").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter= "10/RegistrNumber"
+                CommandParameter= "10/RegNo"
             };
             clm1.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
                     new TextBlock
                     {
-                        [!TextBlock.TextProperty] = new Binding("RegistrNumber"),
+                        [!TextBlock.TextProperty] = new Binding("RegNo"),
                     });
             grd.Columns.Add(clm1);
 
