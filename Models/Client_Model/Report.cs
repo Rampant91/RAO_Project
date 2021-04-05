@@ -257,7 +257,7 @@ namespace Models.Client_Model
 
         //StartPeriod
         [Attributes.FormVisual("Начало")]
-        public DateTime StartPeriod
+        public DateTimeOffset StartPeriod
         {
             get
             {
@@ -280,8 +280,8 @@ namespace Models.Client_Model
                 OnPropertyChanged(nameof(StartPeriod));
             }
         }
-        private DateTime _StartPeriod = DateTime.MinValue;
-        private DateTime _StartPeriod_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _StartPeriod = DateTimeOffset.Now;
+        private DateTimeOffset _StartPeriod_Not_Valid = DateTimeOffset.Now;
         private bool StartPeriod_Validation()
         {
             ClearErrors(nameof(StartPeriod));
@@ -333,10 +333,10 @@ namespace Models.Client_Model
         private bool EndPeriod_Validation()
         {
             ClearErrors(nameof(EndPeriod));
-            if (_EndPeriod_Not_Valid.Equals(DateTime.MinValue))
+            if (_EndPeriod_Not_Valid.Equals(DateTimeOffset.MinValue))
                 AddError(nameof(EndPeriod), "Не заполнено начало периода");
             else
-                if (!EndPeriod.Equals(DateTime.MinValue))
+                if (!EndPeriod.Equals(DateTimeOffset.MinValue))
                 if (_StartPeriod_Not_Valid.CompareTo(_EndPeriod_Not_Valid) > 0)
                     AddError(nameof(EndPeriod), "Начало периода не может быть позже его конца");
 

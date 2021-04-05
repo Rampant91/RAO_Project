@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using FirebirdSql.Data.FirebirdClient;
+using System.IO;
 
 namespace Models.Client_Model
 {
     public interface IDataLoadEngine
     {
-        object Get(int ID);
-        void Set(int ID,object arg);
+        object Get();
+        void Set(object arg);
     }
     public class File:IDataLoadEngine
     {
@@ -22,11 +23,11 @@ namespace Models.Client_Model
         }
 
         public object value = null;
-        public object Get(int ID)
+        public object Get()
         {
             return value;
         }
-        public void Set(int ID,object arg)
+        public void Set(object arg)
         {
             value = arg;
         }
@@ -36,13 +37,19 @@ namespace Models.Client_Model
     {
         public string PropName { get; set; }
         public string FormName { get; set; }
-        public FbConnection connection = new FbConnection(@"Server=localhost;User=SYSDBA;Password=masterkey;Database=C:\Databases\Rao_Local.FDB");
-        public SQLite(string propName,string formName)
+        public int ID { get; set; }
+        public FbConnection connection = new FbConnection(@"Server=localhost;User=SYSDBA;Password=masterkey;Database=C:\Databases\Rao_Local.raodb");
+        public SQLite(string propName,string formName,int ID)
         {
             PropName = propName;
             FormName = formName;
+            this.ID = ID;
+            if(!System.IO.File.Exists(@"C:\Databases\Rao_Local.raodb"))
+            {
+                System.IO.File.Create(@"C:\Databases\Rao_Local.raodb");
+            }
         }
-        public object Get(int ID)
+        public object Get()
         {
             object obj = null;
             connection.Open();
@@ -65,10 +72,10 @@ namespace Models.Client_Model
             connection.Close();
             return obj;
         }
-        public void Set(int ID,object arg)
+        public void Set(object arg)
         {
             connection.Open();
-            var obj = Get(ID);
+            var obj = Get();
             if (obj != null)
             {
                 using (var transaction = connection.BeginTransaction())

@@ -7,16 +7,40 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.1: Сведения о ЗРИ")]
     public class Form11 : Form1
     {
-        public Form11() : base()
+        public Form11(bool isSQL) : base()
         {
-            _Activity = new File();
-            _CreationDate = new File();
-            _CreatorOKPO = new File();
-            _FactoryNumber = new File();
+            if(isSQL)
+            {
+                _Activity = new SQLite("Activity",FormNum,0);
+                _CreationDate = new SQLite("CreationDate", FormNum, 0);
+                _CreatorOKPO = new SQLite("CreatorOKPO", FormNum, 0);
+                _FactoryNumber = new SQLite("FactoryNumber", FormNum, 0);
+            }
+            else
+            {
+                _Activity = new File();
+                _CreationDate = new File();
+                _CreatorOKPO = new File();
+                _FactoryNumber = new File();
+            }
         }
-        public Form11(string[] values) : base()
+        public Form11(bool isSQL,string[] values) : base(values)
         {
-            _Activity = new File();
+            if (isSQL)
+            {
+                _Activity = new SQLite("Activity", FormNum, 0);
+                _CreationDate = new SQLite("CreationDate", FormNum, 0);
+                _CreatorOKPO = new SQLite("CreatorOKPO", FormNum, 0);
+                _FactoryNumber = new SQLite("FactoryNumber", FormNum, 0);
+            }
+            else
+            {
+                _Activity = new File();
+                _CreationDate = new File();
+                _CreatorOKPO = new File();
+                _FactoryNumber = new File();
+            }
+
         }
 
         [Attributes.FormVisual("Форма")]

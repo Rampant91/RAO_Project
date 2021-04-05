@@ -12,13 +12,14 @@ namespace Client_App.PasteRealization
         public List<Form> Convert(string Data,string Form)
         {
             List<Form> lst = new List<Form>();
-            var form = FormCreator.Create(Form);
+            var form = FormCreator.Create(true,Form);
 
             List<string[]> slst = new List<string[]>();
-            string[] mas = new string[form.NumberOfFields];
+            string[] mas = new string[form.NumberOfFields+1];
+            mas[0] = Form;
 
             int Row = 0;
-            int Column = 0;
+            int Column = 1;
 
             string rt = "";
 
@@ -30,7 +31,8 @@ namespace Client_App.PasteRealization
                     slst.Add(mas);
                     Row++;
                     Column = 0;
-                    mas=new string[form.NumberOfFields];
+                    mas=new string[form.NumberOfFields+1];
+                    mas[0] = Form;
                     rt = "";
                 }
                 else
@@ -53,7 +55,7 @@ namespace Client_App.PasteRealization
 
             foreach(var item in slst)
             {
-                Form frm = FormCreator.Create(Form,item);
+                Form frm = FormCreator.Create(true,item);
                 lst.Add(form);
             }
 

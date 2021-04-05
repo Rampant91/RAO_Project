@@ -169,7 +169,7 @@ namespace Client_App.ViewModels
 
         void _AddRow()
         {
-            Storage.Rows.Add(Models.Client_Model.FormCreator.Create(FormType));
+            Storage.Rows.Add(Models.Client_Model.FormCreator.Create(false,FormType));
         }
 
         void _DeleteRow(Form param)
