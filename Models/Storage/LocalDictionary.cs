@@ -159,124 +159,124 @@ namespace Models.Storage
 
         void Init_1()
         {
-            LocalStorage str = new LocalStorage();
+            LocalStorage str = new LocalStorage("10");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("10", str);
-            str = new LocalStorage();
+            str = new LocalStorage("11");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("11", str);
-            str = new LocalStorage();
+            str = new LocalStorage("12");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("12", str);
-            str = new LocalStorage();
+            str = new LocalStorage("13");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("13", str);
-            str = new LocalStorage();
+            str = new LocalStorage("14");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("14", str);
-            str = new LocalStorage();
+            str = new LocalStorage("15");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("15", str);
-            str = new LocalStorage();
+            str = new LocalStorage("16");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("16", str);
-            str = new LocalStorage();
+            str = new LocalStorage("17");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("17", str);
-            str = new LocalStorage();
+            str = new LocalStorage("18");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("18", str);
-            str = new LocalStorage();
+            str = new LocalStorage("19");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("19", str);
         }
         void Init_2()
         {
-            LocalStorage str = new LocalStorage();
+            LocalStorage str = new LocalStorage("20");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("20", str);
-            str = new LocalStorage();
+            str = new LocalStorage("21");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("21", str);
-            str = new LocalStorage();
+            str = new LocalStorage("22");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("22", str);
-            str = new LocalStorage();
+            str = new LocalStorage("23");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("23", str);
-            str = new LocalStorage();
+            str = new LocalStorage("24");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("24", str);
-            str = new LocalStorage();
+            str = new LocalStorage("25");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("25", str);
-            str = new LocalStorage();
+            str = new LocalStorage("26");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("26", str);
-            str = new LocalStorage();
+            str = new LocalStorage("27");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("27", str);
-            str = new LocalStorage();
+            str = new LocalStorage("28");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("28", str);
-            str = new LocalStorage();
+            str = new LocalStorage("29");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("29", str);
-            str = new LocalStorage();
+            str = new LocalStorage("210");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("210", str);
-            str = new LocalStorage();
+            str = new LocalStorage("211");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("211", str);
-            str = new LocalStorage();
+            str = new LocalStorage("212");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("212", str);
         }
         void Init_3()
         {
-            LocalStorage str = new LocalStorage();
+            LocalStorage str = new LocalStorage("30");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("30", str);
-            str = new LocalStorage();
+            str = new LocalStorage("31");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("31", str);
-            str = new LocalStorage();
+            str = new LocalStorage("32");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("32", str);
         }
         void Init_4()
         {
-            LocalStorage str = new LocalStorage();
+            LocalStorage str = new LocalStorage("40");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("40", str);
-            str = new LocalStorage();
+            str = new LocalStorage("41");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("41", str);
         }
         void Init_5()
         {
-            LocalStorage str = new LocalStorage();
+            LocalStorage str = new LocalStorage("50");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("50", str);
-            str = new LocalStorage();
+            str = new LocalStorage("51");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("51", str);
-            str = new LocalStorage();
+            str = new LocalStorage("52");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("52", str);
-            str = new LocalStorage();
+            str = new LocalStorage("53");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("53", str);
-            str = new LocalStorage();
+            str = new LocalStorage("54");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("54", str);
-            str = new LocalStorage();
+            str = new LocalStorage("55");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("55", str);
-            str = new LocalStorage();
+            str = new LocalStorage("56");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("56", str);
-            str = new LocalStorage();
+            str = new LocalStorage("57");
             str.Storage.CollectionChanged += FormsChanged;
             Forms.Add("57", str);
         }

@@ -10,10 +10,20 @@ namespace Models.Client_Model
 {
     public class Report : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-        public Report()
+        int ID { get; set; }
+        public Report(bool isSQL)
         {
+            if (isSQL)
+            {
+
+            }
+            else
+            {
+
+            }
+
             _Filters = new Storage.Filter.Filter<Form>();
-            _Filters.Filter_List.CollectionChanged+= RowsChanged;
+            _Filters.Filter_List.CollectionChanged += RowsChanged;
             _Filters.PropertyChanged += RowsChanged;
             _Rows.CollectionChanged += RowsChanged;
         }

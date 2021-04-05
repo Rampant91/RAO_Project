@@ -97,9 +97,14 @@ namespace Models.Storage
         /// <summary>
         /// Конструктор
         /// </summary>
-        public LocalStorage()
+        public LocalStorage(string param)
         {
+            var t = SQLFormCreation.GetReportIDS(param);
             _Storage = new Report_Observable();
+            foreach (var item in t)
+            {
+                _Storage.Add(new Client_Model.Report(item));
+            }
             _Filters = new Filter.Filter<Client_Model.Report>();
             Storage.CollectionChanged += StorageChanged;
         }
