@@ -108,7 +108,7 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<string, Unit> AddSort { get; }
         public ReactiveCommand<Unit, Unit> AddRow { get; }
-        public ReactiveCommand<Form, Unit> DeleteRow { get; }
+        public ReactiveCommand<IList, Unit> DeleteRow { get; }
 
         public ReactiveCommand<Unit, Unit> PasteRows { get; }
 
@@ -116,7 +116,7 @@ namespace Client_App.ViewModels
         {
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow= ReactiveCommand.Create(_AddRow);
-            DeleteRow = ReactiveCommand.Create<Form>(_DeleteRow);
+            DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             PasteRows = ReactiveCommand.CreateFromTask(_PasteRows);
 
@@ -149,15 +149,31 @@ namespace Client_App.ViewModels
         public void SaveReport()
         {
             SavingStorage = Storage;
-            Forms.Forms[FormType].Storage.Add(_SavingStorage);
-
-            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (!Forms.Forms[FormType].Storage.Contains(_SavingStorage))
             {
-                foreach(var item in desktop.Windows)
+                Forms.Forms[FormType].Storage.Add(_SavingStorage);
+
+                if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
-                    if (item is Views.FormChangeOrCreate)
+                    foreach (var item in desktop.Windows)
                     {
-                        item.Close();
+                        if (item is Views.FormChangeOrCreate)
+                        {
+                            item.Close();
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    foreach (var item in desktop.Windows)
+                    {
+                        if (item is Views.FormChangeOrCreate)
+                        {
+                            item.Close();
+                        }
                     }
                 }
             }
@@ -172,9 +188,17 @@ namespace Client_App.ViewModels
             Storage.Rows.Add(Models.Client_Model.FormCreator.Create(false,FormType));
         }
 
-        void _DeleteRow(Form param)
+        void _DeleteRow(IList param)
         {
-            Storage.Rows.Remove(param);
+            List<Form> lst = new List<Form>();
+            foreach (var item in param)
+            {
+                lst.Add((Form)item);
+            }
+            foreach (var item in lst)
+            {
+                Storage.Rows.Remove((Form)item);
+            }
         }
 
         void _AddSort(string param)

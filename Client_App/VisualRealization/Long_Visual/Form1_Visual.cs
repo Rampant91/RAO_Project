@@ -161,9 +161,9 @@ namespace Client_App.Long_Visual
             });
             itms.Add(new MenuItem
             {
-                Header = "Удалить строку",
+                Header = "Удалить строки",
                 [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
-                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
             }) ;
             cntx.Items = itms;
 

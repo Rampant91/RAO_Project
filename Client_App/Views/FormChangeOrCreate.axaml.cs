@@ -15,24 +15,23 @@ namespace Client_App.Views
         {
             this.DataContext = new ViewModels.ChangeOrCreateVM();
 
-            ((ViewModels.ChangeOrCreateVM)this.DataContext).FormType = param;
-            _param = param;
-
             if (_Storage != null)
             {
+                _param = _Storage.FormNum;
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage = _Storage;
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = _Storage;
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).Forms = dict;
             }
             else
             {
+                _param = param;
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage = new Report();
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage.FormNum = param;
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage.FormNum = _param;
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = new Report();
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage.FormNum = param;
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage.FormNum = _param;
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).Forms = dict;
             }
-            _param = param;
+            ((ViewModels.ChangeOrCreateVM)this.DataContext).FormType = _param;
 
             InitializeComponent();
 #if DEBUG
@@ -51,6 +50,8 @@ namespace Client_App.Views
 
         void Form1Init(in Panel panel)
         {
+            if (_param == "10")
+                panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual());
             if (_param == "11")
                 panel.Children.Add(Long_Visual.Form1_Visual.Form11_Visual());
             if (_param == "12")

@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Linq;
-using Models;
+using System.Collections;
+using System.Collections.ObjectModel;
+
 
 namespace Models.Storage.Filter
 {
@@ -9,12 +14,12 @@ namespace Models.Storage.Filter
     ///  Хранилище для фильтра
     /// </summary>
     ///<typeparam name="T">Тип Form**</typeparam>
-    public class Filter<T>
+    public class Filter<T>:INotifyPropertyChanged
     {
         /// <summary>
         ///  Список фильтров
         /// </summary>
-        public List<Filter_Item<T>> Filter_List { get; set; }
+        public ObservableCollection<Filter_Item<T>> Filter_List { get; set; }
 
         bool CheckObject(T obj)
         {
@@ -79,12 +84,36 @@ namespace Models.Storage.Filter
         /// <summary>
         ///  Имя поля по которому сортируется
         /// </summary>
-        public string SortPath { get; set; }
+        string _SortPath = "";
+        public string SortPath 
+        {
+            get
+            {
+                return _SortPath;
+            }
+            set
+            {
+                if (_SortPath != value)
+                {
+                    _SortPath = value;
+                    OnPropertyChanged(nameof(SortPath));
+                }
+            }
+        }
 
         public Filter()
         {
-            Filter_List = new List<Filter_Item<T>>();
+            Filter_List = new ObservableCollection<Filter_Item<T>>();
             SortPath = "";
         }
+
+        //Property Changed
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        //Property Changed
     }
 }

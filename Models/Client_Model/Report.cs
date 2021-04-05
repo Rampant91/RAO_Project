@@ -13,6 +13,8 @@ namespace Models.Client_Model
         public Report()
         {
             _Filters = new Storage.Filter.Filter<Form>();
+            _Filters.Filter_List.CollectionChanged+= RowsChanged;
+            _Filters.PropertyChanged += RowsChanged;
             _Rows.CollectionChanged += RowsChanged;
         }
 

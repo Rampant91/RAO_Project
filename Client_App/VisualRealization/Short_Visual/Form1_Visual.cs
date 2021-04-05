@@ -44,6 +44,12 @@ namespace Client_App.Short_Visual
             });
             itms.Add(new MenuItem
             {
+                Header = "Изменить форму",
+                [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
+                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+            });
+            itms.Add(new MenuItem
+            {
                 Header = "Удалить форму",
                 [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
                 [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
@@ -117,6 +123,12 @@ namespace Client_App.Short_Visual
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();
+            itms.Add(new MenuItem
+            {
+                Header = "Изменить форму",
+                [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
+                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+            });
             itms.Add(new MenuItem
             {
                 Header = "Удалить форму",
