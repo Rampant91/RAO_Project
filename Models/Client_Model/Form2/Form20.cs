@@ -10,11 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.0: Титульный лист годового отчета организации")]
     public class Form20 : Form
     {
+        public Form20() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "20"; } }
+        public override int NumberOfFields { get; } = 19;
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 19;
 
         //RegNo property
         [Attributes.FormVisual("Рег. №")]

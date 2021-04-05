@@ -10,12 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе")]
     public class Form24: Form2
     {
-        public override string FormNum { get { return "2.4"; } }
+        public Form24() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "24"; } }
+        public override int NumberOfFields { get; } = 26;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 26;
 
         //CodeOYAT property
         [Attributes.FormVisual("Код ОЯТ")]

@@ -7,13 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
     public class Form21: Form2
     {
-        public override string FormNum { get { return "2.1"; } }
+        public Form21() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "21"; } }
+        public override int NumberOfFields { get; } = 19;
         public override void Object_Validation()
         {
 
         }
-
-        public override int NumberOfFields { get; } = 22;
 
         //RefineMachineName property
         [Attributes.FormVisual("Наименование установки переработки")]

@@ -10,11 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 4.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form40 : Form
     {
+        public Form40() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "40"; } }
+        public override int NumberOfFields { get; } = 18;
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 18;
 
         //SubjectRF property
         [Attributes.FormVisual("Субъект РФ")]

@@ -7,12 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.4: Сведения об ОРИ, кроме отдельных изделий")]
     public class Form14: Form1
     {
+        public Form14() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
         public override string FormNum { get { return "14"; } }
+        public override int NumberOfFields { get; } = 32;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 32;
 
         //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]

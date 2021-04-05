@@ -10,12 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.9: Активность радионуклидов, отведенных со сточными водами")]
     public class Form29 : Form2
     {
-        public override string FormNum { get { return "2.9"; } }
+        public Form29() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "29"; } }
+        public override int NumberOfFields { get; } = 8;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 8;
 
         //WasteSourceName property
         [Attributes.FormVisual("Наименование, номер выпуска сточных вод")]

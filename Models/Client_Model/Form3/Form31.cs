@@ -10,12 +10,18 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 3.1: Отчет о намерении экспортировать радиоактивные источники 1 и 2 категории")]
     public class Form31 : Form3
     {
-        public override string FormNum { get { return "3.1"; } }
+        public Form31() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "31"; } }
+        public override int NumberOfFields { get; } = 19;
+
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 19;
 
         //RecieverName property
         [Attributes.FormVisual("Получатель")]

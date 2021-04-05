@@ -10,12 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.5: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций и переводе в РАО изделий из обедненного урана")]
     public class Form55 : Form5
     {
-        public override string FormNum { get { return "5.5"; } }
+        public Form55() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "55"; } }
+        public override int NumberOfFields { get; } = 8;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 8;
 
         //Name property
         [Attributes.FormVisual("Наименование")]

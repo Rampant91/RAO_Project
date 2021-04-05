@@ -7,12 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.6: Сведения о некондиционированных РАО")]
     public class Form16 : Form1
     {
-        public override string FormNum { get { return "1.6"; } }
+        public Form16() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "16"; } }
+        public override int NumberOfFields { get; } = 32;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 32;
 
         //CodeRAO property
         [Attributes.FormVisual("Код РАО")]

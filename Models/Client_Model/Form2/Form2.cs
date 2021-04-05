@@ -7,8 +7,8 @@ namespace Models.Client_Model
     public abstract class Form2:Form
     {
         [Attributes.FormVisual("Форма")]
-        public abstract string FormNum { get; }
-        public abstract int NumberOfFields { get; }
+        public override string FormNum { get; } = "2";
+        public override abstract int NumberOfFields { get; }
 
         //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]

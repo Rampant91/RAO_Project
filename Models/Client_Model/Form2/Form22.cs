@@ -7,12 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения")]
     public class Form22 : Form2
     {
-        public override string FormNum { get { return "2.2"; } }
+        public Form22() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "22"; } }
+        public override int NumberOfFields { get; } = 25;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 25;
 
         //StoragePlaceName property
         [Attributes.FormVisual("Наименование ПХ")]

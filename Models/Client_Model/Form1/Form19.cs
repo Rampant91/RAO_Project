@@ -7,12 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
     public class Form19: Form1
     {
-        public override string FormNum { get { return "1.9"; } }
+        public Form19() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "19"; } }
+        public override int NumberOfFields { get; } = 11;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 11;
 
         //CodeTypeAccObject property
         [Attributes.FormVisual("Код типа объектов учета")]

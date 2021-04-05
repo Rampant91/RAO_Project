@@ -10,12 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("")]
     public class Form32_1: Form3
     {
-        public override string FormNum { get { return "3.2_1"; } }
+        public Form32_1() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "32_1"; } }
+        public override int NumberOfFields { get; } = 15;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 15;
 
         //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]

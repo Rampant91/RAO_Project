@@ -10,12 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 4.1: Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне")]
     public class Form41 : Form4
     {
-        public override string FormNum { get { return "4.1"; } }
+        public Form41() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "41"; } }
+        public override int NumberOfFields { get; } = 9;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 9;
 
         //NumberInOrder property
         [Attributes.FormVisual("№ п/п")]

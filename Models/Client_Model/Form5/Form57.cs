@@ -10,12 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.7: Перечень подведомственных организаций ведомственного информационно-аналитического центра федерального органа исполнительной власти")]
     public class Form57: Form5
     {
-        public override string FormNum { get { return "5.7"; } }
+        public Form57() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "57"; } }
+        public override int NumberOfFields { get; } = 9;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 9;
 
         //RegNo property
         [Attributes.FormVisual("Регистрационный номер")]

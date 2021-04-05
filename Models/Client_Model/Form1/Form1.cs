@@ -6,6 +6,10 @@ namespace Models.Client_Model
 {
     public abstract class Form1:Form
     {
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get; } = "1";
+        public override abstract int NumberOfFields { get; }
+
         public Form1() : base()
         {
             _CorrectionNumber = new File();
@@ -15,10 +19,19 @@ namespace Models.Client_Model
             _NumberInOrder = new File();
             _OperationCode = new File();
             _OperationDate = new File();
+            _documentNumberRecoded = new File();
         }
-
-        [Attributes.FormVisual("Форма")]
-        public abstract string FormNum { get;}
+        public Form1(string[] values) : base()
+        {
+            _CorrectionNumber = new File();
+            _DocumentDate = new File();
+            _DocumentNumber = new File();
+            _DocumentVid = new File();
+            _NumberInOrder = new File();
+            _OperationCode = new File();
+            _OperationDate = new File();
+            _documentNumberRecoded = new File();
+        }
 
         //NumberInOrder property
         [Attributes.FormVisual("№ п/п")]
@@ -218,13 +231,16 @@ namespace Models.Client_Model
         }
         //DocumentNumber property
 
-        private string _documentNumberRecoded = "";
+        private IDataLoadEngine _documentNumberRecoded;
         public string DocumentNumberRecoded
         {
-            get { return _documentNumberRecoded; }
+            get 
+            { 
+                return (string)_documentNumberRecoded.Get(); 
+            }
             set
             {
-                _documentNumberRecoded = value;
+                _documentNumberRecoded.Set(value);
                 OnPropertyChanged("DocumentNumberRecoded");
             }
         }

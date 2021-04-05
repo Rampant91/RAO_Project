@@ -6,13 +6,18 @@ namespace Models.Client_Model
     [Serializable]
     [Attributes.FormVisual_Class("Форма 1.8: Сведения о жидких кондиционированных РАО")]
     public class Form18: Form1
-    {        
-        public override string FormNum { get { return "1.9"; } }
+    {
+        public Form18() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "18"; } }
+        public override int NumberOfFields { get; } = 36;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 36;
 
         //IndividualNumberZHRO property
         [Attributes.FormVisual("Индивидуальный номер ЖРО")]

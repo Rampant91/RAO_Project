@@ -56,12 +56,12 @@ namespace Models.Client_Model
         }
 
         //Сделать
-        public static Form Create(string param,string[] values)
+        public static Form Create(string[] values)
         {
-            switch (param)
+            switch (values[0])
             {
                 case "10": return new Form10();
-                case "11": return new Form11();
+                case "11": return new Form11(values);
                 case "12": return new Form12();
                 case "13": return new Form13();
                 case "14": return new Form14();

@@ -10,6 +10,13 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form50 : Form
     {
+        public Form50() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "50"; } }
+        public override int NumberOfFields { get; } = 11;
         public override void Object_Validation()
         {
 
@@ -21,7 +28,6 @@ namespace Models.Client_Model
             DepartmentOfDefense,
             None
         }
-        public int NumberOfFields { get; } = 11;
 
         //Authority1 property
         [Attributes.FormVisual("ВИАЦ")]

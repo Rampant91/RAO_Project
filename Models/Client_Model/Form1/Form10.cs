@@ -10,13 +10,18 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.0: Титульный лист оперативного отчета организации")]
     public class Form10:Form
     {
-        public override void Object_Validation()
+        public Form10() : base()
         {
 
         }
 
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "10"; } }
+        public override int NumberOfFields { get; } = 19;
+        public override void Object_Validation()
+        {
 
-        public int NumberOfFields { get; } = 19;
+        }
 
         //RegNo property
         [Attributes.FormVisual("Рег. №")]

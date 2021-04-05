@@ -10,12 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]
     public class Form26 : Form2
     {
-        public override string FormNum { get { return "2.6"; } }
+        public Form26() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "26"; } }
+        public override int NumberOfFields { get; } = 11;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 11;
 
         //SourcesQuantity property
         [Attributes.FormVisual("Количество источников, шт.")]

@@ -10,6 +10,7 @@ namespace Models.Client_Model
 {
     public abstract class Form:INotifyPropertyChanged,INotifyDataErrorInfo
     {
+        public abstract string FormNum { get; }
         public abstract int NumberOfFields { get; }
 
         //Для валидации

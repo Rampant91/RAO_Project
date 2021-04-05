@@ -7,12 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.5: Наличие РВ, содержащихся в отработавшем ядерном топливе, в пунктах хранения")]
     public class Form25: Form2
     {
-        public override string FormNum { get { return "2.5"; } }
+        public Form25() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "25"; } }
+        public override int NumberOfFields { get; } = 12;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 12;
 
         //StoragePlaceName property
         [Attributes.FormVisual("Наименование ПХ")]

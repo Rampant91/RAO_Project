@@ -10,13 +10,22 @@ namespace Models.Client_Model
         public Form11() : base()
         {
             _Activity = new File();
+            _CreationDate = new File();
+            _CreatorOKPO = new File();
+            _FactoryNumber = new File();
         }
+        public Form11(string[] values) : base()
+        {
+            _Activity = new File();
+        }
+
+        [Attributes.FormVisual("Форма")]
         public override string FormNum { get { return "11"; } }
+        public override int NumberOfFields { get; } = 37;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 37;
 
         //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]

@@ -8,12 +8,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 3.2: Отчет об отправке радиоактивных источников 1 и 2 категории")]
     public class Form32 : Form3
     {
-        public override string FormNum { get { return "3.2"; } }
+        public Form32() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "32"; } }
+        public override int NumberOfFields { get; } = 17;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 17;
 
         //UniqueAgreementId property
         [Attributes.FormVisual("Уникльный номер соглашения")]

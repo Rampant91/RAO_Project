@@ -10,12 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.10: Территории, загрязненные радионуклидами")]
     public class Form210 : Form2
     {
-        public override string FormNum { get { return "2.10"; } }
+        public Form210() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "210"; } }
+        public override int NumberOfFields { get; } = 12;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 12;
 
         //IndicatorName property
         [Attributes.FormVisual("Наименование показателя")]

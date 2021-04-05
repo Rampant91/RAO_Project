@@ -7,12 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.7: Сведения о твердых кондиционированных РАО")]
     public class Form17: Form1
     {
-        public override string FormNum { get { return "1.7"; } }
+        public Form17() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "17"; } }
+        public override int NumberOfFields { get; } = 41;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 41;
 
         //PackName property
         [Attributes.FormVisual("Наименование упаковки")]

@@ -8,12 +8,17 @@ namespace Models.Client_Model
     public class Form212 : Form2
 
     {
-        public override string FormNum { get { return "2.12"; } }
+        public Form212() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "212"; } }
+        public override int NumberOfFields { get; } = 8;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 8;
 
         //OperationCode property
         [Attributes.FormVisual("Код")]

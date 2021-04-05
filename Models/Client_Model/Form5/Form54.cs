@@ -7,12 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.4: Сведения о наличии в подведомственных организациях ОРИ")]
     public class Form54 : Form5
     {
-        public override string FormNum { get { return "5.4"; } }
+        public Form54() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "54"; } }
+        public override int NumberOfFields { get; } = 10;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 10;
 
         //TypeOfAccountedParts property
         [Attributes.FormVisual("Тип учетных единиц")]

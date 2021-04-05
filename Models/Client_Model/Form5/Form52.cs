@@ -7,12 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.2: Сведения о наличии ЗРИ в подведомственных организациях")]
     public class Form52 : Form5
     {
-        public override string FormNum { get { return "5.1"; } }
+        public Form52() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "52"; } }
+        public override int NumberOfFields { get; } = 6;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 6;
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]

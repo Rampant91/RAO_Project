@@ -6,13 +6,18 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.2: Сведения об изделиях из обедненного урана")]
     public class Form12: Form1
     {
+        public Form12() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
         public override string FormNum { get { return "12"; } }
+        public override int NumberOfFields { get; } = 30;
         public override void Object_Validation()
         {
 
         }
 
-        public override int NumberOfFields { get; } = 30;
 
         //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]

@@ -11,12 +11,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.11: Радионуклидный состав загрязненных участков территорий")]
     public class Form211 : Form2
     {
-        public override string FormNum { get { return "2.11"; } }
+        public Form211() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "211"; } }
+        public override int NumberOfFields { get; } = 11;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 11;
 
         //PlotName property
         [Attributes.FormVisual("Наименование участка")]

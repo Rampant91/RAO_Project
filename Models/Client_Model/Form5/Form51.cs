@@ -7,12 +7,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.1: Сведения о ЗРИ, полученных/переданных подведомственными организациями сторонним организациям и переведенных в РАО")]
     public class Form51 : Form5
     {
-        public override string FormNum { get { return "5.1"; } }
+        public Form51() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "51"; } }
+        public override int NumberOfFields { get; } = 9;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 9;
 
         //OperationCode property
         [Attributes.FormVisual("Код")]

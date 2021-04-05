@@ -10,12 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.8: Отведение сточных вод, содержащих радионуклиды")]
     public class Form28 : Form2
     {
-        public override string FormNum { get { return "2.8"; } }
+        public Form28() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "28"; } }
+        public override int NumberOfFields { get; } = 24;
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 24;
 
         //PermissionNumber property
         [Attributes.FormVisual("Номер разрешительного документа")]

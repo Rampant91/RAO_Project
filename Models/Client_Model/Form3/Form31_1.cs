@@ -7,12 +7,18 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Характеристики экспортируемых ЗРИ/ОЗИИИ:")]
     public class Form31_1 : Form3
     {
-        public override string FormNum { get { return "3.1_1"; } }
+        public Form31_1() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "31_1"; } }
+        public override int NumberOfFields { get; } = 3;
+
         public override void Object_Validation()
         {
 
         }
-        public override int NumberOfFields { get; } = 3;
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]

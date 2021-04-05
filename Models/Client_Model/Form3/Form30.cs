@@ -10,11 +10,17 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 3.0: Титульный лист отчета организации-экспортера радиоактивных источников 1 и 2 категории")]
     public class Form30 : Form
     {
+        public Form30() : base()
+        {
+        }
+
+        [Attributes.FormVisual("Форма")]
+        public override string FormNum { get { return "30"; } }
+        public override int NumberOfFields { get; } = 19;
         public override void Object_Validation()
         {
 
         }
-        public int NumberOfFields { get; } = 19;
 
         //RegNo property
         [Attributes.FormVisual("Рег. №")]

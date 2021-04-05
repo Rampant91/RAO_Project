@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.0" />
+    <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="5.0.4" />
     <PackageReference Include="OlivierL.OfficeOpenXml.Extensions" Version="1.0.0" />
     <PackageReference Include="ReactiveUI.Validation" Version="2.1.1" />
