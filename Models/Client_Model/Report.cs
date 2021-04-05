@@ -10,6 +10,12 @@ namespace Models.Client_Model
 {
     public class Report : INotifyPropertyChanged, INotifyDataErrorInfo
     {
+        public Report()
+        {
+            _Filters = new Storage.Filter.Filter<Form>();
+            _Rows.CollectionChanged += RowsChanged;
+        }
+
         Row_Observable<Form> _Rows=new Row_Observable<Form>();
         public Row_Observable<Form> Rows 
         {
@@ -22,10 +28,30 @@ namespace Models.Client_Model
                 if (value != _Rows)
                 {
                     _Rows = value;
-                    OnPropertyChanged("Storage");
+                    OnPropertyChanged("Rows");
                 }
             }
         }
+
+        void RowsChanged(object sender, EventArgs args)
+        {
+            OnPropertyChanged("GetFilteredRows");
+        }
+
+        /// <summary>
+        /// Дает итератор с фильтрованными и сортированными формами
+        /// </summary>
+        public IEnumerable<Client_Model.Form> GetFilteredRows
+        {
+            get
+            {
+                foreach (var item in Filters.CheckAndSort(_Rows.ToArray()))
+                {
+                    yield return item;
+                }
+            }
+        }
+
         public string Name
         {
             get
@@ -41,8 +67,8 @@ namespace Models.Client_Model
             }
         }
 
-        Storage.Filter.Filter<Client_Model.Report> _Filters;
-        public Storage.Filter.Filter<Client_Model.Report> Filters
+        Storage.Filter.Filter<Client_Model.Form> _Filters;
+        public Storage.Filter.Filter<Client_Model.Form> Filters
         {
             get
             {
@@ -62,7 +88,7 @@ namespace Models.Client_Model
         }
 
         [Attributes.FormVisual("Форма")]
-        public string FormNum { get; }
+        public string FormNum { get; set; }
 
         //IsCorrection  (пример идеальной реализации свойства)
         [Attributes.FormVisual("Корректирующий отчет")]
@@ -279,7 +305,7 @@ namespace Models.Client_Model
 
         //EndPeriod
         [Attributes.FormVisual("Конец")]
-        public DateTime EndPeriod
+        public DateTimeOffset EndPeriod
         {
             get
             {
@@ -302,8 +328,8 @@ namespace Models.Client_Model
                 OnPropertyChanged(nameof(StartPeriod));
             }
         }
-        private DateTime _EndPeriod = DateTime.MinValue;
-        private DateTime _EndPeriod_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _EndPeriod = DateTimeOffset.Now;
+        private DateTimeOffset _EndPeriod_Not_Valid = DateTimeOffset.Now;
         private bool EndPeriod_Validation()
         {
             ClearErrors(nameof(EndPeriod));

@@ -34,6 +34,24 @@ namespace Client_App.Short_Visual
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
             grd.Bind(DataGrid.ItemsProperty, new Binding("FormModel_Local.Forms[10].GetFilteredStorage"));
 
+            var cntx = new ContextMenu();
+            List<MenuItem> itms = new List<MenuItem>();
+            itms.Add(new MenuItem
+            {
+                Header = "Добавить форму",
+                [!MenuItem.CommandProperty] = new Binding("AddForm"),
+                CommandParameter = "10",
+            });
+            itms.Add(new MenuItem
+            {
+                Header = "Удалить форму",
+                [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
+                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+            });
+            cntx.Items = itms;
+
+            grd.ContextMenu = cntx;
+
             DataGridTemplateColumn clm1 = new DataGridTemplateColumn();
             clm1.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
             clm1.Header = new Button
@@ -96,6 +114,18 @@ namespace Client_App.Short_Visual
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
             grd.Bind(DataGrid.ItemsProperty, new Binding("FormModel_Local.GetFilteredDictionary"));
+
+            var cntx = new ContextMenu();
+            List<MenuItem> itms = new List<MenuItem>();
+            itms.Add(new MenuItem
+            {
+                Header = "Удалить форму",
+                [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
+                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+            });
+            cntx.Items = itms;
+
+            grd.ContextMenu = cntx;
 
             DataGridTemplateColumn clm1 = new DataGridTemplateColumn();
             clm1.Width = new DataGridLength(1, DataGridLengthUnitType.Star);

@@ -7,7 +7,11 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.1: Сведения о ЗРИ")]
     public class Form11 : Form1
     {
-        public override string FormNum { get { return "1.1"; } }
+        public Form11() : base()
+        {
+            _Activity = new File();
+        }
+        public override string FormNum { get { return "11"; } }
         public override void Object_Validation()
         {
 

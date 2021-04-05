@@ -23,6 +23,8 @@ using System.Collections;
 using Models.Attributes;
 using Models.Storage;
 using System.IO;
+using Avalonia.Metadata;
+using System.Windows;
 
 namespace Client_App.ViewModels
 {
@@ -85,26 +87,89 @@ namespace Client_App.ViewModels
             }
         }
 
-        public string FormType{get;set;}
+        string _FormType;
+        public string FormType
+        {
+            get
+            {
+                return _FormType;
+            }
+            set
+            {
+                if (_FormType != value)
+                {
+                    _FormType = value;
+                    NotifyPropertyChanged("FormType");
+                }
+            }
+        }
+
+        public ReactiveCommand<Unit, Unit> CheckReport { get; }
 
         public ReactiveCommand<string, Unit> AddSort { get; }
         public ReactiveCommand<Unit, Unit> AddRow { get; }
         public ReactiveCommand<Form, Unit> DeleteRow { get; }
+
+        public ReactiveCommand<Unit, Unit> PasteRows { get; }
 
         public ChangeOrCreateVM()
         {
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow= ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.Create<Form>(_DeleteRow);
+            CheckReport = ReactiveCommand.Create(_CheckReport);
+            PasteRows = ReactiveCommand.CreateFromTask(_PasteRows);
+
 
             _Storage = new Report();
             _Forms = new LocalDictionary();
         }
+        bool _isCanSaveReportEnabled = false;
+        bool IsCanSaveReportEnabled
+        {
+            get
+            {
+                return _isCanSaveReportEnabled;
+            }
+            set
+            {
+                if (value == _isCanSaveReportEnabled)
+                    return;
+                _isCanSaveReportEnabled = value;
+                PropertyChanged?
+                    .Invoke(this, new PropertyChangedEventArgs(nameof(IsCanSaveReportEnabled)));
+            }
+        }
+
+        [DependsOn(nameof(IsCanSaveReportEnabled))]
+        bool CanSaveReport(object parameter)
+        {
+            return _isCanSaveReportEnabled;
+        }
+        public void SaveReport()
+        {
+            SavingStorage = Storage;
+            Forms.Forms[FormType].Storage.Add(_SavingStorage);
+
+            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                foreach(var item in desktop.Windows)
+                {
+                    if (item is Views.FormChangeOrCreate)
+                    {
+                        item.Close();
+                    }
+                }
+            }
+        }
+        void _CheckReport()
+        {
+            IsCanSaveReportEnabled = true;
+        }
 
         void _AddRow()
         {
-            //switch()
-            //Storage.Rows.Add(form);
+            Storage.Rows.Add(Models.Client_Model.FormCreator.Create(FormType));
         }
 
         void _DeleteRow(Form param)
@@ -115,6 +180,24 @@ namespace Client_App.ViewModels
         void _AddSort(string param)
         {
             Storage.Filters.SortPath = param;
+        }
+
+        async Task _PasteRows()
+        {
+            PasteRealization.Excel ex = new PasteRealization.Excel();
+
+            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+            {
+                var text = await clip.GetTextAsync();
+                var lt=ex.Convert(text,FormType);
+                if(lt!=null)
+                {
+                    foreach(var item in lt)
+                    {
+                        Storage.Rows.Add(item);
+                    }
+                }
+            }
         }
     }
 }

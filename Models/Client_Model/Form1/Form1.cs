@@ -6,9 +6,19 @@ namespace Models.Client_Model
 {
     public abstract class Form1:Form
     {
+        public Form1() : base()
+        {
+            _CorrectionNumber = new File();
+            _DocumentDate = new File();
+            _DocumentNumber = new File();
+            _DocumentVid = new File();
+            _NumberInOrder = new File();
+            _OperationCode = new File();
+            _OperationDate = new File();
+        }
+
         [Attributes.FormVisual("Форма")]
         public abstract string FormNum { get;}
-        public abstract int NumberOfFields { get; }
 
         //NumberInOrder property
         [Attributes.FormVisual("№ п/п")]
