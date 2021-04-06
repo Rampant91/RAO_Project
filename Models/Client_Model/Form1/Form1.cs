@@ -7,9 +7,6 @@ namespace Models.Client_Model
     public abstract class Form1:Form
     {
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get; } = "1";
-        public override abstract int NumberOfFields { get; }
-
         public Form1() : base()
         {
             _CorrectionNumber = new File();
@@ -19,7 +16,7 @@ namespace Models.Client_Model
             _NumberInOrder = new File();
             _OperationCode = new File();
             _OperationDate = new File();
-            _documentNumberRecoded = new File();
+            _DocumentNumberRecoded = new File();
         }
         public Form1(string[] values) : base()
         {
@@ -30,7 +27,7 @@ namespace Models.Client_Model
             _NumberInOrder = new File();
             _OperationCode = new File();
             _OperationDate = new File();
-            _documentNumberRecoded = new File();
+            _DocumentNumberRecoded = new File();
         }
 
         //NumberInOrder property
@@ -134,13 +131,13 @@ namespace Models.Client_Model
 
         //OperationDate property
         [Attributes.FormVisual("Дата операции")]
-        public DateTime OperationDate
+        public DateTimeOffset OperationDate
         {
             get
             {
                 if (GetErrors(nameof(OperationDate)) != null)
                 {
-                    return (DateTime)_OperationDate.Get();
+                    return (DateTimeOffset)_OperationDate.Get();
                 }
                 else
                 {
@@ -158,7 +155,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _OperationDate;
-        private DateTime _OperationDate_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _OperationDate_Not_Valid = DateTimeOffset.MinValue;
         private void OperationDate_Validation()
         {
             ClearErrors(nameof(OperationDate));
@@ -231,29 +228,47 @@ namespace Models.Client_Model
         }
         //DocumentNumber property
 
-        private IDataLoadEngine _documentNumberRecoded;
+        //DocumentNumberRecoded property
         public string DocumentNumberRecoded
         {
-            get 
-            { 
-                return (string)_documentNumberRecoded.Get(); 
+            get
+            {
+                if (GetErrors(nameof(DocumentNumberRecoded)) != null)
+                {
+                    return (string)_DocumentNumberRecoded.Get();
+                }
+                else
+                {
+                    return _DocumentNumberRecoded_Not_Valid;
+                }
             }
             set
             {
-                _documentNumberRecoded.Set(value);
-                OnPropertyChanged("DocumentNumberRecoded");
+                _DocumentNumberRecoded_Not_Valid = value;
+                if (GetErrors(nameof(DocumentNumberRecoded)) != null)
+                {
+                    _DocumentNumberRecoded.Set(_DocumentNumberRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
         }
+        private IDataLoadEngine _DocumentNumberRecoded;
+        private string _DocumentNumberRecoded_Not_Valid = "";
+        private void DocumentNumberRecoded_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(DocumentNumberRecoded));
+        }
+        //DocumentNumberRecoded property
 
         //DocumentDate property
         [Attributes.FormVisual("Дата документа")]
-        public DateTime DocumentDate
+        public DateTimeOffset DocumentDate
         {
             get
             {
                 if (GetErrors(nameof(DocumentDate)) != null)
                 {
-                    return (DateTime)_DocumentDate.Get();
+                    return (DateTimeOffset)_DocumentDate.Get();
                 }
                 else
                 {
@@ -271,8 +286,8 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _DocumentDate;//if change this change validation
-        private DateTime _DocumentDate_Not_Valid = DateTime.MinValue;
-        private void DocumentDate_Validation(DateTime value)//Ready
+        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.MinValue;
+        private void DocumentDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(DocumentDate));
         }

@@ -7,13 +7,77 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.8: Сведения о жидких кондиционированных РАО")]
     public class Form18: Form1
     {
-        public Form18() : base()
+        public Form18(bool isSQL) : base()
         {
+            FormNum = "18";
+            NumberOfFields = 37;
+            if (isSQL)
+            {
+                _Volume20 = new SQLite("Volume20", FormNum, 0);
+                _Volume6 = new SQLite("Volume6", FormNum, 0);
+                _SaltConcentration = new SQLite("SaltConcentration", FormNum, 0);
+                _SpecificActivity = new SQLite("SpecificActivity", FormNum, 0);
+                _Mass21 = new SQLite("Mass21", FormNum, 0);
+                _Mass7 = new SQLite("Mass7", FormNum, 0);
+                _IndividualNumberZHRO = new SQLite("IndividualNumberZHRO", FormNum, 0);
+                _IndividualNumberZHROrecoded = new SQLite("IndividualNumberZHRORecoded", FormNum, 0);
+                _CodeRAO = new SQLite("CodeRAO", FormNum, 0);
+                _AlphaActivity = new SQLite("AlphaActivity", FormNum, 0);
+                _BetaGammaActivity = new SQLite("BetaGammaActivity", FormNum, 0);
+                _TritiumActivity = new SQLite("TritiumActivity", FormNum, 0);
+                _TransuraniumActivity = new SQLite("TransuraniumActivity", FormNum, 0);
+                _StoragePlaceCode = new SQLite("StoragePlaceCode", FormNum, 0);
+                _StoragePlaceName = new SQLite("StoragePlaceName", FormNum, 0);
+                _Subsidy = new SQLite("Subsidy", FormNum, 0);
+                _StoragePlaceNameNote = new SQLite("StoragePlaceNameNote", FormNum, 0);
+                _StatusRAO = new SQLite("StatusRAO", FormNum, 0);
+                _RefineOrSortRAOCode = new SQLite("RefineOrSortRAOCode", FormNum, 0);
+                _FcpNumber = new SQLite("FcpNumber", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _PassportNumber = new SQLite("PassportNumber", FormNum, 0);
+                _PassportNumberRecoded = new SQLite("PassportNumberRecoded", FormNum, 0);
+                _PassportNumberNote = new SQLite("PassportNumberNote", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _ProviderOrRecieverOKPO = new SQLite("ProviderOrRecieverOKPO", FormNum, 0);
+                _ProviderOrRecieverOKPONote = new SQLite("ProviderOrRecieverOKPONote", FormNum, 0);
+                _TransporterOKPO = new SQLite("TransporterOKPO", FormNum, 0);
+                _TransporterOKPONote = new SQLite("TransporterOKPONote", FormNum, 0);
+            }
+            else
+            {
+                _Volume20 = new File();
+                _Volume6 = new File();
+                _SaltConcentration = new File();
+                _SpecificActivity = new File();
+                _Mass21 = new File();
+                _Mass7 = new File();
+                _IndividualNumberZHRO = new File();
+                _IndividualNumberZHROrecoded = new File();
+                _CodeRAO = new File();
+                _AlphaActivity = new File();
+                _BetaGammaActivity = new File();
+                _TritiumActivity = new File();
+                _TransuraniumActivity = new File();
+                _StoragePlaceCode = new File();
+                _StoragePlaceName = new File();
+                _Subsidy = new File();
+                _StoragePlaceNameNote = new File();
+                _StatusRAO = new File();
+                _RefineOrSortRAOCode = new File();
+                _FcpNumber = new File();
+                _Radionuclids = new File();
+                _PassportNumber = new File();
+                _PassportNumberRecoded = new File();
+                _PassportNumberNote = new File();
+                _Radionuclids = new File();
+                _ProviderOrRecieverOKPO = new File();
+                _ProviderOrRecieverOKPONote = new File();
+                _TransporterOKPO = new File();
+                _TransporterOKPONote = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "18"; } }
-        public override int NumberOfFields { get; } = 36;
         public override void Object_Validation()
         {
 
@@ -52,16 +116,37 @@ namespace Models.Client_Model
         }
         //IndividualNumberZHRO property
 
-        private string _individualNumberZHRORecoded = "";
-        public string IndividualNumberZHRORecoded
+        //IndividualNumberZHROrecoded property
+        public string IndividualNumberZHROrecoded
         {
-            get { return _individualNumberZHRORecoded; }
+            get
+            {
+                if (GetErrors(nameof(IndividualNumberZHROrecoded)) != null)
+                {
+                    return (string)_IndividualNumberZHROrecoded.Get();
+                }
+                else
+                {
+                    return _IndividualNumberZHROrecoded_Not_Valid;
+                }
+            }
             set
             {
-                _individualNumberZHRORecoded = value;
-                OnPropertyChanged("IndividualNumberZHRORecoded");
+                _IndividualNumberZHROrecoded_Not_Valid = value;
+                if (GetErrors(nameof(IndividualNumberZHROrecoded)) != null)
+                {
+                    _IndividualNumberZHROrecoded.Set(_IndividualNumberZHROrecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(IndividualNumberZHROrecoded));
             }
         }
+        private IDataLoadEngine _IndividualNumberZHROrecoded;
+        private string _IndividualNumberZHROrecoded_Not_Valid = "";
+        private void IndividualNumberZHROrecoded_Validation(string value)
+        {
+            ClearErrors(nameof(IndividualNumberZHROrecoded));
+        }
+        //IndividualNumberZHROrecoded property
 
         //PassportNumber property
         [Attributes.FormVisual("Номер паспорта")]
@@ -96,27 +181,70 @@ namespace Models.Client_Model
         }
         //PassportNumber property
 
-        private string _passportNumberNote = "";
+        //PassportNumberNote property
         public string PassportNumberNote
         {
-            get { return _passportNumberNote; }
+            get
+            {
+                if (GetErrors(nameof(PassportNumberNote)) != null)
+                {
+                    return (string)_PassportNumberNote.Get();
+                }
+                else
+                {
+                    return _PassportNumberNote_Not_Valid;
+                }
+            }
             set
             {
-                _passportNumberNote = value;
-                OnPropertyChanged("PassportNumberNote");
+                _PassportNumberNote_Not_Valid = value;
+                if (GetErrors(nameof(PassportNumberNote)) != null)
+                {
+                    _PassportNumberNote.Set(_PassportNumberNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PassportNumberNote));
             }
         }
+        private IDataLoadEngine _PassportNumberNote;
+        private string _PassportNumberNote_Not_Valid = "";
+        private void PassportNumberNote_Validation()
+        {
+            ClearErrors(nameof(PassportNumberNote));
+        }
+        //PassportNumberNote property
 
-        private string _passportNumberRecoded = "";
+        //PassportNumberRecoded property
+        [Attributes.FormVisual("Номер упаковки")]
         public string PassportNumberRecoded
         {
-            get { return _passportNumberRecoded; }
+            get
+            {
+                if (GetErrors(nameof(PassportNumberRecoded)) != null)
+                {
+                    return (string)_PassportNumberRecoded.Get();
+                }
+                else
+                {
+                    return _PassportNumberRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _passportNumberRecoded = value;
-                OnPropertyChanged("PassportNumberRecoded");
+                _PassportNumberRecoded_Not_Valid = value;
+                if (GetErrors(nameof(PassportNumberRecoded)) != null)
+                {
+                    _PassportNumberRecoded.Set(_PassportNumberRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PassportNumberRecoded));
             }
         }
+        private IDataLoadEngine _PassportNumberRecoded;//If change this change validation
+        private string _PassportNumberRecoded_Not_Valid = "";
+        private void PassportNumberRecoded_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(PassportNumberRecoded));
+        }
+        //PassportNumberRecoded property
 
         //Volume6 property
         [Attributes.FormVisual("Объем, куб. м")]
@@ -327,21 +455,37 @@ namespace Models.Client_Model
         }
         //ProviderOrRecieverOKPO property
 
-        private string _providerOrRecieverOKPONote = "";
+        //ProviderOrRecieverOKPONote property
         public string ProviderOrRecieverOKPONote
         {
-            get { return _providerOrRecieverOKPONote; }
+            get
+            {
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                {
+                    return (string)_ProviderOrRecieverOKPONote.Get();
+                }
+                else
+                {
+                    return _ProviderOrRecieverOKPONote_Not_Valid;
+                }
+            }
             set
             {
-                _providerOrRecieverOKPONote = value;
-                ProviderOrRecieverOKPONote_Validation();
-                OnPropertyChanged("ProviderOrRecieverOKPONote");
+                _ProviderOrRecieverOKPONote_Not_Valid = value;
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                {
+                    _ProviderOrRecieverOKPONote.Set(_ProviderOrRecieverOKPONote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
-        private void ProviderOrRecieverOKPONote_Validation()//TODO
+        private IDataLoadEngine _ProviderOrRecieverOKPONote;
+        private string _ProviderOrRecieverOKPONote_Not_Valid = "";
+        private void ProviderOrRecieverOKPONote_Validation()
         {
             ClearErrors(nameof(ProviderOrRecieverOKPONote));
         }
+        //ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
         [Attributes.FormVisual("ОКПО перевозчика")]
@@ -376,16 +520,37 @@ namespace Models.Client_Model
         }
         //TransporterOKPO property
 
-        private string _transporterOKPONote = "";
+        //TransporterOKPONote property
         public string TransporterOKPONote
         {
-            get { return _transporterOKPONote; }
+            get
+            {
+                if (GetErrors(nameof(TransporterOKPONote)) != null)
+                {
+                    return (string)_TransporterOKPONote.Get();
+                }
+                else
+                {
+                    return _TransporterOKPONote_Not_Valid;
+                }
+            }
             set
             {
-                _transporterOKPONote = value;
-                OnPropertyChanged("TransporterOKPONote");
+                _TransporterOKPONote_Not_Valid = value;
+                if (GetErrors(nameof(TransporterOKPONote)) != null)
+                {
+                    _TransporterOKPONote.Set(_TransporterOKPONote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(TransporterOKPONote));
             }
         }
+        private IDataLoadEngine _TransporterOKPONote;
+        private string _TransporterOKPONote_Not_Valid = "";
+        private void TransporterOKPONote_Validation()
+        {
+            ClearErrors(nameof(TransporterOKPONote));
+        }
+        //TransporterOKPONote property
 
         //StoragePlaceName property
         [Attributes.FormVisual("Наименование ПХ")]
@@ -420,16 +585,37 @@ namespace Models.Client_Model
         }
         //StoragePlaceName property
 
-        private string _storagePlaceNameNote = "";
+        //StoragePlaceNameNote property
         public string StoragePlaceNameNote
         {
-            get { return _storagePlaceNameNote; }
+            get
+            {
+                if (GetErrors(nameof(StoragePlaceNameNote)) != null)
+                {
+                    return (string)_StoragePlaceNameNote.Get();
+                }
+                else
+                {
+                    return _StoragePlaceNameNote_Not_Valid;
+                }
+            }
             set
             {
-                _storagePlaceNameNote = value;
-                OnPropertyChanged("StoragePlaceNameNote");
+                _StoragePlaceNameNote_Not_Valid = value;
+                if (GetErrors(nameof(StoragePlaceNameNote)) != null)
+                {
+                    _StoragePlaceNameNote.Set(_StoragePlaceNameNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
         }
+        private IDataLoadEngine _StoragePlaceNameNote;//If change this change validation
+        private string _StoragePlaceNameNote_Not_Valid = "";
+        private void StoragePlaceNameNote_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(StoragePlaceNameNote));
+        }
+        //StoragePlaceNameNote property
 
         //StoragePlaceCode property
         [Attributes.FormVisual("Код ПХ")]

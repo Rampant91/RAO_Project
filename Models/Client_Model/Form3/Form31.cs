@@ -12,11 +12,11 @@ namespace Models.Client_Model
     {
         public Form31() : base()
         {
+            FormNum = "31";
+            NumberOfFields = 19;
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "31"; } }
-        public override int NumberOfFields { get; } = 19;
 
         public override void Object_Validation()
         {
@@ -141,7 +141,7 @@ namespace Models.Client_Model
 
         //ValidThru property
         [Attributes.FormVisual("Действует по")]
-        public DateTime ValidThru
+        public DateTimeOffset ValidThru
         {
             get
             {
@@ -165,12 +165,12 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidThru;
-        private DateTime _ValidThru_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.MinValue;
         //ValidThru property
 
         //SuggestedSolutionDate property
         [Attributes.FormVisual("")]
-        public DateTime SuggestedSolutionDate
+        public DateTimeOffset SuggestedSolutionDate
         {
             get
             {
@@ -194,7 +194,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _SuggestedSolutionDate;
-        private DateTime _SuggestedSolutionDate_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _SuggestedSolutionDate_Not_Valid = DateTimeOffset.MinValue;
         //SuggestedSolutionDate property
 
         //UserName property
@@ -431,7 +431,7 @@ namespace Models.Client_Model
 
         //ContractDate property
         [Attributes.FormVisual("Дата контракта")]
-        public DateTime ContractDate
+        public DateTimeOffset ContractDate
         {
             get
             {
@@ -455,7 +455,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ContractDate;
-        private DateTime _ContractDate_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ContractDate_Not_Valid = DateTimeOffset.MinValue;
         //ContractDate property
 
         //CountryCreator property

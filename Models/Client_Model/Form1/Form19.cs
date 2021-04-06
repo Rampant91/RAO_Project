@@ -7,13 +7,25 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
     public class Form19: Form1
     {
-        public Form19() : base()
+        public Form19(bool isSQL) : base()
         {
+            FormNum = "19";
+            NumberOfFields = 11;
+            if (isSQL)
+            {
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _Activity = new SQLite("Activity", FormNum, 0);
+            }
+            else
+            {
+                _Radionuclids = new File();
+                _Radionuclids = new File();
+                _Activity = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "19"; } }
-        public override int NumberOfFields { get; } = 11;
         public override void Object_Validation()
         {
 

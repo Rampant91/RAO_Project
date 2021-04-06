@@ -7,13 +7,79 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 1.5: Сведения о РАО в виде отработавших ЗРИ")]
     public class Form15: Form1
     {
-        public Form15() : base()
+        public Form15(bool isSQL) : base()
         {
+            FormNum = "15";
+            NumberOfFields = 38;
+            if (isSQL)
+            {
+                _StoragePlaceCode = new SQLite("StoragePlaceCode", FormNum, 0);
+                _StoragePlaceName = new SQLite("StoragePlaceName", FormNum, 0);
+                _Subsidy = new SQLite("Subsidy", FormNum, 0);
+                _StoragePlaceNameNote = new SQLite("StoragePlaceNameNote", FormNum, 0);
+                _StatusRAO = new SQLite("StatusRAO", FormNum, 0);
+                _RefineOrSortRAOCode = new SQLite("RefineOrSortRAOCode", FormNum, 0);
+                _FcpNumber = new SQLite("FcpNumber", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _PassportNumber = new SQLite("PassportNumber", FormNum, 0);
+                _PassportNumberRecoded = new SQLite("PassportNumberRecoded", FormNum, 0);
+                _PassportNumberNote = new SQLite("PassportNumberNote", FormNum, 0);
+                _Type = new SQLite("Type", FormNum, 0);
+                _TypeRecoded = new SQLite("TypeRecoded", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _FactoryNumber = new SQLite("FactoryNumber", FormNum, 0);
+                _FactoryNumberRecoded = new SQLite("FactoryNumberRecoded", FormNum, 0);
+                _Quantity = new SQLite("Quantity", FormNum, 0);
+                _Activity = new SQLite("Activity", FormNum, 0);
+                _CreationDate = new SQLite("CreationDate", FormNum, 0);
+                _ProviderOrRecieverOKPO = new SQLite("ProviderOrRecieverOKPO", FormNum, 0);
+                _ProviderOrRecieverOKPONote = new SQLite("ProviderOrRecieverOKPONote", FormNum, 0);
+                _TransporterOKPO = new SQLite("TransporterOKPO", FormNum, 0);
+                _TransporterOKPONote = new SQLite("TransporterOKPONote", FormNum, 0);
+                _PackName = new SQLite("PackName", FormNum, 0);
+                _PackNameNote = new SQLite("PackNameNote", FormNum, 0);
+                _PackType = new SQLite("PackType", FormNum, 0);
+                _PackTypeRecoded = new SQLite("PackTypeRecoded", FormNum, 0);
+                _PackTypeNote = new SQLite("PackTypeNote", FormNum, 0);
+                _PackNumber = new SQLite("PackNumber", FormNum, 0);
+                _PackNumberRecoded = new SQLite("PackNumberRecoded", FormNum, 0);
+            }
+            else
+            {
+                _StoragePlaceCode = new File();
+                _StoragePlaceName = new File();
+                _Subsidy = new File();
+                _StoragePlaceNameNote = new File();
+                _StatusRAO = new File();
+                _RefineOrSortRAOCode = new File();
+                _FcpNumber = new File();
+                _Radionuclids = new File();
+                _PassportNumber = new File();
+                _PassportNumberRecoded = new File();
+                _PassportNumberNote = new File();
+                _Type = new File();
+                _TypeRecoded = new File();
+                _Radionuclids = new File();
+                _FactoryNumber = new File();
+                _FactoryNumberRecoded = new File();
+                _Quantity = new File();
+                _Activity = new File();
+                _CreationDate = new File();
+                _ProviderOrRecieverOKPO = new File();
+                _ProviderOrRecieverOKPONote = new File();
+                _TransporterOKPO = new File();
+                _TransporterOKPONote = new File();
+                _PackName = new File();
+                _PackNameNote = new File();
+                _PackType = new File();
+                _PackTypeRecoded = new File();
+                _PackTypeNote = new File();
+                _PackNumber = new File();
+                _PackNumberRecoded = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "15"; } }
-        public override int NumberOfFields { get; } = 37;
         public override void Object_Validation()
         {
 
@@ -52,27 +118,70 @@ namespace Models.Client_Model
         }
         //PassportNumber property
 
-        private string _passportNumberNote = "";
+        //PassportNumberNote property
         public string PassportNumberNote
         {
-            get { return _passportNumberNote; }
+            get
+            {
+                if (GetErrors(nameof(PassportNumberNote)) != null)
+                {
+                    return (string)_PassportNumberNote.Get();
+                }
+                else
+                {
+                    return _PassportNumberNote_Not_Valid;
+                }
+            }
             set
             {
-                _passportNumberNote = value;
-                OnPropertyChanged("PassportNumberNote");
+                _PassportNumberNote_Not_Valid = value;
+                if (GetErrors(nameof(PassportNumberNote)) != null)
+                {
+                    _PassportNumberNote.Set(_PassportNumberNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PassportNumberNote));
             }
         }
+        private IDataLoadEngine _PassportNumberNote;
+        private string _PassportNumberNote_Not_Valid = "";
+        private void PassportNumberNote_Validation()
+        {
+            ClearErrors(nameof(PassportNumberNote));
+        }
+        //PassportNumberNote property
 
-        private string _passportNumberRecoded = "";
+        //PassportNumberRecoded property
+        [Attributes.FormVisual("Номер упаковки")]
         public string PassportNumberRecoded
         {
-            get { return _passportNumberRecoded; }
+            get
+            {
+                if (GetErrors(nameof(PassportNumberRecoded)) != null)
+                {
+                    return (string)_PassportNumberRecoded.Get();
+                }
+                else
+                {
+                    return _PassportNumberRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _passportNumberRecoded = value;
-                OnPropertyChanged("PassportNumberRecoded");
+                _PassportNumberRecoded_Not_Valid = value;
+                if (GetErrors(nameof(PassportNumberRecoded)) != null)
+                {
+                    _PassportNumberRecoded.Set(_PassportNumberRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PassportNumberRecoded));
             }
         }
+        private IDataLoadEngine _PassportNumberRecoded;//If change this change validation
+        private string _PassportNumberRecoded_Not_Valid = "";
+        private void PassportNumberRecoded_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(PassportNumberRecoded));
+        }
+        //PassportNumberRecoded property
 
         //Type property
         [Attributes.FormVisual("Тип")]
@@ -107,16 +216,37 @@ namespace Models.Client_Model
         }
         //Type property
 
-        private string _typeRecoded = "";
+        //TypeRecoded property
         public string TypeRecoded
         {
-            get { return _typeRecoded; }
+            get
+            {
+                if (GetErrors(nameof(TypeRecoded)) != null)
+                {
+                    return (string)_TypeRecoded.Get();
+                }
+                else
+                {
+                    return _TypeRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _typeRecoded = value;
-                OnPropertyChanged("TypeRecoded");
+                _TypeRecoded_Not_Valid = value;
+                if (GetErrors(nameof(TypeRecoded)) != null)
+                {
+                    _TypeRecoded.Set(_TypeRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(TypeRecoded));
             }
         }
+        private IDataLoadEngine _TypeRecoded;
+        private string _TypeRecoded_Not_Valid = "";
+        private void TypeRecoded_Validation()
+        {
+            ClearErrors(nameof(TypeRecoded));
+        }
+        //TypeRecoded property
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]
@@ -184,16 +314,37 @@ namespace Models.Client_Model
         }
         //FactoryNumber property
 
-        private string _factoryNumberRecoded = "";
+        //FactoryNumberRecoded property
         public string FactoryNumberRecoded
         {
-            get { return _factoryNumberRecoded; }
+            get
+            {
+                if (GetErrors(nameof(FactoryNumberRecoded)) != null)
+                {
+                    return (string)_FactoryNumberRecoded.Get();
+                }
+                else
+                {
+                    return _FactoryNumberRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _factoryNumberRecoded = value;
-                OnPropertyChanged("FactoryNumberRecoded");
+                _FactoryNumberRecoded_Not_Valid = value;
+                if (GetErrors(nameof(FactoryNumberRecoded)) != null)
+                {
+                    _FactoryNumberRecoded.Set(_FactoryNumberRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
         }
+        private IDataLoadEngine _FactoryNumberRecoded;//If change this change validation
+        private string _FactoryNumberRecoded_Not_Valid = "";
+        private void FactoryNumberRecoded_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(FactoryNumberRecoded));
+        }
+        //FactoryNumberRecoded property
 
         //Quantity property
         [Attributes.FormVisual("Количество, шт.")]
@@ -283,7 +434,7 @@ namespace Models.Client_Model
 
         //CreationDate property
         [Attributes.FormVisual("Дата изготовления")]
-        public DateTime CreationDate
+        public DateTimeOffset CreationDate
         {
             get
             {
@@ -307,8 +458,8 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _CreationDate;//If change this change validation
-        private DateTime _CreationDate_Not_Valid = DateTime.MinValue;
-        private void CreationDate_Validation(DateTime value)//Ready
+        private DateTimeOffset _CreationDate_Not_Valid = DateTimeOffset.MinValue;
+        private void CreationDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(CreationDate));
         }
@@ -380,16 +531,37 @@ namespace Models.Client_Model
         }
         //ProviderOrRecieverOKPO property
 
-        private string _providerOrRecieverOKPONote = "";
+        //ProviderOrRecieverOKPONote property
         public string ProviderOrRecieverOKPONote
         {
-            get { return _providerOrRecieverOKPONote; }
+            get
+            {
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                {
+                    return (string)_ProviderOrRecieverOKPONote.Get();
+                }
+                else
+                {
+                    return _ProviderOrRecieverOKPONote_Not_Valid;
+                }
+            }
             set
             {
-                _providerOrRecieverOKPONote = value;
-                OnPropertyChanged("ProviderOrRecieverOKPONote");
+                _ProviderOrRecieverOKPONote_Not_Valid = value;
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                {
+                    _ProviderOrRecieverOKPONote.Set(_ProviderOrRecieverOKPONote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
+        private IDataLoadEngine _ProviderOrRecieverOKPONote;
+        private string _ProviderOrRecieverOKPONote_Not_Valid = "";
+        private void ProviderOrRecieverOKPONote_Validation()
+        {
+            ClearErrors(nameof(ProviderOrRecieverOKPONote));
+        }
+        //ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
         [Attributes.FormVisual("ОКПО перевозчика")]
@@ -424,16 +596,37 @@ namespace Models.Client_Model
         }
         //TransporterOKPO property
 
-        private string _transporterOKPONote = "";
+        //TransporterOKPONote property
         public string TransporterOKPONote
         {
-            get { return _transporterOKPONote; }
+            get
+            {
+                if (GetErrors(nameof(TransporterOKPONote)) != null)
+                {
+                    return (string)_TransporterOKPONote.Get();
+                }
+                else
+                {
+                    return _TransporterOKPONote_Not_Valid;
+                }
+            }
             set
             {
-                _transporterOKPONote = value;
-                OnPropertyChanged("TransporterOKPONote");
+                _TransporterOKPONote_Not_Valid = value;
+                if (GetErrors(nameof(TransporterOKPONote)) != null)
+                {
+                    _TransporterOKPONote.Set(_TransporterOKPONote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(TransporterOKPONote));
             }
         }
+        private IDataLoadEngine _TransporterOKPONote;
+        private string _TransporterOKPONote_Not_Valid = "";
+        private void TransporterOKPONote_Validation()
+        {
+            ClearErrors(nameof(TransporterOKPONote));
+        }
+        //TransporterOKPONote property
 
         //PackName property
         [Attributes.FormVisual("Наименование упаковки")]
@@ -468,16 +661,37 @@ namespace Models.Client_Model
         }
         //PackName property
 
-        private string _packNameNote = "";
+        //PackNameNote property
         public string PackNameNote
         {
-            get { return _packNameNote; }
+            get
+            {
+                if (GetErrors(nameof(PackNameNote)) != null)
+                {
+                    return (string)_PackNameNote.Get();
+                }
+                else
+                {
+                    return _PackNameNote_Not_Valid;
+                }
+            }
             set
             {
-                _packNameNote = value;
-                OnPropertyChanged("PackNameNote");
+                _PackNameNote_Not_Valid = value;
+                if (GetErrors(nameof(PackNameNote)) != null)
+                {
+                    _PackNameNote.Set(_PackNameNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackNameNote));
             }
         }
+        private IDataLoadEngine _PackNameNote;
+        private string _PackNameNote_Not_Valid = "";
+        private void PackNameNote_Validation()
+        {
+            ClearErrors(nameof(PackNameNote));
+        }
+        //PackNameNote property
 
         //PackType property
         [Attributes.FormVisual("Тип упаковки")]
@@ -512,27 +726,69 @@ namespace Models.Client_Model
         }
         //PackType property
 
-        private string _packTypeRecoded = "";
+        //PackTypeRecoded property
         public string PackTypeRecoded
         {
-            get { return _packTypeRecoded; }
+            get
+            {
+                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                {
+                    return (string)_PackTypeRecoded.Get();
+                }
+                else
+                {
+                    return _PackTypeRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _packTypeRecoded = value;
-                OnPropertyChanged("PackTypeRecoded");
+                _PackTypeRecoded_Not_Valid = value;
+                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                {
+                    _PackTypeRecoded.Set(_PackTypeRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
+        private IDataLoadEngine _PackTypeRecoded;
+        private string _PackTypeRecoded_Not_Valid = "";
+        private void PackTypeRecoded_Validation()
+        {
+            ClearErrors(nameof(PackTypeRecoded));
+        }
+        //PackTypeRecoded property
 
-        private string _packTypeNote = "";
+        //PackTypeNote property
         public string PackTypeNote
         {
-            get { return _packTypeNote; }
+            get
+            {
+                if (GetErrors(nameof(PackTypeNote)) != null)
+                {
+                    return (string)_PackTypeNote.Get();
+                }
+                else
+                {
+                    return _PackTypeNote_Not_Valid;
+                }
+            }
             set
             {
-                _packTypeNote = value;
-                OnPropertyChanged("PackTypeNote");
+                _PackTypeNote_Not_Valid = value;
+                if (GetErrors(nameof(PackTypeNote)) != null)
+                {
+                    _PackTypeNote.Set(_PackTypeNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackTypeNote));
             }
         }
+        private IDataLoadEngine _PackTypeNote;
+        private string _PackTypeNote_Not_Valid = "";
+        private void PackTypeNote_Validation()
+        {
+            ClearErrors(nameof(PackTypeNote));
+        }
+        //PackTypeNote property
 
         //PackNumber property
         [Attributes.FormVisual("Номер упаковки")]
@@ -567,16 +823,38 @@ namespace Models.Client_Model
         }
         //PackNumber property
 
-        private string _packNumberRecoded = "";
+        //PackNumberRecoded property
+        [Attributes.FormVisual("Номер упаковки")]
         public string PackNumberRecoded
         {
-            get { return _packNumberRecoded; }
+            get
+            {
+                if (GetErrors(nameof(PackNumberRecoded)) != null)
+                {
+                    return (string)_PackNumberRecoded.Get();
+                }
+                else
+                {
+                    return _PackNumberRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _packNumberRecoded = value;
-                OnPropertyChanged("PackNumberRecoded");
+                _PackNumberRecoded_Not_Valid = value;
+                if (GetErrors(nameof(PackNumberRecoded)) != null)
+                {
+                    _PackNumberRecoded.Set(_PackNumberRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackNumberRecoded));
             }
         }
+        private IDataLoadEngine _PackNumberRecoded;//If change this change validation
+        private string _PackNumberRecoded_Not_Valid = "";
+        private void PackNumberRecoded_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(PackNumberRecoded));
+        }
+        //PackNumberRecoded property
 
         //StoragePlaceName property
         [Attributes.FormVisual("Наименование ПХ")]
@@ -611,16 +889,37 @@ namespace Models.Client_Model
         }
         //StoragePlaceName property
 
-        private string _storagePlaceNameNote = "";
+        //StoragePlaceNameNote property
         public string StoragePlaceNameNote
         {
-            get { return _storagePlaceNameNote; }
+            get
+            {
+                if (GetErrors(nameof(StoragePlaceNameNote)) != null)
+                {
+                    return (string)_StoragePlaceNameNote.Get();
+                }
+                else
+                {
+                    return _StoragePlaceNameNote_Not_Valid;
+                }
+            }
             set
             {
-                _storagePlaceNameNote = value;
-                OnPropertyChanged("StoragePlaceNameNote");
+                _StoragePlaceNameNote_Not_Valid = value;
+                if (GetErrors(nameof(StoragePlaceNameNote)) != null)
+                {
+                    _StoragePlaceNameNote.Set(_StoragePlaceNameNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
         }
+        private IDataLoadEngine _StoragePlaceNameNote;//If change this change validation
+        private string _StoragePlaceNameNote_Not_Valid = "";
+        private void StoragePlaceNameNote_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(StoragePlaceNameNote));
+        }
+        //StoragePlaceNameNote property
 
         //StoragePlaceCode property
         [Attributes.FormVisual("Код ПХ")]

@@ -10,8 +10,68 @@ namespace Models.Client_Model
 {
     public abstract class Form:INotifyPropertyChanged,INotifyDataErrorInfo
     {
-        public abstract string FormNum { get; }
-        public abstract int NumberOfFields { get; }
+        //FormNum property
+        public string FormNum
+        {
+            get
+            {
+                if (GetErrors(nameof(FormNum)) != null)
+                {
+                    return (string)_FormNum.Get();
+                }
+                else
+                {
+                    return _FormNum_Not_Valid;
+                }
+            }
+            set
+            {
+                _FormNum_Not_Valid = value;
+                if (GetErrors(nameof(FormNum)) != null)
+                {
+                    _FormNum.Set(_FormNum_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FormNum));
+            }
+        }
+        private IDataLoadEngine _FormNum;
+        private string _FormNum_Not_Valid;
+        private void FormNum_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(FormNum));
+        }
+        //FormNum property
+        //NumberOfFields property
+        public int NumberOfFields
+        {
+            get
+            {
+                if (GetErrors(nameof(NumberOfFields)) != null)
+                {
+                    return (int)_NumberOfFields.Get();
+                }
+                else
+                {
+                    return _NumberOfFields_Not_Valid;
+                }
+            }
+            set
+            {
+                _NumberOfFields_Not_Valid = value;
+                if (GetErrors(nameof(NumberOfFields)) != null)
+                {
+                    _NumberOfFields.Set(_NumberOfFields_Not_Valid);
+                }
+                OnPropertyChanged(nameof(NumberOfFields));
+            }
+        }
+        private IDataLoadEngine _NumberOfFields;
+        private int _NumberOfFields_Not_Valid = -1;
+        private void NumberOfFields_Validation()
+        {
+            ClearErrors(nameof(NumberOfFields));
+        }
+        //NumberOfFields property
 
         //Для валидации
         public Storage.LocalDictionary Forms { get; set; }

@@ -7,13 +7,49 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.3: Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения")]
     public class Form23: Form2
     {
-        public Form23() : base()
+        public Form23(bool isSQL) : base()
         {
+            FormNum = "23";
+            NumberOfFields = 17;
+            if (isSQL)
+            {
+                _DocumentDate = new SQLite("DocumentDate", FormNum, 0);
+                _DocumentName = new SQLite("DocumentName", FormNum, 0);
+                _DocumentNumber = new SQLite("DocumentNumber", FormNum, 0);
+                _DocumentNumberRecoded = new SQLite("DocumentNumberRecoded", FormNum, 0);
+                _ExpirationDate = new SQLite("ExpirationDate", FormNum, 0);
+                _ProjectVolume = new SQLite("ProjectVolume", FormNum, 0);
+                _ProjectVolumeNote = new SQLite("ProjectVolumeNote", FormNum, 0);
+                _SummaryActivity = new SQLite("SummaryActivity", FormNum, 0);
+                _QuantityOZIII = new SQLite("QuantityOZIII", FormNum, 0);
+                _CodeRAO = new SQLite("CodeRAO", FormNum, 0);
+                _StoragePlaceCode = new SQLite("StoragePlaceCode", FormNum, 0);
+                _StoragePlaceName = new SQLite("StoragePlaceName", FormNum, 0);
+                _StoragePlaceNameNote = new SQLite("StoragePlaceNameNote", FormNum, 0);
+                _Volume = new SQLite("Volume", FormNum, 0);
+                _Mass = new SQLite("Mass", FormNum, 0);
+            }
+            else
+            {
+                _DocumentDate = new File();
+                _DocumentName = new File();
+                _DocumentNumber = new File();
+                _DocumentNumberRecoded = new File();
+                _ExpirationDate = new File();
+                _ProjectVolume = new File();
+                _ProjectVolumeNote = new File();
+                _SummaryActivity = new File();
+                _QuantityOZIII = new File();
+                _CodeRAO = new File();
+                _StoragePlaceCode = new File();
+                _StoragePlaceName = new File();
+                _StoragePlaceNameNote = new File();
+                _Volume = new File();
+                _Mass = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "23"; } }
-        public override int NumberOfFields { get; } = 19;
         public override void Object_Validation()
         {
 
@@ -52,16 +88,37 @@ namespace Models.Client_Model
         }
         //StoragePlaceName property
 
-        private string _storagePlaceNameNote = "";
+        //StoragePlaceNameNote property
         public string StoragePlaceNameNote
         {
-            get { return _storagePlaceNameNote; }
+            get
+            {
+                if (GetErrors(nameof(StoragePlaceNameNote)) != null)
+                {
+                    return (string)_StoragePlaceNameNote.Get();
+                }
+                else
+                {
+                    return _StoragePlaceNameNote_Not_Valid;
+                }
+            }
             set
             {
-                _storagePlaceNameNote = value;
-                OnPropertyChanged("StoragePlaceNameNote");
+                _StoragePlaceNameNote_Not_Valid = value;
+                if (GetErrors(nameof(StoragePlaceNameNote)) != null)
+                {
+                    _StoragePlaceNameNote.Set(_StoragePlaceNameNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
         }
+        private IDataLoadEngine _StoragePlaceNameNote;//If change this change validation
+        private string _StoragePlaceNameNote_Not_Valid = "";
+        private void StoragePlaceNameNote_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(StoragePlaceNameNote));
+        }
+        //StoragePlaceNameNote property
 
         //StoragePlaceCode property
         [Attributes.FormVisual("Код ПХ")]
@@ -141,16 +198,37 @@ namespace Models.Client_Model
         }
         //ProjectVolume property
 
-        private double _projectVolumeNote = -1;
+        //ProjectVolumeNote property
         public double ProjectVolumeNote
         {
-            get { return _projectVolumeNote; }
+            get
+            {
+                if (GetErrors(nameof(ProjectVolumeNote)) != null)
+                {
+                    return (double)_ProjectVolumeNote.Get();
+                }
+                else
+                {
+                    return _ProjectVolumeNote_Not_Valid;
+                }
+            }
             set
             {
-                _projectVolumeNote = value;
-                OnPropertyChanged("ProjectVolumeNote");
+                _ProjectVolumeNote_Not_Valid = value;
+                if (GetErrors(nameof(ProjectVolumeNote)) != null)
+                {
+                    _ProjectVolumeNote.Set(_ProjectVolumeNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ProjectVolumeNote));
             }
         }
+        private IDataLoadEngine _ProjectVolumeNote;
+        private double _ProjectVolumeNote_Not_Valid = -1;
+        private void ProjectVolumeNote_Validation(double value)//TODO
+        {
+            ClearErrors(nameof(ProjectVolumeNote));
+        }
+        //ProjectVolumeNote property
 
         //CodeRAO property
         [Attributes.FormVisual("Код РАО")]
@@ -370,20 +448,41 @@ namespace Models.Client_Model
         }
         //DocumentNumber property
 
-        private string _documentNumberRecoded = "";
+        //DocumentNumberRecoded property
         public string DocumentNumberRecoded
         {
-            get { return _documentNumberRecoded; }
+            get
+            {
+                if (GetErrors(nameof(DocumentNumberRecoded)) != null)
+                {
+                    return (string)_DocumentNumberRecoded.Get();
+                }
+                else
+                {
+                    return _DocumentNumberRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _documentNumberRecoded = value;
-                OnPropertyChanged("DocumentNumberRecoded");
+                _DocumentNumberRecoded_Not_Valid = value;
+                if (GetErrors(nameof(DocumentNumberRecoded)) != null)
+                {
+                    _DocumentNumberRecoded.Set(_DocumentNumberRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
         }
+        private IDataLoadEngine _DocumentNumberRecoded;
+        private string _DocumentNumberRecoded_Not_Valid = "";
+        private void DocumentNumberRecoded_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(DocumentNumberRecoded));
+        }
+        //DocumentNumberRecoded property
 
         //DocumentDate property
         [Attributes.FormVisual("Дата документа")]
-        public DateTime DocumentDate
+        public DateTimeOffset DocumentDate
         {
             get
             {
@@ -407,8 +506,8 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _DocumentDate;//if change this change validation
-        private DateTime _DocumentDate_Not_Valid = DateTime.MinValue;
-        private void DocumentDate_Validation(DateTime value)//Ready
+        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.MinValue;
+        private void DocumentDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(DocumentDate));
         }
@@ -416,7 +515,7 @@ namespace Models.Client_Model
 
         //ExpirationDate property
         [Attributes.FormVisual("Срок действия документа")]
-        public DateTime ExpirationDate
+        public DateTimeOffset ExpirationDate
         {
             get
             {
@@ -440,8 +539,8 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ExpirationDate;
-        private DateTime _ExpirationDate_Not_Valid = DateTime.MinValue;
-        private void ExpirationDate_Validation(DateTime value)//TODO
+        private DateTimeOffset _ExpirationDate_Not_Valid = DateTimeOffset.MinValue;
+        private void ExpirationDate_Validation(DateTimeOffset value)//TODO
         {
             ClearErrors(nameof(ExpirationDate));
         }

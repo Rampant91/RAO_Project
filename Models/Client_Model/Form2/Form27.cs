@@ -12,11 +12,11 @@ namespace Models.Client_Model
     {
         public Form27() : base()
         {
+            FormNum = "27";
+            NumberOfFields = 15;
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "27"; } }
-        public override int NumberOfFields { get; } = 15;
         public override void Object_Validation()
         {
 
@@ -123,7 +123,7 @@ namespace Models.Client_Model
 
         //ValidBegin property
         [Attributes.FormVisual("Действует с")]
-        public DateTime ValidBegin
+        public DateTimeOffset ValidBegin
         {
             get
             {
@@ -147,7 +147,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidBegin;
-        private DateTime _ValidBegin_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidBegin_Not_Valid = DateTimeOffset.MinValue;
         private void ValidBegin_Validation()
         {
             ClearErrors(nameof(ValidBegin));
@@ -156,7 +156,7 @@ namespace Models.Client_Model
 
         //ValidThru property
         [Attributes.FormVisual("Действует по")]
-        public DateTime ValidThru
+        public DateTimeOffset ValidThru
         {
             get
             {
@@ -180,7 +180,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidThru;
-        private DateTime _ValidThru_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.MinValue;
         private void ValidThru_Validation()
         {
             ClearErrors(nameof(ValidThru));

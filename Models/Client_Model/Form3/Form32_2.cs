@@ -12,11 +12,11 @@ namespace Models.Client_Model
     {
         public Form32_2() : base()
         {
+            FormNum = "32_2";
+            NumberOfFields = 6;
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "32_2"; } }
-        public override int NumberOfFields { get; } = 6;
         public override void Object_Validation()
         {
 
@@ -88,16 +88,37 @@ namespace Models.Client_Model
         }
         //PackType property
 
-        private string _packTypeRecoded = "";
+        //PackTypeRecoded property
         public string PackTypeRecoded
         {
-            get { return _packTypeRecoded; }
+            get
+            {
+                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                {
+                    return (string)_PackTypeRecoded.Get();
+                }
+                else
+                {
+                    return _PackTypeRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _packTypeRecoded = value;
-                OnPropertyChanged("PackTypeRecoded");
+                _PackTypeRecoded_Not_Valid = value;
+                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                {
+                    _PackTypeRecoded.Set(_PackTypeRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
+        private IDataLoadEngine _PackTypeRecoded;
+        private string _PackTypeRecoded_Not_Valid = "";
+        private void PackTypeRecoded_Validation()
+        {
+            ClearErrors(nameof(PackTypeRecoded));
+        }
+        //PackTypeRecoded property
 
         //Id property
         [Attributes.FormVisual("Идентификационный номер")]

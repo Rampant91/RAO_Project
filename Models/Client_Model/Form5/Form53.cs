@@ -9,11 +9,11 @@ namespace Models.Client_Model
     {
         public Form53() : base()
         {
+            FormNum = "53";
+            NumberOfFields = 13;
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "53"; } }
-        public override int NumberOfFields { get; } = 13;
         public override void Object_Validation()
         {
 
@@ -187,16 +187,37 @@ namespace Models.Client_Model
         }
         //ProviderOrRecieverOKPO property
 
-        private string _providerOrRecieverOKPONote = "";
+        //ProviderOrRecieverOKPONote property
         public string ProviderOrRecieverOKPONote
         {
-            get { return _providerOrRecieverOKPONote; }
+            get
+            {
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                {
+                    return (string)_ProviderOrRecieverOKPONote.Get();
+                }
+                else
+                {
+                    return _ProviderOrRecieverOKPONote_Not_Valid;
+                }
+            }
             set
             {
-                _providerOrRecieverOKPONote = value;
-                OnPropertyChanged("ProviderOrRecieverOKPONote");
+                _ProviderOrRecieverOKPONote_Not_Valid = value;
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                {
+                    _ProviderOrRecieverOKPONote.Set(_ProviderOrRecieverOKPONote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
+        private IDataLoadEngine _ProviderOrRecieverOKPONote;
+        private string _ProviderOrRecieverOKPONote_Not_Valid = "";
+        private void ProviderOrRecieverOKPONote_Validation()
+        {
+            ClearErrors(nameof(ProviderOrRecieverOKPONote));
+        }
+        //ProviderOrRecieverOKPONote property
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]

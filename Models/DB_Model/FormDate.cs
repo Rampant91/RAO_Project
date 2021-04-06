@@ -20,8 +20,8 @@ namespace Models.DB_Model
                 _id = value;
             }
         }
-        private DateTime _date = DateTime.MinValue;
-        public DateTime Date
+        private DateTimeOffset _date = DateTimeOffset.MinValue;
+        public DateTimeOffset Date
         {
             get
             {
@@ -33,7 +33,7 @@ namespace Models.DB_Model
             }
         }
         public FormDate() { }
-        public FormDate(int id, DateTime date)
+        public FormDate(int id, DateTimeOffset date)
         {
             Id = id;
             Date = date;

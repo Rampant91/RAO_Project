@@ -8,15 +8,15 @@ namespace Models.Client_Model
 {
     [Serializable]
     [Attributes.FormVisual_Class("Форма 4.1: Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне")]
-    public class Form41 : Form4
+    public class Form41 : Form
     {
         public Form41() : base()
         {
+            FormNum = "41";
+            NumberOfFields = 9;
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "41"; } }
-        public override int NumberOfFields { get; } = 9;
         public override void Object_Validation()
         {
 

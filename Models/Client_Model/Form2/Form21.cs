@@ -7,13 +7,63 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
     public class Form21: Form2
     {
-        public Form21() : base()
+        public Form21(bool isSQL) : base()
         {
+            FormNum = "21";
+            NumberOfFields = 24;
+            if (isSQL)
+            {
+                _RefineMachineName = new SQLite("RefineMachineName", FormNum, 0);
+                _MachineCode = new SQLite("MachineCode", FormNum, 0);
+                _MachinePower = new SQLite("MachinePower", FormNum, 0);
+                _NumberOfHoursPerYear = new SQLite("NumberOfHoursPerYear", FormNum, 0);
+                _CodeRAOIn = new SQLite("CodeRAOIn", FormNum, 0);
+                _StatusRAOIn = new SQLite("StatusRAOIn", FormNum, 0);
+                _VolumeIn = new SQLite("VolumeIn", FormNum, 0);
+                _MassIn = new SQLite("MassIn", FormNum, 0);
+                _QuantityIn = new SQLite("QuantityIn", FormNum, 0);
+                _CodeRAOout = new SQLite("CodeRAOout", FormNum, 0);
+                _StatusRAOout = new SQLite("StatusRAOout", FormNum, 0);
+                _VolumeOut = new SQLite("VolumeOut", FormNum, 0);
+                _MassOut = new SQLite("MassOut", FormNum, 0);
+                _TritiumActivityIn = new SQLite("TritiumActivityIn", FormNum, 0);
+                _TritiumActivityOut = new SQLite("TritiumActivityOut", FormNum, 0);
+                _QuantityOZIIIout = new SQLite("QuantityOZIIIout", FormNum, 0);
+                _TransuraniumActivityIn = new SQLite("TransuraniumActivityIn", FormNum, 0);
+                _TransuraniumActivityOut = new SQLite("TransuraniumActivityOut", FormNum, 0);
+                _BetaGammaActivityIn = new SQLite("BetaGammaActivityIn", FormNum, 0);
+                _AlphaActivityIn = new SQLite("AlphaActivityIn", FormNum, 0);
+                _BetaGammaActivityOut = new SQLite("BetaGammaActivityOut", FormNum, 0);
+                _AlphaActivityOut = new SQLite("AlphaActivityOut", FormNum, 0);
+            }
+            else
+            {
+                _RefineMachineName = new File();
+                _MachineCode = new File();
+                _MachinePower = new File();
+                _NumberOfHoursPerYear = new File();
+                _CodeRAOIn = new File();
+                _StatusRAOIn = new File();
+                _VolumeIn = new File();
+                _MassIn = new File();
+                _QuantityIn = new File();
+                _CodeRAOout = new File();
+                _StatusRAOout = new File();
+                _VolumeOut = new File();
+                _MassOut = new File();
+                _TritiumActivityIn = new File();
+                _TritiumActivityOut = new File();
+                _QuantityOZIIIout = new File();
+                _TransuraniumActivityIn = new File();
+                _TransuraniumActivityOut = new File();
+                _BetaGammaActivityIn = new File();
+                _BetaGammaActivityOut = new File();
+                _AlphaActivityIn = new File();
+                _AlphaActivityOut = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "21"; } }
-        public override int NumberOfFields { get; } = 19;
         public override void Object_Validation()
         {
 

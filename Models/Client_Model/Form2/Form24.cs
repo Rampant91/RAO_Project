@@ -10,13 +10,67 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе")]
     public class Form24: Form2
     {
-        public Form24() : base()
+        public Form24(bool isSQL) : base()
         {
+            FormNum = "24";
+            NumberOfFields = 26;
+            if (isSQL)
+            {
+                _CodeOYATnote = new SQLite("CodeOYATnote", FormNum, 0);
+                _MassCreated = new SQLite("MassCreated", FormNum, 0);
+                _QuantityCreated = new SQLite("QuantityCreated", FormNum, 0);
+                _QuantityCreatedNote = new SQLite("QuantityCreatedNote", FormNum, 0);
+                _MassFromAnothers = new SQLite("MassFromAnothers", FormNum, 0);
+                _QuantityFromAnothers = new SQLite("QuantityFromAnothers", FormNum, 0);
+                _QuantityFromAnothersNote = new SQLite("QuantityFromAnothersNote", FormNum, 0);
+                _MassFromAnothersImported = new SQLite("MassFromAnothersImported", FormNum, 0);
+                _QuantityFromAnothersImported = new SQLite("QuantityFromAnothersImported", FormNum, 0);
+                _QuantityFromAnothersImportedNote = new SQLite("QuantityFromAnothersImportedNote", FormNum, 0);
+                _MassAnotherReasons = new SQLite("MassAnotherReasons", FormNum, 0);
+                _QuantityAnotherReasons = new SQLite("QuantityAnotherReasons", FormNum, 0);
+                _QuantityAnotherReasonsNote = new SQLite("QuantityAnotherReasonsNote", FormNum, 0);
+                _MassRefined = new SQLite("MassRefined", FormNum, 0);
+                _MassTransferredToAnother = new SQLite("MassTransferredToAnother", FormNum, 0);
+                _QuantityTransferredToAnother = new SQLite("QuantityTransferredToAnother", FormNum, 0);
+                _QuantityTransferredToAnotherNote = new SQLite("CodeOYAT", FormNum, 0);
+                _QuantityRefined = new SQLite("QuantityRefined", FormNum, 0);
+                _QuantityRefinedNote = new SQLite("QuantityRefinedNote", FormNum, 0);
+                _MassRemovedFromAccount = new SQLite("MassRemovedFromAccount", FormNum, 0);
+                _QuantityRemovedFromAccount = new SQLite("QuantityRemovedFromAccount", FormNum, 0);
+                _QuantityRemovedFromAccountNote = new SQLite("QuantityRemovedFromAccountNote", FormNum, 0);
+                _CodeOYAT = new SQLite("CodeOYAT", FormNum, 0);
+                _FcpNumber = new SQLite("FcpNumber", FormNum, 0);
+            }
+            else
+            {
+                _CodeOYATnote = new File();
+                _MassCreated = new File();
+                _QuantityCreated = new File();
+                _QuantityCreatedNote = new File();
+                _MassFromAnothers = new File();
+                _QuantityFromAnothers = new File();
+                _QuantityFromAnothersNote = new File();
+                _MassFromAnothersImported = new File();
+                _QuantityFromAnothersImported = new File();
+                _QuantityFromAnothersImportedNote = new File();
+                _MassAnotherReasons = new File();
+                _QuantityAnotherReasons = new File();
+                _QuantityAnotherReasonsNote = new File();
+                _MassRefined = new File();
+                _MassTransferredToAnother = new File();
+                _QuantityTransferredToAnother = new File();
+                _QuantityTransferredToAnotherNote = new File();
+                _QuantityRefined = new File();
+                _QuantityRefinedNote = new File();
+                _MassRemovedFromAccount = new File();
+                _QuantityRemovedFromAccount = new File();
+                _QuantityRemovedFromAccountNote = new File();
+                _CodeOYAT = new File();
+                _FcpNumber = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "24"; } }
-        public override int NumberOfFields { get; } = 26;
         public override void Object_Validation()
         {
 
@@ -55,16 +109,37 @@ namespace Models.Client_Model
         }
         //CodeOYAT property
 
-        private string _codeOYATnote = "";
+        //CodeOYATnote property
         public string CodeOYATnote
         {
-            get { return _codeOYATnote; }
+            get
+            {
+                if (GetErrors(nameof(CodeOYATnote)) != null)
+                {
+                    return (string)_CodeOYATnote.Get();
+                }
+                else
+                {
+                    return _CodeOYATnote_Not_Valid;
+                }
+            }
             set
             {
-                _codeOYATnote = value;
-                OnPropertyChanged("CodeOYATnote");
+                _CodeOYATnote_Not_Valid = value;
+                if (GetErrors(nameof(CodeOYATnote)) != null)
+                {
+                    _CodeOYATnote.Set(_CodeOYATnote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CodeOYATnote));
             }
         }
+        private IDataLoadEngine _CodeOYATnote;
+        private string _CodeOYATnote_Not_Valid = "";
+        private void CodeOYATnote_Validation()
+        {
+            ClearErrors(nameof(CodeOYATnote));
+        }
+        //CodeOYATnote property
 
         //FcpNumber property
         [Attributes.FormVisual("Номер мероприятия ФЦП")]
@@ -167,16 +242,39 @@ namespace Models.Client_Model
         }
         //QuantityCreated property
 
-        private int _quantityCreatedNote = -1;  // positive int.
+        //QuantityCreatedNote property
         public int QuantityCreatedNote
         {
-            get { return _quantityCreatedNote; }
+            get
+            {
+                if (GetErrors(nameof(QuantityCreatedNote)) != null)
+                {
+                    return (int)_QuantityCreatedNote.Get();
+                }
+                else
+                {
+                    return _QuantityCreatedNote_Not_Valid;
+                }
+            }
             set
             {
-                _quantityCreatedNote = value;
-                OnPropertyChanged("QuantityCreatedNote");
+                _QuantityCreatedNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityCreatedNote)) != null)
+                {
+                    _QuantityCreatedNote.Set(_QuantityCreatedNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityCreatedNote));
             }
         }
+        private IDataLoadEngine _QuantityCreatedNote;  // positive int.
+        private int _QuantityCreatedNote_Not_Valid = -1;
+        private void QuantityCreatedNote_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityCreatedNote));
+            if (value <= 0)
+                AddError(nameof(QuantityCreatedNote), "Недопустимое значение");
+        }
+        //QuantityCreatedNote property
 
         //MassFromAnothers Property
         [Attributes.FormVisual("Масса поступившего от сторонних, т")]
@@ -246,16 +344,39 @@ namespace Models.Client_Model
         }
         //QuantityFromAnothers property
 
-        private int _quantityFromAnothersNote = -1;  // positive int.
+        //QuantityFromAnothersNote property
         public int QuantityFromAnothersNote
         {
-            get { return _quantityFromAnothersNote; }
+            get
+            {
+                if (GetErrors(nameof(QuantityFromAnothersNote)) != null)
+                {
+                    return (int)_QuantityFromAnothersNote.Get();
+                }
+                else
+                {
+                    return _QuantityFromAnothersNote_Not_Valid;
+                }
+            }
             set
             {
-                _quantityFromAnothersNote = value;
-                OnPropertyChanged("QuantityFromAnothersNote");
+                _QuantityFromAnothersNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityFromAnothersNote)) != null)
+                {
+                    _QuantityFromAnothersNote.Set(_QuantityFromAnothersNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityFromAnothersNote));
             }
         }
+        private IDataLoadEngine _QuantityFromAnothersNote;  // positive int.
+        private int _QuantityFromAnothersNote_Not_Valid = -1;
+        private void QuantityFromAnothersNote_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityFromAnothersNote));
+            if (value <= 0)
+                AddError(nameof(QuantityFromAnothersNote), "Недопустимое значение");
+        }
+        //QuantityFromAnothersNote property
 
         //MassFromAnothersImported Property
         [Attributes.FormVisual("Масса импортированного от сторонних, т")]
@@ -325,16 +446,39 @@ namespace Models.Client_Model
         }
         //QuantityFromAnothersImported property
 
-        private int _quantityFromAnothersImportedNote = -1;  // positive int.
+        //QuantityFromAnothersImportedNote property
         public int QuantityFromAnothersImportedNote
         {
-            get { return _quantityFromAnothersImportedNote; }
+            get
+            {
+                if (GetErrors(nameof(QuantityFromAnothersImportedNote)) != null)
+                {
+                    return (int)_QuantityFromAnothersImportedNote.Get();
+                }
+                else
+                {
+                    return _QuantityFromAnothersImportedNote_Not_Valid;
+                }
+            }
             set
             {
-                _quantityFromAnothersImportedNote = value;
-                OnPropertyChanged("QuantityFromAnothersImportedNote");
+                _QuantityFromAnothersImportedNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityFromAnothersNote)) != null)
+                {
+                    _QuantityFromAnothersImportedNote.Set(_QuantityFromAnothersImportedNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityFromAnothersImportedNote));
             }
         }
+        private IDataLoadEngine _QuantityFromAnothersImportedNote;  // positive int.
+        private int _QuantityFromAnothersImportedNote_Not_Valid = -1;
+        private void QuantityFromAnothersImportedNote_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityFromAnothersImportedNote));
+            if (value <= 0)
+                AddError(nameof(QuantityFromAnothersImportedNote), "Недопустимое значение");
+        }
+        //QuantityFromAnothersImportedNote property
 
         //MassAnotherReasons Property
         [Attributes.FormVisual("Масса поставленного на учет по другим причинам, т")]
@@ -404,16 +548,39 @@ namespace Models.Client_Model
         }
         //QuantityAnotherReasons property
 
-        private int _quantityAnotherReasonsNote = -1;  // positive int.
+        //QuantityAnotherReasonsNote property
         public int QuantityAnotherReasonsNote
         {
-            get { return _quantityAnotherReasonsNote; }
+            get
+            {
+                if (GetErrors(nameof(QuantityAnotherReasonsNote)) != null)
+                {
+                    return (int)_QuantityAnotherReasonsNote.Get();
+                }
+                else
+                {
+                    return _QuantityAnotherReasonsNote_Not_Valid;
+                }
+            }
             set
             {
-                _quantityAnotherReasonsNote = value;
-                OnPropertyChanged("QuantityAnotherReasonsNote");
+                _QuantityAnotherReasonsNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityAnotherReasonsNote)) != null)
+                {
+                    _QuantityAnotherReasonsNote.Set(_QuantityAnotherReasonsNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
             }
         }
+        private IDataLoadEngine _QuantityAnotherReasonsNote;  // positive int.
+        private int _QuantityAnotherReasonsNote_Not_Valid = -1;
+        private void QuantityAnotherReasonsNote_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityAnotherReasonsNote));
+            if (value <= 0)
+                AddError(nameof(QuantityAnotherReasonsNote), "Недопустимое значение");
+        }
+        //QuantityAnotherReasonsNote property
 
         //MassTransferredToAnother Property
         [Attributes.FormVisual("Масса переданного сторонним, т")]
@@ -483,16 +650,39 @@ namespace Models.Client_Model
         }
         //QuantityTransferredToAnother property
 
-        private int _quantityTransferredToAnotherNote = -1;  // positive int.
+        //QuantityTransferredToAnotherNote property
         public int QuantityTransferredToAnotherNote
         {
-            get { return _quantityTransferredToAnotherNote; }
+            get
+            {
+                if (GetErrors(nameof(QuantityTransferredToAnotherNote)) != null)
+                {
+                    return (int)_QuantityTransferredToAnotherNote.Get();
+                }
+                else
+                {
+                    return _QuantityTransferredToAnotherNote_Not_Valid;
+                }
+            }
             set
             {
-                _quantityTransferredToAnotherNote = value;
-                OnPropertyChanged("QuantityTransferredToAnotherNote");
+                _QuantityTransferredToAnotherNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityTransferredToAnotherNote)) != null)
+                {
+                    _QuantityTransferredToAnotherNote.Set(_QuantityTransferredToAnotherNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityTransferredToAnotherNote));
             }
         }
+        private IDataLoadEngine _QuantityTransferredToAnotherNote;  // positive int.
+        private int _QuantityTransferredToAnotherNote_Not_Valid = -1;
+        private void QuantityTransferredToAnotherNote_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityTransferredToAnotherNote));
+            if (value <= 0)
+                AddError(nameof(QuantityTransferredToAnotherNote), "Недопустимое значение");
+        }
+        //QuantityTransferredToAnotherNote property
 
         //MassRefined Property
         [Attributes.FormVisual("Масса переработанного, т")]
@@ -562,16 +752,39 @@ namespace Models.Client_Model
         }
         //QuantityRefined property
 
-        private int _quantityRefinedNote = -1;  // positive int.
+        //QuantityRefinedNote property
         public int QuantityRefinedNote
         {
-            get { return _quantityRefinedNote; }
+            get
+            {
+                if (GetErrors(nameof(QuantityRefinedNote)) != null)
+                {
+                    return (int)_QuantityRefinedNote.Get();
+                }
+                else
+                {
+                    return _QuantityRefinedNote_Not_Valid;
+                }
+            }
             set
             {
-                _quantityRefinedNote = value;
-                OnPropertyChanged("QuantityRefinedNote");
+                _QuantityRefinedNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityRefinedNote)) != null)
+                {
+                    _QuantityRefinedNote.Set(_QuantityRefinedNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityRefinedNote));
             }
         }
+        private IDataLoadEngine _QuantityRefinedNote;  // positive int.
+        private int _QuantityRefinedNote_Not_Valid = -1;
+        private void QuantityRefinedNote_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityRefinedNote));
+            if (value <= 0)
+                AddError(nameof(QuantityRefinedNote), "Недопустимое значение");
+        }
+        //QuantityRefinedNote property
 
         //MassRemovedFromAccount Property
         [Attributes.FormVisual("Масса снятого с учета, т")]
@@ -641,15 +854,39 @@ namespace Models.Client_Model
         }
         //QuantityRemovedFromAccount property
 
-        private int _quantityRemovedFromAccountNote = -1;  // positive int.
+        //QuantityRemovedFromAccountNote property
+        [Attributes.FormVisual("Количество снятого с учета, шт.")]
         public int QuantityRemovedFromAccountNote
         {
-            get { return _quantityRemovedFromAccountNote; }
+            get
+            {
+                if (GetErrors(nameof(QuantityRemovedFromAccountNote)) != null)
+                {
+                    return (int)_QuantityRemovedFromAccountNote.Get();
+                }
+                else
+                {
+                    return _QuantityRemovedFromAccountNote_Not_Valid;
+                }
+            }
             set
             {
-                _quantityRemovedFromAccountNote = value;
-                OnPropertyChanged("QuantityRemovedFromAccountNote");
+                _QuantityRemovedFromAccountNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityRemovedFromAccountNote)) != null)
+                {
+                    _QuantityRemovedFromAccountNote.Set(_QuantityRemovedFromAccountNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(QuantityRemovedFromAccountNote));
             }
         }
+        private IDataLoadEngine _QuantityRemovedFromAccountNote;  // positive int.
+        private int _QuantityRemovedFromAccountNote_Not_Valid = -1;
+        private void QuantityRemovedFromAccountNote_Validation(int value)//Ready
+        {
+            ClearErrors(nameof(QuantityRemovedFromAccountNote));
+            if (value <= 0)
+                AddError(nameof(QuantityRemovedFromAccountNote), "Недопустимое значение");
+        }
+        //QuantityRemovedFromAccountNote property
     }
 }

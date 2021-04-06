@@ -7,9 +7,12 @@ namespace Models.Client_Model
     public abstract class Form2:Form
     {
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get; } = "2";
-        public override abstract int NumberOfFields { get; }
 
+        public Form2()
+        {
+            _CorrectionNumber = new File();
+            _NumberInOrder = new File();
+        }
         //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]
         public byte CorrectionNumber

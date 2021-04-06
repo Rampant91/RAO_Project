@@ -7,13 +7,34 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.5: Наличие РВ, содержащихся в отработавшем ядерном топливе, в пунктах хранения")]
     public class Form25: Form2
     {
-        public Form25() : base()
+        public Form25(bool isSQL) : base()
         {
+            FormNum = "25";
+            NumberOfFields = 12;
+            if (isSQL)
+            {
+                
+                _CodeOYAT = new SQLite("CodeOYAT", FormNum, 0);
+                _AlphaActivity = new SQLite("AlphaActivity", FormNum, 0);
+                _BetaGammaActivity = new SQLite("BetaGammaActivity", FormNum, 0);
+                _StoragePlaceCode = new SQLite("StoragePlaceCode", FormNum, 0);
+                _StoragePlaceName = new SQLite("StoragePlaceName", FormNum, 0);
+                _FcpNumber = new SQLite("FcpNumber", FormNum, 0);
+                _Quantity = new SQLite("Quantity", FormNum, 0);
+            }
+            else
+            {
+                _CodeOYAT = new File();
+                _AlphaActivity = new File();
+                _BetaGammaActivity = new File();
+                _StoragePlaceCode = new File();
+                _StoragePlaceName = new File();
+                _FcpNumber = new File();
+                _Quantity = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "25"; } }
-        public override int NumberOfFields { get; } = 12;
         public override void Object_Validation()
         {
 

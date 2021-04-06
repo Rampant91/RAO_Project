@@ -103,7 +103,7 @@ namespace Models.Storage
             _Storage = new Report_Observable();
             foreach (var item in t)
             {
-                _Storage.Add(new Client_Model.Report(item));
+                _Storage.Add(new Client_Model.Report(item, true));
             }
             _Filters = new Filter.Filter<Client_Model.Report>();
             Storage.CollectionChanged += StorageChanged;

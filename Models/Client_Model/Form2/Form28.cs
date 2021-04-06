@@ -12,11 +12,11 @@ namespace Models.Client_Model
     {
         public Form28() : base()
         {
+            FormNum = "28";
+            NumberOfFields = 24;
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "28"; } }
-        public override int NumberOfFields { get; } = 24;
         public override void Object_Validation()
         {
 
@@ -123,7 +123,7 @@ namespace Models.Client_Model
 
         //ValidBegin property
         [Attributes.FormVisual("Действует с")]
-        public DateTime ValidBegin
+        public DateTimeOffset ValidBegin
         {
             get
             {
@@ -147,7 +147,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidBegin;
-        private DateTime _ValidBegin_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidBegin_Not_Valid = DateTimeOffset.MinValue;
         private void ValidBegin_Validation()
         {
             ClearErrors(nameof(ValidBegin));
@@ -156,7 +156,7 @@ namespace Models.Client_Model
 
         //ValidThru property
         [Attributes.FormVisual("Действует по")]
-        public DateTime ValidThru
+        public DateTimeOffset ValidThru
         {
             get
             {
@@ -180,7 +180,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidThru;
-        private DateTime _ValidThru_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.MinValue;
         private void ValidThru_Validation()
         {
             ClearErrors(nameof(ValidThru));
@@ -288,7 +288,7 @@ namespace Models.Client_Model
 
         //ValidBegin1 property
         [Attributes.FormVisual("Действует с")]
-        public DateTime ValidBegin1
+        public DateTimeOffset ValidBegin1
         {
             get
             {
@@ -312,7 +312,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidBegin1;
-        private DateTime _ValidBegin1_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidBegin1_Not_Valid = DateTimeOffset.MinValue;
         private void ValidBegin1_Validation()
         {
             ClearErrors(nameof(ValidBegin1));
@@ -321,7 +321,7 @@ namespace Models.Client_Model
 
         //ValidThru1 property
         [Attributes.FormVisual("Действует по")]
-        public DateTime ValidThru1
+        public DateTimeOffset ValidThru1
         {
             get
             {
@@ -345,7 +345,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidThru1;
-        private DateTime _ValidThru1_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidThru1_Not_Valid = DateTimeOffset.MinValue;
         private void ValidThru1_Validation()
         {
             ClearErrors(nameof(ValidThru1));
@@ -453,7 +453,7 @@ namespace Models.Client_Model
 
         //ValidBegin2 property
         [Attributes.FormVisual("Действует с")]
-        public DateTime ValidBegin2
+        public DateTimeOffset ValidBegin2
         {
             get
             {
@@ -477,7 +477,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidBegin2;
-        private DateTime _ValidBegin2_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidBegin2_Not_Valid = DateTimeOffset.MinValue;
         private void ValidBegin2_Validation()
         {
             ClearErrors(nameof(ValidBegin2));
@@ -486,7 +486,7 @@ namespace Models.Client_Model
 
         //ValidThru2 property
         [Attributes.FormVisual("Действует по")]
-        public DateTime ValidThru2
+        public DateTimeOffset ValidThru2
         {
             get
             {
@@ -510,7 +510,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidThru2;
-        private DateTime _ValidThru2_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidThru2_Not_Valid = DateTimeOffset.MinValue;
         private void ValidThru2_Validation()
         {
             ClearErrors(nameof(ValidThru2));

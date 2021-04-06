@@ -7,8 +7,11 @@ namespace Models.Client_Model
     public abstract class Form3:Form
     {
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get; } = "3";
-        public override abstract int NumberOfFields { get; }
+        
+        public Form3()
+        {
+            
+        }
 
         //CorrectionNumber property
         [Attributes.FormVisual("Номер корректировки")]
@@ -45,13 +48,13 @@ namespace Models.Client_Model
 
         //NotificationDate property
         [Attributes.FormVisual("Дата уведомления")]
-        public DateTime NotificationDate
+        public DateTimeOffset NotificationDate
         {
             get
             {
                 if (GetErrors(nameof(NotificationDate)) != null)
                 {
-                    return (DateTime)_NotificationDate.Get();
+                    return (DateTimeOffset)_NotificationDate.Get();
                 }
                 else
                 {
@@ -69,7 +72,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _NotificationDate;
-        private DateTime _NotificationDate_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _NotificationDate_Not_Valid = DateTimeOffset.MinValue;
         //NotificationDate property
     }
 }

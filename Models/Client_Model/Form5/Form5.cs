@@ -7,8 +7,10 @@ namespace Models.Client_Model
     public abstract class Form5:Form
     {
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get; } = "5";
-        public override abstract int NumberOfFields { get; }
+        public Form5()
+        {
+
+        }
 
         //NumberInOrder property
         [Attributes.FormVisual("№ п/п")]

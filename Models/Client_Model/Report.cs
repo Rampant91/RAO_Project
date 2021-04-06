@@ -11,7 +11,7 @@ namespace Models.Client_Model
     public class Report : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         int ID { get; set; }
-        public Report(bool isSQL)
+        public Report(int arg, bool isSQL)
         {
             if (isSQL)
             {
@@ -108,9 +108,9 @@ namespace Models.Client_Model
         {
             get
             {
-                if (GetErrors(nameof(IsCorrection)) != null)
+                if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    return _IsCorrection;
+                    return (bool)_IsCorrection.Get();
                 }
                 else
                 {
@@ -120,14 +120,14 @@ namespace Models.Client_Model
             set
             {
                 _IsCorrection_Not_Valid = value;
-                if (IsCorrection_Validation())
+                if (GetErrors(nameof(IsCorrection)) != null)
                 {
-                    _IsCorrection = _IsCorrection_Not_Valid;
+                    _IsCorrection.Set(_IsCorrection_Not_Valid);
                 }
                 OnPropertyChanged(nameof(IsCorrection));
             }
         }
-        private bool _IsCorrection = false;
+        private IDataLoadEngine _IsCorrection;
         private bool _IsCorrection_Not_Valid = false;
         private bool IsCorrection_Validation()
         {
@@ -168,15 +168,15 @@ namespace Models.Client_Model
         }
         //CorrectionNumber property
 
-        //Comments
+        //NumberInOrder property
         [Attributes.FormVisual("Номер")]
         public string NumberInOrder
         {
             get
             {
-                if (GetErrors(nameof(EndPeriod)) != null)
+                if (GetErrors(nameof(NumberInOrder)) != null)
                 {
-                    return _NumberInOrder;
+                    return (string)_NumberInOrder.Get();
                 }
                 else
                 {
@@ -186,30 +186,30 @@ namespace Models.Client_Model
             set
             {
                 _NumberInOrder_Not_Valid = value;
-                if (NumberInOrder_Validation())
+                if (GetErrors(nameof(NumberInOrder)) != null)
                 {
-                    _NumberInOrder = _NumberInOrder_Not_Valid;
+                    _NumberInOrder.Set(_NumberInOrder_Not_Valid);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        private string _NumberInOrder = "";
+        private IDataLoadEngine _NumberInOrder;
         private string _NumberInOrder_Not_Valid = "";
         private bool NumberInOrder_Validation()
         {
             return true;
         }
-        //Comments
+        //NumberInOrder property
 
-        //Comments
+        //Comments property
         [Attributes.FormVisual("Комментарий")]
         public string Comments
         {
             get
             {
-                if (GetErrors(nameof(EndPeriod)) != null)
+                if (GetErrors(nameof(Comments)) != null)
                 {
-                    return _Comments;
+                    return (string)_Comments.Get();
                 }
                 else
                 {
@@ -219,30 +219,30 @@ namespace Models.Client_Model
             set
             {
                 _Comments_Not_Valid = value;
-                if (Comments_Validation())
+                if (GetErrors(nameof(NumberInOrder)) != null)
                 {
-                    _Comments = _Comments_Not_Valid;
+                    _Comments.Set(_Comments_Not_Valid);
                 }
-                OnPropertyChanged(nameof(StartPeriod));
+                OnPropertyChanged(nameof(Comments));
             }
         }
-        private string _Comments = "";
+        private IDataLoadEngine _Comments;
         private string _Comments_Not_Valid = "";
         private bool Comments_Validation()
         {
             return true;
         }
-        //Comments
+        //Comments property
 
-        //Notes
+        //Notes property
         [Attributes.FormVisual("Примечания")]
         public Client_Model.Note_Observable Notes
         {
             get
             {
-                if (GetErrors(nameof(EndPeriod)) != null)
+                if (GetErrors(nameof(Notes)) != null)
                 {
-                    return _Notes;
+                    return (Client_Model.Note_Observable)_Notes.Get();
                 }
                 else
                 {
@@ -252,20 +252,20 @@ namespace Models.Client_Model
             set
             {
                 _Notes_Not_Valid = value;
-                if (Comments_Validation())
+                if (GetErrors(nameof(Notes)) != null)
                 {
-                    _Comments = _Comments_Not_Valid;
+                    _Notes.Set(_Notes_Not_Valid);
                 }
-                OnPropertyChanged(nameof(StartPeriod));
+                OnPropertyChanged(nameof(Notes));
             }
         }
-        private Client_Model.Note_Observable _Notes=new Note_Observable();
+        private IDataLoadEngine _Notes;
         private Client_Model.Note_Observable _Notes_Not_Valid=new Note_Observable();
         private bool Notes_Validation()
         {
             return true;
         }
-        //Notes
+        //Notes property
 
         //StartPeriod
         [Attributes.FormVisual("Начало")]
@@ -275,7 +275,7 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(StartPeriod)) != null)
                 {
-                    return _StartPeriod;
+                    return (DateTimeOffset)_StartPeriod.Get();
                 }
                 else
                 {
@@ -285,22 +285,22 @@ namespace Models.Client_Model
             set
             {
                 _StartPeriod_Not_Valid = value;
-                if (StartPeriod_Validation())
+                if (GetErrors(nameof(StartPeriod)) != null)
                 {
-                    _StartPeriod = _StartPeriod_Not_Valid;
+                    _StartPeriod.Set(_StartPeriod_Not_Valid);
                 }
                 OnPropertyChanged(nameof(StartPeriod));
             }
         }
-        private DateTimeOffset _StartPeriod = DateTimeOffset.Now;
+        private IDataLoadEngine _StartPeriod;
         private DateTimeOffset _StartPeriod_Not_Valid = DateTimeOffset.Now;
         private bool StartPeriod_Validation()
         {
             ClearErrors(nameof(StartPeriod));
-            if (_StartPeriod_Not_Valid.Equals(DateTime.MinValue))
+            if (_StartPeriod_Not_Valid.Equals(DateTimeOffset.MinValue))
                 AddError(nameof(StartPeriod), "Не заполнено начало периода");
             else
-                if (!EndPeriod.Equals(DateTime.MinValue))
+                if (!EndPeriod.Equals(DateTimeOffset.MinValue))
                 if (_StartPeriod_Not_Valid.CompareTo(_EndPeriod_Not_Valid) > 0)
                     AddError(nameof(StartPeriod), "Начало периода не может быть позже его конца");
 
@@ -323,7 +323,7 @@ namespace Models.Client_Model
             {
                 if (GetErrors(nameof(EndPeriod)) != null)
                 {
-                    return _EndPeriod;
+                    return (DateTimeOffset)_EndPeriod.Get();
                 }
                 else
                 {
@@ -333,14 +333,14 @@ namespace Models.Client_Model
             set
             {
                 _EndPeriod_Not_Valid = value;
-                if (EndPeriod_Validation())
+                if (GetErrors(nameof(EndPeriod)) != null)
                 {
-                    _EndPeriod = _EndPeriod_Not_Valid;
+                    _EndPeriod.Set(_EndPeriod_Not_Valid);
                 }
-                OnPropertyChanged(nameof(StartPeriod));
+                OnPropertyChanged(nameof(EndPeriod));
             }
         }
-        private DateTimeOffset _EndPeriod = DateTimeOffset.Now;
+        private IDataLoadEngine _EndPeriod;
         private DateTimeOffset _EndPeriod_Not_Valid = DateTimeOffset.Now;
         private bool EndPeriod_Validation()
         {
@@ -365,13 +365,13 @@ namespace Models.Client_Model
 
         //ExportDate
         [Attributes.FormVisual("Дата выгрузки")]
-        public DateTime ExportDate
+        public DateTimeOffset ExportDate
         {
             get
             {
-                if (GetErrors(nameof(EndPeriod)) != null)
+                if (GetErrors(nameof(ExportDate)) != null)
                 {
-                    return _ExportDate;
+                    return (DateTimeOffset)_ExportDate.Get();
                 }
                 else
                 {
@@ -381,15 +381,15 @@ namespace Models.Client_Model
             set
             {
                 _ExportDate_Not_Valid = value;
-                if (ExportDate_Validation())
+                if (GetErrors(nameof(ExportDate)) != null)
                 {
-                    _ExportDate = _ExportDate_Not_Valid;
+                    _ExportDate.Set(_ExportDate_Not_Valid);
                 }
-                OnPropertyChanged(nameof(StartPeriod));
+                OnPropertyChanged(nameof(ExportDate));
             }
         }
-        private DateTime _ExportDate = DateTime.MinValue;
-        private DateTime _ExportDate_Not_Valid = DateTime.MinValue;
+        private IDataLoadEngine _ExportDate;
+        private DateTimeOffset _ExportDate_Not_Valid = DateTimeOffset.MinValue;
         private bool ExportDate_Validation()
         {
             return true;

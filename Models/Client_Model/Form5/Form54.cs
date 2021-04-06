@@ -9,11 +9,11 @@ namespace Models.Client_Model
     {
         public Form54() : base()
         {
+            FormNum = "54";
+            NumberOfFields = 10;
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "54"; } }
-        public override int NumberOfFields { get; } = 10;
         public override void Object_Validation()
         {
 

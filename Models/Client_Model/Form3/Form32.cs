@@ -10,11 +10,11 @@ namespace Models.Client_Model
     {
         public Form32() : base()
         {
+            FormNum = "32";
+            NumberOfFields = 17;
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "32"; } }
-        public override int NumberOfFields { get; } = 17;
         public override void Object_Validation()
         {
 
@@ -51,7 +51,7 @@ namespace Models.Client_Model
 
         //SupplyDate property
         [Attributes.FormVisual("Дата поступления")]
-        public DateTime SupplyDate
+        public DateTimeOffset SupplyDate
         {
             get
             {
@@ -75,7 +75,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _SupplyDate;
-        private DateTime _SupplyDate_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _SupplyDate_Not_Valid = DateTimeOffset.MinValue;
         //SupplyDate property
 
         //RecieverName property
@@ -167,7 +167,7 @@ namespace Models.Client_Model
 
         //ValidThruRv property
         [Attributes.FormVisual("Лицензия истекает(РВ)")]
-        public DateTime ValidThruRv
+        public DateTimeOffset ValidThruRv
         {
             get
             {
@@ -191,7 +191,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidThruRv;
-        private DateTime _ValidThruRv_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidThruRv_Not_Valid = DateTimeOffset.MinValue;
         //ValidThruRv property
 
         //LicenseIdRao property
@@ -225,7 +225,7 @@ namespace Models.Client_Model
 
         //ValidThruRao property
         [Attributes.FormVisual("Лицензия истекает(РАО)")]
-        public DateTime ValidThruRao
+        public DateTimeOffset ValidThruRao
         {
             get
             {
@@ -249,7 +249,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidThruRao;
-        private DateTime _ValidThruRao_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidThruRao_Not_Valid = DateTimeOffset.MinValue;
         //ValidThruRao property
 
         //SupplyAddress property

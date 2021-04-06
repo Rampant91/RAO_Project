@@ -20,8 +20,8 @@ namespace Models.DB_Model
                 _id = value;
             }
         }
-        private DateTime _dateTime = DateTime.MinValue;
-        public DateTime DateTime
+        private DateTimeOffset _dateTime = DateTimeOffset.MinValue;
+        public DateTimeOffset DateTime
         {
             get
             {
@@ -45,7 +45,7 @@ namespace Models.DB_Model
             }
         }
         public Token() { }
-        public Token(int id, DateTime dateTime, int hash)
+        public Token(int id, DateTimeOffset dateTime, int hash)
         {
             Id = id;
             DateTime = dateTime;

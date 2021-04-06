@@ -7,13 +7,65 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения")]
     public class Form22 : Form2
     {
-        public Form22() : base()
+        public Form22(bool isSQL) : base()
         {
+            FormNum = "22";
+            NumberOfFields = 25;
+            if (isSQL)
+            {
+                _QuantityOZIII = new SQLite("QuantityOZIII", FormNum, 0);
+                _PackQuantity = new SQLite("PackQuantity", FormNum, 0);
+                _MassInPack = new SQLite("MassInPack", FormNum, 0);
+                _VolumeOutOfPack = new SQLite("VolumeOutOfPack", FormNum, 0);
+                _VolumeInPack = new SQLite("VolumeInPack", FormNum, 0);
+                _MassOutOfPack = new SQLite("MassOutOfPack", FormNum, 0);
+                _MainRadionuclids = new SQLite("MainRadionuclids", FormNum, 0);
+                _CodeRAO = new SQLite("CodeRAO", FormNum, 0);
+                _AlphaActivity = new SQLite("AlphaActivity", FormNum, 0);
+                _BetaGammaActivity = new SQLite("BetaGammaActivity", FormNum, 0);
+                _TritiumActivity = new SQLite("TritiumActivity", FormNum, 0);
+                _TransuraniumActivity = new SQLite("TransuraniumActivity", FormNum, 0);
+                _StoragePlaceCode = new SQLite("StoragePlaceCode", FormNum, 0);
+                _StoragePlaceName = new SQLite("StoragePlaceName", FormNum, 0);
+                _Subsidy = new SQLite("Subsidy", FormNum, 0);
+                _StoragePlaceNameNote = new SQLite("StoragePlaceNameNote", FormNum, 0);
+                _StatusRAO = new SQLite("StatusRAO", FormNum, 0);
+                _FcpNumber = new SQLite("FcpNumber", FormNum, 0);
+                _PackName = new SQLite("PackName", FormNum, 0);
+                _PackNameNote = new SQLite("PackNameNote", FormNum, 0);
+                _PackType = new SQLite("PackType", FormNum, 0);
+                _PackTypeRecoded = new SQLite("PackTypeRecoded", FormNum, 0);
+                _PackTypeNote = new SQLite("PackTypeNote", FormNum, 0);
+            }
+            else
+            {
+                _QuantityOZIII = new File();
+                _PackQuantity = new File();
+                _MassInPack = new File();
+                _VolumeOutOfPack = new File();
+                _VolumeInPack = new File();
+                _MassOutOfPack = new File();
+                _MainRadionuclids = new File();
+                _CodeRAO = new File();
+                _AlphaActivity = new File();
+                _BetaGammaActivity = new File();
+                _TritiumActivity = new File();
+                _TransuraniumActivity = new File();
+                _StoragePlaceCode = new File();
+                _StoragePlaceName = new File();
+                _Subsidy = new File();
+                _StoragePlaceNameNote = new File();
+                _StatusRAO = new File();
+                _FcpNumber = new File();
+                _PackName = new File();
+                _PackNameNote = new File();
+                _PackType = new File();
+                _PackTypeRecoded = new File();
+                _PackTypeNote = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "22"; } }
-        public override int NumberOfFields { get; } = 25;
         public override void Object_Validation()
         {
 
@@ -52,16 +104,37 @@ namespace Models.Client_Model
         }
         //StoragePlaceName property
 
-        private string _storagePlaceNameNote = "";
+        //StoragePlaceNameNote property
         public string StoragePlaceNameNote
         {
-            get { return _storagePlaceNameNote; }
+            get
+            {
+                if (GetErrors(nameof(StoragePlaceNameNote)) != null)
+                {
+                    return (string)_StoragePlaceNameNote.Get();
+                }
+                else
+                {
+                    return _StoragePlaceNameNote_Not_Valid;
+                }
+            }
             set
             {
-                _storagePlaceNameNote = value;
-                OnPropertyChanged("StoragePlaceNameNote");
+                _StoragePlaceNameNote_Not_Valid = value;
+                if (GetErrors(nameof(StoragePlaceNameNote)) != null)
+                {
+                    _StoragePlaceNameNote.Set(_StoragePlaceNameNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
         }
+        private IDataLoadEngine _StoragePlaceNameNote;//If change this change validation
+        private string _StoragePlaceNameNote_Not_Valid = "";
+        private void StoragePlaceNameNote_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(StoragePlaceNameNote));
+        }
+        //StoragePlaceNameNote property
 
         //StoragePlaceCode property
         [Attributes.FormVisual("Код ПХ")]
@@ -141,16 +214,37 @@ namespace Models.Client_Model
         }
         //PackName property
 
-        private string _packNameNote = "";
+        //PackNameNote property
         public string PackNameNote
         {
-            get { return _packNameNote; }
+            get
+            {
+                if (GetErrors(nameof(PackNameNote)) != null)
+                {
+                    return (string)_PackNameNote.Get();
+                }
+                else
+                {
+                    return _PackNameNote_Not_Valid;
+                }
+            }
             set
             {
-                _packNameNote = value;
-                OnPropertyChanged("PackNameNote");
+                _PackNameNote_Not_Valid = value;
+                if (GetErrors(nameof(PackNameNote)) != null)
+                {
+                    _PackNameNote.Set(_PackNameNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackNameNote));
             }
         }
+        private IDataLoadEngine _PackNameNote;
+        private string _PackNameNote_Not_Valid = "";
+        private void PackNameNote_Validation()
+        {
+            ClearErrors(nameof(PackNameNote));
+        }
+        //PackNameNote property
 
         //PackType property
         [Attributes.FormVisual("Тип упаковки")]
@@ -185,27 +279,69 @@ namespace Models.Client_Model
         }
         //PackType property
 
-        private string _packTypeRecoded = "";
+        //PackTypeRecoded property
         public string PackTypeRecoded
         {
-            get { return _packTypeRecoded; }
+            get
+            {
+                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                {
+                    return (string)_PackTypeRecoded.Get();
+                }
+                else
+                {
+                    return _PackTypeRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _packTypeRecoded = value;
-                OnPropertyChanged("PackTypeRecoded");
+                _PackTypeRecoded_Not_Valid = value;
+                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                {
+                    _PackTypeRecoded.Set(_PackTypeRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
+        private IDataLoadEngine _PackTypeRecoded;
+        private string _PackTypeRecoded_Not_Valid = "";
+        private void PackTypeRecoded_Validation()
+        {
+            ClearErrors(nameof(PackTypeRecoded));
+        }
+        //PackTypeRecoded property
 
-        private string _packTypeNote = "";
+        //PackTypeNote property
         public string PackTypeNote
         {
-            get { return _packTypeNote; }
+            get
+            {
+                if (GetErrors(nameof(PackTypeNote)) != null)
+                {
+                    return (string)_PackTypeNote.Get();
+                }
+                else
+                {
+                    return _PackTypeNote_Not_Valid;
+                }
+            }
             set
             {
-                _packTypeNote = value;
-                OnPropertyChanged("PackTypeNote");
+                _PackTypeNote_Not_Valid = value;
+                if (GetErrors(nameof(PackTypeNote)) != null)
+                {
+                    _PackTypeNote.Set(_PackTypeNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PackTypeNote));
             }
         }
+        private IDataLoadEngine _PackTypeNote;
+        private string _PackTypeNote_Not_Valid = "";
+        private void PackTypeNote_Validation()
+        {
+            ClearErrors(nameof(PackTypeNote));
+        }
+        //PackTypeNote property
 
         //PackQuantity property
         [Attributes.FormVisual("Количество упаковок, шт.")]

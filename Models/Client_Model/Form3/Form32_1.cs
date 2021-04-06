@@ -12,11 +12,11 @@ namespace Models.Client_Model
     {
         public Form32_1() : base()
         {
+            FormNum = "32_1";
+            NumberOfFields = 15;
         }
 
         [Attributes.FormVisual("Форма")]
-        public override string FormNum { get { return "32_1"; } }
-        public override int NumberOfFields { get; } = 15;
         public override void Object_Validation()
         {
 
@@ -55,16 +55,37 @@ namespace Models.Client_Model
         }
         //PassportNumber property
 
-        private string _passportNumberNote = "";
+        //PassportNumberNote property
         public string PassportNumberNote
         {
-            get { return _passportNumberNote; }
+            get
+            {
+                if (GetErrors(nameof(PassportNumberNote)) != null)
+                {
+                    return (string)_PassportNumberNote.Get();
+                }
+                else
+                {
+                    return _PassportNumberNote_Not_Valid;
+                }
+            }
             set
             {
-                _passportNumberNote = value;
-                OnPropertyChanged("PassportNumberNote");
+                _PassportNumberNote_Not_Valid = value;
+                if (GetErrors(nameof(PassportNumberNote)) != null)
+                {
+                    _PassportNumberNote.Set(_PassportNumberNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(PassportNumberNote));
             }
         }
+        private IDataLoadEngine _PassportNumberNote;
+        private string _PassportNumberNote_Not_Valid = "";
+        private void PassportNumberNote_Validation()
+        {
+            ClearErrors(nameof(PassportNumberNote));
+        }
+        //PassportNumberNote property
 
         //CreatorOKPO property
         [Attributes.FormVisual("ОКПО изготовителя")]
@@ -132,16 +153,37 @@ namespace Models.Client_Model
         }
         //Type property
 
-        private string _typeRecoded = "";
+        //TypeRecoded property
         public string TypeRecoded
         {
-            get { return _typeRecoded; }
+            get
+            {
+                if (GetErrors(nameof(TypeRecoded)) != null)
+                {
+                    return (string)_TypeRecoded.Get();
+                }
+                else
+                {
+                    return _TypeRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _typeRecoded = value;
-                OnPropertyChanged("TypeRecoded");
+                _TypeRecoded_Not_Valid = value;
+                if (GetErrors(nameof(TypeRecoded)) != null)
+                {
+                    _TypeRecoded.Set(_TypeRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(TypeRecoded));
             }
         }
+        private IDataLoadEngine _TypeRecoded;
+        private string _TypeRecoded_Not_Valid = "";
+        private void TypeRecoded_Validation()
+        {
+            ClearErrors(nameof(TypeRecoded));
+        }
+        //TypeRecoded property
 
         //Radionuclids property
         [Attributes.FormVisual("Радионуклиды")]
@@ -209,16 +251,37 @@ namespace Models.Client_Model
         }
         //FactoryNumber property
 
-        private string _factoryNumberRecoded = "";
+        //FactoryNumberRecoded property
         public string FactoryNumberRecoded
         {
-            get { return _factoryNumberRecoded; }
+            get
+            {
+                if (GetErrors(nameof(FactoryNumberRecoded)) != null)
+                {
+                    return (string)_FactoryNumberRecoded.Get();
+                }
+                else
+                {
+                    return _FactoryNumberRecoded_Not_Valid;
+                }
+            }
             set
             {
-                _factoryNumberRecoded = value;
-                OnPropertyChanged("FactoryNumberRecoded");
+                _FactoryNumberRecoded_Not_Valid = value;
+                if (GetErrors(nameof(FactoryNumberRecoded)) != null)
+                {
+                    _FactoryNumberRecoded.Set(_FactoryNumberRecoded_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
         }
+        private IDataLoadEngine _FactoryNumberRecoded;//If change this change validation
+        private string _FactoryNumberRecoded_Not_Valid = "";
+        private void FactoryNumberRecoded_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(FactoryNumberRecoded));
+        }
+        //FactoryNumberRecoded property
 
         //ActivityOnCreation property
         [Attributes.FormVisual("Активность на дату создания, Бк")]
@@ -266,7 +329,7 @@ namespace Models.Client_Model
 
         //CreationDate property
         [Attributes.FormVisual("Дата изготовления")]
-        public DateTime CreationDate
+        public DateTimeOffset CreationDate
         {
             get
             {
@@ -290,23 +353,44 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _CreationDate;//If change this change validation
-        private DateTime _CreationDate_Not_Valid = DateTime.MinValue;
-        private void CreationDate_Validation(DateTime value)//Ready
+        private DateTimeOffset _CreationDate_Not_Valid = DateTimeOffset.MinValue;
+        private void CreationDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(CreationDate));
         }
         //CreationDate property
 
-        private string _creatorOKPONote = "";
+        //CreatorOKPONote property
         public string CreatorOKPONote
         {
-            get { return _creatorOKPONote; }
+            get
+            {
+                if (GetErrors(nameof(CreatorOKPONote)) != null)
+                {
+                    return (string)_CreatorOKPONote.Get();
+                }
+                else
+                {
+                    return _CreatorOKPONote_Not_Valid;
+                }
+            }
             set
             {
-                _creatorOKPONote = value;
-                OnPropertyChanged("CreatorOKPONote");
+                _CreatorOKPONote_Not_Valid = value;
+                if (GetErrors(nameof(CreatorOKPONote)) != null)
+                {
+                    _CreatorOKPONote.Set(_CreatorOKPONote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(CreatorOKPONote));
             }
         }
+        private IDataLoadEngine _CreatorOKPONote;
+        private string _CreatorOKPONote_Not_Valid = "";
+        private void CreatorOKPONote_Validation()
+        {
+            ClearErrors(nameof(CreatorOKPONote));
+        }
+        //CreatorOKPONote property
 
         //Kategory property
         [Attributes.FormVisual("Категория")]
@@ -401,7 +485,7 @@ namespace Models.Client_Model
 
         //ValidThru property
         [Attributes.FormVisual("Действует по")]
-        public DateTime ValidThru
+        public DateTimeOffset ValidThru
         {
             get
             {
@@ -425,7 +509,7 @@ namespace Models.Client_Model
             }
         }
         private IDataLoadEngine _ValidThru;
-        private DateTime _ValidThru_Not_Valid = DateTime.MinValue;
+        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.MinValue;
         //ValidThru property
     }
 }
