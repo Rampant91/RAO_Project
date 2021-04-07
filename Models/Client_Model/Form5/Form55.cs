@@ -10,10 +10,28 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.5: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций и переводе в РАО изделий из обедненного урана")]
     public class Form55 : Form5
     {
-        public Form55() : base()
+        public Form55(bool isSQL) : base()
         {
             FormNum = "55";
             NumberOfFields = 8;
+            if (isSQL)
+            {
+                _OperationCode = new SQLite("OperationCode", FormNum, 0);
+                _Mass = new SQLite("Mass", FormNum, 0);
+                _Name = new SQLite("Name", FormNum, 0);
+                _Quantity = new SQLite("Quantity", FormNum, 0);
+                _ProviderOrRecieverOKPO = new SQLite("ProviderOrRecieverOKPO", FormNum, 0);
+                _ProviderOrRecieverOKPONote = new SQLite("ProviderOrRecieverOKPONote", FormNum, 0);
+            }
+            else
+            {
+                _OperationCode = new File();
+                _Mass = new File();
+                _Name = new File();
+                _Quantity = new File();
+                _ProviderOrRecieverOKPO = new File();
+                _ProviderOrRecieverOKPONote = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

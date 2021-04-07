@@ -10,10 +10,54 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 3.0: Титульный лист отчета организации-экспортера радиоактивных источников 1 и 2 категории")]
     public class Form30 : Form
     {
-        public Form30() : base()
+        public Form30(bool isSQL) : base()
         {
             FormNum = "30";
             NumberOfFields = 19;
+            if (isSQL)
+            {
+                _RegNo = new SQLite("RegNo", FormNum, 0);
+                _OrganUprav = new SQLite("OrganUprav", FormNum, 0);
+                _SubjectRF = new SQLite("SubjectRF", FormNum, 0);
+                _JurLico = new SQLite("JurLico", FormNum, 0);
+                _ShortJurLico = new SQLite("ShortJurLico", FormNum, 0);
+                _JurLicoAddress = new SQLite("JurLicoAddress", FormNum, 0);
+                _JurLicoFactAddress = new SQLite("JurLicoFactAddress", FormNum, 0);
+                _GradeFIO = new SQLite("GradeFIO", FormNum, 0);
+                _Telephone = new SQLite("Telephone", FormNum, 0);
+                _Fax = new SQLite("Fax", FormNum, 0);
+                _Email = new SQLite("Email", FormNum, 0);
+                _Okpo = new SQLite("Okpo", FormNum, 0);
+                _Okved = new SQLite("Okved", FormNum, 0);
+                _Okogu = new SQLite("Okogu", FormNum, 0);
+                _Oktmo = new SQLite("Oktmo", FormNum, 0);
+                _Inn = new SQLite("Inn", FormNum, 0);
+                _Kpp = new SQLite("Kpp", FormNum, 0);
+                _Okopf = new SQLite("Okopf", FormNum, 0);
+                _Okfs = new SQLite("Okfs", FormNum, 0);
+            }
+            else
+            {
+                _RegNo = new File();
+                _OrganUprav = new File();
+                _SubjectRF = new File();
+                _JurLico = new File();
+                _ShortJurLico = new File();
+                _JurLicoAddress = new File();
+                _JurLicoFactAddress = new File();
+                _GradeFIO = new File();
+                _Telephone = new File();
+                _Fax = new File();
+                _Email = new File();
+                _Okpo = new File();
+                _Okved = new File();
+                _Okogu = new File();
+                _Oktmo = new File();
+                _Inn = new File();
+                _Kpp = new File();
+                _Okopf = new File();
+                _Okfs = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

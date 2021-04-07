@@ -10,10 +10,34 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 4.1: Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне")]
     public class Form41 : Form
     {
-        public Form41() : base()
+        public Form41(bool isSQL) : base()
         {
             FormNum = "41";
-            NumberOfFields = 9;
+            NumberOfFields = 10;
+            if (isSQL)
+            {
+                _NumberInOrder = new SQLite("NumberInOrder", FormNum, 0);
+                _LicenseInfo = new SQLite("LicenseInfo", FormNum, 0);
+                _QuantityOfFormsInv = new SQLite("QuantityOfFormsInv", FormNum, 0);
+                _QuantityOfFormsOper = new SQLite("QuantityOfFormsOper", FormNum, 0);
+                _QuantityOfFormsYear = new SQLite("QuantityOfFormsYear", FormNum, 0);
+                _Notes = new SQLite("Notes", FormNum, 0);
+                _OrgName = new SQLite("OrgName", FormNum, 0);
+                _RegNo = new SQLite("RegNo", FormNum, 0);
+                _Okpo = new SQLite("Okpo", FormNum, 0);
+            }
+            else
+            {
+                _NumberInOrder = new File();
+                _LicenseInfo = new File();
+                _QuantityOfFormsInv = new File();
+                _QuantityOfFormsOper = new File();
+                _QuantityOfFormsYear = new File();
+                _Notes = new File();
+                _OrgName = new File();
+                _RegNo = new File();
+                _Okpo = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

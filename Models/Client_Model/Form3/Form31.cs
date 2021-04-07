@@ -10,10 +10,49 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 3.1: Отчет о намерении экспортировать радиоактивные источники 1 и 2 категории")]
     public class Form31 : Form3
     {
-        public Form31() : base()
+        public Form31(bool isSQL) : base()
         {
             FormNum = "31";
             NumberOfFields = 19;
+            ZriList = new List<Form31_1>();
+            if (isSQL)
+            {
+                _RecieverName = new SQLite("RecieverName", FormNum, 0);
+                _RecieverAddress = new SQLite("RecieverAddress", FormNum, 0);
+                _RecieverFactAddress = new SQLite("RecieverFactAddress", FormNum, 0);
+                _LicenseId = new SQLite("LicenseId", FormNum, 0);
+                _SuggestedSolutionDate = new SQLite("SuggestedSolutionDate", FormNum, 0);
+                _UserName = new SQLite("UserName", FormNum, 0);
+                _UserAddress = new SQLite("UserAddress", FormNum, 0);
+                _UserFactAddress = new SQLite("UserFactAddress", FormNum, 0);
+                _UserTelephone = new SQLite("UserTelephone", FormNum, 0);
+                _UserFax = new SQLite("UserFax", FormNum, 0);
+                _ZriUsageScope = new SQLite("ZriUsageScope", FormNum, 0);
+                _ContractId = new SQLite("ContractId", FormNum, 0);
+                _ContractDate = new SQLite("ContractDate", FormNum, 0);
+                _CountryCreator = new SQLite("CountryCreator", FormNum, 0);
+                _ValidThru = new SQLite("ValidThru", FormNum, 0);
+                _Email = new SQLite("Email", FormNum, 0);
+            }
+            else
+            {
+                _RecieverName = new File();
+                _RecieverAddress = new File();
+                _RecieverFactAddress = new File();
+                _LicenseId = new File();
+                _SuggestedSolutionDate = new File();
+                _UserName = new File();
+                _UserAddress = new File();
+                _UserFactAddress = new File();
+                _UserTelephone = new File();
+                _UserFax = new File();
+                _ZriUsageScope = new File();
+                _ContractId = new File();
+                _ContractDate = new File();
+                _CountryCreator = new File();
+                _ValidThru = new File();
+                _Email = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

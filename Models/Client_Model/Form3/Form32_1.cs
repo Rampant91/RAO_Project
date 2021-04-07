@@ -10,10 +10,46 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("")]
     public class Form32_1: Form3
     {
-        public Form32_1() : base()
+        public Form32_1(bool isSQL) : base()
         {
             FormNum = "32_1";
             NumberOfFields = 15;
+            if (isSQL)
+            {
+                _CertificateId = new SQLite("CertificateId", FormNum, 0);
+                _NuclearMaterialPresence = new SQLite("NuclearMaterialPresence", FormNum, 0);
+                _Kategory = new SQLite("Kategory", FormNum, 0);
+                _ActivityOnCreation = new SQLite("ActivityOnCreation", FormNum, 0);
+                _ValidThru = new SQLite("ValidThru", FormNum, 0);
+                _PassportNumber = new SQLite("PassportNumber", FormNum, 0);
+                _PassportNumberNote = new SQLite("PassportNumberNote", FormNum, 0);
+                _Type = new SQLite("Type", FormNum, 0);
+                _TypeRecoded = new SQLite("TypeRecoded", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _FactoryNumber = new SQLite("FactoryNumber", FormNum, 0);
+                _FactoryNumberRecoded = new SQLite("FactoryNumberRecoded", FormNum, 0);
+                _CreationDate = new SQLite("CreationDate", FormNum, 0);
+                _CreatorOKPO = new SQLite("CreatorOKPO", FormNum, 0);
+                _CreatorOKPONote = new SQLite("CreatorOKPONote", FormNum, 0);
+            }
+            else
+            {
+                _CertificateId = new File();
+                _NuclearMaterialPresence = new File();
+                _Kategory = new File();
+                _ActivityOnCreation = new File();
+                _ValidThru = new File();
+                _PassportNumber = new File();
+                _PassportNumberNote = new File();
+                _Type = new File();
+                _TypeRecoded = new File();
+                _Radionuclids = new File();
+                _FactoryNumber = new File();
+                _FactoryNumberRecoded = new File();
+                _CreationDate = new File();
+                _CreatorOKPO = new File();
+                _CreatorOKPONote = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

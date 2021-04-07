@@ -7,10 +7,22 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Характеристики экспортируемых ЗРИ/ОЗИИИ:")]
     public class Form31_1 : Form3
     {
-        public Form31_1() : base()
+        public Form31_1(bool isSQL) : base()
         {
             FormNum = "31_1";
             NumberOfFields = 3;
+            if (isSQL)
+            {
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _Quantity = new SQLite("Quantity", FormNum, 0);
+                _SummaryActivity = new SQLite("SummaryActivity", FormNum, 0);
+            }
+            else
+            {
+                _Radionuclids = new File();
+                _Quantity = new File();
+                _SummaryActivity = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

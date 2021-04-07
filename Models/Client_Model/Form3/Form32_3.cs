@@ -10,10 +10,20 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Идентификаторы:")]
     public class Form32_3: Form3
     {
-        public Form32_3() : base()
+        public Form32_3(bool isSQL) : base()
         {
             FormNum = "32_3";
             NumberOfFields = 2;
+            if (isSQL)
+            {
+                _IdName = new SQLite("IdName", FormNum, 0);
+                _Value = new SQLite("Value", FormNum, 0);
+            }
+            else
+            {
+                _IdName = new File();
+                _Value = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

@@ -10,7 +10,8 @@ namespace Models.Client_Model
         
         public Form3()
         {
-            
+            _CorrectionNumber = new File();
+            _NotificationDate = new File();
         }
 
         //CorrectionNumber property

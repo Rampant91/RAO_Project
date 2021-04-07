@@ -11,10 +11,34 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.11: Радионуклидный состав загрязненных участков территорий")]
     public class Form211 : Form2
     {
-        public Form211() : base()
+        public Form211(bool isSQL) : base()
         {
             FormNum = "211";
             NumberOfFields = 11;
+            if (isSQL)
+            {
+                _SpecificActivityOfPlot = new SQLite("SpecificActivityOfPlot", FormNum, 0);
+                _SpecificActivityOfLiquidPart = new SQLite("SpecificActivityOfLiquidPart", FormNum, 0);
+                _SpecificActivityOfDensePart = new SQLite("SpecificActivityOfDensePart", FormNum, 0);
+                _PlotName = new SQLite("PlotName", FormNum, 0);
+                _PlotKadastrNumber = new SQLite("FcpNumber", FormNum, 0);
+                _PlotCode = new SQLite("PlotCode", FormNum, 0);
+                _InfectedArea = new SQLite("InfectedArea", FormNum, 0);
+                _RadionuclidNameNote = new SQLite("RadionuclidNameNote", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+            }
+            else
+            {
+                _SpecificActivityOfPlot = new File();
+                _SpecificActivityOfLiquidPart = new File();
+                _SpecificActivityOfDensePart = new File();
+                _PlotName = new File();
+                _PlotKadastrNumber = new File();
+                _PlotCode = new File();
+                _InfectedArea = new File();
+                _RadionuclidNameNote = new File();
+                _Radionuclids = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
@@ -188,16 +212,37 @@ namespace Models.Client_Model
         }
         //Radionuclids property
 
-        private string _radionuclidNameNote = "";
+        //RadionuclidNameNote property
         public string RadionuclidNameNote
         {
-            get { return _radionuclidNameNote; }
+            get
+            {
+                if (GetErrors(nameof(RadionuclidNameNote)) != null)
+                {
+                    return (string)_RadionuclidNameNote.Get();
+                }
+                else
+                {
+                    return _RadionuclidNameNote_Not_Valid;
+                }
+            }
             set
             {
-                _radionuclidNameNote = value;
-                OnPropertyChanged("RadionuclidNameNote");
+                _RadionuclidNameNote_Not_Valid = value;
+                if (GetErrors(nameof(RadionuclidNameNote)) != null)
+                {
+                    _RadionuclidNameNote.Set(_RadionuclidNameNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(RadionuclidNameNote));
             }
         }
+        private IDataLoadEngine _RadionuclidNameNote;
+        private string _RadionuclidNameNote_Not_Valid = "";
+        private void RadionuclidNameNote_Validation()
+        {
+            ClearErrors(nameof(RadionuclidNameNote));
+        }
+        //RadionuclidNameNote property
 
         //SpecificActivityOfPlot property
         [Attributes.FormVisual("Удельная активность, Бк/г")]

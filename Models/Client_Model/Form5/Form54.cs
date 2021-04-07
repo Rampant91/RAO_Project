@@ -7,10 +7,32 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.4: Сведения о наличии в подведомственных организациях ОРИ")]
     public class Form54 : Form5
     {
-        public Form54() : base()
+        public Form54(bool isSQL) : base()
         {
             FormNum = "54";
             NumberOfFields = 10;
+            if (isSQL)
+            {
+                _TypeOfAccountedParts = new SQLite("TypeOfAccountedParts", FormNum, 0);
+                _KindOri = new SQLite("KindOri", FormNum, 0);
+                _Volume = new SQLite("Volume", FormNum, 0);
+                _Mass = new SQLite("Mass", FormNum, 0);
+                _AggregateState = new SQLite("AggregateState", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _Quantity = new SQLite("Quantity", FormNum, 0);
+                _Activity = new SQLite("Activity", FormNum, 0);
+            }
+            else
+            {
+                _TypeOfAccountedParts = new File();
+                _KindOri = new File();
+                _Volume = new File();
+                _Mass = new File();
+                _AggregateState = new File();
+                _Radionuclids = new File();
+                _Quantity = new File();
+                _Activity = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

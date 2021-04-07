@@ -10,10 +10,28 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.9: Активность радионуклидов, отведенных со сточными водами")]
     public class Form29 : Form2
     {
-        public Form29() : base()
+        public Form29(bool isSQL) : base()
         {
             FormNum = "29";
             NumberOfFields = 8;
+            if (isSQL)
+            {
+                _AllowedActivity = new SQLite("AllowedActivity", FormNum, 0);
+                _AllowedActivityNote = new SQLite("AllowedActivityNote", FormNum, 0);
+                _FactedActivity = new SQLite("FactedActivity", FormNum, 0);
+                _FactedActivityNote = new SQLite("FactedActivityNote", FormNum, 0);
+                _WasteSourceName = new SQLite("WasteSourceName", FormNum, 0);
+                _RadionuclidName = new SQLite("RadionuclidName", FormNum, 0);
+            }
+            else
+            {
+                _AllowedActivity = new File();
+                _AllowedActivityNote = new File();
+                _FactedActivity = new File();
+                _FactedActivityNote = new File();
+                _WasteSourceName = new File();
+                _RadionuclidName = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
@@ -132,16 +150,37 @@ namespace Models.Client_Model
         }
         //AllowedActivity property
 
-        private string _allowedActivityNote = "";
+        //AllowedActivityNote property
         public string AllowedActivityNote
         {
-            get { return _allowedActivityNote; }
+            get
+            {
+                if (GetErrors(nameof(AllowedActivityNote)) != null)
+                {
+                    return (string)_AllowedActivityNote.Get();
+                }
+                else
+                {
+                    return _AllowedActivityNote_Not_Valid;
+                }
+            }
             set
             {
-                _allowedActivityNote = value;
-                OnPropertyChanged("AllowedActivityNote");
+                _AllowedActivityNote_Not_Valid = value;
+                if (GetErrors(nameof(AllowedActivityNote)) != null)
+                {
+                    _AllowedActivityNote.Set(_AllowedActivityNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(AllowedActivityNote));
             }
         }
+        private IDataLoadEngine _AllowedActivityNote;
+        private string _AllowedActivityNote_Not_Valid = "";
+        private void AllowedActivityNote_Validation(string value)//Ready
+        {
+            
+        }
+        //AllowedActivityNote property
 
         //FactedActivity property
         [Attributes.FormVisual("Фактическая активность радионуклида, Бк")]
@@ -187,15 +226,36 @@ namespace Models.Client_Model
         }
         //FactedActivity property
 
-        private string _factedActivityNote = "";
+        //FactedActivityNote property
         public string FactedActivityNote
         {
-            get { return _factedActivityNote; }
+            get
+            {
+                if (GetErrors(nameof(FactedActivityNote)) != null)
+                {
+                    return (string)_FactedActivityNote.Get();
+                }
+                else
+                {
+                    return _FactedActivityNote_Not_Valid;
+                }
+            }
             set
             {
-                _factedActivityNote = value;
-                OnPropertyChanged("FactedActivityNote");
+                _FactedActivityNote_Not_Valid = value;
+                if (GetErrors(nameof(FactedActivityNote)) != null)
+                {
+                    _FactedActivityNote.Set(_FactedActivityNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FactedActivityNote));
             }
         }
+        private IDataLoadEngine _FactedActivityNote;
+        private string _FactedActivityNote_Not_Valid = "";
+        private void FactedActivityNote_Validation(string value)//Ready
+        {
+
+        }
+        //FactedActivityNote property
     }
 }

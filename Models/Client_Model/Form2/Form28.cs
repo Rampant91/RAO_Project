@@ -10,10 +10,60 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.8: Отведение сточных вод, содержащих радионуклиды")]
     public class Form28 : Form2
     {
-        public Form28() : base()
+        public Form28(bool isSQL) : base()
         {
             FormNum = "28";
             NumberOfFields = 24;
+            if (isSQL)
+            {
+                _PermissionNumber1 = new SQLite("PermissionNumber1", FormNum, 0);
+                _PermissionIssueDate1 = new SQLite("PermissionIssueDate1", FormNum, 0);
+                _PermissionDocumentName1 = new SQLite("PermissionDocumentName1", FormNum, 0);
+                _ValidBegin1 = new SQLite("ValidBegin1", FormNum, 0);
+                _ValidThru1 = new SQLite("ValidThru1", FormNum, 0);
+                _PermissionNumber2 = new SQLite("PermissionNumber2", FormNum, 0);
+                _PermissionIssueDate2 = new SQLite("PermissionIssueDate2", FormNum, 0);
+                _ValidBegin2 = new SQLite("ValidBegin2", FormNum, 0);
+                _PermissionDocumentName2 = new SQLite("PermissionDocumentName2", FormNum, 0);
+                _ValidThru2 = new SQLite("ValidThru2", FormNum, 0);
+                _WasteSourceName = new SQLite("WasteSourceName", FormNum, 0);
+                _WasteRecieverName = new SQLite("WasteRecieverName", FormNum, 0);
+                _RecieverTypeCode = new SQLite("RecieverTypeCode", FormNum, 0);
+                _PoolDistrictName = new SQLite("PoolDistrictName", FormNum, 0);
+                _AllowedWasteRemovalVolume = new SQLite("AllowedWasteRemovalVolume", FormNum, 0);
+                _RemovedWasteVolume = new SQLite("RemovedWasteVolume", FormNum, 0);
+                _RemovedWasteVolumeNote = new SQLite("RemovedWasteVolumeNote", FormNum, 0);
+                _PermissionNumber = new SQLite("PermissionNumber", FormNum, 0);
+                _PermissionIssueDate = new SQLite("PermissionIssueDate", FormNum, 0);
+                _PermissionDocumentName = new SQLite("PermissionDocumentName", FormNum, 0);
+                _ValidBegin = new SQLite("ValidBegin", FormNum, 0);
+                _ValidThru = new SQLite("ValidThru", FormNum, 0);
+            }
+            else
+            {
+                _PermissionNumber1 = new File();
+                _PermissionIssueDate1 = new File();
+                _PermissionDocumentName1 = new File();
+                _ValidBegin1 = new File();
+                _ValidThru1 = new File();
+                _PermissionNumber2 = new File();
+                _PermissionIssueDate2 = new File();
+                _ValidBegin2 = new File();
+                _PermissionDocumentName2 = new File();
+                _ValidThru2 = new File();
+                _WasteSourceName = new File();
+                _WasteRecieverName = new File();
+                _RecieverTypeCode = new File();
+                _PoolDistrictName = new File();
+                _AllowedWasteRemovalVolume = new File();
+                _RemovedWasteVolume = new File();
+                _RemovedWasteVolumeNote = new File();
+                _PermissionNumber = new File();
+                _PermissionIssueDate = new File();
+                _PermissionDocumentName = new File();
+                _ValidBegin = new File();
+                _ValidThru = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
@@ -284,7 +334,7 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(PermissionDocumentName1));
         }
-        //PermissionDocumentName property
+        //PermissionDocumentName1 property
 
         //ValidBegin1 property
         [Attributes.FormVisual("Действует с")]
@@ -449,7 +499,7 @@ namespace Models.Client_Model
         {
             ClearErrors(nameof(PermissionDocumentName2));
         }
-        //PermissionDocumentName property
+        //PermissionDocumentName2 property
 
         //ValidBegin2 property
         [Attributes.FormVisual("Действует с")]
@@ -715,15 +765,36 @@ namespace Models.Client_Model
         }
         //RemovedWasteVolume property
 
-        private double _removedWasteVolumeNote = -1;
+        //RemovedWasteVolumeNote property
         public double RemovedWasteVolumeNote
         {
-            get { return _removedWasteVolumeNote; }
+            get
+            {
+                if (GetErrors(nameof(RemovedWasteVolumeNote)) != null)
+                {
+                    return (double)_RemovedWasteVolumeNote.Get();
+                }
+                else
+                {
+                    return _RemovedWasteVolumeNote_Not_Valid;
+                }
+            }
             set
             {
-                _removedWasteVolumeNote = value;
-                OnPropertyChanged("RemovedWasteVolumeNote");
+                _RemovedWasteVolumeNote_Not_Valid = value;
+                if (GetErrors(nameof(RemovedWasteVolumeNote)) != null)
+                {
+                    _RemovedWasteVolumeNote.Set(_RemovedWasteVolumeNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(RemovedWasteVolumeNote));
             }
         }
+        private IDataLoadEngine _RemovedWasteVolumeNote;
+        private double _RemovedWasteVolumeNote_Not_Valid = -1;
+        private void RemovedWasteVolumeNote_Validation()
+        {
+            ClearErrors(nameof(RemovedWasteVolumeNote));
+        }
+        //RemovedWasteVolumeNote property
     }
 }

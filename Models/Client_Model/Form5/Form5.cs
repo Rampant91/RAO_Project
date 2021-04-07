@@ -9,7 +9,8 @@ namespace Models.Client_Model
         [Attributes.FormVisual("Форма")]
         public Form5()
         {
-
+            _CorrectionNumber = new File();
+            _NumberInOrder = new File();
         }
 
         //NumberInOrder property

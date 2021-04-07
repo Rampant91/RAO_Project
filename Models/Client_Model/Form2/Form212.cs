@@ -8,10 +8,28 @@ namespace Models.Client_Model
     public class Form212 : Form2
 
     {
-        public Form212() : base()
+        public Form212(bool isSQL) : base()
         {
             FormNum = "212";
             NumberOfFields = 8;
+            if (isSQL)
+            {
+                _OperationCode = new SQLite("OperationCode", FormNum, 0);
+                _ObjectTypeCode = new SQLite("ObjectTypeCode", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _Activity = new SQLite("Activity", FormNum, 0);
+                _ProviderOrRecieverOKPO = new SQLite("ProviderOrRecieverOKPO", FormNum, 0);
+                _ProviderOrRecieverOKPONote = new SQLite("ProviderOrRecieverOKPONote", FormNum, 0);
+            }
+            else
+            {
+                _OperationCode = new File();
+                _ObjectTypeCode = new File();
+                _Radionuclids = new File();
+                _Activity = new File();
+                _ProviderOrRecieverOKPO = new File();
+                _ProviderOrRecieverOKPONote = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

@@ -10,10 +10,52 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 4.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form40 : Form
     {
-        public Form40() : base()
+        public Form40(bool isSQL) : base()
         {
             FormNum = "40";
             NumberOfFields = 18;
+            if (isSQL)
+            {
+                _Year = new SQLite("Year", FormNum, 0);
+                _SubjectAuthorityName = new SQLite("SubjectAuthorityName", FormNum, 0);
+                _ShortSubjectAuthorityName = new SQLite("ShortSubjectAuthorityName", FormNum, 0);
+                _FactAddress = new SQLite("FactAddress", FormNum, 0);
+                _GradeFIOchef = new SQLite("GradeFIOchef", FormNum, 0);
+                _GradeFIOresponsibleExecutor = new SQLite("GradeFIOresponsibleExecutor", FormNum, 0);
+                _Telephone1 = new SQLite("Telephone1", FormNum, 0);
+                _Fax1 = new SQLite("Fax1", FormNum, 0);
+                _Email1 = new SQLite("Email1", FormNum, 0);
+                _OrgName = new SQLite("OrgName", FormNum, 0);
+                _ShortOrgName = new SQLite("ShortOrgName", FormNum, 0);
+                _FactAddress1 = new SQLite("FactAddress1", FormNum, 0);
+                _GradeFIOchef1 = new SQLite("GradeFIOchef1", FormNum, 0);
+                _GradeFIOresponsibleExecutor1 = new SQLite("GradeFIOresponsibleExecutor1", FormNum, 0);
+                _SubjectRF = new SQLite("SubjectRF", FormNum, 0);
+                _Telephone = new SQLite("Telephone", FormNum, 0);
+                _Fax = new SQLite("Fax", FormNum, 0);
+                _Email = new SQLite("Email", FormNum, 0);
+            }
+            else
+            {
+                _Year = new File();
+                _SubjectAuthorityName = new File();
+                _ShortSubjectAuthorityName = new File();
+                _FactAddress = new File();
+                _GradeFIOchef = new File();
+                _GradeFIOresponsibleExecutor = new File();
+                _Telephone1 = new File();
+                _Fax1 = new File();
+                _Email1 = new File();
+                _OrgName = new File();
+                _ShortOrgName = new File();
+                _FactAddress1 = new File();
+                _GradeFIOchef1 = new File();
+                _GradeFIOresponsibleExecutor1 = new File();
+                _Email = new File();
+                _SubjectRF = new File();
+                _Telephone = new File();
+                _Fax = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
@@ -109,7 +151,7 @@ namespace Models.Client_Model
         private int _SubjectAuthorityName_Not_Valid = -1;
         //SubjectAuthorityName property
 
-        //SubjectAuthorityName property
+        //ShortSubjectAuthorityName property
         [Attributes.FormVisual("Краткое наименование органа исполнительной власти")]
         public int ShortSubjectAuthorityName
         {

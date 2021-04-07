@@ -7,12 +7,25 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.2: Сведения о наличии ЗРИ в подведомственных организациях")]
     public class Form52 : Form5
     {
-        public Form52() : base()
+        public Form52(bool isSQL) : base()
         {
             FormNum = "52";
             NumberOfFields = 6;
+            if (isSQL)
+            {
+                _Kategory = new SQLite("Kategory", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _Quantity = new SQLite("Quantity", FormNum, 0);
+                _Activity = new SQLite("Activity", FormNum, 0);
+            }
+            else
+            {
+                _Kategory = new File();
+                _Radionuclids = new File();
+                _Quantity = new File();
+                _Activity = new File();
+            }
         }
-
         [Attributes.FormVisual("Форма")]
         public override void Object_Validation()
         {

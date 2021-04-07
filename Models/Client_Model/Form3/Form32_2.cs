@@ -10,10 +10,28 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Сведения о поставляемых ЗРИ:")]
     public class Form32_2: Form3
     {
-        public Form32_2() : base()
+        public Form32_2(bool isSQL) : base()
         {
             FormNum = "32_2";
             NumberOfFields = 6;
+            if (isSQL)
+            {
+                _DepletedUraniumMass = new SQLite("DepletedUraniumMass", FormNum, 0);
+                _CreationYear = new SQLite("CreationYear", FormNum, 0);
+                _Id = new SQLite("Id", FormNum, 0);
+                _PackName = new SQLite("PackName", FormNum, 0);
+                _PackType = new SQLite("PackType", FormNum, 0);
+                _PackTypeRecoded = new SQLite("PackTypeRecoded", FormNum, 0);
+            }
+            else
+            {
+                _DepletedUraniumMass = new File();
+                _CreationYear = new File();
+                _Id = new File();
+                _PackName = new File();
+                _PackType = new File();
+                _PackTypeRecoded = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

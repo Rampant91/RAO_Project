@@ -8,10 +8,43 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 3.2: Отчет об отправке радиоактивных источников 1 и 2 категории")]
     public class Form32 : Form3
     {
-        public Form32() : base()
+        public Form32(bool isSQL) : base()
         {
             FormNum = "32";
             NumberOfFields = 17;
+            ZriInfo = new List<Form32_1>();
+            PackInfo = new List<Form32_2>();
+            IdsInfo = new List<Form32_3>();
+            if (isSQL)
+            {
+                _UniqueAgreementId = new SQLite("UniqueAgreementId", FormNum, 0);
+                _SupplyDate = new SQLite("SupplyDate", FormNum, 0);
+                _FieldsOfWorking = new SQLite("FieldsOfWorking", FormNum, 0);
+                _LicenseIdRv = new SQLite("LicenseIdRv", FormNum, 0);
+                _ValidThruRv = new SQLite("ValidThruRv", FormNum, 0);
+                _LicenseIdRao = new SQLite("LicenseIdRao", FormNum, 0);
+                _ValidThruRao = new SQLite("ValidThruRao", FormNum, 0);
+                _SupplyAddress = new SQLite("SupplyAddress", FormNum, 0);
+                _RecieverName = new SQLite("RecieverName", FormNum, 0);
+                _SummaryActivity = new SQLite("SummaryActivity", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _Quantity = new SQLite("Quantity", FormNum, 0);
+            }
+            else
+            {
+                _UniqueAgreementId = new File();
+                _SupplyDate = new File();
+                _FieldsOfWorking = new File();
+                _LicenseIdRv = new File();
+                _ValidThruRv = new File();
+                _LicenseIdRao = new File();
+                _ValidThruRao = new File();
+                _SupplyAddress = new File();
+                _RecieverName = new File();
+                _SummaryActivity = new File();
+                _Radionuclids = new File();
+                _Quantity = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

@@ -7,10 +7,38 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.3: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций, расходовании и переводе в РАО ОРИ")]
     public class Form53 : Form5
     {
-        public Form53() : base()
+        public Form53(bool isSQL) : base()
         {
             FormNum = "53";
             NumberOfFields = 13;
+            if (isSQL)
+            {
+                _TypeOfAccountedParts = new SQLite("TypeOfAccountedParts", FormNum, 0);
+                _KindOri = new SQLite("KindOri", FormNum, 0);
+                _OperationCode = new SQLite("OperationCode", FormNum, 0);
+                _Volume = new SQLite("Volume", FormNum, 0);
+                _Mass = new SQLite("Mass", FormNum, 0);
+                _AggregateState = new SQLite("AggregateState", FormNum, 0);
+                _Radionuclids = new SQLite("Radionuclids", FormNum, 0);
+                _Quantity = new SQLite("Quantity", FormNum, 0);
+                _Activity = new SQLite("Activity", FormNum, 0);
+                _ProviderOrRecieverOKPO = new SQLite("ProviderOrRecieverOKPO", FormNum, 0);
+                _ProviderOrRecieverOKPONote = new SQLite("ProviderOrRecieverOKPONote", FormNum, 0);
+            }
+            else
+            {
+                _TypeOfAccountedParts = new File();
+                _KindOri = new File();
+                _OperationCode = new File();
+                _Volume = new File();
+                _Mass = new File();
+                _AggregateState = new File();
+                _Radionuclids = new File();
+                _Quantity = new File();
+                _Activity = new File();
+                _ProviderOrRecieverOKPO = new File();
+                _ProviderOrRecieverOKPONote = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

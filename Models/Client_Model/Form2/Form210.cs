@@ -10,10 +10,36 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.10: Территории, загрязненные радионуклидами")]
     public class Form210 : Form2
     {
-        public Form210() : base()
+        public Form210(bool isSQL) : base()
         {
             FormNum = "210";
             NumberOfFields = 12;
+            if (isSQL)
+            {
+                _IndicatorName = new SQLite("IndicatorName", FormNum, 0);
+                _PlotName = new SQLite("PlotName", FormNum, 0);
+                _PlotKadastrNumber = new SQLite("FcpNumber", FormNum, 0);
+                _PlotCode = new SQLite("PlotCode", FormNum, 0);
+                _InfectedArea = new SQLite("InfectedArea", FormNum, 0);
+                _AvgGammaRaysDosePower = new SQLite("AvgGammaRaysDosePower", FormNum, 0);
+                _MaxGammaRaysDosePower = new SQLite("MaxGammaRaysDosePower", FormNum, 0);
+                _WasteDensityAlpha = new SQLite("WasteDensityAlpha", FormNum, 0);
+                _WasteDensityBeta = new SQLite("WasteDensityBeta", FormNum, 0);
+                _FcpNumber = new SQLite("FcpNumber", FormNum, 0);
+            }
+            else
+            {
+                _IndicatorName = new File();
+                _PlotName = new File();
+                _PlotKadastrNumber = new File();
+                _PlotCode = new File();
+                _InfectedArea = new File();
+                _AvgGammaRaysDosePower = new File();
+                _MaxGammaRaysDosePower = new File();
+                _WasteDensityAlpha = new File();
+                _WasteDensityBeta = new File();
+                _FcpNumber = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

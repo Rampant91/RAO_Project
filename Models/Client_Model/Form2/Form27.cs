@@ -10,10 +10,38 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 2.7: Поступление радионуклидов в атмосферный воздух")]
     public class Form27 : Form2
     {
-        public Form27() : base()
+        public Form27(bool isSQL) : base()
         {
             FormNum = "27";
             NumberOfFields = 15;
+            if (isSQL)
+            {
+                _PermissionNumber = new SQLite("PermissionNumber", FormNum, 0);
+                _PermissionIssueDate = new SQLite("PermissionIssueDate", FormNum, 0);
+                _PermissionDocumentName = new SQLite("PermissionDocumentName", FormNum, 0);
+                _ValidBegin = new SQLite("ValidBegin", FormNum, 0);
+                _ValidThru = new SQLite("ValidThru", FormNum, 0);
+                _RadionuclidNameNote = new SQLite("RadionuclidNameNote", FormNum, 0);
+                _AllowedWasteValue = new SQLite("AllowedWasteValue", FormNum, 0);
+                _AllowedWasteValueNote = new SQLite("AllowedWasteValueNote", FormNum, 0);
+                _FactedWasteValue = new SQLite("FactedWasteValue", FormNum, 0);
+                _FactedWasteValueNote = new SQLite("FactedWasteValueNote", FormNum, 0);
+                _WasteOutbreakPreviousYear = new SQLite("WasteOutbreakPreviousYear", FormNum, 0);
+            }
+            else
+            {
+                _PermissionNumber = new File();
+                _PermissionIssueDate = new File();
+                _PermissionDocumentName = new File();
+                _ValidBegin = new File();
+                _ValidThru = new File();
+                _RadionuclidNameNote = new File();
+                _AllowedWasteValue = new File();
+                _AllowedWasteValueNote = new File();
+                _FactedWasteValue = new File();
+                _FactedWasteValueNote = new File();
+                _WasteOutbreakPreviousYear = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
@@ -187,17 +215,38 @@ namespace Models.Client_Model
         }
         //ValidThru property
 
-        private string _radionuclidNameNote = "";
+        //RadionuclidNameNote property
         public string RadionuclidNameNote
         {
-            get { return _radionuclidNameNote; }
+            get
+            {
+                if (GetErrors(nameof(RadionuclidNameNote)) != null)
+                {
+                    return (string)_RadionuclidNameNote.Get();
+                }
+                else
+                {
+                    return _RadionuclidNameNote_Not_Valid;
+                }
+            }
             set
             {
-                _radionuclidNameNote = value;
-                OnPropertyChanged("RadionuclidNameNote");
+                _RadionuclidNameNote_Not_Valid = value;
+                if (GetErrors(nameof(RadionuclidNameNote)) != null)
+                {
+                    _RadionuclidNameNote.Set(_RadionuclidNameNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(RadionuclidNameNote));
             }
         }
-        
+        private IDataLoadEngine _RadionuclidNameNote;
+        private string _RadionuclidNameNote_Not_Valid = "";
+        private void RadionuclidNameNote_Validation()
+        {
+            ClearErrors(nameof(RadionuclidNameNote));
+        }
+        //RadionuclidNameNote property
+
         //AllowedWasteValue property
         [Attributes.FormVisual("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]
         public string AllowedWasteValue
@@ -231,17 +280,38 @@ namespace Models.Client_Model
         }
         //AllowedWasteValue property
 
-        private string _allowedWasteValueNote = "";
+        //AllowedWasteValueNote property
         public string AllowedWasteValueNote
         {
-            get { return _allowedWasteValueNote; }
+            get
+            {
+                if (GetErrors(nameof(AllowedWasteValueNote)) != null)
+                {
+                    return (string)_AllowedWasteValueNote.Get();
+                }
+                else
+                {
+                    return _AllowedWasteValueNote_Not_Valid;
+                }
+            }
             set
             {
-                _allowedWasteValueNote = value;
-                OnPropertyChanged("AllowedWasteValueNote");
+                _AllowedWasteValueNote_Not_Valid = value;
+                if (GetErrors(nameof(AllowedWasteValueNote)) != null)
+                {
+                    _AllowedWasteValueNote.Set(_AllowedWasteValueNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(AllowedWasteValueNote));
             }
         }
-        
+        private IDataLoadEngine _AllowedWasteValueNote;
+        private string _AllowedWasteValueNote_Not_Valid = "";
+        private void AllowedWasteValueNote_Validation()
+        {
+            ClearErrors(nameof(AllowedWasteValueNote));
+        }
+        //AllowedWasteValueNote property
+
         //FactedWasteValue property
         [Attributes.FormVisual("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]
         public string FactedWasteValue
@@ -275,16 +345,37 @@ namespace Models.Client_Model
         }
         //FactedWasteValue property
 
-        private string _factedWasteValueNote = "";
+        //FactedWasteValueNote property
         public string FactedWasteValueNote
         {
-            get { return _factedWasteValueNote; }
+            get
+            {
+                if (GetErrors(nameof(FactedWasteValueNote)) != null)
+                {
+                    return (string)_FactedWasteValueNote.Get();
+                }
+                else
+                {
+                    return _FactedWasteValueNote_Not_Valid;
+                }
+            }
             set
             {
-                _factedWasteValueNote = value;
-                OnPropertyChanged("FactedWasteValueNote");
+                _FactedWasteValueNote_Not_Valid = value;
+                if (GetErrors(nameof(FactedWasteValueNote)) != null)
+                {
+                    _FactedWasteValueNote.Set(_FactedWasteValueNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(FactedWasteValueNote));
             }
         }
+        private IDataLoadEngine _FactedWasteValueNote;
+        private string _FactedWasteValueNote_Not_Valid = "";
+        private void FactedWasteValueNote_Validation()
+        {
+            ClearErrors(nameof(FactedWasteValueNote));
+        }
+        //FactedWasteValueNote property
 
         //WasteOutbreakPreviousYear property
         [Attributes.FormVisual("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]

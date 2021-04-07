@@ -10,10 +10,22 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.6: Сведения о наличии в подведомственных организациях изделий из обедненного урана")]
     public class Form56 : Form5
     {
-        public Form56() : base()
+        public Form56(bool isSQL) : base()
         {
             FormNum = "56";
             NumberOfFields = 5;
+            if (isSQL)
+            {
+                _NameIOU = new SQLite("NameIOU", FormNum, 0);
+                _Mass = new SQLite("Mass", FormNum, 0);
+                _Quantity = new SQLite("Quantity", FormNum, 0);
+            }
+            else
+            {
+                _NameIOU = new File();
+                _Mass = new File();
+                _Quantity = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]

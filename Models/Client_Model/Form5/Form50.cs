@@ -10,10 +10,38 @@ namespace Models.Client_Model
     [Attributes.FormVisual_Class("Форма 5.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form50 : Form
     {
-        public Form50() : base()
+        public Form50(bool isSQL) : base()
         {
             FormNum = "50";
             NumberOfFields = 11;
+            if (isSQL)
+            {
+                _Authority1 = new SQLite("Authority1", FormNum, 0);
+                _Year = new SQLite("Year", FormNum, 0);
+                _GradeFIOresponsibleExecutor = new SQLite("GradeFIOresponsibleExecutor", FormNum, 0);
+                _JurLico = new SQLite("JurLico", FormNum, 0);
+                _ShortJurLico = new SQLite("ShortJurLico", FormNum, 0);
+                _JurLicoAddress = new SQLite("JurLicoAddress", FormNum, 0);
+                _JurLicoFactAddress = new SQLite("JurLicoFactAddress", FormNum, 0);
+                _GradeFIO = new SQLite("GradeFIO", FormNum, 0);
+                _Telephone = new SQLite("Telephone", FormNum, 0);
+                _Fax = new SQLite("Fax", FormNum, 0);
+                _Email = new SQLite("Email", FormNum, 0);
+            }
+            else
+            {
+                _Authority1 = new File();
+                _Year = new File();
+                _GradeFIOresponsibleExecutor = new File();
+                _JurLico = new File();
+                _ShortJurLico = new File();
+                _JurLicoAddress = new File();
+                _JurLicoFactAddress = new File();
+                _GradeFIO = new File();
+                _Telephone = new File();
+                _Fax = new File();
+                _Email = new File();
+            }
         }
 
         [Attributes.FormVisual("Форма")]
