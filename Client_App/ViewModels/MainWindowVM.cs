@@ -57,8 +57,8 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> ChooseForm { get;}
 
         public ReactiveCommand<string, Unit> AddForm { get; }
-        public ReactiveCommand<Report, Unit> ChangeForm { get; }
-        public ReactiveCommand<Report, Unit> DeleteForm { get; }
+        public ReactiveCommand<Form, Unit> ChangeForm { get; }
+        public ReactiveCommand<Form, Unit> DeleteForm { get; }
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -77,8 +77,8 @@ namespace Client_App.ViewModels
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
-            ChangeForm = ReactiveCommand.CreateFromTask<Report>(_ChangeForm);
-            DeleteForm = ReactiveCommand.CreateFromTask<Report>(_DeleteForm);
+            ChangeForm = ReactiveCommand.CreateFromTask<Form>(_ChangeForm);
+            DeleteForm = ReactiveCommand.CreateFromTask<Form>(_DeleteForm);
 
             Excel_Export= ReactiveCommand.CreateFromTask(_Excel_Export);
 
@@ -172,11 +172,11 @@ namespace Client_App.ViewModels
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local, null,param);
-                await frm.ShowDialog<Report>(desktop.MainWindow);
+                await frm.ShowDialog<Form>(desktop.MainWindow);
             }
         }
 
-        async Task _ChangeForm(Report param)
+        async Task _ChangeForm(Form param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -184,7 +184,7 @@ namespace Client_App.ViewModels
                 await frm.ShowDialog(desktop.MainWindow);
             }
         }
-        async Task _DeleteForm(Report param)
+        async Task _DeleteForm(Form param)
         {
             if (param != null)
             {

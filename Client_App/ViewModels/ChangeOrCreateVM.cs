@@ -21,7 +21,7 @@ using Avalonia.Collections;
 using Avalonia.Markup.Xaml;
 using System.Collections;
 using Models.Attributes;
-using Models.Storage;
+using Models;
 using System.IO;
 using Avalonia.Metadata;
 using System.Windows;
@@ -36,8 +36,8 @@ namespace Client_App.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        Report _SavingStorage;
-        public Report SavingStorage
+        Form _SavingStorage;
+        public Form SavingStorage
         {
             get
             {
@@ -53,8 +53,8 @@ namespace Client_App.ViewModels
             }
         }
 
-        Report _Storage;
-        public Report Storage
+        Form _Storage;
+        public Form Storage
         {
             get
             {
@@ -70,8 +70,8 @@ namespace Client_App.ViewModels
             }
         }
 
-        Models.Storage.LocalDictionary _Forms;
-        public Models.Storage.LocalDictionary Forms
+        Forms _Forms;
+        public Forms Forms
         {
             get
             {
@@ -121,8 +121,8 @@ namespace Client_App.ViewModels
             PasteRows = ReactiveCommand.CreateFromTask(_PasteRows);
 
 
-            _Storage = new Report();
-            _Forms = new LocalDictionary();
+            _Storage = new Form();
+            _Forms = new Forms();
         }
         bool _isCanSaveReportEnabled = false;
         bool IsCanSaveReportEnabled
@@ -149,7 +149,7 @@ namespace Client_App.ViewModels
         public void SaveReport()
         {
             SavingStorage = Storage;
-            if (!Forms.Forms[FormType].Storage.Contains(_SavingStorage))
+            if (!Forms[FormType].Storage.Contains(_SavingStorage))
             {
                 Forms.Forms[FormType].Storage.Add(_SavingStorage);
 

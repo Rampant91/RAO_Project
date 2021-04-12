@@ -11,7 +11,7 @@ namespace Client_App.Views
     public class FormChangeOrCreate : Window
     {
         string _param = "";
-        public FormChangeOrCreate(in Models.Storage.LocalDictionary dict,in Models.Client_Model.Report _Storage,string param)
+        public FormChangeOrCreate(in Models.Storage.LocalDictionary dict,in Models.Client_Model.Form _Storage,string param)
         {
             this.DataContext = new ViewModels.ChangeOrCreateVM();
 
@@ -25,9 +25,9 @@ namespace Client_App.Views
             else
             {
                 _param = param;
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage = new Report();
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage = new Models.Client_Model.Form();
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage.FormNum = _param;
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = new Report();
+                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = new Models.Client_Model.Form();
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage.FormNum = _param;
                 ((ViewModels.ChangeOrCreateVM)this.DataContext).Forms = dict;
             }

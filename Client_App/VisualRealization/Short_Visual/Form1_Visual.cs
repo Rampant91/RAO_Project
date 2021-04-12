@@ -63,12 +63,12 @@ namespace Client_App.Short_Visual
             clm1.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Form10,Models").
-                GetProperty("RegNo").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form10,Models").
+                GetProperty("RegNo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter= "10/RegNo"
             };
-            clm1.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm1.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("RegNo"),
@@ -80,12 +80,12 @@ namespace Client_App.Short_Visual
             clm2.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Form10,Models").
-                GetProperty("ShortJurLico").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form10,Models").
+                GetProperty("ShortJurLico").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "10/ShortJurLico"
             };
-            clm2.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm2.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -98,12 +98,12 @@ namespace Client_App.Short_Visual
             clm3.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Form10,Models").
-                GetProperty("Okpo").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form10,Models").
+                GetProperty("Okpo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "10/Okpo"
             };
-            clm3.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm3.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("Okpo"),
@@ -144,12 +144,12 @@ namespace Client_App.Short_Visual
             clm1.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Form1,Models").
-                GetProperty("NumberInOrder").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form1,Models").
+                GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/NumberInOrder"
             };
-            clm1.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm1.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("NumberInOrder"),
@@ -161,12 +161,12 @@ namespace Client_App.Short_Visual
             clm2.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Form1,Models").
-                GetProperty("FormNum").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form1,Models").
+                GetProperty("FormNum").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/FormNum"
             };
-            clm2.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm2.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("FormNum"),
@@ -178,14 +178,14 @@ namespace Client_App.Short_Visual
             clm3.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Report,Models").
-                GetProperty("StartPeriod").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Report,Models").
+                GetProperty("StartPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/StartPeriod"
             };
             Binding bnd = new Binding("StartPeriod");
             bnd.StringFormat = "{0:d}";
-            clm3.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm3.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = bnd,
@@ -197,14 +197,14 @@ namespace Client_App.Short_Visual
             clm4.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Report,Models").
-                GetProperty("EndPeriod").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Report,Models").
+                GetProperty("EndPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/EndPeriod"
             };
             bnd = new Binding("EndPeriod");
             bnd.StringFormat = "{0:d}";
-            clm4.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm4.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = bnd,
@@ -216,14 +216,14 @@ namespace Client_App.Short_Visual
             clm5.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Report,Models").
-                GetProperty("ExportDate").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Report,Models").
+                GetProperty("ExportDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/ExportDate"
             };
             bnd = new Binding("ExportDate");
             bnd.StringFormat = "{0:d}";
-            clm5.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm5.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = bnd,
@@ -235,12 +235,12 @@ namespace Client_App.Short_Visual
             clm6.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Report,Models").
-                GetProperty("IsCorrection").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Report,Models").
+                GetProperty("IsCorrection").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/IsCorrection"
             };
-            clm6.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm6.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("IsCorrection"),
@@ -251,12 +251,12 @@ namespace Client_App.Short_Visual
             clm7.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((FormVisualAttribute)Type.GetType("Models.Client_Model.Report,Models").
-                GetProperty("Comments").GetCustomAttributes(typeof(FormVisualAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Report,Models").
+                GetProperty("Comments").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/Comments"
             };
-            clm7.CellTemplate = new FuncDataTemplate<Report>((x, e) =>
+            clm7.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("Comments"),
@@ -273,7 +273,7 @@ namespace Client_App.Short_Visual
             panel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
 
             Button btn1 = new Button();
-            btn1.Content = ((FormVisual_ClassAttribute)Type.GetType("Models.Client_Model.Form11,Models").GetCustomAttributes(typeof(FormVisual_ClassAttribute), false).First()).Name;
+            btn1.Content = ((Form_ClassAttribute)Type.GetType("Models.Client_Model.Form11,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn1.Bind(Button.CommandProperty,new Binding("AddForm"));
             btn1.CommandParameter = "11";
             btn1.Height = 30;
@@ -282,7 +282,7 @@ namespace Client_App.Short_Visual
             panel.Children.Add(btn1);
 
             Button btn2 = new Button();
-            btn2.Content = ((FormVisual_ClassAttribute)Type.GetType("Models.Client_Model.Form12,Models").GetCustomAttributes(typeof(FormVisual_ClassAttribute), false).First()).Name;
+            btn2.Content = ((Form_ClassAttribute)Type.GetType("Models.Client_Model.Form12,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn2.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn2.CommandParameter = "12";
             btn2.Height = 30;
@@ -291,7 +291,7 @@ namespace Client_App.Short_Visual
             panel.Children.Add(btn2);
 
             Button btn3 = new Button();
-            btn3.Content = ((FormVisual_ClassAttribute)Type.GetType("Models.Client_Model.Form13,Models").GetCustomAttributes(typeof(FormVisual_ClassAttribute), false).First()).Name;
+            btn3.Content = ((Form_ClassAttribute)Type.GetType("Models.Client_Model.Form13,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn3.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn3.CommandParameter = "13";
             btn3.Height = 30;
@@ -300,7 +300,7 @@ namespace Client_App.Short_Visual
             panel.Children.Add(btn3);
 
             Button btn4 = new Button();
-            btn4.Content = ((FormVisual_ClassAttribute)Type.GetType("Models.Client_Model.Form14,Models").GetCustomAttributes(typeof(FormVisual_ClassAttribute), false).First()).Name;
+            btn4.Content = ((Form_ClassAttribute)Type.GetType("Models.Client_Model.Form14,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn4.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn4.CommandParameter = "14";
             btn4.Height = 30;
@@ -309,7 +309,7 @@ namespace Client_App.Short_Visual
             panel.Children.Add(btn4);
 
             Button btn5 = new Button();
-            btn5.Content = ((FormVisual_ClassAttribute)Type.GetType("Models.Client_Model.Form15,Models").GetCustomAttributes(typeof(FormVisual_ClassAttribute), false).First()).Name;
+            btn5.Content = ((Form_ClassAttribute)Type.GetType("Models.Client_Model.Form15,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn5.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn5.CommandParameter = "15";
             btn5.Height = 30;
@@ -318,7 +318,7 @@ namespace Client_App.Short_Visual
             panel.Children.Add(btn5);
 
             Button btn6 = new Button();
-            btn6.Content = ((FormVisual_ClassAttribute)Type.GetType("Models.Client_Model.Form16,Models").GetCustomAttributes(typeof(FormVisual_ClassAttribute), false).First()).Name;
+            btn6.Content = ((Form_ClassAttribute)Type.GetType("Models.Client_Model.Form16,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn6.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn6.CommandParameter = "16";
             btn6.Height = 30;
@@ -327,7 +327,7 @@ namespace Client_App.Short_Visual
             panel.Children.Add(btn6);
 
             Button btn7 = new Button();
-            btn7.Content = ((FormVisual_ClassAttribute)Type.GetType("Models.Client_Model.Form17,Models").GetCustomAttributes(typeof(FormVisual_ClassAttribute), false).First()).Name;
+            btn7.Content = ((Form_ClassAttribute)Type.GetType("Models.Client_Model.Form17,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn7.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn7.CommandParameter = "17";
             btn7.Height = 30;
@@ -336,7 +336,7 @@ namespace Client_App.Short_Visual
             panel.Children.Add(btn7);
 
             Button btn8 = new Button();
-            btn8.Content = ((FormVisual_ClassAttribute)Type.GetType("Models.Client_Model.Form18,Models").GetCustomAttributes(typeof(FormVisual_ClassAttribute), false).First()).Name;
+            btn8.Content = ((Form_ClassAttribute)Type.GetType("Models.Client_Model.Form18,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn8.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn8.CommandParameter = "18";
             btn8.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
@@ -344,7 +344,7 @@ namespace Client_App.Short_Visual
             panel.Children.Add(btn8);
 
             Button btn9 = new Button();
-            btn9.Content = ((FormVisual_ClassAttribute)Type.GetType("Models.Client_Model.Form19,Models").GetCustomAttributes(typeof(FormVisual_ClassAttribute), false).First()).Name;
+            btn9.Content = ((Form_ClassAttribute)Type.GetType("Models.Client_Model.Form19,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn9.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn9.CommandParameter = "19";
             btn9.Height = 30;
