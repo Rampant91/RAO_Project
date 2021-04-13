@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RegNo)) != null)
                 {
-                    return (string)_RegNo.Get();
+                    return (string)_dataAccess.Get(nameof(RegNo));
                 }
                 else
                 {
@@ -42,12 +42,12 @@ namespace Models
                 _RegNo_Not_Valid = value;
                 if (GetErrors(nameof(RegNo)) != null)
                 {
-                    _RegNo.Set(_RegNo_Not_Valid);
+                    _dataAccess.Set(nameof(RegNo), _RegNo_Not_Valid);
                 }
                 OnPropertyChanged(nameof(RegNo));
             }
         }
-        private IDataLoadEngine _RegNo;
+        
         private string _RegNo_Not_Valid = "";
         //RegNo property
 
@@ -59,7 +59,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okpo)) != null)
                 {
-                    return (string)_Okpo.Get();
+                    return (string)_dataAccess.Get(nameof(Okpo));
                 }
                 else
                 {
@@ -71,12 +71,12 @@ namespace Models
                 _Okpo_Not_Valid = value;
                 if (GetErrors(nameof(Okpo)) != null)
                 {
-                    _Okpo.Set(_Okpo_Not_Valid);
+                    _dataAccess.Set(nameof(Okpo), _Okpo_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Okpo));
             }
         }
-        private IDataLoadEngine _Okpo;
+        
         private string _Okpo_Not_Valid = "";
         //Okpo property
 
@@ -88,7 +88,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OrgName)) != null)
                 {
-                    return (string)_OrgName.Get();
+                    return (string)_dataAccess.Get(nameof(OrgName));
                 }
                 else
                 {
@@ -100,12 +100,12 @@ namespace Models
                 _OrgName_Not_Valid = value;
                 if (GetErrors(nameof(OrgName)) != null)
                 {
-                    _OrgName.Set(_OrgName_Not_Valid);
+                    _dataAccess.Set(nameof(OrgName), _OrgName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(OrgName));
             }
         }
-        private IDataLoadEngine _OrgName;
+        
         private string _OrgName_Not_Valid = "";
         //OrgName property
 
@@ -117,7 +117,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentNameNumber)) != null)
                 {
-                    return (string)_DocumentNameNumber.Get();
+                    return (string)_dataAccess.Get(nameof(DocumentNameNumber));
                 }
                 else
                 {
@@ -129,12 +129,12 @@ namespace Models
                 _DocumentNameNumber_Not_Valid = value;
                 if (GetErrors(nameof(DocumentNameNumber)) != null)
                 {
-                    _DocumentNameNumber.Set(_DocumentNameNumber_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentNameNumber), _DocumentNameNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(DocumentNameNumber));
             }
         }
-        private IDataLoadEngine _DocumentNameNumber;
+        
         private string _DocumentNameNumber_Not_Valid = "";
         //DocumentNameNumber property
 
@@ -146,7 +146,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionNameNumber)) != null)
                 {
-                    return (string)_PermissionNameNumber.Get();
+                    return (string)_dataAccess.Get(nameof(PermissionNameNumber));
                 }
                 else
                 {
@@ -158,12 +158,12 @@ namespace Models
                 _PermissionNameNumber_Not_Valid = value;
                 if (GetErrors(nameof(PermissionNameNumber)) != null)
                 {
-                    _PermissionNameNumber.Set(_PermissionNameNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionNameNumber), _PermissionNameNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PermissionNameNumber));
             }
         }
-        private IDataLoadEngine _PermissionNameNumber;
+        
         private string _PermissionNameNumber_Not_Valid = "";
         //PermissionNameNumber property
 
@@ -175,7 +175,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedActivity)) != null)
                 {
-                    return (string)_AllowedActivity.Get();
+                    return (string)_dataAccess.Get(nameof(AllowedActivity));
                 }
                 else
                 {
@@ -187,12 +187,12 @@ namespace Models
                 _AllowedActivity_Not_Valid = value;
                 if (GetErrors(nameof(AllowedActivity)) != null)
                 {
-                    _AllowedActivity.Set(_AllowedActivity_Not_Valid);
+                    _dataAccess.Set(nameof(AllowedActivity), _AllowedActivity_Not_Valid);
                 }
                 OnPropertyChanged(nameof(AllowedActivity));
             }
         }
-        private IDataLoadEngine _AllowedActivity;
+        
         private string _AllowedActivity_Not_Valid = "";
         private void AllowedActivity_Validation(string value)//Ready
         {
@@ -208,7 +208,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Note)) != null)
                 {
-                    return (string)_Note.Get();
+                    return (string)_dataAccess.Get(nameof(Note));
                 }
                 else
                 {
@@ -220,12 +220,12 @@ namespace Models
                 _Note_Not_Valid = value;
                 if (GetErrors(nameof(Note)) != null)
                 {
-                    _Note.Set(_Note_Not_Valid);
+                    _dataAccess.Set(nameof(Note), _Note_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Note));
             }
         }
-        private IDataLoadEngine _Note;
+        
         private string _Note_Not_Valid = "";
         //Note property
     }

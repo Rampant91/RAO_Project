@@ -20,7 +20,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    return (byte)_CorrectionNumber.Get();
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
                 else
                 {
@@ -32,12 +32,12 @@ namespace Models.Abstracts
                 _CorrectionNumber_Not_Valid = value;
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
+                    _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        private IDataLoadEngine _CorrectionNumber;
+        
         private byte _CorrectionNumber_Not_Valid = 255;
         private void CorrectionNumber_Validation()
         {
@@ -53,7 +53,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NotificationDate)) != null)
                 {
-                    return (DateTimeOffset)_NotificationDate.Get();
+                    return (DateTimeOffset)_dataAccess.Get(nameof(NotificationDate));
                 }
                 else
                 {
@@ -65,12 +65,12 @@ namespace Models.Abstracts
                 _NotificationDate_Not_Valid = value;
                 if (GetErrors(nameof(NotificationDate)) != null)
                 {
-                    _NotificationDate.Set(_NotificationDate_Not_Valid);
+                    _dataAccess.Set(nameof(NotificationDate), _NotificationDate_Not_Valid);
                 }
                 OnPropertyChanged(nameof(NotificationDate));
             }
         }
-        private IDataLoadEngine _NotificationDate;
+        
         private DateTimeOffset _NotificationDate_Not_Valid = DateTimeOffset.MinValue;
         //NotificationDate property
     }

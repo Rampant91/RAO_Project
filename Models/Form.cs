@@ -102,7 +102,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
+                if (GetErrors(nameof(IsCorrection)) != null)
                 {
                     return (bool)_dataAccess.Get(nameof(IsCorrection));
                 }
@@ -116,7 +116,7 @@ namespace Models
                 _IsCorrection_Not_Valid = value;
                 if (GetErrors(nameof(IsCorrection)) != null)
                 {
-                    _dataAccess.Set(nameof(IsCorrection),_IsCorrection_Not_Valid);
+                    _dataAccess.Set(nameof(IsCorrection), _IsCorrection_Not_Valid);
                 }
                 OnPropertyChanged(nameof(IsCorrection));
             }
@@ -148,7 +148,7 @@ namespace Models
                 _CorrectionNumber_Not_Valid = value;
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    _dataAccess.Set(nameof(CorrectionNumber), _IsCorrection_Not_Valid);
+                    _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
@@ -180,7 +180,7 @@ namespace Models
                 _NumberInOrder_Not_Valid = value;
                 if (GetErrors(nameof(NumberInOrder)) != null)
                 {
-                    _dataAccess.Set(nameof(NumberInOrder),_NumberInOrder_Not_Valid);
+                    _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
@@ -244,7 +244,7 @@ namespace Models
                 _Notes_Not_Valid = value;
                 if (GetErrors(nameof(Notes)) != null)
                 {
-                    _dataAccess.Set(nameof(Notes),_Notes_Not_Valid);
+                    _dataAccess.Set(nameof(Notes), _Notes_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Notes));
             }
@@ -276,7 +276,7 @@ namespace Models
                 _StartPeriod_Not_Valid = value;
                 if (GetErrors(nameof(StartPeriod)) != null)
                 {
-                    _dataAccess.Set(nameof(StartPeriod),_StartPeriod_Not_Valid);
+                    _dataAccess.Set(nameof(StartPeriod), _StartPeriod_Not_Valid);
                 }
                 OnPropertyChanged(nameof(StartPeriod));
             }
@@ -323,7 +323,7 @@ namespace Models
                 _EndPeriod_Not_Valid = value;
                 if (GetErrors(nameof(EndPeriod)) != null)
                 {
-                    _dataAccess.Set(nameof(EndPeriod),_EndPeriod_Not_Valid);
+                    _dataAccess.Set(nameof(EndPeriod), _EndPeriod_Not_Valid);
                 }
                 OnPropertyChanged(nameof(EndPeriod));
             }
@@ -370,7 +370,7 @@ namespace Models
                 _ExportDate_Not_Valid = value;
                 if (GetErrors(nameof(ExportDate)) != null)
                 {
-                    _dataAccess.Set(nameof(ExportDate),_ExportDate_Not_Valid);
+                    _dataAccess.Set(nameof(ExportDate), _ExportDate_Not_Valid);
                 }
                 OnPropertyChanged(nameof(ExportDate));
             }

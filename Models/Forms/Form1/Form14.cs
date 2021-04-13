@@ -27,7 +27,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumber)) != null)
                 {
-                    return (string)_PassportNumber.Get();
+                    return (string)_dataAccess.Get(nameof(PassportNumber));
                 }
                 else
                 {
@@ -39,12 +39,12 @@ namespace Models
                 _PassportNumber_Not_Valid = value;
                 if (GetErrors(nameof(PassportNumber)) != null)
                 {
-                    _PassportNumber.Set(_PassportNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PassportNumber), _PassportNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
         }
-        private IDataLoadEngine _PassportNumber;
+        
         private string _PassportNumber_Not_Valid = "";
         private void PassportNumber_Validation()
         {
@@ -59,7 +59,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberNote)) != null)
                 {
-                    return (string)_PassportNumberNote.Get();
+                    return (string)_dataAccess.Get(nameof(PassportNumberNote));
                 }
                 else
                 {
@@ -71,12 +71,11 @@ namespace Models
                 _PassportNumberNote_Not_Valid = value;
                 if (GetErrors(nameof(PassportNumberNote)) != null)
                 {
-                    _PassportNumberNote.Set(_PassportNumberNote_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(PassportNumberNote), _PassportNumberNote_Not_Valid);                }
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
         }
-        private IDataLoadEngine _PassportNumberNote;
+        
         private string _PassportNumberNote_Not_Valid = "";
         private void PassportNumberNote_Validation()
         {
@@ -92,8 +91,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberRecoded)) != null)
                 {
-                    return (string)_PassportNumberRecoded.Get();
-                }
+                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded));                }
                 else
                 {
                     return _PassportNumberRecoded_Not_Valid;
@@ -104,12 +102,11 @@ namespace Models
                 _PassportNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PassportNumberRecoded)) != null)
                 {
-                    _PassportNumberRecoded.Set(_PassportNumberRecoded_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(PassportNumberRecoded), _PassportNumberRecoded_Not_Valid);                }
                 OnPropertyChanged(nameof(PassportNumberRecoded));
             }
         }
-        private IDataLoadEngine _PassportNumberRecoded;//If change this change validation
+        //If change this change validation
         private string _PassportNumberRecoded_Not_Valid = "";
         private void PassportNumberRecoded_Validation(string value)//Ready
         {
@@ -125,7 +122,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Name)) != null)
                 {
-                    return (string)_Name.Get();
+                    return (string)_dataAccess.Get(nameof(Name));
                 }
                 else
                 {
@@ -137,12 +134,12 @@ namespace Models
                 _Name_Not_Valid = value;
                 if (GetErrors(nameof(Name)) != null)
                 {
-                    _Name.Set(_Name_Not_Valid);
+                    _dataAccess.Set(nameof(Name), _Name_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Name));
             }
         }
-        private IDataLoadEngine _Name;
+        
         private string _Name_Not_Valid = "";
         private void Name_Validation(string value)//TODO
         {
@@ -158,7 +155,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Sort)) != null)
                 {
-                    return (byte)_Sort.Get();
+                    return (byte)_dataAccess.Get(nameof(Sort));
                 }
                 else
                 {
@@ -170,12 +167,12 @@ namespace Models
                 _Sort_Not_Valid = value;
                 if (GetErrors(nameof(Sort)) != null)
                 {
-                    _Sort.Set(_Sort_Not_Valid);
+                    _dataAccess.Set(nameof(Sort), _Sort_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Sort));
             }
         }
-        private IDataLoadEngine _Sort;//If change this change validation
+        //If change this change validation
         private byte _Sort_Not_Valid = 255;
         private void Sort_Validation(byte value)//TODO
         {
@@ -191,8 +188,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) != null)
                 {
-                    return (string)_Radionuclids.Get();
-                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids));                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -203,12 +199,11 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) != null)
                 {
-                    _Radionuclids.Set(_Radionuclids_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
-        private IDataLoadEngine _Radionuclids;//If change this change validation
+        //If change this change validation
         private string _Radionuclids_Not_Valid = "";
         private void Radionuclids_Validation()//TODO
         {
@@ -224,7 +219,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) != null)
                 {
-                    return (string)_Activity.Get();
+                    return (string)_dataAccess.Get(nameof(Activity));
                 }
                 else
                 {
@@ -236,12 +231,12 @@ namespace Models
                 _Activity_Not_Valid = value;
                 if (GetErrors(nameof(Activity)) != null)
                 {
-                    _Activity.Set(_Activity_Not_Valid);
+                    _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
         }
-        private IDataLoadEngine _Activity;
+        
         private string _Activity_Not_Valid = "";
         private void Activity_Validation(string value)//Ready
         {
@@ -268,7 +263,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ActivityMeasurementDate)) != null)
                 {
-                    return (DateTime)_ActivityMeasurementDate.Get();
+                    return (DateTime)_dataAccess.Get(nameof(ActivityMeasurementDate));
                 }
                 else
                 {
@@ -280,12 +275,12 @@ namespace Models
                 _ActivityMeasurementDate_Not_Valid = value;
                 if (GetErrors(nameof(ActivityMeasurementDate)) != null)
                 {
-                    _ActivityMeasurementDate.Set(_ActivityMeasurementDate_Not_Valid);
+                    _dataAccess.Set(nameof(ActivityMeasurementDate), _ActivityMeasurementDate_Not_Valid);
                 }
                 OnPropertyChanged(nameof(ActivityMeasurementDate));
             }
         }
-        private IDataLoadEngine _ActivityMeasurementDate;//if change this change validation
+        //if change this change validation
         private DateTimeOffset _ActivityMeasurementDate_Not_Valid = DateTimeOffset.MinValue;
         private void ActivityMeasurementDate_Validation(DateTimeOffset value)//Ready
         {
@@ -301,7 +296,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Volume)) != null)
                 {
-                    return (double)_Volume.Get();
+                    return (double)_dataAccess.Get(nameof(Volume));
                 }
                 else
                 {
@@ -313,12 +308,12 @@ namespace Models
                 _Volume_Not_Valid = value;
                 if (GetErrors(nameof(Volume)) != null)
                 {
-                    _Volume.Set(_Volume_Not_Valid);
+                    _dataAccess.Set(nameof(Volume), _Volume_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Volume));
             }
         }
-        private IDataLoadEngine _Volume;
+        
         private double _Volume_Not_Valid = -1;
         private void Volume_Validation(double value)//TODO
         {
@@ -334,7 +329,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) != null)
                 {
-                    return (double)_Mass.Get();
+                    return (double)_dataAccess.Get(nameof(Mass));
                 }
                 else
                 {
@@ -346,12 +341,12 @@ namespace Models
                 _Mass_Not_Valid = value;
                 if (GetErrors(nameof(Mass)) != null)
                 {
-                    _Mass.Set(_Mass_Not_Valid);
+                    _dataAccess.Set(nameof(Mass), _Mass_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
         }
-        private IDataLoadEngine _Mass;
+        
         private double _Mass_Not_Valid = -1;
         private void Mass_Validation()//TODO
         {
@@ -367,7 +362,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AggregateState)) != null)
                 {
-                    return (byte)_AggregateState.Get();
+                    return (byte)_dataAccess.Get(nameof(AggregateState));
                 }
                 else
                 {
@@ -379,12 +374,12 @@ namespace Models
                 _AggregateState_Not_Valid = value;
                 if (GetErrors(nameof(AggregateState)) != null)
                 {
-                    _AggregateState.Set(_AggregateState_Not_Valid);
+                    _dataAccess.Set(nameof(AggregateState), _AggregateState_Not_Valid);
                 }
                 OnPropertyChanged(nameof(AggregateState));
             }
         }
-        private IDataLoadEngine _AggregateState;
+        
         private byte _AggregateState_Not_Valid = 0;
         private void AggregateState_Validation(byte value)//Ready
         {
@@ -402,7 +397,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PropertyCode)) != null)
                 {
-                    return (byte)_PropertyCode.Get();
+                    return (byte)_dataAccess.Get(nameof(PropertyCode));
                 }
                 else
                 {
@@ -414,12 +409,12 @@ namespace Models
                 _PropertyCode_Not_Valid = value;
                 if (GetErrors(nameof(PropertyCode)) != null)
                 {
-                    _PropertyCode.Set(_PropertyCode_Not_Valid);
+                    _dataAccess.Set(nameof(PropertyCode), _PropertyCode_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PropertyCode));
             }
         }
-        private IDataLoadEngine _PropertyCode;
+        
         private byte _PropertyCode_Not_Valid = 255;
         private void PropertyCode_Validation(byte value)//Ready
         {
@@ -437,7 +432,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Owner)) != null)
                 {
-                    return (string)_Owner.Get();
+                    return (string)_dataAccess.Get(nameof(Owner));
                 }
                 else
                 {
@@ -449,12 +444,12 @@ namespace Models
                 _Owner_Not_Valid = value;
                 if (GetErrors(nameof(Owner)) != null)
                 {
-                    _Owner.Set(_Owner_Not_Valid);
+                    _dataAccess.Set(nameof(Owner), _Owner_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Owner));
             }
         }
-        private IDataLoadEngine _Owner;//if change this change validation
+        //if change this change validation
         private string _Owner_Not_Valid = "";
         private void Owner_Validation(string value)//Ready
         {
@@ -470,7 +465,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
                 {
-                    return (string)_ProviderOrRecieverOKPO.Get();
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
                 }
                 else
                 {
@@ -482,12 +477,12 @@ namespace Models
                 _ProviderOrRecieverOKPO_Not_Valid = value;
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
                 {
-                    _ProviderOrRecieverOKPO.Set(_ProviderOrRecieverOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
-        private IDataLoadEngine _ProviderOrRecieverOKPO;
+        
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
         private void ProviderOrRecieverOKPO_Validation()//TODO
         {
@@ -502,7 +497,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
                 {
-                    return (string)_ProviderOrRecieverOKPONote.Get();
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
                 }
                 else
                 {
@@ -514,12 +509,12 @@ namespace Models
                 _ProviderOrRecieverOKPONote_Not_Valid = value;
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
                 {
-                    _ProviderOrRecieverOKPONote.Set(_ProviderOrRecieverOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), _ProviderOrRecieverOKPONote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
-        private IDataLoadEngine _ProviderOrRecieverOKPONote;
+        
         private string _ProviderOrRecieverOKPONote_Not_Valid = "";
         private void ProviderOrRecieverOKPONote_Validation()
         {
@@ -535,7 +530,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPO)) != null)
                 {
-                    return (string)_TransporterOKPO.Get();
+                    return (string)_dataAccess.Get(nameof(TransporterOKPO));
                 }
                 else
                 {
@@ -547,12 +542,12 @@ namespace Models
                 _TransporterOKPO_Not_Valid = value;
                 if (GetErrors(nameof(TransporterOKPO)) != null)
                 {
-                    _TransporterOKPO.Set(_TransporterOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(TransporterOKPO), _TransporterOKPO_Not_Valid);
                 }
                 OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
-        private IDataLoadEngine _TransporterOKPO;
+        
         private string _TransporterOKPO_Not_Valid = "";
         private void TransporterOKPO_Validation(string value)//TODO
         {
@@ -567,7 +562,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPONote)) != null)
                 {
-                    return (string)_TransporterOKPONote.Get();
+                    return (string)_dataAccess.Get(nameof(TransporterOKPONote));
                 }
                 else
                 {
@@ -579,12 +574,12 @@ namespace Models
                 _TransporterOKPONote_Not_Valid = value;
                 if (GetErrors(nameof(TransporterOKPONote)) != null)
                 {
-                    _TransporterOKPONote.Set(_TransporterOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(TransporterOKPONote), _TransporterOKPONote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(TransporterOKPONote));
             }
         }
-        private IDataLoadEngine _TransporterOKPONote;
+        
         private string _TransporterOKPONote_Not_Valid = "";
         private void TransporterOKPONote_Validation()
         {
@@ -600,7 +595,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) != null)
                 {
-                    return (string)_PackName.Get();
+                    return (string)_dataAccess.Get(nameof(PackName));
                 }
                 else
                 {
@@ -612,12 +607,12 @@ namespace Models
                 _PackName_Not_Valid = value;
                 if (GetErrors(nameof(PackName)) != null)
                 {
-                    _PackName.Set(_PackName_Not_Valid);
+                    _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
         }
-        private IDataLoadEngine _PackName;
+        
         private string _PackName_Not_Valid = "";
         private void PackName_Validation()
         {
@@ -632,7 +627,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNameNote)) != null)
                 {
-                    return (string)_PackNameNote.Get();
+                    return (string)_dataAccess.Get(nameof(PackNameNote));
                 }
                 else
                 {
@@ -644,12 +639,12 @@ namespace Models
                 _PackNameNote_Not_Valid = value;
                 if (GetErrors(nameof(PackNameNote)) != null)
                 {
-                    _PackNameNote.Set(_PackNameNote_Not_Valid);
+                    _dataAccess.Set(nameof(PackNameNote), _PackNameNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackNameNote));
             }
         }
-        private IDataLoadEngine _PackNameNote;
+        
         private string _PackNameNote_Not_Valid = "";
         private void PackNameNote_Validation()
         {
@@ -665,7 +660,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) != null)
                 {
-                    return (string)_PackType.Get();
+                    return (string)_dataAccess.Get(nameof(PackType));
                 }
                 else
                 {
@@ -677,12 +672,12 @@ namespace Models
                 _PackType_Not_Valid = value;
                 if (GetErrors(nameof(PackType)) != null)
                 {
-                    _PackType.Set(_PackType_Not_Valid);
+                    _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
         }
-        private IDataLoadEngine _PackType;//If change this change validation
+        //If change this change validation
         private string _PackType_Not_Valid = "";
         private void PackType_Validation()//Ready
         {
@@ -697,7 +692,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) != null)
                 {
-                    return (string)_PackTypeRecoded.Get();
+                    return (string)_dataAccess.Get(nameof(PackTypeRecoded));
                 }
                 else
                 {
@@ -709,12 +704,12 @@ namespace Models
                 _PackTypeRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PackTypeRecoded)) != null)
                 {
-                    _PackTypeRecoded.Set(_PackTypeRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(PackTypeRecoded), _PackTypeRecoded_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
-        private IDataLoadEngine _PackTypeRecoded;
+        
         private string _PackTypeRecoded_Not_Valid = "";
         private void PackTypeRecoded_Validation()
         {
@@ -729,7 +724,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeNote)) != null)
                 {
-                    return (string)_PackTypeNote.Get();
+                    return (string)_dataAccess.Get(nameof(PackTypeNote));
                 }
                 else
                 {
@@ -741,12 +736,12 @@ namespace Models
                 _PackTypeNote_Not_Valid = value;
                 if (GetErrors(nameof(PackTypeNote)) != null)
                 {
-                    _PackTypeNote.Set(_PackTypeNote_Not_Valid);
+                    _dataAccess.Set(nameof(PackTypeNote), _PackTypeNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackTypeNote));
             }
         }
-        private IDataLoadEngine _PackTypeNote;
+        
         private string _PackTypeNote_Not_Valid = "";
         private void PackTypeNote_Validation()
         {
@@ -762,7 +757,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNumber)) != null)
                 {
-                    return (string)_PackNumber.Get();
+                    return (string)_dataAccess.Get(nameof(PackNumber));
                 }
                 else
                 {
@@ -774,12 +769,12 @@ namespace Models
                 _PackNumber_Not_Valid = value;
                 if (GetErrors(nameof(PackNumber)) != null)
                 {
-                    _PackNumber.Set(_PackNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PackNumber), _PackNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackNumber));
             }
         }
-        private IDataLoadEngine _PackNumber;//If change this change validation
+        //If change this change validation
         private string _PackNumber_Not_Valid = "";
         private void PackNumber_Validation(string value)//Ready
         {
@@ -795,7 +790,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNumberRecoded)) != null)
                 {
-                    return (string)_PackNumberRecoded.Get();
+                    return (string)_dataAccess.Get(nameof(PackNumberRecoded));
                 }
                 else
                 {
@@ -807,12 +802,12 @@ namespace Models
                 _PackNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PackNumberRecoded)) != null)
                 {
-                    _PackNumberRecoded.Set(_PackNumberRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(PackNumberRecoded), _PackNumberRecoded_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackNumberRecoded));
             }
         }
-        private IDataLoadEngine _PackNumberRecoded;//If change this change validation
+        //If change this change validation
         private string _PackNumberRecoded_Not_Valid = "";
         private void PackNumberRecoded_Validation(string value)//Ready
         {

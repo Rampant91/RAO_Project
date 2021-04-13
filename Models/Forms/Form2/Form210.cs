@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(IndicatorName)) != null)
                 {
-                    return (string)_IndicatorName.Get();
+                    return (string)_dataAccess.Get(nameof(IndicatorName));
                 }
                 else
                 {
@@ -42,12 +42,12 @@ namespace Models
                 _IndicatorName_Not_Valid = value;
                 if (GetErrors(nameof(IndicatorName)) != null)
                 {
-                    _IndicatorName.Set(_IndicatorName_Not_Valid);
+                    _dataAccess.Set(nameof(IndicatorName), _IndicatorName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(IndicatorName));
             }
         }
-        private IDataLoadEngine _IndicatorName;
+        
         private string _IndicatorName_Not_Valid = "";
         private void IndicatorName_Validation(string value)//TODO
         {
@@ -63,7 +63,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotName)) != null)
                 {
-                    return (string)_PlotName.Get();
+                    return (string)_dataAccess.Get(nameof(PlotName));
                 }
                 else
                 {
@@ -75,12 +75,12 @@ namespace Models
                 _PlotName_Not_Valid = value;
                 if (GetErrors(nameof(PlotName)) != null)
                 {
-                    _PlotName.Set(_PlotName_Not_Valid);
+                    _dataAccess.Set(nameof(PlotName), _PlotName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PlotName));
             }
         }
-        private IDataLoadEngine _PlotName;
+        
         private string _PlotName_Not_Valid = "";
         private void PlotName_Validation(string value)//TODO
         {
@@ -96,7 +96,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotKadastrNumber)) != null)
                 {
-                    return (string)_PlotKadastrNumber.Get();
+                    return (string)_dataAccess.Get(nameof(PlotKadastrNumber));
                 }
                 else
                 {
@@ -108,12 +108,12 @@ namespace Models
                 _PlotKadastrNumber_Not_Valid = value;
                 if (GetErrors(nameof(PlotKadastrNumber)) != null)
                 {
-                    _PlotKadastrNumber.Set(_PlotKadastrNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PlotKadastrNumber), _PlotKadastrNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
         }
-        private IDataLoadEngine _PlotKadastrNumber;
+        
         private string _PlotKadastrNumber_Not_Valid = "";
         private void PlotKadastrNumber_Validation(string value)//TODO
         {
@@ -129,8 +129,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotCode)) != null)
                 {
-                    return (string)_PlotCode.Get();
-                }
+                    return (string)_dataAccess.Get(nameof(PlotCode));                }
                 else
                 {
                     return _PlotCode_Not_Valid;
@@ -141,12 +140,11 @@ namespace Models
                 _PlotCode_Not_Valid = value;
                 if (GetErrors(nameof(PlotCode)) != null)
                 {
-                    _PlotCode.Set(_PlotCode_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(PlotCode), _PlotCode_Not_Valid);                }
                 OnPropertyChanged(nameof(PlotCode));
             }
         }
-        private IDataLoadEngine _PlotCode; //6 symbols code
+         //6 symbols code
         private string _PlotCode_Not_Valid = ""; //6 symbols code
         private void PlotCode_Validation(string value)//TODO
         {
@@ -162,7 +160,7 @@ namespace Models
             {
                 if (GetErrors(nameof(InfectedArea)) != null)
                 {
-                    return (int)_InfectedArea.Get();
+                    return (int)_dataAccess.Get(nameof(InfectedArea));
                 }
                 else
                 {
@@ -174,12 +172,12 @@ namespace Models
                 _InfectedArea_Not_Valid = value;
                 if (GetErrors(nameof(InfectedArea)) != null)
                 {
-                    _InfectedArea.Set(_InfectedArea_Not_Valid);
+                    _dataAccess.Set(nameof(InfectedArea), _InfectedArea_Not_Valid);
                 }
                 OnPropertyChanged(nameof(InfectedArea));
             }
         }
-        private IDataLoadEngine _InfectedArea;
+        
         private int _InfectedArea_Not_Valid = -1;
         private void InfectedArea_Validation(int value)//TODO
         {
@@ -195,7 +193,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AvgGammaRaysDosePower)) != null)
                 {
-                    return (double)_AvgGammaRaysDosePower.Get();
+                    return (double)_dataAccess.Get(nameof(AvgGammaRaysDosePower));
                 }
                 else
                 {
@@ -207,12 +205,12 @@ namespace Models
                 _AvgGammaRaysDosePower_Not_Valid = value;
                 if (GetErrors(nameof(AvgGammaRaysDosePower)) != null)
                 {
-                    _AvgGammaRaysDosePower.Set(_AvgGammaRaysDosePower_Not_Valid);
+                    _dataAccess.Set(nameof(AvgGammaRaysDosePower), _AvgGammaRaysDosePower_Not_Valid);
                 }
                 OnPropertyChanged(nameof(AvgGammaRaysDosePower));
             }
         }
-        private IDataLoadEngine _AvgGammaRaysDosePower;
+        
         private double _AvgGammaRaysDosePower_Not_Valid = -1;
         private void AvgGammaRaysDosePower_Validation(double value)//TODO
         {
@@ -228,7 +226,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MaxGammaRaysDosePower)) != null)
                 {
-                    return (double)_MaxGammaRaysDosePower.Get();
+                    return (double)_dataAccess.Get(nameof(MaxGammaRaysDosePower));
                 }
                 else
                 {
@@ -240,12 +238,12 @@ namespace Models
                 _MaxGammaRaysDosePower_Not_Valid = value;
                 if (GetErrors(nameof(MaxGammaRaysDosePower)) != null)
                 {
-                    _MaxGammaRaysDosePower.Set(_MaxGammaRaysDosePower_Not_Valid);
+                    _dataAccess.Set(nameof(MaxGammaRaysDosePower), _MaxGammaRaysDosePower_Not_Valid);
                 }
                 OnPropertyChanged(nameof(MaxGammaRaysDosePower));
             }
         }
-        private IDataLoadEngine _MaxGammaRaysDosePower;
+        
         private double _MaxGammaRaysDosePower_Not_Valid = -1;
         private void MaxGammaRaysDosePower_Validation(double value)//TODO
         {
@@ -261,7 +259,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteDensityAlpha)) != null)
                 {
-                    return (double)_WasteDensityAlpha.Get();
+                    return (double)_dataAccess.Get(nameof(WasteDensityAlpha));
                 }
                 else
                 {
@@ -273,12 +271,12 @@ namespace Models
                 _WasteDensityAlpha_Not_Valid = value;
                 if (GetErrors(nameof(WasteDensityAlpha)) != null)
                 {
-                    _WasteDensityAlpha.Set(_WasteDensityAlpha_Not_Valid);
+                    _dataAccess.Set(nameof(WasteDensityAlpha), _WasteDensityAlpha_Not_Valid);
                 }
                 OnPropertyChanged(nameof(WasteDensityAlpha));
             }
         }
-        private IDataLoadEngine _WasteDensityAlpha;
+        
         private double _WasteDensityAlpha_Not_Valid = -1;
         private void WasteDensityAlpha_Validation(double value)//TODO
         {
@@ -294,7 +292,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteDensityBeta)) != null)
                 {
-                    return (double)_WasteDensityBeta.Get();
+                    return (double)_dataAccess.Get(nameof(WasteDensityBeta));
                 }
                 else
                 {
@@ -306,12 +304,12 @@ namespace Models
                 _WasteDensityBeta_Not_Valid = value;
                 if (GetErrors(nameof(WasteDensityBeta)) != null)
                 {
-                    _WasteDensityBeta.Set(_WasteDensityBeta_Not_Valid);
+                    _dataAccess.Set(nameof(WasteDensityBeta), _WasteDensityBeta_Not_Valid);
                 }
                 OnPropertyChanged(nameof(WasteDensityBeta));
             }
         }
-        private IDataLoadEngine _WasteDensityBeta;
+        
         private double _WasteDensityBeta_Not_Valid = -1;
         private void WasteDensityBeta_Validation(double value)//TODO
         {
@@ -327,7 +325,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FcpNumber)) != null)
                 {
-                    return (string)_FcpNumber.Get();
+                    return (string)_dataAccess.Get(nameof(FcpNumber));
                 }
                 else
                 {
@@ -339,12 +337,12 @@ namespace Models
                 _FcpNumber_Not_Valid = value;
                 if (GetErrors(nameof(FcpNumber)) != null)
                 {
-                    _FcpNumber.Set(_FcpNumber_Not_Valid);
+                    _dataAccess.Set(nameof(FcpNumber), _FcpNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
-        private IDataLoadEngine _FcpNumber;
+        
         private string _FcpNumber_Not_Valid = "";
         private void FcpNuber_Validation(string value)//TODO
         {

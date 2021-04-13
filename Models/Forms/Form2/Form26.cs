@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SourcesQuantity)) != null)
                 {
-                    return (int)_SourcesQuantity.Get();
+                    return (int)_dataAccess.Get(nameof(SourcesQuantity));
                 }
                 else
                 {
@@ -42,12 +42,12 @@ namespace Models
                 _SourcesQuantity_Not_Valid = value;
                 if (GetErrors(nameof(SourcesQuantity)) != null)
                 {
-                    _SourcesQuantity.Set(_SourcesQuantity_Not_Valid);
+                    _dataAccess.Set(nameof(SourcesQuantity), _SourcesQuantity_Not_Valid);
                 }
                 OnPropertyChanged(nameof(SourcesQuantity));
             }
         }
-        private IDataLoadEngine _SourcesQuantity;  // positive int.
+          // positive int.
         private int _SourcesQuantity_Not_Valid = -1;
         private void SourcesQuantity_Validation(int value)//Ready
         {
@@ -65,7 +65,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ObservedSourceNumber)) != null)
                 {
-                    return (string)_ObservedSourceNumber.Get();
+                    return (string)_dataAccess.Get(nameof(ObservedSourceNumber));
                 }
                 else
                 {
@@ -77,12 +77,12 @@ namespace Models
                 _ObservedSourceNumber_Not_Valid = value;
                 if (GetErrors(nameof(ObservedSourceNumber)) != null)
                 {
-                    _ObservedSourceNumber.Set(_ObservedSourceNumber_Not_Valid);
+                    _dataAccess.Set(nameof(ObservedSourceNumber), _ObservedSourceNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(ObservedSourceNumber));
             }
         }
-        private IDataLoadEngine _ObservedSourceNumber;//If change this change validation
+        //If change this change validation
         private string _ObservedSourceNumber_Not_Valid = "";
         private void ObservedSourceNumber_Validation(string value)//Ready
         {
@@ -98,7 +98,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ControlledAreaName)) != null)
                 {
-                    return (string)_ControlledAreaName.Get();
+                    return (string)_dataAccess.Get(nameof(ControlledAreaName));
                 }
                 else
                 {
@@ -110,12 +110,12 @@ namespace Models
                 _ControlledAreaName_Not_Valid = value;
                 if (GetErrors(nameof(ControlledAreaName)) != null)
                 {
-                    _ControlledAreaName.Set(_ControlledAreaName_Not_Valid);
+                    _dataAccess.Set(nameof(ControlledAreaName), _ControlledAreaName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(ControlledAreaName));
             }
         }
-        private IDataLoadEngine _ControlledAreaName;//If change this change validation
+        //If change this change validation
         private string _ControlledAreaName_Not_Valid = "";
         private void ControlledAreaName_Validation(string value)//Ready
         {
@@ -131,7 +131,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SupposedWasteSource)) != null)
                 {
-                    return (string)_SupposedWasteSource.Get();
+                    return (string)_dataAccess.Get(nameof(SupposedWasteSource));
                 }
                 else
                 {
@@ -143,12 +143,12 @@ namespace Models
                 _SupposedWasteSource_Not_Valid = value;
                 if (GetErrors(nameof(SupposedWasteSource)) != null)
                 {
-                    _SupposedWasteSource.Set(_SupposedWasteSource_Not_Valid);
+                    _dataAccess.Set(nameof(SupposedWasteSource), _SupposedWasteSource_Not_Valid);
                 }
                 OnPropertyChanged(nameof(SupposedWasteSource));
             }
         }
-        private IDataLoadEngine _SupposedWasteSource;
+        
         private string _SupposedWasteSource_Not_Valid = "";
         private void SupposedWasteSource_Validation(string value)//Ready
         {
@@ -164,7 +164,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DistanceToWasteSource)) != null)
                 {
-                    return (int)_DistanceToWasteSource.Get();
+                    return (int)_dataAccess.Get(nameof(DistanceToWasteSource));
                 }
                 else
                 {
@@ -176,12 +176,12 @@ namespace Models
                 _DistanceToWasteSource_Not_Valid = value;
                 if (GetErrors(nameof(DistanceToWasteSource)) != null)
                 {
-                    _DistanceToWasteSource.Set(_DistanceToWasteSource_Not_Valid);
+                    _dataAccess.Set(nameof(DistanceToWasteSource), _DistanceToWasteSource_Not_Valid);
                 }
                 OnPropertyChanged(nameof(DistanceToWasteSource));
             }
         }
-        private IDataLoadEngine _DistanceToWasteSource;
+        
         private int _DistanceToWasteSource_Not_Valid = -1;
         private void DistanceToWasteSource_Validation(int value)//Ready
         {
@@ -197,7 +197,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TestDepth)) != null)
                 {
-                    return (int)_TestDepth.Get();
+                    return (int)_dataAccess.Get(nameof(TestDepth));
                 }
                 else
                 {
@@ -209,12 +209,12 @@ namespace Models
                 _TestDepth_Not_Valid = value;
                 if (GetErrors(nameof(TestDepth)) != null)
                 {
-                    _TestDepth.Set(_TestDepth_Not_Valid);
+                    _dataAccess.Set(nameof(TestDepth), _TestDepth_Not_Valid);
                 }
                 OnPropertyChanged(nameof(TestDepth));
             }
         }
-        private IDataLoadEngine _TestDepth;
+        
         private int _TestDepth_Not_Valid = -1;
         private void TestDepth_Validation(int value)//Ready
         {
@@ -229,7 +229,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TestDepthNote)) != null)
                 {
-                    return (int)_TestDepthNote.Get();
+                    return (int)_dataAccess.Get(nameof(TestDepthNote));
                 }
                 else
                 {
@@ -241,12 +241,12 @@ namespace Models
                 _TestDepthNote_Not_Valid = value;
                 if (GetErrors(nameof(TestDepthNote)) != null)
                 {
-                    _TestDepthNote.Set(_TestDepthNote_Not_Valid);
+                    _dataAccess.Set(nameof(TestDepthNote), _TestDepthNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(TestDepthNote));
             }
         }
-        private IDataLoadEngine _TestDepthNote;
+        
         private int _TestDepthNote_Not_Valid = -1;
         private void TestDepthNote_Validation(int value)//Ready
         {
@@ -262,7 +262,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RadionuclidName)) != null)
                 {
-                    return (string)_RadionuclidName.Get();
+                    return (string)_dataAccess.Get(nameof(RadionuclidName));
                 }
                 else
                 {
@@ -274,12 +274,12 @@ namespace Models
                 _RadionuclidName_Not_Valid = value;
                 if (GetErrors(nameof(RadionuclidName)) != null)
                 {
-                    _RadionuclidName.Set(_RadionuclidName_Not_Valid);
+                    _dataAccess.Set(nameof(RadionuclidName), _RadionuclidName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(RadionuclidName));
             }
         }
-        private IDataLoadEngine _RadionuclidName;//If change this change validation
+        //If change this change validation
         private string _RadionuclidName_Not_Valid = "";
         private void RadionuclidName_Validation()//TODO
         {
@@ -295,7 +295,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AverageYearConcentration)) != null)
                 {
-                    return (double)_AverageYearConcentration.Get();
+                    return (double)_dataAccess.Get(nameof(AverageYearConcentration));
                 }
                 else
                 {
@@ -307,12 +307,12 @@ namespace Models
                 _AverageYearConcentration_Not_Valid = value;
                 if (GetErrors(nameof(AverageYearConcentration)) != null)
                 {
-                    _AverageYearConcentration.Set(_AverageYearConcentration_Not_Valid);
+                    _dataAccess.Set(nameof(AverageYearConcentration), _AverageYearConcentration_Not_Valid);
                 }
                 OnPropertyChanged(nameof(AverageYearConcentration));
             }
         }
-        private IDataLoadEngine _AverageYearConcentration;
+        
         private double _AverageYearConcentration_Not_Valid = -1;
         private void AverageYearConcentration_Validation()//TODO
         {

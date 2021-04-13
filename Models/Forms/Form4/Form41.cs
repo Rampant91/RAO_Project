@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(NumberInOrder)) != null)
                 {
-                    return (int)_NumberInOrder.Get();
+                    return (int)_dataAccess.Get(nameof(NumberInOrder));
                 }
                 else
                 {
@@ -42,12 +42,12 @@ namespace Models
                 _NumberInOrder_Not_Valid = value;
                 if (GetErrors(nameof(NumberInOrder)) != null)
                 {
-                    _NumberInOrder.Set(_NumberInOrder_Not_Valid);
+                    _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        private IDataLoadEngine _NumberInOrder;
+        
         private int _NumberInOrder_Not_Valid = -1;
         private void NumberInOrder_Validation()
         {
@@ -63,7 +63,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RegNo)) != null)
                 {
-                    return (string)_RegNo.Get();
+                    return (string)_dataAccess.Get(nameof(RegNo));
                 }
                 else
                 {
@@ -75,12 +75,12 @@ namespace Models
                 _RegNo_Not_Valid = value;
                 if (GetErrors(nameof(RegNo)) != null)
                 {
-                    _RegNo.Set(_RegNo_Not_Valid);
+                    _dataAccess.Set(nameof(RegNo), _RegNo_Not_Valid);
                 }
                 OnPropertyChanged(nameof(RegNo));
             }
         }
-        private IDataLoadEngine _RegNo;
+        
         private string _RegNo_Not_Valid = "";
         //RegNo property
 
@@ -92,7 +92,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okpo)) != null)
                 {
-                    return (string)_Okpo.Get();
+                    return (string)_dataAccess.Get(nameof(Okpo));
                 }
                 else
                 {
@@ -104,12 +104,12 @@ namespace Models
                 _Okpo_Not_Valid = value;
                 if (GetErrors(nameof(Okpo)) != null)
                 {
-                    _Okpo.Set(_Okpo_Not_Valid);
+                    _dataAccess.Set(nameof(Okpo), _Okpo_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Okpo));
             }
         }
-        private IDataLoadEngine _Okpo;
+        
         private string _Okpo_Not_Valid = "";
         //Okpo property
 
@@ -121,7 +121,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OrgName)) != null)
                 {
-                    return (string)_OrgName.Get();
+                    return (string)_dataAccess.Get(nameof(OrgName));
                 }
                 else
                 {
@@ -133,12 +133,12 @@ namespace Models
                 _OrgName_Not_Valid = value;
                 if (GetErrors(nameof(OrgName)) != null)
                 {
-                    _OrgName.Set(_OrgName_Not_Valid);
+                    _dataAccess.Set(nameof(OrgName), _OrgName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(OrgName));
             }
         }
-        private IDataLoadEngine _OrgName;
+        
         private string _OrgName_Not_Valid = "";
         //OrgName property
 
@@ -150,7 +150,7 @@ namespace Models
             {
                 if (GetErrors(nameof(LicenseInfo)) != null)
                 {
-                    return (string)_LicenseInfo.Get();
+                    return (string)_dataAccess.Get(nameof(LicenseInfo));
                 }
                 else
                 {
@@ -162,12 +162,12 @@ namespace Models
                 _LicenseInfo_Not_Valid = value;
                 if (GetErrors(nameof(LicenseInfo)) != null)
                 {
-                    _LicenseInfo.Set(_LicenseInfo_Not_Valid);
+                    _dataAccess.Set(nameof(LicenseInfo), _LicenseInfo_Not_Valid);
                 }
                 OnPropertyChanged(nameof(LicenseInfo));
             }
         }
-        private IDataLoadEngine _LicenseInfo;
+        
         private string _LicenseInfo_Not_Valid = "";
         //LicenseInfo property
 
@@ -179,7 +179,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsInv)) != null)
                 {
-                    return (int)_QuantityOfFormsInv.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityOfFormsInv));
                 }
                 else
                 {
@@ -191,12 +191,12 @@ namespace Models
                 _QuantityOfFormsInv_Not_Valid = value;
                 if (GetErrors(nameof(QuantityOfFormsInv)) != null)
                 {
-                    _QuantityOfFormsInv.Set(_QuantityOfFormsInv_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOfFormsInv), _QuantityOfFormsInv_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsInv));
             }
         }
-        private IDataLoadEngine _QuantityOfFormsInv;  // positive int.
+          // positive int.
         private int _QuantityOfFormsInv_Not_Valid = -1;
         private void QuantityOfFormsInv_Validation(int value)//Ready
         {
@@ -214,7 +214,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsOper)) != null)
                 {
-                    return (int)_QuantityOfFormsOper.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityOfFormsOper));
                 }
                 else
                 {
@@ -226,12 +226,12 @@ namespace Models
                 _QuantityOfFormsOper_Not_Valid = value;
                 if (GetErrors(nameof(QuantityOfFormsOper)) != null)
                 {
-                    _QuantityOfFormsOper.Set(_QuantityOfFormsOper_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOfFormsOper), _QuantityOfFormsOper_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsOper));
             }
         }
-        private IDataLoadEngine _QuantityOfFormsOper;  // positive int.
+          // positive int.
         private int _QuantityOfFormsOper_Not_Valid = -1;
         private void QuantityOfFormsOper_Validation(int value)//Ready
         {
@@ -249,7 +249,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsYear)) != null)
                 {
-                    return (int)_QuantityOfFormsYear.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityOfFormsYear));
                 }
                 else
                 {
@@ -261,12 +261,12 @@ namespace Models
                 _QuantityOfFormsYear_Not_Valid = value;
                 if (GetErrors(nameof(QuantityOfFormsYear)) != null)
                 {
-                    _QuantityOfFormsYear.Set(_QuantityOfFormsYear_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOfFormsYear), _QuantityOfFormsYear_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsYear));
             }
         }
-        private IDataLoadEngine _QuantityOfFormsYear;  // positive int.
+          // positive int.
         private int _QuantityOfFormsYear_Not_Valid = -1;
         private void QuantityOfFormsYear_Validation(int value)//Ready
         {
@@ -284,7 +284,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Notes)) != null)
                 {
-                    return (string)_Notes.Get();
+                    return (string)_dataAccess.Get(nameof(Notes));
                 }
                 else
                 {
@@ -296,12 +296,12 @@ namespace Models
                 _Notes_Not_Valid = value;
                 if (GetErrors(nameof(Notes)) != null)
                 {
-                    _Notes.Set(_Notes_Not_Valid);
+                    _dataAccess.Set(nameof(Notes), _Notes_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Notes));
             }
         }
-        private IDataLoadEngine _Notes;
+        
         private string _Notes_Not_Valid = "";
         //Notes property
     }

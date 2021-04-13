@@ -26,7 +26,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeTypeAccObject)) != null)
                 {
-                    return (short)_CodeTypeAccObject.Get();
+                    return (short)_dataAccess.Get(nameof(CodeTypeAccObject));
                 }
                 else
                 {
@@ -38,12 +38,12 @@ namespace Models
                 _CodeTypeAccObject_Not_Valid = value;
                 if (GetErrors(nameof(CodeTypeAccObject)) != null)
                 {
-                    _CodeTypeAccObject.Set(_CodeTypeAccObject_Not_Valid);
+                    _dataAccess.Set(nameof(CodeTypeAccObject), _CodeTypeAccObject_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CodeTypeAccObject));
             }
         }
-        private IDataLoadEngine _CodeTypeAccObject;
+        
         private short _CodeTypeAccObject_Not_Valid = 0;
         private void CodeTypeAccObject_Validation(short value)//TODO
         {
@@ -59,8 +59,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) != null)
                 {
-                    return (string)_Radionuclids.Get();
-                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids));                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -71,12 +70,11 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) != null)
                 {
-                    _Radionuclids.Set(_Radionuclids_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
-        private IDataLoadEngine _Radionuclids;//If change this change validation
+        //If change this change validation
         private string _Radionuclids_Not_Valid = "";
         private void Radionuclids_Validation()//TODO
         {
@@ -92,7 +90,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) != null)
                 {
-                    return (string)_Activity.Get();
+                    return (string)_dataAccess.Get(nameof(Activity));
                 }
                 else
                 {
@@ -104,12 +102,12 @@ namespace Models
                 _Activity_Not_Valid = value;
                 if (GetErrors(nameof(Activity)) != null)
                 {
-                    _Activity.Set(_Activity_Not_Valid);
+                    _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
         }
-        private IDataLoadEngine _Activity;
+        
         private string _Activity_Not_Valid = "";
         private void Activity_Validation(string value)//Ready
         {

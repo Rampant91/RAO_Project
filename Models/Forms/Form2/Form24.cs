@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeOYAT)) != null)
                 {
-                    return (string)_CodeOYAT.Get();
+                    return (string)_dataAccess.Get(nameof(CodeOYAT));
                 }
                 else
                 {
@@ -42,12 +42,12 @@ namespace Models
                 _CodeOYAT_Not_Valid = value;
                 if (GetErrors(nameof(CodeOYAT)) != null)
                 {
-                    _CodeOYAT.Set(_CodeOYAT_Not_Valid);
+                    _dataAccess.Set(nameof(CodeOYAT), _CodeOYAT_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CodeOYAT));
             }
         }
-        private IDataLoadEngine _CodeOYAT;
+        
         private string _CodeOYAT_Not_Valid = "";
         private void CodeOYAT_Validation()
         {
@@ -62,7 +62,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeOYATnote)) != null)
                 {
-                    return (string)_CodeOYATnote.Get();
+                    return (string)_dataAccess.Get(nameof(CodeOYATnote));
                 }
                 else
                 {
@@ -74,12 +74,12 @@ namespace Models
                 _CodeOYATnote_Not_Valid = value;
                 if (GetErrors(nameof(CodeOYATnote)) != null)
                 {
-                    _CodeOYATnote.Set(_CodeOYATnote_Not_Valid);
+                    _dataAccess.Set(nameof(CodeOYATnote), _CodeOYATnote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CodeOYATnote));
             }
         }
-        private IDataLoadEngine _CodeOYATnote;
+        
         private string _CodeOYATnote_Not_Valid = "";
         private void CodeOYATnote_Validation()
         {
@@ -95,7 +95,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FcpNumber)) != null)
                 {
-                    return (string)_FcpNumber.Get();
+                    return (string)_dataAccess.Get(nameof(FcpNumber));
                 }
                 else
                 {
@@ -107,12 +107,12 @@ namespace Models
                 _FcpNumber_Not_Valid = value;
                 if (GetErrors(nameof(FcpNumber)) != null)
                 {
-                    _FcpNumber.Set(_FcpNumber_Not_Valid);
+                    _dataAccess.Set(nameof(FcpNumber), _FcpNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
-        private IDataLoadEngine _FcpNumber;
+        
         private string _FcpNumber_Not_Valid = "";
         private void FcpNuber_Validation(string value)//TODO
         {
@@ -128,7 +128,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassCreated)) != null)
                 {
-                    return (double)_MassCreated.Get();
+                    return (double)_dataAccess.Get(nameof(MassCreated));
                 }
                 else
                 {
@@ -140,12 +140,12 @@ namespace Models
                 _MassCreated_Not_Valid = value;
                 if (GetErrors(nameof(MassCreated)) != null)
                 {
-                    _MassCreated.Set(_MassCreated_Not_Valid);
+                    _dataAccess.Set(nameof(MassCreated), _MassCreated_Not_Valid);
                 }
                 OnPropertyChanged(nameof(MassCreated));
             }
         }
-        private IDataLoadEngine _MassCreated;
+        
         private double _MassCreated_Not_Valid = -1;
         private void MassCreated_Validation()//TODO
         {
@@ -161,7 +161,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityCreated)) != null)
                 {
-                    return (int)_QuantityCreated.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityCreated));
                 }
                 else
                 {
@@ -173,12 +173,12 @@ namespace Models
                 _QuantityCreated_Not_Valid = value;
                 if (GetErrors(nameof(QuantityCreated)) != null)
                 {
-                    _QuantityCreated.Set(_QuantityCreated_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityCreated), _QuantityCreated_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityCreated));
             }
         }
-        private IDataLoadEngine _QuantityCreated;  // positive int.
+          // positive int.
         private int _QuantityCreated_Not_Valid = -1;
         private void QuantityCreated_Validation(int value)//Ready
         {
@@ -195,7 +195,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityCreatedNote)) != null)
                 {
-                    return (int)_QuantityCreatedNote.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityCreatedNote));
                 }
                 else
                 {
@@ -207,12 +207,12 @@ namespace Models
                 _QuantityCreatedNote_Not_Valid = value;
                 if (GetErrors(nameof(QuantityCreatedNote)) != null)
                 {
-                    _QuantityCreatedNote.Set(_QuantityCreatedNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityCreatedNote), _QuantityCreatedNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityCreatedNote));
             }
         }
-        private IDataLoadEngine _QuantityCreatedNote;  // positive int.
+          // positive int.
         private int _QuantityCreatedNote_Not_Valid = -1;
         private void QuantityCreatedNote_Validation(int value)//Ready
         {
@@ -230,7 +230,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassFromAnothers)) != null)
                 {
-                    return (double)_MassFromAnothers.Get();
+                    return (double)_dataAccess.Get(nameof(MassFromAnothers));
                 }
                 else
                 {
@@ -242,12 +242,12 @@ namespace Models
                 _MassFromAnothers_Not_Valid = value;
                 if (GetErrors(nameof(MassFromAnothers)) != null)
                 {
-                    _MassFromAnothers.Set(_MassFromAnothers_Not_Valid);
+                    _dataAccess.Set(nameof(MassFromAnothers), _MassFromAnothers_Not_Valid);
                 }
                 OnPropertyChanged(nameof(MassFromAnothers));
             }
         }
-        private IDataLoadEngine _MassFromAnothers;
+        
         private double _MassFromAnothers_Not_Valid = -1;
         private void MassFromAnothers_Validation()//TODO
         {
@@ -263,7 +263,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothers)) != null)
                 {
-                    return (int)_QuantityFromAnothers.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityFromAnothers));
                 }
                 else
                 {
@@ -275,12 +275,12 @@ namespace Models
                 _QuantityFromAnothers_Not_Valid = value;
                 if (GetErrors(nameof(QuantityFromAnothers)) != null)
                 {
-                    _QuantityFromAnothers.Set(_QuantityFromAnothers_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityFromAnothers), _QuantityFromAnothers_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityFromAnothers));
             }
         }
-        private IDataLoadEngine _QuantityFromAnothers;  // positive int.
+          // positive int.
         private int _QuantityFromAnothers_Not_Valid = -1;
         private void QuantityFromAnothers_Validation(int value)//Ready
         {
@@ -297,7 +297,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothersNote)) != null)
                 {
-                    return (int)_QuantityFromAnothersNote.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersNote));
                 }
                 else
                 {
@@ -309,12 +309,12 @@ namespace Models
                 _QuantityFromAnothersNote_Not_Valid = value;
                 if (GetErrors(nameof(QuantityFromAnothersNote)) != null)
                 {
-                    _QuantityFromAnothersNote.Set(_QuantityFromAnothersNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityFromAnothersNote), _QuantityFromAnothersNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityFromAnothersNote));
             }
         }
-        private IDataLoadEngine _QuantityFromAnothersNote;  // positive int.
+          // positive int.
         private int _QuantityFromAnothersNote_Not_Valid = -1;
         private void QuantityFromAnothersNote_Validation(int value)//Ready
         {
@@ -332,7 +332,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassFromAnothersImported)) != null)
                 {
-                    return (double)_MassFromAnothersImported.Get();
+                    return (double)_dataAccess.Get(nameof(MassFromAnothersImported));
                 }
                 else
                 {
@@ -344,12 +344,12 @@ namespace Models
                 _MassFromAnothersImported_Not_Valid = value;
                 if (GetErrors(nameof(MassFromAnothersImported)) != null)
                 {
-                    _MassFromAnothersImported.Set(_MassFromAnothersImported_Not_Valid);
+                    _dataAccess.Set(nameof(MassFromAnothersImported), _MassFromAnothersImported_Not_Valid);
                 }
                 OnPropertyChanged(nameof(MassFromAnothersImported));
             }
         }
-        private IDataLoadEngine _MassFromAnothersImported;
+        
         private double _MassFromAnothersImported_Not_Valid = -1;
         private void MassFromAnothersImported_Validation()//TODO
         {
@@ -365,7 +365,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothersImported)) != null)
                 {
-                    return (int)_QuantityFromAnothersImported.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersImported));
                 }
                 else
                 {
@@ -377,12 +377,12 @@ namespace Models
                 _QuantityFromAnothersImported_Not_Valid = value;
                 if (GetErrors(nameof(QuantityFromAnothersImported)) != null)
                 {
-                    _QuantityFromAnothersImported.Set(_QuantityFromAnothersImported_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityFromAnothersImported), _QuantityFromAnothersImported_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityFromAnothersImported));
             }
         }
-        private IDataLoadEngine _QuantityFromAnothersImported;  // positive int.
+          // positive int.
         private int _QuantityFromAnothersImported_Not_Valid = -1;
         private void QuantityFromAnothersImported_Validation(int value)//Ready
         {
@@ -399,7 +399,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothersImportedNote)) != null)
                 {
-                    return (int)_QuantityFromAnothersImportedNote.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersImportedNote));
                 }
                 else
                 {
@@ -411,12 +411,12 @@ namespace Models
                 _QuantityFromAnothersImportedNote_Not_Valid = value;
                 if (GetErrors(nameof(QuantityFromAnothersNote)) != null)
                 {
-                    _QuantityFromAnothersImportedNote.Set(_QuantityFromAnothersImportedNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityFromAnothersImportedNote), _QuantityFromAnothersImportedNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityFromAnothersImportedNote));
             }
         }
-        private IDataLoadEngine _QuantityFromAnothersImportedNote;  // positive int.
+          // positive int.
         private int _QuantityFromAnothersImportedNote_Not_Valid = -1;
         private void QuantityFromAnothersImportedNote_Validation(int value)//Ready
         {
@@ -434,7 +434,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassAnotherReasons)) != null)
                 {
-                    return (double)_MassAnotherReasons.Get();
+                    return (double)_dataAccess.Get(nameof(MassAnotherReasons));
                 }
                 else
                 {
@@ -446,12 +446,12 @@ namespace Models
                 _MassAnotherReasons_Not_Valid = value;
                 if (GetErrors(nameof(MassAnotherReasons)) != null)
                 {
-                    _MassAnotherReasons.Set(_MassAnotherReasons_Not_Valid);
+                    _dataAccess.Set(nameof(MassAnotherReasons), _MassAnotherReasons_Not_Valid);
                 }
                 OnPropertyChanged(nameof(MassAnotherReasons));
             }
         }
-        private IDataLoadEngine _MassAnotherReasons;
+        
         private double _MassAnotherReasons_Not_Valid = -1;
         private void MassAnotherReasons_Validation()//TODO
         {
@@ -467,7 +467,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityAnotherReasons)) != null)
                 {
-                    return (int)_QuantityAnotherReasons.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityAnotherReasons));
                 }
                 else
                 {
@@ -479,12 +479,12 @@ namespace Models
                 _QuantityAnotherReasons_Not_Valid = value;
                 if (GetErrors(nameof(QuantityAnotherReasons)) != null)
                 {
-                    _QuantityAnotherReasons.Set(_QuantityAnotherReasons_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityAnotherReasons), _QuantityAnotherReasons_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityAnotherReasons));
             }
         }
-        private IDataLoadEngine _QuantityAnotherReasons;  // positive int.
+          // positive int.
         private int _QuantityAnotherReasons_Not_Valid = -1;
         private void QuantityAnotherReasons_Validation(int value)//Ready
         {
@@ -501,7 +501,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityAnotherReasonsNote)) != null)
                 {
-                    return (int)_QuantityAnotherReasonsNote.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityAnotherReasonsNote));
                 }
                 else
                 {
@@ -513,12 +513,12 @@ namespace Models
                 _QuantityAnotherReasonsNote_Not_Valid = value;
                 if (GetErrors(nameof(QuantityAnotherReasonsNote)) != null)
                 {
-                    _QuantityAnotherReasonsNote.Set(_QuantityAnotherReasonsNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityAnotherReasonsNote), _QuantityAnotherReasonsNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
             }
         }
-        private IDataLoadEngine _QuantityAnotherReasonsNote;  // positive int.
+          // positive int.
         private int _QuantityAnotherReasonsNote_Not_Valid = -1;
         private void QuantityAnotherReasonsNote_Validation(int value)//Ready
         {
@@ -536,7 +536,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassTransferredToAnother)) != null)
                 {
-                    return (double)_MassTransferredToAnother.Get();
+                    return (double)_dataAccess.Get(nameof(MassTransferredToAnother));
                 }
                 else
                 {
@@ -548,12 +548,12 @@ namespace Models
                 _MassTransferredToAnother_Not_Valid = value;
                 if (GetErrors(nameof(MassTransferredToAnother)) != null)
                 {
-                    _MassTransferredToAnother.Set(_MassTransferredToAnother_Not_Valid);
+                    _dataAccess.Set(nameof(MassTransferredToAnother), _MassTransferredToAnother_Not_Valid);
                 }
                 OnPropertyChanged(nameof(MassTransferredToAnother));
             }
         }
-        private IDataLoadEngine _MassTransferredToAnother;
+        
         private double _MassTransferredToAnother_Not_Valid = -1;
         private void MassTransferredToAnother_Validation()//TODO
         {
@@ -569,7 +569,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityTransferredToAnother)) != null)
                 {
-                    return (int)_QuantityTransferredToAnother.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityTransferredToAnother));
                 }
                 else
                 {
@@ -581,12 +581,12 @@ namespace Models
                 _QuantityTransferredToAnother_Not_Valid = value;
                 if (GetErrors(nameof(QuantityTransferredToAnother)) != null)
                 {
-                    _QuantityTransferredToAnother.Set(_QuantityTransferredToAnother_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityTransferredToAnother), _QuantityTransferredToAnother_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityTransferredToAnother));
             }
         }
-        private IDataLoadEngine _QuantityTransferredToAnother;  // positive int.
+          // positive int.
         private int _QuantityTransferredToAnother_Not_Valid = -1;
         private void QuantityTransferredToAnother_Validation(int value)//Ready
         {
@@ -603,7 +603,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityTransferredToAnotherNote)) != null)
                 {
-                    return (int)_QuantityTransferredToAnotherNote.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityTransferredToAnotherNote));
                 }
                 else
                 {
@@ -615,12 +615,12 @@ namespace Models
                 _QuantityTransferredToAnotherNote_Not_Valid = value;
                 if (GetErrors(nameof(QuantityTransferredToAnotherNote)) != null)
                 {
-                    _QuantityTransferredToAnotherNote.Set(_QuantityTransferredToAnotherNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityTransferredToAnotherNote), _QuantityTransferredToAnotherNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityTransferredToAnotherNote));
             }
         }
-        private IDataLoadEngine _QuantityTransferredToAnotherNote;  // positive int.
+          // positive int.
         private int _QuantityTransferredToAnotherNote_Not_Valid = -1;
         private void QuantityTransferredToAnotherNote_Validation(int value)//Ready
         {
@@ -638,7 +638,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassRefined)) != null)
                 {
-                    return (double)_MassRefined.Get();
+                    return (double)_dataAccess.Get(nameof(MassRefined));
                 }
                 else
                 {
@@ -650,12 +650,12 @@ namespace Models
                 _MassRefined_Not_Valid = value;
                 if (GetErrors(nameof(MassRefined)) != null)
                 {
-                    _MassRefined.Set(_MassRefined_Not_Valid);
+                    _dataAccess.Set(nameof(MassRefined), _MassRefined_Not_Valid);
                 }
                 OnPropertyChanged(nameof(MassRefined));
             }
         }
-        private IDataLoadEngine _MassRefined;
+        
         private double _MassRefined_Not_Valid = -1;
         private void MassRefined_Validation()//TODO
         {
@@ -671,7 +671,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRefined)) != null)
                 {
-                    return (int)_QuantityRefined.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityRefined));
                 }
                 else
                 {
@@ -683,12 +683,12 @@ namespace Models
                 _QuantityRefined_Not_Valid = value;
                 if (GetErrors(nameof(QuantityRefined)) != null)
                 {
-                    _QuantityRefined.Set(_QuantityRefined_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityRefined), _QuantityRefined_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityRefined));
             }
         }
-        private IDataLoadEngine _QuantityRefined;  // positive int.
+          // positive int.
         private int _QuantityRefined_Not_Valid = -1;
         private void QuantityRefined_Validation(int value)//Ready
         {
@@ -705,7 +705,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRefinedNote)) != null)
                 {
-                    return (int)_QuantityRefinedNote.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityRefinedNote));
                 }
                 else
                 {
@@ -717,12 +717,12 @@ namespace Models
                 _QuantityRefinedNote_Not_Valid = value;
                 if (GetErrors(nameof(QuantityRefinedNote)) != null)
                 {
-                    _QuantityRefinedNote.Set(_QuantityRefinedNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityRefinedNote), _QuantityRefinedNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityRefinedNote));
             }
         }
-        private IDataLoadEngine _QuantityRefinedNote;  // positive int.
+          // positive int.
         private int _QuantityRefinedNote_Not_Valid = -1;
         private void QuantityRefinedNote_Validation(int value)//Ready
         {
@@ -740,7 +740,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassRemovedFromAccount)) != null)
                 {
-                    return (double)_MassRemovedFromAccount.Get();
+                    return (double)_dataAccess.Get(nameof(MassRemovedFromAccount));
                 }
                 else
                 {
@@ -752,12 +752,12 @@ namespace Models
                 _MassRemovedFromAccount_Not_Valid = value;
                 if (GetErrors(nameof(MassRemovedFromAccount)) != null)
                 {
-                    _MassRemovedFromAccount.Set(_MassRemovedFromAccount_Not_Valid);
+                    _dataAccess.Set(nameof(MassRemovedFromAccount), _MassRemovedFromAccount_Not_Valid);
                 }
                 OnPropertyChanged(nameof(MassRemovedFromAccount));
             }
         }
-        private IDataLoadEngine _MassRemovedFromAccount;
+        
         private double _MassRemovedFromAccount_Not_Valid = -1;
         private void MassRemovedFromAccount_Validation()//TODO
         {
@@ -773,7 +773,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRemovedFromAccount)) != null)
                 {
-                    return (int)_QuantityRemovedFromAccount.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromAccount));
                 }
                 else
                 {
@@ -785,12 +785,12 @@ namespace Models
                 _QuantityRemovedFromAccount_Not_Valid = value;
                 if (GetErrors(nameof(QuantityRemovedFromAccount)) != null)
                 {
-                    _QuantityRemovedFromAccount.Set(_QuantityRemovedFromAccount_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityRemovedFromAccount), _QuantityRemovedFromAccount_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityRemovedFromAccount));
             }
         }
-        private IDataLoadEngine _QuantityRemovedFromAccount;  // positive int.
+          // positive int.
         private int _QuantityRemovedFromAccount_Not_Valid = -1;
         private void QuantityRemovedFromAccount_Validation(int value)//Ready
         {
@@ -808,7 +808,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRemovedFromAccountNote)) != null)
                 {
-                    return (int)_QuantityRemovedFromAccountNote.Get();
+                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromAccountNote));
                 }
                 else
                 {
@@ -820,12 +820,12 @@ namespace Models
                 _QuantityRemovedFromAccountNote_Not_Valid = value;
                 if (GetErrors(nameof(QuantityRemovedFromAccountNote)) != null)
                 {
-                    _QuantityRemovedFromAccountNote.Set(_QuantityRemovedFromAccountNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityRemovedFromAccountNote), _QuantityRemovedFromAccountNote_Not_Valid);
                 }
                 OnPropertyChanged(nameof(QuantityRemovedFromAccountNote));
             }
         }
-        private IDataLoadEngine _QuantityRemovedFromAccountNote;  // positive int.
+          // positive int.
         private int _QuantityRemovedFromAccountNote_Not_Valid = -1;
         private void QuantityRemovedFromAccountNote_Validation(int value)//Ready
         {

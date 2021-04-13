@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(NameIOU)) != null)
                 {
-                    return (string)_NameIOU.Get();
+                    return (string)_dataAccess.Get(nameof(NameIOU));
                 }
                 else
                 {
@@ -42,12 +42,12 @@ namespace Models
                 _NameIOU_Not_Valid = value;
                 if (GetErrors(nameof(NameIOU)) != null)
                 {
-                    _NameIOU.Set(_NameIOU_Not_Valid);
+                    _dataAccess.Set(nameof(NameIOU), _NameIOU_Not_Valid);
                 }
                 OnPropertyChanged(nameof(NameIOU));
             }
         }
-        private IDataLoadEngine _NameIOU;
+        
         private string _NameIOU_Not_Valid = "";
         private void NameIOU_Validation(string value)//TODO
         {
@@ -63,7 +63,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) != null)
                 {
-                    return (int)_Quantity.Get();
+                    return (int)_dataAccess.Get(nameof(Quantity));
                 }
                 else
                 {
@@ -75,12 +75,12 @@ namespace Models
                 _Quantity_Not_Valid = value;
                 if (GetErrors(nameof(Quantity)) != null)
                 {
-                    _Quantity.Set(_Quantity_Not_Valid);
+                    _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
         }
-        private IDataLoadEngine _Quantity;  // positive int.
+          // positive int.
         private int _Quantity_Not_Valid = -1;
         private void Quantity_Validation(int value)//Ready
         {
@@ -98,7 +98,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) != null)
                 {
-                    return (double)_Mass.Get();
+                    return (double)_dataAccess.Get(nameof(Mass));
                 }
                 else
                 {
@@ -110,12 +110,12 @@ namespace Models
                 _Mass_Not_Valid = value;
                 if (GetErrors(nameof(Mass)) != null)
                 {
-                    _Mass.Set(_Mass_Not_Valid);
+                    _dataAccess.Set(nameof(Mass), _Mass_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
         }
-        private IDataLoadEngine _Mass;
+        
         private double _Mass_Not_Valid = -1;
         private void Mass_Validation()//TODO
         {

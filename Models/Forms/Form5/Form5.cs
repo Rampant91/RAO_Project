@@ -20,7 +20,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberInOrder)) != null)
                 {
-                    return (int)_NumberInOrder.Get();
+                    return (int)_dataAccess.Get(nameof(NumberInOrder));
                 }
                 else
                 {
@@ -32,12 +32,12 @@ namespace Models.Abstracts
                 _NumberInOrder_Not_Valid = value;
                 if (GetErrors(nameof(NumberInOrder)) != null)
                 {
-                    _NumberInOrder.Set(_NumberInOrder_Not_Valid);
+                    _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        private IDataLoadEngine _NumberInOrder;
+        
         private int _NumberInOrder_Not_Valid = -1;
         private void NumberInOrder_Validation()
         {
@@ -53,7 +53,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    return (byte)_CorrectionNumber.Get();
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
                 else
                 {
@@ -65,12 +65,12 @@ namespace Models.Abstracts
                 _CorrectionNumber_Not_Valid = value;
                 if (GetErrors(nameof(CorrectionNumber)) != null)
                 {
-                    _CorrectionNumber.Set(_CorrectionNumber_Not_Valid);
+                    _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        private IDataLoadEngine _CorrectionNumber;
+        
         private byte _CorrectionNumber_Not_Valid = 255;
         private void CorrectionNumber_Validation()
         {

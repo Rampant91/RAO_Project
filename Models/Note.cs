@@ -12,13 +12,14 @@ namespace Models
     {
         //RowNumber property
         [Attributes.Form_Property("№ строки")]
+        protected AccessInterface.Row.IDataAccess _dataAccess { get; set; }
         public int RowNumber
         {
             get
             {
                 if (GetErrors(nameof(Type)) != null)
                 {
-                    return (int)_RowNumber.Get();
+                    return (int)_dataAccess.Get(nameof(RowNumber));
                 }
                 else
                 {
@@ -30,12 +31,12 @@ namespace Models
                 _RowNumber_Not_Valid = value;
                 if (GetErrors(nameof(Type)) != null)
                 {
-                    _RowNumber.Set(_RowNumber_Not_Valid);
+                    _dataAccess.Set(nameof(RowNumber), _RowNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Type));
             }
         }
-        private IDataLoadEngine _RowNumber;
+        
         private int _RowNumber_Not_Valid = -1;
         private void RowNumber_Validation()
         {
@@ -51,7 +52,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Type)) != null)
                 {
-                    return (int)_GraphNumber.Get();
+                    return (int)_dataAccess.Get(nameof(GraphNumber));
                 }
                 else
                 {
@@ -63,12 +64,12 @@ namespace Models
                 _GraphNumber_Not_Valid = value;
                 if (GetErrors(nameof(Type)) != null)
                 {
-                    _GraphNumber.Set(_GraphNumber_Not_Valid);
+                    _dataAccess.Set(nameof(GraphNumber), _GraphNumber_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Type));
             }
         }
-        private IDataLoadEngine _GraphNumber;
+        
         private int _GraphNumber_Not_Valid = -1;
         private void GraphNumber_Validation()
         {
@@ -84,7 +85,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Type)) != null)
                 {
-                    return (string)_Comment.Get();
+                    return (string)_dataAccess.Get(nameof(Comment));
                 }
                 else
                 {
@@ -96,12 +97,12 @@ namespace Models
                 _Comment_Not_Valid = value;
                 if (GetErrors(nameof(Type)) != null)
                 {
-                    _Comment.Set(_Comment_Not_Valid);
+                    _dataAccess.Set(nameof(Comment), _Comment_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Type));
             }
         }
-        private IDataLoadEngine _Comment;
+        
         private string _Comment_Not_Valid = "";
         private void Comment_Validation()
         {

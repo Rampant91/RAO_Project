@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SubjectRF)) != null)
                 {
-                    return (string)_SubjectRF.Get();
+                    return (string)_dataAccess.Get(nameof(SubjectRF));
                 }
                 else
                 {
@@ -42,12 +42,12 @@ namespace Models
                 _SubjectRF_Not_Valid = value;
                 if (GetErrors(nameof(SubjectRF)) != null)
                 {
-                    _SubjectRF.Set(_SubjectRF_Not_Valid);
+                    _dataAccess.Set(nameof(SubjectRF), _SubjectRF_Not_Valid);
                 }
                 OnPropertyChanged(nameof(SubjectRF));
             }
         }
-        private IDataLoadEngine _SubjectRF;
+        
         private string _SubjectRF_Not_Valid = "";
         //SubjectRF property
 
@@ -59,7 +59,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Year)) != null)
                 {
-                    return (int)_Year.Get();
+                    return (int)_dataAccess.Get(nameof(Year));
                 }
                 else
                 {
@@ -71,12 +71,12 @@ namespace Models
                 _Year_Not_Valid = value;
                 if (GetErrors(nameof(Year)) != null)
                 {
-                    _Year.Set(_Year_Not_Valid);
+                    _dataAccess.Set(nameof(Year), _Year_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Year));
             }
         }
-        private IDataLoadEngine _Year;
+        
         private int _Year_Not_Valid = -1;
         //Year property
 
@@ -88,7 +88,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SubjectAuthorityName)) != null)
                 {
-                    return (int)_SubjectAuthorityName.Get();
+                    return (int)_dataAccess.Get(nameof(SubjectAuthorityName));
                 }
                 else
                 {
@@ -100,12 +100,12 @@ namespace Models
                 _SubjectAuthorityName_Not_Valid = value;
                 if (GetErrors(nameof(SubjectAuthorityName)) != null)
                 {
-                    _SubjectAuthorityName.Set(_SubjectAuthorityName_Not_Valid);
+                    _dataAccess.Set(nameof(SubjectAuthorityName), _SubjectAuthorityName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(SubjectAuthorityName));
             }
         }
-        private IDataLoadEngine _SubjectAuthorityName;
+        
         private int _SubjectAuthorityName_Not_Valid = -1;
         //SubjectAuthorityName property
 
@@ -117,7 +117,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ShortSubjectAuthorityName)) != null)
                 {
-                    return (int)_ShortSubjectAuthorityName.Get();
+                    return (int)_dataAccess.Get(nameof(ShortSubjectAuthorityName));
                 }
                 else
                 {
@@ -129,12 +129,12 @@ namespace Models
                 _ShortSubjectAuthorityName_Not_Valid = value;
                 if (GetErrors(nameof(ShortSubjectAuthorityName)) != null)
                 {
-                    _ShortSubjectAuthorityName.Set(_ShortSubjectAuthorityName_Not_Valid);
+                    _dataAccess.Set(nameof(ShortSubjectAuthorityName), _ShortSubjectAuthorityName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(ShortSubjectAuthorityName));
             }
         }
-        private IDataLoadEngine _ShortSubjectAuthorityName;
+        
         private int _ShortSubjectAuthorityName_Not_Valid = -1;
         //ShortSubjectAuthorityName property
 
@@ -146,7 +146,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactAddress)) != null)
                 {
-                    return (string)_FactAddress.Get();
+                    return (string)_dataAccess.Get(nameof(FactAddress));
                 }
                 else
                 {
@@ -158,12 +158,12 @@ namespace Models
                 _FactAddress_Not_Valid = value;
                 if (GetErrors(nameof(FactAddress)) != null)
                 {
-                    _FactAddress.Set(_FactAddress_Not_Valid);
+                    _dataAccess.Set(nameof(FactAddress), _FactAddress_Not_Valid);
                 }
                 OnPropertyChanged(nameof(FactAddress));
             }
         }
-        private IDataLoadEngine _FactAddress;
+        
         private string _FactAddress_Not_Valid = "";
         //FactAddress property
 
@@ -175,7 +175,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOchef)) != null)
                 {
-                    return (string)_GradeFIOchef.Get();
+                    return (string)_dataAccess.Get(nameof(GradeFIOchef));
                 }
                 else
                 {
@@ -187,12 +187,12 @@ namespace Models
                 _GradeFIOchef_Not_Valid = value;
                 if (GetErrors(nameof(GradeFIOchef)) != null)
                 {
-                    _GradeFIOchef.Set(_GradeFIOchef_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIOchef), _GradeFIOchef_Not_Valid);
                 }
                 OnPropertyChanged(nameof(GradeFIOchef));
             }
         }
-        private IDataLoadEngine _GradeFIOchef;
+        
         private string _GradeFIOchef_Not_Valid = "";
         //GradeFIOchef property
 
@@ -204,7 +204,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor)) != null)
                 {
-                    return (string)_GradeFIOresponsibleExecutor.Get();
+                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor));
                 }
                 else
                 {
@@ -216,12 +216,12 @@ namespace Models
                 _GradeFIOresponsibleExecutor_Not_Valid = value;
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor)) != null)
                 {
-                    _GradeFIOresponsibleExecutor.Set(_GradeFIOresponsibleExecutor_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIOresponsibleExecutor), _GradeFIOresponsibleExecutor_Not_Valid);
                 }
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor));
             }
         }
-        private IDataLoadEngine _GradeFIOresponsibleExecutor;
+        
         private string _GradeFIOresponsibleExecutor_Not_Valid = "";
         //GradeFIOresponsibleExecutor property
 
@@ -233,7 +233,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Telephone)) != null)
                 {
-                    return (string)_Telephone.Get();
+                    return (string)_dataAccess.Get(nameof(Telephone));
                 }
                 else
                 {
@@ -245,12 +245,12 @@ namespace Models
                 _Telephone_Not_Valid = value;
                 if (GetErrors(nameof(Telephone)) != null)
                 {
-                    _Telephone.Set(_Telephone_Not_Valid);
+                    _dataAccess.Set(nameof(Telephone), _Telephone_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Telephone));
             }
         }
-        private IDataLoadEngine _Telephone;
+        
         private string _Telephone_Not_Valid = "";
         //Telephone property
 
@@ -262,7 +262,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Fax)) != null)
                 {
-                    return (string)_Fax.Get();
+                    return (string)_dataAccess.Get(nameof(Fax));
                 }
                 else
                 {
@@ -274,12 +274,12 @@ namespace Models
                 _Fax_Not_Valid = value;
                 if (GetErrors(nameof(Fax)) != null)
                 {
-                    _Fax.Set(_Fax_Not_Valid);
+                    _dataAccess.Set(nameof(Fax), _Fax_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Fax));
             }
         }
-        private IDataLoadEngine _Fax;
+        
         private string _Fax_Not_Valid = "";
         //Fax property
 
@@ -291,7 +291,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Email)) != null)
                 {
-                    return (string)_Email.Get();
+                    return (string)_dataAccess.Get(nameof(Email));
                 }
                 else
                 {
@@ -303,12 +303,12 @@ namespace Models
                 _Email_Not_Valid = value;
                 if (GetErrors(nameof(Email)) != null)
                 {
-                    _Email.Set(_Email_Not_Valid);
+                    _dataAccess.Set(nameof(Email), _Email_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Email));
             }
         }
-        private IDataLoadEngine _Email;
+        
         private string _Email_Not_Valid = "";
         //Email property
 
@@ -320,7 +320,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Telephone1)) != null)
                 {
-                    return (string)_Telephone1.Get();
+                    return (string)_dataAccess.Get(nameof(Telephone1));
                 }
                 else
                 {
@@ -332,12 +332,12 @@ namespace Models
                 _Telephone1_Not_Valid = value;
                 if (GetErrors(nameof(Telephone1)) != null)
                 {
-                    _Telephone1.Set(_Telephone1_Not_Valid);
+                    _dataAccess.Set(nameof(Telephone1), _Telephone1_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Telephone1));
             }
         }
-        private IDataLoadEngine _Telephone1;
+        
         private string _Telephone1_Not_Valid = "";
         //Telephone1 property
 
@@ -349,7 +349,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Fax1)) != null)
                 {
-                    return (string)_Fax1.Get();
+                    return (string)_dataAccess.Get(nameof(Fax1));
                 }
                 else
                 {
@@ -361,12 +361,12 @@ namespace Models
                 _Fax1_Not_Valid = value;
                 if (GetErrors(nameof(Fax1)) != null)
                 {
-                    _Fax1.Set(_Fax1_Not_Valid);
+                    _dataAccess.Set(nameof(Fax1), _Fax1_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Fax1));
             }
         }
-        private IDataLoadEngine _Fax1;
+        
         private string _Fax1_Not_Valid = "";
         //Fax1 property
 
@@ -378,7 +378,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Email1)) != null)
                 {
-                    return (string)_Email1.Get();
+                    return (string)_dataAccess.Get(nameof(Email1));
                 }
                 else
                 {
@@ -390,12 +390,12 @@ namespace Models
                 _Email1_Not_Valid = value;
                 if (GetErrors(nameof(Email1)) != null)
                 {
-                    _Email1.Set(_Email1_Not_Valid);
+                    _dataAccess.Set(nameof(Email1), _Email1_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Email1));
             }
         }
-        private IDataLoadEngine _Email1;
+        
         private string _Email1_Not_Valid = "";
         //Email1 property
 
@@ -407,7 +407,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OrgName)) != null)
                 {
-                    return (string)_OrgName.Get();
+                    return (string)_dataAccess.Get(nameof(OrgName));
                 }
                 else
                 {
@@ -419,12 +419,12 @@ namespace Models
                 _OrgName_Not_Valid = value;
                 if (GetErrors(nameof(OrgName)) != null)
                 {
-                    _OrgName.Set(_OrgName_Not_Valid);
+                    _dataAccess.Set(nameof(OrgName), _OrgName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(OrgName));
             }
         }
-        private IDataLoadEngine _OrgName;
+        
         private string _OrgName_Not_Valid = "";
         //OrgName property
 
@@ -436,7 +436,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ShortOrgName)) != null)
                 {
-                    return (string)_ShortOrgName.Get();
+                    return (string)_dataAccess.Get(nameof(ShortOrgName));
                 }
                 else
                 {
@@ -448,12 +448,12 @@ namespace Models
                 _ShortOrgName_Not_Valid = value;
                 if (GetErrors(nameof(ShortOrgName)) != null)
                 {
-                    _ShortOrgName.Set(_ShortOrgName_Not_Valid);
+                    _dataAccess.Set(nameof(ShortOrgName), _ShortOrgName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(ShortOrgName));
             }
         }
-        private IDataLoadEngine _ShortOrgName;
+        
         private string _ShortOrgName_Not_Valid = "";
         //ShortOrgName property
 
@@ -465,7 +465,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactAddress1)) != null)
                 {
-                    return (string)_FactAddress1.Get();
+                    return (string)_dataAccess.Get(nameof(FactAddress1));
                 }
                 else
                 {
@@ -477,12 +477,12 @@ namespace Models
                 _FactAddress1_Not_Valid = value;
                 if (GetErrors(nameof(FactAddress1)) != null)
                 {
-                    _FactAddress1.Set(_FactAddress1_Not_Valid);
+                    _dataAccess.Set(nameof(FactAddress1), _FactAddress1_Not_Valid);
                 }
                 OnPropertyChanged(nameof(FactAddress1));
             }
         }
-        private IDataLoadEngine _FactAddress1;
+        
         private string _FactAddress1_Not_Valid = "";
         //FactAddress1 property
 
@@ -494,7 +494,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOchef1)) != null)
                 {
-                    return (string)_GradeFIOchef1.Get();
+                    return (string)_dataAccess.Get(nameof(GradeFIOchef1));
                 }
                 else
                 {
@@ -506,12 +506,12 @@ namespace Models
                 _GradeFIOchef1_Not_Valid = value;
                 if (GetErrors(nameof(GradeFIOchef1)) != null)
                 {
-                    _GradeFIOchef1.Set(_GradeFIOchef1_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIOchef1), _GradeFIOchef1_Not_Valid);
                 }
                 OnPropertyChanged(nameof(GradeFIOchef1));
             }
         }
-        private IDataLoadEngine _GradeFIOchef1;
+        
         private string _GradeFIOchef1_Not_Valid = "";
         //GradeFIOchef1 property
 
@@ -523,7 +523,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor1)) != null)
                 {
-                    return (string)_GradeFIOresponsibleExecutor1.Get();
+                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor1));
                 }
                 else
                 {
@@ -535,12 +535,12 @@ namespace Models
                 _GradeFIOresponsibleExecutor1_Not_Valid = value;
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor1)) != null)
                 {
-                    _GradeFIOresponsibleExecutor1.Set(_GradeFIOresponsibleExecutor1_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIOresponsibleExecutor1), _GradeFIOresponsibleExecutor1_Not_Valid);
                 }
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor1));
             }
         }
-        private IDataLoadEngine _GradeFIOresponsibleExecutor1;
+        
         private string _GradeFIOresponsibleExecutor1_Not_Valid = "";
         //GradeFIOresponsibleExecutor1 property
     }

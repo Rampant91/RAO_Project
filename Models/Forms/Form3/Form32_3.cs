@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(IdName)) != null)
                 {
-                    return (string)_IdName.Get();
+                    return (string)_dataAccess.Get(nameof(IdName));
                 }
                 else
                 {
@@ -42,12 +42,12 @@ namespace Models
                 _IdName_Not_Valid = value;
                 if (GetErrors(nameof(IdName)) != null)
                 {
-                    _IdName.Set(_IdName_Not_Valid);
+                    _dataAccess.Set(nameof(IdName), _IdName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(IdName));
             }
         }
-        private IDataLoadEngine _IdName;
+        
         private string _IdName_Not_Valid = "";
         //IdName Property
 
@@ -59,7 +59,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Value)) != null)
                 {
-                    return (string)_Value.Get();
+                    return (string)_dataAccess.Get(nameof(Value));
                 }
                 else
                 {
@@ -71,12 +71,12 @@ namespace Models
                 _Value_Not_Valid = value;
                 if (GetErrors(nameof(Value)) != null)
                 {
-                    _Value.Set(_Value_Not_Valid);
+                    _dataAccess.Set(nameof(Value), _Value_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Value));
             }
         }
-        private IDataLoadEngine _Value;
+        
         private string _Value_Not_Valid = "";
         //Value property
     }

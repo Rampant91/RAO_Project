@@ -37,7 +37,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Authority1)) != null)
                 {
-                    return (Authority)_Authority1.Get();
+                    return (Authority)_dataAccess.Get(nameof(Authority1));
                 }
                 else
                 {
@@ -49,12 +49,12 @@ namespace Models
                 _Authority1_Not_Valid = value;
                 if (GetErrors(nameof(Authority1)) != null)
                 {
-                    _Authority1.Set(_Authority1_Not_Valid);
+                    _dataAccess.Set(nameof(Authority1), _Authority1_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Authority1));
             }
         }
-        private IDataLoadEngine _Authority1;
+        
         private Authority _Authority1_Not_Valid = Authority.None;
         //Authority1 property
 
@@ -66,7 +66,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Year)) != null)
                 {
-                    return (int)_Year.Get();
+                    return (int)_dataAccess.Get(nameof(Year));
                 }
                 else
                 {
@@ -78,12 +78,12 @@ namespace Models
                 _Year_Not_Valid = value;
                 if (GetErrors(nameof(Year)) != null)
                 {
-                    _Year.Set(_Year_Not_Valid);
+                    _dataAccess.Set(nameof(Year), _Year_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Year));
             }
         }
-        private IDataLoadEngine _Year;
+        
         private int _Year_Not_Valid = -1;
         //Year property
 
@@ -95,7 +95,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLico)) != null)
                 {
-                    return (string)_JurLico.Get();
+                    return (string)_dataAccess.Get(nameof(JurLico));
                 }
                 else
                 {
@@ -107,12 +107,12 @@ namespace Models
                 _JurLico_Not_Valid = value;
                 if (GetErrors(nameof(JurLico)) != null)
                 {
-                    _JurLico.Set(_JurLico_Not_Valid);
+                    _dataAccess.Set(nameof(JurLico), _JurLico_Not_Valid);
                 }
                 OnPropertyChanged(nameof(JurLico));
             }
         }
-        private IDataLoadEngine _JurLico;
+        
         private string _JurLico_Not_Valid = "";
         //JurLico property
 
@@ -124,7 +124,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ShortJurLico)) != null)
                 {
-                    return (string)_ShortJurLico.Get();
+                    return (string)_dataAccess.Get(nameof(ShortJurLico));
                 }
                 else
                 {
@@ -136,12 +136,12 @@ namespace Models
                 _ShortJurLico_Not_Valid = value;
                 if (GetErrors(nameof(ShortJurLico)) != null)
                 {
-                    _ShortJurLico.Set(_ShortJurLico_Not_Valid);
+                    _dataAccess.Set(nameof(ShortJurLico), _ShortJurLico_Not_Valid);
                 }
                 OnPropertyChanged(nameof(ShortJurLico));
             }
         }
-        private IDataLoadEngine _ShortJurLico;
+        
         private string _ShortJurLico_Not_Valid = "";
         //ShortJurLico property
 
@@ -153,7 +153,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLicoAddress)) != null)
                 {
-                    return (string)_JurLicoAddress.Get();
+                    return (string)_dataAccess.Get(nameof(JurLicoAddress));
                 }
                 else
                 {
@@ -165,12 +165,12 @@ namespace Models
                 _JurLicoAddress_Not_Valid = value;
                 if (GetErrors(nameof(JurLicoAddress)) != null)
                 {
-                    _JurLicoAddress.Set(_JurLicoAddress_Not_Valid);
+                    _dataAccess.Set(nameof(JurLicoAddress), _JurLicoAddress_Not_Valid);
                 }
                 OnPropertyChanged(nameof(JurLicoAddress));
             }
         }
-        private IDataLoadEngine _JurLicoAddress;
+        
         private string _JurLicoAddress_Not_Valid = "";
         //JurLicoAddress property
 
@@ -182,7 +182,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLicoFactAddress)) != null)
                 {
-                    return (string)_JurLicoFactAddress.Get();
+                    return (string)_dataAccess.Get(nameof(JurLicoFactAddress));
                 }
                 else
                 {
@@ -194,12 +194,12 @@ namespace Models
                 _JurLicoFactAddress_Not_Valid = value;
                 if (GetErrors(nameof(JurLicoFactAddress)) != null)
                 {
-                    _JurLicoFactAddress.Set(_JurLicoFactAddress_Not_Valid);
+                    _dataAccess.Set(nameof(JurLicoFactAddress), _JurLicoFactAddress_Not_Valid);
                 }
                 OnPropertyChanged(nameof(JurLicoFactAddress));
             }
         }
-        private IDataLoadEngine _JurLicoFactAddress;
+        
         private string _JurLicoFactAddress_Not_Valid = "";
         //JurLicoFactAddress property
 
@@ -211,7 +211,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIO)) != null)
                 {
-                    return (string)_GradeFIO.Get();
+                    return (string)_dataAccess.Get(nameof(GradeFIO));
                 }
                 else
                 {
@@ -223,12 +223,12 @@ namespace Models
                 _GradeFIO_Not_Valid = value;
                 if (GetErrors(nameof(GradeFIO)) != null)
                 {
-                    _GradeFIO.Set(_GradeFIO_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIO), _GradeFIO_Not_Valid);
                 }
                 OnPropertyChanged(nameof(GradeFIO));
             }
         }
-        private IDataLoadEngine _GradeFIO;
+        
         private string _GradeFIO_Not_Valid = "";
         //GradeFIO property
 
@@ -240,7 +240,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor)) != null)
                 {
-                    return (string)_GradeFIOresponsibleExecutor.Get();
+                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor));
                 }
                 else
                 {
@@ -252,12 +252,12 @@ namespace Models
                 _GradeFIOresponsibleExecutor_Not_Valid = value;
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor)) != null)
                 {
-                    _GradeFIOresponsibleExecutor.Set(_GradeFIOresponsibleExecutor_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIOresponsibleExecutor), _GradeFIOresponsibleExecutor_Not_Valid);
                 }
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor));
             }
         }
-        private IDataLoadEngine _GradeFIOresponsibleExecutor;
+        
         private string _GradeFIOresponsibleExecutor_Not_Valid = "";
         //GradeFIOresponsibleExecutor property
 
@@ -269,7 +269,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Telephone)) != null)
                 {
-                    return (string)_Telephone.Get();
+                    return (string)_dataAccess.Get(nameof(Telephone));
                 }
                 else
                 {
@@ -281,12 +281,12 @@ namespace Models
                 _Telephone_Not_Valid = value;
                 if (GetErrors(nameof(Telephone)) != null)
                 {
-                    _Telephone.Set(_Telephone_Not_Valid);
+                    _dataAccess.Set(nameof(Telephone), _Telephone_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Telephone));
             }
         }
-        private IDataLoadEngine _Telephone;
+        
         private string _Telephone_Not_Valid = "";
         //Telephone property
 
@@ -298,7 +298,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Fax)) != null)
                 {
-                    return (string)_Fax.Get();
+                    return (string)_dataAccess.Get(nameof(Fax));
                 }
                 else
                 {
@@ -310,12 +310,12 @@ namespace Models
                 _Fax_Not_Valid = value;
                 if (GetErrors(nameof(Fax)) != null)
                 {
-                    _Fax.Set(_Fax_Not_Valid);
+                    _dataAccess.Set(nameof(Fax), _Fax_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Fax));
             }
         }
-        private IDataLoadEngine _Fax;
+        
         private string _Fax_Not_Valid = "";
         //Fax property
 
@@ -327,7 +327,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Email)) != null)
                 {
-                    return (string)_Email.Get();
+                    return (string)_dataAccess.Get(nameof(Email));
                 }
                 else
                 {
@@ -339,12 +339,12 @@ namespace Models
                 _Email_Not_Valid = value;
                 if (GetErrors(nameof(Email)) != null)
                 {
-                    _Email.Set(_Email_Not_Valid);
+                    _dataAccess.Set(nameof(Email), _Email_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Email));
             }
         }
-        private IDataLoadEngine _Email;
+        
         private string _Email_Not_Valid = "";
         //Email property
     }

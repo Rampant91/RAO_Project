@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) != null)
                 {
-                    return (string)_PackName.Get();
+                    return (string)_dataAccess.Get(nameof(PackName));
                 }
                 else
                 {
@@ -42,12 +42,12 @@ namespace Models
                 _PackName_Not_Valid = value;
                 if (GetErrors(nameof(PackName)) != null)
                 {
-                    _PackName.Set(_PackName_Not_Valid);
+                    _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
         }
-        private IDataLoadEngine _PackName;
+        
         private string _PackName_Not_Valid = "";
         private void PackName_Validation()
         {
@@ -63,7 +63,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) != null)
                 {
-                    return (string)_PackType.Get();
+                    return (string)_dataAccess.Get(nameof(PackType));
                 }
                 else
                 {
@@ -75,12 +75,12 @@ namespace Models
                 _PackType_Not_Valid = value;
                 if (GetErrors(nameof(PackType)) != null)
                 {
-                    _PackType.Set(_PackType_Not_Valid);
+                    _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
         }
-        private IDataLoadEngine _PackType;//If change this change validation
+        //If change this change validation
         private string _PackType_Not_Valid = "";
         private void PackType_Validation()//Ready
         {
@@ -95,7 +95,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) != null)
                 {
-                    return (string)_PackTypeRecoded.Get();
+                    return (string)_dataAccess.Get(nameof(PackTypeRecoded));
                 }
                 else
                 {
@@ -107,12 +107,12 @@ namespace Models
                 _PackTypeRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PackTypeRecoded)) != null)
                 {
-                    _PackTypeRecoded.Set(_PackTypeRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(PackTypeRecoded), _PackTypeRecoded_Not_Valid);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
-        private IDataLoadEngine _PackTypeRecoded;
+        
         private string _PackTypeRecoded_Not_Valid = "";
         private void PackTypeRecoded_Validation()
         {
@@ -128,7 +128,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Id)) != null)
                 {
-                    return (string)_Id.Get();
+                    return (string)_dataAccess.Get(nameof(Id));
                 }
                 else
                 {
@@ -140,12 +140,12 @@ namespace Models
                 _Id_Not_Valid = value;
                 if (GetErrors(nameof(Id)) != null)
                 {
-                    _Id.Set(_Id_Not_Valid);
+                    _dataAccess.Set(nameof(Id), _Id_Not_Valid);
                 }
                 OnPropertyChanged(nameof(Id));
             }
         }
-        private IDataLoadEngine _Id;
+        
         private string _Id_Not_Valid = "";
         //Id property
 
@@ -157,7 +157,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CreationYear)) != null)
                 {
-                    return (int)_CreationYear.Get();
+                    return (int)_dataAccess.Get(nameof(CreationYear));
                 }
                 else
                 {
@@ -169,12 +169,12 @@ namespace Models
                 _CreationYear_Not_Valid = value;
                 if (GetErrors(nameof(CreationYear)) != null)
                 {
-                    _CreationYear.Set(_CreationYear_Not_Valid);
+                    _dataAccess.Set(nameof(CreationYear), _CreationYear_Not_Valid);
                 }
                 OnPropertyChanged(nameof(CreationYear));
             }
         }
-        private IDataLoadEngine _CreationYear;
+        
         private int _CreationYear_Not_Valid = -1;
         //CreationYear property
 
@@ -186,7 +186,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DepletedUraniumMass)) != null)
                 {
-                    return (double)_DepletedUraniumMass.Get();
+                    return (double)_dataAccess.Get(nameof(DepletedUraniumMass));
                 }
                 else
                 {
@@ -198,12 +198,12 @@ namespace Models
                 _DepletedUraniumMass_Not_Valid = value;
                 if (GetErrors(nameof(DepletedUraniumMass)) != null)
                 {
-                    _DepletedUraniumMass.Set(_DepletedUraniumMass_Not_Valid);
+                    _dataAccess.Set(nameof(DepletedUraniumMass), _DepletedUraniumMass_Not_Valid);
                 }
                 OnPropertyChanged(nameof(DepletedUraniumMass));
             }
         }
-        private IDataLoadEngine _DepletedUraniumMass;
+        
         private double _DepletedUraniumMass_Not_Valid = -1;
         //DepletedUraniumMass property
     }
