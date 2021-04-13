@@ -7,6 +7,17 @@ namespace Models.Abstracts
     public abstract class Form5:Form
     {
         [Attributes.Form_Property("Форма")]
+        protected static string SQLCommandParamsBase()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            return
+                nameof(NumberInOrder) + intNotNullDeclaration +
+                nameof(CorrectionNumber) + byteNotNullDeclaration;
+        }
         public Form5(int RowID):base(RowID)
         {
 

@@ -10,6 +10,26 @@ namespace Models
     [Attributes.Form_Class("Форма 5.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form50 : Abstracts.Form
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string enumNotNullDeclaration = " ????, ";
+            return
+                nameof(Authority1) + enumNotNullDeclaration +
+                nameof(Year) + intNotNullDeclaration +
+                nameof(JurLico) + strNotNullDeclaration +
+                nameof(ShortJurLico) + strNotNullDeclaration +
+                nameof(JurLicoAddress) + strNotNullDeclaration +
+                nameof(JurLicoFactAddress) + strNotNullDeclaration +
+                nameof(GradeFIO) + strNotNullDeclaration +
+                nameof(GradeFIOresponsibleExecutor) + strNotNullDeclaration +
+                nameof(Telephone) + strNotNullDeclaration +
+                nameof(Fax) + " varchar(255) not null";
+        }
         public Form50(int RowID) : base(RowID)
         {
             FormNum = "50";

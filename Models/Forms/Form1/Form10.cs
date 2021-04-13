@@ -12,7 +12,31 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            return "";
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            return
+                nameof(RegNo) + strNotNullDeclaration +
+                nameof(OrganUprav) + strNotNullDeclaration +
+                nameof(SubjectRF) + strNotNullDeclaration +
+                nameof(JurLico) + strNotNullDeclaration +
+                nameof(ShortJurLico) + strNotNullDeclaration +
+                nameof(JurLicoAddress) + strNotNullDeclaration +
+                nameof(JurLicoFactAddress) + strNotNullDeclaration +
+                nameof(GradeFIO) + strNotNullDeclaration +
+                nameof(Telephone) + strNotNullDeclaration +
+                nameof(Fax) + strNotNullDeclaration +
+                nameof(Email) + strNotNullDeclaration +
+                nameof(Okpo) + strNotNullDeclaration +
+                nameof(Okved) + strNotNullDeclaration +
+                nameof(Okogu) + strNotNullDeclaration +
+                nameof(Oktmo) + strNotNullDeclaration +
+                nameof(Inn) + strNotNullDeclaration +
+                nameof(Kpp) + strNotNullDeclaration +
+                nameof(Okopf) + strNotNullDeclaration +
+                nameof(Okfs) + " varchar(255) not null";
         }
         public Form10(int RowID) : base(RowID)
         {

@@ -8,12 +8,42 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            return "";
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            return
+                Abstracts.Form1.SQLCommandParamsBase() +
+                nameof(PassportNumber) + strNotNullDeclaration +
+                nameof(PassportNumberNote) + strNotNullDeclaration +
+                nameof(PassportNumberRecoded) + strNotNullDeclaration +
+                nameof(NameIOU) + strNotNullDeclaration +
+                nameof(FactoryNumber) + strNotNullDeclaration +
+                nameof(FactoryNumberRecoded) + strNotNullDeclaration +
+                nameof(CreationDate) + dateNotNullDeclaration +
+                nameof(CreatorOKPO) + strNotNullDeclaration +
+                nameof(CreatorOKPONote) + strNotNullDeclaration +
+                nameof(SignedServicePeriod) + intNotNullDeclaration +
+                nameof(PropertyCode) + byteNotNullDeclaration +
+                nameof(Owner) + strNotNullDeclaration +
+                nameof(Mass) + strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPONote) + strNotNullDeclaration +
+                nameof(TransporterOKPO) + strNotNullDeclaration +
+                nameof(TransporterOKPONote) + strNotNullDeclaration +
+                nameof(PackName) + strNotNullDeclaration +
+                nameof(PackNameNote) + strNotNullDeclaration +
+                nameof(PackType) + strNotNullDeclaration +
+                nameof(PackTypeRecoded) + strNotNullDeclaration +
+                nameof(PackTypeNote) + strNotNullDeclaration +
+                nameof(PackNumber) + strNotNullDeclaration +
+                nameof(PackNumberRecoded) + " varchar(255) not null";
         }
         public Form12(int RowID) : base(RowID)
         {
             FormNum = "12";
-            NumberOfFields = 30;
+            NumberOfFields = 32;
         }
 
         [Attributes.Form_Property("Форма")]

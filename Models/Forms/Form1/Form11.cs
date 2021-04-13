@@ -9,14 +9,42 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            return 
-                "PassportNumber varchar(255) not null, " +
-                "PassportNumberNote varchar(255) not null, " +
-                "PassportNumberRecoded varchar(255) not null, " +
-                "Type varchar(255) not null, " +
-                "Radionuclids varchar(255) not null, " +
-                "FactoryNumber varchar(255) not null, " +
-                "FactoryNumberRecoded varchar(255) not null";
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            return
+                Abstracts.Form1.SQLCommandParamsBase() +
+                nameof(PassportNumber) + strNotNullDeclaration +
+                nameof(PassportNumberNote) + strNotNullDeclaration +
+                nameof(PassportNumberRecoded) + strNotNullDeclaration +
+                nameof(Type) + strNotNullDeclaration +
+                nameof(TypeRecoded) + strNotNullDeclaration +
+                nameof(Radionuclids) + strNotNullDeclaration +
+                nameof(FactoryNumber) + strNotNullDeclaration +
+                nameof(FactoryNumberRecoded) + strNotNullDeclaration +
+                nameof(Quantity) + intNotNullDeclaration +
+                nameof(Activity) + strNotNullDeclaration +
+                nameof(ActivityNote) + strNotNullDeclaration +
+                nameof(CreationDate) + dateNotNullDeclaration +
+                nameof(CreatorOKPO) + strNotNullDeclaration +
+                nameof(CreatorOKPONote) + strNotNullDeclaration +
+                nameof(Category) + shortNotNullDeclaration +
+                nameof(SignedServicePeriod) + intNotNullDeclaration +
+                nameof(PropertyCode) + byteNotNullDeclaration +
+                nameof(Owner) + strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPONote) + strNotNullDeclaration +
+                nameof(TransporterOKPO) + strNotNullDeclaration +
+                nameof(TransporterOKPONote) + strNotNullDeclaration +
+                nameof(PackName) + strNotNullDeclaration +
+                nameof(PackNameNote) + strNotNullDeclaration +
+                nameof(PackType) + strNotNullDeclaration +
+                nameof(PackTypeRecoded) + strNotNullDeclaration +
+                nameof(PackTypeNote) + strNotNullDeclaration +
+                nameof(PackNumber) + strNotNullDeclaration +
+                nameof(PackNumberRecoded) + " varchar(255) not null";
         }
         public Form11(int RowID) : base(RowID)
         {

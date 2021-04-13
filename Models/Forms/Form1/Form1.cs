@@ -12,8 +12,26 @@ namespace Models.Abstracts
 
         }
 
-        //NumberInOrder property
-        [Attributes.Form_Property("№ п/п")]
+        protected static string SQLCommandParamsBase()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            return
+                nameof(NumberInOrder) + intNotNullDeclaration +
+                nameof(CorrectionNumber) + byteNotNullDeclaration +
+                nameof(OperationCode) + shortNotNullDeclaration +
+                nameof(OperationDate) + dateNotNullDeclaration +
+                nameof(DocumentVid) + byteNotNullDeclaration +
+                nameof(DocumentNumber) + strNotNullDeclaration +
+                nameof(DocumentNumberRecoded) + strNotNullDeclaration +
+                nameof(DocumentDate) + dateNotNullDeclaration;
+        }
+
+            //NumberInOrder property
+            [Attributes.Form_Property("№ п/п")]
         public int NumberInOrder
         {
             get
