@@ -7,10 +7,50 @@ namespace Models
     [Attributes.Form_Class("Форма 1.5: Сведения о РАО в виде отработавших ЗРИ")]
     public class Form15: Abstracts.Form1
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form1.SQLCommandParamsBase() +
+                nameof(PassportNumber) + strNotNullDeclaration +
+                nameof(PassportNumberNote) + strNotNullDeclaration +
+                nameof(PassportNumberRecoded) + strNotNullDeclaration +
+                nameof(StatusRAO) + strNotNullDeclaration +
+                nameof(StoragePlaceName) + strNotNullDeclaration +
+                nameof(StoragePlaceNameNote) + strNotNullDeclaration +
+                nameof(StoragePlaceCode) + strNotNullDeclaration +
+                nameof(RefineOrSortRAOCode) + strNotNullDeclaration +
+                nameof(Subsidy) + strNotNullDeclaration +
+                nameof(FcpNumber) + strNotNullDeclaration +
+                nameof(Quantity) + intNotNullDeclaration +
+                nameof(Type) + strNotNullDeclaration +
+                nameof(FactoryNumber) + strNotNullDeclaration +
+                nameof(FactoryNumberRecoded) + strNotNullDeclaration +
+                nameof(CreationDate) + dateNotNullDeclaration +
+                nameof(TypeRecoded) + strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPONote) + strNotNullDeclaration +
+                nameof(TransporterOKPO) + strNotNullDeclaration +
+                nameof(TransporterOKPONote) + strNotNullDeclaration +
+                nameof(PackName) + strNotNullDeclaration +
+                nameof(PackNameNote) + strNotNullDeclaration +
+                nameof(PackType) + strNotNullDeclaration +
+                nameof(PackTypeRecoded) + strNotNullDeclaration +
+                nameof(PackTypeNote) + strNotNullDeclaration +
+                nameof(PackNumber) + strNotNullDeclaration +
+                nameof(PackNumberRecoded) + strNotNullDeclaration +
+                nameof(Radionuclids) + strNotNullDeclaration +
+                nameof(Activity) + " varchar(255) not null";
+        }
         public Form15(int RowID) : base(RowID)
         {
             FormNum = "15";
-            NumberOfFields = 38;
+            NumberOfFields = 37;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -263,7 +303,6 @@ namespace Models
                 OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
         }
-        //If change this change validation
         private string _FactoryNumberRecoded_Not_Valid = "";
         private void FactoryNumberRecoded_Validation(string value)//Ready
         {
@@ -382,7 +421,6 @@ namespace Models
                 OnPropertyChanged(nameof(CreationDate));
             }
         }
-        //If change this change validation
         private DateTimeOffset _CreationDate_Not_Valid = DateTimeOffset.MinValue;
         private void CreationDate_Validation(DateTimeOffset value)//Ready
         {

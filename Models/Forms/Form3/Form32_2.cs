@@ -10,6 +10,23 @@ namespace Models
     [Attributes.Form_Class("Сведения о поставляемых ЗРИ:")]
     public class Form32_2: Abstracts.Form3
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form3.SQLCommandParamsBase() +
+            nameof(DepletedUraniumMass) + doubleNotNullDeclaration +
+            nameof(CreationYear) + strNotNullDeclaration +
+            nameof(Id) + strNotNullDeclaration +
+            nameof(PackName) + strNotNullDeclaration +
+            nameof(PackType) + strNotNullDeclaration +
+            nameof(PackTypeRecoded) + " varchar(255) not null";
+        }
         public Form32_2(int RowID) : base(RowID)
         {
             FormNum = "32_2";

@@ -8,13 +8,33 @@ namespace Models
     [Attributes.Form_Class("Форма 3.2: Отчет об отправке радиоактивных источников 1 и 2 категории")]
     public class Form32: Abstracts.Form3
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form3.SQLCommandParamsBase() +
+            nameof(UniqueAgreementId) + strNotNullDeclaration +
+            nameof(SupplyDate) + dateNotNullDeclaration +
+            nameof(FieldsOfWorking) + strNotNullDeclaration +
+            nameof(LicenseIdRv) + strNotNullDeclaration +
+            nameof(ValidThruRv) + dateNotNullDeclaration +
+            nameof(LicenseIdRao) + strNotNullDeclaration +
+            nameof(ValidThruRao) + dateNotNullDeclaration +
+            nameof(SupplyAddress) + strNotNullDeclaration +
+            nameof(RecieverName) + strNotNullDeclaration +
+            nameof(SummaryActivity) + strNotNullDeclaration +
+            nameof(Radionuclids) + strNotNullDeclaration +
+            nameof(Quantity) + " int not null";
+        }
         public Form32(int RowID) : base(RowID)
         {
             FormNum = "32";
             NumberOfFields = 17;
-            ZriInfo = new List<Form32_1>();
-            PackInfo = new List<Form32_2>();
-            IdsInfo = new List<Form32_3>();
         }
 
         [Attributes.Form_Property("Форма")]

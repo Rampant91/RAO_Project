@@ -39,7 +39,7 @@ namespace Models
                 nameof(PackTypeRecoded) + strNotNullDeclaration +
                 nameof(PackTypeNote) + strNotNullDeclaration +
                 nameof(PackNumber) + strNotNullDeclaration +
-                nameof(PackTypeRecoded) + strNotNullDeclaration +
+                nameof(PackNumberRecoded) + strNotNullDeclaration +
                 nameof(Radionuclids) + strNotNullDeclaration +
                 nameof(Activity) + strNotNullDeclaration +
                 nameof(ActivityNote) + " varchar(255) not null";

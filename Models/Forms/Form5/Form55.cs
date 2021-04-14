@@ -10,6 +10,23 @@ namespace Models
     [Attributes.Form_Class("Форма 5.5: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций и переводе в РАО изделий из обедненного урана")]
     public class Form55 : Abstracts.Form5
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form5.SQLCommandParamsBase() +
+            nameof(OperationCode) + strNotNullDeclaration +
+            nameof(Mass) + doubleNotNullDeclaration +
+            nameof(Name) + strNotNullDeclaration +
+            nameof(Quantity) + intNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
+        }
         public Form55(int RowID) : base(RowID)
         {
             FormNum = "55";

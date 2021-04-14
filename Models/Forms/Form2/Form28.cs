@@ -10,6 +10,39 @@ namespace Models
     [Attributes.Form_Class("Форма 2.8: Отведение сточных вод, содержащих радионуклиды")]
     public class Form28 : Abstracts.Form2
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form2.SQLCommandParamsBase() +
+            nameof(WasteSourceName) + strNotNullDeclaration +
+            nameof(PermissionNumber1) + strNotNullDeclaration +
+            nameof(PermissionIssueDate1) + dateNotNullDeclaration +
+            nameof(PermissionDocumentName1) + strNotNullDeclaration +
+            nameof(ValidBegin1) + dateNotNullDeclaration +
+            nameof(ValidThru1) + dateNotNullDeclaration +
+            nameof(PermissionNumber2) + strNotNullDeclaration +
+            nameof(PermissionIssueDate2) + dateNotNullDeclaration +
+            nameof(ValidBegin2) + dateNotNullDeclaration +
+            nameof(PermissionDocumentName2) + strNotNullDeclaration +
+            nameof(ValidThru2) + dateNotNullDeclaration +
+            nameof(WasteRecieverName) + strNotNullDeclaration +
+            nameof(RecieverTypeCode) + strNotNullDeclaration +
+            nameof(PoolDistrictName) + strNotNullDeclaration +
+            nameof(AllowedWasteRemovalVolume) + doubleNotNullDeclaration +
+            nameof(RemovedWasteVolume) + doubleNotNullDeclaration +
+            nameof(RemovedWasteVolumeNote) + doubleNotNullDeclaration +
+            nameof(PermissionNumber) + strNotNullDeclaration +
+            nameof(PermissionIssueDate) + strNotNullDeclaration +
+            nameof(ValidBegin) + dateNotNullDeclaration +
+            nameof(ValidThru) + dateNotNullDeclaration +
+            nameof(PermissionDocumentName) + " varchar(255) not null";
+        }
         public Form28(int RowID) : base(RowID)
         {
             FormNum = "28";

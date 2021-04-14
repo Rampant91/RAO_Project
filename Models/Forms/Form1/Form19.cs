@@ -7,6 +7,20 @@ namespace Models
     [Attributes.Form_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
     public class Form19: Abstracts.Form1
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form1.SQLCommandParamsBase() +
+            nameof(Activity) + strNotNullDeclaration +
+            nameof(CodeTypeAccObject) + shortNotNullDeclaration +
+            nameof(Radionuclids) + " varchar(255) not null";
+        }
         public Form19(int RowID) : base(RowID)
         {
 

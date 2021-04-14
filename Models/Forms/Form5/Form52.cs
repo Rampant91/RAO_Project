@@ -7,6 +7,21 @@ namespace Models
     [Attributes.Form_Class("Форма 5.2: Сведения о наличии ЗРИ в подведомственных организациях")]
     public class Form52 : Abstracts.Form5
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form5.SQLCommandParamsBase() +
+            nameof(Kategory) + shortNotNullDeclaration +
+            nameof(Radionuclids) + strNotNullDeclaration +
+            nameof(Quantity) + intNotNullDeclaration +
+            nameof(Activity) + " varchar(255) not null, ";
+        }
         public Form52(int RowID) : base(RowID)
         {
             FormNum = "52";

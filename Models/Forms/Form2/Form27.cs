@@ -10,10 +10,32 @@ namespace Models
     [Attributes.Form_Class("Форма 2.7: Поступление радионуклидов в атмосферный воздух")]
     public class Form27 : Abstracts.Form2
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form2.SQLCommandParamsBase() +
+            nameof(PermissionNumber) + strNotNullDeclaration +
+            nameof(PermissionIssueDate) + dateNotNullDeclaration +
+            nameof(PermissionDocumentName) + strNotNullDeclaration +
+            nameof(ValidBegin) + dateNotNullDeclaration +
+            nameof(ValidThru) + dateNotNullDeclaration +
+            nameof(RadionuclidNameNote) + strNotNullDeclaration +
+            nameof(AllowedWasteValue) + strNotNullDeclaration +
+            nameof(AllowedWasteValueNote) + strNotNullDeclaration +
+            nameof(FactedWasteValue) + strNotNullDeclaration +
+            nameof(FactedWasteValueNote) + strNotNullDeclaration +
+            nameof(WasteOutbreakPreviousYear) + " varchar(255) not null";
+        }
         public Form27(int RowID) : base(RowID)
         {
             FormNum = "27";
-            NumberOfFields = 15;
+            NumberOfFields = 13;
         }
 
         [Attributes.Form_Property("Форма")]

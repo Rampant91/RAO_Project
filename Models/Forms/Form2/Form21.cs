@@ -7,6 +7,39 @@ namespace Models
     [Attributes.Form_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
     public class Form21: Abstracts.Form2
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form2.SQLCommandParamsBase() +
+            nameof(RefineMachineName) + strNotNullDeclaration +
+            nameof(MachineCode) + shortNotNullDeclaration +
+            nameof(MachinePower) + strNotNullDeclaration +
+            nameof(NumberOfHoursPerYear) + intNotNullDeclaration +
+            nameof(CodeRAOIn) + strNotNullDeclaration +
+            nameof(StatusRAOIn) + strNotNullDeclaration +
+            nameof(VolumeIn) + doubleNotNullDeclaration +
+            nameof(MassIn) + doubleNotNullDeclaration +
+            nameof(QuantityIn) + intNotNullDeclaration +
+            nameof(CodeRAOout) + strNotNullDeclaration +
+            nameof(StatusRAOout) + strNotNullDeclaration +
+            nameof(VolumeOut) + doubleNotNullDeclaration +
+            nameof(MassOut) + doubleNotNullDeclaration +
+            nameof(TritiumActivityIn) + strNotNullDeclaration +
+            nameof(TritiumActivityOut) + strNotNullDeclaration +
+            nameof(QuantityOZIIIout) + strNotNullDeclaration +
+            nameof(TransuraniumActivityIn) + strNotNullDeclaration +
+            nameof(TransuraniumActivityOut) + strNotNullDeclaration +
+            nameof(BetaGammaActivityIn) + strNotNullDeclaration +
+            nameof(AlphaActivityIn) + strNotNullDeclaration +
+            nameof(BetaGammaActivityOut) + strNotNullDeclaration +
+            nameof(AlphaActivityOut) + " varchar(255) not null";
+        }
         public Form21(int RowID) : base(RowID)
         {
             FormNum = "21";

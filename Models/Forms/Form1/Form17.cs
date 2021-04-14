@@ -7,6 +7,50 @@ namespace Models
     [Attributes.Form_Class("Форма 1.7: Сведения о твердых кондиционированных РАО")]
     public class Form17: Abstracts.Form1
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form1.SQLCommandParamsBase() +
+            nameof(SpecificActivity) + strNotNullDeclaration +
+            nameof(VolumeOutOfPack) + doubleNotNullDeclaration +
+            nameof(PackFactoryNumber) + strNotNullDeclaration +
+            nameof(MassOutOfPack) + doubleNotNullDeclaration +
+            nameof(FormingDate) + dateNotNullDeclaration +
+            nameof(CodeRAO) + strNotNullDeclaration +
+            nameof(AlphaActivity) + strNotNullDeclaration +
+            nameof(BetaGammaActivity) + strNotNullDeclaration +
+            nameof(TritiumActivity) + strNotNullDeclaration +
+            nameof(TransuraniumActivity) + strNotNullDeclaration +
+            nameof(StoragePlaceCode) + strNotNullDeclaration +
+            nameof(StoragePlaceName) + strNotNullDeclaration +
+            nameof(Subsidy) + strNotNullDeclaration +
+            nameof(StoragePlaceNameNote) + strNotNullDeclaration +
+            nameof(StatusRAO) + strNotNullDeclaration +
+            nameof(RefineOrSortRAOCode) + strNotNullDeclaration +
+            nameof(FcpNumber) + strNotNullDeclaration +
+            nameof(Volume) + strNotNullDeclaration +
+            nameof(Mass) + strNotNullDeclaration +
+            nameof(PassportNumber) + strNotNullDeclaration +
+            nameof(Radionuclids) + strNotNullDeclaration +
+            nameof(Quantity) + intNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPONote) + strNotNullDeclaration +
+            nameof(TransporterOKPO) + strNotNullDeclaration +
+            nameof(TransporterOKPONote) + strNotNullDeclaration +
+            nameof(PackName) + strNotNullDeclaration +
+            nameof(PackNameNote) + strNotNullDeclaration +
+            nameof(PackType) + strNotNullDeclaration +
+            nameof(PackTypeRecoded) + strNotNullDeclaration +
+            nameof(PackTypeNote) + strNotNullDeclaration +
+            nameof(PackNumber) + strNotNullDeclaration +
+            nameof(PackNumberRecoded) + " varchar(255) not null";
+        }
         public Form17(int RowID) : base(RowID)
         {
             FormNum = "17";

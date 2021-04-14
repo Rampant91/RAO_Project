@@ -7,6 +7,27 @@ namespace Models
     [Attributes.Form_Class("Форма 2.5: Наличие РВ, содержащихся в отработавшем ядерном топливе, в пунктах хранения")]
     public class Form25: Abstracts.Form2
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form2.SQLCommandParamsBase() +
+            nameof(CodeOYATnote) + strNotNullDeclaration +
+            nameof(CodeOYAT) + strNotNullDeclaration +
+            nameof(AlphaActivity) + strNotNullDeclaration +
+            nameof(BetaGammaActivity) + strNotNullDeclaration +
+            nameof(StoragePlaceCode) + strNotNullDeclaration +
+            nameof(StoragePlaceName) + strNotNullDeclaration +
+            nameof(FcpNumber) + strNotNullDeclaration +
+            nameof(Quantity) + intNotNullDeclaration +
+            nameof(CellMass) + doubleNotNullDeclaration +
+            nameof(FuelMass) + " float(53) not null";
+        }
         public Form25(int RowID) : base(RowID)
         {
             FormNum = "25";
@@ -141,7 +162,6 @@ namespace Models
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }
-        //if change this change validation
         private string _StoragePlaceCode_Not_Valid = "";
         private void StoragePlaceCode_Validation(string value)//TODO
         {

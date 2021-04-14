@@ -10,6 +10,33 @@ namespace Models
     [Attributes.Form_Class("Форма 3.1: Отчет о намерении экспортировать радиоактивные источники 1 и 2 категории")]
     public class Form31 : Abstracts.Form3
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form3.SQLCommandParamsBase() +
+            nameof(RecieverName) + strNotNullDeclaration +
+            nameof(RecieverAddress) + strNotNullDeclaration +
+            nameof(RecieverFactAddress) + strNotNullDeclaration +
+            nameof(LicenseId) + strNotNullDeclaration +
+            nameof(SuggestedSolutionDate) + dateNotNullDeclaration +
+            nameof(UserName) + strNotNullDeclaration +
+            nameof(UserAddress) + strNotNullDeclaration +
+            nameof(UserFactAddress) + strNotNullDeclaration +
+            nameof(UserTelephone) + strNotNullDeclaration +
+            nameof(UserFax) + strNotNullDeclaration +
+            nameof(ZriUsageScope) + strNotNullDeclaration +
+            nameof(ContractId) + strNotNullDeclaration +
+            nameof(ContractDate) + dateNotNullDeclaration +
+            nameof(CountryCreator) + strNotNullDeclaration +
+            nameof(ValidThru) + dateNotNullDeclaration +
+            nameof(Email) + " varchar(255) not null";
+        }
         public Form31(int RowID) : base(RowID)
         {
             FormNum = "31";

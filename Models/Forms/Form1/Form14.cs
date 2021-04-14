@@ -7,6 +7,42 @@ namespace Models
     [Attributes.Form_Class("Форма 1.4: Сведения об ОРИ, кроме отдельных изделий")]
     public class Form14: Abstracts.Form1
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form1.SQLCommandParamsBase() +
+                nameof(PassportNumber) + strNotNullDeclaration +
+                nameof(PassportNumberNote) + strNotNullDeclaration +
+                nameof(PassportNumberRecoded) + strNotNullDeclaration +
+                nameof(Name) + strNotNullDeclaration +
+                nameof(Sort) + byteNotNullDeclaration +
+                nameof(Type) + strNotNullDeclaration +
+                nameof(ActivityMeasurementDate) + dateNotNullDeclaration +
+                nameof(Volume) + doubleNotNullDeclaration +
+                nameof(Mass) + doubleNotNullDeclaration +
+                nameof(AggregateState) + byteNotNullDeclaration +
+                nameof(PropertyCode) + byteNotNullDeclaration +
+                nameof(Owner) + strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPONote) + strNotNullDeclaration +
+                nameof(TransporterOKPO) + strNotNullDeclaration +
+                nameof(TransporterOKPONote) + strNotNullDeclaration +
+                nameof(PackName) + strNotNullDeclaration +
+                nameof(PackNameNote) + strNotNullDeclaration +
+                nameof(PackType) + strNotNullDeclaration +
+                nameof(PackTypeRecoded) + strNotNullDeclaration +
+                nameof(PackTypeNote) + strNotNullDeclaration +
+                nameof(PackNumber) + strNotNullDeclaration +
+                nameof(PackNumberRecoded) + strNotNullDeclaration +
+                nameof(Radionuclids) + strNotNullDeclaration +
+                nameof(Activity) + " varchar(255) not null";
+        }
         public Form14(int RowID) : base(RowID)
         {
             FormNum = "14";

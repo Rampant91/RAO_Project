@@ -7,6 +7,28 @@ namespace Models
     [Attributes.Form_Class("Форма 5.3: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций, расходовании и переводе в РАО ОРИ")]
     public class Form53 : Abstracts.Form5
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form5.SQLCommandParamsBase() +
+            nameof(TypeOfAccountedParts) + intNotNullDeclaration +
+            nameof(KindOri) + intNotNullDeclaration +
+            nameof(OperationCode) + strNotNullDeclaration +
+            nameof(Volume) + doubleNotNullDeclaration +
+            nameof(Mass) + doubleNotNullDeclaration +
+            nameof(AggregateState) + strNotNullDeclaration +
+            nameof(Radionuclids) + strNotNullDeclaration +
+            nameof(Quantity) + intNotNullDeclaration +
+            nameof(Activity) + strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
+        }
         public Form53(int RowID) : base(RowID)
         {
             FormNum = "53";

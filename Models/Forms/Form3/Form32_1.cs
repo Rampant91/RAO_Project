@@ -10,6 +10,32 @@ namespace Models
     [Attributes.Form_Class("")]
     public class Form32_1: Abstracts.Form3
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form3.SQLCommandParamsBase() +
+            nameof(CertificateId) + strNotNullDeclaration +
+            nameof(NuclearMaterialPresence) + strNotNullDeclaration +
+            nameof(Kategory) + shortNotNullDeclaration +
+            nameof(ActivityOnCreation) + strNotNullDeclaration +
+            nameof(ValidThru) + dateNotNullDeclaration +
+            nameof(PassportNumber) + strNotNullDeclaration +
+            nameof(PassportNumberNote) + strNotNullDeclaration +
+            nameof(Type) + strNotNullDeclaration +
+            nameof(TypeRecoded) + strNotNullDeclaration +
+            nameof(Radionuclids) + strNotNullDeclaration +
+            nameof(FactoryNumber) + strNotNullDeclaration +
+            nameof(FactoryNumberRecoded) + strNotNullDeclaration +
+            nameof(CreationDate) + dateNotNullDeclaration +
+            nameof(CreatorOKPO) + strNotNullDeclaration +
+            nameof(CreatorOKPONote) + " varchar(255) not null";
+        }
         public Form32_1(int RowID) : base(RowID)
         {
             FormNum = "32_1";

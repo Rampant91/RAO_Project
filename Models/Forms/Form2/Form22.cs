@@ -7,6 +7,40 @@ namespace Models
     [Attributes.Form_Class("Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения")]
     public class Form22 : Abstracts.Form2
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form2.SQLCommandParamsBase() +
+            nameof(QuantityOZIII) + intNotNullDeclaration +
+            nameof(PackQuantity) + intNotNullDeclaration +
+            nameof(MassInPack) + doubleNotNullDeclaration +
+            nameof(VolumeInPack) + doubleNotNullDeclaration +
+            nameof(VolumeOutOfPack) + doubleNotNullDeclaration +
+            nameof(MassOutOfPack) + doubleNotNullDeclaration +
+            nameof(MainRadionuclids) + strNotNullDeclaration +
+            nameof(CodeRAO) + strNotNullDeclaration +
+            nameof(AlphaActivity) + strNotNullDeclaration +
+            nameof(BetaGammaActivity) + strNotNullDeclaration +
+            nameof(TritiumActivity) + strNotNullDeclaration +
+            nameof(TransuraniumActivity) + strNotNullDeclaration +
+            nameof(StoragePlaceCode) + strNotNullDeclaration +
+            nameof(StoragePlaceName) + strNotNullDeclaration +
+            nameof(Subsidy) + strNotNullDeclaration +
+            nameof(StoragePlaceNameNote) + strNotNullDeclaration +
+            nameof(StatusRAO) + strNotNullDeclaration +
+            nameof(FcpNumber) + strNotNullDeclaration +
+            nameof(PackName) + strNotNullDeclaration +
+            nameof(PackNameNote) + strNotNullDeclaration +
+            nameof(PackType) + strNotNullDeclaration +
+            nameof(PackTypeRecoded) + strNotNullDeclaration +
+            nameof(PackTypeNote) + " varchar(255) not null";
+        }
         public Form22(int RowID) : base(RowID)
         {
             FormNum = "22";

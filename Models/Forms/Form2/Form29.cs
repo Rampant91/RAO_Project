@@ -10,6 +10,23 @@ namespace Models
     [Attributes.Form_Class("Форма 2.9: Активность радионуклидов, отведенных со сточными водами")]
     public class Form29 : Abstracts.Form2
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form2.SQLCommandParamsBase() +
+            nameof(AllowedActivity) + strNotNullDeclaration +
+            nameof(AllowedActivityNote) + strNotNullDeclaration +
+            nameof(FactedActivity) + strNotNullDeclaration +
+            nameof(FactedActivityNote) + strNotNullDeclaration +
+            nameof(RadionuclidName) + strNotNullDeclaration +
+            nameof(WasteSourceName) + " varchar(255) not null";
+        }
         public Form29(int RowID) : base(RowID)
         {
             FormNum = "29";
@@ -118,16 +135,19 @@ namespace Models
         private void AllowedActivity_Validation(string value)//Ready
         {
             ClearErrors(nameof(AllowedActivity));
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
+            if (value != "прим.")
             {
-                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    AddError(nameof(AllowedActivity), "Число должно быть больше нуля");
-            }
-            catch
-            {
-                AddError(nameof(AllowedActivity), "Недопустимое значение");
+                var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                   NumberStyles.AllowExponent;
+                try
+                {
+                    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                        AddError(nameof(AllowedActivity), "Число должно быть больше нуля");
+                }
+                catch
+                {
+                    AddError(nameof(AllowedActivity), "Недопустимое значение");
+                }
             }
         }
         //AllowedActivity property
@@ -160,7 +180,7 @@ namespace Models
         private string _AllowedActivityNote_Not_Valid = "";
         private void AllowedActivityNote_Validation(string value)//Ready
         {
-            
+
         }
         //AllowedActivityNote property
 

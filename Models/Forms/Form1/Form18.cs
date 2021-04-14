@@ -7,10 +7,49 @@ namespace Models
     [Attributes.Form_Class("Форма 1.8: Сведения о жидких кондиционированных РАО")]
     public class Form18: Abstracts.Form1
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form1.SQLCommandParamsBase() +
+            nameof(Volume20) + doubleNotNullDeclaration +
+            nameof(Volume6) + doubleNotNullDeclaration +
+            nameof(SaltConcentration) + doubleNotNullDeclaration +
+            nameof(SpecificActivity) + strNotNullDeclaration +
+            nameof(Mass21) + doubleNotNullDeclaration +
+            nameof(Mass7) + doubleNotNullDeclaration +
+            nameof(IndividualNumberZHRO) + strNotNullDeclaration +
+            nameof(IndividualNumberZHROrecoded) + strNotNullDeclaration +
+            nameof(CodeRAO) + strNotNullDeclaration +
+            nameof(AlphaActivity) + strNotNullDeclaration +
+            nameof(BetaGammaActivity) + strNotNullDeclaration +
+            nameof(TritiumActivity) + strNotNullDeclaration +
+            nameof(TransuraniumActivity) + strNotNullDeclaration +
+            nameof(StoragePlaceCode) + strNotNullDeclaration +
+            nameof(StoragePlaceName) + strNotNullDeclaration +
+            nameof(Subsidy) + strNotNullDeclaration +
+            nameof(StoragePlaceNameNote) + strNotNullDeclaration +
+            nameof(StatusRAO) + strNotNullDeclaration +
+            nameof(RefineOrSortRAOCode) + strNotNullDeclaration +
+            nameof(FcpNumber) + strNotNullDeclaration +
+            nameof(PassportNumber) + strNotNullDeclaration +
+            nameof(PassportNumberRecoded) + strNotNullDeclaration +
+            nameof(PassportNumberNote) + strNotNullDeclaration +
+            nameof(Radionuclids) + strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPONote) + strNotNullDeclaration +
+            nameof(TransporterOKPO) + strNotNullDeclaration +
+            nameof(TransporterOKPONote) + " varchar(255) not null";
+        }
         public Form18(int RowID) : base(RowID)
         {
             FormNum = "18";
-            NumberOfFields = 37;
+            NumberOfFields = 36;
         }
 
         [Attributes.Form_Property("Форма")]

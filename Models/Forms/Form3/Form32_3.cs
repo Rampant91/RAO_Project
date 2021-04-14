@@ -10,6 +10,19 @@ namespace Models
     [Attributes.Form_Class("Идентификаторы:")]
     public class Form32_3: Abstracts.Form3
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form3.SQLCommandParamsBase() +
+                nameof(IdName) + strNotNullDeclaration +
+                nameof(Value) + " varchar(255) not null";
+        }
         public Form32_3(int RowID) : base(RowID)
         {
             FormNum = "32_3";

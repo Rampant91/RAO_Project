@@ -7,6 +7,32 @@ namespace Models
     [Attributes.Form_Class("Форма 2.3: Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения")]
     public class Form23: Abstracts.Form2
     {
+        public static string SQLCommandParams()
+        {
+            string strNotNullDeclaration = " varchar(255) not null, ";
+            string intNotNullDeclaration = " int not null, ";
+            string shortNotNullDeclaration = " smallint not null, ";
+            string byteNotNullDeclaration = " tinyint not null, ";
+            string dateNotNullDeclaration = " ????, ";
+            string doubleNotNullDeclaration = " float(53) not null, ";
+            return
+                Abstracts.Form2.SQLCommandParamsBase() +
+            nameof(DocumentDate) + strNotNullDeclaration +
+            nameof(DocumentName) + strNotNullDeclaration +
+            nameof(DocumentNumber) + strNotNullDeclaration +
+            nameof(DocumentNumberRecoded) + strNotNullDeclaration +
+            nameof(ExpirationDate) + strNotNullDeclaration +
+            nameof(ProjectVolume) + strNotNullDeclaration +
+            nameof(ProjectVolumeNote) + strNotNullDeclaration +
+            nameof(SummaryActivity) + strNotNullDeclaration +
+            nameof(QuantityOZIII) + strNotNullDeclaration +
+            nameof(CodeRAO) + strNotNullDeclaration +
+            nameof(StoragePlaceCode) + strNotNullDeclaration +
+            nameof(StoragePlaceName) + strNotNullDeclaration +
+            nameof(StoragePlaceNameNote) + strNotNullDeclaration +
+            nameof(Volume) + strNotNullDeclaration +
+            nameof(Mass) + " float(53) not null";
+        }
         public Form23(int RowID) : base(RowID)
         {
             FormNum = "23";
