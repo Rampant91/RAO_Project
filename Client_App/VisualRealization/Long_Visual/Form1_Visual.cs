@@ -174,7 +174,7 @@ namespace Client_App.Long_Visual
             {
 
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
 
@@ -194,7 +194,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "NumberInOrder"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -213,7 +213,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "OperationCode"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         FontSize = FontSizeGlobal,
@@ -233,7 +233,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "OperationDate"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new DatePicker
                     {
                         Height = 30,
@@ -255,7 +255,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PassportNumber"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         FontSize = FontSizeGlobal,
@@ -276,7 +276,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Type"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         FontSize = FontSizeGlobal,
@@ -297,7 +297,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Radionuclids"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -317,7 +317,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "FactoryNumber"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -337,7 +337,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Quantity"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -357,7 +357,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Activity"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -377,7 +377,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "CreatorOKPO"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -396,7 +396,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "CreationDate"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new DatePicker
                     {
                         Height = 30,
@@ -416,13 +416,13 @@ namespace Client_App.Long_Visual
                 Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("Category").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "Сategory"
+                CommandParameter = "Category"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("Сategory"),
+                        [!TextBox.TextProperty] = new Binding("Category"),
 
                     });
             grd.Columns.Add(clm);
@@ -438,7 +438,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "SignedServicePeriod"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -458,7 +458,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PropertyCode"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -478,7 +478,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Owner"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -498,7 +498,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "DocumentVid"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -518,7 +518,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "DocumentNumber"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -538,7 +538,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "DocumentDate"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new DatePicker
                     {
                         Height = 30,
@@ -560,7 +560,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "ProviderOrRecieverOKPO"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -580,7 +580,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "TransporterOKPO"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -600,7 +600,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PackName"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -620,7 +620,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PackType"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -640,7 +640,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PackNumber"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -689,7 +689,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "RowNumber"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -708,7 +708,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "GraphNumber"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
@@ -727,7 +727,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Comment"
             };
-            clm.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
