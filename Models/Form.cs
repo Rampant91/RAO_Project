@@ -31,13 +31,21 @@ namespace Models
         }
          AccessInterface.Form.IDataAccess _dataAccess { get; set; }
 
-        public Form(int FormID)
+        public Form()
         {
-            this.FormID = FormID;
+            this.FormID = 0;
             _dataAccess = new AccessInterface.Form.REDDatabase(FormID);
             _Filters.Filter_List.CollectionChanged += Update;
             _Filters.PropertyChanged += Update;
             _Rows.CollectionChanged += Update;       
+        }
+        public Form(int FormID)
+        {
+            this.FormID = FormID;
+            _dataAccess = new AccessInterface.Form.REDDatabase(this.FormID);
+            _Filters.Filter_List.CollectionChanged += Update;
+            _Filters.PropertyChanged += Update;
+            _Rows.CollectionChanged += Update;
         }
 
         void Update(object sender, EventArgs args)

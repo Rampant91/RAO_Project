@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ReactiveUI;
 using System.Reactive;
 using Avalonia;
-using Models.Client_Model;
+using Models;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Runtime.CompilerServices;
@@ -149,9 +149,9 @@ namespace Client_App.ViewModels
         public void SaveReport()
         {
             SavingStorage = Storage;
-            if (!Forms[FormType].Storage.Contains(_SavingStorage))
+            if (!Forms.Forms_Collection.Contains(_SavingStorage))
             {
-                Forms.Forms[FormType].Storage.Add(_SavingStorage);
+                Forms.Forms_Collection.Add(_SavingStorage);
 
                 if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
@@ -185,19 +185,20 @@ namespace Client_App.ViewModels
 
         void _AddRow()
         {
-            Storage.Rows.Add(Models.Client_Model.FormCreator.Create(false,FormType));
+            Models.Abstracts.Form frm = FormCreator.Create(FormType);
+            Storage.Rows.Add(frm.RowID.ToString(), frm);
         }
 
         void _DeleteRow(IList param)
         {
-            List<Form> lst = new List<Form>();
+            List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
             foreach (var item in param)
             {
-                lst.Add((Form)item);
+                lst.Add((Models.Abstracts.Form)item);
             }
             foreach (var item in lst)
             {
-                Storage.Rows.Remove((Form)item);
+                Storage.Rows.Remove(((Models.Abstracts.Form)item).RowID.ToString());
             }
         }
 
@@ -218,7 +219,7 @@ namespace Client_App.ViewModels
                 {
                     foreach(var item in lt)
                     {
-                        Storage.Rows.Add(item);
+                        Storage.Rows.Add(item.RowID.ToString(),item);
                     }
                 }
             }

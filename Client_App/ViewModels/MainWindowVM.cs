@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ReactiveUI;
 using System.Reactive;
 using Avalonia;
-using Models.Client_Model;
+using Models;
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Runtime.CompilerServices;
@@ -21,15 +21,15 @@ using Avalonia.Collections;
 using Avalonia.Markup.Xaml;
 using System.Collections;
 using Models.Attributes;
-using Models.Storage;
+using Models;
 using System.IO;
 
 namespace Client_App.ViewModels
 {
     public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
-        LocalDictionary _FormModel_Local;
-        public LocalDictionary FormModel_Local 
+        FormsDictionary _FormModel_Local;
+        public FormsDictionary FormModel_Local 
         {
             get
             {
@@ -44,11 +44,6 @@ namespace Client_App.ViewModels
                 }
             }
         }
-
-        public ReactiveCommand<Unit, Unit> Save_Local { get; }
-        public ReactiveCommand<Unit, Unit> Load_Local { get; }
-
-        public ReactiveCommand<Unit, Unit> Save_ToFile { get; }
 
         public ReactiveCommand<Unit, Unit> OpenSettings { get; }
 
@@ -68,12 +63,9 @@ namespace Client_App.ViewModels
         }
         public MainWindowVM()
         {
-            _FormModel_Local = new LocalDictionary();
+            _FormModel_Local = new FormsDictionary("some.raodb");
             FormModel_Local.PropertyChanged += FormModelChanged;
 
-            Save_Local = ReactiveCommand.CreateFromTask(SaveForms);
-            Load_Local = ReactiveCommand.CreateFromTask(LoadForms);
-            Save_ToFile = ReactiveCommand.CreateFromTask(_SaveToFile);
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
@@ -82,60 +74,6 @@ namespace Client_App.ViewModels
 
             Excel_Export= ReactiveCommand.CreateFromTask(_Excel_Export);
 
-            _FormModel_Local = new LocalDictionary();
-        }
-
-        public async Task SaveForms()
-        {
-            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                SaveFileDialog dial = new SaveFileDialog();
-                var filter = new FileDialogFilter();
-                filter.Name = "Excel";
-                filter.Extensions.Add("*.xlsx");
-                dial.Filters.Add(filter);
-                var res = await dial.ShowAsync(desktop.MainWindow);
-                if (res.Count() != 0)
-                {
-                    Models.Storage.File fl = new Models.Storage.File();
-                    await fl.Save(FormModel_Local, res);
-                }
-            }
-        }
-        public async Task LoadForms()
-        {
-            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                OpenFileDialog dial = new OpenFileDialog();
-                var filter = new FileDialogFilter();
-                filter.Name = "Excel";
-                filter.Extensions.Add("*.xlsx");
-                dial.Filters.Add(filter);
-                dial.AllowMultiple = false;
-                var res = await dial.ShowAsync(desktop.MainWindow);
-                if (res.Count() != 0)
-                {
-                    Models.Storage.File fl = new Models.Storage.File();
-                    FormModel_Local=(await fl.Load(res[0]));
-                }
-            }
-        }
-        public async Task _SaveToFile()
-        {
-            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                SaveFileDialog dial = new SaveFileDialog();
-                var filter = new FileDialogFilter();
-                filter.Name = "Excel";
-                filter.Extensions.Add("*.xlsx");
-                dial.Filters.Add(filter);
-                var res = await dial.ShowAsync(desktop.MainWindow);
-                if (res.Count() != 0)
-                {
-                    Models.Storage.File fl = new Models.Storage.File();
-                    await fl.Save(FormModel_Local, res);
-                }
-            }
         }
 
         void _AddSort(string param)
@@ -143,35 +81,14 @@ namespace Client_App.ViewModels
             var type = param.Split('/')[0];
             var path = param.Split('/')[1];
 
-            if (type.Length == 1)
-            {
-                foreach(var item in FormModel_Local.Forms)
-                {
-                    var ty = item.Key.Replace("Forms", "");
-                    if (ty[0]==type[0])
-                    {
-                        if (ty.Count() > 1)
-                        {
-                            if (ty[1] != '0')
-                            {
-                                item.Value.Filters.SortPath = path;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                var str = FormModel_Local.Forms[type];
-                str.Filters.SortPath = path;
-            }
+            FormModel_Local.Dictionary.Filters.SortPath = path;
         }
 
         async Task _AddForm(string param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local, null,param);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Dictionary, null,param);
                 await frm.ShowDialog<Form>(desktop.MainWindow);
             }
         }
@@ -180,7 +97,7 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local,param, null);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Dictionary,param, null);
                 await frm.ShowDialog(desktop.MainWindow);
             }
         }
@@ -188,7 +105,7 @@ namespace Client_App.ViewModels
         {
             if (param != null)
             {
-                FormModel_Local.Forms[param.FormNum].Storage.Remove(param);
+                FormModel_Local.Dictionary.Forms_Collection.Remove(param);
             }
         }
 
@@ -204,8 +121,8 @@ namespace Client_App.ViewModels
                 var res = await dial.ShowAsync(desktop.MainWindow);
                 if (res.Count()!=0)
                 {
-                    Excel exp = new Excel();
-                    await exp.Save(FormModel_Local,res);
+                    Models.Saving.Excel exp = new Models.Saving.Excel();
+                    await exp.Save(FormModel_Local.Dictionary,res);
                 }
             }
         }

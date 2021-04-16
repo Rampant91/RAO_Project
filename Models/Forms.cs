@@ -12,7 +12,6 @@ using Models;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace Models

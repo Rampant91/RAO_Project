@@ -57,7 +57,7 @@ namespace Models.AccessInterface.REDDatabase_Usage
                     transaction.Commit();
 
 
-                    using (var command = new FbCommand("create table forms_11 ("+Client_Model.Form11.SQLCommandParams()+")", connection, transaction))
+                    using (var command = new FbCommand("create table forms_11 ("+Form11.SQLCommandParams()+")", connection, transaction))
                     {
                         command.ExecuteNonQuery();
                     }

@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
 using Avalonia.Controls.ApplicationLifetimes;
-using Models.Client_Model;
+using Models;
 using System.Collections.ObjectModel;
 using System.Collections;
 using System;

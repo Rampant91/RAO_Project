@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Models.Client_Model;
+using Models;
 
 namespace Client_App.PasteRealization
 {
     public interface IPaste
     {
-        public List<Form> Convert(string Data, string Form);
-        public string ConvertBack(Form[] Param);
+        public List<Models.Abstracts.Form> Convert(string Data, string Form);
+        public string ConvertBack(Models.Abstracts.Form[] Param);
     }
 }

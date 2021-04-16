@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Models.Client_Model;
+using Models;
 
 namespace Client_App.PasteRealization
 {
     public class Excel:IPaste
     {
-        public List<Form> Convert(string Data,string Form)
+        public List<Models.Abstracts.Form> Convert(string Data,string Form)
         {
-            List<Form> lst = new List<Form>();
-            var form = FormCreator.Create(true,Form);
+            List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
+            var form = FormCreator.Create(Form);
 
             List<string[]> slst = new List<string[]>();
             string[] mas = new string[form.NumberOfFields+1];
@@ -55,14 +55,14 @@ namespace Client_App.PasteRealization
 
             foreach(var item in slst)
             {
-                Form frm = FormCreator.Create(true,item);
-                lst.Add(form);
+                //Form frm = FormCreator.Create(item);
+                //lst.Add(form);
             }
 
             return lst;
 
         }
-        public string ConvertBack(Form[] Param)
+        public string ConvertBack(Models.Abstracts.Form[] Param)
         {
             return "";
         }

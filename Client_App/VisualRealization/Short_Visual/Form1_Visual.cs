@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Models.Storage;
+using Models;
 using Avalonia.Data;
 using Avalonia;
 using Models.Attributes;
 using Avalonia.Media;
 using Avalonia.Controls.Templates;
-using Models.Client_Model;
 using Avalonia.Data.Converters;
 
 namespace Client_App.Short_Visual
