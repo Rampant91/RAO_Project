@@ -37,6 +37,7 @@ namespace Models
         }
         public FormsDictionary(string PathToDB)
         {
+            this.ChooseID = 0;
             this.PathToDB = PathToDB;
         }
 
@@ -65,7 +66,6 @@ namespace Models
                 Forms frms = new Forms();
                 Form frm = new Form(_ChooseID);
                 frms.MasterForm = frm;
-
                 return frms;
             }
         }

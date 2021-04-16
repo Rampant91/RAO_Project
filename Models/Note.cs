@@ -11,8 +11,9 @@ namespace Models
     public class Note : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         //RowNumber property
-        [Attributes.Form_Property("№ строки")]
         protected AccessInterface.Row.IDataAccess _dataAccess { get; set; }
+
+        [Attributes.Form_Property("№ строки")]
         public int RowNumber
         {
             get

@@ -120,7 +120,7 @@ namespace Client_App.ViewModels
             CheckReport = ReactiveCommand.Create(_CheckReport);
             PasteRows = ReactiveCommand.CreateFromTask(_PasteRows);
 
-
+            _SavingStorage = new Form();
             _Storage = new Form();
             _Forms = new Forms();
         }
@@ -185,7 +185,7 @@ namespace Client_App.ViewModels
 
         void _AddRow()
         {
-            Models.Abstracts.Form frm = FormCreator.Create(FormType);
+            var frm = FormCreator.Create(FormType);
             Storage.Rows.Add(frm.RowID.ToString(), frm);
         }
 
@@ -198,7 +198,7 @@ namespace Client_App.ViewModels
             }
             foreach (var item in lst)
             {
-                Storage.Rows.Remove(((Models.Abstracts.Form)item).RowID.ToString());
+                Storage.Rows.Remove(item.RowID.ToString());
             }
         }
 

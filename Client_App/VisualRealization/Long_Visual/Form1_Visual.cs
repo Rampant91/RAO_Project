@@ -189,7 +189,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize= FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "NumberInOrder"
@@ -208,7 +208,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "OperationCode"
@@ -228,7 +228,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "OperationDate"
@@ -250,7 +250,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PassportNumber"
@@ -271,7 +271,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Type"
@@ -292,7 +292,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Radionuclids"
@@ -312,7 +312,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("FactoryNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "FactoryNumber"
@@ -332,7 +332,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("Quantity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Quantity"
@@ -352,7 +352,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("Activity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Activity"
@@ -372,7 +372,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("CreatorOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "CreatorOKPO"
@@ -391,7 +391,7 @@ namespace Client_App.Long_Visual
             clm.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("CreationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "CreationDate"
@@ -413,8 +413,8 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
-                GetProperty("Сategory").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
+                GetProperty("Category").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Сategory"
             };
@@ -433,7 +433,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("SignedServicePeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "SignedServicePeriod"
@@ -453,7 +453,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PropertyCode"
@@ -473,7 +473,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Owner"
@@ -493,7 +493,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("DocumentVid").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "DocumentVid"
@@ -513,7 +513,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("DocumentNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "DocumentNumber"
@@ -533,7 +533,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("DocumentDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "DocumentDate"
@@ -555,7 +555,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "ProviderOrRecieverOKPO"
@@ -575,7 +575,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "TransporterOKPO"
@@ -595,7 +595,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PackName"
@@ -615,7 +615,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PackType"
@@ -635,7 +635,7 @@ namespace Client_App.Long_Visual
             {
                 FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Form11,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("PackNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "PackNumber"
@@ -673,7 +673,7 @@ namespace Client_App.Long_Visual
             {
                 Header = "Удалить строку",
                 [!MenuItem.CommandProperty] = new Binding("DeleteRowN"),
-                [!MenuItem.CommandParameterProperty] = new Binding("#parent.SelectedItem"),
+                [!MenuItem.CommandParameterProperty] = new Binding("#parent[2].SelectedItem"),
             });
             cntx.Items = itms;
 
@@ -684,7 +684,7 @@ namespace Client_App.Long_Visual
             clm.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Note,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").
                 GetProperty("RowNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "RowNumber"
@@ -703,7 +703,7 @@ namespace Client_App.Long_Visual
             clm.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Note,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").
                 GetProperty("GraphNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "GraphNumber"
@@ -722,7 +722,7 @@ namespace Client_App.Long_Visual
             clm.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Client_Model.Note,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").
                 GetProperty("Comment").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "Comment"

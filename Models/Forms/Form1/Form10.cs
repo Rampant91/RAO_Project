@@ -42,7 +42,6 @@ namespace Models
         {
             NumberOfFields = 19;
             FormNum = "10";
-
         }
 
         [Attributes.Form_Property("Форма")]

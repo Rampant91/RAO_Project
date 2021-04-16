@@ -45,29 +45,41 @@ namespace Models.AccessInterface.REDDatabase_Usage
                 connection.Open();
                 using (var transaction = connection.BeginTransaction())
                 {
-                    using (var command = new FbCommand("create table reports_forms ( report_id integer not null AUTO_INCREMENT, form_id integer not null)", connection, transaction))
+                    using (var command = new FbCommand("create table reports_forms ( report_id integer not null, form_id integer not null)", connection, transaction))
                     {
                         command.ExecuteNonQuery();
                     }
                     transaction.Commit();
+
+                    using (var command = new FbCommand("create table reports ( report_id integer not null AUTO_INCREMENT, masterform_id integer not null)", connection, transaction))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+
                     using (var command = new FbCommand("create table forms ( form_id integer not null AUTO_INCREMENT, form_type varchar(255) not null)", connection, transaction))
                     {
                         command.ExecuteNonQuery();
                     }
                     transaction.Commit();
 
-
-                    using (var command = new FbCommand("create table forms_11 ("+Form11.SQLCommandParams()+")", connection, transaction))
+                    using (var command = new FbCommand("create table rows ( form_id integer not null, row_id integer not null)", connection, transaction))
                     {
                         command.ExecuteNonQuery();
                     }
                     transaction.Commit();
 
-                    //using (var command = new FbCommand("create table forms_XX (" + Client_Model.FormXX.SQLCommandParams() + ")", connection, transaction))
-                    //{
-                    //    command.ExecuteNonQuery();
-                    //}
-                    //transaction.Commit();
+                    using (var command = new FbCommand("create table forms_10 ("+Form10.SQLCommandParams()+")", connection, transaction))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+
+                    using (var command = new FbCommand("create table forms_11 (" + Form11.SQLCommandParams() + ")", connection, transaction))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
                 }
             }
         }

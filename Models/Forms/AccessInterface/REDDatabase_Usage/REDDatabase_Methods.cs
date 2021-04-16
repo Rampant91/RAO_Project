@@ -8,7 +8,7 @@ namespace Models.AccessInterface.REDDatabase_Usage
 {
     public class REDDatabase_Methods
     {
-        public static int[] GetFormsIDS(string param,int masterkey)
+        public static int[] GetFormsIDS(int masterkey)
         {
             REDDatabase_Object us = new REDDatabase_Object(@"C:\Databases\Local.raodb");
             List<int> obj = new List<int>();
@@ -18,7 +18,7 @@ namespace Models.AccessInterface.REDDatabase_Usage
                 connection.Open();
                 using (var transaction = connection.BeginTransaction())
                 {
-                    using (var command = new FbCommand("select formid from reports where formnum=" + param, connection, transaction))
+                    using (var command = new FbCommand("select report_id from reports where masterform_id=" + masterkey, connection, transaction))
                     {
                         using (var reader = command.ExecuteReader())
                         {

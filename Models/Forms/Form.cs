@@ -35,6 +35,7 @@ namespace Models.Abstracts
         }
 
         //FormNum property
+        [Attributes.Form_Property("Форма")]
         public string FormNum
         {
             get

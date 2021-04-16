@@ -29,8 +29,24 @@ namespace Models
             {
                 ObservableCollection<Form> tmp = new ObservableCollection<Form>();
                 tmp.CollectionChanged += Update;
-                var ids=AccessInterface.REDDatabase_Usage.REDDatabase_Methods.GetFormsIDS(MasterForm.FormNum,MasterForm.FormID);
+                var ids=AccessInterface.REDDatabase_Usage.REDDatabase_Methods.GetFormsIDS(MasterForm.FormID);
                 foreach(var item in ids)
+                {
+                    tmp.Add(new Form(item));
+                }
+
+                return tmp;
+            }
+        }
+
+        public ObservableCollection<Form> this[int key]
+        {
+            get
+            {
+                ObservableCollection<Form> tmp = new ObservableCollection<Form>();
+                tmp.CollectionChanged += Update;
+                var ids = AccessInterface.REDDatabase_Usage.REDDatabase_Methods.GetFormsIDS(MasterForm.FormID);
+                foreach (var item in ids)
                 {
                     tmp.Add(new Form(item));
                 }

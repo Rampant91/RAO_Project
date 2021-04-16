@@ -31,7 +31,7 @@ namespace Models.Abstracts
         }
 
             //NumberInOrder property
-            [Attributes.Form_Property("№ п/п")]
+        [Attributes.Form_Property("№ п/п")]
         public int NumberInOrder
         {
             get

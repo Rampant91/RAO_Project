@@ -35,16 +35,22 @@ namespace Models
         {
             this.FormID = 0;
             _dataAccess = new AccessInterface.Form.REDDatabase(FormID);
+            _Filters = new Filter.Filters<Abstracts.Form>();
             _Filters.Filter_List.CollectionChanged += Update;
             _Filters.PropertyChanged += Update;
+
+            _Rows = new ObservableConcurrentDictionary<string, Abstracts.Form>();
             _Rows.CollectionChanged += Update;       
         }
         public Form(int FormID)
         {
             this.FormID = FormID;
             _dataAccess = new AccessInterface.Form.REDDatabase(this.FormID);
+            _Filters = new Filter.Filters<Abstracts.Form>();
             _Filters.Filter_List.CollectionChanged += Update;
             _Filters.PropertyChanged += Update;
+
+            _Rows = new ObservableConcurrentDictionary<string, Abstracts.Form>();
             _Rows.CollectionChanged += Update;
         }
 
