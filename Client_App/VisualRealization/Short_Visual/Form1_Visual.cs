@@ -67,7 +67,7 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter= "10/RegNo"
             };
-            clm1.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm1.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("RegNo"),
@@ -84,7 +84,7 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "10/ShortJurLico"
             };
-            clm2.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm2.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -102,7 +102,7 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "10/Okpo"
             };
-            clm3.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm3.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("Okpo"),
@@ -148,7 +148,7 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/NumberInOrder"
             };
-            clm1.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm1.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("NumberInOrder"),
@@ -165,7 +165,7 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/FormNum"
             };
-            clm2.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm2.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("FormNum"),
@@ -177,14 +177,14 @@ namespace Client_App.Short_Visual
             clm3.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
                 GetProperty("StartPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/StartPeriod"
             };
             Binding bnd = new Binding("StartPeriod");
             bnd.StringFormat = "{0:d}";
-            clm3.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm3.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = bnd,
@@ -196,14 +196,14 @@ namespace Client_App.Short_Visual
             clm4.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
                 GetProperty("EndPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/EndPeriod"
             };
             bnd = new Binding("EndPeriod");
             bnd.StringFormat = "{0:d}";
-            clm4.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm4.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = bnd,
@@ -215,14 +215,14 @@ namespace Client_App.Short_Visual
             clm5.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
                 GetProperty("ExportDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/ExportDate"
             };
             bnd = new Binding("ExportDate");
             bnd.StringFormat = "{0:d}";
-            clm5.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm5.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = bnd,
@@ -234,12 +234,12 @@ namespace Client_App.Short_Visual
             clm6.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
                 GetProperty("IsCorrection").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/IsCorrection"
             };
-            clm6.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm6.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("IsCorrection"),
@@ -250,12 +250,12 @@ namespace Client_App.Short_Visual
             clm7.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form,Models").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
                 GetProperty("Comments").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/Comments"
             };
-            clm7.CellTemplate = new FuncDataTemplate<Form>((x, e) =>
+            clm7.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("Comments"),

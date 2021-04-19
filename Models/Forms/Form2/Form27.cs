@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using DBRealization;
 
 namespace Models
 {
@@ -39,9 +40,9 @@ namespace Models
         }
 
         [Attributes.Form_Property("Форма")]
-        public override void Object_Validation()
+        public override bool Object_Validation()
         {
-
+            return false;
         }
 
         //PermissionNumber property

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Collections;
+using DBRealization;
 
 namespace Models.Abstracts
 {
@@ -81,7 +82,7 @@ namespace Models.Abstracts
         //NumberOfFields property
 
         //Для валидации
-        public abstract void Object_Validation();
+        public abstract bool Object_Validation();
         //Для валидации
 
         //Property Changed

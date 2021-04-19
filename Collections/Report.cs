@@ -7,20 +7,30 @@ using System.Linq;
 using Models;
 using Models.Attributes;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Concurrent;
+using DBRealization;
 
 namespace Collections
 {
     public class Report : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-         IDataAccess _dataAccess { get; set; }
+        IDataAccess _dataAccess { get; set; }
+
+        public int ReportID
+        {
+            get
+            {
+                return _dataAccess.ReportID;
+            }
+        }
 
         public Report(IDataAccess Access)
         {
             _dataAccess = Access;
 
-            _Rows = new ObservableConcurrentDictionary<string, Models.Abstracts.Form>();
-            _Rows.CollectionChanged += Update;       
+            _Rows = new Basics.Rows();
+            //_Rows.CollectionChanged += Update;       
         }
 
         void Update(object sender, EventArgs args)
@@ -29,8 +39,8 @@ namespace Collections
             OnPropertyChanged("Rows");
         }
 
-        ObservableConcurrentDictionary<string, Models.Abstracts.Form> _Rows;
-        public ObservableConcurrentDictionary<string, Models.Abstracts.Form> Rows 
+        Basics.Rows _Rows;
+        public Basics.Rows Rows 
         {
             get
             {

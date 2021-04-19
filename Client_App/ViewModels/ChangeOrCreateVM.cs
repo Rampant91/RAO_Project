@@ -24,6 +24,8 @@ using Models.Attributes;
 using System.IO;
 using Avalonia.Metadata;
 using System.Windows;
+using Collections;
+using DBRealization;
 
 namespace Client_App.ViewModels
 {
@@ -33,57 +35,6 @@ namespace Client_App.ViewModels
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        Form _SavingStorage;
-        public Form SavingStorage
-        {
-            get
-            {
-                return _SavingStorage;
-            }
-            set
-            {
-                if (_SavingStorage != value)
-                {
-                    _SavingStorage = value;
-                    NotifyPropertyChanged("SavingStorage");
-                }
-            }
-        }
-
-        Form _Storage;
-        public Form Storage
-        {
-            get
-            {
-                return _Storage;
-            }
-            set
-            {
-                if (_Storage != value)
-                {
-                    _Storage = value;
-                    NotifyPropertyChanged("Storage");
-                }
-            }
-        }
-
-        Forms _Forms;
-        public Forms Forms
-        {
-            get
-            {
-                return _Forms;
-            }
-            set
-            {
-                if (_Forms != value)
-                {
-                    _Forms = value;
-                    NotifyPropertyChanged("Forms");
-                }
-            }
         }
 
         string _FormType;
@@ -103,6 +54,40 @@ namespace Client_App.ViewModels
             }
         }
 
+        string _DBPath = @"C:\Databases\local.raodb";
+        public string DBPath
+        {
+            get
+            {
+                return _DBPath;
+            }
+            set
+            {
+                if (_DBPath != value)
+                {
+                    _DBPath = value;
+                    NotifyPropertyChanged("DBPath");
+                }
+            }
+        }
+
+        Report _Storage;
+        public Report Storage
+        {
+            get
+            {
+                return _Storage;
+            }
+            set
+            {
+                if (_Storage != value)
+                {
+                    _Storage = value;
+                    NotifyPropertyChanged("Storage");
+                }
+            }
+        }
+
         public ReactiveCommand<Unit, Unit> CheckReport { get; }
 
         public ReactiveCommand<string, Unit> AddSort { get; }
@@ -118,10 +103,6 @@ namespace Client_App.ViewModels
             DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             PasteRows = ReactiveCommand.CreateFromTask(_PasteRows);
-
-            _SavingStorage = new Form();
-            _Storage = new Form();
-            _Forms = new Forms();
         }
         bool _isCanSaveReportEnabled = false;
         bool IsCanSaveReportEnabled
@@ -147,35 +128,17 @@ namespace Client_App.ViewModels
         }
         public void SaveReport()
         {
-            SavingStorage = Storage;
-            if (!Forms.GetLastForms.Contains(_SavingStorage))
+            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Forms.GetLastForms.Add(_SavingStorage);
+                foreach (var item in desktop.Windows)
+                {
+                    if (item is Views.FormChangeOrCreate)
+                    {
+                        item.Close();
+                    }
+                }
+            }
 
-                if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    foreach (var item in desktop.Windows)
-                    {
-                        if (item is Views.FormChangeOrCreate)
-                        {
-                            item.Close();
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    foreach (var item in desktop.Windows)
-                    {
-                        if (item is Views.FormChangeOrCreate)
-                        {
-                            item.Close();
-                        }
-                    }
-                }
-            }
         }
         void _CheckReport()
         {
@@ -184,8 +147,8 @@ namespace Client_App.ViewModels
 
         void _AddRow()
         {
-            var frm = FormCreator.Create(FormType);
-            Storage.Rows.Add(frm.RowID.ToString(), frm);
+            var frm = FormCreator.Create(FormType, new  RedDataBase(DBPath));
+            //Storage.Rows.Add(frm);
         }
 
         void _DeleteRow(IList param)
@@ -197,13 +160,13 @@ namespace Client_App.ViewModels
             }
             foreach (var item in lst)
             {
-                Storage.Rows.Remove(item.RowID.ToString());
+                //Storage.Rows.Remove(item);
             }
         }
 
         void _AddSort(string param)
         {
-            Storage.Filters.SortPath = param;
+            //Storage.Filters.SortPath = param;
         }
 
         async Task _PasteRows()
@@ -218,7 +181,7 @@ namespace Client_App.ViewModels
                 {
                     foreach(var item in lt)
                     {
-                        Storage.Rows.Add(item.RowID.ToString(),item);
+                        //Storage.Rows.Add(item);
                     }
                 }
             }

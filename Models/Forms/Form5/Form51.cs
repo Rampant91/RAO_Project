@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using DBRealization;
 
 namespace Models
 {
@@ -32,9 +33,9 @@ namespace Models
         }
 
         [Attributes.Form_Property("Форма")]
-        public override void Object_Validation()
+        public override bool Object_Validation()
         {
-
+            return false;
         }
 
         //OperationCode property

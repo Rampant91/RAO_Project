@@ -4,34 +4,44 @@ using Avalonia.Markup.Xaml;
 using Models;
 using Models.Attributes;
 using Avalonia.Data;
-using Models;
+using Collections;
+using DBRealization;
 
 namespace Client_App.Views
 {
     public class FormChangeOrCreate : Window
     {
         string _param = "";
-        public FormChangeOrCreate(in Forms dict,in Form _Storage,string param)
+        public FormChangeOrCreate(string DBPath,int ReportID,string param)
         {
-            this.DataContext = new ViewModels.ChangeOrCreateVM();
-
-            if (_Storage != null)
+            var tmp= new ViewModels.ChangeOrCreateVM();
+            tmp.FormType = param;
+            if(DBPath!=null)
             {
-                _param = _Storage.FormNum;
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage = _Storage;
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = _Storage;
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).Forms = dict;
+                tmp.DBPath = DBPath;
+                if (ReportID != -1)
+                {
+                    tmp.Storage = new Report(new RedDataBase(DBPath, ReportID));
+                }
+                else
+                {
+                    tmp.Storage = new Report(new RedDataBase(DBPath));
+                }
             }
             else
             {
-                _param = param;
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage = new Form();
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).SavingStorage.FormNum = _param;
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage = new Form();
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).Storage.FormNum = _param;
-                ((ViewModels.ChangeOrCreateVM)this.DataContext).Forms = dict;
+                if (ReportID != -1)
+                {
+                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath, ReportID));
+                }
+                else
+                {
+                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath));
+                }
             }
-            ((ViewModels.ChangeOrCreateVM)this.DataContext).FormType = _param;
+
+            this.DataContext = tmp;
+            _param = param;
 
             InitializeComponent();
 #if DEBUG

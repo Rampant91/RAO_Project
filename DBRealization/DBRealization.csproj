@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DBRealization\DBRealization.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
+    <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="8.0.1" />
   </ItemGroup>
 
 </Project>

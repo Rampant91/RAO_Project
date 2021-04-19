@@ -21,15 +21,33 @@ using Avalonia.Collections;
 using Avalonia.Markup.Xaml;
 using System.Collections;
 using Models.Attributes;
-using Models;
 using System.IO;
+using Collections;
+using DBRealization;
 
 namespace Client_App.ViewModels
 {
     public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
-        FormsDictionary _FormModel_Local;
-        public FormsDictionary FormModel_Local 
+        string _DBPath= @"C:\Databases\local.raodb";
+        string DBPath
+        {
+            get
+            {
+                return _DBPath;
+            }
+            set
+            {
+                if (_DBPath != value)
+                {
+                    _DBPath = value;
+                    NotifyPropertyChanged("DBPath");
+                }
+            }
+        }
+
+Reports _FormModel_Local;
+        public Reports FormModel_Local 
         {
             get
             {
@@ -52,8 +70,8 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> ChooseForm { get;}
 
         public ReactiveCommand<string, Unit> AddForm { get; }
-        public ReactiveCommand<Form, Unit> ChangeForm { get; }
-        public ReactiveCommand<Form, Unit> DeleteForm { get; }
+        public ReactiveCommand<Report, Unit> ChangeForm { get; }
+        public ReactiveCommand<Report, Unit> DeleteForm { get; }
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -63,14 +81,14 @@ namespace Client_App.ViewModels
         }
         public MainWindowVM()
         {
-            _FormModel_Local = new FormsDictionary("some.raodb");
+            _FormModel_Local = new Reports(new RedDataBase(DBPath));
             FormModel_Local.PropertyChanged += FormModelChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
-            ChangeForm = ReactiveCommand.CreateFromTask<Form>(_ChangeForm);
-            DeleteForm = ReactiveCommand.CreateFromTask<Form>(_DeleteForm);
+            ChangeForm = ReactiveCommand.CreateFromTask<Report>(_ChangeForm);
+            DeleteForm = ReactiveCommand.CreateFromTask<Report>(_DeleteForm);
 
             Excel_Export= ReactiveCommand.CreateFromTask(_Excel_Export);
 
@@ -81,31 +99,31 @@ namespace Client_App.ViewModels
             var type = param.Split('/')[0];
             var path = param.Split('/')[1];
 
-            FormModel_Local.Dictionary.Filters.SortPath = path;
+            //FormModel_Local.Dictionary.Filters.SortPath = path;
         }
 
         async Task _AddForm(string param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Dictionary, null,param);
-                await frm.ShowDialog<Form>(desktop.MainWindow);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(DBPath,-1,param);
+                await frm.ShowDialog<Models.Abstracts.Form>(desktop.MainWindow);
             }
         }
 
-        async Task _ChangeForm(Form param)
+        async Task _ChangeForm(Report param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(FormModel_Local.Dictionary,param, null);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(DBPath,param.ReportID, null);
                 await frm.ShowDialog(desktop.MainWindow);
             }
         }
-        async Task _DeleteForm(Form param)
+        async Task _DeleteForm(Report param)
         {
             if (param != null)
             {
-                FormModel_Local.Dictionary.GetLastForms.Remove(param);
+                //FormModel_Local.Dictionary.GetLastForms.Remove(param);
             }
         }
 
@@ -121,8 +139,8 @@ namespace Client_App.ViewModels
                 var res = await dial.ShowAsync(desktop.MainWindow);
                 if (res.Count()!=0)
                 {
-                    Models.Saving.Excel exp = new Models.Saving.Excel();
-                    await exp.Save(FormModel_Local.Dictionary,res);
+                    //Models.Saving.Excel exp = new Models.Saving.Excel();
+                    //await exp.Save(FormModel_Local.Dictionary,res);
                 }
             }
         }
