@@ -32,7 +32,7 @@ namespace Models
             nameof(FactedWasteValueNote) + strNotNullDeclaration +
             nameof(WasteOutbreakPreviousYear) + " varchar(255) not null";
         }
-        public Form27(int RowID) : base(RowID)
+        public Form27(IDataAccess Access) : base(Access)
         {
             FormNum = "27";
             NumberOfFields = 13;

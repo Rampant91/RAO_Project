@@ -28,7 +28,7 @@ namespace Models
             nameof(CellMass) + doubleNotNullDeclaration +
             nameof(FuelMass) + " float(53) not null";
         }
-        public Form25(int RowID) : base(RowID)
+        public Form25(IDataAccess Access) : base(Access)
         {
             FormNum = "25";
             NumberOfFields = 12;

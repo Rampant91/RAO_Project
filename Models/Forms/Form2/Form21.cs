@@ -40,7 +40,7 @@ namespace Models
             nameof(BetaGammaActivityOut) + strNotNullDeclaration +
             nameof(AlphaActivityOut) + " varchar(255) not null";
         }
-        public Form21(int RowID) : base(RowID)
+        public Form21(IDataAccess Access) : base(Access)
         {
             FormNum = "21";
             NumberOfFields = 24;

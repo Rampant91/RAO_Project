@@ -11,7 +11,7 @@ namespace Models
     [Attributes.Form_Class("Форма 2.11: Радионуклидный состав загрязненных участков территорий")]
     public class Form211 : Abstracts.Form2
     {
-        public Form211(int RowID) : base(RowID)
+        public Form211(IDataAccess Access) : base(Access)
         {
             FormNum = "211";
             NumberOfFields = 11;

@@ -22,7 +22,7 @@ namespace Models
             nameof(Quantity) + intNotNullDeclaration +
             nameof(Activity) + " varchar(255) not null, ";
         }
-        public Form52(int RowID) : base(RowID)
+        public Form52(IDataAccess Access) : base(Access)
         {
             FormNum = "52";
             NumberOfFields = 6;

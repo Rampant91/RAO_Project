@@ -46,7 +46,7 @@ namespace Models
             nameof(TransporterOKPO) + strNotNullDeclaration +
             nameof(TransporterOKPONote) + " varchar(255) not null";
         }
-        public Form18(int RowID) : base(RowID)
+        public Form18(IDataAccess Access) : base(Access)
         {
             FormNum = "18";
             NumberOfFields = 36;

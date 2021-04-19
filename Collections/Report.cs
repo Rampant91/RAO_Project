@@ -4,54 +4,23 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using Models;
+using Models.Attributes;
 using System.Collections;
-using Avalonia.Controls.ApplicationLifetimes;
 using System.Collections.Concurrent;
 
-namespace Models
+namespace Collections
 {
-    public class Form : INotifyPropertyChanged, INotifyDataErrorInfo
+    public class Report : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-        int _FormID;
-        public int FormID 
-        { 
-            get 
-            {
-                return _FormID;
-            }
-            set 
-            {
-                if(_FormID!=value)
-                {
-                    _FormID = value;
-                    OnPropertyChanged(nameof(FormID));
-                    Update(null,null);
-                }
-            } 
-        }
-         AccessInterface.Form.IDataAccess _dataAccess { get; set; }
+         IDataAccess _dataAccess { get; set; }
 
-        public Form()
+        public Report(IDataAccess Access)
         {
-            this.FormID = 0;
-            _dataAccess = new AccessInterface.Form.REDDatabase(FormID);
-            _Filters = new Filter.Filters<Abstracts.Form>();
-            _Filters.Filter_List.CollectionChanged += Update;
-            _Filters.PropertyChanged += Update;
+            _dataAccess = Access;
 
-            _Rows = new ObservableConcurrentDictionary<string, Abstracts.Form>();
+            _Rows = new ObservableConcurrentDictionary<string, Models.Abstracts.Form>();
             _Rows.CollectionChanged += Update;       
-        }
-        public Form(int FormID)
-        {
-            this.FormID = FormID;
-            _dataAccess = new AccessInterface.Form.REDDatabase(this.FormID);
-            _Filters = new Filter.Filters<Abstracts.Form>();
-            _Filters.Filter_List.CollectionChanged += Update;
-            _Filters.PropertyChanged += Update;
-
-            _Rows = new ObservableConcurrentDictionary<string, Abstracts.Form>();
-            _Rows.CollectionChanged += Update;
         }
 
         void Update(object sender, EventArgs args)
@@ -60,8 +29,8 @@ namespace Models
             OnPropertyChanged("Rows");
         }
 
-        ObservableConcurrentDictionary<string, Abstracts.Form> _Rows;
-        public ObservableConcurrentDictionary<string, Abstracts.Form> Rows 
+        ObservableConcurrentDictionary<string, Models.Abstracts.Form> _Rows;
+        public ObservableConcurrentDictionary<string, Models.Abstracts.Form> Rows 
         {
             get
             {
@@ -77,41 +46,11 @@ namespace Models
             }
         }
 
-        public IEnumerable<Abstracts.Form> GetFilteredRows
-        {
-            get
-            {
-                foreach (var item in Filters.CheckAndSort(_Rows.Values.ToArray()))
-                {
-                    yield return item;
-                }
-            }
-        }
-        Filter.Filters<Abstracts.Form> _Filters;
-        public Filter.Filters<Abstracts.Form> Filters
-        {
-            get
-            {
-                return _Filters;
-            }
-            set
-            {
-                if (value.GetType() == _Filters.GetType())
-                {
-                    if (value != _Filters)
-                    {
-                        _Filters = value;
-                        OnPropertyChanged("Filters");
-                    }
-                }
-            }
-        }
-
-        [Attributes.Form_Property("Форма")]
+        [Form_Property("Форма")]
         public string FormNum { get; set; }
 
         //IsCorrection 
-        [Attributes.Form_Property("Корректирующий отчет")]
+        [Form_Property("Корректирующий отчет")]
         public bool IsCorrection
         {
             get
@@ -143,7 +82,7 @@ namespace Models
         //IsCorrection
 
         //CorrectionNumber property
-        [Attributes.Form_Property("Номер корректировки")]
+        [Form_Property("Номер корректировки")]
         public byte CorrectionNumber
         {
             get
@@ -175,7 +114,7 @@ namespace Models
         //CorrectionNumber property
 
         //NumberInOrder property
-        [Attributes.Form_Property("Номер")]
+        [Form_Property("Номер")]
         public string NumberInOrder
         {
             get
@@ -207,7 +146,7 @@ namespace Models
         //NumberInOrder property
 
         //Comments property
-        [Attributes.Form_Property("Комментарий")]
+        [Form_Property("Комментарий")]
         public string Comments
         {
             get
@@ -238,40 +177,40 @@ namespace Models
         }
         //Comments property
 
-        //Notes property
-        [Attributes.Form_Property("Примечания")]
-        public ObservableConcurrentDictionary<string, Note> Notes
-        {
-            get
-            {
-                if (GetErrors(nameof(Notes)) != null)
-                {
-                    return (ObservableConcurrentDictionary<string, Note>)_dataAccess.Get(nameof(Notes));
-                }
-                else
-                {
-                    return _Notes_Not_Valid;
-                }
-            }
-            set
-            {
-                _Notes_Not_Valid = value;
-                if (GetErrors(nameof(Notes)) != null)
-                {
-                    _dataAccess.Set(nameof(Notes), _Notes_Not_Valid);
-                }
-                OnPropertyChanged(nameof(Notes));
-            }
-        }
-        private ObservableConcurrentDictionary<string, Note> _Notes_Not_Valid = new ObservableConcurrentDictionary<string, Note>();
-        private bool Notes_Validation()
-        {
-            return true;
-        }
-        //Notes property
+        ////Notes property
+        //[Form_Property("Примечания")]
+        //public ObservableConcurrentDictionary<string, Note> Notes
+        //{
+        //    get
+        //    {
+        //        if (GetErrors(nameof(Notes)) != null)
+        //        {
+        //            return (ObservableConcurrentDictionary<string, Note>)_dataAccess.GetOne\(.*\,"");
+        //        }
+        //        else
+        //        {
+        //            return _Notes_Not_Valid;
+        //        }
+        //    }
+        //    set
+        //    {
+        //        _Notes_Not_Valid = value;
+        //        if (GetErrors(nameof(Notes)) != null)
+        //        {
+        //            _dataAccess.Set(nameof(Notes), _Notes_Not_Valid);
+        //        }
+        //        OnPropertyChanged(nameof(Notes));
+        //    }
+        //}
+        //private ObservableConcurrentDictionary<string, Note> _Notes_Not_Valid = new ObservableConcurrentDictionary<string, Note>();
+        //private bool Notes_Validation()
+        //{
+        //    return true;
+        //}
+        ////Notes property
 
         //StartPeriod
-        [Attributes.Form_Property("Начало")]
+        [Form_Property("Начало")]
         public DateTimeOffset StartPeriod
         {
             get
@@ -318,7 +257,7 @@ namespace Models
         //StartPeriod
 
         //EndPeriod
-        [Attributes.Form_Property("Конец")]
+        [Form_Property("Конец")]
         public DateTimeOffset EndPeriod
         {
             get
@@ -365,7 +304,7 @@ namespace Models
         //EndPeriod
 
         //ExportDate
-        [Attributes.Form_Property("Дата выгрузки")]
+        [Form_Property("Дата выгрузки")]
         public DateTimeOffset ExportDate
         {
             get

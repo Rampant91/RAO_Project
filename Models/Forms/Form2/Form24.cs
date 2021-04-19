@@ -45,7 +45,7 @@ namespace Models
             nameof(CodeOYAT) + strNotNullDeclaration +
             nameof(FcpNumber) + " varchar(255) not null";
         }
-        public Form24(int RowID) : base(RowID)
+        public Form24(IDataAccess Access) : base(Access)
         {
             FormNum = "24";
             NumberOfFields = 26;

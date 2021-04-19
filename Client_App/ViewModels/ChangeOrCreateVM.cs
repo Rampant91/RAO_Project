@@ -21,7 +21,6 @@ using Avalonia.Collections;
 using Avalonia.Markup.Xaml;
 using System.Collections;
 using Models.Attributes;
-using Models;
 using System.IO;
 using Avalonia.Metadata;
 using System.Windows;
@@ -149,9 +148,9 @@ namespace Client_App.ViewModels
         public void SaveReport()
         {
             SavingStorage = Storage;
-            if (!Forms.Forms_Collection.Contains(_SavingStorage))
+            if (!Forms.GetLastForms.Contains(_SavingStorage))
             {
-                Forms.Forms_Collection.Add(_SavingStorage);
+                Forms.GetLastForms.Add(_SavingStorage);
 
                 if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {

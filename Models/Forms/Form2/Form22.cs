@@ -41,7 +41,7 @@ namespace Models
             nameof(PackTypeRecoded) + strNotNullDeclaration +
             nameof(PackTypeNote) + " varchar(255) not null";
         }
-        public Form22(int RowID) : base(RowID)
+        public Form22(IDataAccess Access) : base(Access)
         {
             FormNum = "22";
             NumberOfFields = 25;

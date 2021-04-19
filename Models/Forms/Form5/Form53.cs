@@ -29,7 +29,7 @@ namespace Models
             nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
             nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
         }
-        public Form53(int RowID) : base(RowID)
+        public Form53(IDataAccess Access) : base(Access)
         {
             FormNum = "53";
             NumberOfFields = 13;

@@ -21,7 +21,7 @@ namespace Models
             nameof(CodeTypeAccObject) + shortNotNullDeclaration +
             nameof(Radionuclids) + " varchar(255) not null";
         }
-        public Form19(int RowID) : base(RowID)
+        public Form19(IDataAccess Access) : base(Access)
         {
 
         }

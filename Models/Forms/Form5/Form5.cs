@@ -18,7 +18,7 @@ namespace Models.Abstracts
                 nameof(NumberInOrder) + intNotNullDeclaration +
                 nameof(CorrectionNumber) + byteNotNullDeclaration;
         }
-        public Form5(int RowID):base(RowID)
+        public Form5(IDataAccess Access) : base(Access)
         {
 
         }

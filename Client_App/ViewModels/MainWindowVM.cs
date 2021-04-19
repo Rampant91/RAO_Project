@@ -105,7 +105,7 @@ namespace Client_App.ViewModels
         {
             if (param != null)
             {
-                FormModel_Local.Dictionary.Forms_Collection.Remove(param);
+                FormModel_Local.Dictionary.GetLastForms.Remove(param);
             }
         }
 

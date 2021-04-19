@@ -33,7 +33,7 @@ namespace Models
             nameof(Volume) + strNotNullDeclaration +
             nameof(Mass) + " float(53) not null";
         }
-        public Form23(int RowID) : base(RowID)
+        public Form23(IDataAccess Access) : base(Access)
         {
             FormNum = "23";
             NumberOfFields = 17;

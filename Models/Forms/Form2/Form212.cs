@@ -7,7 +7,7 @@ namespace Models
     [Attributes.Form_Class("Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ")]
     public class Form212 : Abstracts.Form2
     {
-        public Form212(int RowID) : base(RowID)
+        public Form212(IDataAccess Access) : base(Access)
         {
             FormNum = "212";
             NumberOfFields = 8;

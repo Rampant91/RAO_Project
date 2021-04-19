@@ -18,7 +18,7 @@ namespace Models.Abstracts
                 nameof(CorrectionNumber) + byteNotNullDeclaration +
                 nameof(NotificationDate) + dateNotNullDeclaration;
         }
-        public Form3(int RowID):base(RowID)
+        public Form3(IDataAccess Access) : base(Access)
         {
         }
 

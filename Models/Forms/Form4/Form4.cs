@@ -6,7 +6,7 @@ namespace Models.Abstracts
 {
     public abstract class Form4:Form
     {
-        public Form4(int RowID) : base(RowID)
+        public Form4(IDataAccess Access) : base(Access)
         {
 
         }

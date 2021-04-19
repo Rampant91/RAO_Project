@@ -43,7 +43,7 @@ namespace Models
             nameof(ValidThru) + dateNotNullDeclaration +
             nameof(PermissionDocumentName) + " varchar(255) not null";
         }
-        public Form28(int RowID) : base(RowID)
+        public Form28(IDataAccess Access) : base(Access)
         {
             FormNum = "28";
             NumberOfFields = 24;

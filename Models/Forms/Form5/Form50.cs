@@ -30,7 +30,7 @@ namespace Models
                 nameof(Telephone) + strNotNullDeclaration +
                 nameof(Fax) + " varchar(255) not null";
         }
-        public Form50(int RowID) : base(RowID)
+        public Form50(IDataAccess Access) : base(Access)
         {
             FormNum = "50";
             NumberOfFields = 11;

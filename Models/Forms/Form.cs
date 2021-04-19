@@ -10,28 +10,11 @@ namespace Models.Abstracts
 {
     public abstract class Form:INotifyPropertyChanged,INotifyDataErrorInfo
     {
-        int _RowID;
-        public int RowID
-        {
-            get
-            {
-                return _RowID;
-            }
-            set
-            {
-                if (_RowID != value)
-                {
-                    _RowID = value;
-                    OnPropertyChanged(nameof(RowID));
-                }
-            }
-        }
-        protected AccessInterface.Row.IDataAccess _dataAccess { get; set; }
+        protected IDataAccess _dataAccess { get; set; }
 
-        public Form(int RowID)
+        public Form(IDataAccess Access)
         {
-            this.RowID = RowID;
-            _dataAccess = new AccessInterface.Row.REDDatabase(RowID);
+            _dataAccess = Access;
         }
 
         //FormNum property
@@ -98,7 +81,6 @@ namespace Models.Abstracts
         //NumberOfFields property
 
         //Для валидации
-        public Forms Forms { get; set; }
         public abstract void Object_Validation();
         //Для валидации
 

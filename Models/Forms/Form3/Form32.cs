@@ -31,7 +31,7 @@ namespace Models
             nameof(Radionuclids) + strNotNullDeclaration +
             nameof(Quantity) + " int not null";
         }
-        public Form32(int RowID) : base(RowID)
+        public Form32(IDataAccess Access) : base(Access)
         {
             FormNum = "32";
             NumberOfFields = 17;

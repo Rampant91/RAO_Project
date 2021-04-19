@@ -47,7 +47,7 @@ namespace Models
                 nameof(Radionuclids) + strNotNullDeclaration +
                 nameof(Activity) + " varchar(255) not null";
         }
-        public Form15(int RowID) : base(RowID)
+        public Form15(IDataAccess Access) : base(Access)
         {
             FormNum = "15";
             NumberOfFields = 37;

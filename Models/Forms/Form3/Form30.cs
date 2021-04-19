@@ -38,7 +38,7 @@ namespace Models
                 nameof(Okopf) + strNotNullDeclaration +
                 nameof(Okfs) + " varchar(255) not null";
         }
-        public Form30(int RowID) : base(RowID)
+        public Form30(IDataAccess Access) : base(Access)
         {
             FormNum = "30";
             NumberOfFields = 19;

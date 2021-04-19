@@ -36,7 +36,7 @@ namespace Models
             nameof(CreatorOKPO) + strNotNullDeclaration +
             nameof(CreatorOKPONote) + " varchar(255) not null";
         }
-        public Form32_1(int RowID) : base(RowID)
+        public Form32_1(IDataAccess Access) : base(Access)
         {
             FormNum = "32_1";
             NumberOfFields = 15;

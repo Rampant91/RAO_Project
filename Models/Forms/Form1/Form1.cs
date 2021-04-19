@@ -7,7 +7,7 @@ namespace Models.Abstracts
     public abstract class Form1:Form
     {
         [Attributes.Form_Property("Форма")]
-        public Form1(int RowID) : base(RowID)
+        public Form1(IDataAccess Access) : base(Access)
         {
 
         }
@@ -18,16 +18,17 @@ namespace Models.Abstracts
             string intNotNullDeclaration = " int not null, ";
             string shortNotNullDeclaration = " smallint not null, ";
             string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
+            //string dateNotNullDeclaration = " ????, ";
             return
                 nameof(NumberInOrder) + intNotNullDeclaration +
                 nameof(CorrectionNumber) + byteNotNullDeclaration +
                 nameof(OperationCode) + shortNotNullDeclaration +
-                nameof(OperationDate) + dateNotNullDeclaration +
+                //nameof(OperationDate) + dateNotNullDeclaration +
                 nameof(DocumentVid) + byteNotNullDeclaration +
                 nameof(DocumentNumber) + strNotNullDeclaration +
-                nameof(DocumentNumberRecoded) + strNotNullDeclaration +
-                nameof(DocumentDate) + dateNotNullDeclaration;
+                nameof(DocumentNumberRecoded) + strNotNullDeclaration;
+
+                //nameof(DocumentDate) + dateNotNullDeclaration;
         }
 
             //NumberInOrder property

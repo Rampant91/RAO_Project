@@ -10,7 +10,7 @@ namespace Models
     [Attributes.Form_Class("Форма 2.10: Территории, загрязненные радионуклидами")]
     public class Form210 : Abstracts.Form2
     {
-        public Form210(int RowID) : base(RowID)
+        public Form210(IDataAccess Access) : base(Access)
         {
             FormNum = "210";
             NumberOfFields = 12;

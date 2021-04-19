@@ -30,7 +30,7 @@ namespace Models
             nameof(RegNo) + strNotNullDeclaration +
             nameof(Okpo) + " varchar(255) not null, ";
         }
-        public Form41(int RowID) : base(RowID)
+        public Form41(IDataAccess Access) : base(Access)
         {
             FormNum = "41";
             NumberOfFields = 10;

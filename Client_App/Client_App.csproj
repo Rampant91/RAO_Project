@@ -29,6 +29,7 @@
     <PackageReference Include="MessageBox.Avalonia" Version="1.0.5" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Collections\Collections.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 </Project>

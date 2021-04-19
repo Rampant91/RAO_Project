@@ -24,7 +24,7 @@ namespace Models
             nameof(Mass) + doubleNotNullDeclaration +
             nameof(Quantity) + " int not null";
         }
-        public Form56(int RowID) : base(RowID)
+        public Form56(IDataAccess Access) : base(Access)
         {
             FormNum = "56";
             NumberOfFields = 5;

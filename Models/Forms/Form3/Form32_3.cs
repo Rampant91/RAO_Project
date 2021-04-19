@@ -23,7 +23,7 @@ namespace Models
                 nameof(IdName) + strNotNullDeclaration +
                 nameof(Value) + " varchar(255) not null";
         }
-        public Form32_3(int RowID) : base(RowID)
+        public Form32_3(IDataAccess Access) : base(Access)
         {
             FormNum = "32_3";
             NumberOfFields = 2;

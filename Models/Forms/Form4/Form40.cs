@@ -37,7 +37,7 @@ namespace Models
                 nameof(GradeFIOchef1) + strNotNullDeclaration +
                 nameof(GradeFIOresponsibleExecutor1) + " varchar(255) not null";
         }
-        public Form40(int RowID) : base(RowID)
+        public Form40(IDataAccess Access) : base(Access)
         {
             FormNum = "40";
             NumberOfFields = 18;

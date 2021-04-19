@@ -37,7 +37,7 @@ namespace Models
             nameof(ValidThru) + dateNotNullDeclaration +
             nameof(Email) + " varchar(255) not null";
         }
-        public Form31(int RowID) : base(RowID)
+        public Form31(IDataAccess Access) : base(Access)
         {
             FormNum = "31";
             NumberOfFields = 19;

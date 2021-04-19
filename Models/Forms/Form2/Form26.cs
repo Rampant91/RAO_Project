@@ -30,7 +30,7 @@ namespace Models
             nameof(RadionuclidName) + strNotNullDeclaration +
             nameof(AverageYearConcentration) + " varchar(255) not null";
         }
-        public Form26(int RowID) : base(RowID)
+        public Form26(IDataAccess Access) : base(Access)
         {
             FormNum = "26";
             NumberOfFields = 11;

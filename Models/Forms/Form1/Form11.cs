@@ -13,7 +13,7 @@ namespace Models
             string intNotNullDeclaration = " int not null, ";
             string shortNotNullDeclaration = " smallint not null, ";
             string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
+            //string dateNotNullDeclaration = " ????, ";
             return
                 Abstracts.Form1.SQLCommandParamsBase() +
                 nameof(PassportNumber) + strNotNullDeclaration +
@@ -27,7 +27,7 @@ namespace Models
                 nameof(Quantity) + intNotNullDeclaration +
                 nameof(Activity) + strNotNullDeclaration +
                 nameof(ActivityNote) + strNotNullDeclaration +
-                nameof(CreationDate) + dateNotNullDeclaration +
+                //nameof(CreationDate) + dateNotNullDeclaration +
                 nameof(CreatorOKPO) + strNotNullDeclaration +
                 nameof(CreatorOKPONote) + strNotNullDeclaration +
                 nameof(Category) + shortNotNullDeclaration +
@@ -46,7 +46,7 @@ namespace Models
                 nameof(PackNumber) + strNotNullDeclaration +
                 nameof(PackNumberRecoded) + " varchar(255) not null";
         }
-        public Form11(int RowID) : base(RowID)
+        public Form11(IDataAccess Access) : base(Access)
         {
             FormNum = "11";
             NumberOfFields = 37;
@@ -63,7 +63,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PassportNumber)) != null)
+                if (GetErrors(nameof(PassportNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PassportNumber));
                 }
@@ -75,7 +75,7 @@ namespace Models
             set
             {
                 _PassportNumber_Not_Valid = value;
-                if (GetErrors(nameof(PassportNumber)) != null)
+                if (GetErrors(nameof(PassportNumber)) == null)
                 {
                     _dataAccess.Set(nameof(PassportNumber), _PassportNumber_Not_Valid);
                 }

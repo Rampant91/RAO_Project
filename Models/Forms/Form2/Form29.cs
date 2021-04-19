@@ -27,7 +27,7 @@ namespace Models
             nameof(RadionuclidName) + strNotNullDeclaration +
             nameof(WasteSourceName) + " varchar(255) not null";
         }
-        public Form29(int RowID) : base(RowID)
+        public Form29(IDataAccess Access) : base(Access)
         {
             FormNum = "29";
             NumberOfFields = 8;
