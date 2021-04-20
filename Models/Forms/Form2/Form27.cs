@@ -11,22 +11,8 @@ namespace Models
     [Attributes.Form_Class("Форма 2.7: Поступление радионуклидов в атмосферный воздух")]
     public class Form27 : Abstracts.Form2
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(PermissionNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(PermissionIssueDate) + SQLconsts.dateNotNullDeclaration +
-            nameof(PermissionDocumentName) + SQLconsts.strNotNullDeclaration +
-            nameof(ValidBegin) + SQLconsts.dateNotNullDeclaration +
-            nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
-            nameof(RadionuclidNameNote) + SQLconsts.strNotNullDeclaration +
-            nameof(AllowedWasteValue) + SQLconsts.strNotNullDeclaration +
-            nameof(AllowedWasteValueNote) + SQLconsts.strNotNullDeclaration +
-            nameof(FactedWasteValue) + SQLconsts.strNotNullDeclaration +
-            nameof(FactedWasteValueNote) + SQLconsts.strNotNullDeclaration +
-            nameof(WasteOutbreakPreviousYear) + " varchar(255) not null";
-        }
+
+
         public Form27(IDataAccess Access) : base(Access)
         {
             FormNum = "27";

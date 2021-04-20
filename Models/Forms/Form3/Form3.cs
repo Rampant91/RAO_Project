@@ -8,12 +8,12 @@ namespace Models.Abstracts
     public abstract class Form3:Form
     {
         [Attributes.Form_Property("Форма")]
-        protected static string SQLCommandParamsBase()
-        {
-            return
-                nameof(CorrectionNumber) + SQLconsts.shortNotNullDeclaration +
-                nameof(NotificationDate) + " datetimeoffset not null";
-        }
+        //protected static string SQLCommandParamsBase()
+        //{
+        //    return
+        //        nameof(CorrectionNumber) + SQLconsts.shortNotNullDeclaration +
+        //        nameof(NotificationDate) + " datetimeoffset not null";
+        //}
         public Form3(IDataAccess Access) : base(Access)
         {
         }

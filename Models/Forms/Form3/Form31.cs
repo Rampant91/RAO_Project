@@ -11,27 +11,27 @@ namespace Models
     [Attributes.Form_Class("Форма 3.1: Отчет о намерении экспортировать радиоактивные источники 1 и 2 категории")]
     public class Form31 : Abstracts.Form3
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form3.SQLCommandParamsBase() +
-            nameof(RecieverName) + SQLconsts.strNotNullDeclaration +
-            nameof(RecieverAddress) + SQLconsts.strNotNullDeclaration +
-            nameof(RecieverFactAddress) + SQLconsts.strNotNullDeclaration +
-            nameof(LicenseId) + SQLconsts.strNotNullDeclaration +
-            nameof(SuggestedSolutionDate) + SQLconsts.dateNotNullDeclaration +
-            nameof(UserName) + SQLconsts.strNotNullDeclaration +
-            nameof(UserAddress) + SQLconsts.strNotNullDeclaration +
-            nameof(UserFactAddress) + SQLconsts.strNotNullDeclaration +
-            nameof(UserTelephone) + SQLconsts.strNotNullDeclaration +
-            nameof(UserFax) + SQLconsts.strNotNullDeclaration +
-            nameof(ZriUsageScope) + SQLconsts.strNotNullDeclaration +
-            nameof(ContractId) + SQLconsts.strNotNullDeclaration +
-            nameof(ContractDate) + SQLconsts.dateNotNullDeclaration +
-            nameof(CountryCreator) + SQLconsts.strNotNullDeclaration +
-            nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
-            nameof(Email) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form3.SQLCommandParamsBase() +
+        //    nameof(RecieverName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(RecieverAddress) + SQLconsts.strNotNullDeclaration +
+        //    nameof(RecieverFactAddress) + SQLconsts.strNotNullDeclaration +
+        //    nameof(LicenseId) + SQLconsts.strNotNullDeclaration +
+        //    nameof(SuggestedSolutionDate) + SQLconsts.dateNotNullDeclaration +
+        //    nameof(UserName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(UserAddress) + SQLconsts.strNotNullDeclaration +
+        //    nameof(UserFactAddress) + SQLconsts.strNotNullDeclaration +
+        //    nameof(UserTelephone) + SQLconsts.strNotNullDeclaration +
+        //    nameof(UserFax) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ZriUsageScope) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ContractId) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ContractDate) + SQLconsts.dateNotNullDeclaration +
+        //    nameof(CountryCreator) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
+        //    nameof(Email) + " varchar(255) not null";
+        //}
         public Form31(IDataAccess Access) : base(Access)
         {
             FormNum = "31";

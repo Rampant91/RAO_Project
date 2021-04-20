@@ -11,17 +11,17 @@ namespace Models
     [Attributes.Form_Class("Форма 5.5: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций и переводе в РАО изделий из обедненного урана")]
     public class Form55 : Abstracts.Form5
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(OperationCode) + SQLconsts.strNotNullDeclaration +
-            nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
-            nameof(Name) + SQLconsts.strNotNullDeclaration +
-            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form5.SQLCommandParamsBase() +
+        //    nameof(OperationCode) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(Name) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+        //    nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
+        //}
         public Form55(IDataAccess Access) : base(Access)
         {
             FormNum = "55";

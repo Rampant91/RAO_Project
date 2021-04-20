@@ -9,36 +9,6 @@ namespace Models
     [Attributes.Form_Class("Форма 1.4: Сведения об ОРИ, кроме отдельных изделий")]
     public class Form14: Abstracts.Form1
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form1.SQLCommandParamsBase() +
-                nameof(PassportNumber) + SQLconsts.strNotNullDeclaration +
-                nameof(PassportNumberNote) + SQLconsts.strNotNullDeclaration +
-                nameof(PassportNumberRecoded) + SQLconsts.strNotNullDeclaration +
-                nameof(Name) + SQLconsts.strNotNullDeclaration +
-                nameof(Sort) + SQLconsts.shortNotNullDeclaration +
-                nameof(Type) + SQLconsts.strNotNullDeclaration +
-                nameof(ActivityMeasurementDate) + SQLconsts.dateNotNullDeclaration +
-                nameof(Volume) + SQLconsts.doubleNotNullDeclaration +
-                nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
-                nameof(AggregateState) + SQLconsts.shortNotNullDeclaration +
-                nameof(PropertyCode) + SQLconsts.shortNotNullDeclaration +
-                nameof(Owner) + SQLconsts.strNotNullDeclaration +
-                nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
-                nameof(ProviderOrRecieverOKPONote) + SQLconsts.strNotNullDeclaration +
-                nameof(TransporterOKPO) + SQLconsts.strNotNullDeclaration +
-                nameof(TransporterOKPONote) + SQLconsts.strNotNullDeclaration +
-                nameof(PackName) + SQLconsts.strNotNullDeclaration +
-                nameof(PackNameNote) + SQLconsts.strNotNullDeclaration +
-                nameof(PackType) + SQLconsts.strNotNullDeclaration +
-                nameof(PackTypeRecoded) + SQLconsts.strNotNullDeclaration +
-                nameof(PackTypeNote) + SQLconsts.strNotNullDeclaration +
-                nameof(PackNumber) + SQLconsts.strNotNullDeclaration +
-                nameof(PackNumberRecoded) + SQLconsts.strNotNullDeclaration +
-                nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-                nameof(Activity) + " varchar(255) not null";
-        }
         public Form14(IDataAccess Access) : base(Access)
         {
             FormNum = "14";

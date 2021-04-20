@@ -11,26 +11,26 @@ namespace Models
     [Attributes.Form_Class("")]
     public class Form32_1: Abstracts.Form3
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form3.SQLCommandParamsBase() +
-            nameof(CertificateId) + SQLconsts.strNotNullDeclaration +
-            nameof(NuclearMaterialPresence) + SQLconsts.strNotNullDeclaration +
-            nameof(Kategory) + SQLconsts.shortNotNullDeclaration +
-            nameof(ActivityOnCreation) + SQLconsts.strNotNullDeclaration +
-            nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
-            nameof(PassportNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(PassportNumberNote) + SQLconsts.strNotNullDeclaration +
-            nameof(Type) + SQLconsts.strNotNullDeclaration +
-            nameof(TypeRecoded) + SQLconsts.strNotNullDeclaration +
-            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(FactoryNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(FactoryNumberRecoded) + SQLconsts.strNotNullDeclaration +
-            nameof(CreationDate) + SQLconsts.dateNotNullDeclaration +
-            nameof(CreatorOKPO) + SQLconsts.strNotNullDeclaration +
-            nameof(CreatorOKPONote) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form3.SQLCommandParamsBase() +
+        //    nameof(CertificateId) + SQLconsts.strNotNullDeclaration +
+        //    nameof(NuclearMaterialPresence) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Kategory) + SQLconsts.shortNotNullDeclaration +
+        //    nameof(ActivityOnCreation) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
+        //    nameof(PassportNumber) + SQLconsts.strNotNullDeclaration +
+        //    nameof(PassportNumberNote) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Type) + SQLconsts.strNotNullDeclaration +
+        //    nameof(TypeRecoded) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+        //    nameof(FactoryNumber) + SQLconsts.strNotNullDeclaration +
+        //    nameof(FactoryNumberRecoded) + SQLconsts.strNotNullDeclaration +
+        //    nameof(CreationDate) + SQLconsts.dateNotNullDeclaration +
+        //    nameof(CreatorOKPO) + SQLconsts.strNotNullDeclaration +
+        //    nameof(CreatorOKPONote) + " varchar(255) not null";
+        //}
         public Form32_1(IDataAccess Access) : base(Access)
         {
             FormNum = "32_1";

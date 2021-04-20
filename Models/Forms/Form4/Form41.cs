@@ -11,20 +11,20 @@ namespace Models
     [Attributes.Form_Class("Форма 4.1: Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне")]
     public class Form41 : Abstracts.Form
     {
-        public static string SQLCommandParams()
-        {
-            return
-            nameof(Notes) + SQLconsts.strNotNullDeclaration +
-            nameof(OrgName) + SQLconsts.strNotNullDeclaration +
-            nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
-            nameof(LicenseInfo) + SQLconsts.strNotNullDeclaration +
-            nameof(QuantityOfFormsInv) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityOfFormsOper) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityOfFormsYear) + SQLconsts.intNotNullDeclaration +
-            nameof(Notes) + SQLconsts.strNotNullDeclaration +
-            nameof(RegNo) + SQLconsts.strNotNullDeclaration +
-            nameof(Okpo) + " varchar(255) not null, ";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //    nameof(Notes) + SQLconsts.strNotNullDeclaration +
+        //    nameof(OrgName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
+        //    nameof(LicenseInfo) + SQLconsts.strNotNullDeclaration +
+        //    nameof(QuantityOfFormsInv) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityOfFormsOper) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityOfFormsYear) + SQLconsts.intNotNullDeclaration +
+        //    nameof(Notes) + SQLconsts.strNotNullDeclaration +
+        //    nameof(RegNo) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Okpo) + " varchar(255) not null, ";
+        //}
         public Form41(IDataAccess Access) : base(Access)
         {
             FormNum = "41";

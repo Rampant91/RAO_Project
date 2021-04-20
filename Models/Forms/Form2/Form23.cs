@@ -8,26 +8,26 @@ namespace Models
     [Attributes.Form_Class("Форма 2.3: Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения")]
     public class Form23: Abstracts.Form2
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(DocumentDate) + SQLconsts.strNotNullDeclaration +
-            nameof(DocumentName) + SQLconsts.strNotNullDeclaration +
-            nameof(DocumentNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(DocumentNumberRecoded) + SQLconsts.strNotNullDeclaration +
-            nameof(ExpirationDate) + SQLconsts.strNotNullDeclaration +
-            nameof(ProjectVolume) + SQLconsts.strNotNullDeclaration +
-            nameof(ProjectVolumeNote) + SQLconsts.strNotNullDeclaration +
-            nameof(SummaryActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(QuantityOZIII) + SQLconsts.strNotNullDeclaration +
-            nameof(CodeRAO) + SQLconsts.strNotNullDeclaration +
-            nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
-            nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
-            nameof(StoragePlaceNameNote) + SQLconsts.strNotNullDeclaration +
-            nameof(Volume) + SQLconsts.strNotNullDeclaration +
-            nameof(Mass) + " float(53) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form2.SQLCommandParamsBase() +
+        //    nameof(DocumentDate) + SQLconsts.strNotNullDeclaration +
+        //    nameof(DocumentName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(DocumentNumber) + SQLconsts.strNotNullDeclaration +
+        //    nameof(DocumentNumberRecoded) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ExpirationDate) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ProjectVolume) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ProjectVolumeNote) + SQLconsts.strNotNullDeclaration +
+        //    nameof(SummaryActivity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(QuantityOZIII) + SQLconsts.strNotNullDeclaration +
+        //    nameof(CodeRAO) + SQLconsts.strNotNullDeclaration +
+        //    nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
+        //    nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(StoragePlaceNameNote) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Volume) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Mass) + " float(53) not null";
+        //}
         public Form23(IDataAccess Access) : base(Access)
         {
             FormNum = "23";

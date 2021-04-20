@@ -11,17 +11,17 @@ namespace Models
     [Attributes.Form_Class("Сведения о поставляемых ЗРИ:")]
     public class Form32_2: Abstracts.Form3
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form3.SQLCommandParamsBase() +
-            nameof(DepletedUraniumMass) + SQLconsts.doubleNotNullDeclaration +
-            nameof(CreationYear) + SQLconsts.strNotNullDeclaration +
-            nameof(Id) + SQLconsts.strNotNullDeclaration +
-            nameof(PackName) + SQLconsts.strNotNullDeclaration +
-            nameof(PackType) + SQLconsts.strNotNullDeclaration +
-            nameof(PackTypeRecoded) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form3.SQLCommandParamsBase() +
+        //    nameof(DepletedUraniumMass) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(CreationYear) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Id) + SQLconsts.strNotNullDeclaration +
+        //    nameof(PackName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(PackType) + SQLconsts.strNotNullDeclaration +
+        //    nameof(PackTypeRecoded) + " varchar(255) not null";
+        //}
         public Form32_2(IDataAccess Access) : base(Access)
         {
             FormNum = "32_2";

@@ -8,14 +8,6 @@ namespace Models
     [Attributes.Form_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
     public class Form19: Abstracts.Form1
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form1.SQLCommandParamsBase() +
-            nameof(Activity) + SQLconsts.strNotNullDeclaration +
-            nameof(CodeTypeAccObject) + SQLconsts.shortNotNullDeclaration +
-            nameof(Radionuclids) + " varchar(255) not null";
-        }
         public Form19(IDataAccess Access) : base(Access)
         {
 

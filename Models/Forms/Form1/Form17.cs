@@ -9,44 +9,6 @@ namespace Models
     [Attributes.Form_Class("Форма 1.7: Сведения о твердых кондиционированных РАО")]
     public class Form17: Abstracts.Form1
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form1.SQLCommandParamsBase() +
-            nameof(SpecificActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(VolumeOutOfPack) + SQLconsts.doubleNotNullDeclaration +
-            nameof(PackFactoryNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(MassOutOfPack) + SQLconsts.doubleNotNullDeclaration +
-            nameof(FormingDate) + SQLconsts.dateNotNullDeclaration +
-            nameof(CodeRAO) + SQLconsts.strNotNullDeclaration +
-            nameof(AlphaActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(BetaGammaActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(TritiumActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(TransuraniumActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
-            nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
-            nameof(Subsidy) + SQLconsts.strNotNullDeclaration +
-            nameof(StoragePlaceNameNote) + SQLconsts.strNotNullDeclaration +
-            nameof(StatusRAO) + SQLconsts.strNotNullDeclaration +
-            nameof(RefineOrSortRAOCode) + SQLconsts.strNotNullDeclaration +
-            nameof(FcpNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(Volume) + SQLconsts.strNotNullDeclaration +
-            nameof(Mass) + SQLconsts.strNotNullDeclaration +
-            nameof(PassportNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPONote) + SQLconsts.strNotNullDeclaration +
-            nameof(TransporterOKPO) + SQLconsts.strNotNullDeclaration +
-            nameof(TransporterOKPONote) + SQLconsts.strNotNullDeclaration +
-            nameof(PackName) + SQLconsts.strNotNullDeclaration +
-            nameof(PackNameNote) + SQLconsts.strNotNullDeclaration +
-            nameof(PackType) + SQLconsts.strNotNullDeclaration +
-            nameof(PackTypeRecoded) + SQLconsts.strNotNullDeclaration +
-            nameof(PackTypeNote) + SQLconsts.strNotNullDeclaration +
-            nameof(PackNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(PackNumberRecoded) + " varchar(255) not null";
-        }
         public Form17(IDataAccess Access) : base(Access)
         {
             FormNum = "17";

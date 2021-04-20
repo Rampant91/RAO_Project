@@ -9,22 +9,22 @@ namespace Models
     [Attributes.Form_Class("Форма 5.3: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций, расходовании и переводе в РАО ОРИ")]
     public class Form53 : Abstracts.Form5
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(TypeOfAccountedParts) + SQLconsts.intNotNullDeclaration +
-            nameof(KindOri) + SQLconsts.intNotNullDeclaration +
-            nameof(OperationCode) + SQLconsts.strNotNullDeclaration +
-            nameof(Volume) + SQLconsts.doubleNotNullDeclaration +
-            nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
-            nameof(AggregateState) + SQLconsts.strNotNullDeclaration +
-            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
-            nameof(Activity) + SQLconsts.strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form5.SQLCommandParamsBase() +
+        //    nameof(TypeOfAccountedParts) + SQLconsts.intNotNullDeclaration +
+        //    nameof(KindOri) + SQLconsts.intNotNullDeclaration +
+        //    nameof(OperationCode) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Volume) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(AggregateState) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+        //    nameof(Activity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
+        //}
         public Form53(IDataAccess Access) : base(Access)
         {
             FormNum = "53";

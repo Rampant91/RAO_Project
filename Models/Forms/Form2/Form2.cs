@@ -8,12 +8,12 @@ namespace Models.Abstracts
     public abstract class Form2:Form
     {
         [Attributes.Form_Property("Форма")]
-        protected static string SQLCommandParamsBase()
-        {
-            return
-                nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
-                nameof(CorrectionNumber) + " smallint not null";
-        }
+        //protected static string SQLCommandParamsBase()
+        //{
+        //    return
+        //        nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
+        //        nameof(CorrectionNumber) + " smallint not null";
+        //}
         public Form2(IDataAccess Access) : base(Access)
         {
 

@@ -11,13 +11,13 @@ namespace Models
     [Attributes.Form_Class("Идентификаторы:")]
     public class Form32_3: Abstracts.Form3
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form3.SQLCommandParamsBase() +
-                nameof(IdName) + SQLconsts.strNotNullDeclaration +
-                nameof(Value) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form3.SQLCommandParamsBase() +
+        //        nameof(IdName) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Value) + " varchar(255) not null";
+        //}
         public Form32_3(IDataAccess Access) : base(Access)
         {
             FormNum = "32_3";

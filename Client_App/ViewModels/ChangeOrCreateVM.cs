@@ -147,7 +147,7 @@ namespace Client_App.ViewModels
 
         void _AddRow()
         {
-            var frm = FormCreator.Create(FormType, new  RedDataBase(DBPath));
+            var frm = FormCreator.Create(FormType, new  RedDataBase(DBPath,1));
             //Storage.Rows.Add(frm);
         }
 

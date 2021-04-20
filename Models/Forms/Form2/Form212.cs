@@ -8,17 +8,17 @@ namespace Models
     [Attributes.Form_Class("Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ")]
     public class Form212 : Abstracts.Form2
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(OperationCode) + SQLconsts.shortNotNullDeclaration +
-            nameof(ObjectTypeCode) + SQLconsts.strNotNullDeclaration +
-            nameof(Activity) + SQLconsts.doubleNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form2.SQLCommandParamsBase() +
+        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+        //    nameof(OperationCode) + SQLconsts.shortNotNullDeclaration +
+        //    nameof(ObjectTypeCode) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Activity) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
+        //}
         public Form212(IDataAccess Access) : base(Access)
         {
             FormNum = "212";

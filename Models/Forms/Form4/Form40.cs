@@ -11,28 +11,28 @@ namespace Models
     [Attributes.Form_Class("Форма 4.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form40 : Abstracts.Form
     {
-        public static string SQLCommandParams()
-        {
-            return
-                nameof(SubjectRF) + SQLconsts.strNotNullDeclaration +
-                nameof(Year) + SQLconsts.intNotNullDeclaration +
-                nameof(SubjectAuthorityName) + SQLconsts.intNotNullDeclaration +
-                nameof(ShortSubjectAuthorityName) + SQLconsts.intNotNullDeclaration +
-                nameof(FactAddress) + SQLconsts.strNotNullDeclaration +
-                nameof(GradeFIOchef) + SQLconsts.strNotNullDeclaration +
-                nameof(GradeFIOresponsibleExecutor) + SQLconsts.strNotNullDeclaration +
-                nameof(Telephone) + SQLconsts.strNotNullDeclaration +
-                nameof(Fax) + SQLconsts.strNotNullDeclaration +
-                nameof(Email) + SQLconsts.strNotNullDeclaration +
-                nameof(Telephone1) + SQLconsts.strNotNullDeclaration +
-                nameof(Fax1) + SQLconsts.strNotNullDeclaration +
-                nameof(Email1) + SQLconsts.strNotNullDeclaration +
-                nameof(OrgName) + SQLconsts.strNotNullDeclaration +
-                nameof(ShortOrgName) + SQLconsts.strNotNullDeclaration +
-                nameof(FactAddress1) + SQLconsts.strNotNullDeclaration +
-                nameof(GradeFIOchef1) + SQLconsts.strNotNullDeclaration +
-                nameof(GradeFIOresponsibleExecutor1) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        nameof(SubjectRF) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Year) + SQLconsts.intNotNullDeclaration +
+        //        nameof(SubjectAuthorityName) + SQLconsts.intNotNullDeclaration +
+        //        nameof(ShortSubjectAuthorityName) + SQLconsts.intNotNullDeclaration +
+        //        nameof(FactAddress) + SQLconsts.strNotNullDeclaration +
+        //        nameof(GradeFIOchef) + SQLconsts.strNotNullDeclaration +
+        //        nameof(GradeFIOresponsibleExecutor) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Telephone) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Fax) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Email) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Telephone1) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Fax1) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Email1) + SQLconsts.strNotNullDeclaration +
+        //        nameof(OrgName) + SQLconsts.strNotNullDeclaration +
+        //        nameof(ShortOrgName) + SQLconsts.strNotNullDeclaration +
+        //        nameof(FactAddress1) + SQLconsts.strNotNullDeclaration +
+        //        nameof(GradeFIOchef1) + SQLconsts.strNotNullDeclaration +
+        //        nameof(GradeFIOresponsibleExecutor1) + " varchar(255) not null";
+        //}
         public Form40(IDataAccess Access) : base(Access)
         {
             FormNum = "40";

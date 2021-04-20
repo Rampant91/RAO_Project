@@ -8,33 +8,33 @@ namespace Models
     [Attributes.Form_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
     public class Form21: Abstracts.Form2
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(RefineMachineName) + SQLconsts.strNotNullDeclaration +
-            nameof(MachineCode) + SQLconsts.shortNotNullDeclaration +
-            nameof(MachinePower) + SQLconsts.strNotNullDeclaration +
-            nameof(NumberOfHoursPerYear) + SQLconsts.intNotNullDeclaration +
-            nameof(CodeRAOIn) + SQLconsts.strNotNullDeclaration +
-            nameof(StatusRAOIn) + SQLconsts.strNotNullDeclaration +
-            nameof(VolumeIn) + SQLconsts.doubleNotNullDeclaration +
-            nameof(MassIn) + SQLconsts.doubleNotNullDeclaration +
-            nameof(QuantityIn) + SQLconsts.intNotNullDeclaration +
-            nameof(CodeRAOout) + SQLconsts.strNotNullDeclaration +
-            nameof(StatusRAOout) + SQLconsts.strNotNullDeclaration +
-            nameof(VolumeOut) + SQLconsts.doubleNotNullDeclaration +
-            nameof(MassOut) + SQLconsts.doubleNotNullDeclaration +
-            nameof(TritiumActivityIn) + SQLconsts.strNotNullDeclaration +
-            nameof(TritiumActivityOut) + SQLconsts.strNotNullDeclaration +
-            nameof(QuantityOZIIIout) + SQLconsts.strNotNullDeclaration +
-            nameof(TransuraniumActivityIn) + SQLconsts.strNotNullDeclaration +
-            nameof(TransuraniumActivityOut) + SQLconsts.strNotNullDeclaration +
-            nameof(BetaGammaActivityIn) + SQLconsts.strNotNullDeclaration +
-            nameof(AlphaActivityIn) + SQLconsts.strNotNullDeclaration +
-            nameof(BetaGammaActivityOut) + SQLconsts.strNotNullDeclaration +
-            nameof(AlphaActivityOut) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form2.SQLCommandParamsBase() +
+        //    nameof(RefineMachineName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(MachineCode) + SQLconsts.shortNotNullDeclaration +
+        //    nameof(MachinePower) + SQLconsts.strNotNullDeclaration +
+        //    nameof(NumberOfHoursPerYear) + SQLconsts.intNotNullDeclaration +
+        //    nameof(CodeRAOIn) + SQLconsts.strNotNullDeclaration +
+        //    nameof(StatusRAOIn) + SQLconsts.strNotNullDeclaration +
+        //    nameof(VolumeIn) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(MassIn) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(QuantityIn) + SQLconsts.intNotNullDeclaration +
+        //    nameof(CodeRAOout) + SQLconsts.strNotNullDeclaration +
+        //    nameof(StatusRAOout) + SQLconsts.strNotNullDeclaration +
+        //    nameof(VolumeOut) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(MassOut) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(TritiumActivityIn) + SQLconsts.strNotNullDeclaration +
+        //    nameof(TritiumActivityOut) + SQLconsts.strNotNullDeclaration +
+        //    nameof(QuantityOZIIIout) + SQLconsts.strNotNullDeclaration +
+        //    nameof(TransuraniumActivityIn) + SQLconsts.strNotNullDeclaration +
+        //    nameof(TransuraniumActivityOut) + SQLconsts.strNotNullDeclaration +
+        //    nameof(BetaGammaActivityIn) + SQLconsts.strNotNullDeclaration +
+        //    nameof(AlphaActivityIn) + SQLconsts.strNotNullDeclaration +
+        //    nameof(BetaGammaActivityOut) + SQLconsts.strNotNullDeclaration +
+        //    nameof(AlphaActivityOut) + " varchar(255) not null";
+        //}
         public Form21(IDataAccess Access) : base(Access)
         {
             FormNum = "21";

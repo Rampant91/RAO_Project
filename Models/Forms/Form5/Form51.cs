@@ -9,18 +9,18 @@ namespace Models
     [Attributes.Form_Class("Форма 5.1: Сведения о ЗРИ, полученных/переданных подведомственными организациями сторонним организациям и переведенных в РАО")]
     public class Form51 : Abstracts.Form5
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(OperationCode) + SQLconsts.shortNotNullDeclaration +
-            nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
-            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
-            nameof(Activity) + SQLconsts.strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form5.SQLCommandParamsBase() +
+        //    nameof(OperationCode) + SQLconsts.shortNotNullDeclaration +
+        //    nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
+        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+        //    nameof(Activity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
+        //}
         public Form51(IDataAccess Access) : base(Access)
         {
             FormNum = "51";

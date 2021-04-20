@@ -8,21 +8,21 @@ namespace Models
     [Attributes.Form_Class("Форма 2.5: Наличие РВ, содержащихся в отработавшем ядерном топливе, в пунктах хранения")]
     public class Form25: Abstracts.Form2
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(CodeOYATnote) + SQLconsts.strNotNullDeclaration +
-            nameof(CodeOYAT) + SQLconsts.strNotNullDeclaration +
-            nameof(AlphaActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(BetaGammaActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
-            nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
-            nameof(FcpNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
-            nameof(CellMass) + SQLconsts.doubleNotNullDeclaration +
-            nameof(FuelMass) + " float(53) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form2.SQLCommandParamsBase() +
+        //    nameof(CodeOYATnote) + SQLconsts.strNotNullDeclaration +
+        //    nameof(CodeOYAT) + SQLconsts.strNotNullDeclaration +
+        //    nameof(AlphaActivity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(BetaGammaActivity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
+        //    nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(FcpNumber) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+        //    nameof(CellMass) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(FuelMass) + " float(53) not null";
+        //}
         public Form25(IDataAccess Access) : base(Access)
         {
             FormNum = "25";

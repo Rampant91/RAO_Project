@@ -11,20 +11,20 @@ namespace Models
     [Attributes.Form_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]
     public class Form26 : Abstracts.Form2
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(SourcesQuantity) + SQLconsts.intNotNullDeclaration +
-            nameof(ObservedSourceNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(ControlledAreaName) + SQLconsts.strNotNullDeclaration +
-            nameof(SupposedWasteSource) + SQLconsts.strNotNullDeclaration +
-            nameof(DistanceToWasteSource) + SQLconsts.intNotNullDeclaration +
-            nameof(TestDepth) + SQLconsts.intNotNullDeclaration +
-            nameof(TestDepthNote) + SQLconsts.intNotNullDeclaration +
-            nameof(RadionuclidName) + SQLconsts.strNotNullDeclaration +
-            nameof(AverageYearConcentration) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form2.SQLCommandParamsBase() +
+        //    nameof(SourcesQuantity) + SQLconsts.intNotNullDeclaration +
+        //    nameof(ObservedSourceNumber) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ControlledAreaName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(SupposedWasteSource) + SQLconsts.strNotNullDeclaration +
+        //    nameof(DistanceToWasteSource) + SQLconsts.intNotNullDeclaration +
+        //    nameof(TestDepth) + SQLconsts.intNotNullDeclaration +
+        //    nameof(TestDepthNote) + SQLconsts.intNotNullDeclaration +
+        //    nameof(RadionuclidName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(AverageYearConcentration) + " varchar(255) not null";
+        //}
         public Form26(IDataAccess Access) : base(Access)
         {
             FormNum = "26";

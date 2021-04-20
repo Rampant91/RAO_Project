@@ -11,17 +11,17 @@ namespace Models
     [Attributes.Form_Class("Форма 2.9: Активность радионуклидов, отведенных со сточными водами")]
     public class Form29 : Abstracts.Form2
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(AllowedActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(AllowedActivityNote) + SQLconsts.strNotNullDeclaration +
-            nameof(FactedActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(FactedActivityNote) + SQLconsts.strNotNullDeclaration +
-            nameof(RadionuclidName) + SQLconsts.strNotNullDeclaration +
-            nameof(WasteSourceName) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form2.SQLCommandParamsBase() +
+        //    nameof(AllowedActivity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(AllowedActivityNote) + SQLconsts.strNotNullDeclaration +
+        //    nameof(FactedActivity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(FactedActivityNote) + SQLconsts.strNotNullDeclaration +
+        //    nameof(RadionuclidName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(WasteSourceName) + " varchar(255) not null";
+        //}
         public Form29(IDataAccess Access) : base(Access)
         {
             FormNum = "29";

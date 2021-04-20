@@ -9,35 +9,6 @@ namespace Models
     [Attributes.Form_Class("Форма 1.6: Сведения о некондиционированных РАО")]
     public class Form16 : Abstracts.Form1
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form1.SQLCommandParamsBase() +
-            nameof(MainRadionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(CodeRAO) + SQLconsts.strNotNullDeclaration +
-            nameof(AlphaActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(BetaGammaActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(TritiumActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(TransuraniumActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(Subsidy) + SQLconsts.strNotNullDeclaration +
-            nameof(StatusRAO) + SQLconsts.strNotNullDeclaration +
-            nameof(RefineOrSortRAOCode) + SQLconsts.strNotNullDeclaration +
-            nameof(FcpNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(Volume) + SQLconsts.doubleNotNullDeclaration +
-            nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
-            nameof(ActivityMeasurementDate) + SQLconsts.dateNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPONote) + SQLconsts.strNotNullDeclaration +
-            nameof(TransporterOKPO) + SQLconsts.strNotNullDeclaration +
-            nameof(TransporterOKPONote) + SQLconsts.strNotNullDeclaration +
-            nameof(PackName) + SQLconsts.strNotNullDeclaration +
-            nameof(PackNameNote) + SQLconsts.strNotNullDeclaration +
-            nameof(PackType) + SQLconsts.strNotNullDeclaration +
-            nameof(PackTypeRecoded) + SQLconsts.strNotNullDeclaration +
-            nameof(PackTypeNote) + SQLconsts.strNotNullDeclaration +
-            nameof(PackNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(PackNumberRecoded) + " varchar(255) not null";
-        }
         public Form16(IDataAccess Access) : base(Access)
         {
             FormNum = "16";

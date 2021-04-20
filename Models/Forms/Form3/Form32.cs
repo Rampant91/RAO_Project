@@ -9,23 +9,23 @@ namespace Models
     [Attributes.Form_Class("Форма 3.2: Отчет об отправке радиоактивных источников 1 и 2 категории")]
     public class Form32: Abstracts.Form3
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form3.SQLCommandParamsBase() +
-            nameof(UniqueAgreementId) + SQLconsts.strNotNullDeclaration +
-            nameof(SupplyDate) + SQLconsts.dateNotNullDeclaration +
-            nameof(FieldsOfWorking) + SQLconsts.strNotNullDeclaration +
-            nameof(LicenseIdRv) + SQLconsts.strNotNullDeclaration +
-            nameof(ValidThruRv) + SQLconsts.dateNotNullDeclaration +
-            nameof(LicenseIdRao) + SQLconsts.strNotNullDeclaration +
-            nameof(ValidThruRao) + SQLconsts.dateNotNullDeclaration +
-            nameof(SupplyAddress) + SQLconsts.strNotNullDeclaration +
-            nameof(RecieverName) + SQLconsts.strNotNullDeclaration +
-            nameof(SummaryActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(Quantity) + " int not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form3.SQLCommandParamsBase() +
+        //    nameof(UniqueAgreementId) + SQLconsts.strNotNullDeclaration +
+        //    nameof(SupplyDate) + SQLconsts.dateNotNullDeclaration +
+        //    nameof(FieldsOfWorking) + SQLconsts.strNotNullDeclaration +
+        //    nameof(LicenseIdRv) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ValidThruRv) + SQLconsts.dateNotNullDeclaration +
+        //    nameof(LicenseIdRao) + SQLconsts.strNotNullDeclaration +
+        //    nameof(ValidThruRao) + SQLconsts.dateNotNullDeclaration +
+        //    nameof(SupplyAddress) + SQLconsts.strNotNullDeclaration +
+        //    nameof(RecieverName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(SummaryActivity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Quantity) + " int not null";
+        //}
         public Form32(IDataAccess Access) : base(Access)
         {
             FormNum = "32";

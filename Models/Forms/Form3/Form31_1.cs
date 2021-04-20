@@ -8,14 +8,14 @@ namespace Models
     [Attributes.Form_Class("Характеристики экспортируемых ЗРИ/ОЗИИИ:")]
     public class Form31_1 : Abstracts.Form3
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form3.SQLCommandParamsBase() +
-            nameof(SummaryActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(Quantity) + " int not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form3.SQLCommandParamsBase() +
+        //    nameof(SummaryActivity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Quantity) + " int not null";
+        //}
         public Form31_1(IDataAccess Access) : base(Access)
         {
             FormNum = "31_1";

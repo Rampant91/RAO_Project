@@ -8,15 +8,15 @@ namespace Models
     [Attributes.Form_Class("Форма 5.2: Сведения о наличии ЗРИ в подведомственных организациях")]
     public class Form52 : Abstracts.Form5
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(Kategory) + SQLconsts.shortNotNullDeclaration +
-            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
-            nameof(Activity) + " varchar(255) not null, ";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form5.SQLCommandParamsBase() +
+        //    nameof(Kategory) + SQLconsts.shortNotNullDeclaration +
+        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+        //    nameof(Activity) + " varchar(255) not null, ";
+        //}
         public Form52(IDataAccess Access) : base(Access)
         {
             FormNum = "52";

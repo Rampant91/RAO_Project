@@ -46,7 +46,7 @@ namespace Client_App.ViewModels
             }
         }
 
-Reports _FormModel_Local;
+        Reports _FormModel_Local;
         public Reports FormModel_Local 
         {
             get
@@ -81,7 +81,7 @@ Reports _FormModel_Local;
         }
         public MainWindowVM()
         {
-            _FormModel_Local = new Reports(new RedDataBase(DBPath));
+            _FormModel_Local = new Reports(new RedDataBase(DBPath,3));
             FormModel_Local.PropertyChanged += FormModelChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);

@@ -11,20 +11,20 @@ namespace Models
     [Attributes.Form_Class("Форма 5.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form50 : Abstracts.Form
     {
-        public static string SQLCommandParams()
-        {
-            return
-                nameof(Authority1) + SQLconsts.intNotNullDeclaration +
-                nameof(Year) + SQLconsts.intNotNullDeclaration +
-                nameof(JurLico) + SQLconsts.strNotNullDeclaration +
-                nameof(ShortJurLico) + SQLconsts.strNotNullDeclaration +
-                nameof(JurLicoAddress) + SQLconsts.strNotNullDeclaration +
-                nameof(JurLicoFactAddress) + SQLconsts.strNotNullDeclaration +
-                nameof(GradeFIO) + SQLconsts.strNotNullDeclaration +
-                nameof(GradeFIOresponsibleExecutor) + SQLconsts.strNotNullDeclaration +
-                nameof(Telephone) + SQLconsts.strNotNullDeclaration +
-                nameof(Fax) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        nameof(Authority1) + SQLconsts.intNotNullDeclaration +
+        //        nameof(Year) + SQLconsts.intNotNullDeclaration +
+        //        nameof(JurLico) + SQLconsts.strNotNullDeclaration +
+        //        nameof(ShortJurLico) + SQLconsts.strNotNullDeclaration +
+        //        nameof(JurLicoAddress) + SQLconsts.strNotNullDeclaration +
+        //        nameof(JurLicoFactAddress) + SQLconsts.strNotNullDeclaration +
+        //        nameof(GradeFIO) + SQLconsts.strNotNullDeclaration +
+        //        nameof(GradeFIOresponsibleExecutor) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Telephone) + SQLconsts.strNotNullDeclaration +
+        //        nameof(Fax) + " varchar(255) not null";
+        //}
         public Form50(IDataAccess Access) : base(Access)
         {
             FormNum = "50";

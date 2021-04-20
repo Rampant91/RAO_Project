@@ -25,7 +25,7 @@ namespace Client_App.Views
                 }
                 else
                 {
-                    tmp.Storage = new Report(new RedDataBase(DBPath));
+                    tmp.Storage = new Report(new RedDataBase(DBPath,2));
                 }
             }
             else
@@ -36,7 +36,7 @@ namespace Client_App.Views
                 }
                 else
                 {
-                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath));
+                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath,2));
                 }
             }
 

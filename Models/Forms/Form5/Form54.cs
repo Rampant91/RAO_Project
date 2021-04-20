@@ -8,19 +8,19 @@ namespace Models
     [Attributes.Form_Class("Форма 5.4: Сведения о наличии в подведомственных организациях ОРИ")]
     public class Form54 : Abstracts.Form5
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(TypeOfAccountedParts) + SQLconsts.intNotNullDeclaration +
-            nameof(KindOri) + SQLconsts.intNotNullDeclaration +
-            nameof(Volume) + SQLconsts.doubleNotNullDeclaration +
-            nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
-            nameof(AggregateState) + SQLconsts.strNotNullDeclaration +
-            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
-            nameof(Activity) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form5.SQLCommandParamsBase() +
+        //    nameof(TypeOfAccountedParts) + SQLconsts.intNotNullDeclaration +
+        //    nameof(KindOri) + SQLconsts.intNotNullDeclaration +
+        //    nameof(Volume) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(AggregateState) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+        //    nameof(Activity) + " varchar(255) not null";
+        //}
         public Form54(IDataAccess Access) : base(Access)
         {
             FormNum = "54";

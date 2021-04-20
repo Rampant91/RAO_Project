@@ -11,14 +11,14 @@ namespace Models
     [Attributes.Form_Class("Форма 5.6: Сведения о наличии в подведомственных организациях изделий из обедненного урана")]
     public class Form56 : Abstracts.Form5
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(NameIOU) + SQLconsts.strNotNullDeclaration +
-            nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
-            nameof(Quantity) + " int not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form5.SQLCommandParamsBase() +
+        //    nameof(NameIOU) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(Quantity) + " int not null";
+        //}
         public Form56(IDataAccess Access) : base(Access)
         {
             FormNum = "56";

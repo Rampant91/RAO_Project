@@ -11,18 +11,18 @@ namespace Models
     [Attributes.Form_Class("Форма 5.7: Перечень подведомственных организаций ведомственного информационно-аналитического центра федерального органа исполнительной власти")]
     public class Form57: Abstracts.Form5
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(Note) + SQLconsts.strNotNullDeclaration +
-            nameof(PermissionNameNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(DocumentNameNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(OrgName) + SQLconsts.strNotNullDeclaration +
-            nameof(AllowedActivity) + SQLconsts.strNotNullDeclaration +
-            nameof(RegNo) + SQLconsts.strNotNullDeclaration +
-            nameof(Okpo) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form5.SQLCommandParamsBase() +
+        //    nameof(Note) + SQLconsts.strNotNullDeclaration +
+        //    nameof(PermissionNameNumber) + SQLconsts.strNotNullDeclaration +
+        //    nameof(DocumentNameNumber) + SQLconsts.strNotNullDeclaration +
+        //    nameof(OrgName) + SQLconsts.strNotNullDeclaration +
+        //    nameof(AllowedActivity) + SQLconsts.strNotNullDeclaration +
+        //    nameof(RegNo) + SQLconsts.strNotNullDeclaration +
+        //    nameof(Okpo) + " varchar(255) not null";
+        //}
         public Form57(IDataAccess Access) : base(Access)
         {
             FormNum = "57";

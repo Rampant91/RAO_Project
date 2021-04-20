@@ -11,35 +11,35 @@ namespace Models
     [Attributes.Form_Class("Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе")]
     public class Form24: Abstracts.Form2
     {
-        public static string SQLCommandParams()
-        {
-            return
-                Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(CodeOYATnote) + SQLconsts.strNotNullDeclaration +
-            nameof(MassCreated) + SQLconsts.doubleNotNullDeclaration +
-            nameof(QuantityCreated) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityCreatedNote) + SQLconsts.intNotNullDeclaration +
-            nameof(MassFromAnothers) + SQLconsts.doubleNotNullDeclaration +
-            nameof(QuantityFromAnothers) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityFromAnothersNote) + SQLconsts.intNotNullDeclaration +
-            nameof(MassFromAnothersImported) + SQLconsts.doubleNotNullDeclaration +
-            nameof(QuantityFromAnothersImported) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityFromAnothersImportedNote) + SQLconsts.intNotNullDeclaration +
-            nameof(MassAnotherReasons) + SQLconsts.doubleNotNullDeclaration +
-            nameof(QuantityAnotherReasons) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityAnotherReasonsNote) + SQLconsts.intNotNullDeclaration +
-            nameof(MassRefined) + SQLconsts.doubleNotNullDeclaration +
-            nameof(MassTransferredToAnother) + SQLconsts.doubleNotNullDeclaration +
-            nameof(QuantityTransferredToAnother) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityTransferredToAnotherNote) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityRefined) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityRefinedNote) + SQLconsts.intNotNullDeclaration +
-            nameof(MassRemovedFromAccount) + SQLconsts.doubleNotNullDeclaration +
-            nameof(QuantityRemovedFromAccount) + SQLconsts.intNotNullDeclaration +
-            nameof(QuantityRemovedFromAccountNote) + SQLconsts.intNotNullDeclaration +
-            nameof(CodeOYAT) + SQLconsts.strNotNullDeclaration +
-            nameof(FcpNumber) + " varchar(255) not null";
-        }
+        //public static string SQLCommandParams()
+        //{
+        //    return
+        //        Abstracts.Form2.SQLCommandParamsBase() +
+        //    nameof(CodeOYATnote) + SQLconsts.strNotNullDeclaration +
+        //    nameof(MassCreated) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(QuantityCreated) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityCreatedNote) + SQLconsts.intNotNullDeclaration +
+        //    nameof(MassFromAnothers) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(QuantityFromAnothers) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityFromAnothersNote) + SQLconsts.intNotNullDeclaration +
+        //    nameof(MassFromAnothersImported) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(QuantityFromAnothersImported) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityFromAnothersImportedNote) + SQLconsts.intNotNullDeclaration +
+        //    nameof(MassAnotherReasons) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(QuantityAnotherReasons) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityAnotherReasonsNote) + SQLconsts.intNotNullDeclaration +
+        //    nameof(MassRefined) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(MassTransferredToAnother) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(QuantityTransferredToAnother) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityTransferredToAnotherNote) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityRefined) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityRefinedNote) + SQLconsts.intNotNullDeclaration +
+        //    nameof(MassRemovedFromAccount) + SQLconsts.doubleNotNullDeclaration +
+        //    nameof(QuantityRemovedFromAccount) + SQLconsts.intNotNullDeclaration +
+        //    nameof(QuantityRemovedFromAccountNote) + SQLconsts.intNotNullDeclaration +
+        //    nameof(CodeOYAT) + SQLconsts.strNotNullDeclaration +
+        //    nameof(FcpNumber) + " varchar(255) not null";
+        //}
         public Form24(IDataAccess Access) : base(Access)
         {
             FormNum = "24";
