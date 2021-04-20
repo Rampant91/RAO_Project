@@ -12,6 +12,20 @@ namespace Models
     [Attributes.Form_Class("Форма 2.11: Радионуклидный состав загрязненных участков территорий")]
     public class Form211 : Abstracts.Form2
     {
+        public static string SQLCommandParams()
+        {
+            return
+                Abstracts.Form2.SQLCommandParamsBase() +
+            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+            nameof(PlotName) + SQLconsts.strNotNullDeclaration +
+            nameof(PlotKadastrNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(PlotCode) + SQLconsts.strNotNullDeclaration +
+            nameof(InfectedArea) + SQLconsts.intNotNullDeclaration +
+            nameof(RadionuclidNameNote) + SQLconsts.strNotNullDeclaration +
+            nameof(SpecificActivityOfPlot) + SQLconsts.strNotNullDeclaration +
+            nameof(SpecificActivityOfLiquidPart) + SQLconsts.strNotNullDeclaration +
+            nameof(SpecificActivityOfDensePart) + " varchar(255) not null";
+        }
         public Form211(IDataAccess Access) : base(Access)
         {
             FormNum = "211";

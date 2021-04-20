@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Globalization;
 using DBRealization;
 
@@ -10,24 +11,18 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(TypeOfAccountedParts) + intNotNullDeclaration +
-            nameof(KindOri) + intNotNullDeclaration +
-            nameof(OperationCode) + strNotNullDeclaration +
-            nameof(Volume) + doubleNotNullDeclaration +
-            nameof(Mass) + doubleNotNullDeclaration +
-            nameof(AggregateState) + strNotNullDeclaration +
-            nameof(Radionuclids) + strNotNullDeclaration +
-            nameof(Quantity) + intNotNullDeclaration +
-            nameof(Activity) + strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+            nameof(TypeOfAccountedParts) + SQLconsts.intNotNullDeclaration +
+            nameof(KindOri) + SQLconsts.intNotNullDeclaration +
+            nameof(OperationCode) + SQLconsts.strNotNullDeclaration +
+            nameof(Volume) + SQLconsts.doubleNotNullDeclaration +
+            nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
+            nameof(AggregateState) + SQLconsts.strNotNullDeclaration +
+            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+            nameof(Activity) + SQLconsts.strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
             nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
         }
         public Form53(IDataAccess Access) : base(Access)
@@ -204,9 +199,18 @@ namespace Models
         }
         
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
-        private void ProviderOrRecieverOKPO_Validation()//TODO
+        private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            }
         }
         //ProviderOrRecieverOKPO property
 

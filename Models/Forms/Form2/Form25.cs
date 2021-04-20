@@ -10,23 +10,17 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(CodeOYATnote) + strNotNullDeclaration +
-            nameof(CodeOYAT) + strNotNullDeclaration +
-            nameof(AlphaActivity) + strNotNullDeclaration +
-            nameof(BetaGammaActivity) + strNotNullDeclaration +
-            nameof(StoragePlaceCode) + strNotNullDeclaration +
-            nameof(StoragePlaceName) + strNotNullDeclaration +
-            nameof(FcpNumber) + strNotNullDeclaration +
-            nameof(Quantity) + intNotNullDeclaration +
-            nameof(CellMass) + doubleNotNullDeclaration +
+            nameof(CodeOYATnote) + SQLconsts.strNotNullDeclaration +
+            nameof(CodeOYAT) + SQLconsts.strNotNullDeclaration +
+            nameof(AlphaActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(BetaGammaActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
+            nameof(FcpNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+            nameof(CellMass) + SQLconsts.doubleNotNullDeclaration +
             nameof(FuelMass) + " float(53) not null";
         }
         public Form25(IDataAccess Access) : base(Access)

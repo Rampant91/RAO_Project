@@ -10,16 +10,10 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form1.SQLCommandParamsBase() +
-            nameof(Activity) + strNotNullDeclaration +
-            nameof(CodeTypeAccObject) + shortNotNullDeclaration +
+            nameof(Activity) + SQLconsts.strNotNullDeclaration +
+            nameof(CodeTypeAccObject) + SQLconsts.shortNotNullDeclaration +
             nameof(Radionuclids) + " varchar(255) not null";
         }
         public Form19(IDataAccess Access) : base(Access)

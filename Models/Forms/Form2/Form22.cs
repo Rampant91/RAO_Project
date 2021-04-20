@@ -10,36 +10,30 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(QuantityOZIII) + intNotNullDeclaration +
-            nameof(PackQuantity) + intNotNullDeclaration +
-            nameof(MassInPack) + doubleNotNullDeclaration +
-            nameof(VolumeInPack) + doubleNotNullDeclaration +
-            nameof(VolumeOutOfPack) + doubleNotNullDeclaration +
-            nameof(MassOutOfPack) + doubleNotNullDeclaration +
-            nameof(MainRadionuclids) + strNotNullDeclaration +
-            nameof(CodeRAO) + strNotNullDeclaration +
-            nameof(AlphaActivity) + strNotNullDeclaration +
-            nameof(BetaGammaActivity) + strNotNullDeclaration +
-            nameof(TritiumActivity) + strNotNullDeclaration +
-            nameof(TransuraniumActivity) + strNotNullDeclaration +
-            nameof(StoragePlaceCode) + strNotNullDeclaration +
-            nameof(StoragePlaceName) + strNotNullDeclaration +
-            nameof(Subsidy) + strNotNullDeclaration +
-            nameof(StoragePlaceNameNote) + strNotNullDeclaration +
-            nameof(StatusRAO) + strNotNullDeclaration +
-            nameof(FcpNumber) + strNotNullDeclaration +
-            nameof(PackName) + strNotNullDeclaration +
-            nameof(PackNameNote) + strNotNullDeclaration +
-            nameof(PackType) + strNotNullDeclaration +
-            nameof(PackTypeRecoded) + strNotNullDeclaration +
+            nameof(QuantityOZIII) + SQLconsts.intNotNullDeclaration +
+            nameof(PackQuantity) + SQLconsts.intNotNullDeclaration +
+            nameof(MassInPack) + SQLconsts.doubleNotNullDeclaration +
+            nameof(VolumeInPack) + SQLconsts.doubleNotNullDeclaration +
+            nameof(VolumeOutOfPack) + SQLconsts.doubleNotNullDeclaration +
+            nameof(MassOutOfPack) + SQLconsts.doubleNotNullDeclaration +
+            nameof(MainRadionuclids) + SQLconsts.strNotNullDeclaration +
+            nameof(CodeRAO) + SQLconsts.strNotNullDeclaration +
+            nameof(AlphaActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(BetaGammaActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(TritiumActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(TransuraniumActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
+            nameof(Subsidy) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceNameNote) + SQLconsts.strNotNullDeclaration +
+            nameof(StatusRAO) + SQLconsts.strNotNullDeclaration +
+            nameof(FcpNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(PackName) + SQLconsts.strNotNullDeclaration +
+            nameof(PackNameNote) + SQLconsts.strNotNullDeclaration +
+            nameof(PackType) + SQLconsts.strNotNullDeclaration +
+            nameof(PackTypeRecoded) + SQLconsts.strNotNullDeclaration +
             nameof(PackTypeNote) + " varchar(255) not null";
         }
         public Form22(IDataAccess Access) : base(Access)

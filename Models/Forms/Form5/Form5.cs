@@ -10,14 +10,9 @@ namespace Models.Abstracts
         [Attributes.Form_Property("Форма")]
         protected static string SQLCommandParamsBase()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
             return
-                nameof(NumberInOrder) + intNotNullDeclaration +
-                nameof(CorrectionNumber) + byteNotNullDeclaration;
+                nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
+                nameof(CorrectionNumber) + SQLconsts.shortNotNullDeclaration;
         }
         public Form5(IDataAccess Access) : base(Access)
         {

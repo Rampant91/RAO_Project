@@ -13,22 +13,16 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(SourcesQuantity) + intNotNullDeclaration +
-            nameof(ObservedSourceNumber) + strNotNullDeclaration +
-            nameof(ControlledAreaName) + strNotNullDeclaration +
-            nameof(SupposedWasteSource) + strNotNullDeclaration +
-            nameof(DistanceToWasteSource) + intNotNullDeclaration +
-            nameof(TestDepth) + intNotNullDeclaration +
-            nameof(TestDepthNote) + intNotNullDeclaration +
-            nameof(RadionuclidName) + strNotNullDeclaration +
+            nameof(SourcesQuantity) + SQLconsts.intNotNullDeclaration +
+            nameof(ObservedSourceNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(ControlledAreaName) + SQLconsts.strNotNullDeclaration +
+            nameof(SupposedWasteSource) + SQLconsts.strNotNullDeclaration +
+            nameof(DistanceToWasteSource) + SQLconsts.intNotNullDeclaration +
+            nameof(TestDepth) + SQLconsts.intNotNullDeclaration +
+            nameof(TestDepthNote) + SQLconsts.intNotNullDeclaration +
+            nameof(RadionuclidName) + SQLconsts.strNotNullDeclaration +
             nameof(AverageYearConcentration) + " varchar(255) not null";
         }
         public Form26(IDataAccess Access) : base(Access)

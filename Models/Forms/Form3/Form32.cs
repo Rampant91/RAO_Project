@@ -11,25 +11,19 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form3.SQLCommandParamsBase() +
-            nameof(UniqueAgreementId) + strNotNullDeclaration +
-            nameof(SupplyDate) + dateNotNullDeclaration +
-            nameof(FieldsOfWorking) + strNotNullDeclaration +
-            nameof(LicenseIdRv) + strNotNullDeclaration +
-            nameof(ValidThruRv) + dateNotNullDeclaration +
-            nameof(LicenseIdRao) + strNotNullDeclaration +
-            nameof(ValidThruRao) + dateNotNullDeclaration +
-            nameof(SupplyAddress) + strNotNullDeclaration +
-            nameof(RecieverName) + strNotNullDeclaration +
-            nameof(SummaryActivity) + strNotNullDeclaration +
-            nameof(Radionuclids) + strNotNullDeclaration +
+            nameof(UniqueAgreementId) + SQLconsts.strNotNullDeclaration +
+            nameof(SupplyDate) + SQLconsts.dateNotNullDeclaration +
+            nameof(FieldsOfWorking) + SQLconsts.strNotNullDeclaration +
+            nameof(LicenseIdRv) + SQLconsts.strNotNullDeclaration +
+            nameof(ValidThruRv) + SQLconsts.dateNotNullDeclaration +
+            nameof(LicenseIdRao) + SQLconsts.strNotNullDeclaration +
+            nameof(ValidThruRao) + SQLconsts.dateNotNullDeclaration +
+            nameof(SupplyAddress) + SQLconsts.strNotNullDeclaration +
+            nameof(RecieverName) + SQLconsts.strNotNullDeclaration +
+            nameof(SummaryActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
             nameof(Quantity) + " int not null";
         }
         public Form32(IDataAccess Access) : base(Access)

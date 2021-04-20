@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using DBRealization;
@@ -13,30 +13,25 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
             return
-                nameof(RegNo) + strNotNullDeclaration +
-                nameof(OrganUprav) + strNotNullDeclaration +
-                nameof(SubjectRF) + strNotNullDeclaration +
-                nameof(JurLico) + strNotNullDeclaration +
-                nameof(ShortJurLico) + strNotNullDeclaration +
-                nameof(JurLicoAddress) + strNotNullDeclaration +
-                nameof(JurLicoFactAddress) + strNotNullDeclaration +
-                nameof(GradeFIO) + strNotNullDeclaration +
-                nameof(Telephone) + strNotNullDeclaration +
-                nameof(Fax) + strNotNullDeclaration +
-                nameof(Email) + strNotNullDeclaration +
-                nameof(Okpo) + strNotNullDeclaration +
-                nameof(Okved) + strNotNullDeclaration +
-                nameof(Okogu) + strNotNullDeclaration +
-                nameof(Oktmo) + strNotNullDeclaration +
-                nameof(Inn) + strNotNullDeclaration +
-                nameof(Kpp) + strNotNullDeclaration +
-                nameof(Okopf) + strNotNullDeclaration +
+                nameof(RegNo) + SQLconsts.strNotNullDeclaration +
+                nameof(OrganUprav) + SQLconsts.strNotNullDeclaration +
+                nameof(SubjectRF) + SQLconsts.strNotNullDeclaration +
+                nameof(JurLico) + SQLconsts.strNotNullDeclaration +
+                nameof(ShortJurLico) + SQLconsts.strNotNullDeclaration +
+                nameof(JurLicoAddress) + SQLconsts.strNotNullDeclaration +
+                nameof(JurLicoFactAddress) + SQLconsts.strNotNullDeclaration +
+                nameof(GradeFIO) + SQLconsts.strNotNullDeclaration +
+                nameof(Telephone) + SQLconsts.strNotNullDeclaration +
+                nameof(Fax) + SQLconsts.strNotNullDeclaration +
+                nameof(Email) + SQLconsts.strNotNullDeclaration +
+                nameof(Okpo) + SQLconsts.strNotNullDeclaration +
+                nameof(Okved) + SQLconsts.strNotNullDeclaration +
+                nameof(Okogu) + SQLconsts.strNotNullDeclaration +
+                nameof(Oktmo) + SQLconsts.strNotNullDeclaration +
+                nameof(Inn) + SQLconsts.strNotNullDeclaration +
+                nameof(Kpp) + SQLconsts.strNotNullDeclaration +
+                nameof(Okopf) + SQLconsts.strNotNullDeclaration +
                 nameof(Okfs) + " varchar(255) not null";
         }
         public Form20(IDataAccess Access) : base(Access)
@@ -395,8 +390,19 @@ namespace Models
                 OnPropertyChanged(nameof(Okpo));
             }
         }
-        
         private string _Okpo_Not_Valid = "";
+        private void Okpo_Validation(string value)
+        {
+            ClearErrors(nameof(Okpo));
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(Okpo), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(Okpo), "Недопустимое значение");
+            }
+        }
         //Okpo property
 
         //Okved property

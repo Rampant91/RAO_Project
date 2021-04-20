@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
@@ -13,19 +13,13 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(OperationCode) + strNotNullDeclaration +
-            nameof(Mass) + doubleNotNullDeclaration +
-            nameof(Name) + strNotNullDeclaration +
-            nameof(Quantity) + intNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
+            nameof(OperationCode) + SQLconsts.strNotNullDeclaration +
+            nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
+            nameof(Name) + SQLconsts.strNotNullDeclaration +
+            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
             nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
         }
         public Form55(IDataAccess Access) : base(Access)
@@ -168,9 +162,18 @@ namespace Models
         }
         
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
-        private void ProviderOrRecieverOKPO_Validation()//TODO
+        private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            }
         }
         //ProviderOrRecieverOKPO property
 

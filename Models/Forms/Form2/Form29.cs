@@ -13,19 +13,13 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(AllowedActivity) + strNotNullDeclaration +
-            nameof(AllowedActivityNote) + strNotNullDeclaration +
-            nameof(FactedActivity) + strNotNullDeclaration +
-            nameof(FactedActivityNote) + strNotNullDeclaration +
-            nameof(RadionuclidName) + strNotNullDeclaration +
+            nameof(AllowedActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(AllowedActivityNote) + SQLconsts.strNotNullDeclaration +
+            nameof(FactedActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(FactedActivityNote) + SQLconsts.strNotNullDeclaration +
+            nameof(RadionuclidName) + SQLconsts.strNotNullDeclaration +
             nameof(WasteSourceName) + " varchar(255) not null";
         }
         public Form29(IDataAccess Access) : base(Access)

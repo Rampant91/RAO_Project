@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Globalization;
 using DBRealization;
 
@@ -10,41 +11,35 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form1.SQLCommandParamsBase() +
-            nameof(Volume20) + doubleNotNullDeclaration +
-            nameof(Volume6) + doubleNotNullDeclaration +
-            nameof(SaltConcentration) + doubleNotNullDeclaration +
-            nameof(SpecificActivity) + strNotNullDeclaration +
-            nameof(Mass21) + doubleNotNullDeclaration +
-            nameof(Mass7) + doubleNotNullDeclaration +
-            nameof(IndividualNumberZHRO) + strNotNullDeclaration +
-            nameof(IndividualNumberZHROrecoded) + strNotNullDeclaration +
-            nameof(CodeRAO) + strNotNullDeclaration +
-            nameof(AlphaActivity) + strNotNullDeclaration +
-            nameof(BetaGammaActivity) + strNotNullDeclaration +
-            nameof(TritiumActivity) + strNotNullDeclaration +
-            nameof(TransuraniumActivity) + strNotNullDeclaration +
-            nameof(StoragePlaceCode) + strNotNullDeclaration +
-            nameof(StoragePlaceName) + strNotNullDeclaration +
-            nameof(Subsidy) + strNotNullDeclaration +
-            nameof(StoragePlaceNameNote) + strNotNullDeclaration +
-            nameof(StatusRAO) + strNotNullDeclaration +
-            nameof(RefineOrSortRAOCode) + strNotNullDeclaration +
-            nameof(FcpNumber) + strNotNullDeclaration +
-            nameof(PassportNumber) + strNotNullDeclaration +
-            nameof(PassportNumberRecoded) + strNotNullDeclaration +
-            nameof(PassportNumberNote) + strNotNullDeclaration +
-            nameof(Radionuclids) + strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPONote) + strNotNullDeclaration +
-            nameof(TransporterOKPO) + strNotNullDeclaration +
+            nameof(Volume20) + SQLconsts.doubleNotNullDeclaration +
+            nameof(Volume6) + SQLconsts.doubleNotNullDeclaration +
+            nameof(SaltConcentration) + SQLconsts.doubleNotNullDeclaration +
+            nameof(SpecificActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(Mass21) + SQLconsts.doubleNotNullDeclaration +
+            nameof(Mass7) + SQLconsts.doubleNotNullDeclaration +
+            nameof(IndividualNumberZHRO) + SQLconsts.strNotNullDeclaration +
+            nameof(IndividualNumberZHROrecoded) + SQLconsts.strNotNullDeclaration +
+            nameof(CodeRAO) + SQLconsts.strNotNullDeclaration +
+            nameof(AlphaActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(BetaGammaActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(TritiumActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(TransuraniumActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
+            nameof(Subsidy) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceNameNote) + SQLconsts.strNotNullDeclaration +
+            nameof(StatusRAO) + SQLconsts.strNotNullDeclaration +
+            nameof(RefineOrSortRAOCode) + SQLconsts.strNotNullDeclaration +
+            nameof(FcpNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(PassportNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(PassportNumberRecoded) + SQLconsts.strNotNullDeclaration +
+            nameof(PassportNumberNote) + SQLconsts.strNotNullDeclaration +
+            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPONote) + SQLconsts.strNotNullDeclaration +
+            nameof(TransporterOKPO) + SQLconsts.strNotNullDeclaration +
             nameof(TransporterOKPONote) + " varchar(255) not null";
         }
         public Form18(IDataAccess Access) : base(Access)
@@ -420,9 +415,18 @@ namespace Models
         }
         
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
-        private void ProviderOrRecieverOKPO_Validation()//TODO
+        private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            }
         }
         //ProviderOrRecieverOKPO property
 
@@ -488,6 +492,15 @@ namespace Models
         private void TransporterOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransporterOKPO));
+            if (value.Equals("прим.") || value.Equals("-")) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(TransporterOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(TransporterOKPO), "Недопустимое значение");
+            }
         }
         //TransporterOKPO property
 

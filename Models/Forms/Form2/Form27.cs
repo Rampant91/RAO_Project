@@ -13,24 +13,18 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(PermissionNumber) + strNotNullDeclaration +
-            nameof(PermissionIssueDate) + dateNotNullDeclaration +
-            nameof(PermissionDocumentName) + strNotNullDeclaration +
-            nameof(ValidBegin) + dateNotNullDeclaration +
-            nameof(ValidThru) + dateNotNullDeclaration +
-            nameof(RadionuclidNameNote) + strNotNullDeclaration +
-            nameof(AllowedWasteValue) + strNotNullDeclaration +
-            nameof(AllowedWasteValueNote) + strNotNullDeclaration +
-            nameof(FactedWasteValue) + strNotNullDeclaration +
-            nameof(FactedWasteValueNote) + strNotNullDeclaration +
+            nameof(PermissionNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(PermissionIssueDate) + SQLconsts.dateNotNullDeclaration +
+            nameof(PermissionDocumentName) + SQLconsts.strNotNullDeclaration +
+            nameof(ValidBegin) + SQLconsts.dateNotNullDeclaration +
+            nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
+            nameof(RadionuclidNameNote) + SQLconsts.strNotNullDeclaration +
+            nameof(AllowedWasteValue) + SQLconsts.strNotNullDeclaration +
+            nameof(AllowedWasteValueNote) + SQLconsts.strNotNullDeclaration +
+            nameof(FactedWasteValue) + SQLconsts.strNotNullDeclaration +
+            nameof(FactedWasteValueNote) + SQLconsts.strNotNullDeclaration +
             nameof(WasteOutbreakPreviousYear) + " varchar(255) not null";
         }
         public Form27(IDataAccess Access) : base(Access)

@@ -13,16 +13,10 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form5.SQLCommandParamsBase() +
-            nameof(NameIOU) + strNotNullDeclaration +
-            nameof(Mass) + doubleNotNullDeclaration +
+            nameof(NameIOU) + SQLconsts.strNotNullDeclaration +
+            nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
             nameof(Quantity) + " int not null";
         }
         public Form56(IDataAccess Access) : base(Access)

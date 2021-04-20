@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using DBRealization;
 
 namespace Models
@@ -9,36 +10,31 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
             return
                 Abstracts.Form1.SQLCommandParamsBase() +
-                nameof(PassportNumber) + strNotNullDeclaration +
-                nameof(PassportNumberNote) + strNotNullDeclaration +
-                nameof(PassportNumberRecoded) + strNotNullDeclaration +
-                nameof(NameIOU) + strNotNullDeclaration +
-                nameof(FactoryNumber) + strNotNullDeclaration +
-                nameof(FactoryNumberRecoded) + strNotNullDeclaration +
-                nameof(CreationDate) + dateNotNullDeclaration +
-                nameof(CreatorOKPO) + strNotNullDeclaration +
-                nameof(CreatorOKPONote) + strNotNullDeclaration +
-                nameof(SignedServicePeriod) + intNotNullDeclaration +
-                nameof(PropertyCode) + byteNotNullDeclaration +
-                nameof(Owner) + strNotNullDeclaration +
-                nameof(Mass) + strNotNullDeclaration +
-                nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
-                nameof(ProviderOrRecieverOKPONote) + strNotNullDeclaration +
-                nameof(TransporterOKPO) + strNotNullDeclaration +
-                nameof(TransporterOKPONote) + strNotNullDeclaration +
-                nameof(PackName) + strNotNullDeclaration +
-                nameof(PackNameNote) + strNotNullDeclaration +
-                nameof(PackType) + strNotNullDeclaration +
-                nameof(PackTypeRecoded) + strNotNullDeclaration +
-                nameof(PackTypeNote) + strNotNullDeclaration +
-                nameof(PackNumber) + strNotNullDeclaration +
+                nameof(PassportNumber) + SQLconsts.strNotNullDeclaration +
+                nameof(PassportNumberNote) + SQLconsts.strNotNullDeclaration +
+                nameof(PassportNumberRecoded) + SQLconsts.strNotNullDeclaration +
+                nameof(NameIOU) + SQLconsts.strNotNullDeclaration +
+                nameof(FactoryNumber) + SQLconsts.strNotNullDeclaration +
+                nameof(FactoryNumberRecoded) + SQLconsts.strNotNullDeclaration +
+                nameof(CreationDate) + SQLconsts.dateNotNullDeclaration +
+                nameof(CreatorOKPO) + SQLconsts.strNotNullDeclaration +
+                nameof(CreatorOKPONote) + SQLconsts.strNotNullDeclaration +
+                nameof(SignedServicePeriod) + SQLconsts.intNotNullDeclaration +
+                nameof(PropertyCode) + SQLconsts.shortNotNullDeclaration +
+                nameof(Owner) + SQLconsts.strNotNullDeclaration +
+                nameof(Mass) + SQLconsts.strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
+                nameof(ProviderOrRecieverOKPONote) + SQLconsts.strNotNullDeclaration +
+                nameof(TransporterOKPO) + SQLconsts.strNotNullDeclaration +
+                nameof(TransporterOKPONote) + SQLconsts.strNotNullDeclaration +
+                nameof(PackName) + SQLconsts.strNotNullDeclaration +
+                nameof(PackNameNote) + SQLconsts.strNotNullDeclaration +
+                nameof(PackType) + SQLconsts.strNotNullDeclaration +
+                nameof(PackTypeRecoded) + SQLconsts.strNotNullDeclaration +
+                nameof(PackTypeNote) + SQLconsts.strNotNullDeclaration +
+                nameof(PackNumber) + SQLconsts.strNotNullDeclaration +
                 nameof(PackNumberRecoded) + " varchar(255) not null";
         }
         public Form12(IDataAccess Access) : base(Access)
@@ -309,6 +305,17 @@ namespace Models
         private void CreatorOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(CreatorOKPO));
+            if (value.Equals("прим.")) return;
+            var mask1 = new Regex("[А-Яа-я]*");
+            if (mask1.IsMatch(value)) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(CreatorOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(CreatorOKPO), "Недопустимое значение");
+            }
         }
         //CreatorOKPO property
 
@@ -507,9 +514,18 @@ namespace Models
         }
         
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
-        private void ProviderOrRecieverOKPO_Validation()//TODO
+        private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            }
         }
         //ProviderOrRecieverOKPO property
 
@@ -575,6 +591,15 @@ namespace Models
         private void TransporterOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransporterOKPO));
+            if (value.Equals("прим.") || value.Equals("-")) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(TransporterOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(TransporterOKPO), "Недопустимое значение");
+            }
         }
         //TransporterOKPO property
 

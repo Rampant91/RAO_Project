@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Globalization;
+using System.Text.RegularExpressions;
 using DBRealization;
 
 namespace Models
@@ -8,6 +8,17 @@ namespace Models
     [Attributes.Form_Class("Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ")]
     public class Form212 : Abstracts.Form2
     {
+        public static string SQLCommandParams()
+        {
+            return
+                Abstracts.Form2.SQLCommandParamsBase() +
+            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+            nameof(OperationCode) + SQLconsts.shortNotNullDeclaration +
+            nameof(ObjectTypeCode) + SQLconsts.strNotNullDeclaration +
+            nameof(Activity) + SQLconsts.doubleNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
+        }
         public Form212(IDataAccess Access) : base(Access)
         {
             FormNum = "212";
@@ -179,9 +190,18 @@ namespace Models
         }
         
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
-        private void ProviderOrRecieverOKPO_Validation()//TODO
+        private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            }
         }
         //ProviderOrRecieverOKPO property
 

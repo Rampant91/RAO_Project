@@ -13,37 +13,31 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(CodeOYATnote) + strNotNullDeclaration +
-            nameof(MassCreated) + doubleNotNullDeclaration +
-            nameof(QuantityCreated) + intNotNullDeclaration +
-            nameof(QuantityCreatedNote) + intNotNullDeclaration +
-            nameof(MassFromAnothers) + doubleNotNullDeclaration +
-            nameof(QuantityFromAnothers) + intNotNullDeclaration +
-            nameof(QuantityFromAnothersNote) + intNotNullDeclaration +
-            nameof(MassFromAnothersImported) + doubleNotNullDeclaration +
-            nameof(QuantityFromAnothersImported) + intNotNullDeclaration +
-            nameof(QuantityFromAnothersImportedNote) + intNotNullDeclaration +
-            nameof(MassAnotherReasons) + doubleNotNullDeclaration +
-            nameof(QuantityAnotherReasons) + intNotNullDeclaration +
-            nameof(QuantityAnotherReasonsNote) + intNotNullDeclaration +
-            nameof(MassRefined) + doubleNotNullDeclaration +
-            nameof(MassTransferredToAnother) + doubleNotNullDeclaration +
-            nameof(QuantityTransferredToAnother) + intNotNullDeclaration +
-            nameof(QuantityTransferredToAnotherNote) + intNotNullDeclaration +
-            nameof(QuantityRefined) + intNotNullDeclaration +
-            nameof(QuantityRefinedNote) + intNotNullDeclaration +
-            nameof(MassRemovedFromAccount) + doubleNotNullDeclaration +
-            nameof(QuantityRemovedFromAccount) + intNotNullDeclaration +
-            nameof(QuantityRemovedFromAccountNote) + intNotNullDeclaration +
-            nameof(CodeOYAT) + strNotNullDeclaration +
+            nameof(CodeOYATnote) + SQLconsts.strNotNullDeclaration +
+            nameof(MassCreated) + SQLconsts.doubleNotNullDeclaration +
+            nameof(QuantityCreated) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityCreatedNote) + SQLconsts.intNotNullDeclaration +
+            nameof(MassFromAnothers) + SQLconsts.doubleNotNullDeclaration +
+            nameof(QuantityFromAnothers) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityFromAnothersNote) + SQLconsts.intNotNullDeclaration +
+            nameof(MassFromAnothersImported) + SQLconsts.doubleNotNullDeclaration +
+            nameof(QuantityFromAnothersImported) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityFromAnothersImportedNote) + SQLconsts.intNotNullDeclaration +
+            nameof(MassAnotherReasons) + SQLconsts.doubleNotNullDeclaration +
+            nameof(QuantityAnotherReasons) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityAnotherReasonsNote) + SQLconsts.intNotNullDeclaration +
+            nameof(MassRefined) + SQLconsts.doubleNotNullDeclaration +
+            nameof(MassTransferredToAnother) + SQLconsts.doubleNotNullDeclaration +
+            nameof(QuantityTransferredToAnother) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityTransferredToAnotherNote) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityRefined) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityRefinedNote) + SQLconsts.intNotNullDeclaration +
+            nameof(MassRemovedFromAccount) + SQLconsts.doubleNotNullDeclaration +
+            nameof(QuantityRemovedFromAccount) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityRemovedFromAccountNote) + SQLconsts.intNotNullDeclaration +
+            nameof(CodeOYAT) + SQLconsts.strNotNullDeclaration +
             nameof(FcpNumber) + " varchar(255) not null";
         }
         public Form24(IDataAccess Access) : base(Access)

@@ -13,29 +13,23 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form3.SQLCommandParamsBase() +
-            nameof(RecieverName) + strNotNullDeclaration +
-            nameof(RecieverAddress) + strNotNullDeclaration +
-            nameof(RecieverFactAddress) + strNotNullDeclaration +
-            nameof(LicenseId) + strNotNullDeclaration +
-            nameof(SuggestedSolutionDate) + dateNotNullDeclaration +
-            nameof(UserName) + strNotNullDeclaration +
-            nameof(UserAddress) + strNotNullDeclaration +
-            nameof(UserFactAddress) + strNotNullDeclaration +
-            nameof(UserTelephone) + strNotNullDeclaration +
-            nameof(UserFax) + strNotNullDeclaration +
-            nameof(ZriUsageScope) + strNotNullDeclaration +
-            nameof(ContractId) + strNotNullDeclaration +
-            nameof(ContractDate) + dateNotNullDeclaration +
-            nameof(CountryCreator) + strNotNullDeclaration +
-            nameof(ValidThru) + dateNotNullDeclaration +
+            nameof(RecieverName) + SQLconsts.strNotNullDeclaration +
+            nameof(RecieverAddress) + SQLconsts.strNotNullDeclaration +
+            nameof(RecieverFactAddress) + SQLconsts.strNotNullDeclaration +
+            nameof(LicenseId) + SQLconsts.strNotNullDeclaration +
+            nameof(SuggestedSolutionDate) + SQLconsts.dateNotNullDeclaration +
+            nameof(UserName) + SQLconsts.strNotNullDeclaration +
+            nameof(UserAddress) + SQLconsts.strNotNullDeclaration +
+            nameof(UserFactAddress) + SQLconsts.strNotNullDeclaration +
+            nameof(UserTelephone) + SQLconsts.strNotNullDeclaration +
+            nameof(UserFax) + SQLconsts.strNotNullDeclaration +
+            nameof(ZriUsageScope) + SQLconsts.strNotNullDeclaration +
+            nameof(ContractId) + SQLconsts.strNotNullDeclaration +
+            nameof(ContractDate) + SQLconsts.dateNotNullDeclaration +
+            nameof(CountryCreator) + SQLconsts.strNotNullDeclaration +
+            nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
             nameof(Email) + " varchar(255) not null";
         }
         public Form31(IDataAccess Access) : base(Access)

@@ -10,28 +10,22 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(DocumentDate) + strNotNullDeclaration +
-            nameof(DocumentName) + strNotNullDeclaration +
-            nameof(DocumentNumber) + strNotNullDeclaration +
-            nameof(DocumentNumberRecoded) + strNotNullDeclaration +
-            nameof(ExpirationDate) + strNotNullDeclaration +
-            nameof(ProjectVolume) + strNotNullDeclaration +
-            nameof(ProjectVolumeNote) + strNotNullDeclaration +
-            nameof(SummaryActivity) + strNotNullDeclaration +
-            nameof(QuantityOZIII) + strNotNullDeclaration +
-            nameof(CodeRAO) + strNotNullDeclaration +
-            nameof(StoragePlaceCode) + strNotNullDeclaration +
-            nameof(StoragePlaceName) + strNotNullDeclaration +
-            nameof(StoragePlaceNameNote) + strNotNullDeclaration +
-            nameof(Volume) + strNotNullDeclaration +
+            nameof(DocumentDate) + SQLconsts.strNotNullDeclaration +
+            nameof(DocumentName) + SQLconsts.strNotNullDeclaration +
+            nameof(DocumentNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(DocumentNumberRecoded) + SQLconsts.strNotNullDeclaration +
+            nameof(ExpirationDate) + SQLconsts.strNotNullDeclaration +
+            nameof(ProjectVolume) + SQLconsts.strNotNullDeclaration +
+            nameof(ProjectVolumeNote) + SQLconsts.strNotNullDeclaration +
+            nameof(SummaryActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(QuantityOZIII) + SQLconsts.strNotNullDeclaration +
+            nameof(CodeRAO) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceNameNote) + SQLconsts.strNotNullDeclaration +
+            nameof(Volume) + SQLconsts.strNotNullDeclaration +
             nameof(Mass) + " float(53) not null";
         }
         public Form23(IDataAccess Access) : base(Access)

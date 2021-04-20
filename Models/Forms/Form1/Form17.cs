@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Globalization;
 using DBRealization;
 
@@ -10,46 +11,40 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form1.SQLCommandParamsBase() +
-            nameof(SpecificActivity) + strNotNullDeclaration +
-            nameof(VolumeOutOfPack) + doubleNotNullDeclaration +
-            nameof(PackFactoryNumber) + strNotNullDeclaration +
-            nameof(MassOutOfPack) + doubleNotNullDeclaration +
-            nameof(FormingDate) + dateNotNullDeclaration +
-            nameof(CodeRAO) + strNotNullDeclaration +
-            nameof(AlphaActivity) + strNotNullDeclaration +
-            nameof(BetaGammaActivity) + strNotNullDeclaration +
-            nameof(TritiumActivity) + strNotNullDeclaration +
-            nameof(TransuraniumActivity) + strNotNullDeclaration +
-            nameof(StoragePlaceCode) + strNotNullDeclaration +
-            nameof(StoragePlaceName) + strNotNullDeclaration +
-            nameof(Subsidy) + strNotNullDeclaration +
-            nameof(StoragePlaceNameNote) + strNotNullDeclaration +
-            nameof(StatusRAO) + strNotNullDeclaration +
-            nameof(RefineOrSortRAOCode) + strNotNullDeclaration +
-            nameof(FcpNumber) + strNotNullDeclaration +
-            nameof(Volume) + strNotNullDeclaration +
-            nameof(Mass) + strNotNullDeclaration +
-            nameof(PassportNumber) + strNotNullDeclaration +
-            nameof(Radionuclids) + strNotNullDeclaration +
-            nameof(Quantity) + intNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPO) + strNotNullDeclaration +
-            nameof(ProviderOrRecieverOKPONote) + strNotNullDeclaration +
-            nameof(TransporterOKPO) + strNotNullDeclaration +
-            nameof(TransporterOKPONote) + strNotNullDeclaration +
-            nameof(PackName) + strNotNullDeclaration +
-            nameof(PackNameNote) + strNotNullDeclaration +
-            nameof(PackType) + strNotNullDeclaration +
-            nameof(PackTypeRecoded) + strNotNullDeclaration +
-            nameof(PackTypeNote) + strNotNullDeclaration +
-            nameof(PackNumber) + strNotNullDeclaration +
+            nameof(SpecificActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(VolumeOutOfPack) + SQLconsts.doubleNotNullDeclaration +
+            nameof(PackFactoryNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(MassOutOfPack) + SQLconsts.doubleNotNullDeclaration +
+            nameof(FormingDate) + SQLconsts.dateNotNullDeclaration +
+            nameof(CodeRAO) + SQLconsts.strNotNullDeclaration +
+            nameof(AlphaActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(BetaGammaActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(TritiumActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(TransuraniumActivity) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceCode) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceName) + SQLconsts.strNotNullDeclaration +
+            nameof(Subsidy) + SQLconsts.strNotNullDeclaration +
+            nameof(StoragePlaceNameNote) + SQLconsts.strNotNullDeclaration +
+            nameof(StatusRAO) + SQLconsts.strNotNullDeclaration +
+            nameof(RefineOrSortRAOCode) + SQLconsts.strNotNullDeclaration +
+            nameof(FcpNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(Volume) + SQLconsts.strNotNullDeclaration +
+            nameof(Mass) + SQLconsts.strNotNullDeclaration +
+            nameof(PassportNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+            nameof(Quantity) + SQLconsts.intNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
+            nameof(ProviderOrRecieverOKPONote) + SQLconsts.strNotNullDeclaration +
+            nameof(TransporterOKPO) + SQLconsts.strNotNullDeclaration +
+            nameof(TransporterOKPONote) + SQLconsts.strNotNullDeclaration +
+            nameof(PackName) + SQLconsts.strNotNullDeclaration +
+            nameof(PackNameNote) + SQLconsts.strNotNullDeclaration +
+            nameof(PackType) + SQLconsts.strNotNullDeclaration +
+            nameof(PackTypeRecoded) + SQLconsts.strNotNullDeclaration +
+            nameof(PackTypeNote) + SQLconsts.strNotNullDeclaration +
+            nameof(PackNumber) + SQLconsts.strNotNullDeclaration +
             nameof(PackNumberRecoded) + " varchar(255) not null";
         }
         public Form17(IDataAccess Access) : base(Access)
@@ -559,9 +554,18 @@ namespace Models
         }
         
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
-        private void ProviderOrRecieverOKPO_Validation()//TODO
+        private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+            }
         }
         //ProviderOrRecieverOKPO property
 
@@ -627,6 +631,15 @@ namespace Models
         private void TransporterOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransporterOKPO));
+            if (value.Equals("прим.") || value.Equals("-")) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(TransporterOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(TransporterOKPO), "Недопустимое значение");
+            }
         }
         //TransporterOKPO property
 

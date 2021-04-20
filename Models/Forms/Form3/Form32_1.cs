@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
@@ -13,28 +13,22 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form3.SQLCommandParamsBase() +
-            nameof(CertificateId) + strNotNullDeclaration +
-            nameof(NuclearMaterialPresence) + strNotNullDeclaration +
-            nameof(Kategory) + shortNotNullDeclaration +
-            nameof(ActivityOnCreation) + strNotNullDeclaration +
-            nameof(ValidThru) + dateNotNullDeclaration +
-            nameof(PassportNumber) + strNotNullDeclaration +
-            nameof(PassportNumberNote) + strNotNullDeclaration +
-            nameof(Type) + strNotNullDeclaration +
-            nameof(TypeRecoded) + strNotNullDeclaration +
-            nameof(Radionuclids) + strNotNullDeclaration +
-            nameof(FactoryNumber) + strNotNullDeclaration +
-            nameof(FactoryNumberRecoded) + strNotNullDeclaration +
-            nameof(CreationDate) + dateNotNullDeclaration +
-            nameof(CreatorOKPO) + strNotNullDeclaration +
+            nameof(CertificateId) + SQLconsts.strNotNullDeclaration +
+            nameof(NuclearMaterialPresence) + SQLconsts.strNotNullDeclaration +
+            nameof(Kategory) + SQLconsts.shortNotNullDeclaration +
+            nameof(ActivityOnCreation) + SQLconsts.strNotNullDeclaration +
+            nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
+            nameof(PassportNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(PassportNumberNote) + SQLconsts.strNotNullDeclaration +
+            nameof(Type) + SQLconsts.strNotNullDeclaration +
+            nameof(TypeRecoded) + SQLconsts.strNotNullDeclaration +
+            nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
+            nameof(FactoryNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(FactoryNumberRecoded) + SQLconsts.strNotNullDeclaration +
+            nameof(CreationDate) + SQLconsts.dateNotNullDeclaration +
+            nameof(CreatorOKPO) + SQLconsts.strNotNullDeclaration +
             nameof(CreatorOKPONote) + " varchar(255) not null";
         }
         public Form32_1(IDataAccess Access) : base(Access)
@@ -144,6 +138,17 @@ namespace Models
         private void CreatorOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(CreatorOKPO));
+            if (value.Equals("прим.")) return;
+            var mask1 = new Regex("[А-Яа-я]*");
+            if (mask1.IsMatch(value)) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(CreatorOKPO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(CreatorOKPO), "Недопустимое значение");
+            }
         }
         //CreatorOKPO property
 

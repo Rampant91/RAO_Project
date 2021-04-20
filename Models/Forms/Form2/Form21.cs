@@ -10,35 +10,29 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(RefineMachineName) + strNotNullDeclaration +
-            nameof(MachineCode) + shortNotNullDeclaration +
-            nameof(MachinePower) + strNotNullDeclaration +
-            nameof(NumberOfHoursPerYear) + intNotNullDeclaration +
-            nameof(CodeRAOIn) + strNotNullDeclaration +
-            nameof(StatusRAOIn) + strNotNullDeclaration +
-            nameof(VolumeIn) + doubleNotNullDeclaration +
-            nameof(MassIn) + doubleNotNullDeclaration +
-            nameof(QuantityIn) + intNotNullDeclaration +
-            nameof(CodeRAOout) + strNotNullDeclaration +
-            nameof(StatusRAOout) + strNotNullDeclaration +
-            nameof(VolumeOut) + doubleNotNullDeclaration +
-            nameof(MassOut) + doubleNotNullDeclaration +
-            nameof(TritiumActivityIn) + strNotNullDeclaration +
-            nameof(TritiumActivityOut) + strNotNullDeclaration +
-            nameof(QuantityOZIIIout) + strNotNullDeclaration +
-            nameof(TransuraniumActivityIn) + strNotNullDeclaration +
-            nameof(TransuraniumActivityOut) + strNotNullDeclaration +
-            nameof(BetaGammaActivityIn) + strNotNullDeclaration +
-            nameof(AlphaActivityIn) + strNotNullDeclaration +
-            nameof(BetaGammaActivityOut) + strNotNullDeclaration +
+            nameof(RefineMachineName) + SQLconsts.strNotNullDeclaration +
+            nameof(MachineCode) + SQLconsts.shortNotNullDeclaration +
+            nameof(MachinePower) + SQLconsts.strNotNullDeclaration +
+            nameof(NumberOfHoursPerYear) + SQLconsts.intNotNullDeclaration +
+            nameof(CodeRAOIn) + SQLconsts.strNotNullDeclaration +
+            nameof(StatusRAOIn) + SQLconsts.strNotNullDeclaration +
+            nameof(VolumeIn) + SQLconsts.doubleNotNullDeclaration +
+            nameof(MassIn) + SQLconsts.doubleNotNullDeclaration +
+            nameof(QuantityIn) + SQLconsts.intNotNullDeclaration +
+            nameof(CodeRAOout) + SQLconsts.strNotNullDeclaration +
+            nameof(StatusRAOout) + SQLconsts.strNotNullDeclaration +
+            nameof(VolumeOut) + SQLconsts.doubleNotNullDeclaration +
+            nameof(MassOut) + SQLconsts.doubleNotNullDeclaration +
+            nameof(TritiumActivityIn) + SQLconsts.strNotNullDeclaration +
+            nameof(TritiumActivityOut) + SQLconsts.strNotNullDeclaration +
+            nameof(QuantityOZIIIout) + SQLconsts.strNotNullDeclaration +
+            nameof(TransuraniumActivityIn) + SQLconsts.strNotNullDeclaration +
+            nameof(TransuraniumActivityOut) + SQLconsts.strNotNullDeclaration +
+            nameof(BetaGammaActivityIn) + SQLconsts.strNotNullDeclaration +
+            nameof(AlphaActivityIn) + SQLconsts.strNotNullDeclaration +
+            nameof(BetaGammaActivityOut) + SQLconsts.strNotNullDeclaration +
             nameof(AlphaActivityOut) + " varchar(255) not null";
         }
         public Form21(IDataAccess Access) : base(Access)

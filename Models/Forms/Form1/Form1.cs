@@ -15,21 +15,15 @@ namespace Models.Abstracts
 
         protected static string SQLCommandParamsBase()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            //string dateNotNullDeclaration = " ????, ";
             return
-                nameof(NumberInOrder) + intNotNullDeclaration +
-                nameof(CorrectionNumber) + byteNotNullDeclaration +
-                nameof(OperationCode) + shortNotNullDeclaration +
-                //nameof(OperationDate) + dateNotNullDeclaration +
-                nameof(DocumentVid) + byteNotNullDeclaration +
-                nameof(DocumentNumber) + strNotNullDeclaration +
-                nameof(DocumentNumberRecoded) + strNotNullDeclaration;
-
-                //nameof(DocumentDate) + dateNotNullDeclaration;
+            nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
+            nameof(CorrectionNumber) + SQLconsts.shortNotNullDeclaration +
+            nameof(OperationCode) + SQLconsts.shortNotNullDeclaration +
+            nameof(OperationDate) + SQLconsts.dateNotNullDeclaration +
+            nameof(DocumentVid) + SQLconsts.shortNotNullDeclaration +
+            nameof(DocumentNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(DocumentNumberRecoded) + SQLconsts.strNotNullDeclaration +
+            nameof(DocumentDate) + " datetimeoffset not null";
         }
 
             //NumberInOrder property

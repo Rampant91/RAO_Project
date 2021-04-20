@@ -13,22 +13,16 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string enumNotNullDeclaration = " ????, ";
             return
-                nameof(Authority1) + enumNotNullDeclaration +
-                nameof(Year) + intNotNullDeclaration +
-                nameof(JurLico) + strNotNullDeclaration +
-                nameof(ShortJurLico) + strNotNullDeclaration +
-                nameof(JurLicoAddress) + strNotNullDeclaration +
-                nameof(JurLicoFactAddress) + strNotNullDeclaration +
-                nameof(GradeFIO) + strNotNullDeclaration +
-                nameof(GradeFIOresponsibleExecutor) + strNotNullDeclaration +
-                nameof(Telephone) + strNotNullDeclaration +
+                nameof(Authority1) + SQLconsts.intNotNullDeclaration +
+                nameof(Year) + SQLconsts.intNotNullDeclaration +
+                nameof(JurLico) + SQLconsts.strNotNullDeclaration +
+                nameof(ShortJurLico) + SQLconsts.strNotNullDeclaration +
+                nameof(JurLicoAddress) + SQLconsts.strNotNullDeclaration +
+                nameof(JurLicoFactAddress) + SQLconsts.strNotNullDeclaration +
+                nameof(GradeFIO) + SQLconsts.strNotNullDeclaration +
+                nameof(GradeFIOresponsibleExecutor) + SQLconsts.strNotNullDeclaration +
+                nameof(Telephone) + SQLconsts.strNotNullDeclaration +
                 nameof(Fax) + " varchar(255) not null";
         }
         public Form50(IDataAccess Access) : base(Access)

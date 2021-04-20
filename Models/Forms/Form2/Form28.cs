@@ -13,35 +13,29 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
                 Abstracts.Form2.SQLCommandParamsBase() +
-            nameof(WasteSourceName) + strNotNullDeclaration +
-            nameof(PermissionNumber1) + strNotNullDeclaration +
-            nameof(PermissionIssueDate1) + dateNotNullDeclaration +
-            nameof(PermissionDocumentName1) + strNotNullDeclaration +
-            nameof(ValidBegin1) + dateNotNullDeclaration +
-            nameof(ValidThru1) + dateNotNullDeclaration +
-            nameof(PermissionNumber2) + strNotNullDeclaration +
-            nameof(PermissionIssueDate2) + dateNotNullDeclaration +
-            nameof(ValidBegin2) + dateNotNullDeclaration +
-            nameof(PermissionDocumentName2) + strNotNullDeclaration +
-            nameof(ValidThru2) + dateNotNullDeclaration +
-            nameof(WasteRecieverName) + strNotNullDeclaration +
-            nameof(RecieverTypeCode) + strNotNullDeclaration +
-            nameof(PoolDistrictName) + strNotNullDeclaration +
-            nameof(AllowedWasteRemovalVolume) + doubleNotNullDeclaration +
-            nameof(RemovedWasteVolume) + doubleNotNullDeclaration +
-            nameof(RemovedWasteVolumeNote) + doubleNotNullDeclaration +
-            nameof(PermissionNumber) + strNotNullDeclaration +
-            nameof(PermissionIssueDate) + strNotNullDeclaration +
-            nameof(ValidBegin) + dateNotNullDeclaration +
-            nameof(ValidThru) + dateNotNullDeclaration +
+            nameof(WasteSourceName) + SQLconsts.strNotNullDeclaration +
+            nameof(PermissionNumber1) + SQLconsts.strNotNullDeclaration +
+            nameof(PermissionIssueDate1) + SQLconsts.dateNotNullDeclaration +
+            nameof(PermissionDocumentName1) + SQLconsts.strNotNullDeclaration +
+            nameof(ValidBegin1) + SQLconsts.dateNotNullDeclaration +
+            nameof(ValidThru1) + SQLconsts.dateNotNullDeclaration +
+            nameof(PermissionNumber2) + SQLconsts.strNotNullDeclaration +
+            nameof(PermissionIssueDate2) + SQLconsts.dateNotNullDeclaration +
+            nameof(ValidBegin2) + SQLconsts.dateNotNullDeclaration +
+            nameof(PermissionDocumentName2) + SQLconsts.strNotNullDeclaration +
+            nameof(ValidThru2) + SQLconsts.dateNotNullDeclaration +
+            nameof(WasteRecieverName) + SQLconsts.strNotNullDeclaration +
+            nameof(RecieverTypeCode) + SQLconsts.strNotNullDeclaration +
+            nameof(PoolDistrictName) + SQLconsts.strNotNullDeclaration +
+            nameof(AllowedWasteRemovalVolume) + SQLconsts.doubleNotNullDeclaration +
+            nameof(RemovedWasteVolume) + SQLconsts.doubleNotNullDeclaration +
+            nameof(RemovedWasteVolumeNote) + SQLconsts.doubleNotNullDeclaration +
+            nameof(PermissionNumber) + SQLconsts.strNotNullDeclaration +
+            nameof(PermissionIssueDate) + SQLconsts.strNotNullDeclaration +
+            nameof(ValidBegin) + SQLconsts.dateNotNullDeclaration +
+            nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
             nameof(PermissionDocumentName) + " varchar(255) not null";
         }
         public Form28(IDataAccess Access) : base(Access)

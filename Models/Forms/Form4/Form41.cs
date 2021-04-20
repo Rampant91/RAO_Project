@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
@@ -13,22 +13,16 @@ namespace Models
     {
         public static string SQLCommandParams()
         {
-            string strNotNullDeclaration = " varchar(255) not null, ";
-            string intNotNullDeclaration = " int not null, ";
-            string shortNotNullDeclaration = " smallint not null, ";
-            string byteNotNullDeclaration = " tinyint not null, ";
-            string dateNotNullDeclaration = " ????, ";
-            string doubleNotNullDeclaration = " float(53) not null, ";
             return
-            nameof(Notes) + strNotNullDeclaration +
-            nameof(OrgName) + strNotNullDeclaration +
-            nameof(NumberInOrder) + intNotNullDeclaration +
-            nameof(LicenseInfo) + strNotNullDeclaration +
-            nameof(QuantityOfFormsInv) + intNotNullDeclaration +
-            nameof(QuantityOfFormsOper) + intNotNullDeclaration +
-            nameof(QuantityOfFormsYear) + intNotNullDeclaration +
-            nameof(Notes) + strNotNullDeclaration +
-            nameof(RegNo) + strNotNullDeclaration +
+            nameof(Notes) + SQLconsts.strNotNullDeclaration +
+            nameof(OrgName) + SQLconsts.strNotNullDeclaration +
+            nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
+            nameof(LicenseInfo) + SQLconsts.strNotNullDeclaration +
+            nameof(QuantityOfFormsInv) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityOfFormsOper) + SQLconsts.intNotNullDeclaration +
+            nameof(QuantityOfFormsYear) + SQLconsts.intNotNullDeclaration +
+            nameof(Notes) + SQLconsts.strNotNullDeclaration +
+            nameof(RegNo) + SQLconsts.strNotNullDeclaration +
             nameof(Okpo) + " varchar(255) not null, ";
         }
         public Form41(IDataAccess Access) : base(Access)
@@ -130,8 +124,19 @@ namespace Models
                 OnPropertyChanged(nameof(Okpo));
             }
         }
-        
         private string _Okpo_Not_Valid = "";
+        private void Okpo_Validation(string value)
+        {
+            ClearErrors(nameof(Okpo));
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(Okpo), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(Okpo), "Недопустимое значение");
+            }
+        }
         //Okpo property
 
         //OrgName property
