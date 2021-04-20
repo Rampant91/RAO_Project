@@ -13,20 +13,7 @@ namespace Models.Abstracts
 
         }
 
-        protected static string SQLCommandParamsBase()
-        {
-            return
-            nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
-            nameof(CorrectionNumber) + SQLconsts.shortNotNullDeclaration +
-            nameof(OperationCode) + SQLconsts.shortNotNullDeclaration +
-            nameof(OperationDate) + SQLconsts.dateNotNullDeclaration +
-            nameof(DocumentVid) + SQLconsts.shortNotNullDeclaration +
-            nameof(DocumentNumber) + SQLconsts.strNotNullDeclaration +
-            nameof(DocumentNumberRecoded) + SQLconsts.strNotNullDeclaration +
-            nameof(DocumentDate) + " datetimeoffset not null";
-        }
-
-            //NumberInOrder property
+        //NumberInOrder property
         [Attributes.Form_Property("№ п/п")]
         public int NumberInOrder
         {

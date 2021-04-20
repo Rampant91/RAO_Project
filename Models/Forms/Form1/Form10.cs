@@ -11,29 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 1.0: Титульный лист оперативного отчета организации")]
     public class Form10:Abstracts.Form
     {
-        public static string SQLCommandParams()
-        {
-            return
-                nameof(RegNo) + SQLconsts.strNotNullDeclaration +
-                nameof(OrganUprav) + SQLconsts.strNotNullDeclaration +
-                nameof(SubjectRF) + SQLconsts.strNotNullDeclaration +
-                nameof(JurLico) + SQLconsts.strNotNullDeclaration +
-                nameof(ShortJurLico) + SQLconsts.strNotNullDeclaration +
-                nameof(JurLicoAddress) + SQLconsts.strNotNullDeclaration +
-                nameof(JurLicoFactAddress) + SQLconsts.strNotNullDeclaration +
-                nameof(GradeFIO) + SQLconsts.strNotNullDeclaration +
-                nameof(Telephone) + SQLconsts.strNotNullDeclaration +
-                nameof(Fax) + SQLconsts.strNotNullDeclaration +
-                nameof(Email) + SQLconsts.strNotNullDeclaration +
-                nameof(Okpo) + SQLconsts.strNotNullDeclaration +
-                nameof(Okved) + SQLconsts.strNotNullDeclaration +
-                nameof(Okogu) + SQLconsts.strNotNullDeclaration +
-                nameof(Oktmo) + SQLconsts.strNotNullDeclaration +
-                nameof(Inn) + SQLconsts.strNotNullDeclaration +
-                nameof(Kpp) + SQLconsts.strNotNullDeclaration +
-                nameof(Okopf) + SQLconsts.strNotNullDeclaration +
-                nameof(Okfs) + " varchar(255) not null";
-        }
         public Form10(IDataAccess Access) : base(Access)
         {
             NumberOfFields = 19;

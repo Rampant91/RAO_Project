@@ -2,18 +2,6 @@
 
 namespace DBRealization
 {
-    public class SQLconsts
-    {
-        public SQLconsts()
-        {
-
-        }
-        public const string strNotNullDeclaration = " varchar(255) not null, ";
-        public const string intNotNullDeclaration = " int not null, ";
-        public const string shortNotNullDeclaration = " smallint not null, ";
-        public const string dateNotNullDeclaration = " datetimeoffset not null, ";
-        public const string doubleNotNullDeclaration = " float(53) not null, ";
-    }
     public class RedDataBase:IDataAccess
     {
         public string DBPath { get; set; }
