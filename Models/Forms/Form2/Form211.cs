@@ -12,20 +12,6 @@ namespace Models
     [Attributes.Form_Class("Форма 2.11: Радионуклидный состав загрязненных участков территорий")]
     public class Form211 : Abstracts.Form2
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form2.SQLCommandParamsBase() +
-        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PlotName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PlotKadastrNumber) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PlotCode) + SQLconsts.strNotNullDeclaration +
-        //    nameof(InfectedArea) + SQLconsts.intNotNullDeclaration +
-        //    nameof(RadionuclidNameNote) + SQLconsts.strNotNullDeclaration +
-        //    nameof(SpecificActivityOfPlot) + SQLconsts.strNotNullDeclaration +
-        //    nameof(SpecificActivityOfLiquidPart) + SQLconsts.strNotNullDeclaration +
-        //    nameof(SpecificActivityOfDensePart) + " varchar(255) not null";
-        //}
         public Form211(IDataAccess Access) : base(Access)
         {
             FormNum = "211";
@@ -44,7 +30,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PlotName)) != null)
+                if (GetErrors(nameof(PlotName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PlotName));
                 }
@@ -56,7 +42,7 @@ namespace Models
             set
             {
                 _PlotName_Not_Valid = value;
-                if (GetErrors(nameof(PlotName)) != null)
+                if (GetErrors(nameof(PlotName)) == null)
                 {
                     _dataAccess.Set(nameof(PlotName), _PlotName_Not_Valid);
                 }
@@ -77,7 +63,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PlotKadastrNumber)) != null)
+                if (GetErrors(nameof(PlotKadastrNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PlotKadastrNumber));
                 }
@@ -89,7 +75,7 @@ namespace Models
             set
             {
                 _PlotKadastrNumber_Not_Valid = value;
-                if (GetErrors(nameof(PlotKadastrNumber)) != null)
+                if (GetErrors(nameof(PlotKadastrNumber)) == null)
                 {
                     _dataAccess.Set(nameof(PlotKadastrNumber), _PlotKadastrNumber_Not_Valid);
                 }
@@ -110,7 +96,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PlotCode)) != null)
+                if (GetErrors(nameof(PlotCode)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PlotCode));                }
                 else
@@ -121,7 +107,7 @@ namespace Models
             set
             {
                 _PlotCode_Not_Valid = value;
-                if (GetErrors(nameof(PlotCode)) != null)
+                if (GetErrors(nameof(PlotCode)) == null)
                 {
                     _dataAccess.Set(nameof(PlotCode), _PlotCode_Not_Valid);                }
                 OnPropertyChanged(nameof(PlotCode));
@@ -141,7 +127,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(InfectedArea)) != null)
+                if (GetErrors(nameof(InfectedArea)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(InfectedArea));
                 }
@@ -153,7 +139,7 @@ namespace Models
             set
             {
                 _InfectedArea_Not_Valid = value;
-                if (GetErrors(nameof(InfectedArea)) != null)
+                if (GetErrors(nameof(InfectedArea)) == null)
                 {
                     _dataAccess.Set(nameof(InfectedArea), _InfectedArea_Not_Valid);
                 }
@@ -174,7 +160,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Radionuclids));                }
                 else
@@ -185,7 +171,7 @@ namespace Models
             set
             {
                 _Radionuclids_Not_Valid = value;
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
                 OnPropertyChanged(nameof(Radionuclids));
@@ -204,7 +190,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RadionuclidNameNote)) != null)
+                if (GetErrors(nameof(RadionuclidNameNote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RadionuclidNameNote));
                 }
@@ -216,7 +202,7 @@ namespace Models
             set
             {
                 _RadionuclidNameNote_Not_Valid = value;
-                if (GetErrors(nameof(RadionuclidNameNote)) != null)
+                if (GetErrors(nameof(RadionuclidNameNote)) == null)
                 {
                     _dataAccess.Set(nameof(RadionuclidNameNote), _RadionuclidNameNote_Not_Valid);
                 }
@@ -237,7 +223,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(SpecificActivityOfPlot)) != null)
+                if (GetErrors(nameof(SpecificActivityOfPlot)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(SpecificActivityOfPlot));
                 }
@@ -249,7 +235,7 @@ namespace Models
             set
             {
                 _SpecificActivityOfPlot_Not_Valid = value;
-                if (GetErrors(nameof(SpecificActivityOfPlot)) != null)
+                if (GetErrors(nameof(SpecificActivityOfPlot)) == null)
                 {
                     _dataAccess.Set(nameof(SpecificActivityOfPlot), _SpecificActivityOfPlot_Not_Valid);
                 }
@@ -281,7 +267,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(SpecificActivityOfLiquidPart)) != null)
+                if (GetErrors(nameof(SpecificActivityOfLiquidPart)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(SpecificActivityOfLiquidPart));
                 }
@@ -293,7 +279,7 @@ namespace Models
             set
             {
                 _SpecificActivityOfLiquidPart_Not_Valid = value;
-                if (GetErrors(nameof(SpecificActivityOfLiquidPart)) != null)
+                if (GetErrors(nameof(SpecificActivityOfLiquidPart)) == null)
                 {
                     _dataAccess.Set(nameof(SpecificActivityOfLiquidPart), _SpecificActivityOfLiquidPart_Not_Valid);
                 }
@@ -325,7 +311,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(SpecificActivityOfDensePart)) != null)
+                if (GetErrors(nameof(SpecificActivityOfDensePart)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(SpecificActivityOfDensePart));
                 }
@@ -337,7 +323,7 @@ namespace Models
             set
             {
                 _SpecificActivityOfDensePart_Not_Valid = value;
-                if (GetErrors(nameof(SpecificActivityOfDensePart)) != null)
+                if (GetErrors(nameof(SpecificActivityOfDensePart)) == null)
                 {
                     _dataAccess.Set(nameof(SpecificActivityOfDensePart), _SpecificActivityOfDensePart_Not_Valid);
                 }

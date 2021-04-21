@@ -11,20 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 5.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form50 : Abstracts.Form
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        nameof(Authority1) + SQLconsts.intNotNullDeclaration +
-        //        nameof(Year) + SQLconsts.intNotNullDeclaration +
-        //        nameof(JurLico) + SQLconsts.strNotNullDeclaration +
-        //        nameof(ShortJurLico) + SQLconsts.strNotNullDeclaration +
-        //        nameof(JurLicoAddress) + SQLconsts.strNotNullDeclaration +
-        //        nameof(JurLicoFactAddress) + SQLconsts.strNotNullDeclaration +
-        //        nameof(GradeFIO) + SQLconsts.strNotNullDeclaration +
-        //        nameof(GradeFIOresponsibleExecutor) + SQLconsts.strNotNullDeclaration +
-        //        nameof(Telephone) + SQLconsts.strNotNullDeclaration +
-        //        nameof(Fax) + " varchar(255) not null";
-        //}
         public Form50(IDataAccess Access) : base(Access)
         {
             FormNum = "50";
@@ -50,7 +36,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Authority1)) != null)
+                if (GetErrors(nameof(Authority1)) == null)
                 {
                     return (Authority)_dataAccess.Get(nameof(Authority1));
                 }
@@ -62,7 +48,7 @@ namespace Models
             set
             {
                 _Authority1_Not_Valid = value;
-                if (GetErrors(nameof(Authority1)) != null)
+                if (GetErrors(nameof(Authority1)) == null)
                 {
                     _dataAccess.Set(nameof(Authority1), _Authority1_Not_Valid);
                 }
@@ -79,7 +65,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Year)) != null)
+                if (GetErrors(nameof(Year)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(Year));
                 }
@@ -91,7 +77,7 @@ namespace Models
             set
             {
                 _Year_Not_Valid = value;
-                if (GetErrors(nameof(Year)) != null)
+                if (GetErrors(nameof(Year)) == null)
                 {
                     _dataAccess.Set(nameof(Year), _Year_Not_Valid);
                 }
@@ -108,7 +94,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(JurLico)) != null)
+                if (GetErrors(nameof(JurLico)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(JurLico));
                 }
@@ -120,7 +106,7 @@ namespace Models
             set
             {
                 _JurLico_Not_Valid = value;
-                if (GetErrors(nameof(JurLico)) != null)
+                if (GetErrors(nameof(JurLico)) == null)
                 {
                     _dataAccess.Set(nameof(JurLico), _JurLico_Not_Valid);
                 }
@@ -137,7 +123,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ShortJurLico)) != null)
+                if (GetErrors(nameof(ShortJurLico)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ShortJurLico));
                 }
@@ -149,7 +135,7 @@ namespace Models
             set
             {
                 _ShortJurLico_Not_Valid = value;
-                if (GetErrors(nameof(ShortJurLico)) != null)
+                if (GetErrors(nameof(ShortJurLico)) == null)
                 {
                     _dataAccess.Set(nameof(ShortJurLico), _ShortJurLico_Not_Valid);
                 }
@@ -166,7 +152,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(JurLicoAddress)) != null)
+                if (GetErrors(nameof(JurLicoAddress)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(JurLicoAddress));
                 }
@@ -178,7 +164,7 @@ namespace Models
             set
             {
                 _JurLicoAddress_Not_Valid = value;
-                if (GetErrors(nameof(JurLicoAddress)) != null)
+                if (GetErrors(nameof(JurLicoAddress)) == null)
                 {
                     _dataAccess.Set(nameof(JurLicoAddress), _JurLicoAddress_Not_Valid);
                 }
@@ -195,7 +181,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(JurLicoFactAddress)) != null)
+                if (GetErrors(nameof(JurLicoFactAddress)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(JurLicoFactAddress));
                 }
@@ -207,7 +193,7 @@ namespace Models
             set
             {
                 _JurLicoFactAddress_Not_Valid = value;
-                if (GetErrors(nameof(JurLicoFactAddress)) != null)
+                if (GetErrors(nameof(JurLicoFactAddress)) == null)
                 {
                     _dataAccess.Set(nameof(JurLicoFactAddress), _JurLicoFactAddress_Not_Valid);
                 }
@@ -224,7 +210,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(GradeFIO)) != null)
+                if (GetErrors(nameof(GradeFIO)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(GradeFIO));
                 }
@@ -236,7 +222,7 @@ namespace Models
             set
             {
                 _GradeFIO_Not_Valid = value;
-                if (GetErrors(nameof(GradeFIO)) != null)
+                if (GetErrors(nameof(GradeFIO)) == null)
                 {
                     _dataAccess.Set(nameof(GradeFIO), _GradeFIO_Not_Valid);
                 }
@@ -253,7 +239,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(GradeFIOresponsibleExecutor)) != null)
+                if (GetErrors(nameof(GradeFIOresponsibleExecutor)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor));
                 }
@@ -265,7 +251,7 @@ namespace Models
             set
             {
                 _GradeFIOresponsibleExecutor_Not_Valid = value;
-                if (GetErrors(nameof(GradeFIOresponsibleExecutor)) != null)
+                if (GetErrors(nameof(GradeFIOresponsibleExecutor)) == null)
                 {
                     _dataAccess.Set(nameof(GradeFIOresponsibleExecutor), _GradeFIOresponsibleExecutor_Not_Valid);
                 }
@@ -282,7 +268,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Telephone)) != null)
+                if (GetErrors(nameof(Telephone)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Telephone));
                 }
@@ -294,7 +280,7 @@ namespace Models
             set
             {
                 _Telephone_Not_Valid = value;
-                if (GetErrors(nameof(Telephone)) != null)
+                if (GetErrors(nameof(Telephone)) == null)
                 {
                     _dataAccess.Set(nameof(Telephone), _Telephone_Not_Valid);
                 }
@@ -311,7 +297,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Fax)) != null)
+                if (GetErrors(nameof(Fax)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Fax));
                 }
@@ -323,7 +309,7 @@ namespace Models
             set
             {
                 _Fax_Not_Valid = value;
-                if (GetErrors(nameof(Fax)) != null)
+                if (GetErrors(nameof(Fax)) == null)
                 {
                     _dataAccess.Set(nameof(Fax), _Fax_Not_Valid);
                 }
@@ -340,7 +326,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Email)) != null)
+                if (GetErrors(nameof(Email)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Email));
                 }
@@ -352,7 +338,7 @@ namespace Models
             set
             {
                 _Email_Not_Valid = value;
-                if (GetErrors(nameof(Email)) != null)
+                if (GetErrors(nameof(Email)) == null)
                 {
                     _dataAccess.Set(nameof(Email), _Email_Not_Valid);
                 }

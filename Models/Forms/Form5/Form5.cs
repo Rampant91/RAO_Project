@@ -8,12 +8,6 @@ namespace Models.Abstracts
     public abstract class Form5:Form
     {
         [Attributes.Form_Property("Форма")]
-        //protected static string SQLCommandParamsBase()
-        //{
-        //    return
-        //        nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
-        //        nameof(CorrectionNumber) + SQLconsts.shortNotNullDeclaration;
-        //}
         public Form5(IDataAccess Access) : base(Access)
         {
 
@@ -25,7 +19,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(NumberInOrder)) != null)
+                if (GetErrors(nameof(NumberInOrder)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(NumberInOrder));
                 }
@@ -37,7 +31,7 @@ namespace Models.Abstracts
             set
             {
                 _NumberInOrder_Not_Valid = value;
-                if (GetErrors(nameof(NumberInOrder)) != null)
+                if (GetErrors(nameof(NumberInOrder)) == null)
                 {
                     _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
                 }
@@ -58,7 +52,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
+                if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
                     return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
@@ -70,7 +64,7 @@ namespace Models.Abstracts
             set
             {
                 _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
+                if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
                     _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
                 }

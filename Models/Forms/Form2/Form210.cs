@@ -11,21 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 2.10: Территории, загрязненные радионуклидами")]
     public class Form210 : Abstracts.Form2
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form2.SQLCommandParamsBase() +
-        //    nameof(IndicatorName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PlotName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PlotKadastrNumber) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PlotCode) + SQLconsts.strNotNullDeclaration +
-        //    nameof(InfectedArea) + SQLconsts.intNotNullDeclaration +
-        //    nameof(AvgGammaRaysDosePower) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(MaxGammaRaysDosePower) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(WasteDensityAlpha) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(WasteDensityBeta) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(FcpNumber) + " varchar(255) not null";
-        //}
         public Form210(IDataAccess Access) : base(Access)
         {
             FormNum = "210";
@@ -44,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(IndicatorName)) != null)
+                if (GetErrors(nameof(IndicatorName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(IndicatorName));
                 }
@@ -56,7 +41,7 @@ namespace Models
             set
             {
                 _IndicatorName_Not_Valid = value;
-                if (GetErrors(nameof(IndicatorName)) != null)
+                if (GetErrors(nameof(IndicatorName)) == null)
                 {
                     _dataAccess.Set(nameof(IndicatorName), _IndicatorName_Not_Valid);
                 }
@@ -77,7 +62,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PlotName)) != null)
+                if (GetErrors(nameof(PlotName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PlotName));
                 }
@@ -89,7 +74,7 @@ namespace Models
             set
             {
                 _PlotName_Not_Valid = value;
-                if (GetErrors(nameof(PlotName)) != null)
+                if (GetErrors(nameof(PlotName)) == null)
                 {
                     _dataAccess.Set(nameof(PlotName), _PlotName_Not_Valid);
                 }
@@ -110,7 +95,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PlotKadastrNumber)) != null)
+                if (GetErrors(nameof(PlotKadastrNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PlotKadastrNumber));
                 }
@@ -122,7 +107,7 @@ namespace Models
             set
             {
                 _PlotKadastrNumber_Not_Valid = value;
-                if (GetErrors(nameof(PlotKadastrNumber)) != null)
+                if (GetErrors(nameof(PlotKadastrNumber)) == null)
                 {
                     _dataAccess.Set(nameof(PlotKadastrNumber), _PlotKadastrNumber_Not_Valid);
                 }
@@ -143,7 +128,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PlotCode)) != null)
+                if (GetErrors(nameof(PlotCode)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PlotCode));                }
                 else
@@ -154,7 +139,7 @@ namespace Models
             set
             {
                 _PlotCode_Not_Valid = value;
-                if (GetErrors(nameof(PlotCode)) != null)
+                if (GetErrors(nameof(PlotCode)) == null)
                 {
                     _dataAccess.Set(nameof(PlotCode), _PlotCode_Not_Valid);                }
                 OnPropertyChanged(nameof(PlotCode));
@@ -174,7 +159,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(InfectedArea)) != null)
+                if (GetErrors(nameof(InfectedArea)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(InfectedArea));
                 }
@@ -186,7 +171,7 @@ namespace Models
             set
             {
                 _InfectedArea_Not_Valid = value;
-                if (GetErrors(nameof(InfectedArea)) != null)
+                if (GetErrors(nameof(InfectedArea)) == null)
                 {
                     _dataAccess.Set(nameof(InfectedArea), _InfectedArea_Not_Valid);
                 }
@@ -207,7 +192,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AvgGammaRaysDosePower)) != null)
+                if (GetErrors(nameof(AvgGammaRaysDosePower)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(AvgGammaRaysDosePower));
                 }
@@ -219,7 +204,7 @@ namespace Models
             set
             {
                 _AvgGammaRaysDosePower_Not_Valid = value;
-                if (GetErrors(nameof(AvgGammaRaysDosePower)) != null)
+                if (GetErrors(nameof(AvgGammaRaysDosePower)) == null)
                 {
                     _dataAccess.Set(nameof(AvgGammaRaysDosePower), _AvgGammaRaysDosePower_Not_Valid);
                 }
@@ -240,7 +225,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(MaxGammaRaysDosePower)) != null)
+                if (GetErrors(nameof(MaxGammaRaysDosePower)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(MaxGammaRaysDosePower));
                 }
@@ -252,7 +237,7 @@ namespace Models
             set
             {
                 _MaxGammaRaysDosePower_Not_Valid = value;
-                if (GetErrors(nameof(MaxGammaRaysDosePower)) != null)
+                if (GetErrors(nameof(MaxGammaRaysDosePower)) == null)
                 {
                     _dataAccess.Set(nameof(MaxGammaRaysDosePower), _MaxGammaRaysDosePower_Not_Valid);
                 }
@@ -273,7 +258,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(WasteDensityAlpha)) != null)
+                if (GetErrors(nameof(WasteDensityAlpha)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(WasteDensityAlpha));
                 }
@@ -285,7 +270,7 @@ namespace Models
             set
             {
                 _WasteDensityAlpha_Not_Valid = value;
-                if (GetErrors(nameof(WasteDensityAlpha)) != null)
+                if (GetErrors(nameof(WasteDensityAlpha)) == null)
                 {
                     _dataAccess.Set(nameof(WasteDensityAlpha), _WasteDensityAlpha_Not_Valid);
                 }
@@ -306,7 +291,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(WasteDensityBeta)) != null)
+                if (GetErrors(nameof(WasteDensityBeta)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(WasteDensityBeta));
                 }
@@ -318,7 +303,7 @@ namespace Models
             set
             {
                 _WasteDensityBeta_Not_Valid = value;
-                if (GetErrors(nameof(WasteDensityBeta)) != null)
+                if (GetErrors(nameof(WasteDensityBeta)) == null)
                 {
                     _dataAccess.Set(nameof(WasteDensityBeta), _WasteDensityBeta_Not_Valid);
                 }
@@ -339,7 +324,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(FcpNumber)) != null)
+                if (GetErrors(nameof(FcpNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(FcpNumber));
                 }
@@ -351,7 +336,7 @@ namespace Models
             set
             {
                 _FcpNumber_Not_Valid = value;
-                if (GetErrors(nameof(FcpNumber)) != null)
+                if (GetErrors(nameof(FcpNumber)) == null)
                 {
                     _dataAccess.Set(nameof(FcpNumber), _FcpNumber_Not_Valid);
                 }

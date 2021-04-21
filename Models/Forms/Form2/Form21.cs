@@ -8,33 +8,6 @@ namespace Models
     [Attributes.Form_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
     public class Form21: Abstracts.Form2
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form2.SQLCommandParamsBase() +
-        //    nameof(RefineMachineName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(MachineCode) + SQLconsts.shortNotNullDeclaration +
-        //    nameof(MachinePower) + SQLconsts.strNotNullDeclaration +
-        //    nameof(NumberOfHoursPerYear) + SQLconsts.intNotNullDeclaration +
-        //    nameof(CodeRAOIn) + SQLconsts.strNotNullDeclaration +
-        //    nameof(StatusRAOIn) + SQLconsts.strNotNullDeclaration +
-        //    nameof(VolumeIn) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(MassIn) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(QuantityIn) + SQLconsts.intNotNullDeclaration +
-        //    nameof(CodeRAOout) + SQLconsts.strNotNullDeclaration +
-        //    nameof(StatusRAOout) + SQLconsts.strNotNullDeclaration +
-        //    nameof(VolumeOut) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(MassOut) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(TritiumActivityIn) + SQLconsts.strNotNullDeclaration +
-        //    nameof(TritiumActivityOut) + SQLconsts.strNotNullDeclaration +
-        //    nameof(QuantityOZIIIout) + SQLconsts.strNotNullDeclaration +
-        //    nameof(TransuraniumActivityIn) + SQLconsts.strNotNullDeclaration +
-        //    nameof(TransuraniumActivityOut) + SQLconsts.strNotNullDeclaration +
-        //    nameof(BetaGammaActivityIn) + SQLconsts.strNotNullDeclaration +
-        //    nameof(AlphaActivityIn) + SQLconsts.strNotNullDeclaration +
-        //    nameof(BetaGammaActivityOut) + SQLconsts.strNotNullDeclaration +
-        //    nameof(AlphaActivityOut) + " varchar(255) not null";
-        //}
         public Form21(IDataAccess Access) : base(Access)
         {
             FormNum = "21";
@@ -53,7 +26,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RefineMachineName)) != null)
+                if (GetErrors(nameof(RefineMachineName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RefineMachineName));
                 }
@@ -65,7 +38,7 @@ namespace Models
             set
             {
                 _RefineMachineName_Not_Valid = value;
-                if (GetErrors(nameof(RefineMachineName)) != null)
+                if (GetErrors(nameof(RefineMachineName)) == null)
                 {
                     _dataAccess.Set(nameof(RefineMachineName), _RefineMachineName_Not_Valid);
                 }
@@ -86,7 +59,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(MachineCode)) != null)
+                if (GetErrors(nameof(MachineCode)) == null)
                 {
                     return (short)_dataAccess.Get(nameof(MachineCode));
                 }
@@ -98,7 +71,7 @@ namespace Models
             set
             {
                 _MachineCode_Not_Valid = value;
-                if (GetErrors(nameof(MachineCode)) != null)
+                if (GetErrors(nameof(MachineCode)) == null)
                 {
                     _dataAccess.Set(nameof(MachineCode), _MachineCode_Not_Valid);
                 }
@@ -119,7 +92,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(MachinePower)) != null)
+                if (GetErrors(nameof(MachinePower)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(MachinePower));
                 }
@@ -131,7 +104,7 @@ namespace Models
             set
             {
                 _MachinePower_Not_Valid = value;
-                if (GetErrors(nameof(MachinePower)) != null)
+                if (GetErrors(nameof(MachinePower)) == null)
                 {
                     _dataAccess.Set(nameof(MachinePower), _MachinePower_Not_Valid);
                 }
@@ -152,7 +125,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(NumberOfHoursPerYear)) != null)
+                if (GetErrors(nameof(NumberOfHoursPerYear)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(NumberOfHoursPerYear));
                 }
@@ -164,7 +137,7 @@ namespace Models
             set
             {
                 _NumberOfHoursPerYear_Not_Valid = value;
-                if (GetErrors(nameof(NumberOfHoursPerYear)) != null)
+                if (GetErrors(nameof(NumberOfHoursPerYear)) == null)
                 {
                     _dataAccess.Set(nameof(NumberOfHoursPerYear), _NumberOfHoursPerYear_Not_Valid);
                 }
@@ -185,7 +158,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(CodeRAOIn)) != null)
+                if (GetErrors(nameof(CodeRAOIn)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(CodeRAOIn));
                 }
@@ -197,7 +170,7 @@ namespace Models
             set
             {
                 _CodeRAOIn_Not_Valid = value;
-                if (GetErrors(nameof(CodeRAOIn)) != null)
+                if (GetErrors(nameof(CodeRAOIn)) == null)
                 {
                     _dataAccess.Set(nameof(CodeRAOIn), _CodeRAOIn_Not_Valid);
                 }
@@ -218,7 +191,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(StatusRAOIn)) != null)
+                if (GetErrors(nameof(StatusRAOIn)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(StatusRAOIn));
                 }
@@ -230,7 +203,7 @@ namespace Models
             set
             {
                 _StatusRAOIn_Not_Valid = value;
-                if (GetErrors(nameof(StatusRAOIn)) != null)
+                if (GetErrors(nameof(StatusRAOIn)) == null)
                 {
                     _dataAccess.Set(nameof(StatusRAOIn), _StatusRAOIn_Not_Valid);
                 }
@@ -251,7 +224,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(VolumeIn)) != null)
+                if (GetErrors(nameof(VolumeIn)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(VolumeIn));
                 }
@@ -263,7 +236,7 @@ namespace Models
             set
             {
                 _VolumeIn_Not_Valid = value;
-                if (GetErrors(nameof(VolumeIn)) != null)
+                if (GetErrors(nameof(VolumeIn)) == null)
                 {
                     _dataAccess.Set(nameof(VolumeIn), _VolumeIn_Not_Valid);
                 }
@@ -284,7 +257,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(MassIn)) != null)
+                if (GetErrors(nameof(MassIn)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(MassIn));
                 }
@@ -296,7 +269,7 @@ namespace Models
             set
             {
                 _MassIn_Not_Valid = value;
-                if (GetErrors(nameof(MassIn)) != null)
+                if (GetErrors(nameof(MassIn)) == null)
                 {
                     _dataAccess.Set(nameof(MassIn), _MassIn_Not_Valid);
                 }
@@ -317,7 +290,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(QuantityIn)) != null)
+                if (GetErrors(nameof(QuantityIn)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(QuantityIn));
                 }
@@ -329,7 +302,7 @@ namespace Models
             set
             {
                 _QuantityIn_Not_Valid = value;
-                if (GetErrors(nameof(QuantityIn)) != null)
+                if (GetErrors(nameof(QuantityIn)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityIn), _QuantityIn_Not_Valid);
                 }
@@ -352,7 +325,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TritiumActivityIn)) != null)
+                if (GetErrors(nameof(TritiumActivityIn)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(TritiumActivityIn));
                 }
@@ -364,7 +337,7 @@ namespace Models
             set
             {
                 _TritiumActivityIn_Not_Valid = value;
-                if (GetErrors(nameof(TritiumActivityIn)) != null)
+                if (GetErrors(nameof(TritiumActivityIn)) == null)
                 {
                     _dataAccess.Set(nameof(TritiumActivityIn), _TritiumActivityIn_Not_Valid);
                 }
@@ -403,7 +376,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(BetaGammaActivityIn)) != null)
+                if (GetErrors(nameof(BetaGammaActivityIn)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(BetaGammaActivityIn));
                 }
@@ -415,7 +388,7 @@ namespace Models
             set
             {
                 _BetaGammaActivityIn_Not_Valid = value;
-                if (GetErrors(nameof(BetaGammaActivityIn)) != null)
+                if (GetErrors(nameof(BetaGammaActivityIn)) == null)
                 {
                     _dataAccess.Set(nameof(BetaGammaActivityIn), _BetaGammaActivityIn_Not_Valid);
                 }
@@ -454,7 +427,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AlphaActivityIn)) != null)
+                if (GetErrors(nameof(AlphaActivityIn)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(AlphaActivityIn));
                 }
@@ -466,7 +439,7 @@ namespace Models
             set
             {
                 _AlphaActivityIn_Not_Valid = value;
-                if (GetErrors(nameof(AlphaActivityIn)) != null)
+                if (GetErrors(nameof(AlphaActivityIn)) == null)
                 {
                     _dataAccess.Set(nameof(AlphaActivityIn), _AlphaActivityIn_Not_Valid);
                 }
@@ -505,7 +478,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TransuraniumActivityIn)) != null)
+                if (GetErrors(nameof(TransuraniumActivityIn)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(TransuraniumActivityIn));
                 }
@@ -517,7 +490,7 @@ namespace Models
             set
             {
                 _TransuraniumActivityIn_Not_Valid = value;
-                if (GetErrors(nameof(TransuraniumActivityIn)) != null)
+                if (GetErrors(nameof(TransuraniumActivityIn)) == null)
                 {
                     _dataAccess.Set(nameof(TransuraniumActivityIn), _TransuraniumActivityIn_Not_Valid);
                 }
@@ -556,7 +529,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(CodeRAOout)) != null)
+                if (GetErrors(nameof(CodeRAOout)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(CodeRAOout));
                 }
@@ -568,7 +541,7 @@ namespace Models
             set
             {
                 _CodeRAOout_Not_Valid = value;
-                if (GetErrors(nameof(CodeRAOout)) != null)
+                if (GetErrors(nameof(CodeRAOout)) == null)
                 {
                     _dataAccess.Set(nameof(CodeRAOout), _CodeRAOout_Not_Valid);
                 }
@@ -589,7 +562,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(StatusRAOout)) != null)
+                if (GetErrors(nameof(StatusRAOout)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(StatusRAOout));
                 }
@@ -601,7 +574,7 @@ namespace Models
             set
             {
                 _StatusRAOout_Not_Valid = value;
-                if (GetErrors(nameof(StatusRAOout)) != null)
+                if (GetErrors(nameof(StatusRAOout)) == null)
                 {
                     _dataAccess.Set(nameof(StatusRAOout), _StatusRAOout_Not_Valid);
                 }
@@ -622,7 +595,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(VolumeOut)) != null)
+                if (GetErrors(nameof(VolumeOut)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(VolumeOut));
                 }
@@ -634,7 +607,7 @@ namespace Models
             set
             {
                 _VolumeOut_Not_Valid = value;
-                if (GetErrors(nameof(VolumeOut)) != null)
+                if (GetErrors(nameof(VolumeOut)) == null)
                 {
                     _dataAccess.Set(nameof(VolumeOut), _VolumeOut_Not_Valid);
                 }
@@ -655,7 +628,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(MassOut)) != null)
+                if (GetErrors(nameof(MassOut)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(MassOut));
                 }
@@ -667,7 +640,7 @@ namespace Models
             set
             {
                 _MassOut_Not_Valid = value;
-                if (GetErrors(nameof(MassOut)) != null)
+                if (GetErrors(nameof(MassOut)) == null)
                 {
                     _dataAccess.Set(nameof(MassOut), _MassOut_Not_Valid);
                 }
@@ -688,7 +661,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(QuantityOZIIIout)) != null)
+                if (GetErrors(nameof(QuantityOZIIIout)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(QuantityOZIIIout));
                 }
@@ -700,7 +673,7 @@ namespace Models
             set
             {
                 _QuantityOZIIIout_Not_Valid = value;
-                if (GetErrors(nameof(QuantityOZIIIout)) != null)
+                if (GetErrors(nameof(QuantityOZIIIout)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOZIIIout), _QuantityOZIIIout_Not_Valid);
                 }
@@ -723,7 +696,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TritiumActivityOut)) != null)
+                if (GetErrors(nameof(TritiumActivityOut)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(TritiumActivityOut));
                 }
@@ -735,7 +708,7 @@ namespace Models
             set
             {
                 _TritiumActivityOut_Not_Valid = value;
-                if (GetErrors(nameof(TritiumActivityOut)) != null)
+                if (GetErrors(nameof(TritiumActivityOut)) == null)
                 {
                     _dataAccess.Set(nameof(TritiumActivityOut), _TritiumActivityOut_Not_Valid);
                 }
@@ -774,7 +747,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(BetaGammaActivityOut)) != null)
+                if (GetErrors(nameof(BetaGammaActivityOut)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(BetaGammaActivityOut));
                 }
@@ -786,7 +759,7 @@ namespace Models
             set
             {
                 _BetaGammaActivityOut_Not_Valid = value;
-                if (GetErrors(nameof(BetaGammaActivityOut)) != null)
+                if (GetErrors(nameof(BetaGammaActivityOut)) == null)
                 {
                     _dataAccess.Set(nameof(BetaGammaActivityOut), _BetaGammaActivityOut_Not_Valid);
                 }
@@ -825,7 +798,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AlphaActivityOut)) != null)
+                if (GetErrors(nameof(AlphaActivityOut)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(AlphaActivityOut));
                 }
@@ -837,7 +810,7 @@ namespace Models
             set
             {
                 _AlphaActivityOut_Not_Valid = value;
-                if (GetErrors(nameof(AlphaActivityOut)) != null)
+                if (GetErrors(nameof(AlphaActivityOut)) == null)
                 {
                     _dataAccess.Set(nameof(AlphaActivityOut), _AlphaActivityOut_Not_Valid);
                 }
@@ -876,7 +849,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TransuraniumActivityOut)) != null)
+                if (GetErrors(nameof(TransuraniumActivityOut)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(TransuraniumActivityOut));
                 }
@@ -888,7 +861,7 @@ namespace Models
             set
             {
                 _TransuraniumActivityOut_Not_Valid = value;
-                if (GetErrors(nameof(TransuraniumActivityOut)) != null)
+                if (GetErrors(nameof(TransuraniumActivityOut)) == null)
                 {
                     _dataAccess.Set(nameof(TransuraniumActivityOut), _TransuraniumActivityOut_Not_Valid);
                 }

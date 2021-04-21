@@ -11,18 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 5.7: Перечень подведомственных организаций ведомственного информационно-аналитического центра федерального органа исполнительной власти")]
     public class Form57: Abstracts.Form5
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form5.SQLCommandParamsBase() +
-        //    nameof(Note) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PermissionNameNumber) + SQLconsts.strNotNullDeclaration +
-        //    nameof(DocumentNameNumber) + SQLconsts.strNotNullDeclaration +
-        //    nameof(OrgName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(AllowedActivity) + SQLconsts.strNotNullDeclaration +
-        //    nameof(RegNo) + SQLconsts.strNotNullDeclaration +
-        //    nameof(Okpo) + " varchar(255) not null";
-        //}
         public Form57(IDataAccess Access) : base(Access)
         {
             FormNum = "57";
@@ -41,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RegNo)) != null)
+                if (GetErrors(nameof(RegNo)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RegNo));
                 }
@@ -53,7 +41,7 @@ namespace Models
             set
             {
                 _RegNo_Not_Valid = value;
-                if (GetErrors(nameof(RegNo)) != null)
+                if (GetErrors(nameof(RegNo)) == null)
                 {
                     _dataAccess.Set(nameof(RegNo), _RegNo_Not_Valid);
                 }
@@ -70,7 +58,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Okpo)) != null)
+                if (GetErrors(nameof(Okpo)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Okpo));
                 }
@@ -82,7 +70,7 @@ namespace Models
             set
             {
                 _Okpo_Not_Valid = value;
-                if (GetErrors(nameof(Okpo)) != null)
+                if (GetErrors(nameof(Okpo)) == null)
                 {
                     _dataAccess.Set(nameof(Okpo), _Okpo_Not_Valid);
                 }
@@ -110,7 +98,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(OrgName)) != null)
+                if (GetErrors(nameof(OrgName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(OrgName));
                 }
@@ -122,7 +110,7 @@ namespace Models
             set
             {
                 _OrgName_Not_Valid = value;
-                if (GetErrors(nameof(OrgName)) != null)
+                if (GetErrors(nameof(OrgName)) == null)
                 {
                     _dataAccess.Set(nameof(OrgName), _OrgName_Not_Valid);
                 }
@@ -139,7 +127,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(DocumentNameNumber)) != null)
+                if (GetErrors(nameof(DocumentNameNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(DocumentNameNumber));
                 }
@@ -151,7 +139,7 @@ namespace Models
             set
             {
                 _DocumentNameNumber_Not_Valid = value;
-                if (GetErrors(nameof(DocumentNameNumber)) != null)
+                if (GetErrors(nameof(DocumentNameNumber)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentNameNumber), _DocumentNameNumber_Not_Valid);
                 }
@@ -168,7 +156,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionNameNumber)) != null)
+                if (GetErrors(nameof(PermissionNameNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionNameNumber));
                 }
@@ -180,7 +168,7 @@ namespace Models
             set
             {
                 _PermissionNameNumber_Not_Valid = value;
-                if (GetErrors(nameof(PermissionNameNumber)) != null)
+                if (GetErrors(nameof(PermissionNameNumber)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionNameNumber), _PermissionNameNumber_Not_Valid);
                 }
@@ -197,7 +185,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AllowedActivity)) != null)
+                if (GetErrors(nameof(AllowedActivity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(AllowedActivity));
                 }
@@ -209,7 +197,7 @@ namespace Models
             set
             {
                 _AllowedActivity_Not_Valid = value;
-                if (GetErrors(nameof(AllowedActivity)) != null)
+                if (GetErrors(nameof(AllowedActivity)) == null)
                 {
                     _dataAccess.Set(nameof(AllowedActivity), _AllowedActivity_Not_Valid);
                 }
@@ -230,7 +218,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Note)) != null)
+                if (GetErrors(nameof(Note)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Note));
                 }
@@ -242,7 +230,7 @@ namespace Models
             set
             {
                 _Note_Not_Valid = value;
-                if (GetErrors(nameof(Note)) != null)
+                if (GetErrors(nameof(Note)) == null)
                 {
                     _dataAccess.Set(nameof(Note), _Note_Not_Valid);
                 }

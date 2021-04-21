@@ -30,7 +30,7 @@ namespace DBRealization
             return
                 "NumberInOrder" + intNotNullDeclaration +
                 "CorrectionNumber" + shortNotNullDeclaration +
-                "OperationCode" + shortNotNullDeclaration +
+                "OperationCode" + strNotNullDeclaration +
                 "OperationDate" + dateNotNullDeclaration +
                 "DocumentVid" + shortNotNullDeclaration +
                 "DocumentNumber" + strNotNullDeclaration +
@@ -76,11 +76,11 @@ namespace DBRealization
                 "Quantity" + intNotNullDeclaration +
                 "Activity" + strNotNullDeclaration +
                 "ActivityNote" + strNotNullDeclaration +
-                "CreationDate" + dateNotNullDeclaration +
+                "CreationDate" + strNotNullDeclaration +
                 "CreatorOKPO" + strNotNullDeclaration +
                 "CreatorOKPONote" + strNotNullDeclaration +
                 "Category" + shortNotNullDeclaration +
-                "SignedServicePeriod" + intNotNullDeclaration +
+                "SignedServicePeriod" + doubleNotNullDeclaration +
                 "PropertyCode" + shortNotNullDeclaration +
                 "Owner" + strNotNullDeclaration +
                 "ProviderOrRecieverOKPO" + strNotNullDeclaration +
@@ -341,94 +341,375 @@ namespace DBRealization
         //2_Forms
         public static string Form2()
         {
-            return "";
+            return
+                "NumberInOrder" + intNotNullDeclaration +
+                "CorrectionNumber" + shortNotNullDeclaration.Replace(",","");
         }
         public static string Form20()
         {
-            return "";
+            return
+                "RegNo" + strNotNullDeclaration +
+                "OrganUprav" + strNotNullDeclaration +
+                "SubjectRF" + strNotNullDeclaration +
+                "JurLico" + strNotNullDeclaration +
+                "ShortJurLico" + strNotNullDeclaration +
+                "JurLicoAddress" + strNotNullDeclaration +
+                "JurLicoFactAddress" + strNotNullDeclaration +
+                "GradeFIO" + strNotNullDeclaration +
+                "Telephone" + strNotNullDeclaration +
+                "Fax" + strNotNullDeclaration +
+                "Email" + strNotNullDeclaration +
+                "Okpo" + strNotNullDeclaration +
+                "Okved" + strNotNullDeclaration +
+                "Okogu" + strNotNullDeclaration +
+                "Oktmo" + strNotNullDeclaration +
+                "Inn" + strNotNullDeclaration +
+                "Kpp" + strNotNullDeclaration +
+                "Okopf" + strNotNullDeclaration +
+                "Okfs" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form21()
         {
-            return "";
+            return
+                Form2() +
+            "RefineMachineName" + strNotNullDeclaration +
+            "MachineCode" + shortNotNullDeclaration +
+            "MachinePower" + strNotNullDeclaration +
+            "NumberOfHoursPerYear" + intNotNullDeclaration +
+            "CodeRAOIn" + strNotNullDeclaration +
+            "StatusRAOIn" + strNotNullDeclaration +
+            "VolumeIn" + doubleNotNullDeclaration +
+            "MassIn" + doubleNotNullDeclaration +
+            "QuantityIn" + intNotNullDeclaration +
+            "CodeRAOout" + strNotNullDeclaration +
+            "StatusRAOout" + strNotNullDeclaration +
+            "VolumeOut" + doubleNotNullDeclaration +
+            "MassOut" + doubleNotNullDeclaration +
+            "TritiumActivityIn" + strNotNullDeclaration +
+            "TritiumActivityOut" + strNotNullDeclaration +
+            "QuantityOZIIIout" + intNotNullDeclaration +
+            "TransuraniumActivityIn" + strNotNullDeclaration +
+            "TransuraniumActivityOut" + strNotNullDeclaration +
+            "BetaGammaActivityIn" + strNotNullDeclaration +
+            "AlphaActivityIn" + strNotNullDeclaration +
+            "BetaGammaActivityOut" + strNotNullDeclaration +
+            "AlphaActivityOut" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form22()
         {
-            return "";
+            return
+                Form2() +
+            "TransuraniumActivity" + strNotNullDeclaration +
+            "TritiumActivity" + strNotNullDeclaration +
+            "BetaGammaActivity" + strNotNullDeclaration +
+            "AlphaActivity" + strNotNullDeclaration +
+            "MainRadionuclids" + strNotNullDeclaration +
+            "Subsidy" + strNotNullDeclaration +
+            "FcpNumber" + strNotNullDeclaration +
+            "QuantityOZIII" + intNotNullDeclaration +
+            "PackQuantity" + intNotNullDeclaration +
+            "CodeRAO" + strNotNullDeclaration +
+            "StatusRAO" + strNotNullDeclaration +
+            "PackName" + strNotNullDeclaration +
+            "PackNameNote" + strNotNullDeclaration +
+            "PackType" + strNotNullDeclaration +
+            "PackTypeRecoded" + strNotNullDeclaration +
+            "PackTypeNote" + strNotNullDeclaration +
+            "StoragePlaceCode" + strNotNullDeclaration +
+            "StoragePlaceName" + strNotNullDeclaration +
+            "StoragePlaceNameNote" + strNotNullDeclaration +
+            "VolumeOutOfPack" + doubleNotNullDeclaration +
+            "MassOutOfPack" + doubleNotNullDeclaration +
+            "VolumeInPack" + doubleNotNullDeclaration +
+            "MassInPack" + doubleNotNullDeclaration.Replace(",", "");
         }
         public static string Form23()
         {
-            return "";
+            return
+                Form2() +
+            "DocumentDate" + strNotNullDeclaration +
+            "DocumentName" + strNotNullDeclaration +
+            "DocumentNumber" + strNotNullDeclaration +
+            "DocumentNumberRecoded" + strNotNullDeclaration +
+            "ExpirationDate" + strNotNullDeclaration +
+            "ProjectVolume" + strNotNullDeclaration +
+            "ProjectVolumeNote" + strNotNullDeclaration +
+            "SummaryActivity" + strNotNullDeclaration +
+            "QuantityOZIII" + intNotNullDeclaration +
+            "CodeRAO" + strNotNullDeclaration +
+            "StoragePlaceCode" + strNotNullDeclaration +
+            "StoragePlaceName" + strNotNullDeclaration +
+            "StoragePlaceNameNote" + strNotNullDeclaration +
+            "Volume" + strNotNullDeclaration +
+            "Mass" + doubleNotNullDeclaration.Replace(",", "");
         }
         public static string Form24()
         {
-            return "";
+            return
+                Form2() +
+            "CodeOYATnote" + strNotNullDeclaration +
+            "MassCreated" + doubleNotNullDeclaration +
+            "QuantityCreated" + intNotNullDeclaration +
+            "QuantityCreatedNote" + intNotNullDeclaration +
+            "MassFromAnothers" + doubleNotNullDeclaration +
+            "QuantityFromAnothers" + intNotNullDeclaration +
+            "QuantityFromAnothersNote" + intNotNullDeclaration +
+            "MassFromAnothersImported" + doubleNotNullDeclaration +
+            "QuantityFromAnothersImported" + intNotNullDeclaration +
+            "QuantityFromAnothersImportedNote" + intNotNullDeclaration +
+            "MassAnotherReasons" + doubleNotNullDeclaration +
+            "QuantityAnotherReasons" + intNotNullDeclaration +
+            "QuantityAnotherReasonsNote" + intNotNullDeclaration +
+            "MassRefined" + doubleNotNullDeclaration +
+            "MassTransferredToAnother" + doubleNotNullDeclaration +
+            "QuantityTransferredToAnother" + intNotNullDeclaration +
+            "QuantityTransferredToAnotherNote" + intNotNullDeclaration +
+            "QuantityRefined" + intNotNullDeclaration +
+            "QuantityRefinedNote" + intNotNullDeclaration +
+            "MassRemovedFromAccount" + doubleNotNullDeclaration +
+            "QuantityRemovedFromAccount" + intNotNullDeclaration +
+            "QuantityRemovedFromAccountNote" + intNotNullDeclaration +
+            "CodeOYAT" + strNotNullDeclaration +
+            "FcpNumber" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form25()
         {
-            return "";
+            return
+                Form2() +
+            "CodeOYATnote" + strNotNullDeclaration +
+            "CodeOYAT" + strNotNullDeclaration +
+            "AlphaActivity" + strNotNullDeclaration +
+            "BetaGammaActivity" + strNotNullDeclaration +
+            "StoragePlaceCode" + strNotNullDeclaration +
+            "StoragePlaceName" + strNotNullDeclaration +
+            "FcpNumber" + strNotNullDeclaration +
+            "Quantity" + intNotNullDeclaration +
+            "CellMass" + doubleNotNullDeclaration +
+            "FuelMass" + doubleNotNullDeclaration.Replace(",", "");
         }
         public static string Form26()
         {
-            return "";
+            return
+                Form2() +
+            "SourcesQuantity" + intNotNullDeclaration +
+            "ObservedSourceNumber" + strNotNullDeclaration +
+            "ControlledAreaName" + strNotNullDeclaration +
+            "SupposedWasteSource" + strNotNullDeclaration +
+            "DistanceToWasteSource" + intNotNullDeclaration +
+            "TestDepth" + intNotNullDeclaration +
+            "TestDepthNote" + intNotNullDeclaration +
+            "RadionuclidName" + strNotNullDeclaration +
+            "AverageYearConcentration" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form27()
         {
-            return "";
+            return
+                Form2() +
+                "PermissionNumber" + strNotNullDeclaration +
+                "PermissionIssueDate" + strNotNullDeclaration +
+                "PermissionDocumentName" + strNotNullDeclaration +
+                "ValidBegin" + dateNotNullDeclaration +
+                "ValidThru" + dateNotNullDeclaration +
+                "RadionuclidNameNote" + strNotNullDeclaration +
+                "AllowedWasteValue" + strNotNullDeclaration +
+                "AllowedWasteValueNote" + strNotNullDeclaration +
+                "FactedWasteValue" + strNotNullDeclaration +
+                "FactedWasteValueNote" + strNotNullDeclaration +
+                "WasteOutbreakPreviousYear" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form28()
         {
-            return "";
+            return
+                Form2() +
+            "WasteSourceName" + strNotNullDeclaration +
+            "PermissionNumber1" + strNotNullDeclaration +
+            "PermissionIssueDate1" + dateNotNullDeclaration +
+            "PermissionDocumentName1" + strNotNullDeclaration +
+            "ValidBegin1" + dateNotNullDeclaration +
+            "ValidThru1" + dateNotNullDeclaration +
+            "PermissionNumber2" + strNotNullDeclaration +
+            "PermissionIssueDate2" + dateNotNullDeclaration +
+            "ValidBegin2" + dateNotNullDeclaration +
+            "PermissionDocumentName2" + strNotNullDeclaration +
+            "ValidThru2" + dateNotNullDeclaration +
+            "WasteRecieverName" + strNotNullDeclaration +
+            "RecieverTypeCode" + strNotNullDeclaration +
+            "PoolDistrictName" + strNotNullDeclaration +
+            "AllowedWasteRemovalVolume" + doubleNotNullDeclaration +
+            "RemovedWasteVolume" + doubleNotNullDeclaration +
+            "RemovedWasteVolumeNote" + doubleNotNullDeclaration +
+            "PermissionNumber" + strNotNullDeclaration +
+            "PermissionIssueDate" + strNotNullDeclaration +
+            "ValidBegin" + dateNotNullDeclaration +
+            "ValidThru" + dateNotNullDeclaration +
+            "PermissionDocumentName" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form29()
         {
-            return "";
+            return
+                Form2() +
+            "AllowedActivity" + strNotNullDeclaration +
+            "AllowedActivityNote" + strNotNullDeclaration +
+            "FactedActivity" + strNotNullDeclaration +
+            "FactedActivityNote" + strNotNullDeclaration +
+            "RadionuclidName" + strNotNullDeclaration +
+            "WasteSourceName" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form210()
         {
-            return "";
+            return
+                Form2() +
+            "IndicatorName" + strNotNullDeclaration +
+            "PlotName" + strNotNullDeclaration +
+            "PlotKadastrNumber" + strNotNullDeclaration +
+            "PlotCode" + strNotNullDeclaration +
+            "InfectedArea" + intNotNullDeclaration +
+            "AvgGammaRaysDosePower" + doubleNotNullDeclaration +
+            "MaxGammaRaysDosePower" + doubleNotNullDeclaration +
+            "WasteDensityAlpha" + doubleNotNullDeclaration +
+            "WasteDensityBeta" + doubleNotNullDeclaration +
+            "FcpNumber" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form211()
         {
-            return "";
+            return
+                Form2() +
+            "Radionuclids" + strNotNullDeclaration +
+            "PlotName" + strNotNullDeclaration +
+            "PlotKadastrNumber" + strNotNullDeclaration +
+            "PlotCode" + strNotNullDeclaration +
+            "InfectedArea" + intNotNullDeclaration +
+            "RadionuclidNameNote" + strNotNullDeclaration +
+            "SpecificActivityOfPlot" + strNotNullDeclaration +
+            "SpecificActivityOfLiquidPart" + strNotNullDeclaration +
+            "SpecificActivityOfDensePart" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form212()
         {
-            return "";
+            return
+                Form2() +
+            "Radionuclids" + strNotNullDeclaration +
+            "OperationCode" + strNotNullDeclaration +
+            "ObjectTypeCode" + strNotNullDeclaration +
+            "Activity" + doubleNotNullDeclaration +
+            "ProviderOrRecieverOKPO" + strNotNullDeclaration +
+            "ProviderOrRecieverOKPONote" + strNotNullDeclaration.Replace(",", "");
         }
         //2_Forms
 
         //3_Forms
         public static string Form3()
         {
-            return "";
+            return
+                "CorrectionNumber" + shortNotNullDeclaration +
+                "NotificationDate" + dateNotNullDeclaration.Replace(",", "");
         }
         public static string Form30()
         {
-            return "";
+            return
+                "RegNo" + strNotNullDeclaration +
+                "OrganUprav" + strNotNullDeclaration +
+                "SubjectRF" + strNotNullDeclaration +
+                "JurLico" + strNotNullDeclaration +
+                "ShortJurLico" + strNotNullDeclaration +
+                "JurLicoAddress" + strNotNullDeclaration +
+                "JurLicoFactAddress" + strNotNullDeclaration +
+                "GradeFIO" + strNotNullDeclaration +
+                "Telephone" + strNotNullDeclaration +
+                "Fax" + strNotNullDeclaration +
+                "Email" + strNotNullDeclaration +
+                "Okpo" + strNotNullDeclaration +
+                "Okved" + strNotNullDeclaration +
+                "Okogu" + strNotNullDeclaration +
+                "Oktmo" + strNotNullDeclaration +
+                "Inn" + strNotNullDeclaration +
+                "Kpp" + strNotNullDeclaration +
+                "Okopf" + strNotNullDeclaration +
+                "Okfs" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form31()
         {
-            return "";
+            return
+                Form3() +
+            "RecieverName" + strNotNullDeclaration +
+            "RecieverAddress" + strNotNullDeclaration +
+            "RecieverFactAddress" + strNotNullDeclaration +
+            "LicenseId" + strNotNullDeclaration +
+            "SuggestedSolutionDate" + dateNotNullDeclaration +
+            "UserName" + strNotNullDeclaration +
+            "UserAddress" + strNotNullDeclaration +
+            "UserFactAddress" + strNotNullDeclaration +
+            "UserTelephone" + strNotNullDeclaration +
+            "UserFax" + strNotNullDeclaration +
+            "ZriUsageScope" + strNotNullDeclaration +
+            "ContractId" + strNotNullDeclaration +
+            "ContractDate" + dateNotNullDeclaration +
+            "CountryCreator" + strNotNullDeclaration +
+            "ValidThru" + dateNotNullDeclaration +
+            "Email" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form31_1()
         {
-            return "";
+            return
+                Form3() +
+            "SummaryActivity" + strNotNullDeclaration +
+            "Radionuclids" + strNotNullDeclaration +
+            "Quantity" + intNotNullDeclaration.Replace(",", "");
         }
         public static string Form32()
         {
-            return "";
+            return
+                Form3() +
+            "UniqueAgreementId" + strNotNullDeclaration +
+            "SupplyDate" + dateNotNullDeclaration +
+            "FieldsOfWorking" + strNotNullDeclaration +
+            "LicenseIdRv" + strNotNullDeclaration +
+            "ValidThruRv" + dateNotNullDeclaration +
+            "LicenseIdRao" + strNotNullDeclaration +
+            "ValidThruRao" + dateNotNullDeclaration +
+            "SupplyAddress" + strNotNullDeclaration +
+            "RecieverName" + strNotNullDeclaration +
+            "SummaryActivity" + strNotNullDeclaration +
+            "Radionuclids" + strNotNullDeclaration +
+            "Quantity" + intNotNullDeclaration.Replace(",", "");
         }
         public static string Form32_1()
         {
-            return "";
+            return
+                Form3() +
+            "CertificateId" + strNotNullDeclaration +
+            "NuclearMaterialPresence" + strNotNullDeclaration +
+            "Kategory" + shortNotNullDeclaration +
+            "ActivityOnCreation" + strNotNullDeclaration +
+            "ValidThru" + dateNotNullDeclaration +
+            "PassportNumber" + strNotNullDeclaration +
+            "PassportNumberNote" + strNotNullDeclaration +
+            "Type" + strNotNullDeclaration +
+            "TypeRecoded" + strNotNullDeclaration +
+            "Radionuclids" + strNotNullDeclaration +
+            "FactoryNumber" + strNotNullDeclaration +
+            "FactoryNumberRecoded" + strNotNullDeclaration +
+            "CreationDate" + dateNotNullDeclaration +
+            "CreatorOKPO" + strNotNullDeclaration +
+            "CreatorOKPONote" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form32_2()
         {
-            return "";
+            return
+                Form3() +
+            "DepletedUraniumMass" + doubleNotNullDeclaration +
+            "CreationYear" + strNotNullDeclaration +
+            "Id" + strNotNullDeclaration +
+            "PackName" + strNotNullDeclaration +
+            "PackType" + strNotNullDeclaration +
+            "PackTypeRecoded" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form32_3()
         {
-            return "";
+            return
+                Form3() +
+                "IdName" + strNotNullDeclaration +
+                "Value" + strNotNullDeclaration.Replace(",", "");
         }
         //3_Forms
 
@@ -439,50 +720,143 @@ namespace DBRealization
         }
         public static string Form40()
         {
-            return "";
+            return
+                "SubjectRF" + strNotNullDeclaration +
+                "Year" + intNotNullDeclaration +
+                "SubjectAuthorityName" + intNotNullDeclaration +
+                "ShortSubjectAuthorityName" + intNotNullDeclaration +
+                "FactAddress" + strNotNullDeclaration +
+                "GradeFIOchef" + strNotNullDeclaration +
+                "GradeFIOresponsibleExecutor" + strNotNullDeclaration +
+                "Telephone" + strNotNullDeclaration +
+                "Fax" + strNotNullDeclaration +
+                "Email" + strNotNullDeclaration +
+                "Telephone1" + strNotNullDeclaration +
+                "Fax1" + strNotNullDeclaration +
+                "Email1" + strNotNullDeclaration +
+                "OrgName" + strNotNullDeclaration +
+                "ShortOrgName" + strNotNullDeclaration +
+                "FactAddress1" + strNotNullDeclaration +
+                "GradeFIOchef1" + strNotNullDeclaration +
+                "GradeFIOresponsibleExecutor1" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form41()
         {
-            return "";
+            return
+            "Notes" + strNotNullDeclaration +
+            "OrgName" + strNotNullDeclaration +
+            "NumberInOrder" + intNotNullDeclaration +
+            "LicenseInfo" + strNotNullDeclaration +
+            "QuantityOfFormsInv" + intNotNullDeclaration +
+            "QuantityOfFormsOper" + intNotNullDeclaration +
+            "QuantityOfFormsYear" + intNotNullDeclaration +
+            "Notes" + strNotNullDeclaration +
+            "RegNo" + strNotNullDeclaration +
+            "Okpo" + strNotNullDeclaration.Replace(",", "");
         }
         //4_Forms
 
         //5_Forms
         public static string Form5()
         {
-            return "";
+            return
+                "NumberInOrder" + intNotNullDeclaration +
+                "CorrectionNumber" + shortNotNullDeclaration;
         }
         public static string Form50()
         {
-            return "";
+            return
+                "Authority1" + intNotNullDeclaration +
+                "Year" + intNotNullDeclaration +
+                "JurLico" + strNotNullDeclaration +
+                "ShortJurLico" + strNotNullDeclaration +
+                "JurLicoAddress" + strNotNullDeclaration +
+                "JurLicoFactAddress" + strNotNullDeclaration +
+                "GradeFIO" + strNotNullDeclaration +
+                "GradeFIOresponsibleExecutor" + strNotNullDeclaration +
+                "Telephone" + strNotNullDeclaration +
+                "Fax" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form51()
         {
-            return "";
+            return
+                Form5() +
+            "OperationCode" + strNotNullDeclaration +
+            "NumberInOrder" + intNotNullDeclaration +
+            "Radionuclids" + strNotNullDeclaration +
+            "Quantity" + intNotNullDeclaration +
+            "Activity" + strNotNullDeclaration +
+            "ProviderOrRecieverOKPO" + strNotNullDeclaration +
+            "ProviderOrRecieverOKPONote" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form52()
         {
-            return "";
+            return
+                Form5() +
+            "Kategory" + shortNotNullDeclaration +
+            "Radionuclids" + strNotNullDeclaration +
+            "Quantity" + intNotNullDeclaration +
+            "Activity" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form53()
         {
-            return "";
+            return
+                Form5() +
+            "TypeOfAccountedParts" + intNotNullDeclaration +
+            "KindOri" + intNotNullDeclaration +
+            "OperationCode" + strNotNullDeclaration +
+            "Volume" + doubleNotNullDeclaration +
+            "Mass" + doubleNotNullDeclaration +
+            "AggregateState" + strNotNullDeclaration +
+            "Radionuclids" + strNotNullDeclaration +
+            "Quantity" + intNotNullDeclaration +
+            "Activity" + strNotNullDeclaration +
+            "ProviderOrRecieverOKPO" + strNotNullDeclaration +
+            "ProviderOrRecieverOKPONote" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form54()
         {
-            return "";
+            return
+                Form5() +
+            "TypeOfAccountedParts" + intNotNullDeclaration +
+            "KindOri" + intNotNullDeclaration +
+            "Volume" + doubleNotNullDeclaration +
+            "Mass" + doubleNotNullDeclaration +
+            "AggregateState" + strNotNullDeclaration +
+            "Radionuclids" + strNotNullDeclaration +
+            "Quantity" + intNotNullDeclaration +
+            "Activity" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form55()
         {
-            return "";
+            return
+                Form5() +
+            "OperationCode" + strNotNullDeclaration +
+            "Mass" + doubleNotNullDeclaration +
+            "Name" + strNotNullDeclaration +
+            "Quantity" + intNotNullDeclaration +
+            "ProviderOrRecieverOKPO" + strNotNullDeclaration +
+            "ProviderOrRecieverOKPONote" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form56()
         {
-            return "";
+            return
+                Form5() +
+            "NameIOU" + strNotNullDeclaration +
+            "Mass" + doubleNotNullDeclaration +
+            "Quantity" + intNotNullDeclaration.Replace(",", "");
         }
         public static string Form57()
         {
-            return "";
+            return
+                Form5() +
+            "Note" + strNotNullDeclaration +
+            "PermissionNameNumber" + strNotNullDeclaration +
+            "DocumentNameNumber" + strNotNullDeclaration +
+            "OrgName" + strNotNullDeclaration +
+            "AllowedActivity" + strNotNullDeclaration +
+            "RegNo" + strNotNullDeclaration +
+            "Okpo" + strNotNullDeclaration.Replace(",", "");
         }
         //5_Forms
     }

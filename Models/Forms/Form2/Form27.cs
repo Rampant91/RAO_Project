@@ -11,8 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 2.7: Поступление радионуклидов в атмосферный воздух")]
     public class Form27 : Abstracts.Form2
     {
-
-
         public Form27(IDataAccess Access) : base(Access)
         {
             FormNum = "27";
@@ -31,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionNumber)) != null)
+                if (GetErrors(nameof(PermissionNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionNumber));
                 }
@@ -43,7 +41,7 @@ namespace Models
             set
             {
                 _PermissionNumber_Not_Valid = value;
-                if (GetErrors(nameof(PermissionNumber)) != null)
+                if (GetErrors(nameof(PermissionNumber)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionNumber), _PermissionNumber_Not_Valid);
                 }
@@ -64,7 +62,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionIssueDate)) != null)
+                if (GetErrors(nameof(PermissionIssueDate)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionIssueDate));
                 }
@@ -76,7 +74,7 @@ namespace Models
             set
             {
                 _PermissionIssueDate_Not_Valid = value;
-                if (GetErrors(nameof(PermissionIssueDate)) != null)
+                if (GetErrors(nameof(PermissionIssueDate)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionIssueDate), _PermissionIssueDate_Not_Valid);
                 }
@@ -97,7 +95,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionDocumentName)) != null)
+                if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionDocumentName));
                 }
@@ -109,7 +107,7 @@ namespace Models
             set
             {
                 _PermissionDocumentName_Not_Valid = value;
-                if (GetErrors(nameof(PermissionDocumentName)) != null)
+                if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionDocumentName), _PermissionDocumentName_Not_Valid);
                 }
@@ -130,7 +128,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ValidBegin)) != null)
+                if (GetErrors(nameof(ValidBegin)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ValidBegin));
                 }
@@ -142,7 +140,7 @@ namespace Models
             set
             {
                 _ValidBegin_Not_Valid = value;
-                if (GetErrors(nameof(ValidBegin)) != null)
+                if (GetErrors(nameof(ValidBegin)) == null)
                 {
                     _dataAccess.Set(nameof(ValidBegin), _ValidBegin_Not_Valid);
                 }
@@ -163,7 +161,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ValidThru)) != null)
+                if (GetErrors(nameof(ValidThru)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ValidThru));
                 }
@@ -175,7 +173,7 @@ namespace Models
             set
             {
                 _ValidThru_Not_Valid = value;
-                if (GetErrors(nameof(ValidThru)) != null)
+                if (GetErrors(nameof(ValidThru)) == null)
                 {
                     _dataAccess.Set(nameof(ValidThru), _ValidThru_Not_Valid);
                 }
@@ -195,7 +193,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RadionuclidNameNote)) != null)
+                if (GetErrors(nameof(RadionuclidNameNote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RadionuclidNameNote));
                 }
@@ -207,7 +205,7 @@ namespace Models
             set
             {
                 _RadionuclidNameNote_Not_Valid = value;
-                if (GetErrors(nameof(RadionuclidNameNote)) != null)
+                if (GetErrors(nameof(RadionuclidNameNote)) == null)
                 {
                     _dataAccess.Set(nameof(RadionuclidNameNote), _RadionuclidNameNote_Not_Valid);
                 }
@@ -228,7 +226,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AllowedWasteValue)) != null)
+                if (GetErrors(nameof(AllowedWasteValue)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(AllowedWasteValue));
                 }
@@ -240,7 +238,7 @@ namespace Models
             set
             {
                 _AllowedWasteValue_Not_Valid = value;
-                if (GetErrors(nameof(AllowedWasteValue)) != null)
+                if (GetErrors(nameof(AllowedWasteValue)) == null)
                 {
                     _dataAccess.Set(nameof(AllowedWasteValue), _AllowedWasteValue_Not_Valid);
                 }
@@ -260,7 +258,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AllowedWasteValueNote)) != null)
+                if (GetErrors(nameof(AllowedWasteValueNote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(AllowedWasteValueNote));
                 }
@@ -272,7 +270,7 @@ namespace Models
             set
             {
                 _AllowedWasteValueNote_Not_Valid = value;
-                if (GetErrors(nameof(AllowedWasteValueNote)) != null)
+                if (GetErrors(nameof(AllowedWasteValueNote)) == null)
                 {
                     _dataAccess.Set(nameof(AllowedWasteValueNote), _AllowedWasteValueNote_Not_Valid);
                 }
@@ -293,7 +291,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(FactedWasteValue)) != null)
+                if (GetErrors(nameof(FactedWasteValue)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(FactedWasteValue));
                 }
@@ -305,7 +303,7 @@ namespace Models
             set
             {
                 _FactedWasteValue_Not_Valid = value;
-                if (GetErrors(nameof(FactedWasteValue)) != null)
+                if (GetErrors(nameof(FactedWasteValue)) == null)
                 {
                     _dataAccess.Set(nameof(FactedWasteValue), _FactedWasteValue_Not_Valid);
                 }
@@ -325,7 +323,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(FactedWasteValueNote)) != null)
+                if (GetErrors(nameof(FactedWasteValueNote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(FactedWasteValueNote));
                 }
@@ -337,7 +335,7 @@ namespace Models
             set
             {
                 _FactedWasteValueNote_Not_Valid = value;
-                if (GetErrors(nameof(FactedWasteValueNote)) != null)
+                if (GetErrors(nameof(FactedWasteValueNote)) == null)
                 {
                     _dataAccess.Set(nameof(FactedWasteValueNote), _FactedWasteValueNote_Not_Valid);
                 }
@@ -358,7 +356,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(WasteOutbreakPreviousYear)) != null)
+                if (GetErrors(nameof(WasteOutbreakPreviousYear)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(WasteOutbreakPreviousYear));
                 }
@@ -370,7 +368,7 @@ namespace Models
             set
             {
                 _WasteOutbreakPreviousYear_Not_Valid = value;
-                if (GetErrors(nameof(WasteOutbreakPreviousYear)) != null)
+                if (GetErrors(nameof(WasteOutbreakPreviousYear)) == null)
                 {
                     _dataAccess.Set(nameof(WasteOutbreakPreviousYear), _WasteOutbreakPreviousYear_Not_Valid);
                 }

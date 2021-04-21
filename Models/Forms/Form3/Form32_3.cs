@@ -11,13 +11,6 @@ namespace Models
     [Attributes.Form_Class("Идентификаторы:")]
     public class Form32_3: Abstracts.Form3
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form3.SQLCommandParamsBase() +
-        //        nameof(IdName) + SQLconsts.strNotNullDeclaration +
-        //        nameof(Value) + " varchar(255) not null";
-        //}
         public Form32_3(IDataAccess Access) : base(Access)
         {
             FormNum = "32_3";
@@ -36,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(IdName)) != null)
+                if (GetErrors(nameof(IdName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(IdName));
                 }
@@ -48,7 +41,7 @@ namespace Models
             set
             {
                 _IdName_Not_Valid = value;
-                if (GetErrors(nameof(IdName)) != null)
+                if (GetErrors(nameof(IdName)) == null)
                 {
                     _dataAccess.Set(nameof(IdName), _IdName_Not_Valid);
                 }
@@ -65,7 +58,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Value)) != null)
+                if (GetErrors(nameof(Value)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Value));
                 }
@@ -77,7 +70,7 @@ namespace Models
             set
             {
                 _Value_Not_Valid = value;
-                if (GetErrors(nameof(Value)) != null)
+                if (GetErrors(nameof(Value)) == null)
                 {
                     _dataAccess.Set(nameof(Value), _Value_Not_Valid);
                 }

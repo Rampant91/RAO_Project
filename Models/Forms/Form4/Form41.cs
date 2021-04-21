@@ -11,20 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 4.1: Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне")]
     public class Form41 : Abstracts.Form
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //    nameof(Notes) + SQLconsts.strNotNullDeclaration +
-        //    nameof(OrgName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(NumberInOrder) + SQLconsts.intNotNullDeclaration +
-        //    nameof(LicenseInfo) + SQLconsts.strNotNullDeclaration +
-        //    nameof(QuantityOfFormsInv) + SQLconsts.intNotNullDeclaration +
-        //    nameof(QuantityOfFormsOper) + SQLconsts.intNotNullDeclaration +
-        //    nameof(QuantityOfFormsYear) + SQLconsts.intNotNullDeclaration +
-        //    nameof(Notes) + SQLconsts.strNotNullDeclaration +
-        //    nameof(RegNo) + SQLconsts.strNotNullDeclaration +
-        //    nameof(Okpo) + " varchar(255) not null, ";
-        //}
         public Form41(IDataAccess Access) : base(Access)
         {
             FormNum = "41";
@@ -43,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(NumberInOrder)) != null)
+                if (GetErrors(nameof(NumberInOrder)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(NumberInOrder));
                 }
@@ -55,7 +41,7 @@ namespace Models
             set
             {
                 _NumberInOrder_Not_Valid = value;
-                if (GetErrors(nameof(NumberInOrder)) != null)
+                if (GetErrors(nameof(NumberInOrder)) == null)
                 {
                     _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
                 }
@@ -76,7 +62,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RegNo)) != null)
+                if (GetErrors(nameof(RegNo)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RegNo));
                 }
@@ -88,7 +74,7 @@ namespace Models
             set
             {
                 _RegNo_Not_Valid = value;
-                if (GetErrors(nameof(RegNo)) != null)
+                if (GetErrors(nameof(RegNo)) == null)
                 {
                     _dataAccess.Set(nameof(RegNo), _RegNo_Not_Valid);
                 }
@@ -105,7 +91,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Okpo)) != null)
+                if (GetErrors(nameof(Okpo)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Okpo));
                 }
@@ -117,7 +103,7 @@ namespace Models
             set
             {
                 _Okpo_Not_Valid = value;
-                if (GetErrors(nameof(Okpo)) != null)
+                if (GetErrors(nameof(Okpo)) == null)
                 {
                     _dataAccess.Set(nameof(Okpo), _Okpo_Not_Valid);
                 }
@@ -145,7 +131,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(OrgName)) != null)
+                if (GetErrors(nameof(OrgName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(OrgName));
                 }
@@ -157,7 +143,7 @@ namespace Models
             set
             {
                 _OrgName_Not_Valid = value;
-                if (GetErrors(nameof(OrgName)) != null)
+                if (GetErrors(nameof(OrgName)) == null)
                 {
                     _dataAccess.Set(nameof(OrgName), _OrgName_Not_Valid);
                 }
@@ -174,7 +160,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(LicenseInfo)) != null)
+                if (GetErrors(nameof(LicenseInfo)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(LicenseInfo));
                 }
@@ -186,7 +172,7 @@ namespace Models
             set
             {
                 _LicenseInfo_Not_Valid = value;
-                if (GetErrors(nameof(LicenseInfo)) != null)
+                if (GetErrors(nameof(LicenseInfo)) == null)
                 {
                     _dataAccess.Set(nameof(LicenseInfo), _LicenseInfo_Not_Valid);
                 }
@@ -203,7 +189,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(QuantityOfFormsInv)) != null)
+                if (GetErrors(nameof(QuantityOfFormsInv)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(QuantityOfFormsInv));
                 }
@@ -215,7 +201,7 @@ namespace Models
             set
             {
                 _QuantityOfFormsInv_Not_Valid = value;
-                if (GetErrors(nameof(QuantityOfFormsInv)) != null)
+                if (GetErrors(nameof(QuantityOfFormsInv)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOfFormsInv), _QuantityOfFormsInv_Not_Valid);
                 }
@@ -238,7 +224,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(QuantityOfFormsOper)) != null)
+                if (GetErrors(nameof(QuantityOfFormsOper)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(QuantityOfFormsOper));
                 }
@@ -250,7 +236,7 @@ namespace Models
             set
             {
                 _QuantityOfFormsOper_Not_Valid = value;
-                if (GetErrors(nameof(QuantityOfFormsOper)) != null)
+                if (GetErrors(nameof(QuantityOfFormsOper)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOfFormsOper), _QuantityOfFormsOper_Not_Valid);
                 }
@@ -273,7 +259,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(QuantityOfFormsYear)) != null)
+                if (GetErrors(nameof(QuantityOfFormsYear)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(QuantityOfFormsYear));
                 }
@@ -285,7 +271,7 @@ namespace Models
             set
             {
                 _QuantityOfFormsYear_Not_Valid = value;
-                if (GetErrors(nameof(QuantityOfFormsYear)) != null)
+                if (GetErrors(nameof(QuantityOfFormsYear)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOfFormsYear), _QuantityOfFormsYear_Not_Valid);
                 }
@@ -308,7 +294,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Notes)) != null)
+                if (GetErrors(nameof(Notes)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Notes));
                 }
@@ -320,7 +306,7 @@ namespace Models
             set
             {
                 _Notes_Not_Valid = value;
-                if (GetErrors(nameof(Notes)) != null)
+                if (GetErrors(nameof(Notes)) == null)
                 {
                     _dataAccess.Set(nameof(Notes), _Notes_Not_Valid);
                 }

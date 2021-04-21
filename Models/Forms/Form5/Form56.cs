@@ -11,14 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 5.6: Сведения о наличии в подведомственных организациях изделий из обедненного урана")]
     public class Form56 : Abstracts.Form5
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form5.SQLCommandParamsBase() +
-        //    nameof(NameIOU) + SQLconsts.strNotNullDeclaration +
-        //    nameof(Mass) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(Quantity) + " int not null";
-        //}
         public Form56(IDataAccess Access) : base(Access)
         {
             FormNum = "56";
@@ -37,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(NameIOU)) != null)
+                if (GetErrors(nameof(NameIOU)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(NameIOU));
                 }
@@ -49,7 +41,7 @@ namespace Models
             set
             {
                 _NameIOU_Not_Valid = value;
-                if (GetErrors(nameof(NameIOU)) != null)
+                if (GetErrors(nameof(NameIOU)) == null)
                 {
                     _dataAccess.Set(nameof(NameIOU), _NameIOU_Not_Valid);
                 }
@@ -70,7 +62,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Quantity)) != null)
+                if (GetErrors(nameof(Quantity)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(Quantity));
                 }
@@ -82,7 +74,7 @@ namespace Models
             set
             {
                 _Quantity_Not_Valid = value;
-                if (GetErrors(nameof(Quantity)) != null)
+                if (GetErrors(nameof(Quantity)) == null)
                 {
                     _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
                 }
@@ -105,7 +97,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Mass)) != null)
+                if (GetErrors(nameof(Mass)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(Mass));
                 }
@@ -117,7 +109,7 @@ namespace Models
             set
             {
                 _Mass_Not_Valid = value;
-                if (GetErrors(nameof(Mass)) != null)
+                if (GetErrors(nameof(Mass)) == null)
                 {
                     _dataAccess.Set(nameof(Mass), _Mass_Not_Valid);
                 }

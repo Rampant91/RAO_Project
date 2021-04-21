@@ -19,7 +19,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(NumberInOrder)) != null)
+                if (GetErrors(nameof(NumberInOrder)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(NumberInOrder));
                 }
@@ -31,7 +31,7 @@ namespace Models.Abstracts
             set
             {
                 _NumberInOrder_Not_Valid = value;
-                if (GetErrors(nameof(NumberInOrder)) != null)
+                if (GetErrors(nameof(NumberInOrder)) == null)
                 {
                     _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
                 }
@@ -39,10 +39,10 @@ namespace Models.Abstracts
             }
         }
         private int _NumberInOrder_Not_Valid = -1;
-        private void NumberInOrder_Validation()
-        {
-            ClearErrors(nameof(NumberInOrder));
-        }
+        //private void NumberInOrder_Validation()
+        //{
+        //    ClearErrors(nameof(NumberInOrder));
+        //}
         //NumberInOrder property
 
         //CorrectionNumber property
@@ -51,7 +51,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
+                if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
                     return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
@@ -63,7 +63,7 @@ namespace Models.Abstracts
             set
             {
                 _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
+                if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
                     _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
                 }
@@ -72,21 +72,21 @@ namespace Models.Abstracts
         }
         
         private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
-        {
-            ClearErrors(nameof(CorrectionNumber));
-        }
+        //private void CorrectionNumber_Validation()
+        //{
+        //    ClearErrors(nameof(CorrectionNumber));
+        //}
         //CorrectionNumber property
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public short OperationCode
+        public string OperationCode
         {
             get
             {
-                if (GetErrors(nameof(OperationCode)) != null)
+                if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (short)_dataAccess.Get(nameof(OperationCode));
+                    return (string)_dataAccess.Get(nameof(OperationCode));
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace Models.Abstracts
             set
             {
                 _OperationCode_Not_Valid = value;
-                if (GetErrors(nameof(OperationCode)) != null)
+                if (GetErrors(nameof(OperationCode)) == null)
                 {
                     _dataAccess.Set(nameof(OperationCode), _OperationCode_Not_Valid);
                 }
@@ -104,11 +104,11 @@ namespace Models.Abstracts
             }
         }
         
-        private short _OperationCode_Not_Valid = -1;
-        private void OperationCode_Validation()
-        {
-            ClearErrors(nameof(OperationCode));
-        }
+        private string _OperationCode_Not_Valid = "-1";
+        //private void OperationCode_Validation()
+        //{
+        //    ClearErrors(nameof(OperationCode));
+        //}
         //OprationCode property
 
         //OperationDate property
@@ -117,7 +117,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(OperationDate)) != null)
+                if (GetErrors(nameof(OperationDate)) == null)
                 {
                     return (DateTimeOffset)_dataAccess.Get(nameof(OperationDate));
                 }
@@ -129,7 +129,7 @@ namespace Models.Abstracts
             set
             {
                 _OperationDate_Not_Valid = value;
-                if (GetErrors(nameof(OperationDate)) != null)
+                if (GetErrors(nameof(OperationDate)) == null)
                 {
                     _dataAccess.Set(nameof(OperationDate), _OperationDate_Not_Valid);
                 }
@@ -150,7 +150,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(DocumentVid)) != null)
+                if (GetErrors(nameof(DocumentVid)) == null)
                 {
                     return (byte)_dataAccess.Get(nameof(DocumentVid));
                 }
@@ -162,7 +162,7 @@ namespace Models.Abstracts
             set
             {
                 _DocumentVid_Not_Valid = value;
-                if (GetErrors(nameof(DocumentVid)) != null)
+                if (GetErrors(nameof(DocumentVid)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentVid), _DocumentVid_Not_Valid);
                 }
@@ -171,10 +171,10 @@ namespace Models.Abstracts
         }
         
         private byte _DocumentVid_Not_Valid = 255;
-        private void DocumentVid_Validation(byte value)//TODO
-        {
-            ClearErrors(nameof(DocumentVid));
-        }
+        //private void DocumentVid_Validation(byte value)//TODO
+        //{
+        //    ClearErrors(nameof(DocumentVid));
+        //}
         //DocumentVid property
 
         //DocumentNumber property
@@ -183,7 +183,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(DocumentNumber)) != null)
+                if (GetErrors(nameof(DocumentNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(DocumentNumber));
                 }
@@ -195,7 +195,7 @@ namespace Models.Abstracts
             set
             {
                 _DocumentNumber_Not_Valid = value;
-                if (GetErrors(nameof(DocumentNumber)) != null)
+                if (GetErrors(nameof(DocumentNumber)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentNumber), _DocumentNumber_Not_Valid);
                 }
@@ -215,7 +215,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(DocumentNumberRecoded)) != null)
+                if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(DocumentNumberRecoded));
                 }
@@ -227,7 +227,7 @@ namespace Models.Abstracts
             set
             {
                 _DocumentNumberRecoded_Not_Valid = value;
-                if (GetErrors(nameof(DocumentNumberRecoded)) != null)
+                if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentNumberRecoded), _DocumentNumberRecoded_Not_Valid);
                 }
@@ -236,10 +236,10 @@ namespace Models.Abstracts
         }
         
         private string _DocumentNumberRecoded_Not_Valid = "";
-        private void DocumentNumberRecoded_Validation(string value)//Ready
-        {
-            ClearErrors(nameof(DocumentNumberRecoded));
-        }
+        //private void DocumentNumberRecoded_Validation(string value)//Ready
+        //{
+        //    ClearErrors(nameof(DocumentNumberRecoded));
+        //}
         //DocumentNumberRecoded property
 
         //DocumentDate property
@@ -248,7 +248,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(DocumentDate)) != null)
+                if (GetErrors(nameof(DocumentDate)) == null)
                 {
                     return (DateTimeOffset)_dataAccess.Get(nameof(DocumentDate));
                 }
@@ -260,7 +260,7 @@ namespace Models.Abstracts
             set
             {
                 _DocumentDate_Not_Valid = value;
-                if (GetErrors(nameof(DocumentDate)) != null)
+                if (GetErrors(nameof(DocumentDate)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentDate), _DocumentDate_Not_Valid);
                 }
@@ -269,10 +269,10 @@ namespace Models.Abstracts
         }
         //if change this change validation
         private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.MinValue;
-        private void DocumentDate_Validation(DateTimeOffset value)//Ready
-        {
-            ClearErrors(nameof(DocumentDate));
-        }
+        //private void DocumentDate_Validation(DateTimeOffset value)//Ready
+        //{
+        //    ClearErrors(nameof(DocumentDate));
+        //}
         //DocumentDate property
     }
 }

@@ -11,17 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 2.9: Активность радионуклидов, отведенных со сточными водами")]
     public class Form29 : Abstracts.Form2
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form2.SQLCommandParamsBase() +
-        //    nameof(AllowedActivity) + SQLconsts.strNotNullDeclaration +
-        //    nameof(AllowedActivityNote) + SQLconsts.strNotNullDeclaration +
-        //    nameof(FactedActivity) + SQLconsts.strNotNullDeclaration +
-        //    nameof(FactedActivityNote) + SQLconsts.strNotNullDeclaration +
-        //    nameof(RadionuclidName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(WasteSourceName) + " varchar(255) not null";
-        //}
         public Form29(IDataAccess Access) : base(Access)
         {
             FormNum = "29";
@@ -40,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(WasteSourceName)) != null)
+                if (GetErrors(nameof(WasteSourceName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(WasteSourceName));
                 }
@@ -52,7 +41,7 @@ namespace Models
             set
             {
                 _WasteSourceName_Not_Valid = value;
-                if (GetErrors(nameof(WasteSourceName)) != null)
+                if (GetErrors(nameof(WasteSourceName)) == null)
                 {
                     _dataAccess.Set(nameof(WasteSourceName), _WasteSourceName_Not_Valid);
                 }
@@ -73,7 +62,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RadionuclidName)) != null)
+                if (GetErrors(nameof(RadionuclidName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RadionuclidName));
                 }
@@ -85,7 +74,7 @@ namespace Models
             set
             {
                 _RadionuclidName_Not_Valid = value;
-                if (GetErrors(nameof(RadionuclidName)) != null)
+                if (GetErrors(nameof(RadionuclidName)) == null)
                 {
                     _dataAccess.Set(nameof(RadionuclidName), _RadionuclidName_Not_Valid);
                 }
@@ -106,7 +95,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AllowedActivity)) != null)
+                if (GetErrors(nameof(AllowedActivity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(AllowedActivity));
                 }
@@ -118,7 +107,7 @@ namespace Models
             set
             {
                 _AllowedActivity_Not_Valid = value;
-                if (GetErrors(nameof(AllowedActivity)) != null)
+                if (GetErrors(nameof(AllowedActivity)) == null)
                 {
                     _dataAccess.Set(nameof(AllowedActivity), _AllowedActivity_Not_Valid);
                 }
@@ -152,7 +141,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AllowedActivityNote)) != null)
+                if (GetErrors(nameof(AllowedActivityNote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(AllowedActivityNote));
                 }
@@ -164,7 +153,7 @@ namespace Models
             set
             {
                 _AllowedActivityNote_Not_Valid = value;
-                if (GetErrors(nameof(AllowedActivityNote)) != null)
+                if (GetErrors(nameof(AllowedActivityNote)) == null)
                 {
                     _dataAccess.Set(nameof(AllowedActivityNote), _AllowedActivityNote_Not_Valid);
                 }
@@ -185,7 +174,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(FactedActivity)) != null)
+                if (GetErrors(nameof(FactedActivity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(FactedActivity));
                 }
@@ -197,7 +186,7 @@ namespace Models
             set
             {
                 _FactedActivity_Not_Valid = value;
-                if (GetErrors(nameof(FactedActivity)) != null)
+                if (GetErrors(nameof(FactedActivity)) == null)
                 {
                     _dataAccess.Set(nameof(FactedActivity), _FactedActivity_Not_Valid);
                 }
@@ -228,7 +217,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(FactedActivityNote)) != null)
+                if (GetErrors(nameof(FactedActivityNote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(FactedActivityNote));
                 }
@@ -240,7 +229,7 @@ namespace Models
             set
             {
                 _FactedActivityNote_Not_Valid = value;
-                if (GetErrors(nameof(FactedActivityNote)) != null)
+                if (GetErrors(nameof(FactedActivityNote)) == null)
                 {
                     _dataAccess.Set(nameof(FactedActivityNote), _FactedActivityNote_Not_Valid);
                 }

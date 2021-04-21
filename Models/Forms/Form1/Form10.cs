@@ -29,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RegNo)) != null)
+                if (GetErrors(nameof(RegNo)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RegNo));
                 }
@@ -41,7 +41,7 @@ namespace Models
             set
             {
                 _RegNo_Not_Valid = value;
-                if (GetErrors(nameof(RegNo)) != null)
+                if (GetErrors(nameof(RegNo)) == null)
                 {
                     _dataAccess.Set(nameof(RegNo), _RegNo_Not_Valid);
                 }
@@ -58,7 +58,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(OrganUprav)) != null)
+                if (GetErrors(nameof(OrganUprav)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(OrganUprav));
                 }
@@ -70,7 +70,7 @@ namespace Models
             set
             {
                 _OrganUprav_Not_Valid = value;
-                if (GetErrors(nameof(OrganUprav)) != null)
+                if (GetErrors(nameof(OrganUprav)) == null)
                 {
                     _dataAccess.Set(nameof(OrganUprav), _OrganUprav_Not_Valid);
                 }
@@ -87,7 +87,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(SubjectRF)) != null)
+                if (GetErrors(nameof(SubjectRF)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(SubjectRF));
                 }
@@ -99,7 +99,7 @@ namespace Models
             set
             {
                 _SubjectRF_Not_Valid = value;
-                if (GetErrors(nameof(SubjectRF)) != null)
+                if (GetErrors(nameof(SubjectRF)) == null)
                 {
                     _dataAccess.Set(nameof(SubjectRF), _SubjectRF_Not_Valid);
                 }
@@ -116,7 +116,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(JurLico)) != null)
+                if (GetErrors(nameof(JurLico)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(JurLico));
                 }
@@ -128,7 +128,7 @@ namespace Models
             set
             {
                 _JurLico_Not_Valid = value;
-                if (GetErrors(nameof(JurLico)) != null)
+                if (GetErrors(nameof(JurLico)) == null)
                 {
                     _dataAccess.Set(nameof(JurLico), _JurLico_Not_Valid);
                 }
@@ -145,7 +145,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ShortJurLico)) != null)
+                if (GetErrors(nameof(ShortJurLico)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ShortJurLico));
                 }
@@ -157,7 +157,7 @@ namespace Models
             set
             {
                 _ShortJurLico_Not_Valid = value;
-                if (GetErrors(nameof(ShortJurLico)) != null)
+                if (GetErrors(nameof(ShortJurLico)) == null)
                 {
                     _dataAccess.Set(nameof(ShortJurLico), _ShortJurLico_Not_Valid);
                 }
@@ -174,7 +174,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(JurLicoAddress)) != null)
+                if (GetErrors(nameof(JurLicoAddress)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(JurLicoAddress));
                 }
@@ -186,7 +186,7 @@ namespace Models
             set
             {
                 _JurLicoAddress_Not_Valid = value;
-                if (GetErrors(nameof(JurLicoAddress)) != null)
+                if (GetErrors(nameof(JurLicoAddress)) == null)
                 {
                     _dataAccess.Set(nameof(JurLicoAddress), _JurLicoAddress_Not_Valid);
                 }
@@ -203,7 +203,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(JurLicoFactAddress)) != null)
+                if (GetErrors(nameof(JurLicoFactAddress)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(JurLicoFactAddress));
                 }
@@ -215,7 +215,7 @@ namespace Models
             set
             {
                 _JurLicoFactAddress_Not_Valid = value;
-                if (GetErrors(nameof(JurLicoFactAddress)) != null)
+                if (GetErrors(nameof(JurLicoFactAddress)) == null)
                 {
                     _dataAccess.Set(nameof(JurLicoFactAddress), _JurLicoFactAddress_Not_Valid);
                 }
@@ -232,7 +232,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(GradeFIO)) != null)
+                if (GetErrors(nameof(GradeFIO)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(GradeFIO));
                 }
@@ -244,7 +244,7 @@ namespace Models
             set
             {
                 _GradeFIO_Not_Valid = value;
-                if (GetErrors(nameof(GradeFIO)) != null)
+                if (GetErrors(nameof(GradeFIO)) == null)
                 {
                     _dataAccess.Set(nameof(GradeFIO), _GradeFIO_Not_Valid);
                 }
@@ -261,7 +261,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Telephone)) != null)
+                if (GetErrors(nameof(Telephone)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Telephone));
                 }
@@ -273,7 +273,7 @@ namespace Models
             set
             {
                 _Telephone_Not_Valid = value;
-                if (GetErrors(nameof(Telephone)) != null)
+                if (GetErrors(nameof(Telephone)) == null)
                 {
                     _dataAccess.Set(nameof(Telephone), _Telephone_Not_Valid);
                 }
@@ -290,7 +290,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Fax)) != null)
+                if (GetErrors(nameof(Fax)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Fax));
                 }
@@ -302,7 +302,7 @@ namespace Models
             set
             {
                 _Fax_Not_Valid = value;
-                if (GetErrors(nameof(Fax)) != null)
+                if (GetErrors(nameof(Fax)) == null)
                 {
                     _dataAccess.Set(nameof(Fax), _Fax_Not_Valid);
                 }
@@ -319,7 +319,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Email)) != null)
+                if (GetErrors(nameof(Email)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Email));
                 }
@@ -331,7 +331,7 @@ namespace Models
             set
             {
                 _Email_Not_Valid = value;
-                if (GetErrors(nameof(Email)) != null)
+                if (GetErrors(nameof(Email)) == null)
                 {
                     _dataAccess.Set(nameof(Email), _Email_Not_Valid);
                 }
@@ -348,7 +348,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Okpo)) != null)
+                if (GetErrors(nameof(Okpo)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Okpo));
                 }
@@ -360,7 +360,7 @@ namespace Models
             set
             {
                 _Okpo_Not_Valid = value;
-                if (GetErrors(nameof(Okpo)) != null)
+                if (GetErrors(nameof(Okpo)) == null)
                 {
                     _dataAccess.Set(nameof(Okpo), _Okpo_Not_Valid);
                 }
@@ -388,7 +388,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Okved)) != null)
+                if (GetErrors(nameof(Okved)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Okved));
                 }
@@ -400,7 +400,7 @@ namespace Models
             set
             {
                 _Okved_Not_Valid = value;
-                if (GetErrors(nameof(Okved)) != null)
+                if (GetErrors(nameof(Okved)) == null)
                 {
                     _dataAccess.Set(nameof(Okved), _Okved_Not_Valid);
                 }
@@ -417,7 +417,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Okogu)) != null)
+                if (GetErrors(nameof(Okogu)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Okogu));
                 }
@@ -429,7 +429,7 @@ namespace Models
             set
             {
                 _Okogu_Not_Valid = value;
-                if (GetErrors(nameof(Okved)) != null)
+                if (GetErrors(nameof(Okved)) == null)
                 {
                     _dataAccess.Set(nameof(Okogu), _Okogu_Not_Valid);
                 }
@@ -446,7 +446,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Oktmo)) != null)
+                if (GetErrors(nameof(Oktmo)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Oktmo));
                 }
@@ -458,7 +458,7 @@ namespace Models
             set
             {
                 _Oktmo_Not_Valid = value;
-                if (GetErrors(nameof(Oktmo)) != null)
+                if (GetErrors(nameof(Oktmo)) == null)
                 {
                     _dataAccess.Set(nameof(Oktmo), _Oktmo_Not_Valid);
                 }
@@ -475,7 +475,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Inn)) != null)
+                if (GetErrors(nameof(Inn)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Inn));
                 }
@@ -487,7 +487,7 @@ namespace Models
             set
             {
                 _Inn_Not_Valid = value;
-                if (GetErrors(nameof(Inn)) != null)
+                if (GetErrors(nameof(Inn)) == null)
                 {
                     _dataAccess.Set(nameof(Inn), _Inn_Not_Valid);
                 }
@@ -504,7 +504,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Kpp)) != null)
+                if (GetErrors(nameof(Kpp)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Kpp));
                 }
@@ -516,7 +516,7 @@ namespace Models
             set
             {
                 _Kpp_Not_Valid = value;
-                if (GetErrors(nameof(Kpp)) != null)
+                if (GetErrors(nameof(Kpp)) == null)
                 {
                     _dataAccess.Set(nameof(Kpp), _Kpp_Not_Valid);
                 }
@@ -533,7 +533,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Okopf)) != null)
+                if (GetErrors(nameof(Okopf)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Okopf));
                 }
@@ -545,7 +545,7 @@ namespace Models
             set
             {
                 _Okopf_Not_Valid = value;
-                if (GetErrors(nameof(Okopf)) != null)
+                if (GetErrors(nameof(Okopf)) == null)
                 {
                     _dataAccess.Set(nameof(Okopf), _Okopf_Not_Valid);
                 }
@@ -562,7 +562,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Okfs)) != null)
+                if (GetErrors(nameof(Okfs)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Okfs));
                 }
@@ -574,7 +574,7 @@ namespace Models
             set
             {
                 _Okfs_Not_Valid = value;
-                if (GetErrors(nameof(Okfs)) != null)
+                if (GetErrors(nameof(Okfs)) == null)
                 {
                     _dataAccess.Set(nameof(Okfs), _Okfs_Not_Valid);
                 }

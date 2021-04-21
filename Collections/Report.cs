@@ -65,7 +65,7 @@ namespace Collections
         {
             get
             {
-                if (GetErrors(nameof(IsCorrection)) != null)
+                if (GetErrors(nameof(IsCorrection)) == null)
                 {
                     return (bool)_dataAccess.Get(nameof(IsCorrection));
                 }
@@ -77,7 +77,7 @@ namespace Collections
             set
             {
                 _IsCorrection_Not_Valid = value;
-                if (GetErrors(nameof(IsCorrection)) != null)
+                if (GetErrors(nameof(IsCorrection)) == null)
                 {
                     _dataAccess.Set(nameof(IsCorrection), _IsCorrection_Not_Valid);
                 }
@@ -97,7 +97,7 @@ namespace Collections
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
+                if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
                     return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
@@ -109,7 +109,7 @@ namespace Collections
             set
             {
                 _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
+                if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
                     _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
                 }
@@ -129,7 +129,7 @@ namespace Collections
         {
             get
             {
-                if (GetErrors(nameof(NumberInOrder)) != null)
+                if (GetErrors(nameof(NumberInOrder)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(NumberInOrder));
                 }
@@ -141,7 +141,7 @@ namespace Collections
             set
             {
                 _NumberInOrder_Not_Valid = value;
-                if (GetErrors(nameof(NumberInOrder)) != null)
+                if (GetErrors(nameof(NumberInOrder)) == null)
                 {
                     _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
                 }
@@ -161,7 +161,7 @@ namespace Collections
         {
             get
             {
-                if (GetErrors(nameof(Comments)) != null)
+                if (GetErrors(nameof(Comments)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Comments));
                 }
@@ -173,7 +173,7 @@ namespace Collections
             set
             {
                 _Comments_Not_Valid = value;
-                if (GetErrors(nameof(NumberInOrder)) != null)
+                if (GetErrors(nameof(NumberInOrder)) == null)
                 {
                     _dataAccess.Set(nameof(Comments), _Comments_Not_Valid);
                 }
@@ -193,7 +193,7 @@ namespace Collections
         //{
         //    get
         //    {
-        //        if (GetErrors(nameof(Notes)) != null)
+        //        if (GetErrors(nameof(Notes)) == null)
         //        {
         //            return (ObservableConcurrentDictionary<string, Note>)_dataAccess.GetOne\(.*\,"");
         //        }
@@ -205,7 +205,7 @@ namespace Collections
         //    set
         //    {
         //        _Notes_Not_Valid = value;
-        //        if (GetErrors(nameof(Notes)) != null)
+        //        if (GetErrors(nameof(Notes)) == null)
         //        {
         //            _dataAccess.Set(nameof(Notes), _Notes_Not_Valid);
         //        }
@@ -225,7 +225,7 @@ namespace Collections
         {
             get
             {
-                if (GetErrors(nameof(StartPeriod)) != null)
+                if (GetErrors(nameof(StartPeriod)) == null)
                 {
                     return (DateTimeOffset)_dataAccess.Get(nameof(StartPeriod));
                 }
@@ -237,7 +237,7 @@ namespace Collections
             set
             {
                 _StartPeriod_Not_Valid = value;
-                if (GetErrors(nameof(StartPeriod)) != null)
+                if (GetErrors(nameof(StartPeriod)) == null)
                 {
                     _dataAccess.Set(nameof(StartPeriod), _StartPeriod_Not_Valid);
                 }
@@ -245,7 +245,7 @@ namespace Collections
             }
         }
         private DateTimeOffset _StartPeriod_Not_Valid = DateTimeOffset.Now;
-        private bool StartPeriod_Validation()
+        private void StartPeriod_Validation()
         {
             ClearErrors(nameof(StartPeriod));
             if (_StartPeriod_Not_Valid.Equals(DateTimeOffset.MinValue))
@@ -254,15 +254,6 @@ namespace Collections
                 if (!EndPeriod.Equals(DateTimeOffset.MinValue))
                 if (_StartPeriod_Not_Valid.CompareTo(_EndPeriod_Not_Valid) > 0)
                     AddError(nameof(StartPeriod), "Начало периода не может быть позже его конца");
-
-            if (GetErrors(nameof(StartPeriod)) != null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
         }
         //StartPeriod
 
@@ -272,7 +263,7 @@ namespace Collections
         {
             get
             {
-                if (GetErrors(nameof(EndPeriod)) != null)
+                if (GetErrors(nameof(EndPeriod)) == null)
                 {
                     return (DateTimeOffset)_dataAccess.Get(nameof(EndPeriod));
                 }
@@ -284,7 +275,7 @@ namespace Collections
             set
             {
                 _EndPeriod_Not_Valid = value;
-                if (GetErrors(nameof(EndPeriod)) != null)
+                if (GetErrors(nameof(EndPeriod)) == null)
                 {
                     _dataAccess.Set(nameof(EndPeriod), _EndPeriod_Not_Valid);
                 }
@@ -292,7 +283,7 @@ namespace Collections
             }
         }
         private DateTimeOffset _EndPeriod_Not_Valid = DateTimeOffset.Now;
-        private bool EndPeriod_Validation()
+        private void EndPeriod_Validation()
         {
             ClearErrors(nameof(EndPeriod));
             if (_EndPeriod_Not_Valid.Equals(DateTimeOffset.MinValue))
@@ -301,15 +292,6 @@ namespace Collections
                 if (!EndPeriod.Equals(DateTimeOffset.MinValue))
                 if (_StartPeriod_Not_Valid.CompareTo(_EndPeriod_Not_Valid) > 0)
                     AddError(nameof(EndPeriod), "Начало периода не может быть позже его конца");
-
-            if (GetErrors(nameof(EndPeriod)) != null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
         }
         //EndPeriod
 
@@ -319,7 +301,7 @@ namespace Collections
         {
             get
             {
-                if (GetErrors(nameof(ExportDate)) != null)
+                if (GetErrors(nameof(ExportDate)) == null)
                 {
                     return (DateTimeOffset)_dataAccess.Get(nameof(ExportDate));
                 }
@@ -331,7 +313,7 @@ namespace Collections
             set
             {
                 _ExportDate_Not_Valid = value;
-                if (GetErrors(nameof(ExportDate)) != null)
+                if (GetErrors(nameof(ExportDate)) == null)
                 {
                     _dataAccess.Set(nameof(ExportDate), _ExportDate_Not_Valid);
                 }

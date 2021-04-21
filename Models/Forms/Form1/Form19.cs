@@ -25,7 +25,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(CodeTypeAccObject)) != null)
+                if (GetErrors(nameof(CodeTypeAccObject)) == null)
                 {
                     return (short)_dataAccess.Get(nameof(CodeTypeAccObject));
                 }
@@ -37,7 +37,7 @@ namespace Models
             set
             {
                 _CodeTypeAccObject_Not_Valid = value;
-                if (GetErrors(nameof(CodeTypeAccObject)) != null)
+                if (GetErrors(nameof(CodeTypeAccObject)) == null)
                 {
                     _dataAccess.Set(nameof(CodeTypeAccObject), _CodeTypeAccObject_Not_Valid);
                 }
@@ -58,7 +58,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Radionuclids));                }
                 else
@@ -69,7 +69,7 @@ namespace Models
             set
             {
                 _Radionuclids_Not_Valid = value;
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
                 OnPropertyChanged(nameof(Radionuclids));
@@ -89,7 +89,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Activity)) != null)
+                if (GetErrors(nameof(Activity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Activity));
                 }
@@ -101,7 +101,7 @@ namespace Models
             set
             {
                 _Activity_Not_Valid = value;
-                if (GetErrors(nameof(Activity)) != null)
+                if (GetErrors(nameof(Activity)) == null)
                 {
                     _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
                 }

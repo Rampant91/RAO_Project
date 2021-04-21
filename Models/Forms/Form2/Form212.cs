@@ -8,17 +8,6 @@ namespace Models
     [Attributes.Form_Class("Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ")]
     public class Form212 : Abstracts.Form2
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form2.SQLCommandParamsBase() +
-        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-        //    nameof(OperationCode) + SQLconsts.shortNotNullDeclaration +
-        //    nameof(ObjectTypeCode) + SQLconsts.strNotNullDeclaration +
-        //    nameof(Activity) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(ProviderOrRecieverOKPO) + SQLconsts.strNotNullDeclaration +
-        //    nameof(ProviderOrRecieverOKPONote) + " varchar(255) not null";
-        //}
         public Form212(IDataAccess Access) : base(Access)
         {
             FormNum = "212";
@@ -33,13 +22,13 @@ namespace Models
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public short OperationCode
+        public string OperationCode
         {
             get
             {
-                if (GetErrors(nameof(OperationCode)) != null)
+                if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (short)_dataAccess.Get(nameof(OperationCode));
+                    return (string)_dataAccess.Get(nameof(OperationCode));
                 }
                 else
                 {
@@ -49,7 +38,7 @@ namespace Models
             set
             {
                 _OperationCode_Not_Valid = value;
-                if (GetErrors(nameof(OperationCode)) != null)
+                if (GetErrors(nameof(OperationCode)) == null)
                 {
                     _dataAccess.Set(nameof(OperationCode), _OperationCode_Not_Valid);
                 }
@@ -57,7 +46,7 @@ namespace Models
             }
         }
         
-        private short _OperationCode_Not_Valid = -1;
+        private string _OperationCode_Not_Valid = "-1";
         private void OperationCode_Validation()
         {
             ClearErrors(nameof(OperationCode));
@@ -70,7 +59,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ObjectTypeCode)) != null)
+                if (GetErrors(nameof(ObjectTypeCode)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ObjectTypeCode));
                 }
@@ -82,7 +71,7 @@ namespace Models
             set
             {
                 _ObjectTypeCode_Not_Valid = value;
-                if (GetErrors(nameof(ObjectTypeCode)) != null)
+                if (GetErrors(nameof(ObjectTypeCode)) == null)
                 {
                     _dataAccess.Set(nameof(ObjectTypeCode), _ObjectTypeCode_Not_Valid);
                 }
@@ -103,7 +92,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Radionuclids));                }
                 else
@@ -114,7 +103,7 @@ namespace Models
             set
             {
                 _Radionuclids_Not_Valid = value;
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
                 OnPropertyChanged(nameof(Radionuclids));
@@ -134,7 +123,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Activity)) != null)
+                if (GetErrors(nameof(Activity)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(Activity));
                 }
@@ -146,7 +135,7 @@ namespace Models
             set
             {
                 _Activity_Not_Valid = value;
-                if (GetErrors(nameof(Activity)) != null)
+                if (GetErrors(nameof(Activity)) == null)
                 {
                     _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
                 }
@@ -169,7 +158,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
+                if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
                 }
@@ -181,7 +170,7 @@ namespace Models
             set
             {
                 _ProviderOrRecieverOKPO_Not_Valid = value;
-                if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
+                if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
                 }
@@ -210,7 +199,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
                 }
@@ -222,7 +211,7 @@ namespace Models
             set
             {
                 _ProviderOrRecieverOKPONote_Not_Valid = value;
-                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), _ProviderOrRecieverOKPONote_Not_Valid);
                 }

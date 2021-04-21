@@ -11,27 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 3.1: Отчет о намерении экспортировать радиоактивные источники 1 и 2 категории")]
     public class Form31 : Abstracts.Form3
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form3.SQLCommandParamsBase() +
-        //    nameof(RecieverName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(RecieverAddress) + SQLconsts.strNotNullDeclaration +
-        //    nameof(RecieverFactAddress) + SQLconsts.strNotNullDeclaration +
-        //    nameof(LicenseId) + SQLconsts.strNotNullDeclaration +
-        //    nameof(SuggestedSolutionDate) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(UserName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(UserAddress) + SQLconsts.strNotNullDeclaration +
-        //    nameof(UserFactAddress) + SQLconsts.strNotNullDeclaration +
-        //    nameof(UserTelephone) + SQLconsts.strNotNullDeclaration +
-        //    nameof(UserFax) + SQLconsts.strNotNullDeclaration +
-        //    nameof(ZriUsageScope) + SQLconsts.strNotNullDeclaration +
-        //    nameof(ContractId) + SQLconsts.strNotNullDeclaration +
-        //    nameof(ContractDate) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(CountryCreator) + SQLconsts.strNotNullDeclaration +
-        //    nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(Email) + " varchar(255) not null";
-        //}
         public Form31(IDataAccess Access) : base(Access)
         {
             FormNum = "31";
@@ -51,7 +30,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RecieverName)) != null)
+                if (GetErrors(nameof(RecieverName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RecieverName));
                 }
@@ -63,7 +42,7 @@ namespace Models
             set
             {
                 _RecieverName_Not_Valid = value;
-                if (GetErrors(nameof(RecieverName)) != null)
+                if (GetErrors(nameof(RecieverName)) == null)
                 {
                     _dataAccess.Set(nameof(RecieverName), _RecieverName_Not_Valid);
                 }
@@ -80,7 +59,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RecieverAddress)) != null)
+                if (GetErrors(nameof(RecieverAddress)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RecieverAddress));
                 }
@@ -92,7 +71,7 @@ namespace Models
             set
             {
                 _RecieverAddress_Not_Valid = value;
-                if (GetErrors(nameof(RecieverAddress)) != null)
+                if (GetErrors(nameof(RecieverAddress)) == null)
                 {
                     _dataAccess.Set(nameof(RecieverAddress), _RecieverAddress_Not_Valid);
                 }
@@ -109,7 +88,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RecieverFactAddress)) != null)
+                if (GetErrors(nameof(RecieverFactAddress)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RecieverFactAddress));
                 }
@@ -121,7 +100,7 @@ namespace Models
             set
             {
                 _RecieverFactAddress_Not_Valid = value;
-                if (GetErrors(nameof(RecieverFactAddress)) != null)
+                if (GetErrors(nameof(RecieverFactAddress)) == null)
                 {
                     _dataAccess.Set(nameof(RecieverFactAddress), _RecieverFactAddress_Not_Valid);
                 }
@@ -138,7 +117,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(LicenseId)) != null)
+                if (GetErrors(nameof(LicenseId)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(LicenseId));
                 }
@@ -150,7 +129,7 @@ namespace Models
             set
             {
                 _LicenseId_Not_Valid = value;
-                if (GetErrors(nameof(LicenseId)) != null)
+                if (GetErrors(nameof(LicenseId)) == null)
                 {
                     _dataAccess.Set(nameof(LicenseId), _LicenseId_Not_Valid);
                 }
@@ -167,7 +146,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ValidThru)) != null)
+                if (GetErrors(nameof(ValidThru)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ValidThru));
                 }
@@ -179,7 +158,7 @@ namespace Models
             set
             {
                 _ValidThru_Not_Valid = value;
-                if (GetErrors(nameof(ValidThru)) != null)
+                if (GetErrors(nameof(ValidThru)) == null)
                 {
                     _dataAccess.Set(nameof(ValidThru), _ValidThru_Not_Valid);
                 }
@@ -196,7 +175,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(SuggestedSolutionDate)) != null)
+                if (GetErrors(nameof(SuggestedSolutionDate)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(SuggestedSolutionDate));
                 }
@@ -208,7 +187,7 @@ namespace Models
             set
             {
                 _SuggestedSolutionDate_Not_Valid = value;
-                if (GetErrors(nameof(SuggestedSolutionDate)) != null)
+                if (GetErrors(nameof(SuggestedSolutionDate)) == null)
                 {
                     _dataAccess.Set(nameof(SuggestedSolutionDate), _SuggestedSolutionDate_Not_Valid);
                 }
@@ -225,7 +204,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(UserName)) != null)
+                if (GetErrors(nameof(UserName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(UserName));
                 }
@@ -237,7 +216,7 @@ namespace Models
             set
             {
                 _UserName_Not_Valid = value;
-                if (GetErrors(nameof(UserName)) != null)
+                if (GetErrors(nameof(UserName)) == null)
                 {
                     _dataAccess.Set(nameof(UserName), _UserName_Not_Valid);
                 }
@@ -254,7 +233,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(UserAddress)) != null)
+                if (GetErrors(nameof(UserAddress)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(UserAddress));
                 }
@@ -266,7 +245,7 @@ namespace Models
             set
             {
                 _UserAddress_Not_Valid = value;
-                if (GetErrors(nameof(UserAddress)) != null)
+                if (GetErrors(nameof(UserAddress)) == null)
                 {
                     _dataAccess.Set(nameof(UserAddress), _UserAddress_Not_Valid);
                 }
@@ -283,7 +262,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(UserFactAddress)) != null)
+                if (GetErrors(nameof(UserFactAddress)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(UserFactAddress));
                 }
@@ -295,7 +274,7 @@ namespace Models
             set
             {
                 _UserFactAddress_Not_Valid = value;
-                if (GetErrors(nameof(UserFactAddress)) != null)
+                if (GetErrors(nameof(UserFactAddress)) == null)
                 {
                     _dataAccess.Set(nameof(UserFactAddress), _UserFactAddress_Not_Valid);
                 }
@@ -312,7 +291,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(UserTelephone)) != null)
+                if (GetErrors(nameof(UserTelephone)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(UserTelephone));
                 }
@@ -324,7 +303,7 @@ namespace Models
             set
             {
                 _UserTelephone_Not_Valid = value;
-                if (GetErrors(nameof(UserTelephone)) != null)
+                if (GetErrors(nameof(UserTelephone)) == null)
                 {
                     _dataAccess.Set(nameof(UserTelephone), _UserTelephone_Not_Valid);
                 }
@@ -341,7 +320,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(UserFax)) != null)
+                if (GetErrors(nameof(UserFax)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(UserFax));
                 }
@@ -353,7 +332,7 @@ namespace Models
             set
             {
                 _UserFax_Not_Valid = value;
-                if (GetErrors(nameof(UserFax)) != null)
+                if (GetErrors(nameof(UserFax)) == null)
                 {
                     _dataAccess.Set(nameof(UserFax), _UserFax_Not_Valid);
                 }
@@ -370,7 +349,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Email)) != null)
+                if (GetErrors(nameof(Email)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Email));
                 }
@@ -382,7 +361,7 @@ namespace Models
             set
             {
                 _Email_Not_Valid = value;
-                if (GetErrors(nameof(Email)) != null)
+                if (GetErrors(nameof(Email)) == null)
                 {
                     _dataAccess.Set(nameof(Email), _Email_Not_Valid);
                 }
@@ -399,7 +378,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ZriUsageScope)) != null)
+                if (GetErrors(nameof(ZriUsageScope)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ZriUsageScope));
                 }
@@ -411,7 +390,7 @@ namespace Models
             set
             {
                 _ZriUsageScope_Not_Valid = value;
-                if (GetErrors(nameof(ZriUsageScope)) != null)
+                if (GetErrors(nameof(ZriUsageScope)) == null)
                 {
                     _dataAccess.Set(nameof(ZriUsageScope), _ZriUsageScope_Not_Valid);
                 }
@@ -428,7 +407,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ContractId)) != null)
+                if (GetErrors(nameof(ContractId)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ContractId));
                 }
@@ -440,7 +419,7 @@ namespace Models
             set
             {
                 _ContractId_Not_Valid = value;
-                if (GetErrors(nameof(ContractId)) != null)
+                if (GetErrors(nameof(ContractId)) == null)
                 {
                     _dataAccess.Set(nameof(ContractId), _ContractId_Not_Valid);
                 }
@@ -457,7 +436,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ContractDate)) != null)
+                if (GetErrors(nameof(ContractDate)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ContractDate));
                 }
@@ -469,7 +448,7 @@ namespace Models
             set
             {
                 _ContractDate_Not_Valid = value;
-                if (GetErrors(nameof(ContractDate)) != null)
+                if (GetErrors(nameof(ContractDate)) == null)
                 {
                     _dataAccess.Set(nameof(ContractDate), _ContractDate_Not_Valid);
                 }
@@ -486,7 +465,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(CountryCreator)) != null)
+                if (GetErrors(nameof(CountryCreator)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(CountryCreator));
                 }
@@ -498,7 +477,7 @@ namespace Models
             set
             {
                 _CountryCreator_Not_Valid = value;
-                if (GetErrors(nameof(CountryCreator)) != null)
+                if (GetErrors(nameof(CountryCreator)) == null)
                 {
                     _dataAccess.Set(nameof(CountryCreator), _CountryCreator_Not_Valid);
                 }

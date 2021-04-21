@@ -8,14 +8,6 @@ namespace Models
     [Attributes.Form_Class("Характеристики экспортируемых ЗРИ/ОЗИИИ:")]
     public class Form31_1 : Abstracts.Form3
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form3.SQLCommandParamsBase() +
-        //    nameof(SummaryActivity) + SQLconsts.strNotNullDeclaration +
-        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-        //    nameof(Quantity) + " int not null";
-        //}
         public Form31_1(IDataAccess Access) : base(Access)
         {
             FormNum = "31_1";
@@ -35,7 +27,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Radionuclids));                }
                 else
@@ -46,7 +38,7 @@ namespace Models
             set
             {
                 _Radionuclids_Not_Valid = value;
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
                 OnPropertyChanged(nameof(Radionuclids));
@@ -66,7 +58,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Quantity)) != null)
+                if (GetErrors(nameof(Quantity)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(Quantity));
                 }
@@ -78,7 +70,7 @@ namespace Models
             set
             {
                 _Quantity_Not_Valid = value;
-                if (GetErrors(nameof(Quantity)) != null)
+                if (GetErrors(nameof(Quantity)) == null)
                 {
                     _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
                 }
@@ -101,7 +93,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(SummaryActivity)) != null)
+                if (GetErrors(nameof(SummaryActivity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(SummaryActivity));
                 }
@@ -113,7 +105,7 @@ namespace Models
             set
             {
                 _SummaryActivity_Not_Valid = value;
-                if (GetErrors(nameof(SummaryActivity)) != null)
+                if (GetErrors(nameof(SummaryActivity)) == null)
                 {
                     _dataAccess.Set(nameof(SummaryActivity), _SummaryActivity_Not_Valid);
                 }

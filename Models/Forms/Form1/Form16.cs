@@ -27,7 +27,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(CodeRAO)) != null)
+                if (GetErrors(nameof(CodeRAO)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(CodeRAO));
                 }
@@ -39,7 +39,7 @@ namespace Models
             set
             {
                 _CodeRAO_Not_Valid = value;
-                if (GetErrors(nameof(CodeRAO)) != null)
+                if (GetErrors(nameof(CodeRAO)) == null)
                 {
                     _dataAccess.Set(nameof(CodeRAO), _CodeRAO_Not_Valid);
                 }
@@ -60,7 +60,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(StatusRAO)) != null)
+                if (GetErrors(nameof(StatusRAO)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(StatusRAO));
                 }
@@ -72,7 +72,7 @@ namespace Models
             set
             {
                 _StatusRAO_Not_Valid = value;
-                if (GetErrors(nameof(StatusRAO)) != null)
+                if (GetErrors(nameof(StatusRAO)) == null)
                 {
                     _dataAccess.Set(nameof(StatusRAO), _StatusRAO_Not_Valid);
                 }
@@ -93,7 +93,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Volume)) != null)
+                if (GetErrors(nameof(Volume)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(Volume));
                 }
@@ -105,7 +105,7 @@ namespace Models
             set
             {
                 _Volume_Not_Valid = value;
-                if (GetErrors(nameof(Volume)) != null)
+                if (GetErrors(nameof(Volume)) == null)
                 {
                     _dataAccess.Set(nameof(Volume), _Volume_Not_Valid);
                 }
@@ -126,7 +126,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Mass)) != null)
+                if (GetErrors(nameof(Mass)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(Mass));
                 }
@@ -138,7 +138,7 @@ namespace Models
             set
             {
                 _Mass_Not_Valid = value;
-                if (GetErrors(nameof(Mass)) != null)
+                if (GetErrors(nameof(Mass)) == null)
                 {
                     _dataAccess.Set(nameof(Mass), _Mass_Not_Valid);
                 }
@@ -159,7 +159,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(MainRadionuclids)) != null)
+                if (GetErrors(nameof(MainRadionuclids)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(MainRadionuclids));
                 }
@@ -171,7 +171,7 @@ namespace Models
             set
             {
                 _MainRadionuclids_Not_Valid = value;
-                if (GetErrors(nameof(MainRadionuclids)) != null)
+                if (GetErrors(nameof(MainRadionuclids)) == null)
                 {
                     _dataAccess.Set(nameof(MainRadionuclids), _MainRadionuclids_Not_Valid);
                 }
@@ -192,7 +192,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TritiumActivity)) != null)
+                if (GetErrors(nameof(TritiumActivity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(TritiumActivity));
                 }
@@ -204,7 +204,7 @@ namespace Models
             set
             {
                 _TritiumActivity_Not_Valid = value;
-                if (GetErrors(nameof(TritiumActivity)) != null)
+                if (GetErrors(nameof(TritiumActivity)) == null)
                 {
                     _dataAccess.Set(nameof(TritiumActivity), _TritiumActivity_Not_Valid);
                 }
@@ -243,7 +243,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(BetaGammaActivity)) != null)
+                if (GetErrors(nameof(BetaGammaActivity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(BetaGammaActivity));
                 }
@@ -255,7 +255,7 @@ namespace Models
             set
             {
                 _BetaGammaActivity_Not_Valid = value;
-                if (GetErrors(nameof(BetaGammaActivity)) != null)
+                if (GetErrors(nameof(BetaGammaActivity)) == null)
                 {
                     _dataAccess.Set(nameof(BetaGammaActivity), _BetaGammaActivity_Not_Valid);
                 }
@@ -294,7 +294,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AlphaActivity)) != null)
+                if (GetErrors(nameof(AlphaActivity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(AlphaActivity));
                 }
@@ -306,7 +306,7 @@ namespace Models
             set
             {
                 _AlphaActivity_Not_Valid = value;
-                if (GetErrors(nameof(AlphaActivity)) != null)
+                if (GetErrors(nameof(AlphaActivity)) == null)
                 {
                     _dataAccess.Set(nameof(AlphaActivity), _AlphaActivity_Not_Valid);
                 }
@@ -345,7 +345,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TransuraniumActivity)) != null)
+                if (GetErrors(nameof(TransuraniumActivity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(TransuraniumActivity));
                 }
@@ -357,7 +357,7 @@ namespace Models
             set
             {
                 _TransuraniumActivity_Not_Valid = value;
-                if (GetErrors(nameof(TransuraniumActivity)) != null)
+                if (GetErrors(nameof(TransuraniumActivity)) == null)
                 {
                     _dataAccess.Set(nameof(TransuraniumActivity), _TransuraniumActivity_Not_Valid);
                 }
@@ -396,7 +396,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ActivityMeasurementDate)) != null)
+                if (GetErrors(nameof(ActivityMeasurementDate)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ActivityMeasurementDate));
                 }
@@ -408,7 +408,7 @@ namespace Models
             set
             {
                 _ActivityMeasurementDate_Not_Valid = value;
-                if (GetErrors(nameof(ActivityMeasurementDate)) != null)
+                if (GetErrors(nameof(ActivityMeasurementDate)) == null)
                 {
                     _dataAccess.Set(nameof(ActivityMeasurementDate), _ActivityMeasurementDate_Not_Valid);
                 }
@@ -429,7 +429,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
+                if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
                 }
@@ -441,7 +441,7 @@ namespace Models
             set
             {
                 _ProviderOrRecieverOKPO_Not_Valid = value;
-                if (GetErrors(nameof(ProviderOrRecieverOKPO)) != null)
+                if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
                 }
@@ -470,7 +470,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
                 }
@@ -482,7 +482,7 @@ namespace Models
             set
             {
                 _ProviderOrRecieverOKPONote_Not_Valid = value;
-                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) != null)
+                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), _ProviderOrRecieverOKPONote_Not_Valid);
                 }
@@ -503,7 +503,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TransporterOKPO)) != null)
+                if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(TransporterOKPO));
                 }
@@ -515,7 +515,7 @@ namespace Models
             set
             {
                 _TransporterOKPO_Not_Valid = value;
-                if (GetErrors(nameof(TransporterOKPO)) != null)
+                if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(TransporterOKPO), _TransporterOKPO_Not_Valid);
                 }
@@ -544,7 +544,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TransporterOKPONote)) != null)
+                if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(TransporterOKPONote));
                 }
@@ -556,7 +556,7 @@ namespace Models
             set
             {
                 _TransporterOKPONote_Not_Valid = value;
-                if (GetErrors(nameof(TransporterOKPONote)) != null)
+                if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
                     _dataAccess.Set(nameof(TransporterOKPONote), _TransporterOKPONote_Not_Valid);
                 }
@@ -577,7 +577,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackName)) != null)
+                if (GetErrors(nameof(PackName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackName));
                 }
@@ -589,7 +589,7 @@ namespace Models
             set
             {
                 _PackName_Not_Valid = value;
-                if (GetErrors(nameof(PackName)) != null)
+                if (GetErrors(nameof(PackName)) == null)
                 {
                     _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
                 }
@@ -609,7 +609,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackNameNote)) != null)
+                if (GetErrors(nameof(PackNameNote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackNameNote));
                 }
@@ -621,7 +621,7 @@ namespace Models
             set
             {
                 _PackNameNote_Not_Valid = value;
-                if (GetErrors(nameof(PackNameNote)) != null)
+                if (GetErrors(nameof(PackNameNote)) == null)
                 {
                     _dataAccess.Set(nameof(PackNameNote), _PackNameNote_Not_Valid);
                 }
@@ -642,7 +642,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackType)) != null)
+                if (GetErrors(nameof(PackType)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackType));
                 }
@@ -654,7 +654,7 @@ namespace Models
             set
             {
                 _PackType_Not_Valid = value;
-                if (GetErrors(nameof(PackType)) != null)
+                if (GetErrors(nameof(PackType)) == null)
                 {
                     _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
                 }
@@ -674,7 +674,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackTypeRecoded));
                 }
@@ -686,7 +686,7 @@ namespace Models
             set
             {
                 _PackTypeRecoded_Not_Valid = value;
-                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), _PackTypeRecoded_Not_Valid);
                 }
@@ -706,7 +706,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackTypeNote)) != null)
+                if (GetErrors(nameof(PackTypeNote)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackTypeNote));
                 }
@@ -718,7 +718,7 @@ namespace Models
             set
             {
                 _PackTypeNote_Not_Valid = value;
-                if (GetErrors(nameof(PackTypeNote)) != null)
+                if (GetErrors(nameof(PackTypeNote)) == null)
                 {
                     _dataAccess.Set(nameof(PackTypeNote), _PackTypeNote_Not_Valid);
                 }
@@ -739,7 +739,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackNumber)) != null)
+                if (GetErrors(nameof(PackNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackNumber));
                 }
@@ -751,7 +751,7 @@ namespace Models
             set
             {
                 _PackNumber_Not_Valid = value;
-                if (GetErrors(nameof(PackNumber)) != null)
+                if (GetErrors(nameof(PackNumber)) == null)
                 {
                     _dataAccess.Set(nameof(PackNumber), _PackNumber_Not_Valid);
                 }
@@ -772,7 +772,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackNumberRecoded)) != null)
+                if (GetErrors(nameof(PackNumberRecoded)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackNumberRecoded));
                 }
@@ -784,7 +784,7 @@ namespace Models
             set
             {
                 _PackNumberRecoded_Not_Valid = value;
-                if (GetErrors(nameof(PackNumberRecoded)) != null)
+                if (GetErrors(nameof(PackNumberRecoded)) == null)
                 {
                     _dataAccess.Set(nameof(PackNumberRecoded), _PackNumberRecoded_Not_Valid);
                 }
@@ -805,7 +805,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Subsidy)) != null)
+                if (GetErrors(nameof(Subsidy)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Subsidy));
                 }
@@ -817,7 +817,7 @@ namespace Models
             set
             {
                 _Subsidy_Not_Valid = value;
-                if (GetErrors(nameof(Subsidy)) != null)
+                if (GetErrors(nameof(Subsidy)) == null)
                 {
                     _dataAccess.Set(nameof(Subsidy), _Subsidy_Not_Valid);
                 }
@@ -848,7 +848,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(FcpNumber)) != null)
+                if (GetErrors(nameof(FcpNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(FcpNumber));
                 }
@@ -860,7 +860,7 @@ namespace Models
             set
             {
                 _FcpNumber_Not_Valid = value;
-                if (GetErrors(nameof(FcpNumber)) != null)
+                if (GetErrors(nameof(FcpNumber)) == null)
                 {
                     _dataAccess.Set(nameof(FcpNumber), _FcpNumber_Not_Valid);
                 }
@@ -881,7 +881,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RefineOrSortRAOCode)) != null)
+                if (GetErrors(nameof(RefineOrSortRAOCode)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RefineOrSortRAOCode));
                 }
@@ -893,7 +893,7 @@ namespace Models
             set
             {
                 _RefineOrSortRAOCode_Not_Valid = value;
-                if (GetErrors(nameof(RefineOrSortRAOCode)) != null)
+                if (GetErrors(nameof(RefineOrSortRAOCode)) == null)
                 {
                     _dataAccess.Set(nameof(RefineOrSortRAOCode), _RefineOrSortRAOCode_Not_Valid);
                 }

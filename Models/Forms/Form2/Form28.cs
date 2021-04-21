@@ -11,33 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 2.8: Отведение сточных вод, содержащих радионуклиды")]
     public class Form28 : Abstracts.Form2
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form2.SQLCommandParamsBase() +
-        //    nameof(WasteSourceName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PermissionNumber1) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PermissionIssueDate1) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(PermissionDocumentName1) + SQLconsts.strNotNullDeclaration +
-        //    nameof(ValidBegin1) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(ValidThru1) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(PermissionNumber2) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PermissionIssueDate2) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(ValidBegin2) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(PermissionDocumentName2) + SQLconsts.strNotNullDeclaration +
-        //    nameof(ValidThru2) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(WasteRecieverName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(RecieverTypeCode) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PoolDistrictName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(AllowedWasteRemovalVolume) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(RemovedWasteVolume) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(RemovedWasteVolumeNote) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(PermissionNumber) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PermissionIssueDate) + SQLconsts.strNotNullDeclaration +
-        //    nameof(ValidBegin) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(ValidThru) + SQLconsts.dateNotNullDeclaration +
-        //    nameof(PermissionDocumentName) + " varchar(255) not null";
-        //}
         public Form28(IDataAccess Access) : base(Access)
         {
             FormNum = "28";
@@ -56,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionNumber)) != null)
+                if (GetErrors(nameof(PermissionNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionNumber));
                 }
@@ -68,7 +41,7 @@ namespace Models
             set
             {
                 _PermissionNumber_Not_Valid = value;
-                if (GetErrors(nameof(PermissionNumber)) != null)
+                if (GetErrors(nameof(PermissionNumber)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionNumber), _PermissionNumber_Not_Valid);
                 }
@@ -89,7 +62,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionIssueDate)) != null)
+                if (GetErrors(nameof(PermissionIssueDate)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionIssueDate));
                 }
@@ -101,7 +74,7 @@ namespace Models
             set
             {
                 _PermissionIssueDate_Not_Valid = value;
-                if (GetErrors(nameof(PermissionIssueDate)) != null)
+                if (GetErrors(nameof(PermissionIssueDate)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionIssueDate), _PermissionIssueDate_Not_Valid);
                 }
@@ -122,7 +95,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionDocumentName)) != null)
+                if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionDocumentName));
                 }
@@ -134,7 +107,7 @@ namespace Models
             set
             {
                 _PermissionDocumentName_Not_Valid = value;
-                if (GetErrors(nameof(PermissionDocumentName)) != null)
+                if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionDocumentName), _PermissionDocumentName_Not_Valid);
                 }
@@ -155,7 +128,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ValidBegin)) != null)
+                if (GetErrors(nameof(ValidBegin)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ValidBegin));
                 }
@@ -167,7 +140,7 @@ namespace Models
             set
             {
                 _ValidBegin_Not_Valid = value;
-                if (GetErrors(nameof(ValidBegin)) != null)
+                if (GetErrors(nameof(ValidBegin)) == null)
                 {
                     _dataAccess.Set(nameof(ValidBegin), _ValidBegin_Not_Valid);
                 }
@@ -188,7 +161,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ValidThru)) != null)
+                if (GetErrors(nameof(ValidThru)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ValidThru));
                 }
@@ -200,7 +173,7 @@ namespace Models
             set
             {
                 _ValidThru_Not_Valid = value;
-                if (GetErrors(nameof(ValidThru)) != null)
+                if (GetErrors(nameof(ValidThru)) == null)
                 {
                     _dataAccess.Set(nameof(ValidThru), _ValidThru_Not_Valid);
                 }
@@ -221,7 +194,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionNumber1)) != null)
+                if (GetErrors(nameof(PermissionNumber1)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionNumber1));
                 }
@@ -233,7 +206,7 @@ namespace Models
             set
             {
                 _PermissionNumber1_Not_Valid = value;
-                if (GetErrors(nameof(PermissionNumber1)) != null)
+                if (GetErrors(nameof(PermissionNumber1)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionNumber1), _PermissionNumber1_Not_Valid);
                 }
@@ -254,7 +227,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionIssueDate1)) != null)
+                if (GetErrors(nameof(PermissionIssueDate1)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionIssueDate1));
                 }
@@ -266,7 +239,7 @@ namespace Models
             set
             {
                 _PermissionIssueDate1_Not_Valid = value;
-                if (GetErrors(nameof(PermissionIssueDate1)) != null)
+                if (GetErrors(nameof(PermissionIssueDate1)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionIssueDate1), _PermissionIssueDate1_Not_Valid);
                 }
@@ -287,7 +260,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionDocumentName1)) != null)
+                if (GetErrors(nameof(PermissionDocumentName1)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionDocumentName1));
                 }
@@ -299,7 +272,7 @@ namespace Models
             set
             {
                 _PermissionDocumentName1_Not_Valid = value;
-                if (GetErrors(nameof(PermissionDocumentName1)) != null)
+                if (GetErrors(nameof(PermissionDocumentName1)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionDocumentName1), _PermissionDocumentName1_Not_Valid);
                 }
@@ -320,7 +293,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ValidBegin1)) != null)
+                if (GetErrors(nameof(ValidBegin1)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ValidBegin1));
                 }
@@ -332,7 +305,7 @@ namespace Models
             set
             {
                 _ValidBegin1_Not_Valid = value;
-                if (GetErrors(nameof(ValidBegin1)) != null)
+                if (GetErrors(nameof(ValidBegin1)) == null)
                 {
                     _dataAccess.Set(nameof(ValidBegin1), _ValidBegin1_Not_Valid);
                 }
@@ -353,7 +326,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ValidThru1)) != null)
+                if (GetErrors(nameof(ValidThru1)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ValidThru1));
                 }
@@ -365,7 +338,7 @@ namespace Models
             set
             {
                 _ValidThru1_Not_Valid = value;
-                if (GetErrors(nameof(ValidThru1)) != null)
+                if (GetErrors(nameof(ValidThru1)) == null)
                 {
                     _dataAccess.Set(nameof(ValidThru1), _ValidThru1_Not_Valid);
                 }
@@ -386,7 +359,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionNumber2)) != null)
+                if (GetErrors(nameof(PermissionNumber2)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionNumber2));
                 }
@@ -398,7 +371,7 @@ namespace Models
             set
             {
                 _PermissionNumber2_Not_Valid = value;
-                if (GetErrors(nameof(PermissionNumber2)) != null)
+                if (GetErrors(nameof(PermissionNumber2)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionNumber2), _PermissionNumber2_Not_Valid);
                 }
@@ -419,7 +392,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionIssueDate2)) != null)
+                if (GetErrors(nameof(PermissionIssueDate2)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionIssueDate2));
                 }
@@ -431,7 +404,7 @@ namespace Models
             set
             {
                 _PermissionIssueDate2_Not_Valid = value;
-                if (GetErrors(nameof(PermissionIssueDate2)) != null)
+                if (GetErrors(nameof(PermissionIssueDate2)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionIssueDate2), _PermissionIssueDate2_Not_Valid);
                 }
@@ -452,7 +425,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionDocumentName2)) != null)
+                if (GetErrors(nameof(PermissionDocumentName2)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PermissionDocumentName2));
                 }
@@ -464,7 +437,7 @@ namespace Models
             set
             {
                 _PermissionDocumentName2_Not_Valid = value;
-                if (GetErrors(nameof(PermissionDocumentName)) != null)
+                if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
                     _dataAccess.Set(nameof(PermissionDocumentName2), _PermissionDocumentName2_Not_Valid);
                 }
@@ -485,7 +458,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ValidBegin2)) != null)
+                if (GetErrors(nameof(ValidBegin2)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ValidBegin2));
                 }
@@ -497,7 +470,7 @@ namespace Models
             set
             {
                 _ValidBegin2_Not_Valid = value;
-                if (GetErrors(nameof(ValidBegin2)) != null)
+                if (GetErrors(nameof(ValidBegin2)) == null)
                 {
                     _dataAccess.Set(nameof(ValidBegin2), _ValidBegin2_Not_Valid);
                 }
@@ -518,7 +491,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ValidThru2)) != null)
+                if (GetErrors(nameof(ValidThru2)) == null)
                 {
                     return (DateTime)_dataAccess.Get(nameof(ValidThru2));
                 }
@@ -530,7 +503,7 @@ namespace Models
             set
             {
                 _ValidThru2_Not_Valid = value;
-                if (GetErrors(nameof(ValidThru2)) != null)
+                if (GetErrors(nameof(ValidThru2)) == null)
                 {
                     _dataAccess.Set(nameof(ValidThru2), _ValidThru2_Not_Valid);
                 }
@@ -551,7 +524,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(WasteSourceName)) != null)
+                if (GetErrors(nameof(WasteSourceName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(WasteSourceName));
                 }
@@ -563,7 +536,7 @@ namespace Models
             set
             {
                 _WasteSourceName_Not_Valid = value;
-                if (GetErrors(nameof(WasteSourceName)) != null)
+                if (GetErrors(nameof(WasteSourceName)) == null)
                 {
                     _dataAccess.Set(nameof(WasteSourceName), _WasteSourceName_Not_Valid);
                 }
@@ -584,7 +557,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(WasteRecieverName)) != null)
+                if (GetErrors(nameof(WasteRecieverName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(WasteRecieverName));
                 }
@@ -596,7 +569,7 @@ namespace Models
             set
             {
                 _WasteRecieverName_Not_Valid = value;
-                if (GetErrors(nameof(WasteRecieverName)) != null)
+                if (GetErrors(nameof(WasteRecieverName)) == null)
                 {
                     _dataAccess.Set(nameof(WasteRecieverName), _WasteRecieverName_Not_Valid);
                 }
@@ -617,7 +590,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RecieverTypeCode)) != null)
+                if (GetErrors(nameof(RecieverTypeCode)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RecieverTypeCode));
                 }
@@ -629,7 +602,7 @@ namespace Models
             set
             {
                 _RecieverTypeCode_Not_Valid = value;
-                if (GetErrors(nameof(RecieverTypeCode)) != null)
+                if (GetErrors(nameof(RecieverTypeCode)) == null)
                 {
                     _dataAccess.Set(nameof(RecieverTypeCode), _RecieverTypeCode_Not_Valid);
                 }
@@ -650,7 +623,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PoolDistrictName)) != null)
+                if (GetErrors(nameof(PoolDistrictName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PoolDistrictName));
                 }
@@ -662,7 +635,7 @@ namespace Models
             set
             {
                 _PoolDistrictName_Not_Valid = value;
-                if (GetErrors(nameof(PoolDistrictName)) != null)
+                if (GetErrors(nameof(PoolDistrictName)) == null)
                 {
                     _dataAccess.Set(nameof(PoolDistrictName), _PoolDistrictName_Not_Valid);
                 }
@@ -683,7 +656,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AllowedWasteRemovalVolume)) != null)
+                if (GetErrors(nameof(AllowedWasteRemovalVolume)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(AllowedWasteRemovalVolume));
                 }
@@ -695,7 +668,7 @@ namespace Models
             set
             {
                 _AllowedWasteRemovalVolume_Not_Valid = value;
-                if (GetErrors(nameof(AllowedWasteRemovalVolume)) != null)
+                if (GetErrors(nameof(AllowedWasteRemovalVolume)) == null)
                 {
                     _dataAccess.Set(nameof(AllowedWasteRemovalVolume), _AllowedWasteRemovalVolume_Not_Valid);
                 }
@@ -716,7 +689,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RemovedWasteVolume)) != null)
+                if (GetErrors(nameof(RemovedWasteVolume)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(RemovedWasteVolume));
                 }
@@ -728,7 +701,7 @@ namespace Models
             set
             {
                 _RemovedWasteVolume_Not_Valid = value;
-                if (GetErrors(nameof(RemovedWasteVolume)) != null)
+                if (GetErrors(nameof(RemovedWasteVolume)) == null)
                 {
                     _dataAccess.Set(nameof(RemovedWasteVolume), _RemovedWasteVolume_Not_Valid);
                 }
@@ -748,7 +721,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RemovedWasteVolumeNote)) != null)
+                if (GetErrors(nameof(RemovedWasteVolumeNote)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(RemovedWasteVolumeNote));
                 }
@@ -760,7 +733,7 @@ namespace Models
             set
             {
                 _RemovedWasteVolumeNote_Not_Valid = value;
-                if (GetErrors(nameof(RemovedWasteVolumeNote)) != null)
+                if (GetErrors(nameof(RemovedWasteVolumeNote)) == null)
                 {
                     _dataAccess.Set(nameof(RemovedWasteVolumeNote), _RemovedWasteVolumeNote_Not_Valid);
                 }

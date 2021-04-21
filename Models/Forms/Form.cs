@@ -24,7 +24,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(FormNum)) != null)
+                if (GetErrors(nameof(FormNum)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(FormNum));
                 }
@@ -36,7 +36,7 @@ namespace Models.Abstracts
             set
             {
                 _FormNum_Not_Valid = value;
-                if (GetErrors(nameof(FormNum)) != null)
+                if (GetErrors(nameof(FormNum)) == null)
                 {
                     _dataAccess.Set(nameof(FormNum), _FormNum_Not_Valid);
                 }
@@ -55,7 +55,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(NumberOfFields)) != null)
+                if (GetErrors(nameof(NumberOfFields)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(NumberOfFields));
                 }
@@ -67,7 +67,7 @@ namespace Models.Abstracts
             set
             {
                 _NumberOfFields_Not_Valid = value;
-                if (GetErrors(nameof(NumberOfFields)) != null)
+                if (GetErrors(nameof(NumberOfFields)) == null)
                 {
                     _dataAccess.Set(nameof(NumberOfFields), _NumberOfFields_Not_Valid);
                 }

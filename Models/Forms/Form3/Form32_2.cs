@@ -11,17 +11,6 @@ namespace Models
     [Attributes.Form_Class("Сведения о поставляемых ЗРИ:")]
     public class Form32_2: Abstracts.Form3
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form3.SQLCommandParamsBase() +
-        //    nameof(DepletedUraniumMass) + SQLconsts.doubleNotNullDeclaration +
-        //    nameof(CreationYear) + SQLconsts.strNotNullDeclaration +
-        //    nameof(Id) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PackName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PackType) + SQLconsts.strNotNullDeclaration +
-        //    nameof(PackTypeRecoded) + " varchar(255) not null";
-        //}
         public Form32_2(IDataAccess Access) : base(Access)
         {
             FormNum = "32_2";
@@ -40,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackName)) != null)
+                if (GetErrors(nameof(PackName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackName));
                 }
@@ -52,7 +41,7 @@ namespace Models
             set
             {
                 _PackName_Not_Valid = value;
-                if (GetErrors(nameof(PackName)) != null)
+                if (GetErrors(nameof(PackName)) == null)
                 {
                     _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
                 }
@@ -73,7 +62,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackType)) != null)
+                if (GetErrors(nameof(PackType)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackType));
                 }
@@ -85,7 +74,7 @@ namespace Models
             set
             {
                 _PackType_Not_Valid = value;
-                if (GetErrors(nameof(PackType)) != null)
+                if (GetErrors(nameof(PackType)) == null)
                 {
                     _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
                 }
@@ -105,7 +94,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(PackTypeRecoded));
                 }
@@ -117,7 +106,7 @@ namespace Models
             set
             {
                 _PackTypeRecoded_Not_Valid = value;
-                if (GetErrors(nameof(PackTypeRecoded)) != null)
+                if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), _PackTypeRecoded_Not_Valid);
                 }
@@ -138,7 +127,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Id)) != null)
+                if (GetErrors(nameof(Id)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Id));
                 }
@@ -150,7 +139,7 @@ namespace Models
             set
             {
                 _Id_Not_Valid = value;
-                if (GetErrors(nameof(Id)) != null)
+                if (GetErrors(nameof(Id)) == null)
                 {
                     _dataAccess.Set(nameof(Id), _Id_Not_Valid);
                 }
@@ -167,7 +156,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(CreationYear)) != null)
+                if (GetErrors(nameof(CreationYear)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(CreationYear));
                 }
@@ -179,7 +168,7 @@ namespace Models
             set
             {
                 _CreationYear_Not_Valid = value;
-                if (GetErrors(nameof(CreationYear)) != null)
+                if (GetErrors(nameof(CreationYear)) == null)
                 {
                     _dataAccess.Set(nameof(CreationYear), _CreationYear_Not_Valid);
                 }
@@ -196,7 +185,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(DepletedUraniumMass)) != null)
+                if (GetErrors(nameof(DepletedUraniumMass)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(DepletedUraniumMass));
                 }
@@ -208,7 +197,7 @@ namespace Models
             set
             {
                 _DepletedUraniumMass_Not_Valid = value;
-                if (GetErrors(nameof(DepletedUraniumMass)) != null)
+                if (GetErrors(nameof(DepletedUraniumMass)) == null)
                 {
                     _dataAccess.Set(nameof(DepletedUraniumMass), _DepletedUraniumMass_Not_Valid);
                 }

@@ -11,20 +11,6 @@ namespace Models
     [Attributes.Form_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]
     public class Form26 : Abstracts.Form2
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form2.SQLCommandParamsBase() +
-        //    nameof(SourcesQuantity) + SQLconsts.intNotNullDeclaration +
-        //    nameof(ObservedSourceNumber) + SQLconsts.strNotNullDeclaration +
-        //    nameof(ControlledAreaName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(SupposedWasteSource) + SQLconsts.strNotNullDeclaration +
-        //    nameof(DistanceToWasteSource) + SQLconsts.intNotNullDeclaration +
-        //    nameof(TestDepth) + SQLconsts.intNotNullDeclaration +
-        //    nameof(TestDepthNote) + SQLconsts.intNotNullDeclaration +
-        //    nameof(RadionuclidName) + SQLconsts.strNotNullDeclaration +
-        //    nameof(AverageYearConcentration) + " varchar(255) not null";
-        //}
         public Form26(IDataAccess Access) : base(Access)
         {
             FormNum = "26";
@@ -43,7 +29,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(SourcesQuantity)) != null)
+                if (GetErrors(nameof(SourcesQuantity)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(SourcesQuantity));
                 }
@@ -55,7 +41,7 @@ namespace Models
             set
             {
                 _SourcesQuantity_Not_Valid = value;
-                if (GetErrors(nameof(SourcesQuantity)) != null)
+                if (GetErrors(nameof(SourcesQuantity)) == null)
                 {
                     _dataAccess.Set(nameof(SourcesQuantity), _SourcesQuantity_Not_Valid);
                 }
@@ -78,7 +64,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ObservedSourceNumber)) != null)
+                if (GetErrors(nameof(ObservedSourceNumber)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ObservedSourceNumber));
                 }
@@ -90,7 +76,7 @@ namespace Models
             set
             {
                 _ObservedSourceNumber_Not_Valid = value;
-                if (GetErrors(nameof(ObservedSourceNumber)) != null)
+                if (GetErrors(nameof(ObservedSourceNumber)) == null)
                 {
                     _dataAccess.Set(nameof(ObservedSourceNumber), _ObservedSourceNumber_Not_Valid);
                 }
@@ -111,7 +97,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ControlledAreaName)) != null)
+                if (GetErrors(nameof(ControlledAreaName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(ControlledAreaName));
                 }
@@ -123,7 +109,7 @@ namespace Models
             set
             {
                 _ControlledAreaName_Not_Valid = value;
-                if (GetErrors(nameof(ControlledAreaName)) != null)
+                if (GetErrors(nameof(ControlledAreaName)) == null)
                 {
                     _dataAccess.Set(nameof(ControlledAreaName), _ControlledAreaName_Not_Valid);
                 }
@@ -144,7 +130,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(SupposedWasteSource)) != null)
+                if (GetErrors(nameof(SupposedWasteSource)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(SupposedWasteSource));
                 }
@@ -156,7 +142,7 @@ namespace Models
             set
             {
                 _SupposedWasteSource_Not_Valid = value;
-                if (GetErrors(nameof(SupposedWasteSource)) != null)
+                if (GetErrors(nameof(SupposedWasteSource)) == null)
                 {
                     _dataAccess.Set(nameof(SupposedWasteSource), _SupposedWasteSource_Not_Valid);
                 }
@@ -177,7 +163,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(DistanceToWasteSource)) != null)
+                if (GetErrors(nameof(DistanceToWasteSource)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(DistanceToWasteSource));
                 }
@@ -189,7 +175,7 @@ namespace Models
             set
             {
                 _DistanceToWasteSource_Not_Valid = value;
-                if (GetErrors(nameof(DistanceToWasteSource)) != null)
+                if (GetErrors(nameof(DistanceToWasteSource)) == null)
                 {
                     _dataAccess.Set(nameof(DistanceToWasteSource), _DistanceToWasteSource_Not_Valid);
                 }
@@ -210,7 +196,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TestDepth)) != null)
+                if (GetErrors(nameof(TestDepth)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(TestDepth));
                 }
@@ -222,7 +208,7 @@ namespace Models
             set
             {
                 _TestDepth_Not_Valid = value;
-                if (GetErrors(nameof(TestDepth)) != null)
+                if (GetErrors(nameof(TestDepth)) == null)
                 {
                     _dataAccess.Set(nameof(TestDepth), _TestDepth_Not_Valid);
                 }
@@ -242,7 +228,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TestDepthNote)) != null)
+                if (GetErrors(nameof(TestDepthNote)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(TestDepthNote));
                 }
@@ -254,7 +240,7 @@ namespace Models
             set
             {
                 _TestDepthNote_Not_Valid = value;
-                if (GetErrors(nameof(TestDepthNote)) != null)
+                if (GetErrors(nameof(TestDepthNote)) == null)
                 {
                     _dataAccess.Set(nameof(TestDepthNote), _TestDepthNote_Not_Valid);
                 }
@@ -275,7 +261,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RadionuclidName)) != null)
+                if (GetErrors(nameof(RadionuclidName)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(RadionuclidName));
                 }
@@ -287,7 +273,7 @@ namespace Models
             set
             {
                 _RadionuclidName_Not_Valid = value;
-                if (GetErrors(nameof(RadionuclidName)) != null)
+                if (GetErrors(nameof(RadionuclidName)) == null)
                 {
                     _dataAccess.Set(nameof(RadionuclidName), _RadionuclidName_Not_Valid);
                 }
@@ -308,7 +294,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(AverageYearConcentration)) != null)
+                if (GetErrors(nameof(AverageYearConcentration)) == null)
                 {
                     return (double)_dataAccess.Get(nameof(AverageYearConcentration));
                 }
@@ -320,7 +306,7 @@ namespace Models
             set
             {
                 _AverageYearConcentration_Not_Valid = value;
-                if (GetErrors(nameof(AverageYearConcentration)) != null)
+                if (GetErrors(nameof(AverageYearConcentration)) == null)
                 {
                     _dataAccess.Set(nameof(AverageYearConcentration), _AverageYearConcentration_Not_Valid);
                 }

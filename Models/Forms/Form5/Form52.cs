@@ -8,15 +8,6 @@ namespace Models
     [Attributes.Form_Class("Форма 5.2: Сведения о наличии ЗРИ в подведомственных организациях")]
     public class Form52 : Abstracts.Form5
     {
-        //public static string SQLCommandParams()
-        //{
-        //    return
-        //        Abstracts.Form5.SQLCommandParamsBase() +
-        //    nameof(Kategory) + SQLconsts.shortNotNullDeclaration +
-        //    nameof(Radionuclids) + SQLconsts.strNotNullDeclaration +
-        //    nameof(Quantity) + SQLconsts.intNotNullDeclaration +
-        //    nameof(Activity) + " varchar(255) not null, ";
-        //}
         public Form52(IDataAccess Access) : base(Access)
         {
             FormNum = "52";
@@ -34,7 +25,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Radionuclids));                }
                 else
@@ -45,7 +36,7 @@ namespace Models
             set
             {
                 _Radionuclids_Not_Valid = value;
-                if (GetErrors(nameof(Radionuclids)) != null)
+                if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
                 OnPropertyChanged(nameof(Radionuclids));
@@ -65,7 +56,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Kategory)) != null)
+                if (GetErrors(nameof(Kategory)) == null)
                 {
                     return (short)_dataAccess.Get(nameof(Kategory));
                 }
@@ -77,7 +68,7 @@ namespace Models
             set
             {
                 _Kategory_Not_Valid = value;
-                if (GetErrors(nameof(Kategory)) != null)
+                if (GetErrors(nameof(Kategory)) == null)
                 {
                     _dataAccess.Set(nameof(Kategory), _Kategory_Not_Valid);
                 }
@@ -98,7 +89,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Activity)) != null)
+                if (GetErrors(nameof(Activity)) == null)
                 {
                     return (string)_dataAccess.Get(nameof(Activity));
                 }
@@ -110,7 +101,7 @@ namespace Models
             set
             {
                 _Activity_Not_Valid = value;
-                if (GetErrors(nameof(Activity)) != null)
+                if (GetErrors(nameof(Activity)) == null)
                 {
                     _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
                 }
@@ -142,7 +133,7 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Quantity)) != null)
+                if (GetErrors(nameof(Quantity)) == null)
                 {
                     return (int)_dataAccess.Get(nameof(Quantity));
                 }
@@ -154,7 +145,7 @@ namespace Models
             set
             {
                 _Quantity_Not_Valid = value;
-                if (GetErrors(nameof(Quantity)) != null)
+                if (GetErrors(nameof(Quantity)) == null)
                 {
                     _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
                 }

@@ -8,12 +8,6 @@ namespace Models.Abstracts
     public abstract class Form3:Form
     {
         [Attributes.Form_Property("Форма")]
-        //protected static string SQLCommandParamsBase()
-        //{
-        //    return
-        //        nameof(CorrectionNumber) + SQLconsts.shortNotNullDeclaration +
-        //        nameof(NotificationDate) + " datetimeoffset not null";
-        //}
         public Form3(IDataAccess Access) : base(Access)
         {
         }
@@ -24,7 +18,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) != null)
+                if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
                     return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
@@ -36,7 +30,7 @@ namespace Models.Abstracts
             set
             {
                 _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) != null)
+                if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
                     _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
                 }
@@ -57,7 +51,7 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(NotificationDate)) != null)
+                if (GetErrors(nameof(NotificationDate)) == null)
                 {
                     return (DateTimeOffset)_dataAccess.Get(nameof(NotificationDate));
                 }
@@ -69,7 +63,7 @@ namespace Models.Abstracts
             set
             {
                 _NotificationDate_Not_Valid = value;
-                if (GetErrors(nameof(NotificationDate)) != null)
+                if (GetErrors(nameof(NotificationDate)) == null)
                 {
                     _dataAccess.Set(nameof(NotificationDate), _NotificationDate_Not_Valid);
                 }
