@@ -10,15 +10,16 @@ namespace DBRealization
         public const string strNotNullDeclaration = " varchar(255) not null, ";
         public const string intNotNullDeclaration = " int not null, ";
         public const string shortNotNullDeclaration = " smallint not null, ";
-        public const string dateNotNullDeclaration = " datetimeoffset not null, ";
+        public const string dateNotNullDeclaration = " timestamp not null, ";
         public const string doubleNotNullDeclaration = " float(53) not null, ";
         //Const_Params
 
+        //Список всех форм
         public static string Reports()
         {
             return "";
         }
-
+        //Форма (страница, много строчек)
         public static string Report()
         {
             return "";
@@ -35,7 +36,7 @@ namespace DBRealization
                 "DocumentVid" + shortNotNullDeclaration +
                 "DocumentNumber" + strNotNullDeclaration +
                 "DocumentNumberRecoded" + strNotNullDeclaration +
-                "DocumentDate" + dateNotNullDeclaration.Replace(",","");
+                "DocumentDate" + dateNotNullDeclaration.Replace(",", "");
         }
 
         public static string Form10()
@@ -59,12 +60,12 @@ namespace DBRealization
                 "Inn" + strNotNullDeclaration +
                 "Kpp" + strNotNullDeclaration +
                 "Okopf" + strNotNullDeclaration +
-                "Okfs" + strNotNullDeclaration.Replace(",","");
+                "Okfs" + strNotNullDeclaration.Replace(",", "");
         }
 
         public static string Form11()
         {
-            return Form1() +
+            return Form1() + "," +
                 "PassportNumber" + strNotNullDeclaration +
                 "PassportNumberNote" + strNotNullDeclaration +
                 "PassportNumberRecoded" + strNotNullDeclaration +
@@ -93,14 +94,14 @@ namespace DBRealization
                 "PackTypeRecoded" + strNotNullDeclaration +
                 "PackTypeNote" + strNotNullDeclaration +
                 "PackNumber" + strNotNullDeclaration +
-                "PackNumberRecoded" + strNotNullDeclaration.Replace(",","");
+                "PackNumberRecoded" + strNotNullDeclaration.Replace(",", "");
         }
 
         public static string Form12()
         {
             return
-                Form1() +
-                "PassportNumber" + strNotNullDeclaration +
+                Form1() + "," +
+               "PassportNumber" + strNotNullDeclaration +
                 "PassportNumberNote" + strNotNullDeclaration +
                 "PassportNumberRecoded" + strNotNullDeclaration +
                 "NameIOU" + strNotNullDeclaration +
@@ -123,13 +124,13 @@ namespace DBRealization
                 "PackTypeRecoded" + strNotNullDeclaration +
                 "PackTypeNote" + strNotNullDeclaration +
                 "PackNumber" + strNotNullDeclaration +
-                "PackNumberRecoded"+strNotNullDeclaration.Replace(",","");
+                "PackNumberRecoded" + strNotNullDeclaration.Replace(",", "");
         }
 
         public static string Form13()
         {
             return
-                Form1() +
+                Form1() + "," +
                 "PassportNumber" + strNotNullDeclaration +
                 "PassportNumberNote" + strNotNullDeclaration +
                 "PassportNumberRecoded" + strNotNullDeclaration +
@@ -156,13 +157,13 @@ namespace DBRealization
                 "PackNumberRecoded" + strNotNullDeclaration +
                 "Radionuclids" + strNotNullDeclaration +
                 "Activity" + strNotNullDeclaration +
-                "ActivityNote" + strNotNullDeclaration.Replace(",","");
+                "ActivityNote" + strNotNullDeclaration.Replace(",", "");
         }
 
         public static string Form14()
         {
             return
-                Form1() +
+                Form1() + "," +
                 "PassportNumber" + strNotNullDeclaration +
                 "PassportNumberNote" + strNotNullDeclaration +
                 "PassportNumberRecoded" + strNotNullDeclaration +
@@ -193,7 +194,7 @@ namespace DBRealization
         public static string Form15()
         {
             return
-                Form1() +
+                Form1() + "," +
                 "PassportNumber" + strNotNullDeclaration +
                 "PassportNumberNote" + strNotNullDeclaration +
                 "PassportNumberRecoded" + strNotNullDeclaration +
@@ -228,7 +229,7 @@ namespace DBRealization
         public static string Form16()
         {
             return
-                Form1() +
+                Form1() + "," +
             "MainRadionuclids" + strNotNullDeclaration +
             "CodeRAO" + strNotNullDeclaration +
             "AlphaActivity" + strNotNullDeclaration +
@@ -252,13 +253,13 @@ namespace DBRealization
             "PackTypeRecoded" + strNotNullDeclaration +
             "PackTypeNote" + strNotNullDeclaration +
             "PackNumber" + strNotNullDeclaration +
-            "PackNumberRecoded" +  strNotNullDeclaration.Replace(",", "");
+            "PackNumberRecoded" + strNotNullDeclaration.Replace(",", "");
         }
 
         public static string Form17()
         {
             return
-                Form1() +
+                Form1() + "," +
             "SpecificActivity" + strNotNullDeclaration +
             "VolumeOutOfPack" + doubleNotNullDeclaration +
             "PackFactoryNumber" + strNotNullDeclaration +
@@ -297,7 +298,7 @@ namespace DBRealization
         public static string Form18()
         {
             return
-                Form1() +
+                Form1() + "," +
             "Volume20" + doubleNotNullDeclaration +
             "Volume6" + doubleNotNullDeclaration +
             "SaltConcentration" + doubleNotNullDeclaration +
@@ -331,7 +332,7 @@ namespace DBRealization
         public static string Form19()
         {
             return
-                Form1() +
+                Form1() + "," +
             "Activity" + strNotNullDeclaration +
             "CodeTypeAccObject" + shortNotNullDeclaration +
             "Radionuclids" + strNotNullDeclaration.Replace(",", "");
@@ -343,7 +344,7 @@ namespace DBRealization
         {
             return
                 "NumberInOrder" + intNotNullDeclaration +
-                "CorrectionNumber" + shortNotNullDeclaration.Replace(",","");
+                "CorrectionNumber" + shortNotNullDeclaration.Replace(",", "");
         }
         public static string Form20()
         {
@@ -371,7 +372,7 @@ namespace DBRealization
         public static string Form21()
         {
             return
-                Form2() +
+                Form2() + "," +
             "RefineMachineName" + strNotNullDeclaration +
             "MachineCode" + shortNotNullDeclaration +
             "MachinePower" + strNotNullDeclaration +
@@ -398,7 +399,7 @@ namespace DBRealization
         public static string Form22()
         {
             return
-                Form2() +
+                Form2() + "," +
             "TransuraniumActivity" + strNotNullDeclaration +
             "TritiumActivity" + strNotNullDeclaration +
             "BetaGammaActivity" + strNotNullDeclaration +
@@ -426,7 +427,7 @@ namespace DBRealization
         public static string Form23()
         {
             return
-                Form2() +
+                Form2() + "," +
             "DocumentDate" + strNotNullDeclaration +
             "DocumentName" + strNotNullDeclaration +
             "DocumentNumber" + strNotNullDeclaration +
@@ -446,7 +447,7 @@ namespace DBRealization
         public static string Form24()
         {
             return
-                Form2() +
+                Form2() + "," +
             "CodeOYATnote" + strNotNullDeclaration +
             "MassCreated" + doubleNotNullDeclaration +
             "QuantityCreated" + intNotNullDeclaration +
@@ -475,7 +476,7 @@ namespace DBRealization
         public static string Form25()
         {
             return
-                Form2() +
+                Form2() + "," +
             "CodeOYATnote" + strNotNullDeclaration +
             "CodeOYAT" + strNotNullDeclaration +
             "AlphaActivity" + strNotNullDeclaration +
@@ -490,7 +491,7 @@ namespace DBRealization
         public static string Form26()
         {
             return
-                Form2() +
+                Form2() + "," +
             "SourcesQuantity" + intNotNullDeclaration +
             "ObservedSourceNumber" + strNotNullDeclaration +
             "ControlledAreaName" + strNotNullDeclaration +
@@ -504,7 +505,7 @@ namespace DBRealization
         public static string Form27()
         {
             return
-                Form2() +
+                Form2() + "," +
                 "PermissionNumber" + strNotNullDeclaration +
                 "PermissionIssueDate" + strNotNullDeclaration +
                 "PermissionDocumentName" + strNotNullDeclaration +
@@ -520,7 +521,7 @@ namespace DBRealization
         public static string Form28()
         {
             return
-                Form2() +
+                Form2() + "," +
             "WasteSourceName" + strNotNullDeclaration +
             "PermissionNumber1" + strNotNullDeclaration +
             "PermissionIssueDate1" + dateNotNullDeclaration +
@@ -547,7 +548,7 @@ namespace DBRealization
         public static string Form29()
         {
             return
-                Form2() +
+                Form2() + "," +
             "AllowedActivity" + strNotNullDeclaration +
             "AllowedActivityNote" + strNotNullDeclaration +
             "FactedActivity" + strNotNullDeclaration +
@@ -558,7 +559,7 @@ namespace DBRealization
         public static string Form210()
         {
             return
-                Form2() +
+                Form2() + "," +
             "IndicatorName" + strNotNullDeclaration +
             "PlotName" + strNotNullDeclaration +
             "PlotKadastrNumber" + strNotNullDeclaration +
@@ -573,7 +574,7 @@ namespace DBRealization
         public static string Form211()
         {
             return
-                Form2() +
+                Form2() + "," +
             "Radionuclids" + strNotNullDeclaration +
             "PlotName" + strNotNullDeclaration +
             "PlotKadastrNumber" + strNotNullDeclaration +
@@ -587,7 +588,7 @@ namespace DBRealization
         public static string Form212()
         {
             return
-                Form2() +
+                Form2() + "," +
             "Radionuclids" + strNotNullDeclaration +
             "OperationCode" + strNotNullDeclaration +
             "ObjectTypeCode" + strNotNullDeclaration +
@@ -630,7 +631,7 @@ namespace DBRealization
         public static string Form31()
         {
             return
-                Form3() +
+                Form3() + "," +
             "RecieverName" + strNotNullDeclaration +
             "RecieverAddress" + strNotNullDeclaration +
             "RecieverFactAddress" + strNotNullDeclaration +
@@ -651,7 +652,7 @@ namespace DBRealization
         public static string Form31_1()
         {
             return
-                Form3() +
+                Form3() + "," +
             "SummaryActivity" + strNotNullDeclaration +
             "Radionuclids" + strNotNullDeclaration +
             "Quantity" + intNotNullDeclaration.Replace(",", "");
@@ -659,7 +660,7 @@ namespace DBRealization
         public static string Form32()
         {
             return
-                Form3() +
+                Form3() + "," +
             "UniqueAgreementId" + strNotNullDeclaration +
             "SupplyDate" + dateNotNullDeclaration +
             "FieldsOfWorking" + strNotNullDeclaration +
@@ -676,7 +677,7 @@ namespace DBRealization
         public static string Form32_1()
         {
             return
-                Form3() +
+                Form3() + "," +
             "CertificateId" + strNotNullDeclaration +
             "NuclearMaterialPresence" + strNotNullDeclaration +
             "Kategory" + shortNotNullDeclaration +
@@ -696,7 +697,7 @@ namespace DBRealization
         public static string Form32_2()
         {
             return
-                Form3() +
+                Form3() + "," +
             "DepletedUraniumMass" + doubleNotNullDeclaration +
             "CreationYear" + strNotNullDeclaration +
             "Id" + strNotNullDeclaration +
@@ -707,7 +708,7 @@ namespace DBRealization
         public static string Form32_3()
         {
             return
-                Form3() +
+                Form3() + "," +
                 "IdName" + strNotNullDeclaration +
                 "Value" + strNotNullDeclaration.Replace(",", "");
         }
@@ -720,7 +721,7 @@ namespace DBRealization
         }
         public static string Form40()
         {
-            return
+            return Form4() + "," +
                 "SubjectRF" + strNotNullDeclaration +
                 "Year" + intNotNullDeclaration +
                 "SubjectAuthorityName" + intNotNullDeclaration +
@@ -742,7 +743,7 @@ namespace DBRealization
         }
         public static string Form41()
         {
-            return
+            return Form4() + "," +
             "Notes" + strNotNullDeclaration +
             "OrgName" + strNotNullDeclaration +
             "NumberInOrder" + intNotNullDeclaration +
@@ -780,7 +781,7 @@ namespace DBRealization
         public static string Form51()
         {
             return
-                Form5() +
+                Form5() + "," +
             "OperationCode" + strNotNullDeclaration +
             "NumberInOrder" + intNotNullDeclaration +
             "Radionuclids" + strNotNullDeclaration +
@@ -792,7 +793,7 @@ namespace DBRealization
         public static string Form52()
         {
             return
-                Form5() +
+                Form5() + "," +
             "Kategory" + shortNotNullDeclaration +
             "Radionuclids" + strNotNullDeclaration +
             "Quantity" + intNotNullDeclaration +
@@ -801,7 +802,7 @@ namespace DBRealization
         public static string Form53()
         {
             return
-                Form5() +
+                Form5() + "," +
             "TypeOfAccountedParts" + intNotNullDeclaration +
             "KindOri" + intNotNullDeclaration +
             "OperationCode" + strNotNullDeclaration +
@@ -817,7 +818,7 @@ namespace DBRealization
         public static string Form54()
         {
             return
-                Form5() +
+                Form5() + "," +
             "TypeOfAccountedParts" + intNotNullDeclaration +
             "KindOri" + intNotNullDeclaration +
             "Volume" + doubleNotNullDeclaration +
@@ -830,7 +831,7 @@ namespace DBRealization
         public static string Form55()
         {
             return
-                Form5() +
+                Form5() + "," +
             "OperationCode" + strNotNullDeclaration +
             "Mass" + doubleNotNullDeclaration +
             "Name" + strNotNullDeclaration +
@@ -841,7 +842,7 @@ namespace DBRealization
         public static string Form56()
         {
             return
-                Form5() +
+                Form5() + "," +
             "NameIOU" + strNotNullDeclaration +
             "Mass" + doubleNotNullDeclaration +
             "Quantity" + intNotNullDeclaration.Replace(",", "");
@@ -849,7 +850,7 @@ namespace DBRealization
         public static string Form57()
         {
             return
-                Form5() +
+                Form5() + "," +
             "Note" + strNotNullDeclaration +
             "PermissionNameNumber" + strNotNullDeclaration +
             "DocumentNameNumber" + strNotNullDeclaration +

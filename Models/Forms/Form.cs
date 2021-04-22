@@ -18,6 +18,15 @@ namespace Models.Abstracts
             _dataAccess = Access;
         }
 
+        int _ID = -1;
+        public int ID
+        {
+            get
+            {
+                return _dataAccess.RowID;
+            }
+        }
+
         //FormNum property
         [Attributes.Form_Property("Форма")]
         public string FormNum

@@ -7,9 +7,9 @@ namespace DBRealization
     {
         public string DBPath { get; set; }
 
-        //Иcпользуется как ReportID|_/FormID|_/RowID|_
+        //Иcпользуется как ReportsID|_/ReportID|_/RowID|_
         public string PathToData { get; set; }
-        public int ReportID 
+        public int ReportsID 
         { 
             get 
             {
@@ -23,7 +23,7 @@ namespace DBRealization
                 }
             } 
         }
-        public int FormID
+        public int ReportID
         {
             get
             {
@@ -68,15 +68,15 @@ namespace DBRealization
 
         public object Get(string ParamName)
         {
-            if(ReportID!=-1)
+            if(ReportsID!=-1)
             {
-                return Get_ByReportID(ParamName);
+                return Get_ByReportsID(ParamName);
             }
             else
             {
-                if (FormID != -1)
+                if (ReportID != -1)
                 {
-                    return Get_ByFormID(ParamName);
+                    return Get_ByReportID(ParamName);
                 }
                 else
                 {
@@ -91,12 +91,11 @@ namespace DBRealization
                 }
             }
         }
-
-        object Get_ByReportID(string ParamName)
+        object Get_ByReportsID(string ParamName)
         {
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
 
-            return use.DoCommand("select "+ParamName+" from reports where report_id="+ReportID,(reader)=> 
+            return use.DoCommand("select "+ParamName+" from reports where reports_id="+ReportsID,(reader)=> 
             {
                 List<object[]> lst = new List<object[]>();
                 while(reader.Read())
@@ -108,11 +107,11 @@ namespace DBRealization
                 return lst;
             });
         }
-        object Get_ByFormID(string ParamName)
+        object Get_ByReportID(string ParamName)
         {
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
 
-            return use.DoCommand("select " + ParamName + " from report where form_id=" + FormID, (reader) =>
+            return use.DoCommand("select " + ParamName + " from report where report_id=" + ReportID, (reader) =>
             {
                 List<object[]> lst = new List<object[]>();
                 while (reader.Read())
@@ -148,13 +147,13 @@ namespace DBRealization
         {
             if (ReportID != -1)
             {
-                Set_ByReportID(ParamName,obj);
+                Set_ByReportsID(ParamName,obj);
             }
             else
             {
-                if (FormID != -1)
+                if (ReportID != -1)
                 {
-                    Set_ByFormID(ParamName, obj);
+                    Set_ByReportID(ParamName, obj);
                 }
                 else
                 {
@@ -165,11 +164,11 @@ namespace DBRealization
                 }
             }
         }
-        void Set_ByReportID(string ParamName,object obj)
+        void Set_ByReportsID(string ParamName,object obj)
         {
 
         }
-        void Set_ByFormID(string ParamName, object obj)
+        void Set_ByReportID(string ParamName, object obj)
         {
 
         }

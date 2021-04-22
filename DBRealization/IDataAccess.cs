@@ -8,8 +8,8 @@ namespace DBRealization
     {
         string DBPath { get; set; }
         string PathToData { get; set; }
+        int ReportsID { get; }
         int ReportID { get; }
-        int FormID { get; }
         int RowID { get; }
 
         object Get(string ParamName);

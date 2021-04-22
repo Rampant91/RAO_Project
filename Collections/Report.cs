@@ -17,7 +17,7 @@ namespace Collections
     {
         IDataAccess _dataAccess { get; set; }
 
-        public int ReportID
+        public int ID
         {
             get
             {
