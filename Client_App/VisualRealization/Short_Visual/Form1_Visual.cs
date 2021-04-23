@@ -177,7 +177,7 @@ namespace Client_App.Short_Visual
             clm3.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                 GetProperty("StartPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/StartPeriod"
@@ -196,7 +196,7 @@ namespace Client_App.Short_Visual
             clm4.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                 GetProperty("EndPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/EndPeriod"
@@ -215,7 +215,7 @@ namespace Client_App.Short_Visual
             clm5.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                 GetProperty("ExportDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/ExportDate"
@@ -234,7 +234,7 @@ namespace Client_App.Short_Visual
             clm6.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                 GetProperty("IsCorrection").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/IsCorrection"
@@ -250,7 +250,7 @@ namespace Client_App.Short_Visual
             clm7.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Collections").
+                Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                 GetProperty("Comments").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/Comments"

@@ -116,8 +116,11 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(DBPath,param.ReportID, null);
-                await frm.ShowDialog(desktop.MainWindow);
+                if (param != null)
+                {
+                    Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(DBPath, param.ReportID, null);
+                    await frm.ShowDialog(desktop.MainWindow);
+                }
             }
         }
         async Task _DeleteForm(Report param)

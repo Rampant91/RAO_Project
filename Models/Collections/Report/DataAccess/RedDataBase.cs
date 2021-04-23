@@ -50,6 +50,7 @@ namespace Collections.Report_Collection
             // 1=Row, 2=Report, 3=Reports
             //Write get ID what we need by type
             this.DBPath = DBPath;
+            this.PathToData = "1";
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
         }
 

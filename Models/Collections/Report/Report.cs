@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Concurrent;
 using DBRealization;
+using Collections.Report_Collection;
 
 namespace Collections
 {
@@ -74,7 +75,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(IsCorrection)) == null)
                 {
-                    return (bool)_dataAccess.Get(nameof(IsCorrection));
+                    return (bool)_dataAccess.Get(nameof(IsCorrection))[0][0];
                 }
                 else
                 {
@@ -106,7 +107,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber))[0][0];
                 }
                 else
                 {
@@ -138,7 +139,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(NumberInOrder));
+                    return (string)_dataAccess.Get(nameof(NumberInOrder))[0][0];
                 }
                 else
                 {
@@ -170,7 +171,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(Comments)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Comments));
+                    return (string)_dataAccess.Get(nameof(Comments))[0][0];
                 }
                 else
                 {
@@ -234,7 +235,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(StartPeriod)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(StartPeriod));
+                    return (DateTimeOffset)_dataAccess.Get(nameof(StartPeriod))[0][0];
                 }
                 else
                 {
@@ -272,7 +273,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(EndPeriod)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(EndPeriod));
+                    return (DateTimeOffset)_dataAccess.Get(nameof(EndPeriod))[0][0];
                 }
                 else
                 {
@@ -310,7 +311,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(ExportDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(ExportDate));
+                    return (DateTimeOffset)_dataAccess.Get(nameof(ExportDate))[0][0];
                 }
                 else
                 {

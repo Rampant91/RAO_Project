@@ -22,7 +22,7 @@ namespace Client_App.Views
                 tmp.DBPath = DBPath;
                 if (ReportID != -1)
                 {
-                    tmp.Storage = new Report(new RedDataBase(DBPath, ReportID));
+                    tmp.Storage = new Report(new RedDataBase(DBPath, ReportID.ToString()));
                 }
                 else
                 {
@@ -33,7 +33,7 @@ namespace Client_App.Views
             {
                 if (ReportID != -1)
                 {
-                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath, ReportID));
+                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath, ReportID.ToString())) ;
                 }
                 else
                 {
