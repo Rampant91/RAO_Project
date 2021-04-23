@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -28,7 +29,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StoragePlaceName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StoragePlaceName));
+                    return (string)_dataAccess.Get(nameof(StoragePlaceName))[0][0];
                 }
                 else
                 {
@@ -61,7 +62,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeOYAT)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CodeOYAT));
+                    return (string)_dataAccess.Get(nameof(CodeOYAT))[0][0];
                 }
                 else
                 {
@@ -93,7 +94,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeOYATnote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CodeOYATnote));
+                    return (string)_dataAccess.Get(nameof(CodeOYATnote))[0][0];
                 }
                 else
                 {
@@ -125,7 +126,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StoragePlaceCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StoragePlaceCode));
+                    return (string)_dataAccess.Get(nameof(StoragePlaceCode))[0][0];
                 }
                 else
                 {
@@ -169,7 +170,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FcpNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FcpNumber));
+                    return (string)_dataAccess.Get(nameof(FcpNumber))[0][0];
                 }
                 else
                 {
@@ -202,7 +203,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FuelMass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(FuelMass));
+                    return (double)_dataAccess.Get(nameof(FuelMass))[0][0];
                 }
                 else
                 {
@@ -235,7 +236,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CellMass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(CellMass));
+                    return (double)_dataAccess.Get(nameof(CellMass))[0][0];
                 }
                 else
                 {
@@ -268,7 +269,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
                 }
                 else
                 {
@@ -303,7 +304,7 @@ namespace Models
             {
                 if (GetErrors(nameof(BetaGammaActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(BetaGammaActivity));
+                    return (string)_dataAccess.Get(nameof(BetaGammaActivity))[0][0];
                 }
                 else
                 {
@@ -354,7 +355,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AlphaActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AlphaActivity));
+                    return (string)_dataAccess.Get(nameof(AlphaActivity))[0][0];
                 }
                 else
                 {

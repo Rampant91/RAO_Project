@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder));
+                    return (int)_dataAccess.Get(nameof(NumberInOrder))[0][0];
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RegNo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RegNo));
+                    return (string)_dataAccess.Get(nameof(RegNo))[0][0];
                 }
                 else
                 {
@@ -93,7 +94,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okpo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Okpo));
+                    return (string)_dataAccess.Get(nameof(Okpo))[0][0];
                 }
                 else
                 {
@@ -133,7 +134,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OrgName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OrgName));
+                    return (string)_dataAccess.Get(nameof(OrgName))[0][0];
                 }
                 else
                 {
@@ -162,7 +163,7 @@ namespace Models
             {
                 if (GetErrors(nameof(LicenseInfo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(LicenseInfo));
+                    return (string)_dataAccess.Get(nameof(LicenseInfo))[0][0];
                 }
                 else
                 {
@@ -191,7 +192,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsInv)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOfFormsInv));
+                    return (int)_dataAccess.Get(nameof(QuantityOfFormsInv))[0][0];
                 }
                 else
                 {
@@ -226,7 +227,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsOper)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOfFormsOper));
+                    return (int)_dataAccess.Get(nameof(QuantityOfFormsOper))[0][0];
                 }
                 else
                 {
@@ -261,7 +262,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsYear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOfFormsYear));
+                    return (int)_dataAccess.Get(nameof(QuantityOfFormsYear))[0][0];
                 }
                 else
                 {
@@ -296,7 +297,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Notes)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Notes));
+                    return (string)_dataAccess.Get(nameof(Notes))[0][0];
                 }
                 else
                 {

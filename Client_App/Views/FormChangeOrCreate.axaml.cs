@@ -6,6 +6,7 @@ using Models.Attributes;
 using Avalonia.Data;
 using Collections;
 using DBRealization;
+using Collections.Report_Collection;
 
 namespace Client_App.Views
 {

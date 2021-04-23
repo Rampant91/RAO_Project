@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(NameIOU)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(NameIOU));
+                    return (string)_dataAccess.Get(nameof(NameIOU))[0][0];
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
                 }
                 else
                 {
@@ -99,7 +100,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass));
+                    return (double)_dataAccess.Get(nameof(Mass))[0][0];
                 }
                 else
                 {

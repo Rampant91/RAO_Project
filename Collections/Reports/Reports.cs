@@ -23,6 +23,32 @@ namespace Collections
 
         }
 
+        public Report this[string key]
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        public IEnumerator<Report> GetAllElements
+        {
+            get
+            {
+                yield break;
+            }
+        }
+
+        public void Add(Report item)
+        {
+
+        }
+        public void RemoveAt(int ID)
+        {
+
+        }
+
+
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {

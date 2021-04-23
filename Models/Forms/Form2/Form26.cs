@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SourcesQuantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(SourcesQuantity));
+                    return (int)_dataAccess.Get(nameof(SourcesQuantity))[0][0];
                 }
                 else
                 {
@@ -66,7 +67,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ObservedSourceNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ObservedSourceNumber));
+                    return (string)_dataAccess.Get(nameof(ObservedSourceNumber))[0][0];
                 }
                 else
                 {
@@ -99,7 +100,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ControlledAreaName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ControlledAreaName));
+                    return (string)_dataAccess.Get(nameof(ControlledAreaName))[0][0];
                 }
                 else
                 {
@@ -132,7 +133,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SupposedWasteSource)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SupposedWasteSource));
+                    return (string)_dataAccess.Get(nameof(SupposedWasteSource))[0][0];
                 }
                 else
                 {
@@ -165,7 +166,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DistanceToWasteSource)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(DistanceToWasteSource));
+                    return (int)_dataAccess.Get(nameof(DistanceToWasteSource))[0][0];
                 }
                 else
                 {
@@ -198,7 +199,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TestDepth)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(TestDepth));
+                    return (int)_dataAccess.Get(nameof(TestDepth))[0][0];
                 }
                 else
                 {
@@ -230,7 +231,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TestDepthNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(TestDepthNote));
+                    return (int)_dataAccess.Get(nameof(TestDepthNote))[0][0];
                 }
                 else
                 {
@@ -263,7 +264,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RadionuclidName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RadionuclidName));
+                    return (string)_dataAccess.Get(nameof(RadionuclidName))[0][0];
                 }
                 else
                 {
@@ -296,7 +297,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AverageYearConcentration)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(AverageYearConcentration));
+                    return (double)_dataAccess.Get(nameof(AverageYearConcentration))[0][0];
                 }
                 else
                 {

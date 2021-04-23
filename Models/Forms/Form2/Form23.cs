@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -28,7 +29,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StoragePlaceName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StoragePlaceName));
+                    return (string)_dataAccess.Get(nameof(StoragePlaceName))[0][0];
                 }
                 else
                 {
@@ -60,7 +61,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StoragePlaceNameNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StoragePlaceNameNote));
+                    return (string)_dataAccess.Get(nameof(StoragePlaceNameNote))[0][0];
                 }
                 else
                 {
@@ -93,7 +94,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StoragePlaceCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StoragePlaceCode));
+                    return (string)_dataAccess.Get(nameof(StoragePlaceCode))[0][0];
                 }
                 else
                 {
@@ -138,7 +139,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProjectVolume)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(ProjectVolume));
+                    return (double)_dataAccess.Get(nameof(ProjectVolume))[0][0];
                 }
                 else
                 {
@@ -170,7 +171,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProjectVolumeNote)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(ProjectVolumeNote));
+                    return (double)_dataAccess.Get(nameof(ProjectVolumeNote))[0][0];
                 }
                 else
                 {
@@ -203,7 +204,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeRAO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CodeRAO));
+                    return (string)_dataAccess.Get(nameof(CodeRAO))[0][0];
                 }
                 else
                 {
@@ -236,7 +237,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Volume)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Volume));
+                    return (double)_dataAccess.Get(nameof(Volume))[0][0];
                 }
                 else
                 {
@@ -269,7 +270,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass));
+                    return (double)_dataAccess.Get(nameof(Mass))[0][0];
                 }
                 else
                 {
@@ -302,7 +303,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOZIII)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOZIII));
+                    return (int)_dataAccess.Get(nameof(QuantityOZIII))[0][0];
                 }
                 else
                 {
@@ -337,7 +338,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SummaryActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SummaryActivity));
+                    return (string)_dataAccess.Get(nameof(SummaryActivity))[0][0];
                 }
                 else
                 {
@@ -388,7 +389,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumber));
+                    return (string)_dataAccess.Get(nameof(DocumentNumber))[0][0];
                 }
                 else
                 {
@@ -420,7 +421,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumberRecoded));
+                    return (string)_dataAccess.Get(nameof(DocumentNumberRecoded))[0][0];
                 }
                 else
                 {
@@ -453,7 +454,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(DocumentDate));
+                    return (DateTime)_dataAccess.Get(nameof(DocumentDate))[0][0];
                 }
                 else
                 {
@@ -486,7 +487,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ExpirationDate)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ExpirationDate));
+                    return (DateTime)_dataAccess.Get(nameof(ExpirationDate))[0][0];
                 }
                 else
                 {
@@ -519,7 +520,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentName));
+                    return (string)_dataAccess.Get(nameof(DocumentName))[0][0];
                 }
                 else
                 {

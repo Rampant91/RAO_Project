@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Name)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Name));
+                    return (string)_dataAccess.Get(nameof(Name))[0][0];
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OperationCode));
+                    return (string)_dataAccess.Get(nameof(OperationCode))[0][0];
                 }
                 else
                 {
@@ -97,7 +98,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
                 }
                 else
                 {
@@ -132,7 +133,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO))[0][0];
                 }
                 else
                 {
@@ -173,7 +174,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote))[0][0];
                 }
                 else
                 {
@@ -206,7 +207,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass));
+                    return (double)_dataAccess.Get(nameof(Mass))[0][0];
                 }
                 else
                 {

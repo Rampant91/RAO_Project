@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackName));
+                    return (string)_dataAccess.Get(nameof(PackName))[0][0];
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackType));
+                    return (string)_dataAccess.Get(nameof(PackType))[0][0];
                 }
                 else
                 {
@@ -96,7 +97,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeRecoded));
+                    return (string)_dataAccess.Get(nameof(PackTypeRecoded))[0][0];
                 }
                 else
                 {
@@ -129,7 +130,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Id)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Id));
+                    return (string)_dataAccess.Get(nameof(Id))[0][0];
                 }
                 else
                 {
@@ -158,7 +159,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CreationYear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(CreationYear));
+                    return (int)_dataAccess.Get(nameof(CreationYear))[0][0];
                 }
                 else
                 {
@@ -187,7 +188,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DepletedUraniumMass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(DepletedUraniumMass));
+                    return (double)_dataAccess.Get(nameof(DepletedUraniumMass))[0][0];
                 }
                 else
                 {

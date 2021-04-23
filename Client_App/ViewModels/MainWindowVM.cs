@@ -24,6 +24,7 @@ using Models.Attributes;
 using System.IO;
 using Collections;
 using DBRealization;
+using Collections.Reports_Collection;
 
 namespace Client_App.ViewModels
 {

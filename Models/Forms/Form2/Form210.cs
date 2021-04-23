@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(IndicatorName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(IndicatorName));
+                    return (string)_dataAccess.Get(nameof(IndicatorName))[0][0];
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PlotName));
+                    return (string)_dataAccess.Get(nameof(PlotName))[0][0];
                 }
                 else
                 {
@@ -97,7 +98,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotKadastrNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PlotKadastrNumber));
+                    return (string)_dataAccess.Get(nameof(PlotKadastrNumber))[0][0];
                 }
                 else
                 {
@@ -130,7 +131,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PlotCode));                }
+                    return (string)_dataAccess.Get(nameof(PlotCode))[0][0];                }
                 else
                 {
                     return _PlotCode_Not_Valid;
@@ -161,7 +162,7 @@ namespace Models
             {
                 if (GetErrors(nameof(InfectedArea)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(InfectedArea));
+                    return (int)_dataAccess.Get(nameof(InfectedArea))[0][0];
                 }
                 else
                 {
@@ -194,7 +195,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AvgGammaRaysDosePower)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(AvgGammaRaysDosePower));
+                    return (double)_dataAccess.Get(nameof(AvgGammaRaysDosePower))[0][0];
                 }
                 else
                 {
@@ -227,7 +228,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MaxGammaRaysDosePower)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MaxGammaRaysDosePower));
+                    return (double)_dataAccess.Get(nameof(MaxGammaRaysDosePower))[0][0];
                 }
                 else
                 {
@@ -260,7 +261,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteDensityAlpha)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(WasteDensityAlpha));
+                    return (double)_dataAccess.Get(nameof(WasteDensityAlpha))[0][0];
                 }
                 else
                 {
@@ -293,7 +294,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteDensityBeta)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(WasteDensityBeta));
+                    return (double)_dataAccess.Get(nameof(WasteDensityBeta))[0][0];
                 }
                 else
                 {
@@ -326,7 +327,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FcpNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FcpNumber));
+                    return (string)_dataAccess.Get(nameof(FcpNumber))[0][0];
                 }
                 else
                 {

@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Globalization;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -29,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OperationCode));
+                    return (string)_dataAccess.Get(nameof(OperationCode))[0][0];
                 }
                 else
                 {
@@ -62,7 +63,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TypeOfAccountedParts)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(TypeOfAccountedParts));
+                    return (int)_dataAccess.Get(nameof(TypeOfAccountedParts))[0][0];
                 }
                 else
                 {
@@ -97,7 +98,7 @@ namespace Models
             {
                 if (GetErrors(nameof(KindOri)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(KindOri));
+                    return (int)_dataAccess.Get(nameof(KindOri))[0][0];
                 }
                 else
                 {
@@ -129,7 +130,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AggregateState)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(AggregateState));
+                    return (byte)_dataAccess.Get(nameof(AggregateState))[0][0];
                 }
                 else
                 {
@@ -164,7 +165,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO))[0][0];
                 }
                 else
                 {
@@ -205,7 +206,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote))[0][0];
                 }
                 else
                 {
@@ -238,7 +239,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -269,7 +270,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Activity));
+                    return (string)_dataAccess.Get(nameof(Activity))[0][0];
                 }
                 else
                 {
@@ -313,7 +314,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
                 }
                 else
                 {
@@ -348,7 +349,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Volume)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Volume));
+                    return (double)_dataAccess.Get(nameof(Volume))[0][0];
                 }
                 else
                 {
@@ -381,7 +382,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass));
+                    return (double)_dataAccess.Get(nameof(Mass))[0][0];
                 }
                 else
                 {

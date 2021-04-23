@@ -26,6 +26,7 @@ using Avalonia.Metadata;
 using System.Windows;
 using Collections;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Client_App.ViewModels
 {

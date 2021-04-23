@@ -17,11 +17,18 @@ namespace Collections
     {
         IDataAccess _dataAccess { get; set; }
 
-        public int ID
+        public int ReportID
         {
             get
             {
                 return _dataAccess.ReportID;
+            }
+        }
+        public int ReportsID
+        {
+            get
+            {
+                return _dataAccess.ReportsID;
             }
         }
 
@@ -29,7 +36,7 @@ namespace Collections
         {
             _dataAccess = Access;
 
-            _Rows = new Basics.Rows();
+            _Rows = new Rows();
             //_Rows.CollectionChanged += Update;       
         }
 
@@ -39,8 +46,8 @@ namespace Collections
             OnPropertyChanged("Rows");
         }
 
-        Basics.Rows _Rows;
-        public Basics.Rows Rows 
+        Rows _Rows;
+        public Rows Rows 
         {
             get
             {

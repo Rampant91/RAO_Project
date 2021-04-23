@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models.Abstracts
 {
@@ -20,7 +21,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber))[0][0];
                 }
                 else
                 {
@@ -53,7 +54,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NotificationDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(NotificationDate));
+                    return (DateTimeOffset)_dataAccess.Get(nameof(NotificationDate))[0][0];
                 }
                 else
                 {

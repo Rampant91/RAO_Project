@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RegNo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RegNo));
+                    return (string)_dataAccess.Get(nameof(RegNo))[0][0];
                 }
                 else
                 {
@@ -60,7 +61,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OrganUprav)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OrganUprav));
+                    return (string)_dataAccess.Get(nameof(OrganUprav))[0][0];
                 }
                 else
                 {
@@ -89,7 +90,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SubjectRF)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SubjectRF));
+                    return (string)_dataAccess.Get(nameof(SubjectRF))[0][0];
                 }
                 else
                 {
@@ -118,7 +119,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLico)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(JurLico));
+                    return (string)_dataAccess.Get(nameof(JurLico))[0][0];
                 }
                 else
                 {
@@ -147,7 +148,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ShortJurLico)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ShortJurLico));
+                    return (string)_dataAccess.Get(nameof(ShortJurLico))[0][0];
                 }
                 else
                 {
@@ -176,7 +177,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLicoAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(JurLicoAddress));
+                    return (string)_dataAccess.Get(nameof(JurLicoAddress))[0][0];
                 }
                 else
                 {
@@ -205,7 +206,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLicoFactAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(JurLicoFactAddress));
+                    return (string)_dataAccess.Get(nameof(JurLicoFactAddress))[0][0];
                 }
                 else
                 {
@@ -234,7 +235,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIO));
+                    return (string)_dataAccess.Get(nameof(GradeFIO))[0][0];
                 }
                 else
                 {
@@ -263,7 +264,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Telephone)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Telephone));
+                    return (string)_dataAccess.Get(nameof(Telephone))[0][0];
                 }
                 else
                 {
@@ -292,7 +293,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Fax)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Fax));
+                    return (string)_dataAccess.Get(nameof(Fax))[0][0];
                 }
                 else
                 {
@@ -321,7 +322,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Email)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Email));
+                    return (string)_dataAccess.Get(nameof(Email))[0][0];
                 }
                 else
                 {
@@ -350,7 +351,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okpo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Okpo));
+                    return (string)_dataAccess.Get(nameof(Okpo))[0][0];
                 }
                 else
                 {
@@ -390,7 +391,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okved)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Okved));
+                    return (string)_dataAccess.Get(nameof(Okved))[0][0];
                 }
                 else
                 {
@@ -419,7 +420,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okogu)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Okogu));
+                    return (string)_dataAccess.Get(nameof(Okogu))[0][0];
                 }
                 else
                 {
@@ -448,7 +449,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Oktmo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Oktmo));
+                    return (string)_dataAccess.Get(nameof(Oktmo))[0][0];
                 }
                 else
                 {
@@ -477,7 +478,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Inn)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Inn));
+                    return (string)_dataAccess.Get(nameof(Inn))[0][0];
                 }
                 else
                 {
@@ -506,7 +507,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Kpp)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Kpp));
+                    return (string)_dataAccess.Get(nameof(Kpp))[0][0];
                 }
                 else
                 {
@@ -535,7 +536,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okopf)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Okopf));
+                    return (string)_dataAccess.Get(nameof(Okopf))[0][0];
                 }
                 else
                 {
@@ -564,7 +565,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okfs)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Okfs));
+                    return (string)_dataAccess.Get(nameof(Okfs))[0][0];
                 }
                 else
                 {

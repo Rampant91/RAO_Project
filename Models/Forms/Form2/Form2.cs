@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models.Abstracts
 {
@@ -21,7 +22,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber))[0][0];
                 }
                 else
                 {
@@ -54,7 +55,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder));
+                    return (int)_dataAccess.Get(nameof(NumberInOrder))[0][0];
                 }
                 else
                 {

@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteSourceName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(WasteSourceName));
+                    return (string)_dataAccess.Get(nameof(WasteSourceName))[0][0];
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RadionuclidName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RadionuclidName));
+                    return (string)_dataAccess.Get(nameof(RadionuclidName))[0][0];
                 }
                 else
                 {
@@ -97,7 +98,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedActivity));
+                    return (string)_dataAccess.Get(nameof(AllowedActivity))[0][0];
                 }
                 else
                 {
@@ -143,7 +144,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedActivityNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedActivityNote));
+                    return (string)_dataAccess.Get(nameof(AllowedActivityNote))[0][0];
                 }
                 else
                 {
@@ -176,7 +177,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactedActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactedActivity));
+                    return (string)_dataAccess.Get(nameof(FactedActivity))[0][0];
                 }
                 else
                 {
@@ -219,7 +220,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactedActivityNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactedActivityNote));
+                    return (string)_dataAccess.Get(nameof(FactedActivityNote))[0][0];
                 }
                 else
                 {

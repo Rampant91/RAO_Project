@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using DBRealization;
 
-namespace DBRealization
+namespace Collections.Notes_Collection
 {
     public class RedDataBase:IDataAccess
     {
         public string DBPath { get; set; }
 
-        //Иcпользуется как ReportsID|_/ReportID|_/RowID|_
+        //Иcпользуется как ReportsID|_ / ReportID|_ / NoteID|_ 
         public string PathToData { get; set; }
         public int ReportsID 
         { 
@@ -37,7 +38,7 @@ namespace DBRealization
                 }
             }
         }
-        public int RowID
+        public int NoteID
         {
             get
             {
@@ -60,13 +61,12 @@ namespace DBRealization
         }
         public RedDataBase(string DBPath, int Type)
         {
-            // 1=Row, 2=Report, 3=Reports
             //Write get ID what we need by type
             this.DBPath = DBPath;
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
         }
 
-        public object Get(string ParamName)
+        public List<object[]> Get(string ParamName)
         {
             if(ReportsID!=-1)
             {
@@ -80,9 +80,9 @@ namespace DBRealization
                 }
                 else
                 {
-                    if (RowID != -1)
+                    if (NoteID != -1)
                     {
-                        return Get_ByRowID(ParamName);
+                        return Get_ByNoteID(ParamName);
                     }
                     else
                     {
@@ -91,11 +91,11 @@ namespace DBRealization
                 }
             }
         }
-        object Get_ByReportsID(string ParamName)
+        List<object[]> Get_ByReportsID(string ParamName)
         {
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
 
-            return use.DoCommand("select "+ParamName+" from reports where reports_id="+ReportsID,(reader)=> 
+            return (List<object[]>)use.DoCommand("select "+ParamName+" from reports where reports_id="+ReportsID,(reader)=> 
             {
                 List<object[]> lst = new List<object[]>();
                 while(reader.Read())
@@ -107,11 +107,11 @@ namespace DBRealization
                 return lst;
             });
         }
-        object Get_ByReportID(string ParamName)
+        List<object[]> Get_ByReportID(string ParamName)
         {
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
 
-            return use.DoCommand("select " + ParamName + " from report where report_id=" + ReportID, (reader) =>
+            return (List<object[]>)use.DoCommand("select " + ParamName + " from report where report_id=" + ReportID, (reader) =>
             {
                 List<object[]> lst = new List<object[]>();
                 while (reader.Read())
@@ -123,14 +123,11 @@ namespace DBRealization
                 return lst;
             });
         }
-        object Get_ByRowID(string ParamName)
+        List<object[]> Get_ByNoteID(string ParamName)
         {
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
 
-            //Write get type from db
-            string type = "11";
-
-            return use.DoCommand("select " + ParamName + " from forms_" + type + " where row_id=" + RowID, (reader) =>
+            return (List<object[]>)use.DoCommand("select " + ParamName + " from notes where row_id=" + NoteID, (reader) =>
             {
                 List<object[]> lst = new List<object[]>();
                 while (reader.Read())
@@ -157,9 +154,9 @@ namespace DBRealization
                 }
                 else
                 {
-                    if (RowID != -1)
+                    if (NoteID != -1)
                     {
-                        Set_ByRowID(ParamName, obj);
+                        Set_ByNoteID(ParamName, obj);
                     }
                 }
             }
@@ -172,9 +169,21 @@ namespace DBRealization
         {
 
         }
-        void Set_ByRowID(string ParamName, object obj)
+        void Set_ByNoteID(string ParamName, object obj)
         {
+            RedDataBaseUse use = new RedDataBaseUse(DBPath);
 
+            List<object[]> lst=(List<object[]>)use.DoCommand("select form_type from reports where reports_id=" + NoteID, (reader) =>
+            {
+                List<object[]> lst = new List<object[]>();
+                while (reader.Read())
+                {
+                    var values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    lst.Add(values);
+                }
+                return lst;
+            });
         }
     }
 }

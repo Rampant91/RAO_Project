@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RegNo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RegNo));
+                    return (string)_dataAccess.Get(nameof(RegNo))[0][0];
                 }
                 else
                 {
@@ -60,7 +61,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okpo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Okpo));
+                    return (string)_dataAccess.Get(nameof(Okpo))[0][0];
                 }
                 else
                 {
@@ -100,7 +101,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OrgName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OrgName));
+                    return (string)_dataAccess.Get(nameof(OrgName))[0][0];
                 }
                 else
                 {
@@ -129,7 +130,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentNameNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNameNumber));
+                    return (string)_dataAccess.Get(nameof(DocumentNameNumber))[0][0];
                 }
                 else
                 {
@@ -158,7 +159,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionNameNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionNameNumber));
+                    return (string)_dataAccess.Get(nameof(PermissionNameNumber))[0][0];
                 }
                 else
                 {
@@ -187,7 +188,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedActivity));
+                    return (string)_dataAccess.Get(nameof(AllowedActivity))[0][0];
                 }
                 else
                 {
@@ -220,7 +221,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Note)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Note));
+                    return (string)_dataAccess.Get(nameof(Note))[0][0];
                 }
                 else
                 {

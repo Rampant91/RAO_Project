@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -38,7 +39,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Authority1)) == null)
                 {
-                    return (Authority)_dataAccess.Get(nameof(Authority1));
+                    return (Authority)_dataAccess.Get(nameof(Authority1))[0][0];
                 }
                 else
                 {
@@ -67,7 +68,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Year)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Year));
+                    return (int)_dataAccess.Get(nameof(Year))[0][0];
                 }
                 else
                 {
@@ -96,7 +97,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLico)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(JurLico));
+                    return (string)_dataAccess.Get(nameof(JurLico))[0][0];
                 }
                 else
                 {
@@ -125,7 +126,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ShortJurLico)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ShortJurLico));
+                    return (string)_dataAccess.Get(nameof(ShortJurLico))[0][0];
                 }
                 else
                 {
@@ -154,7 +155,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLicoAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(JurLicoAddress));
+                    return (string)_dataAccess.Get(nameof(JurLicoAddress))[0][0];
                 }
                 else
                 {
@@ -183,7 +184,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLicoFactAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(JurLicoFactAddress));
+                    return (string)_dataAccess.Get(nameof(JurLicoFactAddress))[0][0];
                 }
                 else
                 {
@@ -212,7 +213,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIO));
+                    return (string)_dataAccess.Get(nameof(GradeFIO))[0][0];
                 }
                 else
                 {
@@ -241,7 +242,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor));
+                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor))[0][0];
                 }
                 else
                 {
@@ -270,7 +271,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Telephone)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Telephone));
+                    return (string)_dataAccess.Get(nameof(Telephone))[0][0];
                 }
                 else
                 {
@@ -299,7 +300,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Fax)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Fax));
+                    return (string)_dataAccess.Get(nameof(Fax))[0][0];
                 }
                 else
                 {
@@ -328,7 +329,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Email)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Email));
+                    return (string)_dataAccess.Get(nameof(Email))[0][0];
                 }
                 else
                 {

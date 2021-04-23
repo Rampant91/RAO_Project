@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -29,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(UniqueAgreementId)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(UniqueAgreementId));
+                    return (string)_dataAccess.Get(nameof(UniqueAgreementId))[0][0];
                 }
                 else
                 {
@@ -58,7 +59,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SupplyDate)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(SupplyDate));
+                    return (DateTime)_dataAccess.Get(nameof(SupplyDate))[0][0];
                 }
                 else
                 {
@@ -87,7 +88,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RecieverName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RecieverName));
+                    return (string)_dataAccess.Get(nameof(RecieverName))[0][0];
                 }
                 else
                 {
@@ -116,7 +117,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FieldsOfWorking)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(FieldsOfWorking));
+                    return (byte)_dataAccess.Get(nameof(FieldsOfWorking))[0][0];
                 }
                 else
                 {
@@ -145,7 +146,7 @@ namespace Models
             {
                 if (GetErrors(nameof(LicenseIdRv)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(LicenseIdRv));
+                    return (string)_dataAccess.Get(nameof(LicenseIdRv))[0][0];
                 }
                 else
                 {
@@ -174,7 +175,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThruRv)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThruRv));
+                    return (DateTime)_dataAccess.Get(nameof(ValidThruRv))[0][0];
                 }
                 else
                 {
@@ -203,7 +204,7 @@ namespace Models
             {
                 if (GetErrors(nameof(LicenseIdRao)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(LicenseIdRao));
+                    return (string)_dataAccess.Get(nameof(LicenseIdRao))[0][0];
                 }
                 else
                 {
@@ -232,7 +233,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThruRao)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThruRao));
+                    return (DateTime)_dataAccess.Get(nameof(ValidThruRao))[0][0];
                 }
                 else
                 {
@@ -261,7 +262,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SupplyAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SupplyAddress));
+                    return (string)_dataAccess.Get(nameof(SupplyAddress))[0][0];
                 }
                 else
                 {
@@ -290,7 +291,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -321,7 +322,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
                 }
                 else
                 {
@@ -356,7 +357,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SummaryActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SummaryActivity));
+                    return (string)_dataAccess.Get(nameof(SummaryActivity))[0][0];
                 }
                 else
                 {

@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeOYAT)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CodeOYAT));
+                    return (string)_dataAccess.Get(nameof(CodeOYAT))[0][0];
                 }
                 else
                 {
@@ -63,7 +64,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeOYATnote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CodeOYATnote));
+                    return (string)_dataAccess.Get(nameof(CodeOYATnote))[0][0];
                 }
                 else
                 {
@@ -96,7 +97,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FcpNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FcpNumber));
+                    return (string)_dataAccess.Get(nameof(FcpNumber))[0][0];
                 }
                 else
                 {
@@ -129,7 +130,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassCreated)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassCreated));
+                    return (double)_dataAccess.Get(nameof(MassCreated))[0][0];
                 }
                 else
                 {
@@ -162,7 +163,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityCreated)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityCreated));
+                    return (int)_dataAccess.Get(nameof(QuantityCreated))[0][0];
                 }
                 else
                 {
@@ -196,7 +197,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityCreatedNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityCreatedNote));
+                    return (int)_dataAccess.Get(nameof(QuantityCreatedNote))[0][0];
                 }
                 else
                 {
@@ -231,7 +232,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassFromAnothers)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassFromAnothers));
+                    return (double)_dataAccess.Get(nameof(MassFromAnothers))[0][0];
                 }
                 else
                 {
@@ -264,7 +265,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothers)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromAnothers));
+                    return (int)_dataAccess.Get(nameof(QuantityFromAnothers))[0][0];
                 }
                 else
                 {
@@ -298,7 +299,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothersNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersNote));
+                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersNote))[0][0];
                 }
                 else
                 {
@@ -333,7 +334,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassFromAnothersImported)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassFromAnothersImported));
+                    return (double)_dataAccess.Get(nameof(MassFromAnothersImported))[0][0];
                 }
                 else
                 {
@@ -366,7 +367,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothersImported)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersImported));
+                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersImported))[0][0];
                 }
                 else
                 {
@@ -400,7 +401,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothersImportedNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersImportedNote));
+                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersImportedNote))[0][0];
                 }
                 else
                 {
@@ -435,7 +436,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassAnotherReasons)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassAnotherReasons));
+                    return (double)_dataAccess.Get(nameof(MassAnotherReasons))[0][0];
                 }
                 else
                 {
@@ -468,7 +469,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityAnotherReasons)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityAnotherReasons));
+                    return (int)_dataAccess.Get(nameof(QuantityAnotherReasons))[0][0];
                 }
                 else
                 {
@@ -502,7 +503,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityAnotherReasonsNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityAnotherReasonsNote));
+                    return (int)_dataAccess.Get(nameof(QuantityAnotherReasonsNote))[0][0];
                 }
                 else
                 {
@@ -537,7 +538,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassTransferredToAnother)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassTransferredToAnother));
+                    return (double)_dataAccess.Get(nameof(MassTransferredToAnother))[0][0];
                 }
                 else
                 {
@@ -570,7 +571,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityTransferredToAnother)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityTransferredToAnother));
+                    return (int)_dataAccess.Get(nameof(QuantityTransferredToAnother))[0][0];
                 }
                 else
                 {
@@ -604,7 +605,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityTransferredToAnotherNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityTransferredToAnotherNote));
+                    return (int)_dataAccess.Get(nameof(QuantityTransferredToAnotherNote))[0][0];
                 }
                 else
                 {
@@ -639,7 +640,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassRefined)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassRefined));
+                    return (double)_dataAccess.Get(nameof(MassRefined))[0][0];
                 }
                 else
                 {
@@ -672,7 +673,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRefined)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityRefined));
+                    return (int)_dataAccess.Get(nameof(QuantityRefined))[0][0];
                 }
                 else
                 {
@@ -706,7 +707,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRefinedNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityRefinedNote));
+                    return (int)_dataAccess.Get(nameof(QuantityRefinedNote))[0][0];
                 }
                 else
                 {
@@ -741,7 +742,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassRemovedFromAccount)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassRemovedFromAccount));
+                    return (double)_dataAccess.Get(nameof(MassRemovedFromAccount))[0][0];
                 }
                 else
                 {
@@ -774,7 +775,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRemovedFromAccount)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromAccount));
+                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromAccount))[0][0];
                 }
                 else
                 {
@@ -809,7 +810,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRemovedFromAccountNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromAccountNote));
+                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromAccountNote))[0][0];
                 }
                 else
                 {

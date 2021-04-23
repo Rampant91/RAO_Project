@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models.Abstracts
 {
@@ -21,7 +22,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder));
+                    return (int)_dataAccess.Get(nameof(NumberInOrder))[0][0];
                 }
                 else
                 {
@@ -53,7 +54,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber))[0][0];
                 }
                 else
                 {
@@ -86,7 +87,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OperationCode));
+                    return (string)_dataAccess.Get(nameof(OperationCode))[0][0];
                 }
                 else
                 {
@@ -119,7 +120,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(OperationDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(OperationDate));
+                    return (DateTimeOffset)_dataAccess.Get(nameof(OperationDate))[0][0];
                 }
                 else
                 {
@@ -152,7 +153,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentVid)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(DocumentVid));
+                    return (byte)_dataAccess.Get(nameof(DocumentVid))[0][0];
                 }
                 else
                 {
@@ -185,7 +186,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumber));
+                    return (string)_dataAccess.Get(nameof(DocumentNumber))[0][0];
                 }
                 else
                 {
@@ -217,7 +218,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumberRecoded));
+                    return (string)_dataAccess.Get(nameof(DocumentNumberRecoded))[0][0];
                 }
                 else
                 {
@@ -250,7 +251,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(DocumentDate));
+                    return (DateTimeOffset)_dataAccess.Get(nameof(DocumentDate))[0][0];
                 }
                 else
                 {

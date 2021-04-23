@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionNumber));
+                    return (string)_dataAccess.Get(nameof(PermissionNumber))[0][0];
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionIssueDate)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionIssueDate));
+                    return (string)_dataAccess.Get(nameof(PermissionIssueDate))[0][0];
                 }
                 else
                 {
@@ -97,7 +98,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionDocumentName));
+                    return (string)_dataAccess.Get(nameof(PermissionDocumentName))[0][0];
                 }
                 else
                 {
@@ -130,7 +131,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidBegin)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidBegin));
+                    return (DateTime)_dataAccess.Get(nameof(ValidBegin))[0][0];
                 }
                 else
                 {
@@ -163,7 +164,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThru)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThru));
+                    return (DateTime)_dataAccess.Get(nameof(ValidThru))[0][0];
                 }
                 else
                 {
@@ -195,7 +196,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RadionuclidNameNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RadionuclidNameNote));
+                    return (string)_dataAccess.Get(nameof(RadionuclidNameNote))[0][0];
                 }
                 else
                 {
@@ -228,7 +229,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedWasteValue)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedWasteValue));
+                    return (string)_dataAccess.Get(nameof(AllowedWasteValue))[0][0];
                 }
                 else
                 {
@@ -260,7 +261,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedWasteValueNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedWasteValueNote));
+                    return (string)_dataAccess.Get(nameof(AllowedWasteValueNote))[0][0];
                 }
                 else
                 {
@@ -293,7 +294,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactedWasteValue)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactedWasteValue));
+                    return (string)_dataAccess.Get(nameof(FactedWasteValue))[0][0];
                 }
                 else
                 {
@@ -325,7 +326,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactedWasteValueNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactedWasteValueNote));
+                    return (string)_dataAccess.Get(nameof(FactedWasteValueNote))[0][0];
                 }
                 else
                 {
@@ -358,7 +359,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteOutbreakPreviousYear)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(WasteOutbreakPreviousYear));
+                    return (string)_dataAccess.Get(nameof(WasteOutbreakPreviousYear))[0][0];
                 }
                 else
                 {

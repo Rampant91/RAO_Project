@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Collections;
 using DBRealization;
+using Collections.Notes_Collection;
 
 namespace Models
 {
@@ -17,20 +18,26 @@ namespace Models
 
         }
 
-        int _ID = -1;
-        public int ID
+        public int NoteID
         {
             get
             {
-                return _ID;
+                return _dataAccess.ReportID;
             }
-            set
+        }
+
+        public int ReportID
+        {
+            get
             {
-                if (_ID != value)
-                {
-                    _ID = value;
-                }
-                OnPropertyChanged(nameof(ID));
+                return _dataAccess.ReportID;
+            }
+        }
+        public int ReportsID
+        {
+            get
+            {
+                return _dataAccess.ReportsID;
             }
         }
 
@@ -42,7 +49,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RowNumber)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(RowNumber));
+                    return (int)_dataAccess.Get(nameof(RowNumber))[0][0];
                 }
                 else
                 {
@@ -74,7 +81,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GraphNumber)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(GraphNumber));
+                    return (int)_dataAccess.Get(nameof(GraphNumber))[0][0];
                 }
                 else
                 {
@@ -106,7 +113,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Comment)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Comment));
+                    return (string)_dataAccess.Get(nameof(Comment))[0][0];
                 }
                 else
                 {

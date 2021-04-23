@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections.ObjectModel;
+using Models;
 
-namespace Collections.Basics
+namespace Collections
 {
-    public class Notes
+    public class Rows
     {
-        public Models.Note this[string key]
+        public Models.Abstracts.Form this[string key]
         {
-            get
+            get 
             {
                 return null;
             }
         }
 
-        public IEnumerator<Models.Note> GetAllElements
+        public IEnumerator<Models.Abstracts.Form> GetAllElements
         {
             get
             {
@@ -22,10 +24,11 @@ namespace Collections.Basics
             }
         }
 
-        public void Add(Models.Note item)
+        public void Add(Models.Abstracts.Form item)
         {
 
         }
+
         public void RemoveAt(int ID)
         {
 

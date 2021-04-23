@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Collections.Basics
+namespace Collections
 {
-    public class Reports
+    public class Notes
     {
-        public Report this[string key]
+        public Models.Note this[string key]
         {
             get
             {
@@ -14,7 +14,7 @@ namespace Collections.Basics
             }
         }
 
-        public IEnumerator<Report> GetAllElements
+        public IEnumerator<Models.Note> GetAllElements
         {
             get
             {
@@ -22,7 +22,7 @@ namespace Collections.Basics
             }
         }
 
-        public void Add(Report item)
+        public void Add(Models.Note item)
         {
 
         }

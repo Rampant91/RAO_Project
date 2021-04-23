@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Collections;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models.Abstracts
 {
@@ -18,12 +19,25 @@ namespace Models.Abstracts
             _dataAccess = Access;
         }
 
-        int _ID = -1;
-        public int ID
+        public int RowID
         {
             get
             {
                 return _dataAccess.RowID;
+            }
+        }
+        public int ReportID
+        {
+            get
+            {
+                return _dataAccess.ReportID;
+            }
+        }
+        public int ReportsID
+        {
+            get
+            {
+                return _dataAccess.ReportsID;
             }
         }
 
@@ -35,7 +49,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(FormNum)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FormNum));
+                    return (string)_dataAccess.Get(nameof(FormNum))[0][0];
                 }
                 else
                 {
@@ -66,7 +80,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberOfFields)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberOfFields));
+                    return (int)_dataAccess.Get(nameof(NumberOfFields))[0][0];
                 }
                 else
                 {

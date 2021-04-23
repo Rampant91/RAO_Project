@@ -4,6 +4,7 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DBRealization;
+using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -31,7 +32,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionNumber));
+                    return (string)_dataAccess.Get(nameof(PermissionNumber))[0][0];
                 }
                 else
                 {
@@ -64,7 +65,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionIssueDate)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionIssueDate));
+                    return (string)_dataAccess.Get(nameof(PermissionIssueDate))[0][0];
                 }
                 else
                 {
@@ -97,7 +98,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionDocumentName));
+                    return (string)_dataAccess.Get(nameof(PermissionDocumentName))[0][0];
                 }
                 else
                 {
@@ -130,7 +131,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidBegin)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidBegin));
+                    return (DateTime)_dataAccess.Get(nameof(ValidBegin))[0][0];
                 }
                 else
                 {
@@ -163,7 +164,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThru)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThru));
+                    return (DateTime)_dataAccess.Get(nameof(ValidThru))[0][0];
                 }
                 else
                 {
@@ -196,7 +197,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionNumber1)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionNumber1));
+                    return (string)_dataAccess.Get(nameof(PermissionNumber1))[0][0];
                 }
                 else
                 {
@@ -229,7 +230,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionIssueDate1)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionIssueDate1));
+                    return (string)_dataAccess.Get(nameof(PermissionIssueDate1))[0][0];
                 }
                 else
                 {
@@ -262,7 +263,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionDocumentName1)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionDocumentName1));
+                    return (string)_dataAccess.Get(nameof(PermissionDocumentName1))[0][0];
                 }
                 else
                 {
@@ -295,7 +296,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidBegin1)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidBegin1));
+                    return (DateTime)_dataAccess.Get(nameof(ValidBegin1))[0][0];
                 }
                 else
                 {
@@ -328,7 +329,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThru1)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThru1));
+                    return (DateTime)_dataAccess.Get(nameof(ValidThru1))[0][0];
                 }
                 else
                 {
@@ -361,7 +362,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionNumber2)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionNumber2));
+                    return (string)_dataAccess.Get(nameof(PermissionNumber2))[0][0];
                 }
                 else
                 {
@@ -394,7 +395,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionIssueDate2)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionIssueDate2));
+                    return (string)_dataAccess.Get(nameof(PermissionIssueDate2))[0][0];
                 }
                 else
                 {
@@ -427,7 +428,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionDocumentName2)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionDocumentName2));
+                    return (string)_dataAccess.Get(nameof(PermissionDocumentName2))[0][0];
                 }
                 else
                 {
@@ -460,7 +461,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidBegin2)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidBegin2));
+                    return (DateTime)_dataAccess.Get(nameof(ValidBegin2))[0][0];
                 }
                 else
                 {
@@ -493,7 +494,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThru2)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThru2));
+                    return (DateTime)_dataAccess.Get(nameof(ValidThru2))[0][0];
                 }
                 else
                 {
@@ -526,7 +527,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteSourceName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(WasteSourceName));
+                    return (string)_dataAccess.Get(nameof(WasteSourceName))[0][0];
                 }
                 else
                 {
@@ -559,7 +560,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteRecieverName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(WasteRecieverName));
+                    return (string)_dataAccess.Get(nameof(WasteRecieverName))[0][0];
                 }
                 else
                 {
@@ -592,7 +593,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RecieverTypeCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RecieverTypeCode));
+                    return (string)_dataAccess.Get(nameof(RecieverTypeCode))[0][0];
                 }
                 else
                 {
@@ -625,7 +626,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PoolDistrictName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PoolDistrictName));
+                    return (string)_dataAccess.Get(nameof(PoolDistrictName))[0][0];
                 }
                 else
                 {
@@ -658,7 +659,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedWasteRemovalVolume)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(AllowedWasteRemovalVolume));
+                    return (double)_dataAccess.Get(nameof(AllowedWasteRemovalVolume))[0][0];
                 }
                 else
                 {
@@ -691,7 +692,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RemovedWasteVolume)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(RemovedWasteVolume));
+                    return (double)_dataAccess.Get(nameof(RemovedWasteVolume))[0][0];
                 }
                 else
                 {
@@ -723,7 +724,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RemovedWasteVolumeNote)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(RemovedWasteVolumeNote));
+                    return (double)_dataAccess.Get(nameof(RemovedWasteVolumeNote))[0][0];
                 }
                 else
                 {
