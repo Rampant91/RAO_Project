@@ -41,7 +41,7 @@ namespace Models
             }
             set
             {
-                _IdName_Not_Valid = value;
+                _IdName_Not_Valid = Val;
                 if (GetErrors(nameof(IdName)) == null)
                 {
                     _dataAccess.Set(nameof(IdName), _IdName_Not_Valid);
@@ -53,33 +53,33 @@ namespace Models
         private string _IdName_Not_Valid = "";
         //IdName Property
 
-        //Value property
+        //Val property
         [Attributes.Form_Property("Значение")]
-        public string Value
+        public string Val
         {
             get
             {
-                if (GetErrors(nameof(Value)) == null)
+                if (GetErrors(nameof(Val)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Value))[0][0];
+                    return (string)_dataAccess.Get(nameof(Val))[0][0];
                 }
                 else
                 {
-                    return _Value_Not_Valid;
+                    return _Val_Not_Valid;
                 }
             }
             set
             {
-                _Value_Not_Valid = value;
-                if (GetErrors(nameof(Value)) == null)
+                _Val_Not_Valid = Val;
+                if (GetErrors(nameof(Val)) == null)
                 {
-                    _dataAccess.Set(nameof(Value), _Value_Not_Valid);
+                    _dataAccess.Set(nameof(Val), _Val_Not_Valid);
                 }
-                OnPropertyChanged(nameof(Value));
+                OnPropertyChanged(nameof(Val));
             }
         }
         
-        private string _Value_Not_Valid = "";
-        //Value property
+        private string _Val_Not_Valid = "";
+        //Val property
     }
 }

@@ -457,19 +457,19 @@ namespace DBRealization
             "QuantityFromAnothersNote" + intNotNullDeclaration +
             "MassFromAnothersImported" + doubleNotNullDeclaration +
             "QuantityFromAnothersImported" + intNotNullDeclaration +
-            "QuantityFromAnothersImportedNote" + intNotNullDeclaration +
+            "QuantityFromAnothersINote" + intNotNullDeclaration +
             "MassAnotherReasons" + doubleNotNullDeclaration +
             "QuantityAnotherReasons" + intNotNullDeclaration +
             "QuantityAnotherReasonsNote" + intNotNullDeclaration +
             "MassRefined" + doubleNotNullDeclaration +
             "MassTransferredToAnother" + doubleNotNullDeclaration +
             "QuantityTransferredToAnother" + intNotNullDeclaration +
-            "QuantityTransferredToAnotherNote" + intNotNullDeclaration +
+            "QuantityTransferredToNote" + intNotNullDeclaration +
             "QuantityRefined" + intNotNullDeclaration +
             "QuantityRefinedNote" + intNotNullDeclaration +
             "MassRemovedFromAccount" + doubleNotNullDeclaration +
             "QuantityRemovedFromAccount" + intNotNullDeclaration +
-            "QuantityRemovedFromAccountNote" + intNotNullDeclaration +
+            "QuantityRemovedFromNote" + intNotNullDeclaration +
             "CodeOYAT" + strNotNullDeclaration +
             "FcpNumber" + strNotNullDeclaration.Replace(",", "");
         }
@@ -710,7 +710,7 @@ namespace DBRealization
             return
                 Form3() + "," +
                 "IdName" + strNotNullDeclaration +
-                "Value" + strNotNullDeclaration.Replace(",", "");
+                "Val" + strNotNullDeclaration.Replace(",", "");
         }
         //3_Forms
 
@@ -721,9 +721,9 @@ namespace DBRealization
         }
         public static string Form40()
         {
-            return Form4() + "," +
+            return Form4() + "" +
                 "SubjectRF" + strNotNullDeclaration +
-                "Year" + intNotNullDeclaration +
+                "Yyear" + intNotNullDeclaration +
                 "SubjectAuthorityName" + intNotNullDeclaration +
                 "ShortSubjectAuthorityName" + intNotNullDeclaration +
                 "FactAddress" + strNotNullDeclaration +
@@ -743,7 +743,7 @@ namespace DBRealization
         }
         public static string Form41()
         {
-            return Form4() + "," +
+            return Form4() + "" +
             "Notes" + strNotNullDeclaration +
             "OrgName" + strNotNullDeclaration +
             "NumberInOrder" + intNotNullDeclaration +
@@ -751,7 +751,6 @@ namespace DBRealization
             "QuantityOfFormsInv" + intNotNullDeclaration +
             "QuantityOfFormsOper" + intNotNullDeclaration +
             "QuantityOfFormsYear" + intNotNullDeclaration +
-            "Notes" + strNotNullDeclaration +
             "RegNo" + strNotNullDeclaration +
             "Okpo" + strNotNullDeclaration.Replace(",", "");
         }
@@ -762,13 +761,13 @@ namespace DBRealization
         {
             return
                 "NumberInOrder" + intNotNullDeclaration +
-                "CorrectionNumber" + shortNotNullDeclaration;
+                "CorrectionNumber" + shortNotNullDeclaration.Replace(",", "");
         }
         public static string Form50()
         {
             return
                 "Authority1" + intNotNullDeclaration +
-                "Year" + intNotNullDeclaration +
+                "Yyear" + intNotNullDeclaration +
                 "JurLico" + strNotNullDeclaration +
                 "ShortJurLico" + strNotNullDeclaration +
                 "JurLicoAddress" + strNotNullDeclaration +
@@ -783,7 +782,6 @@ namespace DBRealization
             return
                 Form5() + "," +
             "OperationCode" + strNotNullDeclaration +
-            "NumberInOrder" + intNotNullDeclaration +
             "Radionuclids" + strNotNullDeclaration +
             "Quantity" + intNotNullDeclaration +
             "Activity" + strNotNullDeclaration +

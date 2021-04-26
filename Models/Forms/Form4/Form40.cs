@@ -53,34 +53,34 @@ namespace Models
         private string _SubjectRF_Not_Valid = "";
         //SubjectRF property
 
-        //Year property
+        //Yyear property
         [Attributes.Form_Property("Год")]
-        public int Year
+        public int Yyear
         {
             get
             {
-                if (GetErrors(nameof(Year)) == null)
+                if (GetErrors(nameof(Yyear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Year))[0][0];
+                    return (int)_dataAccess.Get(nameof(Yyear))[0][0];
                 }
                 else
                 {
-                    return _Year_Not_Valid;
+                    return _Yyear_Not_Valid;
                 }
             }
             set
             {
-                _Year_Not_Valid = value;
-                if (GetErrors(nameof(Year)) == null)
+                _Yyear_Not_Valid = value;
+                if (GetErrors(nameof(Yyear)) == null)
                 {
-                    _dataAccess.Set(nameof(Year), _Year_Not_Valid);
+                    _dataAccess.Set(nameof(Yyear), _Yyear_Not_Valid);
                 }
-                OnPropertyChanged(nameof(Year));
+                OnPropertyChanged(nameof(Yyear));
             }
         }
         
-        private int _Year_Not_Valid = -1;
-        //Year property
+        private int _Yyear_Not_Valid = -1;
+        //Yyear property
 
         //SubjectAuthorityName property
         [Attributes.Form_Property("Наименование органа исполнительной власти")]

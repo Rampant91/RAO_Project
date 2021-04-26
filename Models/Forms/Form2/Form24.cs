@@ -292,39 +292,39 @@ namespace Models
         }
         //QuantityFromAnothers property
 
-        //QuantityFromAnothersNote property
-        public int QuantityFromAnothersNote
+        //QuantityFromAnothersINote property
+        public int QuantityFromAnothersINote
         {
             get
             {
-                if (GetErrors(nameof(QuantityFromAnothersNote)) == null)
+                if (GetErrors(nameof(QuantityFromAnothersINote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersNote))[0][0];
+                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersINote))[0][0];
                 }
                 else
                 {
-                    return _QuantityFromAnothersNote_Not_Valid;
+                    return _QuantityFromAnothersINote_Not_Valid;
                 }
             }
             set
             {
-                _QuantityFromAnothersNote_Not_Valid = value;
-                if (GetErrors(nameof(QuantityFromAnothersNote)) == null)
+                _QuantityFromAnothersINote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityFromAnothersINote)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityFromAnothersNote), _QuantityFromAnothersNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityFromAnothersINote), _QuantityFromAnothersINote_Not_Valid);
                 }
-                OnPropertyChanged(nameof(QuantityFromAnothersNote));
+                OnPropertyChanged(nameof(QuantityFromAnothersINote));
             }
         }
           // positive int.
-        private int _QuantityFromAnothersNote_Not_Valid = -1;
-        private void QuantityFromAnothersNote_Validation(int value)//Ready
+        private int _QuantityFromAnothersINote_Not_Valid = -1;
+        private void QuantityFromAnothersINote_Validation(int value)//Ready
         {
-            ClearErrors(nameof(QuantityFromAnothersNote));
+            ClearErrors(nameof(QuantityFromAnothersINote));
             if (value <= 0)
-                AddError(nameof(QuantityFromAnothersNote), "Недопустимое значение");
+                AddError(nameof(QuantityFromAnothersINote), "Недопустимое значение");
         }
-        //QuantityFromAnothersNote property
+        //QuantityFromAnothersINote property
 
         //MassFromAnothersImported Property
         [Attributes.Form_Property("Масса импортированного от сторонних, т")]
@@ -394,39 +394,39 @@ namespace Models
         }
         //QuantityFromAnothersImported property
 
-        //QuantityFromAnothersImportedNote property
-        public int QuantityFromAnothersImportedNote
+        //QuantityFromImportedNote property
+        public int QuantityFromImportedNote
         {
             get
             {
-                if (GetErrors(nameof(QuantityFromAnothersImportedNote)) == null)
+                if (GetErrors(nameof(QuantityFromImportedNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersImportedNote))[0][0];
+                    return (int)_dataAccess.Get(nameof(QuantityFromImportedNote))[0][0];
                 }
                 else
                 {
-                    return _QuantityFromAnothersImportedNote_Not_Valid;
+                    return _QuantityFromImportedNote_Not_Valid;
                 }
             }
             set
             {
-                _QuantityFromAnothersImportedNote_Not_Valid = value;
-                if (GetErrors(nameof(QuantityFromAnothersNote)) == null)
+                _QuantityFromImportedNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityFromAnothersINote)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityFromAnothersImportedNote), _QuantityFromAnothersImportedNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityFromImportedNote), _QuantityFromImportedNote_Not_Valid);
                 }
-                OnPropertyChanged(nameof(QuantityFromAnothersImportedNote));
+                OnPropertyChanged(nameof(QuantityFromImportedNote));
             }
         }
           // positive int.
-        private int _QuantityFromAnothersImportedNote_Not_Valid = -1;
-        private void QuantityFromAnothersImportedNote_Validation(int value)//Ready
+        private int _QuantityFromImportedNote_Not_Valid = -1;
+        private void QuantityFromImportedNote_Validation(int value)//Ready
         {
-            ClearErrors(nameof(QuantityFromAnothersImportedNote));
+            ClearErrors(nameof(QuantityFromImportedNote));
             if (value <= 0)
-                AddError(nameof(QuantityFromAnothersImportedNote), "Недопустимое значение");
+                AddError(nameof(QuantityFromImportedNote), "Недопустимое значение");
         }
-        //QuantityFromAnothersImportedNote property
+        //QuantityFromImportedNote property
 
         //MassAnotherReasons Property
         [Attributes.Form_Property("Масса поставленного на учет по другим причинам, т")]
@@ -598,39 +598,39 @@ namespace Models
         }
         //QuantityTransferredToAnother property
 
-        //QuantityTransferredToAnotherNote property
-        public int QuantityTransferredToAnotherNote
+        //QuantityTransferredToNote property
+        public int QuantityTransferredToNote
         {
             get
             {
-                if (GetErrors(nameof(QuantityTransferredToAnotherNote)) == null)
+                if (GetErrors(nameof(QuantityTransferredToNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityTransferredToAnotherNote))[0][0];
+                    return (int)_dataAccess.Get(nameof(QuantityTransferredToNote))[0][0];
                 }
                 else
                 {
-                    return _QuantityTransferredToAnotherNote_Not_Valid;
+                    return _QuantityTransferredToNote_Not_Valid;
                 }
             }
             set
             {
-                _QuantityTransferredToAnotherNote_Not_Valid = value;
-                if (GetErrors(nameof(QuantityTransferredToAnotherNote)) == null)
+                _QuantityTransferredToNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityTransferredToNote)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityTransferredToAnotherNote), _QuantityTransferredToAnotherNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityTransferredToNote), _QuantityTransferredToNote_Not_Valid);
                 }
-                OnPropertyChanged(nameof(QuantityTransferredToAnotherNote));
+                OnPropertyChanged(nameof(QuantityTransferredToNote));
             }
         }
           // positive int.
-        private int _QuantityTransferredToAnotherNote_Not_Valid = -1;
-        private void QuantityTransferredToAnotherNote_Validation(int value)//Ready
+        private int _QuantityTransferredToNote_Not_Valid = -1;
+        private void QuantityTransferredToNote_Validation(int value)//Ready
         {
-            ClearErrors(nameof(QuantityTransferredToAnotherNote));
+            ClearErrors(nameof(QuantityTransferredToNote));
             if (value <= 0)
-                AddError(nameof(QuantityTransferredToAnotherNote), "Недопустимое значение");
+                AddError(nameof(QuantityTransferredToNote), "Недопустимое значение");
         }
-        //QuantityTransferredToAnotherNote property
+        //QuantityTransferredToNote property
 
         //MassRefined Property
         [Attributes.Form_Property("Масса переработанного, т")]
@@ -802,39 +802,39 @@ namespace Models
         }
         //QuantityRemovedFromAccount property
 
-        //QuantityRemovedFromAccountNote property
+        //QuantityRemovedFromNote property
         [Attributes.Form_Property("Количество снятого с учета, шт.")]
-        public int QuantityRemovedFromAccountNote
+        public int QuantityRemovedFromNote
         {
             get
             {
-                if (GetErrors(nameof(QuantityRemovedFromAccountNote)) == null)
+                if (GetErrors(nameof(QuantityRemovedFromNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromAccountNote))[0][0];
+                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromNote))[0][0];
                 }
                 else
                 {
-                    return _QuantityRemovedFromAccountNote_Not_Valid;
+                    return _QuantityRemovedFromNote_Not_Valid;
                 }
             }
             set
             {
-                _QuantityRemovedFromAccountNote_Not_Valid = value;
-                if (GetErrors(nameof(QuantityRemovedFromAccountNote)) == null)
+                _QuantityRemovedFromNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityRemovedFromNote)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityRemovedFromAccountNote), _QuantityRemovedFromAccountNote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityRemovedFromNote), _QuantityRemovedFromNote_Not_Valid);
                 }
-                OnPropertyChanged(nameof(QuantityRemovedFromAccountNote));
+                OnPropertyChanged(nameof(QuantityRemovedFromNote));
             }
         }
           // positive int.
-        private int _QuantityRemovedFromAccountNote_Not_Valid = -1;
-        private void QuantityRemovedFromAccountNote_Validation(int value)//Ready
+        private int _QuantityRemovedFromNote_Not_Valid = -1;
+        private void QuantityRemovedFromNote_Validation(int value)//Ready
         {
-            ClearErrors(nameof(QuantityRemovedFromAccountNote));
+            ClearErrors(nameof(QuantityRemovedFromNote));
             if (value <= 0)
-                AddError(nameof(QuantityRemovedFromAccountNote), "Недопустимое значение");
+                AddError(nameof(QuantityRemovedFromNote), "Недопустимое значение");
         }
-        //QuantityRemovedFromAccountNote property
+        //QuantityRemovedFromNote property
     }
 }
