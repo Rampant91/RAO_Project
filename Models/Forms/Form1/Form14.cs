@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Globalization;
-using DBRealization;
 using Collections.Rows_Collection;
 
 namespace Models
@@ -54,6 +54,37 @@ namespace Models
             ClearErrors(nameof(PassportNumber));
         }
         //PassportNumber property
+
+        private void OperationCode_Validation(string value)
+        {
+            ClearErrors(nameof(OperationCode));
+            var a = new Regex("[0-9]{2}");
+            List<string> spr = new List<string>();    //HERE BINDS SPRAVOCHNIK
+            if (!a.IsMatch(value) || !spr.Contains(value))
+            {
+                AddError(nameof(OperationCode), "Недопустимое значение");
+                return;
+            }
+            bool a0 = value.Equals("01");
+            bool a1 = value.Equals("13");
+            bool a2 = value.Equals("14");
+            bool a3 = value.Equals("16");
+            bool a4 = value.Equals("26");
+            bool a5 = value.Equals("36");
+            bool a6 = value.Equals("44");
+            bool a7 = value.Equals("45");
+            bool a8 = value.Equals("49");
+            bool a9 = value.Equals("51");
+            bool a10 = value.Equals("52");
+            bool a11 = value.Equals("55");
+            bool a12 = value.Equals("56");
+            bool a13 = value.Equals("57");
+            bool a14 = value.Equals("59");
+            bool a15 = value.Equals("76");
+            if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15)
+                AddError(nameof(OperationCode), "Код операции не может быть использован для РВ");
+            return;
+        }
 
         //PassportNumberNote property
         public string PassportNumberNote
@@ -457,6 +488,17 @@ namespace Models
         private void Owner_Validation(string value)//Ready
         {
             ClearErrors(nameof(Owner));
+            if (value.Equals("прим.")) return;
+            var mask1 = new Regex("[А-Яа-я]*");
+            if (mask1.IsMatch(value)) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(Owner), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(Owner), "Недопустимое значение");
+            }
         }
         //Owner property
 

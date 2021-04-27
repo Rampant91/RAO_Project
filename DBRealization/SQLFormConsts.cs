@@ -12,6 +12,8 @@ namespace DBRealization
         public const string shortNotNullDeclaration = " smallint not null, ";
         public const string dateNotNullDeclaration = " timestamp not null, ";
         public const string doubleNotNullDeclaration = " float(53) not null, ";
+        public const string boolNotNullDeclaration = " boolean not null, ";
+        public const string floatNotNullDeclaration = " float(24) not null, ";
         //Const_Params
 
         //Список всех форм
@@ -20,10 +22,6 @@ namespace DBRealization
             return "";
         }
         //Форма (страница, много строчек)
-        public static string Report()
-        {
-            return "";
-        }
 
         //1_Forms
         protected static string Form1()
@@ -63,6 +61,18 @@ namespace DBRealization
                 "Okfs" + strNotNullDeclaration.Replace(",", "");
         }
 
+        public static string Report()
+        {
+            return
+                "IsCorrection" + boolNotNullDeclaration +
+                "CorrectionNumber" + shortNotNullDeclaration +
+                "NumberInOrder" + intNotNullDeclaration +
+                "Comments" + strNotNullDeclaration +
+                "StartPeriod" + dateNotNullDeclaration +
+                "EndPeriod" + dateNotNullDeclaration +
+                "ExportDate" + dateNotNullDeclaration.Replace(",", "");
+        }
+
         public static string Form11()
         {
             return Form1() + "," +
@@ -81,7 +91,7 @@ namespace DBRealization
                 "CreatorOKPO" + strNotNullDeclaration +
                 "CreatorOKPONote" + strNotNullDeclaration +
                 "Category" + shortNotNullDeclaration +
-                "SignedServicePeriod" + doubleNotNullDeclaration +
+                "SignedServicePeriod" + floatNotNullDeclaration +
                 "PropertyCode" + shortNotNullDeclaration +
                 "Owner" + strNotNullDeclaration +
                 "ProviderOrRecieverOKPO" + strNotNullDeclaration +
@@ -110,7 +120,7 @@ namespace DBRealization
                 "CreationDate" + dateNotNullDeclaration +
                 "CreatorOKPO" + strNotNullDeclaration +
                 "CreatorOKPONote" + strNotNullDeclaration +
-                "SignedServicePeriod" + intNotNullDeclaration +
+                "SignedServicePeriod" + floatNotNullDeclaration +
                 "PropertyCode" + shortNotNullDeclaration +
                 "Owner" + strNotNullDeclaration +
                 "Mass" + strNotNullDeclaration +

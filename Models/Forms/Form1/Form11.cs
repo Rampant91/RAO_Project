@@ -605,13 +605,13 @@ namespace Models
 
         //SignedServicePeriod property
         [Attributes.Form_Property("НСС, мес.")]
-        public double SignedServicePeriod
+        public float SignedServicePeriod
         {
             get
             {
                 if (GetErrors(nameof(SignedServicePeriod)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(SignedServicePeriod))[0][0];
+                    return (float)_dataAccess.Get(nameof(SignedServicePeriod))[0][0];
                 }
                 else
                 {
@@ -629,7 +629,7 @@ namespace Models
             }
         }
         
-        private double _SignedServicePeriod_Not_Valid = -1;
+        private float _SignedServicePeriod_Not_Valid = -1;
         private void SignedServicePeriod_Validation(int value)//Ready
         {
             ClearErrors(nameof(SignedServicePeriod));
@@ -703,6 +703,17 @@ namespace Models
         private void Owner_Validation(string value)//Ready
         {
             ClearErrors(nameof(Owner));
+            if (value.Equals("прим.")) return;
+            var mask1 = new Regex("[А-Яа-я]*");
+            if (mask1.IsMatch(value)) return;
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(Owner), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(Owner), "Недопустимое значение");
+            }
         }
         //Owner property
 
