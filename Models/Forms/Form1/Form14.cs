@@ -211,6 +211,8 @@ namespace Models
         private void Sort_Validation(byte value)//TODO
         {
             ClearErrors(nameof(Sort));
+            if (!((value >= 4) && (value <= 12)))
+                AddError(nameof(Sort), "Недопустимое значение");
         }
         //Sort property
 
