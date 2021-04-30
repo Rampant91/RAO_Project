@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе")]
-    public class Form24: Abstracts.Form2
+    public class Form24 : Abstracts.Form2
     {
         public Form24(IDataAccess Access) : base(Access)
         {
@@ -49,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(CodeOYAT));
             }
         }
-        
+
         private string _CodeOYAT_Not_Valid = "";
         private void CodeOYAT_Validation()
         {
@@ -81,7 +76,7 @@ namespace Models
                 OnPropertyChanged(nameof(CodeOYATnote));
             }
         }
-        
+
         private string _CodeOYATnote_Not_Valid = "";
         private void CodeOYATnote_Validation()
         {
@@ -114,7 +109,7 @@ namespace Models
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
-        
+
         private string _FcpNumber_Not_Valid = "";
         private void FcpNuber_Validation(string value)//TODO
         {
@@ -147,7 +142,7 @@ namespace Models
                 OnPropertyChanged(nameof(MassCreated));
             }
         }
-        
+
         private double _MassCreated_Not_Valid = -1;
         private void MassCreated_Validation()//TODO
         {
@@ -180,7 +175,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityCreated));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityCreated_Not_Valid = -1;
         private void QuantityCreated_Validation(int value)//Ready
         {
@@ -214,7 +209,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityCreatedNote));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityCreatedNote_Not_Valid = -1;
         private void QuantityCreatedNote_Validation(int value)//Ready
         {
@@ -249,7 +244,7 @@ namespace Models
                 OnPropertyChanged(nameof(MassFromAnothers));
             }
         }
-        
+
         private double _MassFromAnothers_Not_Valid = -1;
         private void MassFromAnothers_Validation()//TODO
         {
@@ -282,7 +277,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityFromAnothers));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityFromAnothers_Not_Valid = -1;
         private void QuantityFromAnothers_Validation(int value)//Ready
         {
@@ -316,7 +311,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityFromAnothersINote));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityFromAnothersINote_Not_Valid = -1;
         private void QuantityFromAnothersINote_Validation(int value)//Ready
         {
@@ -351,7 +346,7 @@ namespace Models
                 OnPropertyChanged(nameof(MassFromAnothersImported));
             }
         }
-        
+
         private double _MassFromAnothersImported_Not_Valid = -1;
         private void MassFromAnothersImported_Validation()//TODO
         {
@@ -384,7 +379,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityFromAnothersImported));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityFromAnothersImported_Not_Valid = -1;
         private void QuantityFromAnothersImported_Validation(int value)//Ready
         {
@@ -418,7 +413,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityFromImportedNote));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityFromImportedNote_Not_Valid = -1;
         private void QuantityFromImportedNote_Validation(int value)//Ready
         {
@@ -453,7 +448,7 @@ namespace Models
                 OnPropertyChanged(nameof(MassAnotherReasons));
             }
         }
-        
+
         private double _MassAnotherReasons_Not_Valid = -1;
         private void MassAnotherReasons_Validation()//TODO
         {
@@ -486,7 +481,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityAnotherReasons));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityAnotherReasons_Not_Valid = -1;
         private void QuantityAnotherReasons_Validation(int value)//Ready
         {
@@ -520,7 +515,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityAnotherReasonsNote_Not_Valid = -1;
         private void QuantityAnotherReasonsNote_Validation(int value)//Ready
         {
@@ -555,7 +550,7 @@ namespace Models
                 OnPropertyChanged(nameof(MassTransferredToAnother));
             }
         }
-        
+
         private double _MassTransferredToAnother_Not_Valid = -1;
         private void MassTransferredToAnother_Validation()//TODO
         {
@@ -588,7 +583,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityTransferredToAnother));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityTransferredToAnother_Not_Valid = -1;
         private void QuantityTransferredToAnother_Validation(int value)//Ready
         {
@@ -622,7 +617,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityTransferredToNote));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityTransferredToNote_Not_Valid = -1;
         private void QuantityTransferredToNote_Validation(int value)//Ready
         {
@@ -657,7 +652,7 @@ namespace Models
                 OnPropertyChanged(nameof(MassRefined));
             }
         }
-        
+
         private double _MassRefined_Not_Valid = -1;
         private void MassRefined_Validation()//TODO
         {
@@ -690,7 +685,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityRefined));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityRefined_Not_Valid = -1;
         private void QuantityRefined_Validation(int value)//Ready
         {
@@ -724,7 +719,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityRefinedNote));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityRefinedNote_Not_Valid = -1;
         private void QuantityRefinedNote_Validation(int value)//Ready
         {
@@ -759,7 +754,7 @@ namespace Models
                 OnPropertyChanged(nameof(MassRemovedFromAccount));
             }
         }
-        
+
         private double _MassRemovedFromAccount_Not_Valid = -1;
         private void MassRemovedFromAccount_Validation()//TODO
         {
@@ -792,7 +787,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityRemovedFromAccount));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityRemovedFromAccount_Not_Valid = -1;
         private void QuantityRemovedFromAccount_Validation(int value)//Ready
         {
@@ -827,7 +822,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityRemovedFromNote));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityRemovedFromNote_Not_Valid = -1;
         private void QuantityRemovedFromNote_Validation(int value)//Ready
         {

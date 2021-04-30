@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -49,7 +45,7 @@ namespace Models
                 OnPropertyChanged(nameof(RegNo));
             }
         }
-        
+
         private string _RegNo_Not_Valid = "";
         //RegNo property
 
@@ -78,7 +74,7 @@ namespace Models
                 OnPropertyChanged(nameof(OrganUprav));
             }
         }
-        
+
         private string _OrganUprav_Not_Valid = "";
         //OrganUprav property
 
@@ -107,7 +103,7 @@ namespace Models
                 OnPropertyChanged(nameof(SubjectRF));
             }
         }
-        
+
         private string _SubjectRF_Not_Valid = "";
         //SubjectRF property
 
@@ -136,7 +132,7 @@ namespace Models
                 OnPropertyChanged(nameof(JurLico));
             }
         }
-        
+
         private string _JurLico_Not_Valid = "";
         //JurLico property
 
@@ -165,7 +161,7 @@ namespace Models
                 OnPropertyChanged(nameof(ShortJurLico));
             }
         }
-        
+
         private string _ShortJurLico_Not_Valid = "";
         //ShortJurLico property
 
@@ -194,7 +190,7 @@ namespace Models
                 OnPropertyChanged(nameof(JurLicoAddress));
             }
         }
-        
+
         private string _JurLicoAddress_Not_Valid = "";
         //JurLicoAddress property
 
@@ -223,7 +219,7 @@ namespace Models
                 OnPropertyChanged(nameof(JurLicoFactAddress));
             }
         }
-        
+
         private string _JurLicoFactAddress_Not_Valid = "";
         //JurLicoFactAddress property
 
@@ -252,7 +248,7 @@ namespace Models
                 OnPropertyChanged(nameof(GradeFIO));
             }
         }
-        
+
         private string _GradeFIO_Not_Valid = "";
         //GradeFIO property
 
@@ -281,7 +277,7 @@ namespace Models
                 OnPropertyChanged(nameof(Telephone));
             }
         }
-        
+
         private string _Telephone_Not_Valid = "";
         //Telephone property
 
@@ -310,7 +306,7 @@ namespace Models
                 OnPropertyChanged(nameof(Fax));
             }
         }
-        
+
         private string _Fax_Not_Valid = "";
         //Fax property
 
@@ -339,7 +335,7 @@ namespace Models
                 OnPropertyChanged(nameof(Email));
             }
         }
-        
+
         private string _Email_Not_Valid = "";
         //Email property
 
@@ -408,7 +404,7 @@ namespace Models
                 OnPropertyChanged(nameof(Okved));
             }
         }
-        
+
         private string _Okved_Not_Valid = "";
         //Okved property
 
@@ -437,7 +433,7 @@ namespace Models
                 OnPropertyChanged(nameof(Okogu));
             }
         }
-        
+
         private string _Okogu_Not_Valid = "";
         //Okogu property
 
@@ -466,7 +462,7 @@ namespace Models
                 OnPropertyChanged(nameof(Oktmo));
             }
         }
-        
+
         private string _Oktmo_Not_Valid = "";
         //Oktmo property
 
@@ -495,7 +491,7 @@ namespace Models
                 OnPropertyChanged(nameof(Inn));
             }
         }
-        
+
         private string _Inn_Not_Valid = "";
         //Inn property
 
@@ -524,7 +520,7 @@ namespace Models
                 OnPropertyChanged(nameof(Kpp));
             }
         }
-        
+
         private string _Kpp_Not_Valid = "";
         //Kpp property
 
@@ -553,7 +549,7 @@ namespace Models
                 OnPropertyChanged(nameof(Okopf));
             }
         }
-        
+
         private string _Okopf_Not_Valid = "";
         //Okopf property
 
@@ -582,7 +578,7 @@ namespace Models
                 OnPropertyChanged(nameof(Okfs));
             }
         }
-        
+
         private string _Okfs_Not_Valid = "";
         //Okfs property
     }

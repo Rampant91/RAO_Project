@@ -1,16 +1,12 @@
-﻿using System;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Avalonia.Media;
+using Models.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Data;
-using Avalonia;
-using Models.Attributes;
-using Avalonia.Media;
-using Avalonia.Controls.Templates;
-using Models;
-using Avalonia.Data.Converters;
 
 namespace Client_App.Long_Visual
 {
@@ -27,7 +23,7 @@ namespace Client_App.Long_Visual
         {
             Grid maingrid = new Grid();
             var row = new RowDefinition();
-            row.Height = new GridLength(0.5,GridUnitType.Star);
+            row.Height = new GridLength(0.5, GridUnitType.Star);
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition();
             row.Height = new GridLength(0.7, GridUnitType.Star);
@@ -49,7 +45,7 @@ namespace Client_App.Long_Visual
             column = new ColumnDefinition();
             column.Width = new GridLength(1, GridUnitType.Star);
             topPnl1.ColumnDefinitions.Add(column);
-            topPnl1.SetValue(Grid.RowProperty,0);
+            topPnl1.SetValue(Grid.RowProperty, 0);
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(new TextBlock
@@ -109,7 +105,7 @@ namespace Client_App.Long_Visual
             topPnl2.Children.Add(new TextBox
             {
                 Height = 30,
-                Width=70,
+                Width = 70,
                 Margin = Thickness.Parse("5,12,0,0"),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -149,8 +145,9 @@ namespace Client_App.Long_Visual
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();
-            itms.Add(new MenuItem {
-                Header="Добавить строку",
+            itms.Add(new MenuItem
+            {
+                Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddRow"),
             });
             itms.Add(new MenuItem
@@ -163,7 +160,7 @@ namespace Client_App.Long_Visual
                 Header = "Удалить строки",
                 [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                 [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-            }) ;
+            });
             cntx.Items = itms;
 
             grd.ContextMenu = cntx;
@@ -187,7 +184,7 @@ namespace Client_App.Long_Visual
             clm.Width = DataGridLength.SizeToHeader;
             clm.Header = new Button
             {
-                FontSize= FontSizeGlobal,
+                FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -199,7 +196,7 @@ namespace Client_App.Long_Visual
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
                         [!TextBox.TextProperty] = new Binding("NumberInOrder"),
-                    }) ;
+                    });
             grd.Columns.Add(clm);
 
             clm = new DataGridTemplateColumn();
@@ -718,7 +715,7 @@ namespace Client_App.Long_Visual
             bgrd.Columns.Add(clm);
 
             clm = new DataGridTemplateColumn();
-            clm.Width = new DataGridLength(1,DataGridLengthUnitType.Star);
+            clm.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
             clm.Header = new Button
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -741,13 +738,13 @@ namespace Client_App.Long_Visual
         public static Grid Form12_Visual()
         {
             Grid maingrid = new Grid();
-            
+
             return maingrid;
         }
         public static Grid Form13_Visual()
         {
             Grid maingrid = new Grid();
-            
+
             return maingrid;
         }
         public static Grid Form14_Visual()
@@ -758,7 +755,7 @@ namespace Client_App.Long_Visual
         public static Grid Form15_Visual()
         {
             Grid maingrid = new Grid();
-            
+
             return maingrid;
         }
         public static Grid Form16_Visual()
@@ -770,19 +767,19 @@ namespace Client_App.Long_Visual
         public static Grid Form17_Visual()
         {
             Grid maingrid = new Grid();
-            
+
             return maingrid;
         }
         public static Grid Form18_Visual()
         {
             Grid maingrid = new Grid();
-            
+
             return maingrid;
         }
         public static Grid Form19_Visual()
         {
             Grid maingrid = new Grid();
-            
+
             return maingrid;
         }
     }

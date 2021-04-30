@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Models;
+﻿using System.Collections.Generic;
 
 namespace Client_App.PasteRealization
 {
-    public class Excel:IPaste
+    public class Excel : IPaste
     {
-        public List<Models.Abstracts.Form> Convert(string Data,string Form)
+        public List<Models.Abstracts.Form> Convert(string Data, string Form)
         {
             List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
             //var form = FormCreator.Create(Form);

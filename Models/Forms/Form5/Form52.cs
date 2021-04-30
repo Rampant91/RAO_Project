@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Globalization;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -28,7 +27,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -39,7 +39,8 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -76,7 +77,7 @@ namespace Models
                 OnPropertyChanged(nameof(Kategory));
             }
         }
-        
+
         private short _Kategory_Not_Valid = -1;
         private void Kategory_Validation(short value)//TODO
         {
@@ -109,7 +110,7 @@ namespace Models
                 OnPropertyChanged(nameof(Activity));
             }
         }
-        
+
         private string _Activity_Not_Valid = "";
         private void Activity_Validation(string value)//Ready
         {
@@ -153,7 +154,7 @@ namespace Models
                 OnPropertyChanged(nameof(Quantity));
             }
         }
-          // positive int.
+        // positive int.
         private int _Quantity_Not_Valid = -1;
         private void Quantity_Validation(int value)//Ready
         {

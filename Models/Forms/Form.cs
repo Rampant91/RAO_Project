@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Linq;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Collections;
-using DBRealization;
-using Collections.Rows_Collection;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Models.Abstracts
 {
-    public abstract class Form:INotifyPropertyChanged,INotifyDataErrorInfo
+    public abstract class Form : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         protected IDataAccess _dataAccess { get; set; }
 

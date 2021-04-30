@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Text.RegularExpressions;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -46,14 +45,14 @@ namespace Models
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        
+
         private string _OperationCode_Not_Valid = "-1";
         private void OperationCode_Validation()
         {
             ClearErrors(nameof(OperationCode));
         }
         //OperationCode property
-        
+
         //ObjectTypeCode property
         [Attributes.Form_Property("Код типа объектов учета")]
         public string ObjectTypeCode
@@ -79,7 +78,7 @@ namespace Models
                 OnPropertyChanged(nameof(ObjectTypeCode));
             }
         }
-         //2 digit code
+        //2 digit code
         private string _ObjectTypeCode_Not_Valid = ""; //2 digit code
         private void ObjectTypeCode_Validation(string value)//TODO
         {
@@ -95,7 +94,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -106,7 +106,8 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -143,7 +144,7 @@ namespace Models
                 OnPropertyChanged(nameof(Activity));
             }
         }
-        
+
         private double _Activity_Not_Valid = -1;
         private void Activity_Validation(double value)//Ready
         {
@@ -178,7 +179,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
@@ -219,7 +220,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPONote_Not_Valid = "";
         private void ProviderOrRecieverOKPONote_Validation()
         {

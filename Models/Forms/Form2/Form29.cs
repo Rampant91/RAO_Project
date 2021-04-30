@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Globalization;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -49,7 +45,7 @@ namespace Models
                 OnPropertyChanged(nameof(WasteSourceName));
             }
         }
-        
+
         private string _WasteSourceName_Not_Valid = "";
         private void WasteSourceName_Validation()
         {
@@ -115,7 +111,7 @@ namespace Models
                 OnPropertyChanged(nameof(AllowedActivity));
             }
         }
-        
+
         private string _AllowedActivity_Not_Valid = "";
         private void AllowedActivity_Validation(string value)//Ready
         {
@@ -161,7 +157,7 @@ namespace Models
                 OnPropertyChanged(nameof(AllowedActivityNote));
             }
         }
-        
+
         private string _AllowedActivityNote_Not_Valid = "";
         private void AllowedActivityNote_Validation(string value)//Ready
         {
@@ -194,7 +190,7 @@ namespace Models
                 OnPropertyChanged(nameof(FactedActivity));
             }
         }
-        
+
         private string _FactedActivity_Not_Valid = "";
         private void FactedActivity_Validation(string value)//Ready
         {
@@ -237,7 +233,7 @@ namespace Models
                 OnPropertyChanged(nameof(FactedActivityNote));
             }
         }
-        
+
         private string _FactedActivityNote_Not_Valid = "";
         private void FactedActivityNote_Validation(string value)//Ready
         {

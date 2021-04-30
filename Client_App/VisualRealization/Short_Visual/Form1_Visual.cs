@@ -1,21 +1,16 @@
-﻿using System;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Avalonia.Data;
+using Models.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia.Controls;
-using Models;
-using Avalonia.Data;
-using Avalonia;
-using Models.Attributes;
-using Avalonia.Media;
-using Avalonia.Controls.Templates;
-using Avalonia.Data.Converters;
 
 namespace Client_App.Short_Visual
 {
     public class Form1_Visual
-    { 
+    {
         //Полный вывод
         public static void FormF_Visual(in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
@@ -65,7 +60,7 @@ namespace Client_App.Short_Visual
                 Content = ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
                 GetProperty("RegNo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter= "10/RegNo"
+                CommandParameter = "10/RegNo"
             };
             clm1.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
                     new TextBlock
@@ -110,7 +105,7 @@ namespace Client_App.Short_Visual
             grd.Columns.Add(clm3);
             return grd;
         }
-        
+
         //Форма 1X
         static DataGrid FormX_Visual()
         {
@@ -273,7 +268,7 @@ namespace Client_App.Short_Visual
 
             Button btn1 = new Button();
             btn1.Content = ((Form_ClassAttribute)Type.GetType("Models.Form11,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
-            btn1.Bind(Button.CommandProperty,new Binding("AddForm"));
+            btn1.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn1.CommandParameter = "11";
             btn1.Height = 30;
             btn1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;

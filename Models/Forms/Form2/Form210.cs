@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
@@ -49,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(IndicatorName));
             }
         }
-        
+
         private string _IndicatorName_Not_Valid = "";
         private void IndicatorName_Validation(string value)//TODO
         {
@@ -82,7 +77,7 @@ namespace Models
                 OnPropertyChanged(nameof(PlotName));
             }
         }
-        
+
         private string _PlotName_Not_Valid = "";
         private void PlotName_Validation(string value)//TODO
         {
@@ -115,7 +110,7 @@ namespace Models
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
         }
-        
+
         private string _PlotKadastrNumber_Not_Valid = "";
         private void PlotKadastrNumber_Validation(string value)//TODO
         {
@@ -131,7 +126,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PlotCode))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(PlotCode))[0][0];
+                }
                 else
                 {
                     return _PlotCode_Not_Valid;
@@ -142,11 +138,12 @@ namespace Models
                 _PlotCode_Not_Valid = value;
                 if (GetErrors(nameof(PlotCode)) == null)
                 {
-                    _dataAccess.Set(nameof(PlotCode), _PlotCode_Not_Valid);                }
+                    _dataAccess.Set(nameof(PlotCode), _PlotCode_Not_Valid);
+                }
                 OnPropertyChanged(nameof(PlotCode));
             }
         }
-         //6 symbols code
+        //6 symbols code
         private string _PlotCode_Not_Valid = ""; //6 symbols code
         private void PlotCode_Validation(string value)//TODO
         {
@@ -179,7 +176,7 @@ namespace Models
                 OnPropertyChanged(nameof(InfectedArea));
             }
         }
-        
+
         private int _InfectedArea_Not_Valid = -1;
         private void InfectedArea_Validation(int value)//TODO
         {
@@ -212,7 +209,7 @@ namespace Models
                 OnPropertyChanged(nameof(AvgGammaRaysDosePower));
             }
         }
-        
+
         private double _AvgGammaRaysDosePower_Not_Valid = -1;
         private void AvgGammaRaysDosePower_Validation(double value)//TODO
         {
@@ -245,7 +242,7 @@ namespace Models
                 OnPropertyChanged(nameof(MaxGammaRaysDosePower));
             }
         }
-        
+
         private double _MaxGammaRaysDosePower_Not_Valid = -1;
         private void MaxGammaRaysDosePower_Validation(double value)//TODO
         {
@@ -278,7 +275,7 @@ namespace Models
                 OnPropertyChanged(nameof(WasteDensityAlpha));
             }
         }
-        
+
         private double _WasteDensityAlpha_Not_Valid = -1;
         private void WasteDensityAlpha_Validation(double value)//TODO
         {
@@ -311,7 +308,7 @@ namespace Models
                 OnPropertyChanged(nameof(WasteDensityBeta));
             }
         }
-        
+
         private double _WasteDensityBeta_Not_Valid = -1;
         private void WasteDensityBeta_Validation(double value)//TODO
         {
@@ -344,7 +341,7 @@ namespace Models
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
-        
+
         private string _FcpNumber_Not_Valid = "";
         private void FcpNuber_Validation(string value)//TODO
         {

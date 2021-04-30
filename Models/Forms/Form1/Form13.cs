@@ -1,15 +1,14 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Globalization;
-using DBRealization;
-using Collections.Rows_Collection;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 1.3: Сведения об ОРИ в виде отдельных изделий")]
-    public class Form13: Abstracts.Form1
+    public class Form13 : Abstracts.Form1
     {
         public Form13(IDataAccess Access) : base(Access)
         {
@@ -79,7 +78,7 @@ namespace Models
                 OnPropertyChanged(nameof(PassportNumber));
             }
         }
-        
+
         private string _PassportNumber_Not_Valid = "";
         private void PassportNumber_Validation()
         {
@@ -106,11 +105,12 @@ namespace Models
                 _PassportNumberNote_Not_Valid = value;
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumberNote), _PassportNumberNote_Not_Valid);                }
+                    _dataAccess.Set(nameof(PassportNumberNote), _PassportNumberNote_Not_Valid);
+                }
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
         }
-        
+
         private string _PassportNumberNote_Not_Valid = "";
         private void PassportNumberNote_Validation()
         {
@@ -126,7 +126,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded))[0][0];
+                }
                 else
                 {
                     return _PassportNumberRecoded_Not_Valid;
@@ -137,7 +138,8 @@ namespace Models
                 _PassportNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumberRecoded), _PassportNumberRecoded_Not_Valid);                }
+                    _dataAccess.Set(nameof(PassportNumberRecoded), _PassportNumberRecoded_Not_Valid);
+                }
                 OnPropertyChanged(nameof(PassportNumberRecoded));
             }
         }
@@ -157,7 +159,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Type))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Type))[0][0];
+                }
                 else
                 {
                     return _Type_Not_Valid;
@@ -168,11 +171,12 @@ namespace Models
                 _Type_Not_Valid = value;
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    _dataAccess.Set(nameof(Type), _Type_Not_Valid);                }
+                    _dataAccess.Set(nameof(Type), _Type_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Type));
             }
         }
-        
+
         private string _Type_Not_Valid = "";
         private void Type_Validation()
         {
@@ -187,7 +191,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TypeRecoded))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(TypeRecoded))[0][0];
+                }
                 else
                 {
                     return _TypeRecoded_Not_Valid;
@@ -198,11 +203,12 @@ namespace Models
                 _TypeRecoded_Not_Valid = value;
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(TypeRecoded), _TypeRecoded_Not_Valid);                }
+                    _dataAccess.Set(nameof(TypeRecoded), _TypeRecoded_Not_Valid);
+                }
                 OnPropertyChanged(nameof(TypeRecoded));
             }
         }
-        
+
         private string _TypeRecoded_Not_Valid = "";
         private void TypeRecoded_Validation()
         {
@@ -218,7 +224,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -229,7 +236,8 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -266,7 +274,7 @@ namespace Models
                 OnPropertyChanged(nameof(FactoryNumber));
             }
         }
-        
+
         private string _FactoryNumber_Not_Valid = "";
         private void FactoryNumber_Validation()
         {
@@ -331,7 +339,7 @@ namespace Models
                 OnPropertyChanged(nameof(Activity));
             }
         }
-        
+
         private string _Activity_Not_Valid = "";
         private void Activity_Validation(string value)//Ready
         {
@@ -440,7 +448,7 @@ namespace Models
                 OnPropertyChanged(nameof(CreatorOKPO));
             }
         }
-          //If change this change validation
+        //If change this change validation
         private string _CreatorOKPO_Not_Valid = "";
         private void CreatorOKPO_Validation(string value)//TODO
         {
@@ -483,7 +491,7 @@ namespace Models
                 OnPropertyChanged(nameof(CreatorOKPONote));
             }
         }
-        
+
         private string _CreatorOKPONote_Not_Valid = "";
         private void CreatorOKPONote_Validation()
         {
@@ -516,7 +524,7 @@ namespace Models
                 OnPropertyChanged(nameof(AggregateState));
             }
         }
-        
+
         private byte _AggregateState_Not_Valid = 0;
         private void AggregateState_Validation(byte value)//Ready
         {
@@ -551,7 +559,7 @@ namespace Models
                 OnPropertyChanged(nameof(PropertyCode));
             }
         }
-        
+
         private byte _PropertyCode_Not_Valid = 255;
         private void PropertyCode_Validation(byte value)//Ready
         {
@@ -630,7 +638,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
@@ -671,7 +679,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPONote_Not_Valid = "";
         private void ProviderOrRecieverOKPONote_Validation()
         {
@@ -704,7 +712,7 @@ namespace Models
                 OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
-        
+
         private string _TransporterOKPO_Not_Valid = "";
         private void TransporterOKPO_Validation(string value)//TODO
         {
@@ -745,7 +753,7 @@ namespace Models
                 OnPropertyChanged(nameof(TransporterOKPONote));
             }
         }
-        
+
         private string _TransporterOKPONote_Not_Valid = "";
         private void TransporterOKPONote_Validation()
         {
@@ -778,7 +786,7 @@ namespace Models
                 OnPropertyChanged(nameof(PackName));
             }
         }
-        
+
         private string _PackName_Not_Valid = "";
         private void PackName_Validation()
         {
@@ -810,7 +818,7 @@ namespace Models
                 OnPropertyChanged(nameof(PackNameNote));
             }
         }
-        
+
         private string _PackNameNote_Not_Valid = "";
         private void PackNameNote_Validation()
         {
@@ -875,7 +883,7 @@ namespace Models
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
-        
+
         private string _PackTypeRecoded_Not_Valid = "";
         private void PackTypeRecoded_Validation()
         {
@@ -907,7 +915,7 @@ namespace Models
                 OnPropertyChanged(nameof(PackTypeNote));
             }
         }
-        
+
         private string _PackTypeNote_Not_Valid = "";
         private void PackTypeNote_Validation()
         {

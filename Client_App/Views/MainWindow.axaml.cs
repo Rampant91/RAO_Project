@@ -1,20 +1,7 @@
 using Avalonia;
-using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Data;
 using Avalonia.Markup.Xaml;
-using Avalonia.Controls.ApplicationLifetimes;
-using Models;
-using System.Collections.ObjectModel;
-using System.Collections;
 using System;
-using Avalonia.Controls.Primitives;
-using Avalonia.Input;
-using Avalonia.Media;
-using MessageBox.Avalonia;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Avalonia.Interactivity;
 
 namespace Client_App.Views
 {

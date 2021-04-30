@@ -1,11 +1,5 @@
-﻿using System;
-using System.Globalization;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
@@ -50,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(PlotName));
             }
         }
-        
+
         private string _PlotName_Not_Valid = "";
         private void PlotName_Validation(string value)//TODO
         {
@@ -83,7 +77,7 @@ namespace Models
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
         }
-        
+
         private string _PlotKadastrNumber_Not_Valid = "";
         private void PlotKadastrNumber_Validation(string value)//TODO
         {
@@ -99,7 +93,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PlotCode))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(PlotCode))[0][0];
+                }
                 else
                 {
                     return _PlotCode_Not_Valid;
@@ -110,11 +105,12 @@ namespace Models
                 _PlotCode_Not_Valid = value;
                 if (GetErrors(nameof(PlotCode)) == null)
                 {
-                    _dataAccess.Set(nameof(PlotCode), _PlotCode_Not_Valid);                }
+                    _dataAccess.Set(nameof(PlotCode), _PlotCode_Not_Valid);
+                }
                 OnPropertyChanged(nameof(PlotCode));
             }
         }
-         //6 symbols code
+        //6 symbols code
         private string _PlotCode_Not_Valid = ""; //6 symbols code
         private void PlotCode_Validation(string value)//TODO
         {
@@ -147,7 +143,7 @@ namespace Models
                 OnPropertyChanged(nameof(InfectedArea));
             }
         }
-        
+
         private int _InfectedArea_Not_Valid = -1;
         private void InfectedArea_Validation(int value)//TODO
         {
@@ -163,7 +159,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -174,7 +171,8 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -210,7 +208,7 @@ namespace Models
                 OnPropertyChanged(nameof(RadionuclidNameNote));
             }
         }
-        
+
         private string _RadionuclidNameNote_Not_Valid = "";
         private void RadionuclidNameNote_Validation()
         {
@@ -243,7 +241,7 @@ namespace Models
                 OnPropertyChanged(nameof(SpecificActivityOfPlot));
             }
         }
-        
+
         private string _SpecificActivityOfPlot_Not_Valid = "";
         private void SpecificActivityOfPlot_Validation(string value)//TODO
         {
@@ -287,7 +285,7 @@ namespace Models
                 OnPropertyChanged(nameof(SpecificActivityOfLiquidPart));
             }
         }
-        
+
         private string _SpecificActivityOfLiquidPart_Not_Valid = "";
         private void SpecificActivityOfLiquidPart_Validation(string value)//TODO
         {
@@ -331,7 +329,7 @@ namespace Models
                 OnPropertyChanged(nameof(SpecificActivityOfDensePart));
             }
         }
-        
+
         private string _SpecificActivityOfDensePart_Not_Valid = "";
         private void SpecificActivityOfDensePart_Validation(string value)//TODO
         {

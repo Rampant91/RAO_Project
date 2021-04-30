@@ -1,32 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ReactiveUI;
-using System.Reactive;
-using Avalonia;
-using Models;
-using System.ComponentModel;
-using System.Collections.Specialized;
-using System.Runtime.CompilerServices;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Templates;
-using Avalonia.Data;
-using Avalonia.Data.Converters;
-using System.Reflection;
-using Avalonia.Collections;
-using Avalonia.Markup.Xaml;
-using System.Collections;
-using Models.Attributes;
-using System.IO;
+﻿using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Metadata;
-using System.Windows;
 using Collections;
-using DBRealization;
 using Collections.Rows_Collection;
+using Models;
+using ReactiveUI;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reactive;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Client_App.ViewModels
 {
@@ -100,7 +84,7 @@ namespace Client_App.ViewModels
         public ChangeOrCreateVM()
         {
             AddSort = ReactiveCommand.Create<string>(_AddSort);
-            AddRow= ReactiveCommand.Create(_AddRow);
+            AddRow = ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             PasteRows = ReactiveCommand.CreateFromTask(_PasteRows);
@@ -148,7 +132,7 @@ namespace Client_App.ViewModels
 
         void _AddRow()
         {
-            var frm = FormCreator.Create(FormType, new  RedDataBase(DBPath,1));
+            var frm = FormCreator.Create(FormType, new RedDataBase(DBPath, 1));
             //Storage.Rows.Add(frm);
         }
 
@@ -177,10 +161,10 @@ namespace Client_App.ViewModels
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
                 var text = await clip.GetTextAsync();
-                var lt=ex.Convert(text,FormType);
-                if(lt!=null)
+                var lt = ex.Convert(text, FormType);
+                if (lt != null)
                 {
-                    foreach(var item in lt)
+                    foreach (var item in lt)
                     {
                         //Storage.Rows.Add(item);
                     }

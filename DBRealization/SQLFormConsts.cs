@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DBRealization
+﻿namespace DBRealization
 {
     public class SQLFormConsts
     {

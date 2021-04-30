@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models.Abstracts
 {
-    public abstract class Form3:Form
+    public abstract class Form3 : Form
     {
         [Attributes.Form_Property("Форма")]
         public Form3(IDataAccess Access) : base(Access)
@@ -38,7 +35,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        
+
         private byte _CorrectionNumber_Not_Valid = 255;
         private void CorrectionNumber_Validation()
         {
@@ -71,7 +68,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(NotificationDate));
             }
         }
-        
+
         private DateTimeOffset _NotificationDate_Not_Valid = DateTimeOffset.MinValue;
         //NotificationDate property
     }

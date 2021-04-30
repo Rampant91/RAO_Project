@@ -1,36 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ReactiveUI;
-using System.Reactive;
-using Avalonia;
-using Models;
-using System.ComponentModel;
-using System.Collections.Specialized;
-using System.Runtime.CompilerServices;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Templates;
-using Avalonia.Data;
-using Avalonia.Data.Converters;
-using System.Reflection;
-using Avalonia.Collections;
-using Avalonia.Markup.Xaml;
-using System.Collections;
-using Models.Attributes;
-using System.IO;
 using Collections;
-using DBRealization;
 using Collections.Reports_Collection;
+using ReactiveUI;
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Reactive;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Client_App.ViewModels
 {
     public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
-        string _DBPath= @"C:\Databases\local.raodb";
+        string _DBPath = @"C:\Databases\local.raodb";
         string DBPath
         {
             get
@@ -48,7 +32,7 @@ namespace Client_App.ViewModels
         }
 
         Reports _FormModel_Local;
-        public Reports FormModel_Local 
+        public Reports FormModel_Local
         {
             get
             {
@@ -56,7 +40,7 @@ namespace Client_App.ViewModels
             }
             set
             {
-                if(_FormModel_Local!=value)
+                if (_FormModel_Local != value)
                 {
                     _FormModel_Local = value;
                     NotifyPropertyChanged("FormModel_Local");
@@ -68,7 +52,7 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<string, Unit> AddSort { get; }
 
-        public ReactiveCommand<string, Unit> ChooseForm { get;}
+        public ReactiveCommand<string, Unit> ChooseForm { get; }
 
         public ReactiveCommand<string, Unit> AddForm { get; }
         public ReactiveCommand<Report, Unit> ChangeForm { get; }
@@ -82,7 +66,7 @@ namespace Client_App.ViewModels
         }
         public MainWindowVM()
         {
-            _FormModel_Local = new Reports(new RedDataBase(DBPath,3));
+            _FormModel_Local = new Reports(new RedDataBase(DBPath, 3));
             FormModel_Local.PropertyChanged += FormModelChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
@@ -91,7 +75,7 @@ namespace Client_App.ViewModels
             ChangeForm = ReactiveCommand.CreateFromTask<Report>(_ChangeForm);
             DeleteForm = ReactiveCommand.CreateFromTask<Report>(_DeleteForm);
 
-            Excel_Export= ReactiveCommand.CreateFromTask(_Excel_Export);
+            Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
 
         }
 
@@ -107,7 +91,7 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(DBPath,-1,param);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(DBPath, -1, param);
                 await frm.ShowDialog<Models.Abstracts.Form>(desktop.MainWindow);
             }
         }
@@ -141,7 +125,7 @@ namespace Client_App.ViewModels
                 filter.Extensions.Add("*.xlsx");
                 dial.Filters.Add(filter);
                 var res = await dial.ShowAsync(desktop.MainWindow);
-                if (res.Count()!=0)
+                if (res.Count() != 0)
                 {
                     //Models.Saving.Excel exp = new Models.Saving.Excel();
                     //await exp.Save(FormModel_Local.Dictionary,res);

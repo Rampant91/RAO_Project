@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Globalization;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
-    public class Form19: Abstracts.Form1
+    public class Form19 : Abstracts.Form1
     {
         public Form19(IDataAccess Access) : base(Access)
         {
@@ -45,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(CodeTypeAccObject));
             }
         }
-        
+
         private short _CodeTypeAccObject_Not_Valid = 0;
         private void CodeTypeAccObject_Validation(short value)//TODO
         {
@@ -61,7 +60,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -72,7 +72,8 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -109,7 +110,7 @@ namespace Models
                 OnPropertyChanged(nameof(Activity));
             }
         }
-        
+
         private string _Activity_Not_Valid = "";
         private void Activity_Validation(string value)//Ready
         {

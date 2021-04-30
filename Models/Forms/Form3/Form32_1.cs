@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("")]
-    public class Form32_1: Abstracts.Form3
+    public class Form32_1 : Abstracts.Form3
     {
         public Form32_1(IDataAccess Access) : base(Access)
         {
@@ -49,7 +46,7 @@ namespace Models
                 OnPropertyChanged(nameof(PassportNumber));
             }
         }
-        
+
         private string _PassportNumber_Not_Valid = "";
         private void PassportNumber_Validation()
         {
@@ -81,7 +78,7 @@ namespace Models
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
         }
-        
+
         private string _PassportNumberNote_Not_Valid = "";
         private void PassportNumberNote_Validation()
         {
@@ -114,7 +111,7 @@ namespace Models
                 OnPropertyChanged(nameof(CreatorOKPO));
             }
         }
-          //If change this change validation
+        //If change this change validation
         private string _CreatorOKPO_Not_Valid = "";
         private void CreatorOKPO_Validation(string value)//TODO
         {
@@ -141,7 +138,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Type))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Type))[0][0];
+                }
                 else
                 {
                     return _Type_Not_Valid;
@@ -152,11 +150,12 @@ namespace Models
                 _Type_Not_Valid = value;
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    _dataAccess.Set(nameof(Type), _Type_Not_Valid);                }
+                    _dataAccess.Set(nameof(Type), _Type_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Type));
             }
         }
-        
+
         private string _Type_Not_Valid = "";
         private void Type_Validation()
         {
@@ -171,7 +170,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TypeRecoded))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(TypeRecoded))[0][0];
+                }
                 else
                 {
                     return _TypeRecoded_Not_Valid;
@@ -182,11 +182,12 @@ namespace Models
                 _TypeRecoded_Not_Valid = value;
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(TypeRecoded), _TypeRecoded_Not_Valid);                }
+                    _dataAccess.Set(nameof(TypeRecoded), _TypeRecoded_Not_Valid);
+                }
                 OnPropertyChanged(nameof(TypeRecoded));
             }
         }
-        
+
         private string _TypeRecoded_Not_Valid = "";
         private void TypeRecoded_Validation()
         {
@@ -202,7 +203,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -213,7 +215,8 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -250,7 +253,7 @@ namespace Models
                 OnPropertyChanged(nameof(FactoryNumber));
             }
         }
-        
+
         private string _FactoryNumber_Not_Valid = "";
         private void FactoryNumber_Validation()
         {
@@ -315,7 +318,7 @@ namespace Models
                 OnPropertyChanged(nameof(ActivityOnCreation));
             }
         }
-        
+
         private string _ActivityOnCreation_Not_Valid = "";
         private void ActivityOnCreation_Validation(string value)//Ready
         {
@@ -391,7 +394,7 @@ namespace Models
                 OnPropertyChanged(nameof(CreatorOKPONote));
             }
         }
-        
+
         private string _CreatorOKPONote_Not_Valid = "";
         private void CreatorOKPONote_Validation()
         {
@@ -424,7 +427,7 @@ namespace Models
                 OnPropertyChanged(nameof(Kategory));
             }
         }
-        
+
         private short _Kategory_Not_Valid = -1;
         private void Kategory_Validation(short value)//TODO
         {
@@ -457,7 +460,7 @@ namespace Models
                 OnPropertyChanged(nameof(NuclearMaterialPresence));
             }
         }
-        
+
         private double _NuclearMaterialPresence_Not_Valid = -1;
         //NuclearMaterialPresence property
 
@@ -486,7 +489,7 @@ namespace Models
                 OnPropertyChanged(nameof(CertificateId));
             }
         }
-        
+
         private string _CertificateId_Not_Valid = "";
         //CertificateId property
 
@@ -515,7 +518,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThru));
             }
         }
-        
+
         private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.MinValue;
         //ValidThru property
     }

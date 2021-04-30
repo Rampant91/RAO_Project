@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 5.7: Перечень подведомственных организаций ведомственного информационно-аналитического центра федерального органа исполнительной власти")]
-    public class Form57: Abstracts.Form5
+    public class Form57 : Abstracts.Form5
     {
         public Form57(IDataAccess Access) : base(Access)
         {
@@ -49,7 +45,7 @@ namespace Models
                 OnPropertyChanged(nameof(RegNo));
             }
         }
-        
+
         private string _RegNo_Not_Valid = "";
         //RegNo property
 
@@ -118,7 +114,7 @@ namespace Models
                 OnPropertyChanged(nameof(OrgName));
             }
         }
-        
+
         private string _OrgName_Not_Valid = "";
         //OrgName property
 
@@ -147,7 +143,7 @@ namespace Models
                 OnPropertyChanged(nameof(DocumentNameNumber));
             }
         }
-        
+
         private string _DocumentNameNumber_Not_Valid = "";
         //DocumentNameNumber property
 
@@ -176,7 +172,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionNameNumber));
             }
         }
-        
+
         private string _PermissionNameNumber_Not_Valid = "";
         //PermissionNameNumber property
 
@@ -205,7 +201,7 @@ namespace Models
                 OnPropertyChanged(nameof(AllowedActivity));
             }
         }
-        
+
         private string _AllowedActivity_Not_Valid = "";
         private void AllowedActivity_Validation(string value)//Ready
         {
@@ -238,7 +234,7 @@ namespace Models
                 OnPropertyChanged(nameof(Note));
             }
         }
-        
+
         private string _Note_Not_Valid = "";
         //Note property
     }

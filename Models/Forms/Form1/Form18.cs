@@ -1,14 +1,13 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Globalization;
-using DBRealization;
-using Collections.Rows_Collection;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 1.8: Сведения о жидких кондиционированных РАО")]
-    public class Form18: Abstracts.Form1
+    public class Form18 : Abstracts.Form1
     {
         public Form18(IDataAccess Access) : base(Access)
         {
@@ -47,7 +46,7 @@ namespace Models
                 OnPropertyChanged(nameof(IndividualNumberZHRO));
             }
         }
-        
+
         private string _IndividualNumberZHRO_Not_Valid = "";
         private void IndividualNumberZHRO_Validation(string value)
         {
@@ -79,7 +78,7 @@ namespace Models
                 OnPropertyChanged(nameof(IndividualNumberZHROrecoded));
             }
         }
-        
+
         private string _IndividualNumberZHROrecoded_Not_Valid = "";
         private void IndividualNumberZHROrecoded_Validation(string value)
         {
@@ -112,7 +111,7 @@ namespace Models
                 OnPropertyChanged(nameof(PassportNumber));
             }
         }
-        
+
         private string _PassportNumber_Not_Valid = "";
         private void PassportNumber_Validation()
         {
@@ -139,11 +138,12 @@ namespace Models
                 _PassportNumberNote_Not_Valid = value;
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumberNote), _PassportNumberNote_Not_Valid);                }
+                    _dataAccess.Set(nameof(PassportNumberNote), _PassportNumberNote_Not_Valid);
+                }
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
         }
-        
+
         private string _PassportNumberNote_Not_Valid = "";
         private void PassportNumberNote_Validation()
         {
@@ -159,7 +159,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded))[0][0];
+                }
                 else
                 {
                     return _PassportNumberRecoded_Not_Valid;
@@ -170,7 +171,8 @@ namespace Models
                 _PassportNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumberRecoded), _PassportNumberRecoded_Not_Valid);                }
+                    _dataAccess.Set(nameof(PassportNumberRecoded), _PassportNumberRecoded_Not_Valid);
+                }
                 OnPropertyChanged(nameof(PassportNumberRecoded));
             }
         }
@@ -207,7 +209,7 @@ namespace Models
                 OnPropertyChanged(nameof(Volume6));
             }
         }
-        
+
         private double _Volume6_Not_Valid = -1;
         private void Volume6_Validation(double value)//TODO
         {
@@ -240,7 +242,7 @@ namespace Models
                 OnPropertyChanged(nameof(Mass7));
             }
         }
-        
+
         private double _Mass7_Not_Valid = -1;
         private void Mass7_Validation()//TODO
         {
@@ -273,7 +275,7 @@ namespace Models
                 OnPropertyChanged(nameof(SaltConcentration));
             }
         }
-        
+
         private double _SaltConcentration_Not_Valid = -1;
         private void SaltConcentration_Validation(double value)
         {
@@ -289,7 +291,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -300,7 +303,8 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -337,7 +341,7 @@ namespace Models
                 OnPropertyChanged(nameof(SpecificActivity));
             }
         }
-        
+
         private string _SpecificActivity_Not_Valid = "";
         private void SpecificActivity_Validation(string value)//TODO
         {
@@ -381,7 +385,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
@@ -422,7 +426,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPONote_Not_Valid = "";
         private void ProviderOrRecieverOKPONote_Validation()
         {
@@ -455,7 +459,7 @@ namespace Models
                 OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
-        
+
         private string _TransporterOKPO_Not_Valid = "";
         private void TransporterOKPO_Validation(string value)//TODO
         {
@@ -496,7 +500,7 @@ namespace Models
                 OnPropertyChanged(nameof(TransporterOKPONote));
             }
         }
-        
+
         private string _TransporterOKPONote_Not_Valid = "";
         private void TransporterOKPONote_Validation()
         {
@@ -639,7 +643,7 @@ namespace Models
                 OnPropertyChanged(nameof(CodeRAO));
             }
         }
-        
+
         private string _CodeRAO_Not_Valid = "";
         private void CodeRAO_Validation(string value)//TODO
         {
@@ -672,7 +676,7 @@ namespace Models
                 OnPropertyChanged(nameof(StatusRAO));
             }
         }
-        
+
         private string _StatusRAO_Not_Valid = "";
         private void StatusRAO_Validation(string value)//TODO
         {
@@ -705,7 +709,7 @@ namespace Models
                 OnPropertyChanged(nameof(Volume20));
             }
         }
-        
+
         private double _Volume20_Not_Valid = -1;
         private void Volume20_Validation(double value)//TODO
         {
@@ -738,7 +742,7 @@ namespace Models
                 OnPropertyChanged(nameof(Mass21));
             }
         }
-        
+
         private double _Mass21_Not_Valid = -1;
         private void Mass21_Validation()//TODO
         {
@@ -771,7 +775,7 @@ namespace Models
                 OnPropertyChanged(nameof(TritiumActivity));
             }
         }
-        
+
         private string _TritiumActivity_Not_Valid = "";
         private void TritiumActivity_Validation(string value)//TODO
         {
@@ -822,7 +826,7 @@ namespace Models
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
         }
-        
+
         private string _BetaGammaActivity_Not_Valid = "";
         private void BetaGammaActivity_Validation(string value)//TODO
         {
@@ -873,7 +877,7 @@ namespace Models
                 OnPropertyChanged(nameof(AlphaActivity));
             }
         }
-        
+
         private string _AlphaActivity_Not_Valid = "";
         private void AlphaActivity_Validation(string value)//TODO
         {
@@ -924,7 +928,7 @@ namespace Models
                 OnPropertyChanged(nameof(TransuraniumActivity));
             }
         }
-        
+
         private string _TransuraniumActivity_Not_Valid = "";
         private void TransuraniumActivity_Validation(string value)//TODO
         {
@@ -1019,7 +1023,7 @@ namespace Models
                 OnPropertyChanged(nameof(Subsidy));
             }
         }
-        
+
         private string _Subsidy_Not_Valid = "";
         private void Subsidy_Validation(string value)//Ready
         {
@@ -1062,7 +1066,7 @@ namespace Models
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
-        
+
         private string _FcpNumber_Not_Valid = "";
         private void FcpNuber_Validation(string value)//TODO
         {

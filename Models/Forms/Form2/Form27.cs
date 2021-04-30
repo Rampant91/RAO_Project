@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
@@ -49,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionNumber));
             }
         }
-        
+
         private string _PermissionNumber_Not_Valid = "";
         private void PermissionNumber_Validation()
         {
@@ -82,14 +77,14 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionIssueDate));
             }
         }
-        
+
         private string _PermissionIssueDate_Not_Valid = "";
         private void PermissionIssueDate_Validation()
         {
             ClearErrors(nameof(PermissionIssueDate));
         }
         //PermissionIssueDate property
-        
+
         //PermissionDocumentName property
         [Attributes.Form_Property("Наименование разрешительного документа")]
         public string PermissionDocumentName
@@ -115,7 +110,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionDocumentName));
             }
         }
-        
+
         private string _PermissionDocumentName_Not_Valid = "";
         private void PermissionDocumentName_Validation()
         {
@@ -148,7 +143,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidBegin));
             }
         }
-        
+
         private DateTimeOffset _ValidBegin_Not_Valid = DateTimeOffset.MinValue;
         private void ValidBegin_Validation()
         {
@@ -181,7 +176,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThru));
             }
         }
-        
+
         private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.MinValue;
         private void ValidThru_Validation()
         {
@@ -213,7 +208,7 @@ namespace Models
                 OnPropertyChanged(nameof(RadionuclidNameNote));
             }
         }
-        
+
         private string _RadionuclidNameNote_Not_Valid = "";
         private void RadionuclidNameNote_Validation()
         {
@@ -246,7 +241,7 @@ namespace Models
                 OnPropertyChanged(nameof(AllowedWasteValue));
             }
         }
-        
+
         private string _AllowedWasteValue_Not_Valid = "";
         private void AllowedWasteValue_Validation()
         {
@@ -278,7 +273,7 @@ namespace Models
                 OnPropertyChanged(nameof(AllowedWasteValueNote));
             }
         }
-        
+
         private string _AllowedWasteValueNote_Not_Valid = "";
         private void AllowedWasteValueNote_Validation()
         {
@@ -311,7 +306,7 @@ namespace Models
                 OnPropertyChanged(nameof(FactedWasteValue));
             }
         }
-        
+
         private string _FactedWasteValue_Not_Valid = "";
         private void FactedWasteValue_Validation()
         {
@@ -343,7 +338,7 @@ namespace Models
                 OnPropertyChanged(nameof(FactedWasteValueNote));
             }
         }
-        
+
         private string _FactedWasteValueNote_Not_Valid = "";
         private void FactedWasteValueNote_Validation()
         {
@@ -376,7 +371,7 @@ namespace Models
                 OnPropertyChanged(nameof(WasteOutbreakPreviousYear));
             }
         }
-        
+
         private string _WasteOutbreakPreviousYear_Not_Valid = "";
         private void WasteOutbreakPreviousYear_Validation()
         {

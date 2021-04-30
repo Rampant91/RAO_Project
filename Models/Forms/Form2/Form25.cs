@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Globalization;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 2.5: Наличие РВ, содержащихся в отработавшем ядерном топливе, в пунктах хранения")]
-    public class Form25: Abstracts.Form2
+    public class Form25 : Abstracts.Form2
     {
         public Form25(IDataAccess Access) : base(Access)
         {
@@ -79,7 +78,7 @@ namespace Models
                 OnPropertyChanged(nameof(CodeOYAT));
             }
         }
-        
+
         private string _CodeOYAT_Not_Valid = "";
         private void CodeOYAT_Validation()
         {
@@ -187,7 +186,7 @@ namespace Models
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
-        
+
         private string _FcpNumber_Not_Valid = "";
         private void FcpNuber_Validation(string value)//TODO
         {
@@ -220,7 +219,7 @@ namespace Models
                 OnPropertyChanged(nameof(FuelMass));
             }
         }
-        
+
         private double _FuelMass_Not_Valid = -1;
         private void FuelMass_Validation(double value)//TODO
         {
@@ -253,7 +252,7 @@ namespace Models
                 OnPropertyChanged(nameof(CellMass));
             }
         }
-        
+
         private double _CellMass_Not_Valid = -1;
         private void CellMass_Validation(double value)//TODO
         {
@@ -286,7 +285,7 @@ namespace Models
                 OnPropertyChanged(nameof(Quantity));
             }
         }
-          // positive int.
+        // positive int.
         private int _Quantity_Not_Valid = -1;
         private void Quantity_Validation(int value)//Ready
         {
@@ -321,7 +320,7 @@ namespace Models
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
         }
-        
+
         private string _BetaGammaActivity_Not_Valid = "";
         private void BetaGammaActivity_Validation(string value)//TODO
         {
@@ -372,7 +371,7 @@ namespace Models
                 OnPropertyChanged(nameof(AlphaActivity));
             }
         }
-        
+
         private string _AlphaActivity_Not_Valid = "";
         private void AlphaActivity_Validation(string value)//TODO
         {

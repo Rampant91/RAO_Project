@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Globalization;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
-    public class Form21: Abstracts.Form2
+    public class Form21 : Abstracts.Form2
     {
         public Form21(IDataAccess Access) : base(Access)
         {
@@ -46,7 +45,7 @@ namespace Models
                 OnPropertyChanged(nameof(RefineMachineName));
             }
         }
-        
+
         private string _RefineMachineName_Not_Valid = "";
         private void RefineMachineName_Validation()
         {
@@ -79,7 +78,7 @@ namespace Models
                 OnPropertyChanged(nameof(MachineCode));
             }
         }
-        
+
         private short _MachineCode_Not_Valid = 0;
         private void MachineCode_Validation(short value)//TODO
         {
@@ -112,7 +111,7 @@ namespace Models
                 OnPropertyChanged(nameof(MachinePower));
             }
         }
-        
+
         private string _MachinePower_Not_Valid = "";
         private void MachinePower_Validation(string value)//TODO
         {
@@ -145,7 +144,7 @@ namespace Models
                 OnPropertyChanged(nameof(NumberOfHoursPerYear));
             }
         }
-        
+
         private int _NumberOfHoursPerYear_Not_Valid = -1;
         private void NumberOfHoursPerYear_Validation(int value)//TODO
         {
@@ -178,7 +177,7 @@ namespace Models
                 OnPropertyChanged(nameof(CodeRAOIn));
             }
         }
-        
+
         private string _CodeRAOIn_Not_Valid = "";
         private void CodeRAOIn_Validation(string value)//TODO
         {
@@ -211,7 +210,7 @@ namespace Models
                 OnPropertyChanged(nameof(StatusRAOIn));
             }
         }
-        
+
         private string _StatusRAOIn_Not_Valid = "";
         private void StatusRAO_Validation(string value)//TODO
         {
@@ -244,7 +243,7 @@ namespace Models
                 OnPropertyChanged(nameof(VolumeIn));
             }
         }
-        
+
         private double _VolumeIn_Not_Valid = -1;
         private void VolumeIn_Validation(double value)//TODO
         {
@@ -277,7 +276,7 @@ namespace Models
                 OnPropertyChanged(nameof(MassIn));
             }
         }
-        
+
         private double _MassIn_Not_Valid = -1;
         private void MassIn_Validation()//TODO
         {
@@ -310,7 +309,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityIn));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityIn_Not_Valid = -1;
         private void QuantityIn_Validation(int value)//Ready
         {
@@ -345,7 +344,7 @@ namespace Models
                 OnPropertyChanged(nameof(TritiumActivityIn));
             }
         }
-        
+
         private string _TritiumActivityIn_Not_Valid = "";
         private void TritiumActivityIn_Validation(string value)//TODO
         {
@@ -396,7 +395,7 @@ namespace Models
                 OnPropertyChanged(nameof(BetaGammaActivityIn));
             }
         }
-        
+
         private string _BetaGammaActivityIn_Not_Valid = "";
         private void BetaGammaActivity_Validation(string value)//TODO
         {
@@ -447,7 +446,7 @@ namespace Models
                 OnPropertyChanged(nameof(AlphaActivityIn));
             }
         }
-        
+
         private string _AlphaActivityIn_Not_Valid = "";
         private void AlphaActivityIn_Validation(string value)//TODO
         {
@@ -498,7 +497,7 @@ namespace Models
                 OnPropertyChanged(nameof(TransuraniumActivityIn));
             }
         }
-        
+
         private string _TransuraniumActivityIn_Not_Valid = "";
         private void TransuraniumActivityIn_Validation(string value)//TODO
         {
@@ -549,7 +548,7 @@ namespace Models
                 OnPropertyChanged(nameof(CodeRAOout));
             }
         }
-        
+
         private string _CodeRAOout_Not_Valid = "";
         private void CodeRAOout_Validation(string value)//TODO
         {
@@ -582,7 +581,7 @@ namespace Models
                 OnPropertyChanged(nameof(StatusRAOout));
             }
         }
-        
+
         private string _StatusRAOout_Not_Valid = "";
         private void StatusRAOout_Validation(string value)//TODO
         {
@@ -615,7 +614,7 @@ namespace Models
                 OnPropertyChanged(nameof(VolumeOut));
             }
         }
-        
+
         private double _VolumeOut_Not_Valid = -1;
         private void VolumeOut_Validation(double value)//TODO
         {
@@ -648,7 +647,7 @@ namespace Models
                 OnPropertyChanged(nameof(MassOut));
             }
         }
-        
+
         private double _MassOut_Not_Valid = -1;
         private void MassOut_Validation()//TODO
         {
@@ -681,7 +680,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityOZIIIout));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityOZIIIout_Not_Valid = -1;
         private void QuantityOZIIIout_Validation(int value)//Ready
         {
@@ -716,7 +715,7 @@ namespace Models
                 OnPropertyChanged(nameof(TritiumActivityOut));
             }
         }
-        
+
         private string _TritiumActivityOut_Not_Valid = "";
         private void TritiumActivityOut_Validation(string value)//TODO
         {
@@ -767,7 +766,7 @@ namespace Models
                 OnPropertyChanged(nameof(BetaGammaActivityOut));
             }
         }
-        
+
         private string _BetaGammaActivityOut_Not_Valid = "";
         private void BetaGammaActivityOut_Validation(string value)//TODO
         {
@@ -818,7 +817,7 @@ namespace Models
                 OnPropertyChanged(nameof(AlphaActivityOut));
             }
         }
-        
+
         private string _AlphaActivityOut_Not_Valid = "";
         private void AlphaActivityOut_Validation(string value)//TODO
         {
@@ -869,7 +868,7 @@ namespace Models
                 OnPropertyChanged(nameof(TransuraniumActivityOut));
             }
         }
-        
+
         private string _TransuraniumActivityOut_Not_Valid = "";
         private void TransuraniumActivityOut_Validation(string value)//TODO
         {

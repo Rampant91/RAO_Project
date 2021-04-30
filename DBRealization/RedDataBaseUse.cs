@@ -1,7 +1,6 @@
-﻿using System;
+﻿using FirebirdSql.Data.FirebirdClient;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using FirebirdSql.Data.FirebirdClient;
 using System.IO;
 
 namespace DBRealization

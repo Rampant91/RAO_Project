@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Идентификаторы:")]
-    public class Form32_3: Abstracts.Form3
+    public class Form32_3 : Abstracts.Form3
     {
         public Form32_3(IDataAccess Access) : base(Access)
         {
@@ -49,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(IdName));
             }
         }
-        
+
         private string _IdName_Not_Valid = "";
         //IdName Property
 
@@ -78,7 +73,7 @@ namespace Models
                 OnPropertyChanged(nameof(Val));
             }
         }
-        
+
         private string _Val_Not_Valid = "";
         //Val property
     }

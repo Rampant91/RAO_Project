@@ -1,11 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Models;
-using Models.Attributes;
-using Avalonia.Data;
 using Collections;
-using DBRealization;
 using Collections.Report_Collection;
 
 namespace Client_App.Views
@@ -13,11 +9,11 @@ namespace Client_App.Views
     public class FormChangeOrCreate : Window
     {
         string _param = "";
-        public FormChangeOrCreate(string DBPath,int ReportID,string param)
+        public FormChangeOrCreate(string DBPath, int ReportID, string param)
         {
-            var tmp= new ViewModels.ChangeOrCreateVM();
+            var tmp = new ViewModels.ChangeOrCreateVM();
             tmp.FormType = param;
-            if(DBPath!=null)
+            if (DBPath != null)
             {
                 tmp.DBPath = DBPath;
                 if (ReportID != -1)
@@ -26,18 +22,18 @@ namespace Client_App.Views
                 }
                 else
                 {
-                    tmp.Storage = new Report(new RedDataBase(DBPath,2));
+                    tmp.Storage = new Report(new RedDataBase(DBPath, 2));
                 }
             }
             else
             {
                 if (ReportID != -1)
                 {
-                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath, ReportID.ToString())) ;
+                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath, ReportID.ToString()));
                 }
                 else
                 {
-                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath,2));
+                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath, 2));
                 }
             }
 
@@ -85,7 +81,7 @@ namespace Client_App.Views
 
         void Init()
         {
-            var panel=this.FindControl<Panel>("ChangingPanel");
+            var panel = this.FindControl<Panel>("ChangingPanel");
             Form1Init(panel);
         }
 

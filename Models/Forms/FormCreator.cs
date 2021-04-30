@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
 
 namespace Models
 {

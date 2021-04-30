@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
@@ -49,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(SourcesQuantity));
             }
         }
-          // positive int.
+        // positive int.
         private int _SourcesQuantity_Not_Valid = -1;
         private void SourcesQuantity_Validation(int value)//Ready
         {
@@ -124,7 +119,7 @@ namespace Models
             ClearErrors(nameof(ControlledAreaName));
         }
         //ControlledAreaName property
-        
+
         //SupposedWasteSource property
         [Attributes.Form_Property("Предполагаемый источник поступления радиоактивных веществ")]
         public string SupposedWasteSource
@@ -150,7 +145,7 @@ namespace Models
                 OnPropertyChanged(nameof(SupposedWasteSource));
             }
         }
-        
+
         private string _SupposedWasteSource_Not_Valid = "";
         private void SupposedWasteSource_Validation(string value)//Ready
         {
@@ -183,7 +178,7 @@ namespace Models
                 OnPropertyChanged(nameof(DistanceToWasteSource));
             }
         }
-        
+
         private int _DistanceToWasteSource_Not_Valid = -1;
         private void DistanceToWasteSource_Validation(int value)//Ready
         {
@@ -216,7 +211,7 @@ namespace Models
                 OnPropertyChanged(nameof(TestDepth));
             }
         }
-        
+
         private int _TestDepth_Not_Valid = -1;
         private void TestDepth_Validation(int value)//Ready
         {
@@ -248,7 +243,7 @@ namespace Models
                 OnPropertyChanged(nameof(TestDepthNote));
             }
         }
-        
+
         private int _TestDepthNote_Not_Valid = -1;
         private void TestDepthNote_Validation(int value)//Ready
         {
@@ -314,7 +309,7 @@ namespace Models
                 OnPropertyChanged(nameof(AverageYearConcentration));
             }
         }
-        
+
         private double _AverageYearConcentration_Not_Valid = -1;
         private void AverageYearConcentration_Validation()//TODO
         {

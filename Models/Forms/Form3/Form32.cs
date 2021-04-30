@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 3.2: Отчет об отправке радиоактивных источников 1 и 2 категории")]
-    public class Form32: Abstracts.Form3
+    public class Form32 : Abstracts.Form3
     {
         public Form32(IDataAccess Access) : base(Access)
         {
@@ -47,7 +46,7 @@ namespace Models
                 OnPropertyChanged(nameof(UniqueAgreementId));
             }
         }
-        
+
         private string _UniqueAgreementId_Not_Valid = "";
         //UniqueAgreementId property
 
@@ -76,7 +75,7 @@ namespace Models
                 OnPropertyChanged(nameof(SupplyDate));
             }
         }
-        
+
         private DateTimeOffset _SupplyDate_Not_Valid = DateTimeOffset.MinValue;
         //SupplyDate property
 
@@ -105,7 +104,7 @@ namespace Models
                 OnPropertyChanged(nameof(RecieverName));
             }
         }
-        
+
         private string _RecieverName_Not_Valid = "";
         //RecieverName property
 
@@ -134,7 +133,7 @@ namespace Models
                 OnPropertyChanged(nameof(FieldsOfWorking));
             }
         }
-        
+
         private byte _FieldsOfWorking_Not_Valid = 0;
         //FieldsOfWorking property
 
@@ -163,7 +162,7 @@ namespace Models
                 OnPropertyChanged(nameof(LicenseIdRv));
             }
         }
-        
+
         private string _LicenseIdRv_Not_Valid = "";
         //LicenseIdRv property
 
@@ -192,7 +191,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThruRv));
             }
         }
-        
+
         private DateTimeOffset _ValidThruRv_Not_Valid = DateTimeOffset.MinValue;
         //ValidThruRv property
 
@@ -221,7 +220,7 @@ namespace Models
                 OnPropertyChanged(nameof(LicenseIdRao));
             }
         }
-        
+
         private string _LicenseIdRao_Not_Valid = "";
         //LicenseIdRao property
 
@@ -250,7 +249,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThruRao));
             }
         }
-        
+
         private DateTimeOffset _ValidThruRao_Not_Valid = DateTimeOffset.MinValue;
         //ValidThruRao property
 
@@ -279,7 +278,7 @@ namespace Models
                 OnPropertyChanged(nameof(SupplyAddress));
             }
         }
-        
+
         private string _SupplyAddress_Not_Valid = "";
         //SupplyAddress property
 
@@ -291,7 +290,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -302,7 +302,8 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -339,7 +340,7 @@ namespace Models
                 OnPropertyChanged(nameof(Quantity));
             }
         }
-          // positive int.
+        // positive int.
         private int _Quantity_Not_Valid = -1;
         private void Quantity_Validation(int value)//Ready
         {
@@ -374,7 +375,7 @@ namespace Models
                 OnPropertyChanged(nameof(SummaryActivity));
             }
         }
-        
+
         private string _SummaryActivity_Not_Valid = "";
         private void SummaryActivity_Validation(string value)//Ready
         {

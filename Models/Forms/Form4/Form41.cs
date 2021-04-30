@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -49,7 +45,7 @@ namespace Models
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        
+
         private int _NumberInOrder_Not_Valid = -1;
         private void NumberInOrder_Validation()
         {
@@ -82,7 +78,7 @@ namespace Models
                 OnPropertyChanged(nameof(RegNo));
             }
         }
-        
+
         private string _RegNo_Not_Valid = "";
         //RegNo property
 
@@ -151,7 +147,7 @@ namespace Models
                 OnPropertyChanged(nameof(OrgName));
             }
         }
-        
+
         private string _OrgName_Not_Valid = "";
         //OrgName property
 
@@ -180,7 +176,7 @@ namespace Models
                 OnPropertyChanged(nameof(LicenseInfo));
             }
         }
-        
+
         private string _LicenseInfo_Not_Valid = "";
         //LicenseInfo property
 
@@ -209,7 +205,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityOfFormsInv));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityOfFormsInv_Not_Valid = -1;
         private void QuantityOfFormsInv_Validation(int value)//Ready
         {
@@ -244,7 +240,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityOfFormsOper));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityOfFormsOper_Not_Valid = -1;
         private void QuantityOfFormsOper_Validation(int value)//Ready
         {
@@ -279,7 +275,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityOfFormsYear));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityOfFormsYear_Not_Valid = -1;
         private void QuantityOfFormsYear_Validation(int value)//Ready
         {
@@ -314,7 +310,7 @@ namespace Models
                 OnPropertyChanged(nameof(Notes));
             }
         }
-        
+
         private string _Notes_Not_Valid = "";
         //Notes property
     }

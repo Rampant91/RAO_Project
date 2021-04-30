@@ -1,23 +1,22 @@
-﻿using System;
+﻿using DBRealization;
 using System.Collections.Generic;
-using DBRealization;
 
 namespace Collections.Reports_Collection
 {
-    public class RedDataBase:IDataAccess
+    public class RedDataBase : IDataAccess
     {
         public string DBPath { get; set; }
 
         int _ReportsID = -1;
-        public int ReportsID 
-        { 
-            get 
+        public int ReportsID
+        {
+            get
             {
                 return _ReportsID;
-            } 
+            }
             set
             {
-                if(_ReportsID!=value)
+                if (_ReportsID != value)
                 {
                     _ReportsID = value;
                 }
@@ -39,7 +38,7 @@ namespace Collections.Reports_Collection
 
         public List<object[]> Get(string ParamName)
         {
-            if(ReportsID!=-1)
+            if (ReportsID != -1)
             {
                 return Get_ByReportsID(ParamName);
             }
@@ -52,27 +51,27 @@ namespace Collections.Reports_Collection
         {
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
 
-            return (List<object[]>)use.DoCommand("select "+ParamName+" from reports where reports_id="+ReportsID,(reader)=> 
-            {
-                List<object[]> lst = new List<object[]>();
-                while(reader.Read())
-                {
-                    var values = new object[reader.FieldCount];
-                    reader.GetValues(values);
-                    lst.Add(values);
-                }
-                return lst;
-            });
+            return (List<object[]>)use.DoCommand("select " + ParamName + " from reports where reports_id=" + ReportsID, (reader) =>
+                   {
+                       List<object[]> lst = new List<object[]>();
+                       while (reader.Read())
+                       {
+                           var values = new object[reader.FieldCount];
+                           reader.GetValues(values);
+                           lst.Add(values);
+                       }
+                       return lst;
+                   });
         }
 
         public void Set(string ParamName, object obj)
         {
             if (ReportsID != -1)
             {
-                Set_ByReportsID(ParamName,obj);
+                Set_ByReportsID(ParamName, obj);
             }
         }
-        void Set_ByReportsID(string ParamName,object obj)
+        void Set_ByReportsID(string ParamName, object obj)
         {
 
         }

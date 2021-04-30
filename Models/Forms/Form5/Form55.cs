@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Text.RegularExpressions;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -49,7 +45,7 @@ namespace Models
                 OnPropertyChanged(nameof(Name));
             }
         }
-        
+
         private string _Name_Not_Valid = "";
         private void Name_Validation(string value)//TODO
         {
@@ -82,7 +78,7 @@ namespace Models
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        
+
         private string _OperationCode_Not_Valid = "-1";
         private void OperationCode_Validation()
         {
@@ -115,7 +111,7 @@ namespace Models
                 OnPropertyChanged(nameof(Quantity));
             }
         }
-          // positive int.
+        // positive int.
         private int _Quantity_Not_Valid = -1;
         private void Quantity_Validation(int value)//Ready
         {
@@ -150,7 +146,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
@@ -191,7 +187,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPONote_Not_Valid = "";
         private void ProviderOrRecieverOKPONote_Validation()
         {
@@ -224,7 +220,7 @@ namespace Models
                 OnPropertyChanged(nameof(Mass));
             }
         }
-        
+
         private double _Mass_Not_Valid = -1;
         private void Mass_Validation()//TODO
         {

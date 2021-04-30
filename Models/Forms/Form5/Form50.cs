@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
@@ -56,7 +51,7 @@ namespace Models
                 OnPropertyChanged(nameof(Authority1));
             }
         }
-        
+
         private Authority _Authority1_Not_Valid = Authority.None;
         //Authority1 property
 
@@ -85,7 +80,7 @@ namespace Models
                 OnPropertyChanged(nameof(Yyear));
             }
         }
-        
+
         private int _Yyear_Not_Valid = -1;
         //Yyear property
 
@@ -114,7 +109,7 @@ namespace Models
                 OnPropertyChanged(nameof(JurLico));
             }
         }
-        
+
         private string _JurLico_Not_Valid = "";
         //JurLico property
 
@@ -143,7 +138,7 @@ namespace Models
                 OnPropertyChanged(nameof(ShortJurLico));
             }
         }
-        
+
         private string _ShortJurLico_Not_Valid = "";
         //ShortJurLico property
 
@@ -172,7 +167,7 @@ namespace Models
                 OnPropertyChanged(nameof(JurLicoAddress));
             }
         }
-        
+
         private string _JurLicoAddress_Not_Valid = "";
         //JurLicoAddress property
 
@@ -201,7 +196,7 @@ namespace Models
                 OnPropertyChanged(nameof(JurLicoFactAddress));
             }
         }
-        
+
         private string _JurLicoFactAddress_Not_Valid = "";
         //JurLicoFactAddress property
 
@@ -230,7 +225,7 @@ namespace Models
                 OnPropertyChanged(nameof(GradeFIO));
             }
         }
-        
+
         private string _GradeFIO_Not_Valid = "";
         //GradeFIO property
 
@@ -259,7 +254,7 @@ namespace Models
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor));
             }
         }
-        
+
         private string _GradeFIOresponsibleExecutor_Not_Valid = "";
         //GradeFIOresponsibleExecutor property
 
@@ -288,7 +283,7 @@ namespace Models
                 OnPropertyChanged(nameof(Telephone));
             }
         }
-        
+
         private string _Telephone_Not_Valid = "";
         //Telephone property
 
@@ -317,7 +312,7 @@ namespace Models
                 OnPropertyChanged(nameof(Fax));
             }
         }
-        
+
         private string _Fax_Not_Valid = "";
         //Fax property
 
@@ -346,7 +341,7 @@ namespace Models
                 OnPropertyChanged(nameof(Email));
             }
         }
-        
+
         private string _Email_Not_Valid = "";
         //Email property
     }

@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Globalization;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Форма 2.3: Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения")]
-    public class Form23: Abstracts.Form2
+    public class Form23 : Abstracts.Form2
     {
         public Form23(IDataAccess Access) : base(Access)
         {
@@ -156,7 +155,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProjectVolume));
             }
         }
-        
+
         private double _ProjectVolume_Not_Valid = -1;
         private void ProjectVolume_Validation(double value)//TODO
         {
@@ -188,7 +187,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProjectVolumeNote));
             }
         }
-        
+
         private double _ProjectVolumeNote_Not_Valid = -1;
         private void ProjectVolumeNote_Validation(double value)//TODO
         {
@@ -221,7 +220,7 @@ namespace Models
                 OnPropertyChanged(nameof(CodeRAO));
             }
         }
-        
+
         private string _CodeRAO_Not_Valid = "";
         private void CodeRAO_Validation(string value)//TODO
         {
@@ -254,7 +253,7 @@ namespace Models
                 OnPropertyChanged(nameof(Volume));
             }
         }
-        
+
         private double _Volume_Not_Valid = -1;
         private void Volume_Validation(double value)//TODO
         {
@@ -287,7 +286,7 @@ namespace Models
                 OnPropertyChanged(nameof(Mass));
             }
         }
-        
+
         private double _Mass_Not_Valid = -1;
         private void Mass_Validation()//TODO
         {
@@ -320,7 +319,7 @@ namespace Models
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
         }
-          // positive int.
+        // positive int.
         private int _QuantityOZIII_Not_Valid = -1;
         private void QuantityOZIII_Validation(int value)//Ready
         {
@@ -355,7 +354,7 @@ namespace Models
                 OnPropertyChanged(nameof(SummaryActivity));
             }
         }
-        
+
         private string _SummaryActivity_Not_Valid = "";
         private void SummaryActivity_Validation(string value)//Ready
         {
@@ -406,7 +405,7 @@ namespace Models
                 OnPropertyChanged(nameof(DocumentNumber));
             }
         }
-        
+
         private string _DocumentNumber_Not_Valid = "";
         private void DocumentNumber_Validation(string value)//Ready
         {
@@ -438,7 +437,7 @@ namespace Models
                 OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
         }
-        
+
         private string _DocumentNumberRecoded_Not_Valid = "";
         private void DocumentNumberRecoded_Validation(string value)//Ready
         {
@@ -504,7 +503,7 @@ namespace Models
                 OnPropertyChanged(nameof(ExpirationDate));
             }
         }
-        
+
         private DateTimeOffset _ExpirationDate_Not_Valid = DateTimeOffset.MinValue;
         private void ExpirationDate_Validation(DateTimeOffset value)//TODO
         {
@@ -537,7 +536,7 @@ namespace Models
                 OnPropertyChanged(nameof(DocumentName));
             }
         }
-        
+
         private string _DocumentName_Not_Valid = "";
         private void DocumentName_Validation(string value)//Ready
         {

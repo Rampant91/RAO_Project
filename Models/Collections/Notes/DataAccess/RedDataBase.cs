@@ -1,18 +1,18 @@
-﻿using System;
+﻿using DBRealization;
+using System;
 using System.Collections.Generic;
-using DBRealization;
 
 namespace Collections.Notes_Collection
 {
-    public class RedDataBase:IDataAccess
+    public class RedDataBase : IDataAccess
     {
         public string DBPath { get; set; }
 
         //Иcпользуется как ReportsID|_ / ReportID|_ / NoteID|_ 
         public string PathToData { get; set; }
-        public int ReportsID 
-        { 
-            get 
+        public int ReportsID
+        {
+            get
             {
                 try
                 {
@@ -22,7 +22,7 @@ namespace Collections.Notes_Collection
                 {
                     return -1;
                 }
-            } 
+            }
         }
         public int ReportID
         {
@@ -68,7 +68,7 @@ namespace Collections.Notes_Collection
 
         public List<object[]> Get(string ParamName)
         {
-            if(ReportsID!=-1)
+            if (ReportsID != -1)
             {
                 return Get_ByReportsID(ParamName);
             }
@@ -95,17 +95,17 @@ namespace Collections.Notes_Collection
         {
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
 
-            return (List<object[]>)use.DoCommand("select "+ParamName+" from reports where reports_id="+ReportsID,(reader)=> 
-            {
-                List<object[]> lst = new List<object[]>();
-                while(reader.Read())
-                {
-                    var values = new object[reader.FieldCount];
-                    reader.GetValues(values);
-                    lst.Add(values);
-                }
-                return lst;
-            });
+            return (List<object[]>)use.DoCommand("select " + ParamName + " from reports where reports_id=" + ReportsID, (reader) =>
+                   {
+                       List<object[]> lst = new List<object[]>();
+                       while (reader.Read())
+                       {
+                           var values = new object[reader.FieldCount];
+                           reader.GetValues(values);
+                           lst.Add(values);
+                       }
+                       return lst;
+                   });
         }
         List<object[]> Get_ByReportID(string ParamName)
         {
@@ -144,7 +144,7 @@ namespace Collections.Notes_Collection
         {
             if (ReportID != -1)
             {
-                Set_ByReportsID(ParamName,obj);
+                Set_ByReportsID(ParamName, obj);
             }
             else
             {
@@ -161,7 +161,7 @@ namespace Collections.Notes_Collection
                 }
             }
         }
-        void Set_ByReportsID(string ParamName,object obj)
+        void Set_ByReportsID(string ParamName, object obj)
         {
 
         }
@@ -173,17 +173,17 @@ namespace Collections.Notes_Collection
         {
             RedDataBaseUse use = new RedDataBaseUse(DBPath);
 
-            List<object[]> lst=(List<object[]>)use.DoCommand("select form_type from reports where reports_id=" + NoteID, (reader) =>
-            {
-                List<object[]> lst = new List<object[]>();
-                while (reader.Read())
-                {
-                    var values = new object[reader.FieldCount];
-                    reader.GetValues(values);
-                    lst.Add(values);
-                }
-                return lst;
-            });
+            List<object[]> lst = (List<object[]>)use.DoCommand("select form_type from reports where reports_id=" + NoteID, (reader) =>
+              {
+                  List<object[]> lst = new List<object[]>();
+                  while (reader.Read())
+                  {
+                      var values = new object[reader.FieldCount];
+                      reader.GetValues(values);
+                      lst.Add(values);
+                  }
+                  return lst;
+              });
         }
     }
 }

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Globalization;
-using DBRealization;
-using Collections.Rows_Collection;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -47,7 +46,7 @@ namespace Models
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        
+
         private string _OperationCode_Not_Valid = "-1";
         private void OperationCode_Validation()
         {
@@ -80,7 +79,7 @@ namespace Models
                 OnPropertyChanged(nameof(TypeOfAccountedParts));
             }
         }
-         //1 or 2
+        //1 or 2
         private int _TypeOfAccountedParts_Not_Valid = -1; //1 or 2
         private void TypeOfAccountedParts_Validation(int value)//Ready
         {
@@ -115,7 +114,7 @@ namespace Models
                 OnPropertyChanged(nameof(KindOri));
             }
         }
-        
+
         private int _KindOri_Not_Valid = -1;
         private void KindOri_Validation(int value)//TODO
         {
@@ -147,7 +146,7 @@ namespace Models
                 OnPropertyChanged(nameof(AggregateState));
             }
         }
-        
+
         private byte _AggregateState_Not_Valid = 0;
         private void AggregateState_Validation(byte value)//Ready
         {
@@ -182,7 +181,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPO_Not_Valid = "";
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
@@ -223,7 +222,7 @@ namespace Models
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
-        
+
         private string _ProviderOrRecieverOKPONote_Not_Valid = "";
         private void ProviderOrRecieverOKPONote_Validation()
         {
@@ -239,7 +238,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];                }
+                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                }
                 else
                 {
                     return _Radionuclids_Not_Valid;
@@ -250,7 +250,8 @@ namespace Models
                 _Radionuclids_Not_Valid = value;
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);                }
+                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -287,7 +288,7 @@ namespace Models
                 OnPropertyChanged(nameof(Activity));
             }
         }
-        
+
         private string _Activity_Not_Valid = "";
         private void Activity_Validation(string value)//Ready
         {
@@ -331,7 +332,7 @@ namespace Models
                 OnPropertyChanged(nameof(Quantity));
             }
         }
-          // positive int.
+        // positive int.
         private int _Quantity_Not_Valid = -1;
         private void Quantity_Validation(int value)//Ready
         {
@@ -366,7 +367,7 @@ namespace Models
                 OnPropertyChanged(nameof(Volume));
             }
         }
-        
+
         private double _Volume_Not_Valid = -1;
         private void Volume_Validation(double value)//TODO
         {
@@ -399,7 +400,7 @@ namespace Models
                 OnPropertyChanged(nameof(Mass));
             }
         }
-        
+
         private double _Mass_Not_Valid = -1;
         private void Mass_Validation()//TODO
         {

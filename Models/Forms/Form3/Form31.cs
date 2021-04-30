@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Collections.Rows_Collection;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
 
 namespace Models
 {
@@ -50,7 +46,7 @@ namespace Models
                 OnPropertyChanged(nameof(RecieverName));
             }
         }
-        
+
         private string _RecieverName_Not_Valid = "";
         //RecieverName property
 
@@ -79,7 +75,7 @@ namespace Models
                 OnPropertyChanged(nameof(RecieverAddress));
             }
         }
-        
+
         private string _RecieverAddress_Not_Valid = "";
         //RecieverAddress property
 
@@ -108,7 +104,7 @@ namespace Models
                 OnPropertyChanged(nameof(RecieverFactAddress));
             }
         }
-        
+
         private string _RecieverFactAddress_Not_Valid = "";
         //RecieverFactAddress property
 
@@ -137,7 +133,7 @@ namespace Models
                 OnPropertyChanged(nameof(LicenseId));
             }
         }
-        
+
         private string _LicenseId_Not_Valid = "";
         //LicenseId property
 
@@ -166,7 +162,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThru));
             }
         }
-        
+
         private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.MinValue;
         //ValidThru property
 
@@ -195,7 +191,7 @@ namespace Models
                 OnPropertyChanged(nameof(SuggestedSolutionDate));
             }
         }
-        
+
         private DateTimeOffset _SuggestedSolutionDate_Not_Valid = DateTimeOffset.MinValue;
         //SuggestedSolutionDate property
 
@@ -224,7 +220,7 @@ namespace Models
                 OnPropertyChanged(nameof(UserName));
             }
         }
-        
+
         private string _UserName_Not_Valid = "";
         //UserName property
 
@@ -253,7 +249,7 @@ namespace Models
                 OnPropertyChanged(nameof(UserAddress));
             }
         }
-        
+
         private string _UserAddress_Not_Valid = "";
         //UserAddress property
 
@@ -282,7 +278,7 @@ namespace Models
                 OnPropertyChanged(nameof(UserFactAddress));
             }
         }
-        
+
         private string _UserFactAddress_Not_Valid = "";
         //UserFactAddress property
 
@@ -311,7 +307,7 @@ namespace Models
                 OnPropertyChanged(nameof(UserTelephone));
             }
         }
-        
+
         private string _UserTelephone_Not_Valid = "";
         //UserTelephone property
 
@@ -340,7 +336,7 @@ namespace Models
                 OnPropertyChanged(nameof(UserFax));
             }
         }
-        
+
         private string _UserFax_Not_Valid = "";
         //UserFax property
 
@@ -369,7 +365,7 @@ namespace Models
                 OnPropertyChanged(nameof(Email));
             }
         }
-        
+
         private string _Email_Not_Valid = "";
         //Email property
 
@@ -398,7 +394,7 @@ namespace Models
                 OnPropertyChanged(nameof(ZriUsageScope));
             }
         }
-        
+
         private string _ZriUsageScope_Not_Valid = "";
         //ZriUsageScope property
 
@@ -427,7 +423,7 @@ namespace Models
                 OnPropertyChanged(nameof(ContractId));
             }
         }
-        
+
         private string _ContractId_Not_Valid = "";
         //ContractId property
 
@@ -456,7 +452,7 @@ namespace Models
                 OnPropertyChanged(nameof(ContractDate));
             }
         }
-        
+
         private DateTimeOffset _ContractDate_Not_Valid = DateTimeOffset.MinValue;
         //ContractDate property
 
@@ -485,7 +481,7 @@ namespace Models
                 OnPropertyChanged(nameof(CountryCreator));
             }
         }
-        
+
         private string _CountryCreator_Not_Valid = "";
         //CountryCreator property
 

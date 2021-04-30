@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
@@ -49,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(NameIOU));
             }
         }
-        
+
         private string _NameIOU_Not_Valid = "";
         private void NameIOU_Validation(string value)//TODO
         {
@@ -82,7 +77,7 @@ namespace Models
                 OnPropertyChanged(nameof(Quantity));
             }
         }
-          // positive int.
+        // positive int.
         private int _Quantity_Not_Valid = -1;
         private void Quantity_Validation(int value)//Ready
         {
@@ -117,7 +112,7 @@ namespace Models
                 OnPropertyChanged(nameof(Mass));
             }
         }
-        
+
         private double _Mass_Not_Valid = -1;
         private void Mass_Validation()//TODO
         {

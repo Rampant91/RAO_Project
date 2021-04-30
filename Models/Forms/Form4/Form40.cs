@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
@@ -49,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(SubjectRF));
             }
         }
-        
+
         private string _SubjectRF_Not_Valid = "";
         //SubjectRF property
 
@@ -78,7 +73,7 @@ namespace Models
                 OnPropertyChanged(nameof(Yyear));
             }
         }
-        
+
         private int _Yyear_Not_Valid = -1;
         //Yyear property
 
@@ -107,7 +102,7 @@ namespace Models
                 OnPropertyChanged(nameof(SubjectAuthorityName));
             }
         }
-        
+
         private int _SubjectAuthorityName_Not_Valid = -1;
         //SubjectAuthorityName property
 
@@ -136,7 +131,7 @@ namespace Models
                 OnPropertyChanged(nameof(ShortSubjectAuthorityName));
             }
         }
-        
+
         private int _ShortSubjectAuthorityName_Not_Valid = -1;
         //ShortSubjectAuthorityName property
 
@@ -165,7 +160,7 @@ namespace Models
                 OnPropertyChanged(nameof(FactAddress));
             }
         }
-        
+
         private string _FactAddress_Not_Valid = "";
         //FactAddress property
 
@@ -194,7 +189,7 @@ namespace Models
                 OnPropertyChanged(nameof(GradeFIOchef));
             }
         }
-        
+
         private string _GradeFIOchef_Not_Valid = "";
         //GradeFIOchef property
 
@@ -223,7 +218,7 @@ namespace Models
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor));
             }
         }
-        
+
         private string _GradeFIOresponsibleExecutor_Not_Valid = "";
         //GradeFIOresponsibleExecutor property
 
@@ -252,7 +247,7 @@ namespace Models
                 OnPropertyChanged(nameof(Telephone));
             }
         }
-        
+
         private string _Telephone_Not_Valid = "";
         //Telephone property
 
@@ -281,7 +276,7 @@ namespace Models
                 OnPropertyChanged(nameof(Fax));
             }
         }
-        
+
         private string _Fax_Not_Valid = "";
         //Fax property
 
@@ -310,7 +305,7 @@ namespace Models
                 OnPropertyChanged(nameof(Email));
             }
         }
-        
+
         private string _Email_Not_Valid = "";
         //Email property
 
@@ -339,7 +334,7 @@ namespace Models
                 OnPropertyChanged(nameof(Telephone1));
             }
         }
-        
+
         private string _Telephone1_Not_Valid = "";
         //Telephone1 property
 
@@ -368,7 +363,7 @@ namespace Models
                 OnPropertyChanged(nameof(Fax1));
             }
         }
-        
+
         private string _Fax1_Not_Valid = "";
         //Fax1 property
 
@@ -397,7 +392,7 @@ namespace Models
                 OnPropertyChanged(nameof(Email1));
             }
         }
-        
+
         private string _Email1_Not_Valid = "";
         //Email1 property
 
@@ -426,7 +421,7 @@ namespace Models
                 OnPropertyChanged(nameof(OrgName));
             }
         }
-        
+
         private string _OrgName_Not_Valid = "";
         //OrgName property
 
@@ -455,7 +450,7 @@ namespace Models
                 OnPropertyChanged(nameof(ShortOrgName));
             }
         }
-        
+
         private string _ShortOrgName_Not_Valid = "";
         //ShortOrgName property
 
@@ -484,7 +479,7 @@ namespace Models
                 OnPropertyChanged(nameof(FactAddress1));
             }
         }
-        
+
         private string _FactAddress1_Not_Valid = "";
         //FactAddress1 property
 
@@ -513,7 +508,7 @@ namespace Models
                 OnPropertyChanged(nameof(GradeFIOchef1));
             }
         }
-        
+
         private string _GradeFIOchef1_Not_Valid = "";
         //GradeFIOchef1 property
 
@@ -542,7 +537,7 @@ namespace Models
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor1));
             }
         }
-        
+
         private string _GradeFIOresponsibleExecutor1_Not_Valid = "";
         //GradeFIOresponsibleExecutor1 property
     }

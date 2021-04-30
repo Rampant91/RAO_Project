@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
     [Serializable]
     [Attributes.Form_Class("Сведения о поставляемых ЗРИ:")]
-    public class Form32_2: Abstracts.Form3
+    public class Form32_2 : Abstracts.Form3
     {
         public Form32_2(IDataAccess Access) : base(Access)
         {
@@ -49,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(PackName));
             }
         }
-        
+
         private string _PackName_Not_Valid = "";
         private void PackName_Validation()
         {
@@ -114,7 +109,7 @@ namespace Models
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
-        
+
         private string _PackTypeRecoded_Not_Valid = "";
         private void PackTypeRecoded_Validation()
         {
@@ -147,7 +142,7 @@ namespace Models
                 OnPropertyChanged(nameof(Id));
             }
         }
-        
+
         private string _Id_Not_Valid = "";
         //Id property
 
@@ -176,7 +171,7 @@ namespace Models
                 OnPropertyChanged(nameof(CreationYear));
             }
         }
-        
+
         private int _CreationYear_Not_Valid = -1;
         //CreationYear property
 
@@ -205,7 +200,7 @@ namespace Models
                 OnPropertyChanged(nameof(DepletedUraniumMass));
             }
         }
-        
+
         private double _DepletedUraniumMass_Not_Valid = -1;
         //DepletedUraniumMass property
     }

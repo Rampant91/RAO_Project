@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models
 {
@@ -49,7 +44,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionNumber));
             }
         }
-        
+
         private string _PermissionNumber_Not_Valid = "";
         private void PermissionNumber_Validation()
         {
@@ -82,7 +77,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionIssueDate));
             }
         }
-        
+
         private string _PermissionIssueDate_Not_Valid = "";
         private void PermissionIssueDate_Validation()
         {
@@ -115,7 +110,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionDocumentName));
             }
         }
-        
+
         private string _PermissionDocumentName_Not_Valid = "";
         private void PermissionDocumentName_Validation()
         {
@@ -148,7 +143,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidBegin));
             }
         }
-        
+
         private DateTimeOffset _ValidBegin_Not_Valid = DateTimeOffset.MinValue;
         private void ValidBegin_Validation()
         {
@@ -181,7 +176,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThru));
             }
         }
-        
+
         private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.MinValue;
         private void ValidThru_Validation()
         {
@@ -214,7 +209,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionNumber1));
             }
         }
-        
+
         private string _PermissionNumber1_Not_Valid = "";
         private void PermissionNumber1_Validation()
         {
@@ -247,7 +242,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionIssueDate1));
             }
         }
-        
+
         private string _PermissionIssueDate1_Not_Valid = "";
         private void PermissionIssueDate1_Validation()
         {
@@ -280,7 +275,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionDocumentName1));
             }
         }
-        
+
         private string _PermissionDocumentName1_Not_Valid = "";
         private void PermissionDocumentName1_Validation()
         {
@@ -313,7 +308,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidBegin1));
             }
         }
-        
+
         private DateTimeOffset _ValidBegin1_Not_Valid = DateTimeOffset.MinValue;
         private void ValidBegin1_Validation()
         {
@@ -346,7 +341,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThru1));
             }
         }
-        
+
         private DateTimeOffset _ValidThru1_Not_Valid = DateTimeOffset.MinValue;
         private void ValidThru1_Validation()
         {
@@ -379,7 +374,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionNumber2));
             }
         }
-        
+
         private string _PermissionNumber2_Not_Valid = "";
         private void PermissionNumber2_Validation()
         {
@@ -412,7 +407,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionIssueDate2));
             }
         }
-        
+
         private string _PermissionIssueDate2_Not_Valid = "";
         private void PermissionIssueDate2_Validation()
         {
@@ -445,7 +440,7 @@ namespace Models
                 OnPropertyChanged(nameof(PermissionDocumentName2));
             }
         }
-        
+
         private string _PermissionDocumentName2_Not_Valid = "";
         private void PermissionDocumentName2_Validation()
         {
@@ -478,7 +473,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidBegin2));
             }
         }
-        
+
         private DateTimeOffset _ValidBegin2_Not_Valid = DateTimeOffset.MinValue;
         private void ValidBegin2_Validation()
         {
@@ -511,14 +506,14 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThru2));
             }
         }
-        
+
         private DateTimeOffset _ValidThru2_Not_Valid = DateTimeOffset.MinValue;
         private void ValidThru2_Validation()
         {
             ClearErrors(nameof(ValidThru2));
         }
         //ValidThru2 property
-        
+
         //WasteSourceName property
         [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
         public string WasteSourceName
@@ -544,14 +539,14 @@ namespace Models
                 OnPropertyChanged(nameof(WasteSourceName));
             }
         }
-        
+
         private string _WasteSourceName_Not_Valid = "";
         private void WasteSourceName_Validation()
         {
             ClearErrors(nameof(WasteSourceName));
         }
         //WasteSourceName property
-        
+
         //WasteRecieverName property
         [Attributes.Form_Property("Наименование приемника отведенных вод")]
         public string WasteRecieverName
@@ -577,14 +572,14 @@ namespace Models
                 OnPropertyChanged(nameof(WasteRecieverName));
             }
         }
-        
+
         private string _WasteRecieverName_Not_Valid = "";
         private void WasteRecieverName_Validation()
         {
             ClearErrors(nameof(WasteRecieverName));
         }
         //WasteRecieverName property
-        
+
         //RecieverTypeCode property
         [Attributes.Form_Property("Код типа приемника отведенных вод")]
         public string RecieverTypeCode
@@ -610,14 +605,14 @@ namespace Models
                 OnPropertyChanged(nameof(RecieverTypeCode));
             }
         }
-        
+
         private string _RecieverTypeCode_Not_Valid = "";
         private void RecieverTypeCode_Validation()
         {
             ClearErrors(nameof(RecieverTypeCode));
         }
         //RecieverTypeCode property
-        
+
         //PoolDistrictName property
         [Attributes.Form_Property("Наименование бассейнового округа приемника отведенных вод")]
         public string PoolDistrictName
@@ -643,7 +638,7 @@ namespace Models
                 OnPropertyChanged(nameof(PoolDistrictName));
             }
         }
-        
+
         private string _PoolDistrictName_Not_Valid = "";
         private void PoolDistrictName_Validation()
         {
@@ -676,7 +671,7 @@ namespace Models
                 OnPropertyChanged(nameof(AllowedWasteRemovalVolume));
             }
         }
-        
+
         private double _AllowedWasteRemovalVolume_Not_Valid = -1;
         private void AllowedWasteRemovalVolume_Validation()
         {
@@ -709,7 +704,7 @@ namespace Models
                 OnPropertyChanged(nameof(RemovedWasteVolume));
             }
         }
-        
+
         private double _RemovedWasteVolume_Not_Valid = -1;
         private void RemovedWasteVolume_Validation()
         {
@@ -741,7 +736,7 @@ namespace Models
                 OnPropertyChanged(nameof(RemovedWasteVolumeNote));
             }
         }
-        
+
         private double _RemovedWasteVolumeNote_Not_Valid = -1;
         private void RemovedWasteVolumeNote_Validation()
         {

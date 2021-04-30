@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
+using System;
 
 namespace Models.Abstracts
 {
-    public abstract class Form1:Form
+    public abstract class Form1 : Form
     {
         [Attributes.Form_Property("Форма")]
         public Form1(IDataAccess Access) : base(Access)
@@ -71,7 +68,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        
+
         private byte _CorrectionNumber_Not_Valid = 255;
         //private void CorrectionNumber_Validation()
         //{
@@ -104,7 +101,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        
+
         private string _OperationCode_Not_Valid = "-1";
         //private void OperationCode_Validation()
         //{
@@ -137,7 +134,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(OperationDate));
             }
         }
-        
+
         private DateTimeOffset _OperationDate_Not_Valid = DateTimeOffset.MinValue;
         private void OperationDate_Validation()
         {
@@ -170,7 +167,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(DocumentVid));
             }
         }
-        
+
         private byte _DocumentVid_Not_Valid = 255;
         //private void DocumentVid_Validation(byte value)//TODO
         //{
@@ -203,7 +200,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(DocumentNumber));
             }
         }
-        
+
         private string _DocumentNumber_Not_Valid = "";
         private void DocumentNumber_Validation(string value)//Ready
         {
@@ -235,7 +232,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
         }
-        
+
         private string _DocumentNumberRecoded_Not_Valid = "";
         //private void DocumentNumberRecoded_Validation(string value)//Ready
         //{

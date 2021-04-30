@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using DBRealization;
-using Collections.Rows_Collection;
+﻿using Collections.Rows_Collection;
 
 namespace Models.Abstracts
 {
-    public abstract class Form5:Form
+    public abstract class Form5 : Form
     {
         [Attributes.Form_Property("Форма")]
         public Form5(IDataAccess Access) : base(Access)
@@ -39,7 +35,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        
+
         private int _NumberInOrder_Not_Valid = -1;
         private void NumberInOrder_Validation()
         {
@@ -72,7 +68,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        
+
         private byte _CorrectionNumber_Not_Valid = 255;
         private void CorrectionNumber_Validation()
         {
