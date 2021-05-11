@@ -45,6 +45,13 @@ namespace Models
             }
         }
 
+        private void OperationCode_Validation(string value)
+        {
+            ClearErrors(nameof(OperationCode));
+            if (value != "10")
+                AddError(nameof(OperationCode), "Недопустимое значение");
+        }
+
         private short _CodeTypeAccObject_Not_Valid = 0;
         private void CodeTypeAccObject_Validation(short value)//TODO
         {

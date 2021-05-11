@@ -169,11 +169,20 @@ namespace Models.Abstracts
         }
 
         private byte _DocumentVid_Not_Valid = 255;
-        //private void DocumentVid_Validation(byte value)//TODO
-        //{
-        //    ClearErrors(nameof(DocumentVid));
-        //}
+        private void DocumentVid_Validation(byte value)//TODO
+        {
+            ClearErrors(nameof(DocumentVid));
+            bool a = value < 0;
+            bool b = value > 19;
+            bool c = value == 16;
+            bool d = value == 17;
+            bool e = value == 18;
+            if (a || b || c || d || e)
+                AddError(nameof(DocumentVid), "Недопустимое значение");
+        }
         //DocumentVid property
+
+
 
         //DocumentNumber property
         [Attributes.Form_Property("Номер документа")]
@@ -205,6 +214,7 @@ namespace Models.Abstracts
         private void DocumentNumber_Validation(string value)//Ready
         {
             ClearErrors(nameof(DocumentNumber));
+            if (value.Equals("-") || value.Equals("прим.")) return;
         }
         //DocumentNumber property
 

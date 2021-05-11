@@ -113,7 +113,7 @@
                 "NameIOU" + strNotNullDeclaration +
                 "FactoryNumber" + strNotNullDeclaration +
                 "FactoryNumberRecoded" + strNotNullDeclaration +
-                "CreationDate" + dateNotNullDeclaration +
+                "CreationDate" + strNotNullDeclaration +
                 "CreatorOKPO" + strNotNullDeclaration +
                 "CreatorOKPONote" + strNotNullDeclaration +
                 "SignedServicePeriod" + floatNotNullDeclaration +
@@ -143,7 +143,7 @@
                 "Type" + strNotNullDeclaration +
                 "FactoryNumber" + strNotNullDeclaration +
                 "FactoryNumberRecoded" + strNotNullDeclaration +
-                "CreationDate" + dateNotNullDeclaration +
+                "CreationDate" + strNotNullDeclaration +
                 "CreatorOKPO" + strNotNullDeclaration +
                 "CreatorOKPONote" + strNotNullDeclaration +
                 "AggregateState" + shortNotNullDeclaration +

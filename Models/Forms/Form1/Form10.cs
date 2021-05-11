@@ -365,6 +365,7 @@ namespace Models
             }
         }
         private string _Okpo_Not_Valid = "";
+
         private void Okpo_Validation(string value)
         {
             ClearErrors(nameof(Okpo));
@@ -406,6 +407,13 @@ namespace Models
         }
 
         private string _Okved_Not_Valid = "";
+        private void Okved_Validation(string value)
+        {
+            ClearErrors(nameof(Okved));
+            var ex = new Regex("[0123456789]{2}\\.[0123456789]{2}\\.[0123456789]{2}");
+            if (!ex.IsMatch(value))
+                AddError(nameof(Okved), "Недопустимое значение");
+        }
         //Okved property
 
         //Okogu property
@@ -435,6 +443,13 @@ namespace Models
         }
 
         private string _Okogu_Not_Valid = "";
+        private void Okogu_Validation(string value)
+        {
+            ClearErrors(nameof(Okogu));
+            var ex = new Regex("[0123456789]{5}");
+            if (!ex.IsMatch(value))
+                AddError(nameof(Okogu), "Недопустимое значение");
+        }
         //Okogu property
 
         //Oktmo property
@@ -464,6 +479,13 @@ namespace Models
         }
 
         private string _Oktmo_Not_Valid = "";
+        private void Oktmo_Validation(string value)
+        {
+            ClearErrors(nameof(Oktmo));
+            var ex = new Regex("[0123456789]{11}");
+            if (!ex.IsMatch(value))
+                AddError(nameof(Oktmo), "Недопустимое значение");
+        }
         //Oktmo property
 
         //Inn property
@@ -493,6 +515,13 @@ namespace Models
         }
 
         private string _Inn_Not_Valid = "";
+        private void Inn_Validation(string value)
+        {
+            ClearErrors(nameof(Inn));
+            var ex = new Regex("[0123456789]{10}");
+            if (!ex.IsMatch(value))
+                AddError(nameof(Inn), "Недопустимое значение");
+        }
         //Inn property
 
         //Kpp property
@@ -522,6 +551,13 @@ namespace Models
         }
 
         private string _Kpp_Not_Valid = "";
+        private void Kpp_Validation(string value)
+        {
+            ClearErrors(nameof(Kpp));
+            var ex = new Regex("[0123456789]{10}");
+            if (!ex.IsMatch(value))
+                AddError(nameof(Kpp), "Недопустимое значение");
+        }
         //Kpp property
 
         //Okopf property
@@ -551,6 +587,13 @@ namespace Models
         }
 
         private string _Okopf_Not_Valid = "";
+        private void Okopf_Validation(string value)
+        {
+            ClearErrors(nameof(Okopf));
+            var ex = new Regex("[0123456789]{5}");
+            if (!ex.IsMatch(value))
+                AddError(nameof(Okopf), "Недопустимое значение");
+        }
         //Okopf property
 
         //Okfs property
@@ -580,6 +623,13 @@ namespace Models
         }
 
         private string _Okfs_Not_Valid = "";
+        private void Okfs_Validation(string value)
+        {
+            ClearErrors(nameof(Okfs));
+            var ex = new Regex("[0123456789]{2}");
+            if (!ex.IsMatch(value))
+                AddError(nameof(Okfs), "Недопустимое значение");
+        }
         //Okfs property
     }
 }

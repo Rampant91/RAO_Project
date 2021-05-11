@@ -83,6 +83,16 @@ namespace Models
         private void MachineCode_Validation(short value)//TODO
         {
             ClearErrors(nameof(MachineCode));
+            bool a = (value >= 11) && (value <= 17);
+            bool b = (value >= 21) && (value <= 24);
+            bool c = (value >= 31) && (value <= 32);
+            bool d = (value >= 41) && (value <= 43);
+            bool e = (value >= 51) && (value <= 56);
+            bool f = (value >= 61) && (value <= 63);
+            bool g = (value >= 71) && (value <= 73);
+            bool h = (value == 19) || (value == 29) || (value == 39) || (value == 49) || (value == 99) || (value == 79);
+            if (!(a || b || c || d || e || f || g || h))
+                AddError(nameof(MachineCode), "Недопустимое значение");
         }
         //MachineCode property
 
