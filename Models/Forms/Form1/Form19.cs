@@ -10,7 +10,8 @@ namespace Models
     {
         public Form19(IDataAccess Access) : base(Access)
         {
-
+            FormNum = "19";
+            NumberOfFields = 12;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -43,13 +44,6 @@ namespace Models
                 }
                 OnPropertyChanged(nameof(CodeTypeAccObject));
             }
-        }
-
-        private void OperationCode_Validation(string value)
-        {
-            ClearErrors(nameof(OperationCode));
-            if (value != "10")
-                AddError(nameof(OperationCode), "Недопустимое значение");
         }
 
         private short _CodeTypeAccObject_Not_Valid = 0;
@@ -135,5 +129,12 @@ namespace Models
             }
         }
         //Activity property
+
+        private void OperationCode_Validation(string value)
+        {
+            ClearErrors(nameof(OperationCode));
+            if (value != "10")
+                AddError(nameof(OperationCode), "Недопустимое значение");
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace Models
         public Form16(IDataAccess Access) : base(Access)
         {
             FormNum = "16";
-            NumberOfFields = 32;
+            NumberOfFields = 33;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -85,6 +85,31 @@ namespace Models
         private void StatusRAO_Validation(string value)//TODO
         {
             ClearErrors(nameof(StatusRAO));
+            if (value.Length == 1)
+            {
+                int tmp;
+                try
+                {
+                    tmp = int.Parse(value);
+                    if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
+                    {
+                        AddError(nameof(StatusRAO), "Недопустимое значение");
+                    }
+                }
+                catch (Exception)
+                {
+                    AddError(nameof(StatusRAO), "Недопустимое значение");
+                }
+                return;
+            }
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(StatusRAO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("[0123456789_]*");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(StatusRAO), "Недопустимое значение");
+            }
         }
         //StatusRAO property
 
@@ -454,6 +479,27 @@ namespace Models
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            int tmp = -1;
+            try
+            {
+                tmp = int.Parse(OperationCode);
+            }
+            catch (Exception) { }
+            if (tmp != -1)
+            {
+                bool a = (tmp >= 10) && (tmp <= 14);
+                bool b = (tmp >= 41) && (tmp <= 45);
+                bool c = (tmp >= 71) && (tmp <= 73);
+                bool e = (tmp >= 55) && (tmp <= 57);
+                bool d = (tmp == 1) || (tmp == 16) || (tmp == 18) || (tmp == 48) ||
+                    (tmp == 49) || (tmp == 51) || (tmp == 52) || (tmp == 59) ||
+                    (tmp == 68) || (tmp == 75) || (tmp == 76);
+                if (a || b || c || d || e)
+                {
+                    ProviderOrRecieverOKPO = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+                    return;
+                }
+            }
             if (value.Equals("Минобороны") || value.Equals("прим.")) return;
             foreach (var item in OKSM)
             {
@@ -1080,5 +1126,58 @@ namespace Models
                 }
         }
         //RefineOrSortRAOCode property
+
+        private void OperationCode_Validation(string value)
+        {
+            ClearErrors(nameof(OperationCode));
+            var a = new Regex("[0-9]{2}");
+            List<string> spr = new List<string>();    //HERE BINDS SPRAVOCHNIK
+            if (!a.IsMatch(value) || !spr.Contains(value))
+            {
+                AddError(nameof(OperationCode), "Недопустимое значение");
+                return;
+            }
+            bool a0 = value.Equals("15");
+            bool a1 = value.Equals("17");
+            bool a2 = value.Equals("46");
+            bool a3 = value.Equals("47");
+            bool a4 = value.Equals("53");
+            bool a5 = value.Equals("54");
+            bool a6 = value.Equals("58");
+            bool a7 = value.Equals("61");
+            bool a8 = value.Equals("62");
+            bool a9 = value.Equals("65");
+            bool a10 = value.Equals("66");
+            bool a11 = value.Equals("67");
+            bool a12 = value.Equals("81");
+            bool a13 = value.Equals("82");
+            bool a14 = value.Equals("83");
+            bool a15 = value.Equals("85");
+            bool a16 = value.Equals("86");
+            bool a17 = value.Equals("87");
+            if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15 || a16 || a17)
+                AddError(nameof(OperationCode), "Код операции не может быть использован для РАО");
+            return;
+        }
+        private void DocumentDate_Validation(DateTimeOffset value)
+        {
+            ClearErrors(nameof(DocumentDate));
+            int tmp;
+            try
+            {
+                tmp = int.Parse(OperationCode);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            bool a = (tmp >= 11) && (tmp <= 18);
+            bool b = (tmp >= 41) && (tmp <= 49);
+            bool c = (tmp >= 51) && (tmp <= 59);
+            bool d = (tmp == 65) || (tmp == 68);
+            if (a || b || c || d)
+                if (!value.Date.Equals(OperationDate.Date))
+                    AddError(nameof(DocumentDate), "Заполните примечание");
+        }
     }
 }

@@ -182,8 +182,6 @@ namespace Models.Abstracts
         }
         //DocumentVid property
 
-
-
         //DocumentNumber property
         [Attributes.Form_Property("Номер документа")]
         public string DocumentNumber
@@ -277,10 +275,40 @@ namespace Models.Abstracts
         }
         //if change this change validation
         private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.MinValue;
-        //private void DocumentDate_Validation(DateTimeOffset value)//Ready
-        //{
-        //    ClearErrors(nameof(DocumentDate));
-        //}
         //DocumentDate property
+
+        //DocumentDateNote property
+        [Attributes.Form_Property("Дата документа")]
+        public string DocumentDateNote
+        {
+            get
+            {
+                if (GetErrors(nameof(DocumentDateNote)) == null)
+                {
+                    return (string)_dataAccess.Get(nameof(DocumentDateNote))[0][0];
+                }
+                else
+                {
+                    return _DocumentDateNote_Not_Valid;
+                }
+            }
+            set
+            {
+                _DocumentDateNote_Not_Valid = value;
+                if (GetErrors(nameof(DocumentDateNote)) == null)
+                {
+                    _dataAccess.Set(nameof(DocumentDateNote), _DocumentDateNote_Not_Valid);
+                }
+                OnPropertyChanged(nameof(DocumentDateNote));
+            }
+        }
+        //if change this change validation
+        private string _DocumentDateNote_Not_Valid = "-";
+
+        private void DocumentDateNote_Validation(string value)
+        {
+            ClearErrors(nameof(DocumentDate));
+        }
+        //DocumentDateNote property
     }
 }

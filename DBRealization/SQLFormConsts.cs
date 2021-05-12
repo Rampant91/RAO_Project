@@ -30,6 +30,7 @@
                 "DocumentVid" + shortNotNullDeclaration +
                 "DocumentNumber" + strNotNullDeclaration +
                 "DocumentNumberRecoded" + strNotNullDeclaration +
+                "DocumentDateNote" + strNotNullDeclaration +
                 "DocumentDate" + dateNotNullDeclaration.Replace(",", "");
         }
 

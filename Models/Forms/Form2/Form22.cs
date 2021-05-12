@@ -1,5 +1,6 @@
 ﻿using Collections.Rows_Collection;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Models
@@ -115,18 +116,12 @@ namespace Models
         private void StoragePlaceCode_Validation(string value)//TODO
         {
             ClearErrors(nameof(StoragePlaceCode));
-            if (!(value == "-"))
-                if (value.Length != 8)
-                    AddError(nameof(StoragePlaceCode), "Недопустимое значение");
-                else
-                    for (int i = 0; i < 8; i++)
-                    {
-                        if (!((value[i] >= '0') && (value[i] <= '9')))
-                        {
-                            AddError(nameof(StoragePlaceCode), "Недопустимое значение");
-                            return;
-                        }
-                    }
+            var lst = new List<string>();//HERE binds spr
+            foreach (var item in lst)
+            {
+                if (item.Equals(value)) return;
+            }
+            AddError(nameof(StoragePlaceCode), "Такого значения нет в справочнике");
         }
         //StoragePlaceCode property
 

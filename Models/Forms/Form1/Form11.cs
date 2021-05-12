@@ -13,7 +13,7 @@ namespace Models
         public Form11(IDataAccess Access) : base(Access)
         {
             FormNum = "11";
-            NumberOfFields = 37;
+            NumberOfFields = 38;
         }
 
         public override bool Object_Validation()
@@ -68,23 +68,14 @@ namespace Models
                 AddError(nameof(OperationCode), "Недопустимое значение");
                 return;
             }
-            bool a0 = value.Equals("01");
-            bool a1 = value.Equals("13");
-            bool a2 = value.Equals("14");
-            bool a3 = value.Equals("16");
-            bool a4 = value.Equals("26");
-            bool a5 = value.Equals("36");
-            bool a6 = value.Equals("44");
-            bool a7 = value.Equals("45");
-            bool a8 = value.Equals("49");
-            bool a9 = value.Equals("51");
-            bool a10 = value.Equals("52");
-            bool a11 = value.Equals("55");
-            bool a12 = value.Equals("56");
-            bool a13 = value.Equals("57");
-            bool a14 = value.Equals("59");
-            bool a15 = value.Equals("76");
-            if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15)
+            if (value.Equals("01") || value.Equals("13") ||
+                value.Equals("14") || value.Equals("16") ||
+                value.Equals("26") || value.Equals("36") ||
+                value.Equals("44") || value.Equals("45") ||
+                value.Equals("49") || value.Equals("51") ||
+                value.Equals("52") || value.Equals("55") ||
+                value.Equals("56") || value.Equals("57") ||
+                value.Equals("59") || value.Equals("76"))
                 AddError(nameof(OperationCode), "Код операции не может быть использован для РВ");
             return;
         }

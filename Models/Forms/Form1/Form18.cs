@@ -13,7 +13,7 @@ namespace Models
         public Form18(IDataAccess Access) : base(Access)
         {
             FormNum = "18";
-            NumberOfFields = 36;
+            NumberOfFields = 37;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -765,18 +765,25 @@ namespace Models
         private void StoragePlaceCode_Validation(string value)//TODO
         {
             ClearErrors(nameof(StoragePlaceCode));
-            if (!(value == "-"))
-                if (value.Length != 8)
-                    AddError(nameof(StoragePlaceCode), "Недопустимое значение");
-                else
-                    for (int i = 0; i < 8; i++)
-                    {
-                        if (!((value[i] >= '0') && (value[i] <= '9')))
-                        {
-                            AddError(nameof(StoragePlaceCode), "Недопустимое значение");
-                            return;
-                        }
-                    }
+            var lst = new List<string>();//HERE binds spr
+            foreach (var item in lst)
+            {
+                if (item.Equals(value)) return;
+            }
+            AddError(nameof(StoragePlaceCode), "Такого значения нет в справочнике");
+            //ClearErrors(nameof(StoragePlaceCode));
+            //if (!(value == "-"))
+            //    if (value.Length != 8)
+            //        AddError(nameof(StoragePlaceCode), "Недопустимое значение");
+            //    else
+            //        for (int i = 0; i < 8; i++)
+            //        {
+            //            if (!((value[i] >= '0') && (value[i] <= '9')))
+            //            {
+            //                AddError(nameof(StoragePlaceCode), "Недопустимое значение");
+            //                return;
+            //            }
+            //        }
         }
         //StoragePlaceCode property
 

@@ -13,7 +13,7 @@ namespace Models
         public Form14(IDataAccess Access) : base(Access)
         {
             FormNum = "14";
-            NumberOfFields = 32;
+            NumberOfFields = 33;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -65,23 +65,14 @@ namespace Models
                 AddError(nameof(OperationCode), "Недопустимое значение");
                 return;
             }
-            bool a0 = value.Equals("01");
-            bool a1 = value.Equals("13");
-            bool a2 = value.Equals("14");
-            bool a3 = value.Equals("16");
-            bool a4 = value.Equals("26");
-            bool a5 = value.Equals("36");
-            bool a6 = value.Equals("44");
-            bool a7 = value.Equals("45");
-            bool a8 = value.Equals("49");
-            bool a9 = value.Equals("51");
-            bool a10 = value.Equals("52");
-            bool a11 = value.Equals("55");
-            bool a12 = value.Equals("56");
-            bool a13 = value.Equals("57");
-            bool a14 = value.Equals("59");
-            bool a15 = value.Equals("76");
-            if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15)
+            if (value.Equals("01") || value.Equals("13") ||
+                value.Equals("14") || value.Equals("16") ||
+                value.Equals("26") || value.Equals("36") ||
+                value.Equals("44") || value.Equals("45") ||
+                value.Equals("49") || value.Equals("51") ||
+                value.Equals("52") || value.Equals("55") ||
+                value.Equals("56") || value.Equals("57") ||
+                value.Equals("59") || value.Equals("76"))
                 AddError(nameof(OperationCode), "Код операции не может быть использован для РВ");
             return;
         }
@@ -541,6 +532,27 @@ namespace Models
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            int tmp = -1;
+            try
+            {
+                tmp = int.Parse(OperationCode);
+            }
+            catch (Exception) { }
+            if (tmp != -1)
+            {
+                bool a = (tmp >= 10) && (tmp <= 12);
+                bool b = (tmp >= 41) && (tmp <= 43);
+                bool c = (tmp >= 71) && (tmp <= 73);
+                bool d = (tmp == 15) || (tmp == 17) || (tmp == 18) || (tmp == 46) ||
+                    (tmp == 47) || (tmp == 48) || (tmp == 53) || (tmp == 54) ||
+                    (tmp == 58) || (tmp == 61) || (tmp == 62) || (tmp == 65) ||
+                    (tmp == 67) || (tmp == 68) || (tmp == 75) || (tmp == 76);
+                if (a || b || c || d)
+                {
+                    ProviderOrRecieverOKPO = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+                    return;
+                }
+            }
             if (value.Equals("Минобороны") || value.Equals("прим.")) return;
             foreach (var item in OKSM)
             {
@@ -1047,5 +1059,26 @@ namespace Models
             ClearErrors(nameof(PackNumberRecoded));
         }
         //PackNumberRecoded property
+
+        private void DocumentDate_Validation(DateTimeOffset value)
+        {
+            ClearErrors(nameof(DocumentDate));
+            int tmp;
+            try
+            {
+                tmp = int.Parse(OperationCode);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+            bool a = (tmp >= 11) && (tmp <= 18);
+            bool b = (tmp >= 41) && (tmp <= 49);
+            bool c = (tmp >= 51) && (tmp <= 59);
+            bool d = (tmp == 65) || (tmp == 68);
+            if (a || b || c || d)
+                if (!value.Date.Equals(OperationDate.Date))
+                    AddError(nameof(DocumentDate), "Заполните примечание");
+        }
     }
 }
