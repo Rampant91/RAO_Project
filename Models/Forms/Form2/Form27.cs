@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models
@@ -7,7 +7,7 @@ namespace Models
     [Attributes.Form_Class("Форма 2.7: Поступление радионуклидов в атмосферный воздух")]
     public class Form27 : Abstracts.Form2
     {
-        public Form27(IDataAccess Access) : base(Access)
+        public Form27() : base()
         {
             FormNum = "27";
             NumberOfFields = 13;
@@ -27,7 +27,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionNumber))[0][0];
+                    return (string)_dataAccess.Get(nameof(PermissionNumber));
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionIssueDate)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionIssueDate))[0][0];
+                    return (string)_dataAccess.Get(nameof(PermissionIssueDate));
                 }
                 else
                 {
@@ -93,7 +93,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionDocumentName))[0][0];
+                    return (string)_dataAccess.Get(nameof(PermissionDocumentName));
                 }
                 else
                 {
@@ -126,7 +126,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidBegin)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidBegin))[0][0];
+                    return (DateTime)_dataAccess.Get(nameof(ValidBegin));
                 }
                 else
                 {
@@ -159,7 +159,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThru)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThru))[0][0];
+                    return (DateTime)_dataAccess.Get(nameof(ValidThru));
                 }
                 else
                 {
@@ -191,7 +191,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RadionuclidNameNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RadionuclidNameNote))[0][0];
+                    return (string)_dataAccess.Get(nameof(RadionuclidNameNote));
                 }
                 else
                 {
@@ -224,7 +224,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedWasteValue)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedWasteValue))[0][0];
+                    return (string)_dataAccess.Get(nameof(AllowedWasteValue));
                 }
                 else
                 {
@@ -256,7 +256,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedWasteValueNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedWasteValueNote))[0][0];
+                    return (string)_dataAccess.Get(nameof(AllowedWasteValueNote));
                 }
                 else
                 {
@@ -289,7 +289,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactedWasteValue)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactedWasteValue))[0][0];
+                    return (string)_dataAccess.Get(nameof(FactedWasteValue));
                 }
                 else
                 {
@@ -321,7 +321,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactedWasteValueNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactedWasteValueNote))[0][0];
+                    return (string)_dataAccess.Get(nameof(FactedWasteValueNote));
                 }
                 else
                 {
@@ -354,7 +354,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteOutbreakPreviousYear)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(WasteOutbreakPreviousYear))[0][0];
+                    return (string)_dataAccess.Get(nameof(WasteOutbreakPreviousYear));
                 }
                 else
                 {

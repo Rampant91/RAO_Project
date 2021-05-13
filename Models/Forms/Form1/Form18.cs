@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +10,7 @@ namespace Models
     [Attributes.Form_Class("Форма 1.8: Сведения о жидких кондиционированных РАО")]
     public class Form18 : Abstracts.Form1
     {
-        public Form18(IDataAccess Access) : base(Access)
+        public Form18() : base()
         {
             FormNum = "18";
             NumberOfFields = 37;
@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(IndividualNumberZHRO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(IndividualNumberZHRO))[0][0];
+                    return (string)_dataAccess.Get(nameof(IndividualNumberZHRO));
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace Models
             {
                 if (GetErrors(nameof(IndividualNumberZHROrecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(IndividualNumberZHROrecoded))[0][0];
+                    return (string)_dataAccess.Get(nameof(IndividualNumberZHROrecoded));
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumber))[0][0];
+                    return (string)_dataAccess.Get(nameof(PassportNumber));
                 }
                 else
                 {
@@ -127,7 +127,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberNote))[0][0];
+                    return (string)_dataAccess.Get(nameof(PassportNumberNote));
                 }
                 else
                 {
@@ -160,7 +160,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded))[0][0];
+                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded));
                 }
                 else
                 {
@@ -193,7 +193,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Volume6)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Volume6))[0][0];
+                    return (double)_dataAccess.Get(nameof(Volume6));
                 }
                 else
                 {
@@ -226,7 +226,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass7)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass7))[0][0];
+                    return (double)_dataAccess.Get(nameof(Mass7));
                 }
                 else
                 {
@@ -259,7 +259,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SaltConcentration)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(SaltConcentration))[0][0];
+                    return (double)_dataAccess.Get(nameof(SaltConcentration));
                 }
                 else
                 {
@@ -292,7 +292,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                    return (string)_dataAccess.Get(nameof(Radionuclids));
                 }
                 else
                 {
@@ -325,7 +325,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SpecificActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SpecificActivity))[0][0];
+                    return (string)_dataAccess.Get(nameof(SpecificActivity));
                 }
                 else
                 {
@@ -369,7 +369,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO))[0][0];
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
                 }
                 else
                 {
@@ -571,7 +571,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote))[0][0];
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
                 }
                 else
                 {
@@ -604,7 +604,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPO))[0][0];
+                    return (string)_dataAccess.Get(nameof(TransporterOKPO));
                 }
                 else
                 {
@@ -645,7 +645,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPONote))[0][0];
+                    return (string)_dataAccess.Get(nameof(TransporterOKPONote));
                 }
                 else
                 {
@@ -678,7 +678,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StoragePlaceName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StoragePlaceName))[0][0];
+                    return (string)_dataAccess.Get(nameof(StoragePlaceName));
                 }
                 else
                 {
@@ -710,7 +710,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StoragePlaceNameNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StoragePlaceNameNote))[0][0];
+                    return (string)_dataAccess.Get(nameof(StoragePlaceNameNote));
                 }
                 else
                 {
@@ -743,7 +743,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StoragePlaceCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StoragePlaceCode))[0][0];
+                    return (string)_dataAccess.Get(nameof(StoragePlaceCode));
                 }
                 else
                 {
@@ -795,7 +795,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeRAO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CodeRAO))[0][0];
+                    return (string)_dataAccess.Get(nameof(CodeRAO));
                 }
                 else
                 {
@@ -828,7 +828,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StatusRAO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StatusRAO))[0][0];
+                    return (string)_dataAccess.Get(nameof(StatusRAO));
                 }
                 else
                 {
@@ -861,7 +861,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Volume20)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Volume20))[0][0];
+                    return (double)_dataAccess.Get(nameof(Volume20));
                 }
                 else
                 {
@@ -894,7 +894,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass21)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass21))[0][0];
+                    return (double)_dataAccess.Get(nameof(Mass21));
                 }
                 else
                 {
@@ -927,7 +927,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TritiumActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TritiumActivity))[0][0];
+                    return (string)_dataAccess.Get(nameof(TritiumActivity));
                 }
                 else
                 {
@@ -978,7 +978,7 @@ namespace Models
             {
                 if (GetErrors(nameof(BetaGammaActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(BetaGammaActivity))[0][0];
+                    return (string)_dataAccess.Get(nameof(BetaGammaActivity));
                 }
                 else
                 {
@@ -1029,7 +1029,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AlphaActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AlphaActivity))[0][0];
+                    return (string)_dataAccess.Get(nameof(AlphaActivity));
                 }
                 else
                 {
@@ -1080,7 +1080,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TransuraniumActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransuraniumActivity))[0][0];
+                    return (string)_dataAccess.Get(nameof(TransuraniumActivity));
                 }
                 else
                 {
@@ -1131,7 +1131,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RefineOrSortRAOCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RefineOrSortRAOCode))[0][0];
+                    return (string)_dataAccess.Get(nameof(RefineOrSortRAOCode));
                 }
                 else
                 {
@@ -1175,7 +1175,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Subsidy)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Subsidy))[0][0];
+                    return (string)_dataAccess.Get(nameof(Subsidy));
                 }
                 else
                 {
@@ -1218,7 +1218,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FcpNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FcpNumber))[0][0];
+                    return (string)_dataAccess.Get(nameof(FcpNumber));
                 }
                 else
                 {

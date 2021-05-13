@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Text.RegularExpressions;
 
@@ -8,7 +8,7 @@ namespace Models
     [Attributes.Form_Class("Форма 5.7: Перечень подведомственных организаций ведомственного информационно-аналитического центра федерального органа исполнительной власти")]
     public class Form57 : Abstracts.Form5
     {
-        public Form57(IDataAccess Access) : base(Access)
+        public Form57() : base()
         {
             FormNum = "57";
             NumberOfFields = 9;
@@ -28,7 +28,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RegNo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RegNo))[0][0];
+                    return (string)_dataAccess.Get(nameof(RegNo));
                 }
                 else
                 {
@@ -57,7 +57,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okpo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Okpo))[0][0];
+                    return (string)_dataAccess.Get(nameof(Okpo));
                 }
                 else
                 {
@@ -97,7 +97,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OrgName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OrgName))[0][0];
+                    return (string)_dataAccess.Get(nameof(OrgName));
                 }
                 else
                 {
@@ -126,7 +126,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentNameNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNameNumber))[0][0];
+                    return (string)_dataAccess.Get(nameof(DocumentNameNumber));
                 }
                 else
                 {
@@ -155,7 +155,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PermissionNameNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionNameNumber))[0][0];
+                    return (string)_dataAccess.Get(nameof(PermissionNameNumber));
                 }
                 else
                 {
@@ -184,7 +184,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedActivity))[0][0];
+                    return (string)_dataAccess.Get(nameof(AllowedActivity));
                 }
                 else
                 {
@@ -217,7 +217,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Note)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Note))[0][0];
+                    return (string)_dataAccess.Get(nameof(Note));
                 }
                 else
                 {

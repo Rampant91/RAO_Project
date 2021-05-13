@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace Models
     [Attributes.Form_Class("Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ")]
     public class Form212 : Abstracts.Form2
     {
-        public Form212(IDataAccess Access) : base(Access)
+        public Form212() : base()
         {
             FormNum = "212";
             NumberOfFields = 8;
@@ -29,7 +29,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OperationCode))[0][0];
+                    return (string)_dataAccess.Get(nameof(OperationCode));
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ObjectTypeCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ObjectTypeCode))[0][0];
+                    return (string)_dataAccess.Get(nameof(ObjectTypeCode));
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                    return (string)_dataAccess.Get(nameof(Radionuclids));
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Activity))[0][0];
+                    return (double)_dataAccess.Get(nameof(Activity));
                 }
                 else
                 {
@@ -163,7 +163,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO))[0][0];
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
                 }
                 else
                 {
@@ -365,7 +365,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote))[0][0];
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
                 }
                 else
                 {

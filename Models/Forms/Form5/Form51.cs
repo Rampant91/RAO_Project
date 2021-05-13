@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +10,7 @@ namespace Models
     [Attributes.Form_Class("Форма 5.1: Сведения о ЗРИ, полученных/переданных подведомственными организациями сторонним организациям и переведенных в РАО")]
     public class Form51 : Abstracts.Form5
     {
-        public Form51(IDataAccess Access) : base(Access)
+        public Form51() : base()
         {
             FormNum = "51";
             NumberOfFields = 9;
@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OperationCode))[0][0];
+                    return (string)_dataAccess.Get(nameof(OperationCode));
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                    return (string)_dataAccess.Get(nameof(Radionuclids));
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Kategory)) == null)
                 {
-                    return (short)_dataAccess.Get(nameof(Kategory))[0][0];
+                    return (short)_dataAccess.Get(nameof(Kategory));
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Activity))[0][0];
+                    return (string)_dataAccess.Get(nameof(Activity));
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
+                    return (int)_dataAccess.Get(nameof(Quantity));
                 }
                 else
                 {
@@ -208,7 +208,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO))[0][0];
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
                 }
                 else
                 {
@@ -410,7 +410,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote))[0][0];
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
                 }
                 else
                 {

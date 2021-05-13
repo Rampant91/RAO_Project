@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models.Abstracts
@@ -6,7 +6,7 @@ namespace Models.Abstracts
     public abstract class Form1 : Form
     {
         [Attributes.Form_Property("Форма")]
-        public Form1(IDataAccess Access) : base(Access)
+        public Form1() : base()
         {
 
         }
@@ -19,7 +19,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder))[0][0];
+                    return (int)_dataAccess.Get(nameof(NumberInOrder));
                 }
                 else
                 {
@@ -51,7 +51,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber))[0][0];
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
                 else
                 {
@@ -84,7 +84,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OperationCode))[0][0];
+                    return (string)_dataAccess.Get(nameof(OperationCode));
                 }
                 else
                 {
@@ -117,7 +117,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(OperationDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(OperationDate))[0][0];
+                    return (DateTimeOffset)_dataAccess.Get(nameof(OperationDate));
                 }
                 else
                 {
@@ -150,7 +150,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentVid)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(DocumentVid))[0][0];
+                    return (byte)_dataAccess.Get(nameof(DocumentVid));
                 }
                 else
                 {
@@ -190,7 +190,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumber))[0][0];
+                    return (string)_dataAccess.Get(nameof(DocumentNumber));
                 }
                 else
                 {
@@ -223,7 +223,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumberRecoded))[0][0];
+                    return (string)_dataAccess.Get(nameof(DocumentNumberRecoded));
                 }
                 else
                 {
@@ -256,7 +256,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(DocumentDate))[0][0];
+                    return (DateTimeOffset)_dataAccess.Get(nameof(DocumentDate));
                 }
                 else
                 {
@@ -285,7 +285,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentDateNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentDateNote))[0][0];
+                    return (string)_dataAccess.Get(nameof(DocumentDateNote));
                 }
                 else
                 {

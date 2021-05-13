@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models
@@ -7,7 +7,7 @@ namespace Models
     [Attributes.Form_Class("Форма 4.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form40 : Abstracts.Form
     {
-        public Form40(IDataAccess Access) : base(Access)
+        public Form40() : base()
         {
             FormNum = "40";
             NumberOfFields = 18;
@@ -27,7 +27,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SubjectRF)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SubjectRF))[0][0];
+                    return (string)_dataAccess.Get(nameof(SubjectRF));
                 }
                 else
                 {
@@ -56,7 +56,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Yyear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Yyear))[0][0];
+                    return (int)_dataAccess.Get(nameof(Yyear));
                 }
                 else
                 {
@@ -85,7 +85,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SubjectAuthorityName)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(SubjectAuthorityName))[0][0];
+                    return (int)_dataAccess.Get(nameof(SubjectAuthorityName));
                 }
                 else
                 {
@@ -114,7 +114,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ShortSubjectAuthorityName)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(ShortSubjectAuthorityName))[0][0];
+                    return (int)_dataAccess.Get(nameof(ShortSubjectAuthorityName));
                 }
                 else
                 {
@@ -143,7 +143,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactAddress))[0][0];
+                    return (string)_dataAccess.Get(nameof(FactAddress));
                 }
                 else
                 {
@@ -172,7 +172,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOchef)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOchef))[0][0];
+                    return (string)_dataAccess.Get(nameof(GradeFIOchef));
                 }
                 else
                 {
@@ -201,7 +201,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor))[0][0];
+                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor));
                 }
                 else
                 {
@@ -230,7 +230,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Telephone)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Telephone))[0][0];
+                    return (string)_dataAccess.Get(nameof(Telephone));
                 }
                 else
                 {
@@ -259,7 +259,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Fax)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Fax))[0][0];
+                    return (string)_dataAccess.Get(nameof(Fax));
                 }
                 else
                 {
@@ -288,7 +288,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Email)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Email))[0][0];
+                    return (string)_dataAccess.Get(nameof(Email));
                 }
                 else
                 {
@@ -317,7 +317,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Telephone1)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Telephone1))[0][0];
+                    return (string)_dataAccess.Get(nameof(Telephone1));
                 }
                 else
                 {
@@ -346,7 +346,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Fax1)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Fax1))[0][0];
+                    return (string)_dataAccess.Get(nameof(Fax1));
                 }
                 else
                 {
@@ -375,7 +375,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Email1)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Email1))[0][0];
+                    return (string)_dataAccess.Get(nameof(Email1));
                 }
                 else
                 {
@@ -404,7 +404,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OrgName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OrgName))[0][0];
+                    return (string)_dataAccess.Get(nameof(OrgName));
                 }
                 else
                 {
@@ -433,7 +433,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ShortOrgName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ShortOrgName))[0][0];
+                    return (string)_dataAccess.Get(nameof(ShortOrgName));
                 }
                 else
                 {
@@ -462,7 +462,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactAddress1)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactAddress1))[0][0];
+                    return (string)_dataAccess.Get(nameof(FactAddress1));
                 }
                 else
                 {
@@ -491,7 +491,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOchef1)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOchef1))[0][0];
+                    return (string)_dataAccess.Get(nameof(GradeFIOchef1));
                 }
                 else
                 {
@@ -520,7 +520,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor1)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor1))[0][0];
+                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor1));
                 }
                 else
                 {

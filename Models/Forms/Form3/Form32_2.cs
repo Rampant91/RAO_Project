@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models
@@ -7,7 +7,7 @@ namespace Models
     [Attributes.Form_Class("Сведения о поставляемых ЗРИ:")]
     public class Form32_2 : Abstracts.Form3
     {
-        public Form32_2(IDataAccess Access) : base(Access)
+        public Form32_2() : base()
         {
             FormNum = "32_2";
             NumberOfFields = 6;
@@ -27,7 +27,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackName))[0][0];
+                    return (string)_dataAccess.Get(nameof(PackName));
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackType))[0][0];
+                    return (string)_dataAccess.Get(nameof(PackType));
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeRecoded))[0][0];
+                    return (string)_dataAccess.Get(nameof(PackTypeRecoded));
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Id)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Id))[0][0];
+                    return (string)_dataAccess.Get(nameof(Id));
                 }
                 else
                 {
@@ -154,7 +154,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CreationYear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(CreationYear))[0][0];
+                    return (int)_dataAccess.Get(nameof(CreationYear));
                 }
                 else
                 {
@@ -183,7 +183,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DepletedUraniumMass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(DepletedUraniumMass))[0][0];
+                    return (double)_dataAccess.Get(nameof(DepletedUraniumMass));
                 }
                 else
                 {

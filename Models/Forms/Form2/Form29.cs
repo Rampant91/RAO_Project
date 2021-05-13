@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Globalization;
 
@@ -8,7 +8,7 @@ namespace Models
     [Attributes.Form_Class("Форма 2.9: Активность радионуклидов, отведенных со сточными водами")]
     public class Form29 : Abstracts.Form2
     {
-        public Form29(IDataAccess Access) : base(Access)
+        public Form29() : base()
         {
             FormNum = "29";
             NumberOfFields = 8;
@@ -28,7 +28,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteSourceName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(WasteSourceName))[0][0];
+                    return (string)_dataAccess.Get(nameof(WasteSourceName));
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RadionuclidName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RadionuclidName))[0][0];
+                    return (string)_dataAccess.Get(nameof(RadionuclidName));
                 }
                 else
                 {
@@ -94,7 +94,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedActivity))[0][0];
+                    return (string)_dataAccess.Get(nameof(AllowedActivity));
                 }
                 else
                 {
@@ -140,7 +140,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AllowedActivityNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedActivityNote))[0][0];
+                    return (string)_dataAccess.Get(nameof(AllowedActivityNote));
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactedActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactedActivity))[0][0];
+                    return (string)_dataAccess.Get(nameof(FactedActivity));
                 }
                 else
                 {
@@ -216,7 +216,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactedActivityNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactedActivityNote))[0][0];
+                    return (string)_dataAccess.Get(nameof(FactedActivityNote));
                 }
                 else
                 {

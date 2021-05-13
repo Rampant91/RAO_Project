@@ -1,11 +1,11 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 
 namespace Models.Abstracts
 {
     public abstract class Form5 : Form
     {
         [Attributes.Form_Property("Форма")]
-        public Form5(IDataAccess Access) : base(Access)
+        public Form5() : base()
         {
 
         }
@@ -18,7 +18,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder))[0][0];
+                    return (int)_dataAccess.Get(nameof(NumberInOrder));
                 }
                 else
                 {
@@ -51,7 +51,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber))[0][0];
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
                 else
                 {

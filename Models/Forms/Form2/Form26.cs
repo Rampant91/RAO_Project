@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models
@@ -7,7 +7,7 @@ namespace Models
     [Attributes.Form_Class("Форма 2.6: Контроль загрязнения подземных вод РВ")]
     public class Form26 : Abstracts.Form2
     {
-        public Form26(IDataAccess Access) : base(Access)
+        public Form26() : base()
         {
             FormNum = "26";
             NumberOfFields = 11;
@@ -27,7 +27,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SourcesQuantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(SourcesQuantity))[0][0];
+                    return (int)_dataAccess.Get(nameof(SourcesQuantity));
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ObservedSourceNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ObservedSourceNumber))[0][0];
+                    return (string)_dataAccess.Get(nameof(ObservedSourceNumber));
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ControlledAreaName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ControlledAreaName))[0][0];
+                    return (string)_dataAccess.Get(nameof(ControlledAreaName));
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SupposedWasteSource)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SupposedWasteSource))[0][0];
+                    return (string)_dataAccess.Get(nameof(SupposedWasteSource));
                 }
                 else
                 {
@@ -161,7 +161,7 @@ namespace Models
             {
                 if (GetErrors(nameof(DistanceToWasteSource)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(DistanceToWasteSource))[0][0];
+                    return (int)_dataAccess.Get(nameof(DistanceToWasteSource));
                 }
                 else
                 {
@@ -194,7 +194,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TestDepth)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(TestDepth))[0][0];
+                    return (int)_dataAccess.Get(nameof(TestDepth));
                 }
                 else
                 {
@@ -226,7 +226,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TestDepthNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(TestDepthNote))[0][0];
+                    return (int)_dataAccess.Get(nameof(TestDepthNote));
                 }
                 else
                 {
@@ -259,7 +259,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RadionuclidName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RadionuclidName))[0][0];
+                    return (string)_dataAccess.Get(nameof(RadionuclidName));
                 }
                 else
                 {
@@ -292,7 +292,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AverageYearConcentration)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(AverageYearConcentration))[0][0];
+                    return (double)_dataAccess.Get(nameof(AverageYearConcentration));
                 }
                 else
                 {

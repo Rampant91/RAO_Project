@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models
@@ -7,7 +7,7 @@ namespace Models
     [Attributes.Form_Class("Форма 2.10: Территории, загрязненные радионуклидами")]
     public class Form210 : Abstracts.Form2
     {
-        public Form210(IDataAccess Access) : base(Access)
+        public Form210() : base()
         {
             FormNum = "210";
             NumberOfFields = 12;
@@ -27,7 +27,7 @@ namespace Models
             {
                 if (GetErrors(nameof(IndicatorName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(IndicatorName))[0][0];
+                    return (string)_dataAccess.Get(nameof(IndicatorName));
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PlotName))[0][0];
+                    return (string)_dataAccess.Get(nameof(PlotName));
                 }
                 else
                 {
@@ -93,7 +93,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotKadastrNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PlotKadastrNumber))[0][0];
+                    return (string)_dataAccess.Get(nameof(PlotKadastrNumber));
                 }
                 else
                 {
@@ -126,7 +126,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PlotCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PlotCode))[0][0];
+                    return (string)_dataAccess.Get(nameof(PlotCode));
                 }
                 else
                 {
@@ -159,7 +159,7 @@ namespace Models
             {
                 if (GetErrors(nameof(InfectedArea)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(InfectedArea))[0][0];
+                    return (int)_dataAccess.Get(nameof(InfectedArea));
                 }
                 else
                 {
@@ -192,7 +192,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AvgGammaRaysDosePower)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(AvgGammaRaysDosePower))[0][0];
+                    return (double)_dataAccess.Get(nameof(AvgGammaRaysDosePower));
                 }
                 else
                 {
@@ -225,7 +225,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MaxGammaRaysDosePower)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MaxGammaRaysDosePower))[0][0];
+                    return (double)_dataAccess.Get(nameof(MaxGammaRaysDosePower));
                 }
                 else
                 {
@@ -258,7 +258,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteDensityAlpha)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(WasteDensityAlpha))[0][0];
+                    return (double)_dataAccess.Get(nameof(WasteDensityAlpha));
                 }
                 else
                 {
@@ -291,7 +291,7 @@ namespace Models
             {
                 if (GetErrors(nameof(WasteDensityBeta)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(WasteDensityBeta))[0][0];
+                    return (double)_dataAccess.Get(nameof(WasteDensityBeta));
                 }
                 else
                 {
@@ -324,7 +324,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FcpNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FcpNumber))[0][0];
+                    return (string)_dataAccess.Get(nameof(FcpNumber));
                 }
                 else
                 {

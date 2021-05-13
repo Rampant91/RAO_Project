@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -9,7 +9,7 @@ namespace Models
     [Attributes.Form_Class("Форма 5.5: Сведения о поступлении/передаче в подведомственные организации от сторонних организаций и переводе в РАО изделий из обедненного урана")]
     public class Form55 : Abstracts.Form5
     {
-        public Form55(IDataAccess Access) : base(Access)
+        public Form55() : base()
         {
             FormNum = "55";
             NumberOfFields = 8;
@@ -29,7 +29,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Name)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Name))[0][0];
+                    return (string)_dataAccess.Get(nameof(Name));
                 }
                 else
                 {
@@ -62,7 +62,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OperationCode))[0][0];
+                    return (string)_dataAccess.Get(nameof(OperationCode));
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
+                    return (int)_dataAccess.Get(nameof(Quantity));
                 }
                 else
                 {
@@ -130,7 +130,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO))[0][0];
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
                 }
                 else
                 {
@@ -330,7 +330,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote))[0][0];
+                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
                 }
                 else
                 {
@@ -363,7 +363,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass))[0][0];
+                    return (double)_dataAccess.Get(nameof(Mass));
                 }
                 else
                 {

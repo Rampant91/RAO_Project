@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Globalization;
 
@@ -8,7 +8,7 @@ namespace Models
     [Attributes.Form_Class("Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках")]
     public class Form21 : Abstracts.Form2
     {
-        public Form21(IDataAccess Access) : base(Access)
+        public Form21() : base()
         {
             FormNum = "21";
             NumberOfFields = 24;
@@ -28,7 +28,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RefineMachineName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RefineMachineName))[0][0];
+                    return (string)_dataAccess.Get(nameof(RefineMachineName));
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MachineCode)) == null)
                 {
-                    return (short)_dataAccess.Get(nameof(MachineCode))[0][0];
+                    return (short)_dataAccess.Get(nameof(MachineCode));
                 }
                 else
                 {
@@ -104,7 +104,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MachinePower)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(MachinePower))[0][0];
+                    return (string)_dataAccess.Get(nameof(MachinePower));
                 }
                 else
                 {
@@ -137,7 +137,7 @@ namespace Models
             {
                 if (GetErrors(nameof(NumberOfHoursPerYear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberOfHoursPerYear))[0][0];
+                    return (int)_dataAccess.Get(nameof(NumberOfHoursPerYear));
                 }
                 else
                 {
@@ -170,7 +170,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeRAOIn)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CodeRAOIn))[0][0];
+                    return (string)_dataAccess.Get(nameof(CodeRAOIn));
                 }
                 else
                 {
@@ -203,7 +203,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StatusRAOIn)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StatusRAOIn))[0][0];
+                    return (string)_dataAccess.Get(nameof(StatusRAOIn));
                 }
                 else
                 {
@@ -236,7 +236,7 @@ namespace Models
             {
                 if (GetErrors(nameof(VolumeIn)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(VolumeIn))[0][0];
+                    return (double)_dataAccess.Get(nameof(VolumeIn));
                 }
                 else
                 {
@@ -269,7 +269,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassIn)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassIn))[0][0];
+                    return (double)_dataAccess.Get(nameof(MassIn));
                 }
                 else
                 {
@@ -302,7 +302,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityIn)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityIn))[0][0];
+                    return (int)_dataAccess.Get(nameof(QuantityIn));
                 }
                 else
                 {
@@ -337,7 +337,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TritiumActivityIn)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TritiumActivityIn))[0][0];
+                    return (string)_dataAccess.Get(nameof(TritiumActivityIn));
                 }
                 else
                 {
@@ -388,7 +388,7 @@ namespace Models
             {
                 if (GetErrors(nameof(BetaGammaActivityIn)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(BetaGammaActivityIn))[0][0];
+                    return (string)_dataAccess.Get(nameof(BetaGammaActivityIn));
                 }
                 else
                 {
@@ -439,7 +439,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AlphaActivityIn)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AlphaActivityIn))[0][0];
+                    return (string)_dataAccess.Get(nameof(AlphaActivityIn));
                 }
                 else
                 {
@@ -490,7 +490,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TransuraniumActivityIn)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransuraniumActivityIn))[0][0];
+                    return (string)_dataAccess.Get(nameof(TransuraniumActivityIn));
                 }
                 else
                 {
@@ -541,7 +541,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeRAOout)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CodeRAOout))[0][0];
+                    return (string)_dataAccess.Get(nameof(CodeRAOout));
                 }
                 else
                 {
@@ -574,7 +574,7 @@ namespace Models
             {
                 if (GetErrors(nameof(StatusRAOout)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(StatusRAOout))[0][0];
+                    return (string)_dataAccess.Get(nameof(StatusRAOout));
                 }
                 else
                 {
@@ -607,7 +607,7 @@ namespace Models
             {
                 if (GetErrors(nameof(VolumeOut)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(VolumeOut))[0][0];
+                    return (double)_dataAccess.Get(nameof(VolumeOut));
                 }
                 else
                 {
@@ -640,7 +640,7 @@ namespace Models
             {
                 if (GetErrors(nameof(MassOut)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassOut))[0][0];
+                    return (double)_dataAccess.Get(nameof(MassOut));
                 }
                 else
                 {
@@ -673,7 +673,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOZIIIout)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOZIIIout))[0][0];
+                    return (int)_dataAccess.Get(nameof(QuantityOZIIIout));
                 }
                 else
                 {
@@ -708,7 +708,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TritiumActivityOut)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TritiumActivityOut))[0][0];
+                    return (string)_dataAccess.Get(nameof(TritiumActivityOut));
                 }
                 else
                 {
@@ -759,7 +759,7 @@ namespace Models
             {
                 if (GetErrors(nameof(BetaGammaActivityOut)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(BetaGammaActivityOut))[0][0];
+                    return (string)_dataAccess.Get(nameof(BetaGammaActivityOut));
                 }
                 else
                 {
@@ -810,7 +810,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AlphaActivityOut)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(AlphaActivityOut))[0][0];
+                    return (string)_dataAccess.Get(nameof(AlphaActivityOut));
                 }
                 else
                 {
@@ -861,7 +861,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TransuraniumActivityOut)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransuraniumActivityOut))[0][0];
+                    return (string)_dataAccess.Get(nameof(TransuraniumActivityOut));
                 }
                 else
                 {

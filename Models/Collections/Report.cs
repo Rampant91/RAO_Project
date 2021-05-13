@@ -1,4 +1,4 @@
-﻿using Collections.Report_Collection;
+﻿using Models.DataAccess;
 using Models.Attributes;
 using System;
 using System.Collections;
@@ -12,21 +12,6 @@ namespace Collections
     public class Report : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         IDataAccess _dataAccess { get; set; }
-
-        public int ReportID
-        {
-            get
-            {
-                return _dataAccess.ReportID;
-            }
-        }
-        public int ReportsID
-        {
-            get
-            {
-                return _dataAccess.ReportsID;
-            }
-        }
 
         public Report(IDataAccess Access)
         {
@@ -70,7 +55,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(IsCorrection)) == null)
                 {
-                    return (bool)_dataAccess.Get(nameof(IsCorrection))[0][0];
+                    return (bool)_dataAccess.Get(nameof(IsCorrection));
                 }
                 else
                 {
@@ -102,7 +87,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber))[0][0];
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
                 else
                 {
@@ -134,7 +119,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(NumberInOrder))[0][0];
+                    return (string)_dataAccess.Get(nameof(NumberInOrder));
                 }
                 else
                 {
@@ -166,7 +151,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(Comments)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Comments))[0][0];
+                    return (string)_dataAccess.Get(nameof(Comments));
                 }
                 else
                 {
@@ -230,7 +215,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(StartPeriod)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(StartPeriod))[0][0];
+                    return (DateTimeOffset)_dataAccess.Get(nameof(StartPeriod));
                 }
                 else
                 {
@@ -268,7 +253,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(EndPeriod)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(EndPeriod))[0][0];
+                    return (DateTimeOffset)_dataAccess.Get(nameof(EndPeriod));
                 }
                 else
                 {
@@ -306,7 +291,7 @@ namespace Collections
             {
                 if (GetErrors(nameof(ExportDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(ExportDate))[0][0];
+                    return (DateTimeOffset)_dataAccess.Get(nameof(ExportDate));
                 }
                 else
                 {

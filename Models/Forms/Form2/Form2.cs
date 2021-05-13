@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 
 namespace Models.Abstracts
 {
@@ -6,7 +6,7 @@ namespace Models.Abstracts
     {
         [Attributes.Form_Property("Форма")]
 
-        public Form2(IDataAccess Access) : base(Access)
+        public Form2() : base()
         {
 
         }
@@ -18,7 +18,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber))[0][0];
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
                 else
                 {
@@ -51,7 +51,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder))[0][0];
+                    return (int)_dataAccess.Get(nameof(NumberInOrder));
                 }
                 else
                 {

@@ -1,4 +1,4 @@
-﻿using Collections.Notes_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,29 +16,6 @@ namespace Models
 
         }
 
-        public int NoteID
-        {
-            get
-            {
-                return _dataAccess.ReportID;
-            }
-        }
-
-        public int ReportID
-        {
-            get
-            {
-                return _dataAccess.ReportID;
-            }
-        }
-        public int ReportsID
-        {
-            get
-            {
-                return _dataAccess.ReportsID;
-            }
-        }
-
         //RowNumber property
         [Attributes.Form_Property("Номер строки")]
         public int RowNumber
@@ -47,7 +24,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RowNumber)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(RowNumber))[0][0];
+                    return (int)_dataAccess.Get(nameof(RowNumber));
                 }
                 else
                 {
@@ -79,7 +56,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GraphNumber)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(GraphNumber))[0][0];
+                    return (int)_dataAccess.Get(nameof(GraphNumber));
                 }
                 else
                 {
@@ -111,7 +88,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Comment)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Comment))[0][0];
+                    return (string)_dataAccess.Get(nameof(Comment));
                 }
                 else
                 {

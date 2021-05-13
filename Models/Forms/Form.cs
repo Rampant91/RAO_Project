@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,32 +12,12 @@ namespace Models.Abstracts
     {
         protected IDataAccess _dataAccess { get; set; }
 
-        public Form(IDataAccess Access)
+        public Form()
         {
-            _dataAccess = Access;
+            _dataAccess = new RamAccess();
         }
 
-        public int RowID
-        {
-            get
-            {
-                return _dataAccess.RowID;
-            }
-        }
-        public int ReportID
-        {
-            get
-            {
-                return _dataAccess.ReportID;
-            }
-        }
-        public int ReportsID
-        {
-            get
-            {
-                return _dataAccess.ReportsID;
-            }
-        }
+        public int RowID { get; set; }
 
         //FormNum property
         [Attributes.Form_Property("Форма")]
@@ -47,7 +27,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(FormNum)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FormNum))[0][0];
+                    return (string)_dataAccess.Get(nameof(FormNum));
                 }
                 else
                 {
@@ -78,7 +58,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberOfFields)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberOfFields))[0][0];
+                    return (int)_dataAccess.Get(nameof(NumberOfFields));
                 }
                 else
                 {

@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models
@@ -7,7 +7,7 @@ namespace Models
     [Attributes.Form_Class("Идентификаторы:")]
     public class Form32_3 : Abstracts.Form3
     {
-        public Form32_3(IDataAccess Access) : base(Access)
+        public Form32_3() : base()
         {
             FormNum = "32_3";
             NumberOfFields = 2;
@@ -27,7 +27,7 @@ namespace Models
             {
                 if (GetErrors(nameof(IdName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(IdName))[0][0];
+                    return (string)_dataAccess.Get(nameof(IdName));
                 }
                 else
                 {
@@ -56,7 +56,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Val)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Val))[0][0];
+                    return (string)_dataAccess.Get(nameof(Val));
                 }
                 else
                 {

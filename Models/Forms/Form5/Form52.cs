@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Globalization;
 
@@ -8,7 +8,7 @@ namespace Models
     [Attributes.Form_Class("Форма 5.2: Сведения о наличии ЗРИ в подведомственных организациях")]
     public class Form52 : Abstracts.Form5
     {
-        public Form52(IDataAccess Access) : base(Access)
+        public Form52() : base()
         {
             FormNum = "52";
             NumberOfFields = 6;
@@ -27,7 +27,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                    return (string)_dataAccess.Get(nameof(Radionuclids));
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Kategory)) == null)
                 {
-                    return (short)_dataAccess.Get(nameof(Kategory))[0][0];
+                    return (short)_dataAccess.Get(nameof(Kategory));
                 }
                 else
                 {
@@ -93,7 +93,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Activity))[0][0];
+                    return (string)_dataAccess.Get(nameof(Activity));
                 }
                 else
                 {
@@ -137,7 +137,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
+                    return (int)_dataAccess.Get(nameof(Quantity));
                 }
                 else
                 {

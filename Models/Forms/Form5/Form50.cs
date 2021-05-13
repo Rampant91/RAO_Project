@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models
@@ -7,7 +7,7 @@ namespace Models
     [Attributes.Form_Class("Форма 5.0: Титульный лист годового отчета СГУК РВ и РАО")]
     public class Form50 : Abstracts.Form
     {
-        public Form50(IDataAccess Access) : base(Access)
+        public Form50() : base()
         {
             FormNum = "50";
             NumberOfFields = 11;
@@ -34,7 +34,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Authority1)) == null)
                 {
-                    return (Authority)_dataAccess.Get(nameof(Authority1))[0][0];
+                    return (Authority)_dataAccess.Get(nameof(Authority1));
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Yyear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Yyear))[0][0];
+                    return (int)_dataAccess.Get(nameof(Yyear));
                 }
                 else
                 {
@@ -92,7 +92,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLico)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(JurLico))[0][0];
+                    return (string)_dataAccess.Get(nameof(JurLico));
                 }
                 else
                 {
@@ -121,7 +121,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ShortJurLico)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ShortJurLico))[0][0];
+                    return (string)_dataAccess.Get(nameof(ShortJurLico));
                 }
                 else
                 {
@@ -150,7 +150,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLicoAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(JurLicoAddress))[0][0];
+                    return (string)_dataAccess.Get(nameof(JurLicoAddress));
                 }
                 else
                 {
@@ -179,7 +179,7 @@ namespace Models
             {
                 if (GetErrors(nameof(JurLicoFactAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(JurLicoFactAddress))[0][0];
+                    return (string)_dataAccess.Get(nameof(JurLicoFactAddress));
                 }
                 else
                 {
@@ -208,7 +208,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIO))[0][0];
+                    return (string)_dataAccess.Get(nameof(GradeFIO));
                 }
                 else
                 {
@@ -237,7 +237,7 @@ namespace Models
             {
                 if (GetErrors(nameof(GradeFIOresponsibleExecutor)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor))[0][0];
+                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor));
                 }
                 else
                 {
@@ -266,7 +266,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Telephone)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Telephone))[0][0];
+                    return (string)_dataAccess.Get(nameof(Telephone));
                 }
                 else
                 {
@@ -295,7 +295,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Fax)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Fax))[0][0];
+                    return (string)_dataAccess.Get(nameof(Fax));
                 }
                 else
                 {
@@ -324,7 +324,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Email)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Email))[0][0];
+                    return (string)_dataAccess.Get(nameof(Email));
                 }
                 else
                 {

@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,7 +9,7 @@ namespace Models
     [Attributes.Form_Class("Форма 3.2: Отчет об отправке радиоактивных источников 1 и 2 категории")]
     public class Form32 : Abstracts.Form3
     {
-        public Form32(IDataAccess Access) : base(Access)
+        public Form32() : base()
         {
             FormNum = "32";
             NumberOfFields = 17;
@@ -29,7 +29,7 @@ namespace Models
             {
                 if (GetErrors(nameof(UniqueAgreementId)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(UniqueAgreementId))[0][0];
+                    return (string)_dataAccess.Get(nameof(UniqueAgreementId));
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SupplyDate)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(SupplyDate))[0][0];
+                    return (DateTime)_dataAccess.Get(nameof(SupplyDate));
                 }
                 else
                 {
@@ -87,7 +87,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RecieverName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RecieverName))[0][0];
+                    return (string)_dataAccess.Get(nameof(RecieverName));
                 }
                 else
                 {
@@ -116,7 +116,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FieldsOfWorking)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(FieldsOfWorking))[0][0];
+                    return (byte)_dataAccess.Get(nameof(FieldsOfWorking));
                 }
                 else
                 {
@@ -145,7 +145,7 @@ namespace Models
             {
                 if (GetErrors(nameof(LicenseIdRv)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(LicenseIdRv))[0][0];
+                    return (string)_dataAccess.Get(nameof(LicenseIdRv));
                 }
                 else
                 {
@@ -174,7 +174,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThruRv)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThruRv))[0][0];
+                    return (DateTime)_dataAccess.Get(nameof(ValidThruRv));
                 }
                 else
                 {
@@ -203,7 +203,7 @@ namespace Models
             {
                 if (GetErrors(nameof(LicenseIdRao)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(LicenseIdRao))[0][0];
+                    return (string)_dataAccess.Get(nameof(LicenseIdRao));
                 }
                 else
                 {
@@ -232,7 +232,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThruRao)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThruRao))[0][0];
+                    return (DateTime)_dataAccess.Get(nameof(ValidThruRao));
                 }
                 else
                 {
@@ -261,7 +261,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SupplyAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SupplyAddress))[0][0];
+                    return (string)_dataAccess.Get(nameof(SupplyAddress));
                 }
                 else
                 {
@@ -290,7 +290,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                    return (string)_dataAccess.Get(nameof(Radionuclids));
                 }
                 else
                 {
@@ -323,7 +323,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
+                    return (int)_dataAccess.Get(nameof(Quantity));
                 }
                 else
                 {
@@ -358,7 +358,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SummaryActivity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(SummaryActivity))[0][0];
+                    return (string)_dataAccess.Get(nameof(SummaryActivity));
                 }
                 else
                 {

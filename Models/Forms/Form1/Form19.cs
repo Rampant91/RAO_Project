@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Globalization;
 
@@ -8,7 +8,7 @@ namespace Models
     [Attributes.Form_Class("Форма 1.9: Сведения о результатах инвентаризации РВ не в составе ЗРИ")]
     public class Form19 : Abstracts.Form1
     {
-        public Form19(IDataAccess Access) : base(Access)
+        public Form19() : base()
         {
             FormNum = "19";
             NumberOfFields = 12;
@@ -28,7 +28,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CodeTypeAccObject)) == null)
                 {
-                    return (short)_dataAccess.Get(nameof(CodeTypeAccObject))[0][0];
+                    return (short)_dataAccess.Get(nameof(CodeTypeAccObject));
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                    return (string)_dataAccess.Get(nameof(Radionuclids));
                 }
                 else
                 {
@@ -94,7 +94,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Activity))[0][0];
+                    return (string)_dataAccess.Get(nameof(Activity));
                 }
                 else
                 {

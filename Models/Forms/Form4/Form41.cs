@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Text.RegularExpressions;
 
@@ -8,7 +8,7 @@ namespace Models
     [Attributes.Form_Class("Форма 4.1: Перечень организаций, зарегистрированных в СГУК РВ и РАО на региональном уровне")]
     public class Form41 : Abstracts.Form
     {
-        public Form41(IDataAccess Access) : base(Access)
+        public Form41() : base()
         {
             FormNum = "41";
             NumberOfFields = 10;
@@ -28,7 +28,7 @@ namespace Models
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder))[0][0];
+                    return (int)_dataAccess.Get(nameof(NumberInOrder));
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RegNo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RegNo))[0][0];
+                    return (string)_dataAccess.Get(nameof(RegNo));
                 }
                 else
                 {
@@ -90,7 +90,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Okpo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Okpo))[0][0];
+                    return (string)_dataAccess.Get(nameof(Okpo));
                 }
                 else
                 {
@@ -130,7 +130,7 @@ namespace Models
             {
                 if (GetErrors(nameof(OrgName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OrgName))[0][0];
+                    return (string)_dataAccess.Get(nameof(OrgName));
                 }
                 else
                 {
@@ -159,7 +159,7 @@ namespace Models
             {
                 if (GetErrors(nameof(LicenseInfo)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(LicenseInfo))[0][0];
+                    return (string)_dataAccess.Get(nameof(LicenseInfo));
                 }
                 else
                 {
@@ -188,7 +188,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsInv)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOfFormsInv))[0][0];
+                    return (int)_dataAccess.Get(nameof(QuantityOfFormsInv));
                 }
                 else
                 {
@@ -223,7 +223,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsOper)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOfFormsOper))[0][0];
+                    return (int)_dataAccess.Get(nameof(QuantityOfFormsOper));
                 }
                 else
                 {
@@ -258,7 +258,7 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsYear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOfFormsYear))[0][0];
+                    return (int)_dataAccess.Get(nameof(QuantityOfFormsYear));
                 }
                 else
                 {
@@ -293,7 +293,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Notes)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Notes))[0][0];
+                    return (string)_dataAccess.Get(nameof(Notes));
                 }
                 else
                 {

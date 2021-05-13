@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models.Abstracts
@@ -6,7 +6,7 @@ namespace Models.Abstracts
     public abstract class Form3 : Form
     {
         [Attributes.Form_Property("Форма")]
-        public Form3(IDataAccess Access) : base(Access)
+        public Form3() : base()
         {
         }
 
@@ -18,7 +18,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber))[0][0];
+                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
                 }
                 else
                 {
@@ -51,7 +51,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NotificationDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(NotificationDate))[0][0];
+                    return (DateTimeOffset)_dataAccess.Get(nameof(NotificationDate));
                 }
                 else
                 {

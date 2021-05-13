@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 
 namespace Models
@@ -7,7 +7,7 @@ namespace Models
     [Attributes.Form_Class("Форма 5.6: Сведения о наличии в подведомственных организациях изделий из обедненного урана")]
     public class Form56 : Abstracts.Form5
     {
-        public Form56(IDataAccess Access) : base(Access)
+        public Form56() : base()
         {
             FormNum = "56";
             NumberOfFields = 5;
@@ -27,7 +27,7 @@ namespace Models
             {
                 if (GetErrors(nameof(NameIOU)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(NameIOU))[0][0];
+                    return (string)_dataAccess.Get(nameof(NameIOU));
                 }
                 else
                 {
@@ -60,7 +60,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
+                    return (int)_dataAccess.Get(nameof(Quantity));
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass))[0][0];
+                    return (double)_dataAccess.Get(nameof(Mass));
                 }
                 else
                 {

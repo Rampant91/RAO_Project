@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Globalization;
 
@@ -8,7 +8,7 @@ namespace Models
     [Attributes.Form_Class("Форма 5.4: Сведения о наличии в подведомственных организациях ОРИ")]
     public class Form54 : Abstracts.Form5
     {
-        public Form54(IDataAccess Access) : base(Access)
+        public Form54() : base()
         {
             FormNum = "54";
             NumberOfFields = 10;
@@ -28,7 +28,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TypeOfAccountedParts)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(TypeOfAccountedParts))[0][0];
+                    return (int)_dataAccess.Get(nameof(TypeOfAccountedParts));
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace Models
             {
                 if (GetErrors(nameof(KindOri)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(KindOri))[0][0];
+                    return (int)_dataAccess.Get(nameof(KindOri));
                 }
                 else
                 {
@@ -95,7 +95,7 @@ namespace Models
             {
                 if (GetErrors(nameof(AggregateState)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(AggregateState))[0][0];
+                    return (byte)_dataAccess.Get(nameof(AggregateState));
                 }
                 else
                 {
@@ -130,7 +130,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids))[0][0];
+                    return (string)_dataAccess.Get(nameof(Radionuclids));
                 }
                 else
                 {
@@ -163,7 +163,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Activity))[0][0];
+                    return (string)_dataAccess.Get(nameof(Activity));
                 }
                 else
                 {
@@ -207,7 +207,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity))[0][0];
+                    return (int)_dataAccess.Get(nameof(Quantity));
                 }
                 else
                 {
@@ -242,7 +242,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Volume)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Volume))[0][0];
+                    return (double)_dataAccess.Get(nameof(Volume));
                 }
                 else
                 {
@@ -275,7 +275,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass))[0][0];
+                    return (double)_dataAccess.Get(nameof(Mass));
                 }
                 else
                 {

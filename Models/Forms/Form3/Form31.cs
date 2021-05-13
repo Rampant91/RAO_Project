@@ -1,4 +1,4 @@
-﻿using Collections.Rows_Collection;
+﻿using Models.DataAccess;
 using System;
 using System.Collections.Generic;
 
@@ -8,7 +8,7 @@ namespace Models
     [Attributes.Form_Class("Форма 3.1: Отчет о намерении экспортировать радиоактивные источники 1 и 2 категории")]
     public class Form31 : Abstracts.Form3
     {
-        public Form31(IDataAccess Access) : base(Access)
+        public Form31() : base()
         {
             FormNum = "31";
             NumberOfFields = 19;
@@ -29,7 +29,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RecieverName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RecieverName))[0][0];
+                    return (string)_dataAccess.Get(nameof(RecieverName));
                 }
                 else
                 {
@@ -58,7 +58,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RecieverAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RecieverAddress))[0][0];
+                    return (string)_dataAccess.Get(nameof(RecieverAddress));
                 }
                 else
                 {
@@ -87,7 +87,7 @@ namespace Models
             {
                 if (GetErrors(nameof(RecieverFactAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(RecieverFactAddress))[0][0];
+                    return (string)_dataAccess.Get(nameof(RecieverFactAddress));
                 }
                 else
                 {
@@ -116,7 +116,7 @@ namespace Models
             {
                 if (GetErrors(nameof(LicenseId)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(LicenseId))[0][0];
+                    return (string)_dataAccess.Get(nameof(LicenseId));
                 }
                 else
                 {
@@ -145,7 +145,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ValidThru)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThru))[0][0];
+                    return (DateTime)_dataAccess.Get(nameof(ValidThru));
                 }
                 else
                 {
@@ -174,7 +174,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SuggestedSolutionDate)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(SuggestedSolutionDate))[0][0];
+                    return (DateTime)_dataAccess.Get(nameof(SuggestedSolutionDate));
                 }
                 else
                 {
@@ -203,7 +203,7 @@ namespace Models
             {
                 if (GetErrors(nameof(UserName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(UserName))[0][0];
+                    return (string)_dataAccess.Get(nameof(UserName));
                 }
                 else
                 {
@@ -232,7 +232,7 @@ namespace Models
             {
                 if (GetErrors(nameof(UserAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(UserAddress))[0][0];
+                    return (string)_dataAccess.Get(nameof(UserAddress));
                 }
                 else
                 {
@@ -261,7 +261,7 @@ namespace Models
             {
                 if (GetErrors(nameof(UserFactAddress)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(UserFactAddress))[0][0];
+                    return (string)_dataAccess.Get(nameof(UserFactAddress));
                 }
                 else
                 {
@@ -290,7 +290,7 @@ namespace Models
             {
                 if (GetErrors(nameof(UserTelephone)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(UserTelephone))[0][0];
+                    return (string)_dataAccess.Get(nameof(UserTelephone));
                 }
                 else
                 {
@@ -319,7 +319,7 @@ namespace Models
             {
                 if (GetErrors(nameof(UserFax)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(UserFax))[0][0];
+                    return (string)_dataAccess.Get(nameof(UserFax));
                 }
                 else
                 {
@@ -348,7 +348,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Email)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Email))[0][0];
+                    return (string)_dataAccess.Get(nameof(Email));
                 }
                 else
                 {
@@ -377,7 +377,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ZriUsageScope)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ZriUsageScope))[0][0];
+                    return (string)_dataAccess.Get(nameof(ZriUsageScope));
                 }
                 else
                 {
@@ -406,7 +406,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ContractId)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ContractId))[0][0];
+                    return (string)_dataAccess.Get(nameof(ContractId));
                 }
                 else
                 {
@@ -435,7 +435,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ContractDate)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ContractDate))[0][0];
+                    return (DateTime)_dataAccess.Get(nameof(ContractDate));
                 }
                 else
                 {
@@ -464,7 +464,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CountryCreator)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CountryCreator))[0][0];
+                    return (string)_dataAccess.Get(nameof(CountryCreator));
                 }
                 else
                 {
