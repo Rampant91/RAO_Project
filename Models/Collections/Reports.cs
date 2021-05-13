@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Collections
 {
@@ -17,30 +19,82 @@ namespace Collections
             _dataAccess = Access;
 
         }
+        public Reports()
+        {
+            _dataAccess = new Models.DataAccess.RamAccess();
 
-        public Report this[string key]
+        }
+        [Key]
+        public int ReportsId { get; set; }
+
+        public Report Master
         {
             get
             {
-                return null;
+                if (GetErrors(nameof(Master)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(Master));
+                    if (tmp == null)
+                    {
+                        _dataAccess.Set(nameof(Master), new Collections.Report());
+                    }
+                    tmp = _dataAccess.Get(nameof(Master));
+                    return (Collections.Report)tmp;
+                }
+                else
+                {
+                    return _Master_Not_Valid;
+                }
+            }
+            set
+            {
+                _Master_Not_Valid = value;
+                if (GetErrors(nameof(Master)) == null)
+                {
+                    _dataAccess.Set(nameof(Master), _Master_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Master));
             }
         }
+        private Report _Master_Not_Valid = new Report();
+        private bool Master_Validation()
+        {
+            return true;
+        }
 
-        public IEnumerator<Report> GetAllElements
+        public ObservableCollection<Report> Reps
         {
             get
             {
-                yield break;
+                if (GetErrors(nameof(Reps)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(Reps));
+                    if (tmp == null)
+                    {
+                        _dataAccess.Set(nameof(Reps), new ObservableCollection<Collections.Report>());
+                    }
+                    tmp = _dataAccess.Get(nameof(Reps));
+                    return (ObservableCollection<Collections.Report>)tmp;
+                }
+                else
+                {
+                    return _Reps_Not_Valid;
+                }
+            }
+            set
+            {
+                _Reps_Not_Valid = value;
+                if (GetErrors(nameof(Reps)) == null)
+                {
+                    _dataAccess.Set(nameof(Reps), _Reps_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Reps));
             }
         }
-
-        public void Add(Report item)
+        private ObservableCollection<Report> _Reps_Not_Valid = new ObservableCollection<Report>();
+        private bool Reps_Validation()
         {
-
-        }
-        public void RemoveAt(int ID)
-        {
-
+            return true;
         }
 
 

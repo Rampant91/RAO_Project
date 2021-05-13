@@ -8,9 +8,21 @@ namespace Models.DataAccess
     {
         Dictionary<string,object> Data { get; set; }
 
+        public RamAccess()
+        {
+            Data = new Dictionary<string, object>();
+        }
+
         public object Get(string key)
         {
-            return Data[key];
+            if(Data.ContainsKey(key))
+            {
+                return Data[key];
+            }
+            else
+            {
+                return null;
+            }
         }
         public void Set(string key,object obj)
         {

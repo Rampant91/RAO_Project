@@ -26,7 +26,7 @@ namespace Client_App.Short_Visual
             grd.IsReadOnly = true;
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            grd.Bind(DataGrid.ItemsProperty, new Binding("FormModel_Local.Dictionary.GetFilteredStorage"));
+            grd.Bind(DataGrid.ItemsProperty, new Binding("FormModel_Local"));
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();
@@ -62,10 +62,10 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "10/RegNo"
             };
-            clm1.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm1.CellTemplate = new FuncDataTemplate<Collections.Reports>((x, e) =>
                     new TextBlock
                     {
-                        [!TextBlock.TextProperty] = new Binding("RegNo"),
+                        [!TextBlock.TextProperty] = new Binding("Master.RegNo"),
                     });
             grd.Columns.Add(clm1);
 
@@ -79,11 +79,11 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "10/ShortJurLico"
             };
-            clm2.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm2.CellTemplate = new FuncDataTemplate<Collections.Reports>((x, e) =>
                     new TextBlock
                     {
                         HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                        [!TextBlock.TextProperty] = new Binding("ShortJurLico"),
+                        [!TextBlock.TextProperty] = new Binding("Master.ShortJurLico"),
                     });
             grd.Columns.Add(clm2);
 
@@ -97,10 +97,10 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "10/Okpo"
             };
-            clm3.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm3.CellTemplate = new FuncDataTemplate<Collections.Reports>((x, e) =>
                     new TextBlock
                     {
-                        [!TextBlock.TextProperty] = new Binding("Okpo"),
+                        [!TextBlock.TextProperty] = new Binding("Master.Okpo"),
                     });
             grd.Columns.Add(clm3);
             return grd;
@@ -113,7 +113,7 @@ namespace Client_App.Short_Visual
             grd.IsReadOnly = true;
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            grd.Bind(DataGrid.ItemsProperty, new Binding("FormModel_Local.GetFilteredDictionary"));
+            grd.Bind(DataGrid.ItemsProperty, new Binding("FormModel_Local[0].Reps"));
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();
@@ -143,7 +143,7 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/NumberInOrder"
             };
-            clm1.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm1.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("NumberInOrder"),
@@ -160,7 +160,7 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "1/FormNum"
             };
-            clm2.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm2.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("FormNum"),
@@ -179,7 +179,7 @@ namespace Client_App.Short_Visual
             };
             Binding bnd = new Binding("StartPeriod");
             bnd.StringFormat = "{0:d}";
-            clm3.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm3.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = bnd,
@@ -198,7 +198,7 @@ namespace Client_App.Short_Visual
             };
             bnd = new Binding("EndPeriod");
             bnd.StringFormat = "{0:d}";
-            clm4.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm4.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = bnd,
@@ -217,7 +217,7 @@ namespace Client_App.Short_Visual
             };
             bnd = new Binding("ExportDate");
             bnd.StringFormat = "{0:d}";
-            clm5.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm5.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = bnd,
@@ -234,7 +234,7 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/IsCorrection"
             };
-            clm6.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm6.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("IsCorrection"),
@@ -250,7 +250,7 @@ namespace Client_App.Short_Visual
                 [!Button.CommandProperty] = new Binding("AddSort"),
                 CommandParameter = "_/Comments"
             };
-            clm7.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            clm7.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
                     new TextBlock
                     {
                         [!TextBlock.TextProperty] = new Binding("Comments"),

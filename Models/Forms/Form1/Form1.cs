@@ -19,7 +19,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder));
+                    var tmp = _dataAccess.Get(nameof(NumberInOrder));
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -51,7 +52,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
+                    var tmp = _dataAccess.Get(nameof(CorrectionNumber));
+                    return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
                 {
@@ -84,7 +86,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OperationCode));
+                    var tmp = _dataAccess.Get(nameof(OperationCode));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -117,7 +120,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(OperationDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(OperationDate));
+                    var tmp = _dataAccess.Get(nameof(OperationDate));
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
                 }
                 else
                 {
@@ -150,7 +154,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentVid)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(DocumentVid));
+                    var tmp = _dataAccess.Get(nameof(DocumentVid));
+                    return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
                 {
@@ -190,7 +195,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumber));
+                    var tmp = _dataAccess.Get(nameof(DocumentNumber));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -223,7 +229,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(DocumentNumberRecoded));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -256,7 +263,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(DocumentDate));
+                    var tmp = _dataAccess.Get(nameof(DocumentDate));
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
                 }
                 else
                 {
@@ -285,7 +293,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentDateNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentDateNote));
+                    var tmp = _dataAccess.Get(nameof(DocumentDateNote));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {

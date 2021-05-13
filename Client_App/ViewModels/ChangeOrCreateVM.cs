@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Metadata;
 using Collections;
-using Collections.Rows_Collection;
 using Models;
 using ReactiveUI;
 using System;
@@ -132,8 +131,8 @@ namespace Client_App.ViewModels
 
         void _AddRow()
         {
-            var frm = FormCreator.Create(FormType, new RedDataBase(DBPath, 1));
-            //Storage.Rows.Add(frm);
+            var frm = new Form11();
+            Storage.Rows11.Add(frm);
         }
 
         void _DeleteRow(IList param)

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
@@ -13,8 +14,14 @@ namespace Models
         protected IDataAccess _dataAccess { get; set; }
         public Note(IDataAccess Access)
         {
-
+            _dataAccess = Access;
         }
+        public Note()
+        {
+            _dataAccess = new Models.DataAccess.RamAccess();
+        }
+        [Key]
+        public int NoteId { get; set; }
 
         //RowNumber property
         [Attributes.Form_Property("Номер строки")]

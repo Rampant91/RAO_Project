@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
@@ -29,7 +30,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumber));
+                    var tmp = _dataAccess.Get(nameof(PassportNumber));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -87,7 +89,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberNote));
+                    var tmp = _dataAccess.Get(nameof(PassportNumberNote));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -120,7 +123,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(PassportNumberRecoded));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -170,7 +174,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Type));
+                    var tmp = _dataAccess.Get(nameof(Type));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -208,7 +213,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(TypeRecoded));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -242,7 +248,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -284,7 +291,8 @@ namespace Models
             {
                 if (GetErrors(nameof(FactoryNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactoryNumber));
+                    var tmp = _dataAccess.Get(nameof(FactoryNumber));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -316,7 +324,8 @@ namespace Models
             {
                 if (GetErrors(nameof(FactoryNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactoryNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(FactoryNumberRecoded));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -349,7 +358,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    var tmp = _dataAccess.Get(nameof(Quantity));
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -384,7 +394,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Activity));
+                    var tmp = _dataAccess.Get(nameof(Activity));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -429,7 +440,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ActivityNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ActivityNote));
+                    var tmp = _dataAccess.Get(nameof(ActivityNote));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -462,7 +474,8 @@ namespace Models
             {
                 if (GetErrors(nameof(CreationDate)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CreationDate));
+                    var tmp = _dataAccess.Get(nameof(CreationDate));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -499,7 +512,8 @@ namespace Models
             {
                 if (GetErrors(nameof(CreatorOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CreatorOKPO));
+                    var tmp = _dataAccess.Get(nameof(CreatorOKPO));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -522,7 +536,7 @@ namespace Models
         {
             ClearErrors(nameof(CreatorOKPO));
             if (value.Equals("прим.")) return;
-            foreach(var item in OKSM)
+            foreach (var item in OKSM)
             {
                 if (value.Equals(item)) return;
             }
@@ -544,7 +558,8 @@ namespace Models
             {
                 if (GetErrors(nameof(CreatorOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CreatorOKPONote));
+                    var tmp = _dataAccess.Get(nameof(CreatorOKPONote));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -577,7 +592,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Category)) == null)
                 {
-                    return (short)_dataAccess.Get(nameof(Category));
+                    var tmp = _dataAccess.Get(nameof(Category));
+                    return tmp != null ? (short)tmp : (short)-1;
                 }
                 else
                 {
@@ -612,7 +628,8 @@ namespace Models
             {
                 if (GetErrors(nameof(SignedServicePeriod)) == null)
                 {
-                    return (float)_dataAccess.Get(nameof(SignedServicePeriod));
+                    var tmp = _dataAccess.Get(nameof(SignedServicePeriod));
+                    return tmp != null ? (float)tmp : -1;
                 }
                 else
                 {
@@ -647,7 +664,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PropertyCode)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(PropertyCode));
+                    var tmp = _dataAccess.Get(nameof(PropertyCode));
+                    return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
                 {
@@ -682,7 +700,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Owner)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Owner));
+                    var tmp = _dataAccess.Get(nameof(Owner));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -885,7 +904,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPO));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -930,7 +950,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -963,7 +984,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPO));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPO));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1004,7 +1026,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPONote));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPONote));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1037,7 +1060,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackName));
+                    var tmp = _dataAccess.Get(nameof(PackName));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1069,7 +1093,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNameNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNameNote));
+                    var tmp = _dataAccess.Get(nameof(PackNameNote));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1102,7 +1127,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackType));
+                    var tmp = _dataAccess.Get(nameof(PackType));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1134,7 +1160,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(PackTypeRecoded));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1166,7 +1193,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeNote));
+                    var tmp = _dataAccess.Get(nameof(PackTypeNote));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1199,7 +1227,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNumber));
+                    var tmp = _dataAccess.Get(nameof(PackNumber));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1232,7 +1261,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(PackNumberRecoded));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {

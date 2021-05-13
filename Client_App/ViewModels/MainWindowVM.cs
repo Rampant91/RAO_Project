@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Collections;
-using Collections.Reports_Collection;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -9,6 +8,7 @@ using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace Client_App.ViewModels
 {
@@ -31,23 +31,6 @@ namespace Client_App.ViewModels
             }
         }
 
-        Reports _FormModel_Local;
-        public Reports FormModel_Local
-        {
-            get
-            {
-                return _FormModel_Local;
-            }
-            set
-            {
-                if (_FormModel_Local != value)
-                {
-                    _FormModel_Local = value;
-                    NotifyPropertyChanged("FormModel_Local");
-                }
-            }
-        }
-
         public ReactiveCommand<Unit, Unit> OpenSettings { get; }
 
         public ReactiveCommand<string, Unit> AddSort { get; }
@@ -64,10 +47,15 @@ namespace Client_App.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public DBRealization.DBModel dbm { get; set; }
         public MainWindowVM()
         {
-            _FormModel_Local = new Reports(new RedDataBase(DBPath, 3));
-            FormModel_Local.PropertyChanged += FormModelChanged;
+            dbm= new DBRealization.DBModel(_DBPath);
+            var t= dbm.Database.EnsureCreated();
+
+            dbm.SaveChanges();
+            //FormModel_Local.CollectionChanged += FormModelChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
@@ -91,8 +79,12 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(DBPath, -1, param);
+                var rt = new Report();
+                //var obj= dbm.coll_reports
+                dbm.coll_reports.Find(1).Reps[0].Reps.Add(rt);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param,DBPath,rt);
                 await frm.ShowDialog<Models.Abstracts.Form>(desktop.MainWindow);
+                dbm.SaveChanges();
             }
         }
 
@@ -102,7 +94,7 @@ namespace Client_App.ViewModels
             {
                 if (param != null)
                 {
-                    Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(DBPath, param.ReportID, null);
+                    Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate("11",DBPath,param);
                     await frm.ShowDialog(desktop.MainWindow);
                 }
             }
@@ -111,7 +103,7 @@ namespace Client_App.ViewModels
         {
             if (param != null)
             {
-                //FormModel_Local.Dictionary.GetLastForms.Remove(param);
+                dbm.coll_reports.Find(1).Reps[0].Reps.Remove(param);
             }
         }
 
@@ -133,7 +125,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        void FormModelChanged(object sender, PropertyChangedEventArgs e)
+        void FormModelChanged(object sender, CollectionChangeEventArgs e)
         {
             NotifyPropertyChanged("FormModel_Local");
         }

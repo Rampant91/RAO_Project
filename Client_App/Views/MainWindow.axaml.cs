@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using System;
+using System.ComponentModel;
 
 namespace Client_App.Views
 {
@@ -18,6 +19,16 @@ namespace Client_App.Views
         {
             base.OnOpened(e);
             Init();
+        }
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            var cntx=this.DataContext as ViewModels.MainWindowVM;
+            if(cntx!=null)
+            {
+                cntx.dbm.SaveChanges();
+            }
+
         }
         private void Init()
         {

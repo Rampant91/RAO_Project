@@ -141,7 +141,7 @@ namespace Client_App.Long_Visual
             grd.CanUserResizeColumns = true;
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            grd.Bind(DataGrid.ItemsProperty, new Binding("Storage.GetFilteredRows"));
+            grd.Bind(DataGrid.ItemsProperty, new Binding("Storage.Rows11"));
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();

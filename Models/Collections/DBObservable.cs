@@ -5,90 +5,63 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Models.Abstracts
+namespace Collections
 {
-    public abstract class Form : INotifyPropertyChanged, INotifyDataErrorInfo
+    public class DBObservable : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-        protected IDataAccess _dataAccess { get; set; }
+        IDataAccess _dataAccess { get; set; }
 
-        public Form()
+        public DBObservable(IDataAccess Access)
         {
-            _dataAccess = new RamAccess();
-        }
+            _dataAccess = Access;
 
+        }
+        public DBObservable()
+        {
+            _dataAccess = new Models.DataAccess.RamAccess();
+
+        }
         [Key]
-        public int RowId { get; set; }
+        public int DBObservableId { get; set; }
 
-        //FormNum property
-        [Attributes.Form_Property("Форма")]
-        public string FormNum
+        public ObservableCollection<Reports> Reps
         {
             get
             {
-                if (GetErrors(nameof(FormNum)) == null)
+                if (GetErrors(nameof(Reps)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(FormNum));
-                    return tmp != null ? (string)tmp : null;
+                    var tmp = _dataAccess.Get(nameof(Reps));
+                    if (tmp == null)
+                    {
+                        _dataAccess.Set(nameof(Reps), new ObservableCollection<Collections.Reports>());
+                    }
+                    tmp = _dataAccess.Get(nameof(Reps));
+                    return (ObservableCollection<Collections.Reports>)tmp;
                 }
                 else
                 {
-                    return _FormNum_Not_Valid;
+                    return _Reps_Not_Valid;
                 }
             }
             set
             {
-                _FormNum_Not_Valid = value;
-                if (GetErrors(nameof(FormNum)) == null)
+                _Reps_Not_Valid = value;
+                if (GetErrors(nameof(Reps)) == null)
                 {
-                    _dataAccess.Set(nameof(FormNum), _FormNum_Not_Valid);
+                    _dataAccess.Set(nameof(Reps), _Reps_Not_Valid);
                 }
-                OnPropertyChanged(nameof(FormNum));
+                OnPropertyChanged(nameof(Reps));
             }
         }
-        private string _FormNum_Not_Valid;
-        private void FormNum_Validation(string value)//Ready
+        private ObservableCollection<Reports> _Reps_Not_Valid = new ObservableCollection<Reports>();
+        private bool Reps_Validation()
         {
-            ClearErrors(nameof(FormNum));
+            return true;
         }
-        //FormNum property
 
-        //NumberOfFields property
-        public int NumberOfFields
-        {
-            get
-            {
-                if (GetErrors(nameof(NumberOfFields)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(NumberOfFields));
-                    return tmp != null ? (int)tmp : -1;
-                }
-                else
-                {
-                    return _NumberOfFields_Not_Valid;
-                }
-            }
-            set
-            {
-                _NumberOfFields_Not_Valid = value;
-                if (GetErrors(nameof(NumberOfFields)) == null)
-                {
-                    _dataAccess.Set(nameof(NumberOfFields), _NumberOfFields_Not_Valid);
-                }
-                OnPropertyChanged(nameof(NumberOfFields));
-            }
-        }
-        private int _NumberOfFields_Not_Valid = -1;
-        private void NumberOfFields_Validation()
-        {
-            ClearErrors(nameof(NumberOfFields));
-        }
-        //NumberOfFields property
-
-        //Для валидации
-        public abstract bool Object_Validation();
-        //Для валидации
 
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")

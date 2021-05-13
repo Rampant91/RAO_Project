@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Collections
 {
@@ -16,32 +18,127 @@ namespace Collections
         public Report(IDataAccess Access)
         {
             _dataAccess = Access;
-
-            _Rows = new Rows();
-            //_Rows.CollectionChanged += Update;       
         }
+
+        public Report()
+        {
+            _dataAccess = new Models.DataAccess.RamAccess();
+        }
+
+        [Key]
+        public int ReportId { get; set; }
 
         void Update(object sender, EventArgs args)
         {
-            OnPropertyChanged("GetFilteredRows");
-            OnPropertyChanged("Rows");
+            OnPropertyChanged("GetFilteredRows10");
+            OnPropertyChanged("Rows10");
         }
 
-        Rows _Rows;
-        public Rows Rows
+        public ObservableCollection<Models.Form10> Rows10
         {
             get
             {
-                return _Rows;
+                if (GetErrors(nameof(Rows10)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(Rows10));
+                    if (tmp == null)
+                    {
+                        _dataAccess.Set(nameof(Rows10), new ObservableCollection<Models.Form10>());
+                    }
+                    tmp = _dataAccess.Get(nameof(Rows10));
+                    return (ObservableCollection<Models.Form10>)tmp;
+                }
+                else
+                {
+                    return _Rows10_Not_Valid;
+                }
             }
             set
             {
-                if (value != _Rows)
+                _Rows10_Not_Valid = value;
+                if (GetErrors(nameof(Rows10)) == null)
                 {
-                    _Rows = value;
-                    OnPropertyChanged("Rows");
+                    _dataAccess.Set(nameof(Rows10), _Rows10_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Rows10));
+            }
+        }
+        private ObservableCollection<Models.Form10> _Rows10_Not_Valid = new ObservableCollection<Models.Form10>();
+        private bool Rows10_Validation()
+        {
+            return true;
+        }
+
+
+        public ObservableCollection<Models.Form11> Rows11
+        {
+            get
+            {
+                if (GetErrors(nameof(Rows11)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(Rows11));
+                    if (tmp == null)
+                    {
+                        _dataAccess.Set(nameof(Rows11), new ObservableCollection<Models.Form11>());
+                    }
+                    tmp = _dataAccess.Get(nameof(Rows11));
+                    return (ObservableCollection<Models.Form11>)tmp;
+                }
+                else
+                {
+                    return _Rows11_Not_Valid;
                 }
             }
+            set
+            {
+                _Rows11_Not_Valid = value;
+                if (GetErrors(nameof(Rows11)) == null)
+                {
+                    _dataAccess.Set(nameof(Rows11), _Rows11_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Rows11));
+            }
+        }
+        private ObservableCollection<Models.Form11> _Rows11_Not_Valid = new ObservableCollection<Models.Form11>();
+        private bool Rows11_Validation()
+        {
+            return true;
+        }
+
+
+        public ObservableCollection<Models.Form12> Rows12
+        {
+            get
+            {
+                if (GetErrors(nameof(Rows12)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(Rows12));
+                    if (tmp == null)
+                    {
+                        _dataAccess.Set(nameof(Rows12), new ObservableCollection<Models.Form12>());
+                    }
+                    tmp = _dataAccess.Get(nameof(Rows12));
+                    return (ObservableCollection<Models.Form12>)tmp;
+                }
+                else
+                {
+                    return _Rows12_Not_Valid;
+                }
+            }
+            set
+            {
+                _Rows12_Not_Valid = value;
+                if (GetErrors(nameof(Rows12)) == null)
+                {
+                    _dataAccess.Set(nameof(Rows12), _Rows12_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Rows12));
+            }
+        }
+        private ObservableCollection<Models.Form12> _Rows12_Not_Valid = new ObservableCollection<Models.Form12>();
+        private bool Rows12_Validation()
+        {
+            return true;
         }
 
         [Form_Property("Форма")]
@@ -55,7 +152,8 @@ namespace Collections
             {
                 if (GetErrors(nameof(IsCorrection)) == null)
                 {
-                    return (bool)_dataAccess.Get(nameof(IsCorrection));
+                    var tmp = _dataAccess.Get(nameof(IsCorrection));
+                    return tmp != null ? (bool)tmp : false;
                 }
                 else
                 {
@@ -87,7 +185,8 @@ namespace Collections
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
+                    var tmp = _dataAccess.Get(nameof(CorrectionNumber));
+                    return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
                 {
@@ -119,7 +218,8 @@ namespace Collections
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(NumberInOrder));
+                    var tmp = _dataAccess.Get(nameof(NumberInOrder));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -151,7 +251,8 @@ namespace Collections
             {
                 if (GetErrors(nameof(Comments)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Comments));
+                    var tmp = _dataAccess.Get(nameof(Comments));
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -175,37 +276,39 @@ namespace Collections
         }
         //Comments property
 
-        ////Notes property
-        //[Form_Property("Примечания")]
-        //public ObservableConcurrentDictionary<string, Note> Notes
-        //{
-        //    get
-        //    {
-        //        if (GetErrors(nameof(Notes)) == null)
-        //        {
-        //            return (ObservableConcurrentDictionary<string, Note>)_dataAccess.GetOne\(.*\,"");
-        //        }
-        //        else
-        //        {
-        //            return _Notes_Not_Valid;
-        //        }
-        //    }
-        //    set
-        //    {
-        //        _Notes_Not_Valid = value;
-        //        if (GetErrors(nameof(Notes)) == null)
-        //        {
-        //            _dataAccess.Set(nameof(Notes), _Notes_Not_Valid);
-        //        }
-        //        OnPropertyChanged(nameof(Notes));
-        //    }
-        //}
-        //private ObservableConcurrentDictionary<string, Note> _Notes_Not_Valid = new ObservableConcurrentDictionary<string, Note>();
-        //private bool Notes_Validation()
-        //{
-        //    return true;
-        //}
-        ////Notes property
+        //Notes property
+        [Form_Property("Примечания")]
+        ObservableCollection<Models.Note> _notes = new ObservableCollection<Models.Note>();
+        public ObservableCollection<Models.Note> Notes
+        {
+            get
+            {
+                if (GetErrors(nameof(Notes)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(Notes));
+                    return tmp != null ? (ObservableCollection<Models.Note>)tmp : null;
+                }
+                else
+                {
+                    return _Notes_Not_Valid;
+                }
+            }
+            set
+            {
+                _Notes_Not_Valid = value;
+                if (GetErrors(nameof(Notes)) == null)
+                {
+                    _dataAccess.Set(nameof(Notes), _Notes_Not_Valid);
+                }
+                OnPropertyChanged(nameof(Notes));
+            }
+        }
+        private ObservableCollection<Models.Note> _Notes_Not_Valid = new ObservableCollection<Models.Note>();
+        private bool Notes_Validation()
+        {
+            return true;
+        }
+        //Notes property
 
         //StartPeriod
         [Form_Property("Начало")]
@@ -215,7 +318,8 @@ namespace Collections
             {
                 if (GetErrors(nameof(StartPeriod)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(StartPeriod));
+                    var tmp = _dataAccess.Get(nameof(StartPeriod));
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
                 }
                 else
                 {
@@ -253,7 +357,8 @@ namespace Collections
             {
                 if (GetErrors(nameof(EndPeriod)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(EndPeriod));
+                    var tmp = _dataAccess.Get(nameof(EndPeriod));
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
                 }
                 else
                 {
@@ -291,7 +396,8 @@ namespace Collections
             {
                 if (GetErrors(nameof(ExportDate)) == null)
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(ExportDate));
+                    var tmp = _dataAccess.Get(nameof(ExportDate));
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
                 }
                 else
                 {

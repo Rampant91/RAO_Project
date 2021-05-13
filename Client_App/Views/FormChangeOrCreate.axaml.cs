@@ -2,39 +2,23 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Collections;
-using Collections.Report_Collection;
 
 namespace Client_App.Views
 {
     public class FormChangeOrCreate : Window
     {
         string _param = "";
-        public FormChangeOrCreate(string DBPath, int ReportID, string param)
+        public FormChangeOrCreate(string param, string DBPath, Report rep)
         {
             var tmp = new ViewModels.ChangeOrCreateVM();
-            tmp.FormType = param;
             if (DBPath != null)
             {
                 tmp.DBPath = DBPath;
-                if (ReportID != -1)
-                {
-                    tmp.Storage = new Report(new RedDataBase(DBPath, ReportID.ToString()));
-                }
-                else
-                {
-                    tmp.Storage = new Report(new RedDataBase(DBPath, 2));
-                }
+                tmp.Storage = rep;
             }
             else
             {
-                if (ReportID != -1)
-                {
-                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath, ReportID.ToString()));
-                }
-                else
-                {
-                    tmp.Storage = new Report(new RedDataBase(tmp.DBPath, 2));
-                }
+                tmp.Storage = rep;
             }
 
             this.DataContext = tmp;
