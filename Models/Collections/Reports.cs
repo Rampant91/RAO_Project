@@ -27,7 +27,7 @@ namespace Collections
         [Key]
         public int ReportsId { get; set; }
 
-        public Report Master
+        public virtual Report Master
         {
             get
             {
@@ -62,37 +62,37 @@ namespace Collections
             return true;
         }
 
-        public ObservableCollection<Report> Reps
+        public virtual ObservableCollection<Report> Report_Collection
         {
             get
             {
-                if (GetErrors(nameof(Reps)) == null)
+                if (GetErrors(nameof(Report_Collection)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Reps));
+                    var tmp = _dataAccess.Get(nameof(Report_Collection));
                     if (tmp == null)
                     {
-                        _dataAccess.Set(nameof(Reps), new ObservableCollection<Collections.Report>());
+                        _dataAccess.Set(nameof(Report_Collection), new ObservableCollection<Collections.Report>());
                     }
-                    tmp = _dataAccess.Get(nameof(Reps));
+                    tmp = _dataAccess.Get(nameof(Report_Collection));
                     return (ObservableCollection<Collections.Report>)tmp;
                 }
                 else
                 {
-                    return _Reps_Not_Valid;
+                    return _Report_Collection_Not_Valid;
                 }
             }
             set
             {
-                _Reps_Not_Valid = value;
-                if (GetErrors(nameof(Reps)) == null)
+                _Report_Collection_Not_Valid = value;
+                if (GetErrors(nameof(Report_Collection)) == null)
                 {
-                    _dataAccess.Set(nameof(Reps), _Reps_Not_Valid);
+                    _dataAccess.Set(nameof(Report_Collection), _Report_Collection_Not_Valid);
                 }
-                OnPropertyChanged(nameof(Reps));
+                OnPropertyChanged(nameof(Report_Collection));
             }
         }
-        private ObservableCollection<Report> _Reps_Not_Valid = new ObservableCollection<Report>();
-        private bool Reps_Validation()
+        private ObservableCollection<Report> _Report_Collection_Not_Valid = new ObservableCollection<Report>();
+        private bool Report_Collection_Validation()
         {
             return true;
         }

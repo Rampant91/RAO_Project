@@ -9,6 +9,7 @@ using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.ViewModels
 {
@@ -30,6 +31,8 @@ namespace Client_App.ViewModels
                 }
             }
         }
+
+        public DBObservable Local_Reports { get; set; } = new DBObservable();
 
         public ReactiveCommand<Unit, Unit> OpenSettings { get; }
 
@@ -54,6 +57,21 @@ namespace Client_App.ViewModels
             dbm= new DBRealization.DBModel(_DBPath);
             var t= dbm.Database.EnsureCreated();
 
+            dbm.coll_reports.Include(x => x.Reports_Collection).Load();
+            dbm.reports.Include(x => x.Report_Collection).Load();
+            dbm.reports.Include(x => x.Master).Load();
+            dbm.report.Include(x => x.Rows11).Load();
+
+            if (dbm.coll_reports.Count() != 0)
+            {
+                Local_Reports = dbm.coll_reports.First();
+            }
+            else
+            {
+                Local_Reports = new DBObservable();
+                Local_Reports.Reports_Collection.Add(new Reports());
+                dbm.coll_reports.Add(Local_Reports);
+            }
             dbm.SaveChanges();
             //FormModel_Local.CollectionChanged += FormModelChanged;
 
@@ -81,7 +99,15 @@ namespace Client_App.ViewModels
             {
                 var rt = new Report();
                 //var obj= dbm.coll_reports
-                dbm.coll_reports.Find(1).Reps[0].Reps.Add(rt);
+                //if (dbm.coll_reports.Count() == 0)
+                //{
+                //    var tmp = new DBObservable();
+                //    dbm.coll_reports.Add(new DBObservable());
+                //    tmp.Reps.Add(new Reports());
+                //    dbm.SaveChanges();
+                //}
+                var obj = dbm.coll_reports.Find(1).Reports_Collection[0];
+                obj.Report_Collection.Add(rt);
                 Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param,DBPath,rt);
                 await frm.ShowDialog<Models.Abstracts.Form>(desktop.MainWindow);
                 dbm.SaveChanges();
@@ -103,7 +129,7 @@ namespace Client_App.ViewModels
         {
             if (param != null)
             {
-                dbm.coll_reports.Find(1).Reps[0].Reps.Remove(param);
+                dbm.coll_reports.Find(1).Reports_Collection[0].Report_Collection.Remove(param);
             }
         }
 

@@ -26,7 +26,7 @@ namespace Client_App.Short_Visual
             grd.IsReadOnly = true;
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            grd.Bind(DataGrid.ItemsProperty, new Binding("FormModel_Local"));
+            grd.Bind(DataGrid.ItemsProperty, new Binding("Local_Reports.Reports_Collection"));
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();
@@ -113,7 +113,7 @@ namespace Client_App.Short_Visual
             grd.IsReadOnly = true;
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            grd.Bind(DataGrid.ItemsProperty, new Binding("FormModel_Local[0].Reps"));
+            grd.Bind(DataGrid.ItemsProperty, new Binding("Local_Reports.Reports_Collection[0].Report_Collection"));
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();
