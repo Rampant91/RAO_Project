@@ -32,43 +32,39 @@ namespace Client_App.Controls.DataGrid
             get { return _type; }
             set { SetAndRaise(TypeProperty, ref _type, value); }
         }
-
-        public Control RowControl { get; set; }
         public Control HeaderControl { get; set; }
 
         public DataGrid()
         {
             InitializeComponent();
+            this.DataContext = new Support.DataGrid_DataContext(this);
             Type = "1/1";
             MakeHeader();
             HeaderControl = Support.RenderDataGridHeader.Render.GetControl(Type);
-            RowControl= Support.RenderDataGridRow.Render.GetControl(Type);
         }
 
         public void AddRow()
         {
             var panel = this.FindControl<Panel>("Rows");
+            var rp = new Report();
+            this.Items.Add(rp);
+            var id = this.Items.IndexOf(rp);
+            panel.Children.Add(Support.RenderDataGridRow.Render.GetControl(Type,id));
         }
 
-        public void DeleteRow()
+        public void DeleteRow(Report obj)
         {
             var panel = this.FindControl<Panel>("Rows");
+            var id=this.Items.IndexOf(obj);
+            this.Items.RemoveAt(id);
+            panel.Children.RemoveAt(id);
         }
 
         public void MakeHeader()
         {
-            if(HeaderControl!=null)
-            {
-                var panel=this.FindControl<Panel>("Columns");
-                panel.Children.Clear();
-                panel.Children.Add(HeaderControl);
-            }
-            else
-            {
-                HeaderControl = Support.RenderDataGridHeader.Render.GetControl(Type);
-                var panel = this.FindControl<Panel>("Columns");
-                panel.Children.Add(HeaderControl);
-            }
+            var panel = this.FindControl<Panel>("Columns");
+            panel.Children.Clear();
+            panel.Children.Add(HeaderControl);
         }
 
         private void InitializeComponent()

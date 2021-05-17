@@ -107,13 +107,13 @@ namespace Client_App.Short_Visual
         }
 
         //Форма 1X
-        static DataGrid FormX_Visual()
+        static Controls.DataGrid.DataGrid FormX_Visual()
         {
-            DataGrid grd = new DataGrid();
-            grd.IsReadOnly = true;
+            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid();
+            //grd.IsReadOnly = true;
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            grd.Bind(DataGrid.ItemsProperty, new Binding("Local_Reports.Reports_Collection[0].Report_Collection"));
+            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, new Binding("Local_Reports.Reports_Collection[0].Report_Collection"));
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();
@@ -148,7 +148,7 @@ namespace Client_App.Short_Visual
                     {
                         [!TextBlock.TextProperty] = new Binding("NumberInOrder"),
                     });
-            grd.Columns.Add(clm1);
+            //grd.Columns.Add(clm1);
 
             DataGridTemplateColumn clm2 = new DataGridTemplateColumn();
             clm2.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
@@ -165,7 +165,7 @@ namespace Client_App.Short_Visual
                     {
                         [!TextBlock.TextProperty] = new Binding("FormNum"),
                     });
-            grd.Columns.Add(clm2);
+            //grd.Columns.Add(clm2);
 
             DataGridTemplateColumn clm3 = new DataGridTemplateColumn();
             clm3.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
@@ -184,7 +184,7 @@ namespace Client_App.Short_Visual
                     {
                         [!TextBlock.TextProperty] = bnd,
                     });
-            grd.Columns.Add(clm3);
+            //grd.Columns.Add(clm3);
 
             DataGridTemplateColumn clm4 = new DataGridTemplateColumn();
             clm4.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
@@ -203,7 +203,7 @@ namespace Client_App.Short_Visual
                     {
                         [!TextBlock.TextProperty] = bnd,
                     });
-            grd.Columns.Add(clm4);
+            //grd.Columns.Add(clm4);
 
             DataGridTemplateColumn clm5 = new DataGridTemplateColumn();
             clm5.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
@@ -222,7 +222,7 @@ namespace Client_App.Short_Visual
                     {
                         [!TextBlock.TextProperty] = bnd,
                     });
-            grd.Columns.Add(clm5);
+            //grd.Columns.Add(clm5);
 
             DataGridTemplateColumn clm6 = new DataGridTemplateColumn();
             clm6.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
@@ -239,7 +239,7 @@ namespace Client_App.Short_Visual
                     {
                         [!TextBlock.TextProperty] = new Binding("IsCorrection"),
                     });
-            grd.Columns.Add(clm6);
+            //grd.Columns.Add(clm6);
             DataGridTemplateColumn clm7 = new DataGridTemplateColumn();
             clm7.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
             clm7.Header = new Button
@@ -255,7 +255,7 @@ namespace Client_App.Short_Visual
                     {
                         [!TextBlock.TextProperty] = new Binding("Comments"),
                     });
-            grd.Columns.Add(clm7);
+            //.Columns.Add(clm7);
             return grd;
         }
 

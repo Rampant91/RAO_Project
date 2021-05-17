@@ -57,10 +57,7 @@ namespace Client_App.ViewModels
             dbm= new DBRealization.DBModel(_DBPath);
             var t= dbm.Database.EnsureCreated();
 
-            dbm.coll_reports.Include(x => x.Reports_Collection).Load();
-            dbm.reports.Include(x => x.Report_Collection).Load();
-            dbm.reports.Include(x => x.Master).Load();
-            dbm.report.Include(x => x.Rows11).Load();
+            dbm.LoadAllTables();
 
             if (dbm.coll_reports.Count() != 0)
             {
