@@ -39,15 +39,28 @@ namespace Client_App.Controls.DataGrid
         public DataGrid()
         {
             InitializeComponent();
+            Type = "1/1";
+            MakeHeader();
             HeaderControl = Support.RenderDataGridHeader.Render.GetControl(Type);
             RowControl= Support.RenderDataGridRow.Render.GetControl(Type);
         }
 
-        public void UpdateHeader()
+        public void AddRow()
+        {
+            var panel = this.FindControl<Panel>("Rows");
+        }
+
+        public void DeleteRow()
+        {
+            var panel = this.FindControl<Panel>("Rows");
+        }
+
+        public void MakeHeader()
         {
             if(HeaderControl!=null)
             {
                 var panel=this.FindControl<Panel>("Columns");
+                panel.Children.Clear();
                 panel.Children.Add(HeaderControl);
             }
             else

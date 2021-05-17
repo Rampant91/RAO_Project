@@ -33,7 +33,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
         }
         static Control Get1()
         {
-            return null;
+            return new TextBlock { Text="Test" };
         }
         static Control Get2()
         {

@@ -7,7 +7,7 @@
   <Panel>
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
       <StackPanel Name="Columns" Orientation="Horizontal">
-        
+
       </StackPanel>
       <StackPanel Name="Rows" Orientation="Vertical">
         
