@@ -109,11 +109,11 @@ namespace Client_App.Short_Visual
         //Форма 1X
         static Controls.DataGrid.DataGrid FormX_Visual()
         {
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid();
-            //grd.IsReadOnly = true;
-            grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-            grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, new Binding("Local_Reports.Reports_Collection[0].Report_Collection"));
+            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid {
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                [!Controls.DataGrid.DataGrid.ItemsProperty] = new Binding("Local_Reports.Reports_Collection[0].Report_Collection")
+            };
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();

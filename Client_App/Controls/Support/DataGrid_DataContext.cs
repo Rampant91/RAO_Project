@@ -13,17 +13,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.Controls.Support
 {
-    public class DataGrid_DataContext 
+    public class DataGrid_DataContext
     {
-        public ReactiveCommand<Unit, Unit> AddRow { get; }
-        public ReactiveCommand<Report, Unit> DeleteRow { get; }
-
         DataGrid.DataGrid MainControl { get; set; }
         public DataGrid_DataContext(DataGrid.DataGrid grd)
         {
             MainControl = grd;
-            AddRow = ReactiveCommand.Create(MainControl.AddRow);
-            DeleteRow = ReactiveCommand.Create<Report>(MainControl.DeleteRow);
         }
     }
 }

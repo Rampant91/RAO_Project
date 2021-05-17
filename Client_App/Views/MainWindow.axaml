@@ -12,9 +12,6 @@
         Title="РАО"
         x:Name="MainWindow"
         Background="#D3D3D3">
-    <Design.DataContext>
-        <vm:MainWindowVM/>
-    </Design.DataContext>
   <Window.Resources>
     <Converters:WindowPercentConverter_Height x:Key="WindowPercentConverter_Height"/>
     <Converters:WindowPercentConverter_Width x:Key="WindowPercentConverter_Width"/>

@@ -14,6 +14,7 @@ namespace Client_App.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
+            this.DataContext = new ViewModels.MainWindowVM();
         }
         protected override void OnOpened(EventArgs e)
         {
