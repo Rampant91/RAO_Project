@@ -159,7 +159,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {

@@ -158,7 +158,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityCreated)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityCreated));
+                    var tmp = _dataAccess.Get(nameof(QuantityCreated));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -167,7 +168,9 @@ namespace Models
             }
             set
             {
-                _QuantityCreated_Not_Valid = value;
+                QuantityCreated_Validation(value);
+                //_QuantityCreated_Not_Valid = value;
+
                 if (GetErrors(nameof(QuantityCreated)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityCreated), _QuantityCreated_Not_Valid);
@@ -192,7 +195,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityCreatedNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityCreatedNote));
+                    var tmp = _dataAccess.Get(nameof(QuantityCreatedNote));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -260,7 +264,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothers)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromAnothers));
+                    var tmp = _dataAccess.Get(nameof(QuantityFromAnothers));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -269,7 +274,9 @@ namespace Models
             }
             set
             {
-                _QuantityFromAnothers_Not_Valid = value;
+                QuantityFromAnothers_Validation(value);
+                //_QuantityFromAnothers_Not_Valid = value;
+                
                 if (GetErrors(nameof(QuantityFromAnothers)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityFromAnothers), _QuantityFromAnothers_Not_Valid);
@@ -287,39 +294,40 @@ namespace Models
         }
         //QuantityFromAnothers property
 
-        //QuantityFromAnothersINote property
-        public int QuantityFromAnothersINote
+        //QuantityFromAnothersNote property
+        public int QuantityFromAnothersNote
         {
             get
             {
-                if (GetErrors(nameof(QuantityFromAnothersINote)) == null)
+                if (GetErrors(nameof(QuantityFromAnothersNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersINote));
+                    var tmp = _dataAccess.Get(nameof(QuantityFromAnothersNote));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
-                    return _QuantityFromAnothersINote_Not_Valid;
+                    return _QuantityFromAnothersNote_Not_Valid;
                 }
             }
             set
             {
-                _QuantityFromAnothersINote_Not_Valid = value;
-                if (GetErrors(nameof(QuantityFromAnothersINote)) == null)
+                _QuantityFromAnothersNote_Not_Valid = value;
+                if (GetErrors(nameof(QuantityFromAnothersNote)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityFromAnothersINote), _QuantityFromAnothersINote_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityFromAnothersNote), _QuantityFromAnothersNote_Not_Valid);
                 }
-                OnPropertyChanged(nameof(QuantityFromAnothersINote));
+                OnPropertyChanged(nameof(QuantityFromAnothersNote));
             }
         }
         // positive int.
-        private int _QuantityFromAnothersINote_Not_Valid = -1;
-        private void QuantityFromAnothersINote_Validation(int value)//Ready
+        private int _QuantityFromAnothersNote_Not_Valid = -1;
+        private void QuantityFromAnothersNote_Validation(int value)//Ready
         {
-            ClearErrors(nameof(QuantityFromAnothersINote));
+            ClearErrors(nameof(QuantityFromAnothersNote));
             if (value <= 0)
-                AddError(nameof(QuantityFromAnothersINote), "Недопустимое значение");
+                AddError(nameof(QuantityFromAnothersNote), "Недопустимое значение");
         }
-        //QuantityFromAnothersINote property
+        //QuantityFromAnothersNote property
 
         //MassFromAnothersImported Property
         [Attributes.Form_Property("Масса импортированного от сторонних, т")]
@@ -362,7 +370,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromAnothersImported)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromAnothersImported));
+                    var tmp = _dataAccess.Get(nameof(QuantityFromAnothersImported));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -371,7 +380,9 @@ namespace Models
             }
             set
             {
-                _QuantityFromAnothersImported_Not_Valid = value;
+                QuantityFromAnothersImported_Validation(value);
+                //_QuantityFromAnothersImported_Not_Valid = value;
+
                 if (GetErrors(nameof(QuantityFromAnothersImported)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityFromAnothersImported), _QuantityFromAnothersImported_Not_Valid);
@@ -396,7 +407,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityFromImportedNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityFromImportedNote));
+                    var tmp = _dataAccess.Get(nameof(QuantityFromImportedNote));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -406,7 +418,7 @@ namespace Models
             set
             {
                 _QuantityFromImportedNote_Not_Valid = value;
-                if (GetErrors(nameof(QuantityFromAnothersINote)) == null)
+                if (GetErrors(nameof(QuantityFromAnothersNote)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityFromImportedNote), _QuantityFromImportedNote_Not_Valid);
                 }
@@ -464,7 +476,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityAnotherReasons)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityAnotherReasons));
+                    var tmp = _dataAccess.Get(nameof(QuantityAnotherReasons));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -473,7 +486,8 @@ namespace Models
             }
             set
             {
-                _QuantityAnotherReasons_Not_Valid = value;
+                QuantityAnotherReasons_Validation(value);
+
                 if (GetErrors(nameof(QuantityAnotherReasons)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityAnotherReasons), _QuantityAnotherReasons_Not_Valid);
@@ -498,7 +512,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityAnotherReasonsNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityAnotherReasonsNote));
+                    var tmp = _dataAccess.Get(nameof(QuantityAnotherReasonsNote));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -566,7 +581,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityTransferredToAnother)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityTransferredToAnother));
+                    var tmp = _dataAccess.Get(nameof(QuantityTransferredToAnother));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -575,7 +591,8 @@ namespace Models
             }
             set
             {
-                _QuantityTransferredToAnother_Not_Valid = value;
+                QuantityTransferredToAnother_Validation(value);
+
                 if (GetErrors(nameof(QuantityTransferredToAnother)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityTransferredToAnother), _QuantityTransferredToAnother_Not_Valid);
@@ -600,7 +617,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityTransferredToNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityTransferredToNote));
+                    var tmp = _dataAccess.Get(nameof(QuantityTransferredToNote));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -668,7 +686,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRefined)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityRefined));
+                    var tmp = _dataAccess.Get(nameof(QuantityRefined));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -677,7 +696,8 @@ namespace Models
             }
             set
             {
-                _QuantityRefined_Not_Valid = value;
+                QuantityRefined_Validation(value);
+
                 if (GetErrors(nameof(QuantityRefined)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityRefined), _QuantityRefined_Not_Valid);
@@ -702,7 +722,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRefinedNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityRefinedNote));
+                    var tmp = _dataAccess.Get(nameof(QuantityRefinedNote));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -770,7 +791,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRemovedFromAccount)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromAccount));
+                    var tmp = _dataAccess.Get(nameof(QuantityRemovedFromAccount));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -779,7 +801,8 @@ namespace Models
             }
             set
             {
-                _QuantityRemovedFromAccount_Not_Valid = value;
+                QuantityRemovedFromAccount_Validation(value);
+
                 if (GetErrors(nameof(QuantityRemovedFromAccount)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityRemovedFromAccount), _QuantityRemovedFromAccount_Not_Valid);
@@ -805,7 +828,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityRemovedFromNote)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityRemovedFromNote));
+                    var tmp = _dataAccess.Get(nameof(QuantityRemovedFromNote));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {

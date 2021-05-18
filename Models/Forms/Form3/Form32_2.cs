@@ -27,7 +27,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackName));
+                    var tmp = _dataAccess.Get(nameof(PackName));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -60,7 +61,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackType));
+                    var tmp = _dataAccess.Get(nameof(PackType));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -92,7 +94,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(PackTypeRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {

@@ -297,7 +297,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOZIII)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOZIII));
+                    var tmp = _dataAccess.Get(nameof(QuantityOZIII));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -306,7 +307,8 @@ namespace Models
             }
             set
             {
-                _QuantityOZIII_Not_Valid = value;
+                QuantityOZIII_Validation(value);
+
                 if (GetErrors(nameof(QuantityOZIII)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOZIII), _QuantityOZIII_Not_Valid);
@@ -383,7 +385,8 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumber));
+                    var tmp = _dataAccess.Get(nameof(DocumentNumber));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -415,7 +418,8 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(DocumentNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(DocumentNumberRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -448,7 +452,8 @@ namespace Models
             {
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(DocumentDate));
+                    var tmp = _dataAccess.Get(nameof(DocumentDate));//OK
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
                 }
                 else
                 {
@@ -466,7 +471,7 @@ namespace Models
             }
         }
         //if change this change validation
-        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         private void DocumentDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(DocumentDate));
@@ -499,7 +504,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ExpirationDate_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _ExpirationDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         private void ExpirationDate_Validation(DateTimeOffset value)//TODO
         {
             ClearErrors(nameof(ExpirationDate));

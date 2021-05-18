@@ -133,7 +133,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackName));
+                    var tmp = _dataAccess.Get(nameof(PackName));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -165,7 +166,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNameNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNameNote));
+                    var tmp = _dataAccess.Get(nameof(PackNameNote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -198,7 +200,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackType));
+                    var tmp = _dataAccess.Get(nameof(PackType));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -230,7 +233,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(PackTypeRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -262,7 +266,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeNote));
+                    var tmp = _dataAccess.Get(nameof(PackTypeNote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -528,7 +533,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOZIII)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOZIII));
+                    var tmp = _dataAccess.Get(nameof(QuantityOZIII));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -537,7 +543,9 @@ namespace Models
             }
             set
             {
-                _QuantityOZIII_Not_Valid = value;
+                QuantityOZIII_Validation(value);
+                //_QuantityOZIII_Not_Valid = value;
+
                 if (GetErrors(nameof(QuantityOZIII)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOZIII), _QuantityOZIII_Not_Valid);

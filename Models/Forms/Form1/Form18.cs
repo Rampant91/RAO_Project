@@ -95,7 +95,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumber));
+                    var tmp = _dataAccess.Get(nameof(PassportNumber));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -127,7 +128,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberNote));
+                    var tmp = _dataAccess.Get(nameof(PassportNumberNote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -160,7 +162,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(PassportNumberRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -292,7 +295,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -369,7 +373,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPO));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -571,7 +576,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPONote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -604,7 +610,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPO));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPO));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -645,7 +652,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPONote));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPONote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {

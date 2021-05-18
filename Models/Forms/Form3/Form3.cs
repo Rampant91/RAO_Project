@@ -18,7 +18,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
+                    var tmp = _dataAccess.Get(nameof(CorrectionNumber));
+                    return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
                 {
@@ -69,7 +70,7 @@ namespace Models.Abstracts
             }
         }
 
-        private DateTimeOffset _NotificationDate_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _NotificationDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         //NotificationDate property
     }
 }

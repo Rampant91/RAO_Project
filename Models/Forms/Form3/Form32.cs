@@ -76,7 +76,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _SupplyDate_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _SupplyDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         //SupplyDate property
 
         //RecieverName property
@@ -192,7 +192,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThruRv_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _ValidThruRv_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         //ValidThruRv property
 
         //LicenseIdRao property
@@ -250,7 +250,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThruRao_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _ValidThruRao_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         //ValidThruRao property
 
         //SupplyAddress property
@@ -290,7 +290,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -323,7 +324,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    var tmp = _dataAccess.Get(nameof(Quantity));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -332,7 +334,8 @@ namespace Models
             }
             set
             {
-                _Quantity_Not_Valid = value;
+                Quantity_Validation(value);
+
                 if (GetErrors(nameof(Quantity)) == null)
                 {
                     _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);

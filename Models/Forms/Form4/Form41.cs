@@ -28,7 +28,8 @@ namespace Models
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder));
+                    var tmp = _dataAccess.Get(nameof(NumberInOrder));
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -188,7 +189,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsInv)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOfFormsInv));
+                    var tmp = _dataAccess.Get(nameof(QuantityOfFormsInv));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -197,7 +199,8 @@ namespace Models
             }
             set
             {
-                _QuantityOfFormsInv_Not_Valid = value;
+                QuantityOfFormsInv_Validation(value);
+
                 if (GetErrors(nameof(QuantityOfFormsInv)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOfFormsInv), _QuantityOfFormsInv_Not_Valid);
@@ -223,7 +226,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsOper)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOfFormsOper));
+                    var tmp = _dataAccess.Get(nameof(QuantityOfFormsOper));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -232,7 +236,8 @@ namespace Models
             }
             set
             {
-                _QuantityOfFormsOper_Not_Valid = value;
+                QuantityOfFormsOper_Validation(value);
+
                 if (GetErrors(nameof(QuantityOfFormsOper)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOfFormsOper), _QuantityOfFormsOper_Not_Valid);
@@ -258,7 +263,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOfFormsYear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOfFormsYear));
+                    var tmp = _dataAccess.Get(nameof(QuantityOfFormsYear));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -267,7 +273,8 @@ namespace Models
             }
             set
             {
-                _QuantityOfFormsYear_Not_Valid = value;
+                QuantityOfFormsYear_Validation(value);
+
                 if (GetErrors(nameof(QuantityOfFormsYear)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOfFormsYear), _QuantityOfFormsYear_Not_Valid);

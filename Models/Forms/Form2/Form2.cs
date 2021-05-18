@@ -18,7 +18,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(CorrectionNumber));
+                    var tmp = _dataAccess.Get(nameof(CorrectionNumber));
+                    return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
                 {
@@ -51,7 +52,8 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberInOrder));
+                    var tmp = _dataAccess.Get(nameof(NumberInOrder));
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {

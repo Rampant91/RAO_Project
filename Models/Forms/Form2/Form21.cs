@@ -302,7 +302,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityIn)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityIn));
+                    var tmp = _dataAccess.Get(nameof(QuantityIn));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -311,7 +312,8 @@ namespace Models
             }
             set
             {
-                _QuantityIn_Not_Valid = value;
+                QuantityIn_Validation(value);
+
                 if (GetErrors(nameof(QuantityIn)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityIn), _QuantityIn_Not_Valid);
@@ -673,7 +675,8 @@ namespace Models
             {
                 if (GetErrors(nameof(QuantityOZIIIout)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(QuantityOZIIIout));
+                    var tmp = _dataAccess.Get(nameof(QuantityOZIIIout));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -682,7 +685,8 @@ namespace Models
             }
             set
             {
-                _QuantityOZIIIout_Not_Valid = value;
+                QuantityOZIIIout_Validation(value);
+
                 if (GetErrors(nameof(QuantityOZIIIout)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityOZIIIout), _QuantityOZIIIout_Not_Valid);

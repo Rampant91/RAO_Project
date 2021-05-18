@@ -80,14 +80,14 @@ namespace Models.Abstracts
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public string OperationCode
+        public short OperationCode
         {
             get
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(OperationCode));
-                    return tmp != null ? (string)tmp : null;
+                    string tmp = (string)_dataAccess.Get(nameof(OperationCode));
+                    return tmp != null ? short.Parse(tmp) : (short)-1;
                 }
                 else
                 {
@@ -96,20 +96,24 @@ namespace Models.Abstracts
             }
             set
             {
-                _OperationCode_Not_Valid = value;
+                var tmp1 = value.ToString();
+                if (tmp1.Length == 1) tmp1 = "0" + tmp1;
+
+                OperationCode_Validation(tmp1);
+                //_OperationCode_Not_Valid = value;
+
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    _dataAccess.Set(nameof(OperationCode), _OperationCode_Not_Valid);
+                    var tmp = _OperationCode_Not_Valid.ToString();
+                    if (tmp.Length == 1) tmp = "0" + tmp;
+                    _dataAccess.Set(nameof(OperationCode), tmp);
                 }
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
+        protected virtual void OperationCode_Validation(string arg) { }
 
-        private string _OperationCode_Not_Valid = "-1";
-        //private void OperationCode_Validation()
-        //{
-        //    ClearErrors(nameof(OperationCode));
-        //}
+        protected short _OperationCode_Not_Valid = -1;
         //OprationCode property
 
         //OperationDate property
@@ -121,7 +125,7 @@ namespace Models.Abstracts
                 if (GetErrors(nameof(OperationDate)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(OperationDate));
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01/01/1753");
                 }
                 else
                 {
@@ -139,7 +143,7 @@ namespace Models.Abstracts
             }
         }
 
-        private DateTimeOffset _OperationDate_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _OperationDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         private void OperationDate_Validation()
         {
             ClearErrors(nameof(OperationDate));
@@ -154,7 +158,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentVid)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(DocumentVid));
+                    var tmp = _dataAccess.Get(nameof(DocumentVid));//Ok
                     return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
@@ -174,9 +178,14 @@ namespace Models.Abstracts
         }
 
         private byte _DocumentVid_Not_Valid = 255;
-        private void DocumentVid_Validation(byte value)//TODO
+        private void DocumentVid_Validation(byte value)//Ok
         {
             ClearErrors(nameof(DocumentVid));
+            if (value == _DocumentVid_Not_Valid)
+            {
+                AddError(nameof(DocumentVid), "Поле не заполнено");
+                return;
+            }
             bool a = value < 0;
             bool b = value > 19;
             bool c = value == 16;
@@ -195,7 +204,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(DocumentNumber));
+                    var tmp = _dataAccess.Get(nameof(DocumentNumber));//Ok
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -229,7 +238,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(DocumentNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(DocumentNumberRecoded));//ok
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -263,7 +272,7 @@ namespace Models.Abstracts
             {
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(DocumentDate));
+                    var tmp = _dataAccess.Get(nameof(DocumentDate));//OK
                     return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
                 }
                 else
@@ -282,7 +291,7 @@ namespace Models.Abstracts
             }
         }
         //if change this change validation
-        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         //DocumentDate property
 
         //DocumentDateNote property

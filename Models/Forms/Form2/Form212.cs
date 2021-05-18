@@ -23,13 +23,14 @@ namespace Models
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public string OperationCode
+        public short OperationCode
         {
             get
             {
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(OperationCode));
+                    string tmp = (string)_dataAccess.Get(nameof(OperationCode));
+                    return tmp != null ? short.Parse(tmp) : (short)-1;
                 }
                 else
                 {
@@ -38,17 +39,24 @@ namespace Models
             }
             set
             {
-                _OperationCode_Not_Valid = value;
+                var tmp1 = value.ToString();
+                if (tmp1.Length == 1) tmp1 = "0" + tmp1;
+
+                OperationCode_Validation(tmp1);
+                //_OperationCode_Not_Valid = value;
+
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    _dataAccess.Set(nameof(OperationCode), _OperationCode_Not_Valid);
+                    var tmp = _OperationCode_Not_Valid.ToString();
+                    if (tmp.Length == 1) tmp = "0" + tmp;
+                    _dataAccess.Set(nameof(OperationCode), tmp);
                 }
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
 
-        private string _OperationCode_Not_Valid = "-1";
-        private void OperationCode_Validation()
+        private short _OperationCode_Not_Valid = -1;
+        private void OperationCode_Validation(string value)
         {
             ClearErrors(nameof(OperationCode));
         }
@@ -95,7 +103,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -163,7 +172,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPO));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -365,7 +375,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPONote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {

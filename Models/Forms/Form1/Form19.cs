@@ -61,7 +61,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -94,7 +95,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Activity));
+                    var tmp = _dataAccess.Get(nameof(Activity));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -130,10 +132,16 @@ namespace Models
         }
         //Activity property
 
-        private void OperationCode_Validation(string value)
+        protected override void OperationCode_Validation(string value1)//OK
         {
             ClearErrors(nameof(OperationCode));
-            if (value != "10")
+            if (value1 == null)
+            {
+                AddError(nameof(OperationCode), "Недопустимое значение");
+                return;
+            }
+            var value = short.Parse(value1);
+            if (value != 10)
                 AddError(nameof(OperationCode), "Недопустимое значение");
         }
     }

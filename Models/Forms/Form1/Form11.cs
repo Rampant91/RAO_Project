@@ -30,7 +30,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PassportNumber));
+                    var tmp = _dataAccess.Get(nameof(PassportNumber));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -60,27 +60,6 @@ namespace Models
         }
 
         //PassportNumber property
-        private void OperationCode_Validation(string value)
-        {
-            ClearErrors(nameof(OperationCode));
-            var a = new Regex("[0-9]{2}");
-            List<string> spr = new List<string>();    //HERE BINDS SPRAVOCHNIK
-            if (!a.IsMatch(value) || !spr.Contains(value))
-            {
-                AddError(nameof(OperationCode), "Недопустимое значение");
-                return;
-            }
-            if (value.Equals("01") || value.Equals("13") ||
-                value.Equals("14") || value.Equals("16") ||
-                value.Equals("26") || value.Equals("36") ||
-                value.Equals("44") || value.Equals("45") ||
-                value.Equals("49") || value.Equals("51") ||
-                value.Equals("52") || value.Equals("55") ||
-                value.Equals("56") || value.Equals("57") ||
-                value.Equals("59") || value.Equals("76"))
-                AddError(nameof(OperationCode), "Код операции не может быть использован для РВ");
-            return;
-        }
 
         //PassportNumberNote property
         public string PassportNumberNote
@@ -89,7 +68,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PassportNumberNote));
+                    var tmp = _dataAccess.Get(nameof(PassportNumberNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -123,7 +102,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PassportNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(PassportNumberRecoded));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -149,23 +128,6 @@ namespace Models
         }
         //PassportNumberRecoded property
 
-        private void DocumentNumber_Validation(string value)
-        {
-            if (value.Equals("прим.")) { }
-            if (value.Equals("-")) { }
-        }
-
-        private void DocumentVid_Validation(byte value)
-        {
-            ClearErrors(nameof(DocumentVid));
-            List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>();   //HERE BINDS SPRAVOCHNICK
-            foreach (var item in spr)
-            {
-                if (item.Item1 == value) return;
-            }
-            AddError(nameof(DocumentVid), "Недопустимое значение");
-        }
-
         //Type property
         [Attributes.Form_Property("Тип")]
         public string Type
@@ -174,7 +136,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Type));
+                    var tmp = _dataAccess.Get(nameof(Type));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -213,7 +175,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(TypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(TypeRecoded));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -248,7 +210,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -291,7 +253,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactoryNumber)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(FactoryNumber));
+                    var tmp = _dataAccess.Get(nameof(FactoryNumber));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -324,7 +286,7 @@ namespace Models
             {
                 if (GetErrors(nameof(FactoryNumberRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(FactoryNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(FactoryNumberRecoded));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -358,7 +320,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Quantity));
+                    var tmp = _dataAccess.Get(nameof(Quantity));//OK
                     return tmp != null ? (int)tmp : -1;
                 }
                 else
@@ -368,7 +330,9 @@ namespace Models
             }
             set
             {
-                _Quantity_Not_Valid = value;
+                Quantity_Validation(value);
+                //_Quantity_Not_Valid = value;
+
                 if (GetErrors(nameof(Quantity)) == null)
                 {
                     _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
@@ -381,6 +345,8 @@ namespace Models
         private void Quantity_Validation(int value)//Ready
         {
             ClearErrors(nameof(Quantity));
+            if (value == _Quantity_Not_Valid)
+                AddError(nameof(Quantity), "Поле не заполнено");
             if (value <= 0)
                 AddError(nameof(Quantity), "Недопустимое значение");
         }
@@ -394,7 +360,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Activity));
+                    var tmp = _dataAccess.Get(nameof(Activity));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -440,7 +406,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ActivityNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(ActivityNote));
+                    var tmp = _dataAccess.Get(nameof(ActivityNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -474,7 +440,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CreationDate)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(CreationDate));
+                    var tmp = _dataAccess.Get(nameof(CreationDate));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -512,7 +478,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CreatorOKPO)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(CreatorOKPO));
+                    var tmp = _dataAccess.Get(nameof(CreatorOKPO));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -531,7 +497,7 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _CreatorOKPO_Not_Valid = "";
+        private string _CreatorOKPO_Not_Valid = "qqqqq";
         private void CreatorOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(CreatorOKPO));
@@ -558,7 +524,7 @@ namespace Models
             {
                 if (GetErrors(nameof(CreatorOKPONote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(CreatorOKPONote));
+                    var tmp = _dataAccess.Get(nameof(CreatorOKPONote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -592,7 +558,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Category)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Category));
+                    var tmp = _dataAccess.Get(nameof(Category));//OK
                     return tmp != null ? (short)tmp : (short)-1;
                 }
                 else
@@ -628,7 +594,7 @@ namespace Models
             {
                 if (GetErrors(nameof(SignedServicePeriod)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(SignedServicePeriod));
+                    var tmp = _dataAccess.Get(nameof(SignedServicePeriod));//OK
                     return tmp != null ? (float)tmp : -1;
                 }
                 else
@@ -664,7 +630,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PropertyCode)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PropertyCode));
+                    var tmp = _dataAccess.Get(nameof(PropertyCode));//OK
                     return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
@@ -700,7 +666,7 @@ namespace Models
             {
                 if (GetErrors(nameof(Owner)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Owner));
+                    var tmp = _dataAccess.Get(nameof(Owner));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -904,7 +870,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPO));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPO));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -950,7 +916,7 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPONote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -984,7 +950,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(TransporterOKPO));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPO));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -1026,7 +992,7 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(TransporterOKPONote));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPONote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -1060,7 +1026,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackName));
+                    var tmp = _dataAccess.Get(nameof(PackName));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -1093,7 +1059,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNameNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackNameNote));
+                    var tmp = _dataAccess.Get(nameof(PackNameNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -1127,7 +1093,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackType));
+                    var tmp = _dataAccess.Get(nameof(PackType));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -1160,7 +1126,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackTypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(PackTypeRecoded));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -1193,7 +1159,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackTypeNote));
+                    var tmp = _dataAccess.Get(nameof(PackTypeNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -1227,7 +1193,7 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNumber)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackNumber));
+                    var tmp = _dataAccess.Get(nameof(PackNumber));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
@@ -1286,5 +1252,64 @@ namespace Models
             ClearErrors(nameof(PackNumberRecoded));
         }
         //PackNumberRecoded property
+
+        private void DocumentNumber_Validation(string value)
+        {
+            if (value.Equals("прим.")) { }
+            if (value.Equals("-")) { }
+        }
+
+        private void DocumentVid_Validation(byte value)
+        {
+            ClearErrors(nameof(DocumentVid));
+            List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>();   //HERE BINDS SPRAVOCHNICK
+            foreach (var item in spr)
+            {
+                if (item.Item1 == value) return;
+            }
+            AddError(nameof(DocumentVid), "Недопустимое значение");
+        }
+
+        protected override void OperationCode_Validation(string value1)//OK
+        {
+            ClearErrors(nameof(OperationCode));
+            if (value1 == null)
+            {
+                AddError(nameof(OperationCode), "Недопустимое значение");
+                return;
+            }
+            var value = short.Parse(value1);
+            if (value == _OperationCode_Not_Valid)
+            {
+                AddError(nameof(OperationCode), "Поле не заполнено");
+                return;
+            }
+            List<short> spr = new List<short>()
+            {
+                1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,
+                46,47,48,49,51,52,53,54,55,56,57,58,59,61,62,63,64,65,66,67,68,71,72,73,74,75,76,81,82,
+                83,84,85,86,87,88,97,98,99
+            };    //HERE BINDS SPRAVOCHNIK
+            bool flag = false;
+            foreach(var item in spr)
+            {
+                if (item == value) flag = true; 
+            }
+            if (!flag)
+            {
+                AddError(nameof(OperationCode),"Недопустимое значение");
+                return;
+            }
+            if ((value == 1) || (value == 13) ||
+                (value == 14) || (value == 16) ||
+                (value == 26) || (value == 36) ||
+                (value == 44) || (value == 45) ||
+                (value == 49) || (value == 51) ||
+                (value == 52) || (value == 55) ||
+                (value == 56) || (value == 57) ||
+                (value == 59) || (value == 76))
+                AddError(nameof(OperationCode), "Код операции не может быть использован для РВ");
+            return;
+        }
     }
 }

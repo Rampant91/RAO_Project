@@ -30,7 +30,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumber));
+                    var tmp = _dataAccess.Get(nameof(PassportNumber));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -62,7 +63,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberNote));
+                    var tmp = _dataAccess.Get(nameof(PassportNumberNote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -95,7 +97,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(PassportNumberRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -128,7 +131,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Type));
+                    var tmp = _dataAccess.Get(nameof(Type));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -160,7 +164,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(TypeRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -193,7 +198,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -226,7 +232,8 @@ namespace Models
             {
                 if (GetErrors(nameof(FactoryNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactoryNumber));
+                    var tmp = _dataAccess.Get(nameof(FactoryNumber));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -258,7 +265,8 @@ namespace Models
             {
                 if (GetErrors(nameof(FactoryNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactoryNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(FactoryNumberRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -290,7 +298,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    var tmp = _dataAccess.Get(nameof(Quantity));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -299,7 +308,9 @@ namespace Models
             }
             set
             {
-                _Quantity_Not_Valid = value;
+                Quantity_Validation(value);
+                //_Quantity_Not_Valid = value;
+
                 if (GetErrors(nameof(Quantity)) == null)
                 {
                     _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
@@ -325,7 +336,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Activity));
+                    var tmp = _dataAccess.Get(nameof(Activity));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -393,7 +405,7 @@ namespace Models
                 OnPropertyChanged(nameof(CreationDate));
             }
         }
-        private DateTimeOffset _CreationDate_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _CreationDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         private void CreationDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(CreationDate));
@@ -466,7 +478,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPO));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -488,26 +501,18 @@ namespace Models
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
-            int tmp = -1;
-            try
+            short tmp = OperationCode;
+            bool a = (tmp >= 10) && (tmp <= 14);
+            bool b = (tmp >= 41) && (tmp <= 45);
+            bool c = (tmp >= 71) && (tmp <= 73);
+            bool e = (tmp >= 55) && (tmp <= 57);
+            bool d = (tmp == 1) || (tmp == 16) || (tmp == 18) || (tmp == 48) ||
+                (tmp == 49) || (tmp == 51) || (tmp == 52) || (tmp == 59) ||
+                (tmp == 68) || (tmp == 75) || (tmp == 76);
+            if (a || b || c || d || e)
             {
-                tmp = int.Parse(OperationCode);
-            }
-            catch (Exception) { }
-            if (tmp != -1)
-            {
-                bool a = (tmp >= 10) && (tmp <= 14);
-                bool b = (tmp >= 41) && (tmp <= 45);
-                bool c = (tmp >= 71) && (tmp <= 73);
-                bool e = (tmp >= 55) && (tmp <= 57);
-                bool d = (tmp == 1) || (tmp == 16) || (tmp == 18) || (tmp == 48) ||
-                    (tmp == 49) || (tmp == 51) || (tmp == 52) || (tmp == 59) ||
-                    (tmp == 68) || (tmp == 75) || (tmp == 76);
-                if (a || b || c || d || e)
-                {
-                    ProviderOrRecieverOKPO = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-                    return;
-                }
+                ProviderOrRecieverOKPO = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+                return;
             }
             if (value.Equals("Минобороны") || value.Equals("прим.")) return;
             foreach (var item in OKSM)
@@ -689,7 +694,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPONote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -722,7 +728,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPO));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPO));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -763,7 +770,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPONote));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPONote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -796,7 +804,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackName));
+                    var tmp = _dataAccess.Get(nameof(PackName));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -828,7 +837,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNameNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNameNote));
+                    var tmp = _dataAccess.Get(nameof(PackNameNote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -861,7 +871,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackType));
+                    var tmp = _dataAccess.Get(nameof(PackType));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -893,7 +904,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(PackTypeRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -925,7 +937,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeNote));
+                    var tmp = _dataAccess.Get(nameof(PackTypeNote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -958,7 +971,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNumber));
+                    var tmp = _dataAccess.Get(nameof(PackNumber));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -991,7 +1005,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(PackNumberRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1258,34 +1273,46 @@ namespace Models
         }
         //FcpNumber property
 
-        private void OperationCode_Validation(string value)
+        protected override void OperationCode_Validation(string value1)//OK
         {
             ClearErrors(nameof(OperationCode));
-            var a = new Regex("[0-9]{2}");
-            List<string> spr = new List<string>();    //HERE BINDS SPRAVOCHNIK
-            if (!a.IsMatch(value) || !spr.Contains(value))
+            if (value1 == null)
             {
                 AddError(nameof(OperationCode), "Недопустимое значение");
                 return;
             }
-            bool a0 = value.Equals("15");
-            bool a1 = value.Equals("17");
-            bool a2 = value.Equals("46");
-            bool a3 = value.Equals("47");
-            bool a4 = value.Equals("53");
-            bool a5 = value.Equals("54");
-            bool a6 = value.Equals("58");
-            bool a7 = value.Equals("61");
-            bool a8 = value.Equals("62");
-            bool a9 = value.Equals("65");
-            bool a10 = value.Equals("66");
-            bool a11 = value.Equals("67");
-            bool a12 = value.Equals("81");
-            bool a13 = value.Equals("82");
-            bool a14 = value.Equals("83");
-            bool a15 = value.Equals("85");
-            bool a16 = value.Equals("86");
-            bool a17 = value.Equals("87");
+            var value = short.Parse(value1);
+            if (value == _OperationCode_Not_Valid)
+                AddError(nameof(OperationCode), "Поле не заполнено");
+            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
+            bool flag = false;
+            foreach (var item in spr)
+            {
+                if (item == value) flag = true;
+            }
+            if (!flag)
+            {
+                AddError(nameof(OperationCode), "Недопустимое значение");
+                return;
+            }
+            bool a0 = value==15;
+            bool a1 = value==17;
+            bool a2 = value==46;
+            bool a3 = value==47;
+            bool a4 = value==53;
+            bool a5 = value==54;
+            bool a6 = value==58;
+            bool a7 = value==61;
+            bool a8 = value==62;
+            bool a9 = value==65;
+            bool a10 = value==66;
+            bool a11 = value==67;
+            bool a12 = value==81;
+            bool a13 = value==82;
+            bool a14 = value==83;
+            bool a15 = value==85;
+            bool a16 = value==86;
+            bool a17 = value==87;
             if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15 || a16 || a17)
                 AddError(nameof(OperationCode), "Код операции не может быть использован для РАО");
             return;
@@ -1294,15 +1321,7 @@ namespace Models
         private void DocumentDate_Validation(DateTimeOffset value)
         {
             ClearErrors(nameof(DocumentDate));
-            int tmp;
-            try
-            {
-                tmp = int.Parse(OperationCode);
-            }
-            catch (Exception)
-            {
-                return;
-            }
+            short tmp = OperationCode;
             bool a = (tmp >= 11) && (tmp <= 18);
             bool b = (tmp >= 41) && (tmp <= 49);
             bool c = (tmp >= 51) && (tmp <= 59);

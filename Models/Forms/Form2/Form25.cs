@@ -268,7 +268,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    var tmp = _dataAccess.Get(nameof(Quantity));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -277,7 +278,8 @@ namespace Models
             }
             set
             {
-                _Quantity_Not_Valid = value;
+                Quantity_Validation(value);
+
                 if (GetErrors(nameof(Quantity)) == null)
                 {
                     _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);

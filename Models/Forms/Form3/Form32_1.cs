@@ -30,7 +30,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumber));
+                    var tmp = _dataAccess.Get(nameof(PassportNumber));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -62,7 +63,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumberNote));
+                    var tmp = _dataAccess.Get(nameof(PassportNumberNote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -95,7 +97,8 @@ namespace Models
             {
                 if (GetErrors(nameof(CreatorOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CreatorOKPO));
+                    var tmp = _dataAccess.Get(nameof(CreatorOKPO));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -298,7 +301,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Type));
+                    var tmp = _dataAccess.Get(nameof(Type));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -330,7 +334,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(TypeRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -363,7 +368,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -396,7 +402,8 @@ namespace Models
             {
                 if (GetErrors(nameof(FactoryNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactoryNumber));
+                    var tmp = _dataAccess.Get(nameof(FactoryNumber));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -428,7 +435,8 @@ namespace Models
             {
                 if (GetErrors(nameof(FactoryNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(FactoryNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(FactoryNumberRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -461,7 +469,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ActivityOnCreation)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ActivityOnCreation));
+                    var tmp = _dataAccess.Get(nameof(ActivityOnCreation));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -523,7 +532,7 @@ namespace Models
             }
         }
         //If change this change validation
-        private DateTimeOffset _CreationDate_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _CreationDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         private void CreationDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(CreationDate));
@@ -537,7 +546,8 @@ namespace Models
             {
                 if (GetErrors(nameof(CreatorOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(CreatorOKPONote));
+                    var tmp = _dataAccess.Get(nameof(CreatorOKPONote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -679,7 +689,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         //ValidThru property
     }
 }

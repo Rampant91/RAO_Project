@@ -30,7 +30,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackName));
+                    var tmp = _dataAccess.Get(nameof(PackName));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -62,7 +63,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNameNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNameNote));
+                    var tmp = _dataAccess.Get(nameof(PackNameNote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -95,7 +97,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackType));
+                    var tmp = _dataAccess.Get(nameof(PackType));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -127,7 +130,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeRecoded));
+                    var tmp = _dataAccess.Get(nameof(PackTypeRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -159,7 +163,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackTypeNote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackTypeNote));
+                    var tmp = _dataAccess.Get(nameof(PackTypeNote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -192,7 +197,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNumber));
+                    var tmp = _dataAccess.Get(nameof(PackNumber));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -225,7 +231,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PackNumberRecoded)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PackNumberRecoded));
+                    var tmp = _dataAccess.Get(nameof(PackNumberRecoded));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -309,7 +316,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _FormingDate_Not_Valid = DateTimeOffset.MinValue;
+        private DateTimeOffset _FormingDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
         private void FormingDate_Validation(DateTimeOffset value)//TODO
         {
             ClearErrors(nameof(FormingDate));
@@ -357,7 +364,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Mass));
+                    var tmp = _dataAccess.Get(nameof(Mass));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -390,7 +398,8 @@ namespace Models
             {
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(PassportNumber));
+                    var tmp = _dataAccess.Get(nameof(PassportNumber));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -423,7 +432,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Radionuclids));
+                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -500,7 +510,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPO));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPO));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -702,7 +713,8 @@ namespace Models
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(ProviderOrRecieverOKPONote));
+                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPONote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -735,7 +747,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPO));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPO));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -776,7 +789,8 @@ namespace Models
             {
                 if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(TransporterOKPONote));
+                    var tmp = _dataAccess.Get(nameof(TransporterOKPONote));//OK
+                    return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
@@ -1134,7 +1148,8 @@ namespace Models
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(Quantity));
+                    var tmp = _dataAccess.Get(nameof(Quantity));//OK
+                    return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
@@ -1143,7 +1158,9 @@ namespace Models
             }
             set
             {
-                _Quantity_Not_Valid = value;
+                Quantity_Validation(value);
+                //_Quantity_Not_Valid = value;
+
                 if (GetErrors(nameof(Quantity)) == null)
                 {
                     _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
