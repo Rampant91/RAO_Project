@@ -125,7 +125,7 @@ namespace Models.Abstracts
                 if (GetErrors(nameof(OperationDate)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(OperationDate));
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01/01/1753");
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01/01/1950");
                 }
                 else
                 {

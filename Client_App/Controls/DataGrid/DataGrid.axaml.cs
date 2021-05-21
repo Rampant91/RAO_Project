@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Collections;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using Avalonia.Collections;
@@ -9,20 +10,20 @@ using Avalonia.Collections;
 namespace Client_App.Controls.DataGrid
 {
 
-    public partial class DataGrid : UserControl
+    public class DataGrid : UserControl
     {
-        public static readonly DirectProperty<DataGrid, IEnumerable<Report>> ItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<Report>>(
+        public static readonly DirectProperty<DataGrid, IEnumerable> ItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable>(
                 nameof(Items),
                 o => o.Items,
                 (o, v) => o.Items = v);
 
-        private IEnumerable<Report> _items = new AvaloniaList<Report> ();
+        private IEnumerable _items;
 
-        public IEnumerable<Report> Items
+        public IEnumerable Items
         {
             get { return _items; }
-            set { SetAndRaise(ItemsProperty, ref _items, value); }
+            set { SetAndRaise(ItemsProperty, ref _items, value);}
         }
 
         public static readonly DirectProperty<DataGrid, string> TypeProperty =
@@ -39,18 +40,16 @@ namespace Client_App.Controls.DataGrid
 
         public DataGrid()
         {
-            InitializeComponent();
             this.DataContext = new Support.DataGrid_DataContext(this);
-            Type = "1/1";
+            InitializeComponent();
             MakeHeader();
         }
 
         public void MakeHeader()
         {
-            var HeaderControl = Support.RenderDataGridHeader.Render.GetControl(Type);
             var panel = this.FindControl<Panel>("Columns");
             panel.Children.Clear();
-            panel.Children.Add(HeaderControl);
+            panel.Children.Add(Support.RenderDataGridHeader.Render.GetControl(Type));
         }
 
         private void InitializeComponent()

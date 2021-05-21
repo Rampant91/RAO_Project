@@ -32,7 +32,22 @@ namespace Client_App.ViewModels
             }
         }
 
-        public DBObservable Local_Reports { get; set; } = new DBObservable();
+        private DBObservable _local_Reports = new DBObservable();
+        public DBObservable Local_Reports
+        {
+            get
+            {
+                return _local_Reports;
+            }
+            set
+            {
+                if (_local_Reports != value)
+                {
+                    _local_Reports = value;
+                    NotifyPropertyChanged("Local_Reports");
+                }
+            }
+        }
 
         public ReactiveCommand<Unit, Unit> OpenSettings { get; }
 
@@ -70,7 +85,8 @@ namespace Client_App.ViewModels
                 dbm.coll_reports.Add(Local_Reports);
             }
             dbm.SaveChanges();
-            //FormModel_Local.CollectionChanged += FormModelChanged;
+
+            Local_Reports.PropertyChanged += Local_ReportsChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
@@ -148,9 +164,9 @@ namespace Client_App.ViewModels
             }
         }
 
-        void FormModelChanged(object sender, CollectionChangeEventArgs e)
+        void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
         {
-            NotifyPropertyChanged("FormModel_Local");
+            NotifyPropertyChanged("Local_Reports");
         }
     }
 }

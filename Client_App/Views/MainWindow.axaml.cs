@@ -10,11 +10,11 @@ namespace Client_App.Views
     {
         public MainWindow()
         {
+            this.DataContext = new ViewModels.MainWindowVM();
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
 #endif
-            this.DataContext = new ViewModels.MainWindowVM();
         }
         protected override void OnOpened(EventArgs e)
         {
