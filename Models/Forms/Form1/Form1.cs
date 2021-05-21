@@ -217,7 +217,7 @@ namespace Models.Abstracts
         private void DocumentNumber_Validation(string value)//Ready
         {
             ClearErrors(nameof(DocumentNumber));
-            if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
+            if ((value == null) || value=="")//ok
             {
                 AddError(nameof(DocumentNumber), "Поле не заполнено");
                 return;
