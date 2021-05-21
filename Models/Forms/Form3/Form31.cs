@@ -163,7 +163,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //ValidThru property
 
         //SuggestedSolutionDate property
@@ -192,7 +192,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _SuggestedSolutionDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _SuggestedSolutionDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //SuggestedSolutionDate property
 
         //UserName property
@@ -453,7 +453,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ContractDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ContractDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //ContractDate property
 
         //CountryCreator property

@@ -117,6 +117,16 @@ namespace Models
         private void Activity_Validation(string value)//Ready
         {
             ClearErrors(nameof(Activity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Activity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(Activity), "Недопустимое значение");
+                return;
+            }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try

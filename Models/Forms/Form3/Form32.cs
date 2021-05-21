@@ -76,7 +76,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _SupplyDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _SupplyDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //SupplyDate property
 
         //RecieverName property
@@ -192,7 +192,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThruRv_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidThruRv_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //ValidThruRv property
 
         //LicenseIdRao property
@@ -250,7 +250,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThruRao_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidThruRao_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //ValidThruRao property
 
         //SupplyAddress property
@@ -383,6 +383,16 @@ namespace Models
         private void SummaryActivity_Validation(string value)//Ready
         {
             ClearErrors(nameof(SummaryActivity));
+            if (value == null || value.Equals(""))
+            {
+                AddError(nameof(SummaryActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(SummaryActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))

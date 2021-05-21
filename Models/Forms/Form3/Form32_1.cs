@@ -107,7 +107,8 @@ namespace Models
             }
             set
             {
-                _CreatorOKPO_Not_Valid = value;
+                CreatorOKPO_Validation(value);
+
                 if (GetErrors(nameof(CreatorOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(CreatorOKPO), _CreatorOKPO_Not_Valid);
@@ -120,6 +121,11 @@ namespace Models
         private void CreatorOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(CreatorOKPO));
+            if ((value == null) || (value.Equals("")))
+            {
+                AddError(nameof(CreatorOKPO), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("прим.")) return;
             foreach (var item in OKSM)
             {
@@ -532,7 +538,7 @@ namespace Models
             }
         }
         //If change this change validation
-        private DateTimeOffset _CreationDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _CreationDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void CreationDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(CreationDate));
@@ -689,7 +695,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //ValidThru property
     }
 }

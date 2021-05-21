@@ -356,6 +356,16 @@ namespace Models
         private void SummaryActivity_Validation(string value)//Ready
         {
             ClearErrors(nameof(SummaryActivity));
+            if (value == null || value.Equals(""))
+            {
+                AddError(nameof(SummaryActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(SummaryActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -408,6 +418,11 @@ namespace Models
         private void DocumentNumber_Validation(string value)//Ready
         {
             ClearErrors(nameof(DocumentNumber));
+            if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
+            {
+                AddError(nameof(DocumentNumber), "Поле не заполнено");
+                return;
+            }
         }
         //DocumentNumber property
 
@@ -471,7 +486,7 @@ namespace Models
             }
         }
         //if change this change validation
-        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void DocumentDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(DocumentDate));
@@ -504,7 +519,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ExpirationDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ExpirationDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void ExpirationDate_Validation(DateTimeOffset value)//TODO
         {
             ClearErrors(nameof(ExpirationDate));

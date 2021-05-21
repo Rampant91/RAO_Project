@@ -161,6 +161,16 @@ namespace Models
         private void Activity_Validation(string value)//Ready
         {
             ClearErrors(nameof(Activity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Activity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(Activity), "Недопустимое значение");
+                return;
+            }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -231,7 +241,8 @@ namespace Models
             }
             set
             {
-                _ProviderOrRecieverOKPO_Not_Valid = value;
+                ProviderOrRecieverOKPO_Validation(value);
+
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
@@ -244,6 +255,11 @@ namespace Models
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if ((value == null) || value.Equals(_ProviderOrRecieverOKPO_Not_Valid))
+            {
+                AddError(nameof(ProviderOrRecieverOKPO), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("Минобороны") || value.Equals("прим.")) return;
             foreach (var item in OKSM)
             {

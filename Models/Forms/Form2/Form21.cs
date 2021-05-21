@@ -412,6 +412,16 @@ namespace Models
         private void BetaGammaActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(BetaGammaActivityIn));
+            if ((value==null)||(value.Equals("")))
+            {
+                AddError(nameof(BetaGammaActivityIn), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(BetaGammaActivityIn), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))

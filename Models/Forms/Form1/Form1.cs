@@ -125,7 +125,7 @@ namespace Models.Abstracts
                 if (GetErrors(nameof(OperationDate)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(OperationDate));
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01/01/1753");
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01/01/1921");
                 }
                 else
                 {
@@ -143,7 +143,7 @@ namespace Models.Abstracts
             }
         }
 
-        private DateTimeOffset _OperationDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _OperationDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void OperationDate_Validation()
         {
             ClearErrors(nameof(OperationDate));
@@ -168,7 +168,8 @@ namespace Models.Abstracts
             }
             set
             {
-                _DocumentVid_Not_Valid = value;
+                DocumentVid_Validation(value);
+
                 if (GetErrors(nameof(DocumentVid)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentVid), _DocumentVid_Not_Valid);
@@ -178,21 +179,9 @@ namespace Models.Abstracts
         }
 
         private byte _DocumentVid_Not_Valid = 255;
-        private void DocumentVid_Validation(byte value)//Ok
+        protected virtual void DocumentVid_Validation(byte value)//Ok
         {
             ClearErrors(nameof(DocumentVid));
-            if (value == _DocumentVid_Not_Valid)
-            {
-                AddError(nameof(DocumentVid), "Поле не заполнено");
-                return;
-            }
-            bool a = value < 0;
-            bool b = value > 19;
-            bool c = value == 16;
-            bool d = value == 17;
-            bool e = value == 18;
-            if (a || b || c || d || e)
-                AddError(nameof(DocumentVid), "Недопустимое значение");
         }
         //DocumentVid property
 
@@ -214,7 +203,8 @@ namespace Models.Abstracts
             }
             set
             {
-                _DocumentNumber_Not_Valid = value;
+                DocumentNumber_Validation(value);
+
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentNumber), _DocumentNumber_Not_Valid);
@@ -227,7 +217,11 @@ namespace Models.Abstracts
         private void DocumentNumber_Validation(string value)//Ready
         {
             ClearErrors(nameof(DocumentNumber));
-            if (value.Equals("-") || value.Equals("прим.")) return;
+            if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
+            {
+                AddError(nameof(DocumentNumber), "Поле не заполнено");
+                return;
+            }
         }
         //DocumentNumber property
 
@@ -291,7 +285,7 @@ namespace Models.Abstracts
             }
         }
         //if change this change validation
-        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //DocumentDate property
 
         //DocumentDateNote property

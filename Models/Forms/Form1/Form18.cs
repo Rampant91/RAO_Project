@@ -351,6 +351,16 @@ namespace Models
         private void SpecificActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(SpecificActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(SpecificActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(SpecificActivity), "Недопустимое значение");
+                return;
+            }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -383,7 +393,8 @@ namespace Models
             }
             set
             {
-                _ProviderOrRecieverOKPO_Not_Valid = value;
+                ProviderOrRecieverOKPO_Validation(value);
+
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
@@ -396,6 +407,11 @@ namespace Models
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if ((value == null) || value.Equals(_ProviderOrRecieverOKPO_Not_Valid))
+            {
+                AddError(nameof(ProviderOrRecieverOKPO), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("Минобороны") || value.Equals("прим.")) return;
             foreach (var item in OKSM)
             {
@@ -620,7 +636,8 @@ namespace Models
             }
             set
             {
-                _TransporterOKPO_Not_Valid = value;
+                TransporterOKPO_Validation(value);
+
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(TransporterOKPO), _TransporterOKPO_Not_Valid);
@@ -633,6 +650,11 @@ namespace Models
         private void TransporterOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransporterOKPO));
+            if ((value == null) || value.Equals(_TransporterOKPO_Not_Valid))
+            {
+                AddError(nameof(TransporterOKPO), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("прим.") || value.Equals("-")) return;
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(TransporterOKPO), "Недопустимое значение");
@@ -957,6 +979,16 @@ namespace Models
         private void TritiumActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(TritiumActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(TritiumActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(TritiumActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1008,6 +1040,16 @@ namespace Models
         private void BetaGammaActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(BetaGammaActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(BetaGammaActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(BetaGammaActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1059,6 +1101,16 @@ namespace Models
         private void AlphaActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(AlphaActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(AlphaActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(AlphaActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1110,6 +1162,16 @@ namespace Models
         private void TransuraniumActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransuraniumActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(TransuraniumActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(TransuraniumActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))

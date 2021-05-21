@@ -1,5 +1,6 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Models
@@ -206,6 +207,30 @@ namespace Models
         private void AllowedActivity_Validation(string value)//Ready
         {
             ClearErrors(nameof(AllowedActivity));
+            if ((value == null) || (value.Equals("")))
+            {
+                AddError(nameof(AllowedActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(AllowedActivity), "Недопустимое значение");
+                return;
+            }
+            if (value != "прим.")
+            {
+                var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                   NumberStyles.AllowExponent;
+                try
+                {
+                    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                        AddError(nameof(AllowedActivity), "Число должно быть больше нуля");
+                }
+                catch
+                {
+                    AddError(nameof(AllowedActivity), "Недопустимое значение");
+                }
+            }
         }
         //AllowedActivity property
 
