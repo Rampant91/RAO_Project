@@ -35,10 +35,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
         }
         static Control Get1()
         {
-            return new TextBlock 
-            {
-                [!TextBlock.TextProperty]=new Binding("Items[0]")
-            };
+            return null;
         }
         static Control Get2()
         {

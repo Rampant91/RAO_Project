@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Input;
 
 namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Render
     {
-        public static Control GetControl(string Type,int ID)
+        public static Control GetControl(string Type,string Name,
+            EventHandler<PointerPressedEventArgs> PressHandler,
+            EventHandler<PointerReleasedEventArgs> ReleasedHandle,
+            EventHandler<PointerEventArgs> MovedHandle)
         {
             Control ctrl = null;
             if (Type != "")
@@ -20,22 +24,22 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 switch (formT1)
                 {
                     case "0":
-                        ctrl = Support.RenderDataGridHeader.Main.GetControl(formT2);
+                        ctrl = Support.RenderDataGridRow.Main.GetControl(formT2,Name, PressHandler,ReleasedHandle,MovedHandle);
                         break;
                     case "1":
-                        ctrl = Support.RenderDataGridHeader.Form1.GetControl(formT2);
+                        ctrl = Support.RenderDataGridRow.Form1.GetControl(formT2);
                         break;
                     case "2":
-                        ctrl = Support.RenderDataGridHeader.Form2.GetControl(formT2);
+                        ctrl = Support.RenderDataGridRow.Form2.GetControl(formT2);
                         break;
                     case "3":
-                        ctrl = Support.RenderDataGridHeader.Form3.GetControl(formT2);
+                        ctrl = Support.RenderDataGridRow.Form3.GetControl(formT2);
                         break;
                     case "4":
-                        ctrl = Support.RenderDataGridHeader.Form4.GetControl(formT2);
+                        ctrl = Support.RenderDataGridRow.Form4.GetControl(formT2);
                         break;
                     case "5":
-                        ctrl = Support.RenderDataGridHeader.Form5.GetControl(formT2);
+                        ctrl = Support.RenderDataGridRow.Form5.GetControl(formT2);
                         break;
                 }
             }

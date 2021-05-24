@@ -15,7 +15,7 @@ namespace Client_App.Short_Visual
         public static void FormF_Visual(in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
             pnl0.Children.Add(Form0_Visual(pnl0.FindNameScope()));
-            pnlb.Children.Add(FormX_Visual(pnlx.FindNameScope()));
+            pnlx.Children.Add(FormX_Visual(pnlx.FindNameScope()));
             pnlb.Children.Add(FormB_Visual());
         }
 
@@ -115,8 +115,11 @@ namespace Client_App.Short_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
             };
 
+            grd.Type = "0/0";
+            grd.Name = "Form1AllDataGrid_";
+
             Binding bnd = new Binding();
-            bnd.Path = "DataContext.Local_Reports.Reports_Collection";
+            bnd.Path = "DataContext.Local_Reports.Reports_Collection[0].Report_Collection";
             bnd.ElementName = "MainWindow";
             bnd.NameScope = new WeakReference<INameScope>(scp);
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty,bnd);
