@@ -37,7 +37,8 @@ namespace Models
             }
             set
             {
-                _PackName_Not_Valid = value;
+                PackName_Validation(value);
+
                 if (GetErrors(nameof(PackName)) == null)
                 {
                     _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
@@ -47,9 +48,14 @@ namespace Models
         }
 
         private string _PackName_Not_Valid = "";
-        private void PackName_Validation()
+        private void PackName_Validation(string value)
         {
             ClearErrors(nameof(PackName));
+            if ((value == null) || value.Equals(_PackName_Not_Valid))
+            {
+                AddError(nameof(PackName), "Поле не заполнено");
+                return;
+            }
         }
         //PackName property
 
@@ -71,7 +77,8 @@ namespace Models
             }
             set
             {
-                _PackType_Not_Valid = value;
+                PackType_Validation(value);
+
                 if (GetErrors(nameof(PackType)) == null)
                 {
                     _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
@@ -81,9 +88,14 @@ namespace Models
         }
         //If change this change validation
         private string _PackType_Not_Valid = "";
-        private void PackType_Validation()//Ready
+        private void PackType_Validation(string value)//Ready
         {
             ClearErrors(nameof(PackType));
+            if ((value == null) || value.Equals(_PackType_Not_Valid))
+            {
+                AddError(nameof(PackType), "Поле не заполнено");
+                return;
+            }
         }
         //PackType property
 

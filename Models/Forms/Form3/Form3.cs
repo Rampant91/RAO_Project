@@ -70,7 +70,7 @@ namespace Models.Abstracts
             }
         }
 
-        private DateTimeOffset _NotificationDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _NotificationDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //NotificationDate property
     }
 }

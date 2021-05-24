@@ -144,7 +144,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidBegin_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidBegin_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void ValidBegin_Validation()
         {
             ClearErrors(nameof(ValidBegin));
@@ -177,7 +177,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void ValidThru_Validation()
         {
             ClearErrors(nameof(ValidThru));

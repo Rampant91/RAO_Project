@@ -144,7 +144,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidBegin_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidBegin_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void ValidBegin_Validation()
         {
             ClearErrors(nameof(ValidBegin));
@@ -177,7 +177,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void ValidThru_Validation()
         {
             ClearErrors(nameof(ValidThru));
@@ -309,7 +309,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidBegin1_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidBegin1_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void ValidBegin1_Validation()
         {
             ClearErrors(nameof(ValidBegin1));
@@ -342,7 +342,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThru1_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidThru1_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void ValidThru1_Validation()
         {
             ClearErrors(nameof(ValidThru1));
@@ -474,7 +474,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidBegin2_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidBegin2_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void ValidBegin2_Validation()
         {
             ClearErrors(nameof(ValidBegin2));
@@ -507,7 +507,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThru2_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _ValidThru2_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void ValidThru2_Validation()
         {
             ClearErrors(nameof(ValidThru2));

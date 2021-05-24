@@ -314,7 +314,7 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity
+        public int Quantity//эталон свойства с валидацией
         {
             get
             {
@@ -370,7 +370,9 @@ namespace Models
             }
             set
             {
-                _Activity_Not_Valid = value;
+                Activity_Validation(value);
+                //_Activity_Not_Valid = value;
+
                 if (GetErrors(nameof(Activity)) == null)
                 {
                     _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
@@ -383,6 +385,16 @@ namespace Models
         private void Activity_Validation(string value)//Ready
         {
             ClearErrors(nameof(Activity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Activity),"Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(Activity), "Недопустимое значение");
+                return;
+            }
             if (value.Equals("прим."))
                 return;
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -459,7 +471,7 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _CreationDate_Not_Valid = "01.01.0001";
+        private string _CreationDate_Not_Valid = "01/01/1921";
         private void CreationDate_Validation(string value)//Ready
         {
             ClearErrors(nameof(CreationDate));
@@ -488,7 +500,8 @@ namespace Models
             }
             set
             {
-                _CreatorOKPO_Not_Valid = value;
+                CreatorOKPO_Validation(value);
+                
                 if (GetErrors(nameof(CreatorOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(CreatorOKPO), _CreatorOKPO_Not_Valid);
@@ -497,10 +510,15 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _CreatorOKPO_Not_Valid = "qqqqq";
+        private string _CreatorOKPO_Not_Valid = "";
         private void CreatorOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(CreatorOKPO));
+            if ((value == null) || (value.Equals("")))
+            {
+                AddError(nameof(CreatorOKPO),"Поле не заполнено");
+                return;
+            }
             if (value.Equals("прим.")) return;
             foreach (var item in OKSM)
             {
@@ -568,7 +586,7 @@ namespace Models
             }
             set
             {
-                _Category_Not_Valid = value;
+                Category_Validation(value);
                 if (GetErrors(nameof(Category)) == null)
                 {
                     _dataAccess.Set(nameof(Category), _Category_Not_Valid);
@@ -578,7 +596,7 @@ namespace Models
         }
 
         private short _Category_Not_Valid = -1;
-        private void Сategory_Validation(short value)//TODO
+        private void Category_Validation(short value)//TODO
         {
             ClearErrors(nameof(Category));
             if ((value < 1) || (value > 5))
@@ -604,7 +622,7 @@ namespace Models
             }
             set
             {
-                _SignedServicePeriod_Not_Valid = value;
+                SignedServicePeriod_Validation(value);
                 if (GetErrors(nameof(SignedServicePeriod)) == null)
                 {
                     _dataAccess.Set(nameof(SignedServicePeriod), _SignedServicePeriod_Not_Valid);
@@ -614,7 +632,7 @@ namespace Models
         }
 
         private float _SignedServicePeriod_Not_Valid = -1;
-        private void SignedServicePeriod_Validation(int value)//Ready
+        private void SignedServicePeriod_Validation(float value)//Ready
         {
             ClearErrors(nameof(SignedServicePeriod));
             if (value <= 0)
@@ -640,7 +658,7 @@ namespace Models
             }
             set
             {
-                _PropertyCode_Not_Valid = value;
+                PropertyCode_Validation(value);
                 if (GetErrors(nameof(PropertyCode)) == null)
                 {
                     _dataAccess.Set(nameof(PropertyCode), _PropertyCode_Not_Valid);
@@ -676,7 +694,7 @@ namespace Models
             }
             set
             {
-                _Owner_Not_Valid = value;
+                Owner_Validation(value);
                 if (GetErrors(nameof(Owner)) == null)
                 {
                     _dataAccess.Set(nameof(Owner), _Owner_Not_Valid);
@@ -689,6 +707,11 @@ namespace Models
         private void Owner_Validation(string value)//Ready
         {
             ClearErrors(nameof(Owner));
+            if ((value==null)||value.Equals(_Owner_Not_Valid))
+            {
+                AddError(nameof(Owner), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("прим.")) return;
             foreach (var item in OKSM)
             {
@@ -880,7 +903,7 @@ namespace Models
             }
             set
             {
-                _ProviderOrRecieverOKPO_Not_Valid = value;
+                ProviderOrRecieverOKPO_Validation(value);
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
@@ -893,6 +916,11 @@ namespace Models
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if ((value == null) || value.Equals(_ProviderOrRecieverOKPO_Not_Valid))
+            {
+                AddError(nameof(ProviderOrRecieverOKPO), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("Минобороны") || value.Equals("прим.")) return;
             foreach (var item in OKSM)
             {
@@ -960,7 +988,7 @@ namespace Models
             }
             set
             {
-                _TransporterOKPO_Not_Valid = value;
+                TransporterOKPO_Validation(value);
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(TransporterOKPO), _TransporterOKPO_Not_Valid);
@@ -973,6 +1001,11 @@ namespace Models
         private void TransporterOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransporterOKPO));
+            if ((value == null) || value.Equals(_TransporterOKPO_Not_Valid))
+            {
+                AddError(nameof(TransporterOKPO), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("прим.") || value.Equals("-")) return;
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(TransporterOKPO), "Недопустимое значение");
@@ -1036,7 +1069,7 @@ namespace Models
             }
             set
             {
-                _PackName_Not_Valid = value;
+                PackName_Validation(value);
                 if (GetErrors(nameof(PackName)) == null)
                 {
                     _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
@@ -1046,9 +1079,14 @@ namespace Models
         }
 
         private string _PackName_Not_Valid = "";
-        private void PackName_Validation()
+        private void PackName_Validation(string value)
         {
             ClearErrors(nameof(PackName));
+            if ((value == null) || value.Equals(_PackName_Not_Valid))
+            {
+                AddError(nameof(PackName), "Поле не заполнено");
+                return;
+            }
         }
         //PackName property
 
@@ -1103,7 +1141,7 @@ namespace Models
             }
             set
             {
-                _PackType_Not_Valid = value;
+                PackType_Validation(value);
                 if (GetErrors(nameof(PackType)) == null)
                 {
                     _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
@@ -1113,9 +1151,14 @@ namespace Models
         }
         //If change this change validation
         private string _PackType_Not_Valid = "";
-        private void PackType_Validation()//Ready
+        private void PackType_Validation(string value)//Ready
         {
             ClearErrors(nameof(PackType));
+            if ((value == null) || value.Equals(_PackType_Not_Valid))
+            {
+                AddError(nameof(PackType), "Поле не заполнено");
+                return;
+            }
         }
         //PackType property
 
@@ -1216,6 +1259,11 @@ namespace Models
         private void PackNumber_Validation(string value)//Ready
         {
             ClearErrors(nameof(PackNumber));
+            if ((value == null) || value.Equals(_PackNumber_Not_Valid))//ok
+            {
+                AddError(nameof(PackNumber), "Поле не заполнено");
+                return;
+            }
         }
         //PackNumber property
 
@@ -1253,16 +1301,39 @@ namespace Models
         }
         //PackNumberRecoded property
 
-        private void DocumentNumber_Validation(string value)
-        {
-            if (value.Equals("прим.")) { }
-            if (value.Equals("-")) { }
-        }
+        //private void DocumentNumber_Validation(string value)
+        //{
+        //    ClearErrors(nameof(DocumentNumber));
+        //    if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
+        //    {
+        //        AddError(nameof(DocumentNumber), "Поле не заполнено");
+        //        return;
+        //    }
+        //}
 
-        private void DocumentVid_Validation(byte value)
+        protected override void DocumentVid_Validation(byte value)// TO DO
         {
             ClearErrors(nameof(DocumentVid));
-            List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>();   //HERE BINDS SPRAVOCHNICK
+            List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>
+            {
+                new Tuple<byte, string>(0,""),
+                new Tuple<byte, string>(1,""),
+                new Tuple<byte, string>(2,""),
+                new Tuple<byte, string>(3,""),
+                new Tuple<byte, string>(4,""),
+                new Tuple<byte, string>(5,""),
+                new Tuple<byte, string>(6,""),
+                new Tuple<byte, string>(7,""),
+                new Tuple<byte, string>(8,""),
+                new Tuple<byte, string>(9,""),
+                new Tuple<byte, string>(10,""),
+                new Tuple<byte, string>(11,""),
+                new Tuple<byte, string>(12,""),
+                new Tuple<byte, string>(13,""),
+                new Tuple<byte, string>(14,""),
+                new Tuple<byte, string>(15,""),
+                new Tuple<byte, string>(19,"")
+            };   //HERE BINDS SPRAVOCHNICK
             foreach (var item in spr)
             {
                 if (item.Item1 == value) return;

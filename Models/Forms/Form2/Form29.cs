@@ -116,6 +116,16 @@ namespace Models
         private void AllowedActivity_Validation(string value)//Ready
         {
             ClearErrors(nameof(AllowedActivity));
+            if ((value == null) || (value.Equals("")))
+            {
+                AddError(nameof(AllowedActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(AllowedActivity), "Недопустимое значение");
+                return;
+            }
             if (value != "прим.")
             {
                 var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -195,6 +205,16 @@ namespace Models
         private void FactedActivity_Validation(string value)//Ready
         {
             ClearErrors(nameof(FactedActivity));
+            if ((value == null) || (value.Equals("")))
+            {
+                AddError(nameof(FactedActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(FactedActivity), "Недопустимое значение");
+                return;
+            }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try

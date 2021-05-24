@@ -122,6 +122,16 @@ namespace Models
         private void SummaryActivity_Validation(string value)//Ready
         {
             ClearErrors(nameof(SummaryActivity));
+            if ((value == null) || (value.Equals("")))
+            {
+                AddError(nameof(SummaryActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(SummaryActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))

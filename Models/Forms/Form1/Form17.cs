@@ -40,7 +40,8 @@ namespace Models
             }
             set
             {
-                _PackName_Not_Valid = value;
+                PackName_Validation(value);
+
                 if (GetErrors(nameof(PackName)) == null)
                 {
                     _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
@@ -50,9 +51,14 @@ namespace Models
         }
 
         private string _PackName_Not_Valid = "";
-        private void PackName_Validation()
+        private void PackName_Validation(string value)
         {
             ClearErrors(nameof(PackName));
+            if ((value == null) || value.Equals(_PackName_Not_Valid))
+            {
+                AddError(nameof(PackName), "Поле не заполнено");
+                return;
+            }
         }
         //PackName property
 
@@ -107,7 +113,8 @@ namespace Models
             }
             set
             {
-                _PackType_Not_Valid = value;
+                PackType_Validation(value);
+
                 if (GetErrors(nameof(PackType)) == null)
                 {
                     _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
@@ -117,9 +124,14 @@ namespace Models
         }
         //If change this change validation
         private string _PackType_Not_Valid = "";
-        private void PackType_Validation()//Ready
+        private void PackType_Validation(string value)//Ready
         {
             ClearErrors(nameof(PackType));
+            if ((value == null) || value.Equals(_PackType_Not_Valid))
+            {
+                AddError(nameof(PackType), "Поле не заполнено");
+                return;
+            }
         }
         //PackType property
 
@@ -220,6 +232,11 @@ namespace Models
         private void PackNumber_Validation(string value)//Ready
         {
             ClearErrors(nameof(PackNumber));
+            if ((value == null) || value.Equals(_PackNumber_Not_Valid))//ok
+            {
+                AddError(nameof(PackNumber), "Поле не заполнено");
+                return;
+            }
         }
         //PackNumber property
 
@@ -316,7 +333,7 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _FormingDate_Not_Valid = DateTimeOffset.Parse("01/01/1753");
+        private DateTimeOffset _FormingDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         private void FormingDate_Validation(DateTimeOffset value)//TODO
         {
             ClearErrors(nameof(FormingDate));
@@ -488,6 +505,16 @@ namespace Models
         private void SpecificActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(SpecificActivity));
+            if ((value == null) || (value.Equals("")))
+            {
+                AddError(nameof(SpecificActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(SpecificActivity), "Недопустимое значение");
+                return;
+            }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -520,7 +547,8 @@ namespace Models
             }
             set
             {
-                _ProviderOrRecieverOKPO_Not_Valid = value;
+                ProviderOrRecieverOKPO_Validation(value);
+
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
@@ -533,6 +561,11 @@ namespace Models
         private void ProviderOrRecieverOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProviderOrRecieverOKPO));
+            if ((value == null) || value.Equals(_ProviderOrRecieverOKPO_Not_Valid))
+            {
+                AddError(nameof(ProviderOrRecieverOKPO), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("Минобороны") || value.Equals("прим.")) return;
             foreach (var item in OKSM)
             {
@@ -757,7 +790,8 @@ namespace Models
             }
             set
             {
-                _TransporterOKPO_Not_Valid = value;
+                TransporterOKPO_Validation(value);
+
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(TransporterOKPO), _TransporterOKPO_Not_Valid);
@@ -770,6 +804,11 @@ namespace Models
         private void TransporterOKPO_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransporterOKPO));
+            if ((value == null) || value.Equals(_TransporterOKPO_Not_Valid))
+            {
+                AddError(nameof(TransporterOKPO), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("прим.") || value.Equals("-")) return;
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(TransporterOKPO), "Недопустимое значение");
@@ -1208,6 +1247,16 @@ namespace Models
         private void TritiumActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(TritiumActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(TritiumActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(TritiumActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1259,6 +1308,16 @@ namespace Models
         private void BetaGammaActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(BetaGammaActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(BetaGammaActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(BetaGammaActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1310,6 +1369,16 @@ namespace Models
         private void AlphaActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(AlphaActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(AlphaActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(AlphaActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1361,6 +1430,16 @@ namespace Models
         private void TransuraniumActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransuraniumActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(TransuraniumActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(TransuraniumActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))

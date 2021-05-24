@@ -326,7 +326,16 @@ namespace Models
         private string _BetaGammaActivity_Not_Valid = "";
         private void BetaGammaActivity_Validation(string value)//TODO
         {
-            ClearErrors(nameof(BetaGammaActivity));
+            ClearErrors(nameof(BetaGammaActivity)); if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(BetaGammaActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(BetaGammaActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -378,6 +387,16 @@ namespace Models
         private void AlphaActivity_Validation(string value)//TODO
         {
             ClearErrors(nameof(AlphaActivity));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(AlphaActivity), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e')))
+            {
+                AddError(nameof(AlphaActivity), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
