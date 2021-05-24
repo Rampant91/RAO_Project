@@ -508,6 +508,7 @@ namespace Models
             set
             {
                 ProviderOrRecieverOKPO_Validation(value);
+
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
@@ -762,6 +763,7 @@ namespace Models
             set
             {
                 TransporterOKPO_Validation(value);
+
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(TransporterOKPO), _TransporterOKPO_Not_Valid);
@@ -843,6 +845,7 @@ namespace Models
             set
             {
                 PackName_Validation(value);
+
                 if (GetErrors(nameof(PackName)) == null)
                 {
                     _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
@@ -915,6 +918,7 @@ namespace Models
             set
             {
                 PackType_Validation(value);
+
                 if (GetErrors(nameof(PackType)) == null)
                 {
                     _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);

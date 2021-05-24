@@ -469,6 +469,7 @@ namespace Models
             set
             {
                 PropertyCode_Validation(value);
+
                 if (GetErrors(nameof(PropertyCode)) == null)
                 {
                     _dataAccess.Set(nameof(PropertyCode), _PropertyCode_Not_Valid);
@@ -505,6 +506,7 @@ namespace Models
             set
             {
                 Owner_Validation(value);
+
                 if (GetErrors(nameof(Owner)) == null)
                 {
                     _dataAccess.Set(nameof(Owner), _Owner_Not_Valid);
@@ -813,6 +815,7 @@ namespace Models
             set
             {
                 TransporterOKPO_Validation(value);
+
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
                     _dataAccess.Set(nameof(TransporterOKPO), _TransporterOKPO_Not_Valid);
@@ -894,6 +897,7 @@ namespace Models
             set
             {
                 PackName_Validation(value);
+
                 if (GetErrors(nameof(PackName)) == null)
                 {
                     _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);

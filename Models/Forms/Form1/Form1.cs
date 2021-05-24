@@ -169,6 +169,7 @@ namespace Models.Abstracts
             set
             {
                 DocumentVid_Validation(value);
+
                 if (GetErrors(nameof(DocumentVid)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentVid), _DocumentVid_Not_Valid);
@@ -203,6 +204,7 @@ namespace Models.Abstracts
             set
             {
                 DocumentNumber_Validation(value);
+
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentNumber), _DocumentNumber_Not_Valid);
