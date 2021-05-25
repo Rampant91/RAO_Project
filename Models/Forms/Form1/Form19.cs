@@ -1,5 +1,6 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Models
@@ -71,7 +72,8 @@ namespace Models
             }
             set
             {
-                _Radionuclids_Not_Valid = value;
+                Radionuclids_Validation(value);
+
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
@@ -81,9 +83,23 @@ namespace Models
         }
         //If change this change validation
         private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation()//TODO
+        private void Radionuclids_Validation(string value)//TODO
         {
             ClearErrors(nameof(Radionuclids));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Radionuclids), "Поле не заполнено");
+                return;
+            }
+            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
+            foreach (var item in spr)
+            {
+                if (item.Item2.Equals(value))
+                {
+                    Radionuclids = item.Item2;
+                    return;
+                }
+            }
         }
         //Radionuclids property
 
@@ -142,9 +158,11 @@ namespace Models
         }
         //Activity property
 
-        protected override void OperationCode_Validation(string value1)//OK
+        protected override void OperationCode_Validation(short arg)//OK
         {
             ClearErrors(nameof(OperationCode));
+            string value1 = arg.ToString();
+            value1 = (value1.Length == 1) ? "0" + value1 : value1;
             if (value1 == null)
             {
                 AddError(nameof(OperationCode), "Недопустимое значение");
@@ -153,6 +171,26 @@ namespace Models
             var value = short.Parse(value1);
             if (value != 10)
                 AddError(nameof(OperationCode), "Недопустимое значение");
+        }
+
+        protected override void DocumentDate_Validation(string value)
+        {
+            ClearErrors(nameof(DocumentDate));
+            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
+            {
+                AddError(nameof(DocumentDate), "Поле не заполнено");
+                return;
+            }
+        }
+
+        protected override void OperationDate_Validation(string value)
+        {
+            ClearErrors(nameof(OperationDate));
+            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
+            {
+                AddError(nameof(OperationDate), "Поле не заполнено");
+                return;
+            }
         }
     }
 }

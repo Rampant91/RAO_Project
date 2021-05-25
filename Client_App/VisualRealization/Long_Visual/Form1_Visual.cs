@@ -220,7 +220,7 @@ namespace Client_App.Long_Visual
             grd.Columns.Add(clm);
 
             clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToCells;
+            clm.Width = DataGridLength.SizeToHeader;
             clm.Header = new Button
             {
                 FontSize = FontSizeGlobal,
@@ -231,13 +231,11 @@ namespace Client_App.Long_Visual
                 CommandParameter = "OperationDate"
             };
             clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new DatePicker
+                    new TextBox
                     {
-                        Height = 30,
-                        Width = 300,
                         FontSize = FontSizeGlobal,
-                        Margin = Thickness.Parse("-4,-4,0,0"),
-                        [!DatePicker.SelectedDateProperty] = new Binding("OperationDate", BindingMode.TwoWay),
+                        Foreground = new SolidColorBrush(Color.Parse("Black")),
+                        [!TextBox.TextProperty] = new Binding("OperationDate"),
                     });
             grd.Columns.Add(clm);
 
@@ -384,9 +382,10 @@ namespace Client_App.Long_Visual
             grd.Columns.Add(clm);
 
             clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToCells;
+            clm.Width = DataGridLength.SizeToHeader;
             clm.Header = new Button
             {
+                FontSize = FontSizeGlobal,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                 GetProperty("CreationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -394,13 +393,11 @@ namespace Client_App.Long_Visual
                 CommandParameter = "CreationDate"
             };
             clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new DatePicker
+                    new TextBox
                     {
-                        Height = 30,
-                        Width = 300,
-                        FontSize = FontSizeGlobal,
-                        Margin = Thickness.Parse("0,-4,0,0"),
-                        [!DatePicker.SelectedDateProperty] = new Binding("CreationDate", BindingMode.TwoWay),
+                        Foreground = new SolidColorBrush(Color.Parse("Black")),
+                        [!TextBox.TextProperty] = new Binding("CreationDate"),
+
                     });
             grd.Columns.Add(clm);
 
@@ -525,7 +522,7 @@ namespace Client_App.Long_Visual
             grd.Columns.Add(clm);
 
             clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToCells;
+            clm.Width = DataGridLength.SizeToHeader;
             clm.Header = new Button
             {
                 FontSize = FontSizeGlobal,
@@ -536,13 +533,11 @@ namespace Client_App.Long_Visual
                 CommandParameter = "DocumentDate"
             };
             clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new DatePicker
+                    new TextBox
                     {
-                        Height = 30,
-                        Width = 300,
-                        FontSize = FontSizeGlobal,
-                        Margin = Thickness.Parse("0,-4,0,0"),
-                        [!DatePicker.SelectedDateProperty] = new Binding("DocumentDate", BindingMode.TwoWay),
+                        Foreground = new SolidColorBrush(Color.Parse("Black")),
+                        [!TextBox.TextProperty] = new Binding("DocumentDate"),
+
                     });
             grd.Columns.Add(clm);
 

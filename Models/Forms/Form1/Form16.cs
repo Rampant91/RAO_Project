@@ -1022,7 +1022,8 @@ namespace Models
             }
             set
             {
-                _PackNumber_Not_Valid = value;
+                PackNumber_Validation(value);
+
                 if (GetErrors(nameof(PackNumber)) == null)
                 {
                     _dataAccess.Set(nameof(PackNumber), _PackNumber_Not_Valid);
@@ -1196,9 +1197,11 @@ namespace Models
         }
         //RefineOrSortRAOCode property
 
-        protected override void OperationCode_Validation(string value1)//OK
+        protected override void OperationCode_Validation(short arg)//OK
         {
             ClearErrors(nameof(OperationCode));
+            string value1 = arg.ToString();
+            value1 = (value1.Length == 1) ? "0" + value1 : value1;
             if (value1 == null)
             {
                 AddError(nameof(OperationCode), "Недопустимое значение");
@@ -1248,8 +1251,28 @@ namespace Models
             bool c = (OperationCode >= 51) && (OperationCode <= 59);
             bool d = (OperationCode == 65) || (OperationCode == 68);
             if (a || b || c || d)
-                if (!value.Date.Equals(OperationDate.Date))
+                if (!value.Date.Equals(DateTimeOffset.Parse(OperationDate).Date))
                     AddError(nameof(DocumentDate), "Заполните примечание");
+        }
+
+        protected override void DocumentDate_Validation(string value)
+        {
+            ClearErrors(nameof(DocumentDate));
+            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
+            {
+                AddError(nameof(DocumentDate), "Поле не заполнено");
+                return;
+            }
+        }
+
+        protected override void OperationDate_Validation(string value)
+        {
+            ClearErrors(nameof(OperationDate));
+            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
+            {
+                AddError(nameof(OperationDate), "Поле не заполнено");
+                return;
+            }
         }
     }
 }

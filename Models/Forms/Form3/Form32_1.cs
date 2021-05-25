@@ -40,7 +40,8 @@ namespace Models
             }
             set
             {
-                _PassportNumber_Not_Valid = value;
+                PassportNumber_Validation(value);
+
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
                     _dataAccess.Set(nameof(PassportNumber), _PassportNumber_Not_Valid);
@@ -50,9 +51,19 @@ namespace Models
         }
 
         private string _PassportNumber_Not_Valid = "";
-        private void PassportNumber_Validation()
+        private void PassportNumber_Validation(string value)
         {
             ClearErrors(nameof(PassportNumber));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(PassportNumber), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                if ((PassportNumberNote == null) || (PassportNumberNote == ""))
+                    AddError(nameof(PassportNumberNote), "Поле не может быть пустым");
+            }
         }
         //PassportNumber property
 
@@ -384,7 +395,8 @@ namespace Models
             }
             set
             {
-                _Radionuclids_Not_Valid = value;
+                Radionuclids_Validation(value);
+
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
                     _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
@@ -394,9 +406,23 @@ namespace Models
         }
         //If change this change validation
         private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation()//TODO
+        private void Radionuclids_Validation(string value)//TODO
         {
             ClearErrors(nameof(Radionuclids));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Radionuclids), "Поле не заполнено");
+                return;
+            }
+            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
+            foreach (var item in spr)
+            {
+                if (item.Item1.Equals(Type))
+                {
+                    Radionuclids = item.Item2;
+                    return;
+                }
+            }
         }
         //Radionuclids property
 
@@ -562,7 +588,9 @@ namespace Models
             }
             set
             {
-                _CreatorOKPONote_Not_Valid = value;
+                CreatorOKPONote_Validation(value);
+                //_CreatorOKPONote_Not_Valid = value;
+
                 if (GetErrors(nameof(CreatorOKPONote)) == null)
                 {
                     _dataAccess.Set(nameof(CreatorOKPONote), _CreatorOKPONote_Not_Valid);
@@ -572,7 +600,7 @@ namespace Models
         }
 
         private string _CreatorOKPONote_Not_Valid = "";
-        private void CreatorOKPONote_Validation()
+        private void CreatorOKPONote_Validation(string value)
         {
             ClearErrors(nameof(CreatorOKPONote));
         }

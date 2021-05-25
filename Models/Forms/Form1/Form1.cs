@@ -96,36 +96,35 @@ namespace Models.Abstracts
             }
             set
             {
-                var tmp1 = value.ToString();
-                if (tmp1.Length == 1) tmp1 = "0" + tmp1;
-
-                OperationCode_Validation(tmp1);
+                OperationCode_Validation(value);
                 //_OperationCode_Not_Valid = value;
 
                 if (GetErrors(nameof(OperationCode)) == null)
                 {
-                    var tmp = _OperationCode_Not_Valid.ToString();
+                    var tmp = value.ToString();
                     if (tmp.Length == 1) tmp = "0" + tmp;
                     _dataAccess.Set(nameof(OperationCode), tmp);
                 }
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        protected virtual void OperationCode_Validation(string arg) { }
+        protected virtual void OperationCode_Validation(short arg) { }
 
         protected short _OperationCode_Not_Valid = -1;
         //OprationCode property
-
+        
         //OperationDate property
         [Attributes.Form_Property("Дата операции")]
-        public DateTimeOffset OperationDate
+        public string OperationDate
         {
             get
             {
                 if (GetErrors(nameof(OperationDate)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(OperationDate));
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01/01/1921");
+                    if (tmp == null)
+                        return _OperationDate_Not_Valid;
+                    return ((DateTimeOffset)tmp).Date.ToString("dd/MM/yyyy");// дает дату в формате дд.мм.гггг
                 }
                 else
                 {
@@ -134,20 +133,19 @@ namespace Models.Abstracts
             }
             set
             {
-                _OperationDate_Not_Valid = value;
+                OperationDate_Validation(value);
+
                 if (GetErrors(nameof(OperationDate)) == null)
                 {
-                    _dataAccess.Set(nameof(OperationDate), _OperationDate_Not_Valid);
+                    _dataAccess.Set(nameof(OperationDate), DateTimeOffset.Parse(value));
                 }
                 OnPropertyChanged(nameof(OperationDate));
             }
         }
 
-        private DateTimeOffset _OperationDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
-        private void OperationDate_Validation()
-        {
-            ClearErrors(nameof(OperationDate));
-        }
+        protected string _OperationDate_Not_Valid = "";
+
+        protected virtual void OperationDate_Validation(string value) { }
         //OperationDate property
 
         //DocumentVid property
@@ -159,7 +157,7 @@ namespace Models.Abstracts
                 if (GetErrors(nameof(DocumentVid)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(DocumentVid));//Ok
-                    return tmp != null ? (byte)tmp : (byte)0;
+                    return tmp != null ? (byte)tmp : (byte)255;
                 }
                 else
                 {
@@ -213,7 +211,7 @@ namespace Models.Abstracts
             }
         }
 
-        private string _DocumentNumber_Not_Valid = "";
+        protected string _DocumentNumber_Not_Valid = "";
         private void DocumentNumber_Validation(string value)//Ready
         {
             ClearErrors(nameof(DocumentNumber));
@@ -260,14 +258,16 @@ namespace Models.Abstracts
 
         //DocumentDate property
         [Attributes.Form_Property("Дата документа")]
-        public DateTimeOffset DocumentDate
+        public string DocumentDate
         {
             get
             {
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(DocumentDate));//OK
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
+                    if (tmp == null)
+                        return _DocumentDate_Not_Valid;
+                    return ((DateTimeOffset)tmp).Date.ToString("dd/MM/yyyy");
                 }
                 else
                 {
@@ -276,16 +276,19 @@ namespace Models.Abstracts
             }
             set
             {
-                _DocumentDate_Not_Valid = value;
+                DocumentDate_Validation(value);
+
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentDate), _DocumentDate_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentDate), DateTimeOffset.Parse(value));
                 }
                 OnPropertyChanged(nameof(DocumentDate));
             }
         }
         //if change this change validation
-        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
+        protected string _DocumentDate_Not_Valid = "";
+
+        protected virtual void DocumentDate_Validation(string value) { }
         //DocumentDate property
 
         //DocumentDateNote property
