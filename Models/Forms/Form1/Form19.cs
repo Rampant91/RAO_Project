@@ -41,7 +41,7 @@ namespace Models
                 _CodeTypeAccObject_Not_Valid = value;
                 if (GetErrors(nameof(CodeTypeAccObject)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeTypeAccObject), _CodeTypeAccObject_Not_Valid);
+                    _dataAccess.Set(nameof(CodeTypeAccObject), value);
                 }
                 OnPropertyChanged(nameof(CodeTypeAccObject));
             }
@@ -76,7 +76,7 @@ namespace Models
 
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -124,7 +124,7 @@ namespace Models
                 _Activity_Not_Valid = value;
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
+                    _dataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }

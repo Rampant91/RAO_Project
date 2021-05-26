@@ -101,6 +101,10 @@
                 "PackTypeRecoded" + strNotNullDeclaration +
                 "PackTypeNote" + strNotNullDeclaration +
                 "PackNumber" + strNotNullDeclaration +
+                "OwnerNote" + strNotNullDeclaration +
+                "ActivityNote" + strNotNullDeclaration +
+                "PackNumberNote" + strNotNullDeclaration +
+                "CreationDateNote" + strNotNullDeclaration +
                 "PackNumberRecoded" + strNotNullDeclaration.Replace(",", "");
         }
 

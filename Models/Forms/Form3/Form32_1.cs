@@ -44,7 +44,7 @@ namespace Models
 
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumber), _PassportNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PassportNumber), value);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
@@ -87,7 +87,7 @@ namespace Models
                 _PassportNumberNote_Not_Valid = value;
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumberNote), _PassportNumberNote_Not_Valid);
+                    _dataAccess.Set(nameof(PassportNumberNote), value);
                 }
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
@@ -122,7 +122,7 @@ namespace Models
 
                 if (GetErrors(nameof(CreatorOKPO)) == null)
                 {
-                    _dataAccess.Set(nameof(CreatorOKPO), _CreatorOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(CreatorOKPO), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPO));
             }
@@ -331,7 +331,7 @@ namespace Models
                 _Type_Not_Valid = value;
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    _dataAccess.Set(nameof(Type), _Type_Not_Valid);
+                    _dataAccess.Set(nameof(Type), value);
                 }
                 OnPropertyChanged(nameof(Type));
             }
@@ -364,7 +364,7 @@ namespace Models
                 _TypeRecoded_Not_Valid = value;
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(TypeRecoded), _TypeRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(TypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(TypeRecoded));
             }
@@ -399,7 +399,7 @@ namespace Models
 
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -447,16 +447,21 @@ namespace Models
                 _FactoryNumber_Not_Valid = value;
                 if (GetErrors(nameof(FactoryNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(FactoryNumber), _FactoryNumber_Not_Valid);
+                    _dataAccess.Set(nameof(FactoryNumber), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumber));
             }
         }
 
         private string _FactoryNumber_Not_Valid = "";
-        private void FactoryNumber_Validation()
+        private void FactoryNumber_Validation(string value)
         {
             ClearErrors(nameof(FactoryNumber));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(FactoryNumber), "Поле не заполнено");
+                return;
+            }
         }
         //FactoryNumber property
 
@@ -480,7 +485,7 @@ namespace Models
                 _FactoryNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(FactoryNumberRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(FactoryNumberRecoded), _FactoryNumberRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(FactoryNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
@@ -514,7 +519,7 @@ namespace Models
                 _ActivityOnCreation_Not_Valid = value;
                 if (GetErrors(nameof(ActivityOnCreation)) == null)
                 {
-                    _dataAccess.Set(nameof(ActivityOnCreation), _ActivityOnCreation_Not_Valid);
+                    _dataAccess.Set(nameof(ActivityOnCreation), value);
                 }
                 OnPropertyChanged(nameof(ActivityOnCreation));
             }
@@ -558,7 +563,7 @@ namespace Models
                 _CreationDate_Not_Valid = value;
                 if (GetErrors(nameof(CreationDate)) == null)
                 {
-                    _dataAccess.Set(nameof(CreationDate), _CreationDate_Not_Valid);
+                    _dataAccess.Set(nameof(CreationDate), value);
                 }
                 OnPropertyChanged(nameof(CreationDate));
             }
@@ -593,7 +598,7 @@ namespace Models
 
                 if (GetErrors(nameof(CreatorOKPONote)) == null)
                 {
-                    _dataAccess.Set(nameof(CreatorOKPONote), _CreatorOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(CreatorOKPONote), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPONote));
             }
@@ -626,7 +631,7 @@ namespace Models
                 _Kategory_Not_Valid = value;
                 if (GetErrors(nameof(Kategory)) == null)
                 {
-                    _dataAccess.Set(nameof(Kategory), _Kategory_Not_Valid);
+                    _dataAccess.Set(nameof(Kategory), value);
                 }
                 OnPropertyChanged(nameof(Kategory));
             }
@@ -659,7 +664,7 @@ namespace Models
                 _NuclearMaterialPresence_Not_Valid = value;
                 if (GetErrors(nameof(NuclearMaterialPresence)) == null)
                 {
-                    _dataAccess.Set(nameof(NuclearMaterialPresence), _NuclearMaterialPresence_Not_Valid);
+                    _dataAccess.Set(nameof(NuclearMaterialPresence), value);
                 }
                 OnPropertyChanged(nameof(NuclearMaterialPresence));
             }
@@ -688,7 +693,7 @@ namespace Models
                 _CertificateId_Not_Valid = value;
                 if (GetErrors(nameof(CertificateId)) == null)
                 {
-                    _dataAccess.Set(nameof(CertificateId), _CertificateId_Not_Valid);
+                    _dataAccess.Set(nameof(CertificateId), value);
                 }
                 OnPropertyChanged(nameof(CertificateId));
             }
@@ -717,7 +722,7 @@ namespace Models
                 _ValidThru_Not_Valid = value;
                 if (GetErrors(nameof(ValidThru)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidThru), _ValidThru_Not_Valid);
+                    _dataAccess.Set(nameof(ValidThru), value);
                 }
                 OnPropertyChanged(nameof(ValidThru));
             }

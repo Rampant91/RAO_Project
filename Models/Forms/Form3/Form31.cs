@@ -38,16 +38,18 @@ namespace Models
             }
             set
             {
-                _RecieverName_Not_Valid = value;
+                RecieverName_Validation(value);
                 if (GetErrors(nameof(RecieverName)) == null)
                 {
-                    _dataAccess.Set(nameof(RecieverName), _RecieverName_Not_Valid);
+                    _dataAccess.Set(nameof(RecieverName), value);
                 }
                 OnPropertyChanged(nameof(RecieverName));
             }
         }
 
         private string _RecieverName_Not_Valid = "";
+        private void RecieverName_Validation(string value)
+        { }
         //RecieverName property
 
         //RecieverAddress property
@@ -67,14 +69,16 @@ namespace Models
             }
             set
             {
-                _RecieverAddress_Not_Valid = value;
+                RecieverAddress_Validation(value);
                 if (GetErrors(nameof(RecieverAddress)) == null)
                 {
-                    _dataAccess.Set(nameof(RecieverAddress), _RecieverAddress_Not_Valid);
+                    _dataAccess.Set(nameof(RecieverAddress), value);
                 }
                 OnPropertyChanged(nameof(RecieverAddress));
             }
         }
+        private void RecieverAddress_Validation(string value)
+        { }
 
         private string _RecieverAddress_Not_Valid = "";
         //RecieverAddress property
@@ -96,15 +100,16 @@ namespace Models
             }
             set
             {
-                _RecieverFactAddress_Not_Valid = value;
+                RecieverFactAddress_Validation(value);
                 if (GetErrors(nameof(RecieverFactAddress)) == null)
                 {
-                    _dataAccess.Set(nameof(RecieverFactAddress), _RecieverFactAddress_Not_Valid);
+                    _dataAccess.Set(nameof(RecieverFactAddress), value);
                 }
                 OnPropertyChanged(nameof(RecieverFactAddress));
             }
         }
-
+        private void RecieverFactAddress_Validation(string value)
+        { }
         private string _RecieverFactAddress_Not_Valid = "";
         //RecieverFactAddress property
 
@@ -125,15 +130,16 @@ namespace Models
             }
             set
             {
-                _LicenseId_Not_Valid = value;
+                LicenseId_Validation(value);
                 if (GetErrors(nameof(LicenseId)) == null)
                 {
-                    _dataAccess.Set(nameof(LicenseId), _LicenseId_Not_Valid);
+                    _dataAccess.Set(nameof(LicenseId), value);
                 }
                 OnPropertyChanged(nameof(LicenseId));
             }
         }
-
+        private void LicenseId_Validation(string value)
+        { }
         private string _LicenseId_Not_Valid = "";
         //LicenseId property
 
@@ -154,15 +160,16 @@ namespace Models
             }
             set
             {
-                _ValidThru_Not_Valid = value;
+                ValidThru_Validation(value);
                 if (GetErrors(nameof(ValidThru)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidThru), _ValidThru_Not_Valid);
+                    _dataAccess.Set(nameof(ValidThru), value);
                 }
                 OnPropertyChanged(nameof(ValidThru));
             }
         }
-
+        private void ValidThru_Validation(DateTimeOffset value)
+        { }
         private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //ValidThru property
 
@@ -183,15 +190,16 @@ namespace Models
             }
             set
             {
-                _SuggestedSolutionDate_Not_Valid = value;
+                SuggestedSolutionDate_Validation(value);
                 if (GetErrors(nameof(SuggestedSolutionDate)) == null)
                 {
-                    _dataAccess.Set(nameof(SuggestedSolutionDate), _SuggestedSolutionDate_Not_Valid);
+                    _dataAccess.Set(nameof(SuggestedSolutionDate), value);
                 }
                 OnPropertyChanged(nameof(SuggestedSolutionDate));
             }
         }
-
+        private void SuggestedSolutionDate_Validation(DateTimeOffset value)
+        { }
         private DateTimeOffset _SuggestedSolutionDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //SuggestedSolutionDate property
 
@@ -212,15 +220,16 @@ namespace Models
             }
             set
             {
-                _UserName_Not_Valid = value;
+                UserName_Validation(value);
                 if (GetErrors(nameof(UserName)) == null)
                 {
-                    _dataAccess.Set(nameof(UserName), _UserName_Not_Valid);
+                    _dataAccess.Set(nameof(UserName), value);
                 }
                 OnPropertyChanged(nameof(UserName));
             }
         }
-
+        private void UserName_Validation(string value)
+        { }
         private string _UserName_Not_Valid = "";
         //UserName property
 
@@ -241,15 +250,16 @@ namespace Models
             }
             set
             {
-                _UserAddress_Not_Valid = value;
+                UserAddress_Validation(value);
                 if (GetErrors(nameof(UserAddress)) == null)
                 {
-                    _dataAccess.Set(nameof(UserAddress), _UserAddress_Not_Valid);
+                    _dataAccess.Set(nameof(UserAddress), value);
                 }
                 OnPropertyChanged(nameof(UserAddress));
             }
         }
-
+        private void UserAddress_Validation(string value)
+        { }
         private string _UserAddress_Not_Valid = "";
         //UserAddress property
 
@@ -270,15 +280,16 @@ namespace Models
             }
             set
             {
-                _UserFactAddress_Not_Valid = value;
+                UserFactAddress_Validation(value);
                 if (GetErrors(nameof(UserFactAddress)) == null)
                 {
-                    _dataAccess.Set(nameof(UserFactAddress), _UserFactAddress_Not_Valid);
+                    _dataAccess.Set(nameof(UserFactAddress), value);
                 }
                 OnPropertyChanged(nameof(UserFactAddress));
             }
         }
-
+        private void UserFactAddress_Validation(string value)
+        { }
         private string _UserFactAddress_Not_Valid = "";
         //UserFactAddress property
 
@@ -299,15 +310,17 @@ namespace Models
             }
             set
             {
-                _UserTelephone_Not_Valid = value;
+                UserTelephone_Validation(value);
                 if (GetErrors(nameof(UserTelephone)) == null)
                 {
-                    _dataAccess.Set(nameof(UserTelephone), _UserTelephone_Not_Valid);
+                    _dataAccess.Set(nameof(UserTelephone), value);
                 }
                 OnPropertyChanged(nameof(UserTelephone));
             }
         }
 
+        private void UserTelephone_Validation(string value)
+        { }
         private string _UserTelephone_Not_Valid = "";
         //UserTelephone property
 
@@ -328,15 +341,16 @@ namespace Models
             }
             set
             {
-                _UserFax_Not_Valid = value;
+                UserFax_Validation(value);
                 if (GetErrors(nameof(UserFax)) == null)
                 {
-                    _dataAccess.Set(nameof(UserFax), _UserFax_Not_Valid);
+                    _dataAccess.Set(nameof(UserFax), value);
                 }
                 OnPropertyChanged(nameof(UserFax));
             }
         }
-
+        private void UserFax_Validation(string value)
+        { }
         private string _UserFax_Not_Valid = "";
         //UserFax property
 
@@ -357,15 +371,16 @@ namespace Models
             }
             set
             {
-                _Email_Not_Valid = value;
+                Email_Validation(value);
                 if (GetErrors(nameof(Email)) == null)
                 {
-                    _dataAccess.Set(nameof(Email), _Email_Not_Valid);
+                    _dataAccess.Set(nameof(Email), value);
                 }
                 OnPropertyChanged(nameof(Email));
             }
         }
-
+        private void Email_Validation(string value)
+        { }
         private string _Email_Not_Valid = "";
         //Email property
 
@@ -386,15 +401,16 @@ namespace Models
             }
             set
             {
-                _ZriUsageScope_Not_Valid = value;
+                ZriUsageScope_Validation(value);
                 if (GetErrors(nameof(ZriUsageScope)) == null)
                 {
-                    _dataAccess.Set(nameof(ZriUsageScope), _ZriUsageScope_Not_Valid);
+                    _dataAccess.Set(nameof(ZriUsageScope), value);
                 }
                 OnPropertyChanged(nameof(ZriUsageScope));
             }
         }
-
+        private void ZriUsageScope_Validation(string value)
+        { }
         private string _ZriUsageScope_Not_Valid = "";
         //ZriUsageScope property
 
@@ -415,15 +431,16 @@ namespace Models
             }
             set
             {
-                _ContractId_Not_Valid = value;
+                ContractId_Validation(value);
                 if (GetErrors(nameof(ContractId)) == null)
                 {
-                    _dataAccess.Set(nameof(ContractId), _ContractId_Not_Valid);
+                    _dataAccess.Set(nameof(ContractId), value);
                 }
                 OnPropertyChanged(nameof(ContractId));
             }
         }
-
+        private void ContractId_Validation(string value)
+        { }
         private string _ContractId_Not_Valid = "";
         //ContractId property
 
@@ -444,15 +461,16 @@ namespace Models
             }
             set
             {
-                _ContractDate_Not_Valid = value;
+                ContractDate_Validation(value);
                 if (GetErrors(nameof(ContractDate)) == null)
                 {
-                    _dataAccess.Set(nameof(ContractDate), _ContractDate_Not_Valid);
+                    _dataAccess.Set(nameof(ContractDate), value);
                 }
                 OnPropertyChanged(nameof(ContractDate));
             }
         }
-
+        private void ContractDate_Validation(DateTimeOffset value)
+        { }
         private DateTimeOffset _ContractDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
         //ContractDate property
 
@@ -473,15 +491,16 @@ namespace Models
             }
             set
             {
-                _CountryCreator_Not_Valid = value;
+                CountryCreator_Validation(value);
                 if (GetErrors(nameof(CountryCreator)) == null)
                 {
-                    _dataAccess.Set(nameof(CountryCreator), _CountryCreator_Not_Valid);
+                    _dataAccess.Set(nameof(CountryCreator), value);
                 }
                 OnPropertyChanged(nameof(CountryCreator));
             }
         }
-
+        private void CountryCreator_Validation(string value)
+        { }
         private string _CountryCreator_Not_Valid = "";
         //CountryCreator property
 

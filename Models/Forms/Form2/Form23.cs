@@ -41,7 +41,7 @@ namespace Models
                 _StoragePlaceName_Not_Valid = value;
                 if (GetErrors(nameof(StoragePlaceName)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceName), _StoragePlaceName_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
@@ -73,7 +73,7 @@ namespace Models
                 _StoragePlaceNameNote_Not_Valid = value;
                 if (GetErrors(nameof(StoragePlaceNameNote)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceNameNote), _StoragePlaceNameNote_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceNameNote), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
@@ -106,7 +106,7 @@ namespace Models
                 _StoragePlaceCode_Not_Valid = value;
                 if (GetErrors(nameof(StoragePlaceCode)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceCode), _StoragePlaceCode_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
@@ -145,7 +145,7 @@ namespace Models
                 _ProjectVolume_Not_Valid = value;
                 if (GetErrors(nameof(ProjectVolume)) == null)
                 {
-                    _dataAccess.Set(nameof(ProjectVolume), _ProjectVolume_Not_Valid);
+                    _dataAccess.Set(nameof(ProjectVolume), value);
                 }
                 OnPropertyChanged(nameof(ProjectVolume));
             }
@@ -177,7 +177,7 @@ namespace Models
                 _ProjectVolumeNote_Not_Valid = value;
                 if (GetErrors(nameof(ProjectVolumeNote)) == null)
                 {
-                    _dataAccess.Set(nameof(ProjectVolumeNote), _ProjectVolumeNote_Not_Valid);
+                    _dataAccess.Set(nameof(ProjectVolumeNote), value);
                 }
                 OnPropertyChanged(nameof(ProjectVolumeNote));
             }
@@ -210,7 +210,7 @@ namespace Models
                 _CodeRAO_Not_Valid = value;
                 if (GetErrors(nameof(CodeRAO)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeRAO), _CodeRAO_Not_Valid);
+                    _dataAccess.Set(nameof(CodeRAO), value);
                 }
                 OnPropertyChanged(nameof(CodeRAO));
             }
@@ -243,7 +243,7 @@ namespace Models
                 _Volume_Not_Valid = value;
                 if (GetErrors(nameof(Volume)) == null)
                 {
-                    _dataAccess.Set(nameof(Volume), _Volume_Not_Valid);
+                    _dataAccess.Set(nameof(Volume), value);
                 }
                 OnPropertyChanged(nameof(Volume));
             }
@@ -253,6 +253,11 @@ namespace Models
         private void Volume_Validation(double value)//TODO
         {
             ClearErrors(nameof(Volume));
+            if (Volume <= 0)
+            {
+                AddError(nameof(Volume), "Недопустимое значение");
+                return;
+            }
         }
         //Volume property
 
@@ -276,7 +281,7 @@ namespace Models
                 _Mass_Not_Valid = value;
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    _dataAccess.Set(nameof(Mass), _Mass_Not_Valid);
+                    _dataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -286,6 +291,11 @@ namespace Models
         private void Mass_Validation()//TODO
         {
             ClearErrors(nameof(Mass));
+            if (Mass <= 0)
+            {
+                AddError(nameof(Mass), "Недопустимое значение");
+                return;
+            }
         }
         //Mass Property
 
@@ -311,7 +321,7 @@ namespace Models
 
                 if (GetErrors(nameof(QuantityOZIII)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityOZIII), _QuantityOZIII_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOZIII), value);
                 }
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
@@ -346,7 +356,7 @@ namespace Models
                 _SummaryActivity_Not_Valid = value;
                 if (GetErrors(nameof(SummaryActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(SummaryActivity), _SummaryActivity_Not_Valid);
+                    _dataAccess.Set(nameof(SummaryActivity), value);
                 }
                 OnPropertyChanged(nameof(SummaryActivity));
             }
@@ -408,7 +418,7 @@ namespace Models
                 _DocumentNumber_Not_Valid = value;
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentNumber), _DocumentNumber_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentNumber), value);
                 }
                 OnPropertyChanged(nameof(DocumentNumber));
             }
@@ -446,7 +456,7 @@ namespace Models
                 _DocumentNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentNumberRecoded), _DocumentNumberRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
@@ -480,7 +490,7 @@ namespace Models
                 _DocumentDate_Not_Valid = value;
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentDate), _DocumentDate_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentDate), value);
                 }
                 OnPropertyChanged(nameof(DocumentDate));
             }
@@ -513,7 +523,7 @@ namespace Models
                 _ExpirationDate_Not_Valid = value;
                 if (GetErrors(nameof(ExpirationDate)) == null)
                 {
-                    _dataAccess.Set(nameof(ExpirationDate), _ExpirationDate_Not_Valid);
+                    _dataAccess.Set(nameof(ExpirationDate), value);
                 }
                 OnPropertyChanged(nameof(ExpirationDate));
             }
@@ -546,7 +556,7 @@ namespace Models
                 _DocumentName_Not_Valid = value;
                 if (GetErrors(nameof(DocumentName)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentName), _DocumentName_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentName), value);
                 }
                 OnPropertyChanged(nameof(DocumentName));
             }

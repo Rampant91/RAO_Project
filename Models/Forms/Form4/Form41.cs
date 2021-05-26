@@ -41,7 +41,7 @@ namespace Models
                 _NumberInOrder_Not_Valid = value;
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
+                    _dataAccess.Set(nameof(NumberInOrder), value);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
@@ -74,7 +74,7 @@ namespace Models
                 _RegNo_Not_Valid = value;
                 if (GetErrors(nameof(RegNo)) == null)
                 {
-                    _dataAccess.Set(nameof(RegNo), _RegNo_Not_Valid);
+                    _dataAccess.Set(nameof(RegNo), value);
                 }
                 OnPropertyChanged(nameof(RegNo));
             }
@@ -103,7 +103,7 @@ namespace Models
                 _Okpo_Not_Valid = value;
                 if (GetErrors(nameof(Okpo)) == null)
                 {
-                    _dataAccess.Set(nameof(Okpo), _Okpo_Not_Valid);
+                    _dataAccess.Set(nameof(Okpo), value);
                 }
                 OnPropertyChanged(nameof(Okpo));
             }
@@ -143,7 +143,7 @@ namespace Models
                 _OrgName_Not_Valid = value;
                 if (GetErrors(nameof(OrgName)) == null)
                 {
-                    _dataAccess.Set(nameof(OrgName), _OrgName_Not_Valid);
+                    _dataAccess.Set(nameof(OrgName), value);
                 }
                 OnPropertyChanged(nameof(OrgName));
             }
@@ -172,7 +172,7 @@ namespace Models
                 _LicenseInfo_Not_Valid = value;
                 if (GetErrors(nameof(LicenseInfo)) == null)
                 {
-                    _dataAccess.Set(nameof(LicenseInfo), _LicenseInfo_Not_Valid);
+                    _dataAccess.Set(nameof(LicenseInfo), value);
                 }
                 OnPropertyChanged(nameof(LicenseInfo));
             }
@@ -203,7 +203,7 @@ namespace Models
 
                 if (GetErrors(nameof(QuantityOfFormsInv)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityOfFormsInv), _QuantityOfFormsInv_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOfFormsInv), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsInv));
             }
@@ -240,7 +240,7 @@ namespace Models
 
                 if (GetErrors(nameof(QuantityOfFormsOper)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityOfFormsOper), _QuantityOfFormsOper_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOfFormsOper), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsOper));
             }
@@ -277,7 +277,7 @@ namespace Models
 
                 if (GetErrors(nameof(QuantityOfFormsYear)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityOfFormsYear), _QuantityOfFormsYear_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOfFormsYear), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsYear));
             }
@@ -312,7 +312,7 @@ namespace Models
                 _Notes_Not_Valid = value;
                 if (GetErrors(nameof(Notes)) == null)
                 {
-                    _dataAccess.Set(nameof(Notes), _Notes_Not_Valid);
+                    _dataAccess.Set(nameof(Notes), value);
                 }
                 OnPropertyChanged(nameof(Notes));
             }

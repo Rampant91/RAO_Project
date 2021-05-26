@@ -8,7 +8,18 @@ namespace Models.Abstracts
         [Attributes.Form_Property("Форма")]
         public Form1() : base()
         {
+            Validate_base();
+        }
 
+        protected void Validate_base()
+        {
+            OperationCode_Validation(OperationCode);
+            OperationDate_Validation(OperationDate);
+            DocumentNumber_Validation(DocumentNumber);
+            DocumentVid_Validation(DocumentVid);
+            DocumentNumberRecoded_Validation(DocumentNumberRecoded);
+            DocumentDate_Validation(DocumentDate);
+            DocumentDateNote_Validation(DocumentDateNote);
         }
 
         //NumberInOrder property
@@ -32,7 +43,7 @@ namespace Models.Abstracts
                 _NumberInOrder_Not_Valid = value;
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
+                    _dataAccess.Set(nameof(NumberInOrder), value);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
@@ -65,7 +76,7 @@ namespace Models.Abstracts
                 _CorrectionNumber_Not_Valid = value;
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
+                    _dataAccess.Set(nameof(CorrectionNumber), value);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
@@ -170,7 +181,7 @@ namespace Models.Abstracts
 
                 if (GetErrors(nameof(DocumentVid)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentVid), _DocumentVid_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentVid), value);
                 }
                 OnPropertyChanged(nameof(DocumentVid));
             }
@@ -178,9 +189,7 @@ namespace Models.Abstracts
 
         private byte _DocumentVid_Not_Valid = 255;
         protected virtual void DocumentVid_Validation(byte value)//Ok
-        {
-            ClearErrors(nameof(DocumentVid));
-        }
+        { }
         //DocumentVid property
 
         //DocumentNumber property
@@ -205,22 +214,15 @@ namespace Models.Abstracts
 
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentNumber), _DocumentNumber_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentNumber), value);
                 }
                 OnPropertyChanged(nameof(DocumentNumber));
             }
         }
 
         protected string _DocumentNumber_Not_Valid = "";
-        private void DocumentNumber_Validation(string value)//Ready
-        {
-            ClearErrors(nameof(DocumentNumber));
-            if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
-            {
-                AddError(nameof(DocumentNumber), "Поле не заполнено");
-                return;
-            }
-        }
+        protected virtual void DocumentNumber_Validation(string value)//Ready
+        { }
         //DocumentNumber property
 
         //DocumentNumberRecoded property
@@ -243,17 +245,17 @@ namespace Models.Abstracts
                 _DocumentNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentNumberRecoded), _DocumentNumberRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
         }
 
         private string _DocumentNumberRecoded_Not_Valid = "";
-        //private void DocumentNumberRecoded_Validation(string value)//Ready
-        //{
-        //    ClearErrors(nameof(DocumentNumberRecoded));
-        //}
+        private void DocumentNumberRecoded_Validation(string value)//Ready
+        {
+            ClearErrors(nameof(DocumentNumberRecoded));
+        }
         //DocumentNumberRecoded property
 
         //DocumentDate property
@@ -267,7 +269,7 @@ namespace Models.Abstracts
                     var tmp = _dataAccess.Get(nameof(DocumentDate));//OK
                     if (tmp == null)
                         return _DocumentDate_Not_Valid;
-                    return ((DateTimeOffset)tmp).Date.ToString("dd/MM/yyyy");
+                    return ((DateTimeOffset)tmp).Date.ToString("dd/MM/yyyy");// дает дату в формате дд.мм.гггг
                 }
                 else
                 {
@@ -312,7 +314,7 @@ namespace Models.Abstracts
                 _DocumentDateNote_Not_Valid = value;
                 if (GetErrors(nameof(DocumentDateNote)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentDateNote), _DocumentDateNote_Not_Valid);
+                    _dataAccess.Set(nameof(DocumentDateNote), value);
                 }
                 OnPropertyChanged(nameof(DocumentDateNote));
             }
@@ -322,7 +324,7 @@ namespace Models.Abstracts
 
         private void DocumentDateNote_Validation(string value)
         {
-            ClearErrors(nameof(DocumentDate));
+            ClearErrors(nameof(DocumentDateNote));
         }
         //DocumentDateNote property
     }

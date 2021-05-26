@@ -41,7 +41,7 @@ namespace Models
                 _UniqueAgreementId_Not_Valid = value;
                 if (GetErrors(nameof(UniqueAgreementId)) == null)
                 {
-                    _dataAccess.Set(nameof(UniqueAgreementId), _UniqueAgreementId_Not_Valid);
+                    _dataAccess.Set(nameof(UniqueAgreementId), value);
                 }
                 OnPropertyChanged(nameof(UniqueAgreementId));
             }
@@ -70,7 +70,7 @@ namespace Models
                 _SupplyDate_Not_Valid = value;
                 if (GetErrors(nameof(SupplyDate)) == null)
                 {
-                    _dataAccess.Set(nameof(SupplyDate), _SupplyDate_Not_Valid);
+                    _dataAccess.Set(nameof(SupplyDate), value);
                 }
                 OnPropertyChanged(nameof(SupplyDate));
             }
@@ -99,7 +99,7 @@ namespace Models
                 _RecieverName_Not_Valid = value;
                 if (GetErrors(nameof(RecieverName)) == null)
                 {
-                    _dataAccess.Set(nameof(RecieverName), _RecieverName_Not_Valid);
+                    _dataAccess.Set(nameof(RecieverName), value);
                 }
                 OnPropertyChanged(nameof(RecieverName));
             }
@@ -128,7 +128,7 @@ namespace Models
                 _FieldsOfWorking_Not_Valid = value;
                 if (GetErrors(nameof(FieldsOfWorking)) == null)
                 {
-                    _dataAccess.Set(nameof(FieldsOfWorking), _FieldsOfWorking_Not_Valid);
+                    _dataAccess.Set(nameof(FieldsOfWorking), value);
                 }
                 OnPropertyChanged(nameof(FieldsOfWorking));
             }
@@ -157,7 +157,7 @@ namespace Models
                 _LicenseIdRv_Not_Valid = value;
                 if (GetErrors(nameof(LicenseIdRv)) == null)
                 {
-                    _dataAccess.Set(nameof(LicenseIdRv), _LicenseIdRv_Not_Valid);
+                    _dataAccess.Set(nameof(LicenseIdRv), value);
                 }
                 OnPropertyChanged(nameof(LicenseIdRv));
             }
@@ -186,7 +186,7 @@ namespace Models
                 _ValidThruRv_Not_Valid = value;
                 if (GetErrors(nameof(ValidThruRv)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidThruRv), _ValidThruRv_Not_Valid);
+                    _dataAccess.Set(nameof(ValidThruRv), value);
                 }
                 OnPropertyChanged(nameof(ValidThruRv));
             }
@@ -215,7 +215,7 @@ namespace Models
                 _LicenseIdRao_Not_Valid = value;
                 if (GetErrors(nameof(LicenseIdRao)) == null)
                 {
-                    _dataAccess.Set(nameof(LicenseIdRao), _LicenseIdRao_Not_Valid);
+                    _dataAccess.Set(nameof(LicenseIdRao), value);
                 }
                 OnPropertyChanged(nameof(LicenseIdRao));
             }
@@ -244,7 +244,7 @@ namespace Models
                 _ValidThruRao_Not_Valid = value;
                 if (GetErrors(nameof(ValidThruRao)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidThruRao), _ValidThruRao_Not_Valid);
+                    _dataAccess.Set(nameof(ValidThruRao), value);
                 }
                 OnPropertyChanged(nameof(ValidThruRao));
             }
@@ -273,7 +273,7 @@ namespace Models
                 _SupplyAddress_Not_Valid = value;
                 if (GetErrors(nameof(SupplyAddress)) == null)
                 {
-                    _dataAccess.Set(nameof(SupplyAddress), _SupplyAddress_Not_Valid);
+                    _dataAccess.Set(nameof(SupplyAddress), value);
                 }
                 OnPropertyChanged(nameof(SupplyAddress));
             }
@@ -304,7 +304,7 @@ namespace Models
 
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -353,7 +353,7 @@ namespace Models
 
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
+                    _dataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -388,7 +388,7 @@ namespace Models
                 _SummaryActivity_Not_Valid = value;
                 if (GetErrors(nameof(SummaryActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(SummaryActivity), _SummaryActivity_Not_Valid);
+                    _dataAccess.Set(nameof(SummaryActivity), value);
                 }
                 OnPropertyChanged(nameof(SummaryActivity));
             }

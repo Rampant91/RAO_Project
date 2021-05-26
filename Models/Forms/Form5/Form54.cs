@@ -41,7 +41,7 @@ namespace Models
                 _TypeOfAccountedParts_Not_Valid = value;
                 if (GetErrors(nameof(TypeOfAccountedParts)) == null)
                 {
-                    _dataAccess.Set(nameof(TypeOfAccountedParts), _TypeOfAccountedParts_Not_Valid);
+                    _dataAccess.Set(nameof(TypeOfAccountedParts), value);
                 }
                 OnPropertyChanged(nameof(TypeOfAccountedParts));
             }
@@ -76,7 +76,7 @@ namespace Models
                 _KindOri_Not_Valid = value;
                 if (GetErrors(nameof(KindOri)) == null)
                 {
-                    _dataAccess.Set(nameof(KindOri), _KindOri_Not_Valid);
+                    _dataAccess.Set(nameof(KindOri), value);
                 }
                 OnPropertyChanged(nameof(KindOri));
             }
@@ -108,7 +108,7 @@ namespace Models
                 _AggregateState_Not_Valid = value;
                 if (GetErrors(nameof(AggregateState)) == null)
                 {
-                    _dataAccess.Set(nameof(AggregateState), _AggregateState_Not_Valid);
+                    _dataAccess.Set(nameof(AggregateState), value);
                 }
                 OnPropertyChanged(nameof(AggregateState));
             }
@@ -145,7 +145,7 @@ namespace Models
 
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -193,7 +193,7 @@ namespace Models
                 _Activity_Not_Valid = value;
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
+                    _dataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -250,7 +250,7 @@ namespace Models
 
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
+                    _dataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -285,7 +285,7 @@ namespace Models
                 _Volume_Not_Valid = value;
                 if (GetErrors(nameof(Volume)) == null)
                 {
-                    _dataAccess.Set(nameof(Volume), _Volume_Not_Valid);
+                    _dataAccess.Set(nameof(Volume), value);
                 }
                 OnPropertyChanged(nameof(Volume));
             }
@@ -295,6 +295,11 @@ namespace Models
         private void Volume_Validation(double value)//TODO
         {
             ClearErrors(nameof(Volume));
+            if (Volume <= 0)
+            {
+                AddError(nameof(Volume), "Недопустимое значение");
+                return;
+            }
         }
         //Volume property
 
@@ -318,7 +323,7 @@ namespace Models
                 _Mass_Not_Valid = value;
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    _dataAccess.Set(nameof(Mass), _Mass_Not_Valid);
+                    _dataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -328,6 +333,11 @@ namespace Models
         private void Mass_Validation()//TODO
         {
             ClearErrors(nameof(Mass));
+            if (Mass <= 0)
+            {
+                AddError(nameof(Mass), "Недопустимое значение");
+                return;
+            }
         }
         //Mass Property
     }
