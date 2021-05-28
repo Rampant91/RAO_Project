@@ -83,7 +83,7 @@ namespace Client_App.Controls.DataGrid
             ItemsProperty.Changed.Subscribe(new ItemsObserver(Rows, ItemsChanged));
             this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
             this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
-            this.AddHandler(PointerReleasedEvent, PanelPointerReleased, handledEventsToo: true);
+            this.AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
         }
 
         public void Update()
@@ -206,11 +206,33 @@ namespace Client_App.Controls.DataGrid
         }
         void RenderSelectedControls()
         {
+            ClearElseControls();
             foreach (Panel item in FindSelectedControls())
             {
                 item.Background = new SolidColorBrush(Color.FromArgb(150, 255, 0, 0));
             }
         }
+
+        void ClearElseControls()
+        {
+            var list = Rows.Children;
+            foreach (Panel item in list)
+            {
+                var stack = (StackPanel)item.Children[0];
+                foreach (Border it in stack.Children)
+                {
+                    var child = (Panel)it.Child;
+                    foreach (Panel i in FindSelectedControls())
+                    {
+                        if (i.Name != child.Name)
+                        {
+                            child.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                        }
+                    }
+                }
+            }
+        }
+
         void ClearAllControls()
         {
             var list = Rows.Children;
@@ -271,7 +293,7 @@ namespace Client_App.Controls.DataGrid
                 LastControl = FindPressedControl(mouse);
             }
         }
-        public void PanelPointerReleased(object sender, PointerReleasedEventArgs args)
+        public void PanelPointerUp(object sender, PointerReleasedEventArgs args)
         {
             var mouse = args.GetCurrentPoint((DataGrid)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
