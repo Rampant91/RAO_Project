@@ -16,14 +16,11 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Main
     {
-        public static Control GetControl(string type,string Name, 
-            EventHandler<PointerPressedEventArgs> PressHandle,
-            EventHandler<PointerReleasedEventArgs> ReleasedHandle,
-            EventHandler<PointerEventArgs> MovedHandle)
+        public static Control GetControl(string type,string Name)
         {
             switch (type)
             {
-                case "0": return Get0(Name, PressHandle,ReleasedHandle,MovedHandle);
+                case "0": return Get0(Name);
                 case "1": return Get1();
                 case "2": return Get2();
                 case "3": return Get3();
@@ -35,23 +32,17 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
         static int Wdth = 100;
         static Color border_color = Color.FromArgb(255, 0, 0, 0);
-        static Control Get0Row(int starWidth, string Name, Binding Text,
-            EventHandler<PointerPressedEventArgs> PressHandle,
-            EventHandler<PointerReleasedEventArgs> ReleasedHandle,
-            EventHandler<PointerEventArgs> MovedHandle)
+        static Control Get0Row(int starWidth, string Name, Binding Text)
         {
             Border brd = new Border()
             {
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(border_color)
-            };
-            Button pnl = new Button();
+            }; 
+
+            Panel pnl = new Panel();
             pnl.Name = Name;
             pnl.Width = starWidth * Wdth;
-            pnl.AddHandler(InputElement.PointerPressedEvent, PressHandle, handledEventsToo: true);
-            pnl.AddHandler(InputElement.PointerReleasedEvent, ReleasedHandle, handledEventsToo: true);
-            pnl.AddHandler(InputElement.PointerMovedEvent, MovedHandle, handledEventsToo: true);
-            pnl.BorderThickness = Thickness.Parse("0");
 
             TextBlock txt = new TextBlock();
             txt.Bind(TextBlock.TextProperty, Text);
@@ -60,34 +51,31 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             txt.Width = starWidth * Wdth;
 
             brd.Child = pnl;
-            pnl.Content = txt;
+            pnl.Children.Add(txt);
 
             return brd;
         }
-        static Control Get0(string Name, 
-            EventHandler<PointerPressedEventArgs> PressHandle,
-            EventHandler<PointerReleasedEventArgs> ReleasedHandle,
-            EventHandler<PointerEventArgs> MovedHandle)
+        static Control Get0(string Name)
         {
             StackPanel stck = new StackPanel();
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
             stck.Spacing = -1;
 
-            stck.Children.Add(Get0Row(1, Name + "_" + 1, new Binding("NumberInOrder"), PressHandle,ReleasedHandle, MovedHandle));
-            stck.Children.Add(Get0Row(1, Name + "_" + 2, new Binding("FormNum"), PressHandle, ReleasedHandle, MovedHandle));
+            stck.Children.Add(Get0Row(1, Name + "_" + 1, new Binding("NumberInOrder")));
+            stck.Children.Add(Get0Row(1, Name + "_" + 2, new Binding("FormNum")));
 
             var bd = new Binding("StartPeriod");
             bd.StringFormat = "{0:d}";
-            stck.Children.Add(Get0Row(1, Name + "_" + 3, bd, PressHandle, ReleasedHandle, MovedHandle));
+            stck.Children.Add(Get0Row(1, Name + "_" + 3, bd));
             bd = new Binding("EndPeriod");
             bd.StringFormat = "{0:d}";
-            stck.Children.Add(Get0Row(1, Name + "_" + 4, bd, PressHandle, ReleasedHandle, MovedHandle));
+            stck.Children.Add(Get0Row(1, Name + "_" + 4, bd));
             bd = new Binding("ExportDate");
             bd.StringFormat = "{0:d}";
-            stck.Children.Add(Get0Row(1, Name + "_" + 5, bd, PressHandle, ReleasedHandle, MovedHandle));
+            stck.Children.Add(Get0Row(1, Name + "_" + 5, bd));
 
-            stck.Children.Add(Get0Row(2, Name + "_" + 6, new Binding("IsCorrection"), PressHandle, ReleasedHandle, MovedHandle));
-            stck.Children.Add(Get0Row(1, Name + "_" + 7, new Binding("Comments"), PressHandle, ReleasedHandle, MovedHandle));
+            stck.Children.Add(Get0Row(2, Name + "_" + 6, new Binding("IsCorrection")));
+            stck.Children.Add(Get0Row(1, Name + "_" + 7, new Binding("Comments")));
 
             return stck;
         }

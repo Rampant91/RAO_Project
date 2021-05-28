@@ -107,7 +107,7 @@ namespace Client_App.Short_Visual
         }
 
         //Форма 1X
-        static Controls.DataGrid.DataGrid FormX_Visual(INameScope scp)
+        static Control FormX_Visual(INameScope scp)
         {
             Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
             {
@@ -118,28 +118,36 @@ namespace Client_App.Short_Visual
             grd.Type = "0/0";
             grd.Name = "Form1AllDataGrid_";
 
-            Binding bnd = new Binding();
-            bnd.Path = "DataContext.Local_Reports.Reports_Collection[0].Report_Collection";
-            bnd.ElementName = "MainWindow";
-            bnd.NameScope = new WeakReference<INameScope>(scp);
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty,bnd);
+            Binding b = new Binding();
+            b.Path = "DataContext.Local_Reports.Reports_Collection[0].Report_Collection";
+            b.ElementName = "MainWindow";
+            b.NameScope = new WeakReference<INameScope>(scp);
 
-            ///Test
-            //var cntx = new ContextMenu();
-            //List<MenuItem> itms = new List<MenuItem>();
-            //itms.Add(new MenuItem
-            //{
-            //    Header = "Изменить форму",
-            //    [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
-            //    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
-            //});
-            //itms.Add(new MenuItem
-            //{
-            //    Header = "Удалить форму",
-            //    [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
-            //    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
-            //});
-            //cntx.Items = itms;
+            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+
+            //DataGrid grd = new DataGrid();
+            //grd.Width = 300;
+            //grd.Height = 300;
+            //grd.RowHeight = 20;
+            //grd.ColumnHeaderHeight = 100;
+            //grd.Bind(DataGrid.ItemsProperty,b);
+            //grd.HeadersVisibility = DataGridHeadersVisibility.All;
+            //// Test
+            ////var cntx = new ContextMenu();
+            ////List<MenuItem> itms = new List<MenuItem>();
+            ////itms.Add(new MenuItem
+            ////{
+            ////    Header = "Изменить форму",
+            ////    [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
+            ////    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+            ////});
+            ////itms.Add(new MenuItem
+            ////{
+            ////    Header = "Удалить форму",
+            ////    [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
+            ////    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+            ////});
+            ////cntx.Items = itms;
 
             ////grd.ContextMenu = cntx;
 
@@ -153,12 +161,13 @@ namespace Client_App.Short_Visual
             //    [!Button.CommandProperty] = new Binding("AddSort"),
             //    CommandParameter = "1/NumberInOrder"
             //};
+
             //clm1.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
             //        new TextBlock
             //        {
             //            [!TextBlock.TextProperty] = new Binding("NumberInOrder"),
             //        });
-            ////grd.Columns.Add(clm1);
+            //grd.Columns.Add(clm1);
 
             //DataGridTemplateColumn clm2 = new DataGridTemplateColumn();
             //clm2.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
@@ -266,7 +275,7 @@ namespace Client_App.Short_Visual
             //            [!TextBlock.TextProperty] = new Binding("Comments"),
             //        });
             ////.Columns.Add(clm7);
-            ///Test
+            //// Test
             return grd;
         }
 

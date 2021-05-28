@@ -10,10 +10,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Render
     {
-        public static Control GetControl(string Type,string Name,
-            EventHandler<PointerPressedEventArgs> PressHandler,
-            EventHandler<PointerReleasedEventArgs> ReleasedHandle,
-            EventHandler<PointerEventArgs> MovedHandle)
+        public static Control GetControl(string Type,string Name)
         {
             Control ctrl = null;
             if (Type != "")
@@ -24,7 +21,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 switch (formT1)
                 {
                     case "0":
-                        ctrl = Support.RenderDataGridRow.Main.GetControl(formT2,Name, PressHandler,ReleasedHandle,MovedHandle);
+                        ctrl = Support.RenderDataGridRow.Main.GetControl(formT2,Name);
                         break;
                     case "1":
                         ctrl = Support.RenderDataGridRow.Form1.GetControl(formT2);

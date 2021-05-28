@@ -33,6 +33,16 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
+        public static readonly DirectProperty<DataGrid, IEnumerable> SelectedItemsProperty =
+                AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable>(
+        nameof(SelectedItems),
+        o => o.SelectedItems);
+
+        public IEnumerable SelectedItems
+        {
+            get { return FindSelectedItems(); }
+        }
+
         public static readonly DirectProperty<DataGrid, string> TypeProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, string>(
                 nameof(Type),
@@ -42,7 +52,10 @@ namespace Client_App.Controls.DataGrid
         public string Type
         {
             get { return _type; }
-            set { SetAndRaise(TypeProperty, ref _type, value); }
+            set { 
+                SetAndRaise(TypeProperty, ref _type, value);
+                Update();
+            }
         }
 
         public static new readonly DirectProperty<DataGrid, string> NameProperty =
@@ -68,8 +81,9 @@ namespace Client_App.Controls.DataGrid
             Rows=this.FindControl<StackPanel>("Rows");
 
             ItemsProperty.Changed.Subscribe(new ItemsObserver(Rows, ItemsChanged));
-            MakeHeader();
-
+            this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
+            this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
+            this.AddHandler(PointerReleasedEvent, PanelPointerReleased, handledEventsToo: true);
         }
 
         public void Update()
@@ -89,15 +103,17 @@ namespace Client_App.Controls.DataGrid
                         if((string)sender=="ALL")
                         {
                             Rows.Children.Clear();
+                            int count = 0;
                             foreach(var item in Items)
                             {
                                 var it = (Report)item;
                                 if(it.ReportId!=null)
                                 {
-                                    var tmp = Support.RenderDataGridRow.Render.GetControl(Type,Name+it.ReportId, CellPressed,CellReleased,CellMoved);
+                                    var tmp = Support.RenderDataGridRow.Render.GetControl(Type,Name+count);
                                     if(tmp!=null)
                                     {
-                                        Panel pnl = new Panel() { Name = this.Name + it.ReportId };
+                                        Panel pnl = new Panel() { Name = this.Name + count };
+                                        count++;
                                         pnl.Children.Add(tmp);
                                         pnl.DataContext = item;
                                         Rows.Children.Add(pnl);
@@ -114,100 +130,153 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
-        bool First = false;
-        int[] _first = new int[2];
-        object fsender=null;
 
-        void CellMoved(object sender, PointerEventArgs args)
-        {
-            if (args.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        Control _firstControl = null;
+        Control FirstControl { 
+            get
             {
-                if (fsender != sender)
+                return _firstControl;
+            }
+            set
+            {
+                _firstControl = value;
+                RenderSelectedControls();
+            }
+        }
+        Control _lastControl = null;
+        Control LastControl
+        {
+            get
+            {
+                return _lastControl;
+            }
+            set
+            {
+                _lastControl = value;
+                RenderSelectedControls();
+            }
+        }
+        bool IsMouseDown = false;
+        bool IsXYinBounds(Point XY,Rect ctrl)
+        {
+            if(XY.X>ctrl.X&&XY.X<ctrl.X+ ctrl.Width)
+            {
+                if (XY.Y > ctrl.Y && XY.Y < ctrl.Y + ctrl.Height)
                 {
-                    fsender = sender;
-                    var n = ((Control)sender).Name;
-                    n = n.Replace(this.Name, "");
-                    var row = System.Convert.ToInt32(n.Split('_')[0]);
-                    var column = System.Convert.ToInt32(n.Split('_')[1]);
+                    return true;
+                }
+            }
+            return false;
+        }
+        IEnumerable<Control> FindSelectedControls()
+        {
+            if (FirstControl != null && LastControl != null)
+            {
+                var tp11 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[0]);
+                var tp12 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[1]);
+                var tp21 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[0]);
+                var tp22 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[1]);
 
-                    var prt = (StackPanel)((Control)sender).Parent.Parent.Parent.Parent;
-
-                    var lt = prt.Children;
-
-                    var t1 = -1;
-                    var t2 = -1;
-                    var t3 = -1;
-                    var t4 = -1;
-                    if (_first[0] >= row)
+                var list = Rows.Children;
+                foreach (Panel item in list)
+                {
+                    var stack = (StackPanel)item.Children[0];
+                    foreach (Border it in stack.Children)
                     {
-                        t1 = _first[0];
-                        t2 = row;
-                    }
-                    else
-                    {
-                        t1 = row;
-                        t2 = _first[0];
-                    }
-                    if (_first[1] >= column)
-                    {
-                        t3 = _first[1];
-                        t4 = column;
-                    }
-                    else
-                    {
-                        t3 = column;
-                        t4 = _first[1];
-                    }
-
-                    foreach (var item in lt)
-                    {
-                        var ty = (StackPanel)((Panel)item).Children[0];
-                        var tu = ty.Children;
-                        foreach (Border it in tu)
+                        var child = (Panel)it.Child;
+                        var tpl1 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[0]);
+                        var tpl2 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[1]);
+                        if (tpl1 <= System.Math.Max(tp11, tp21) && tpl1 >= System.Math.Min(tp11, tp21))
                         {
-                            var nam = ((Button)it.Child).Name;
-                            if (nam.Contains(this.Name))
+                            if (tpl2 <= System.Math.Max(tp12, tp22) && tpl2 >= System.Math.Min(tp12, tp22))
                             {
-                                var nm = nam;
-                                nm = nm.Replace(this.Name, "");
-                                var rw = System.Convert.ToInt32(nm.Split('_')[0]);
-                                var clmn = System.Convert.ToInt32(nm.Split('_')[1]);
-
-
-                                if (rw >= t2 && rw <= t1)
-                                {
-                                    if (clmn >= t4 && clmn <= t3)
-                                    {
-                                        ((Button)it.Child).Background = new SolidColorBrush(Color.FromArgb(150, 114, 121, 158));
-                                    }
-                                }
+                                yield return child;
                             }
                         }
                     }
                 }
             }
         }
-
-        void CellPressed(object sender,PointerPressedEventArgs args)
+        IEnumerable<Report> FindSelectedItems()
         {
-            if(args.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+            foreach (Panel item in FindSelectedControls())
             {
-                First = true;
-                var nm = ((Control)sender).Name;
-                nm = nm.Replace(this.Name, "");
-                var row = nm.Split('_')[0];
-                var column = nm.Split('_')[1];
-                _first[0] = System.Convert.ToInt32(row);
-                _first[1] = System.Convert.ToInt32(column);
+                yield return (Report)item.DataContext;
             }
         }
-        void CellReleased(object sender, PointerReleasedEventArgs args)
+        void RenderSelectedControls()
         {
-            if (First)
+            foreach (Panel item in FindSelectedControls())
             {
-                First = false;
+                item.Background = new SolidColorBrush(Color.FromArgb(150, 255, 0, 0));
+            }
+        }
+        void ClearAllControls()
+        {
+            var list = Rows.Children;
+            foreach (Panel item in list)
+            {
+                var stack = (StackPanel)item.Children[0];
+                foreach (Border it in stack.Children)
+                {
+                    var child = (Panel)it.Child;
+                    child.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                }
+            }
+        }
+        public void PanelPointerDown(object sender, PointerPressedEventArgs args)
+        {
+            var mouse = args.GetCurrentPoint((DataGrid)sender);
+            if (mouse.Properties.PointerUpdateKind==PointerUpdateKind.LeftButtonPressed)
+            {
+                IsMouseDown = true;
+                ClearAllControls();
 
-                _first = new int[2];
+                LastControl = null;
+                FirstControl = FindPressedControl(mouse);
+            }
+        }
+
+        Control FindPressedControl(PointerPoint mouse)
+        {
+            var list = Rows.Children;
+            foreach (Panel item in list)
+            {
+                var stack = (StackPanel)item.Children[0];
+                foreach (Border it in stack.Children)
+                {
+                    var child = (Panel)it.Child;
+                    var pnt = child.TransformedBounds.Value.Bounds.TransformToAABB(child.TransformedBounds.Value.Transform);
+                    var mpnt = mouse.Position.Transform(this.TransformedBounds.Value.Transform);
+                    if (IsXYinBounds(mpnt, pnt))
+                    {
+                        return child;
+                    }
+                }
+            }
+            return null;
+        }
+        public void PanelPointerMoved(object sender, PointerEventArgs args)
+        {
+            var mouse = args.GetCurrentPoint((DataGrid)sender);
+            if (IsMouseDown)
+            {
+                if(LastControl!=null)
+                {
+                    if(IsXYinBounds(mouse.Position,LastControl.Bounds))
+                    {
+                        return;
+                    }
+                }
+                LastControl = FindPressedControl(mouse);
+            }
+        }
+        public void PanelPointerReleased(object sender, PointerReleasedEventArgs args)
+        {
+            var mouse = args.GetCurrentPoint((DataGrid)sender);
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            {
+                IsMouseDown = false;
             }
         }
 
