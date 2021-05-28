@@ -40,7 +40,7 @@ namespace Models
                 _StoragePlaceName_Not_Valid = value;
                 if (GetErrors(nameof(StoragePlaceName)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceName), _StoragePlaceName_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
@@ -73,7 +73,7 @@ namespace Models
                 _CodeOYAT_Not_Valid = value;
                 if (GetErrors(nameof(CodeOYAT)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeOYAT), _CodeOYAT_Not_Valid);
+                    _dataAccess.Set(nameof(CodeOYAT), value);
                 }
                 OnPropertyChanged(nameof(CodeOYAT));
             }
@@ -105,7 +105,7 @@ namespace Models
                 _CodeOYATnote_Not_Valid = value;
                 if (GetErrors(nameof(CodeOYATnote)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeOYATnote), _CodeOYATnote_Not_Valid);
+                    _dataAccess.Set(nameof(CodeOYATnote), value);
                 }
                 OnPropertyChanged(nameof(CodeOYATnote));
             }
@@ -137,7 +137,7 @@ namespace Models
                 _StoragePlaceCode_Not_Valid = value;
                 if (GetErrors(nameof(StoragePlaceCode)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceCode), _StoragePlaceCode_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
@@ -181,7 +181,7 @@ namespace Models
                 _FcpNumber_Not_Valid = value;
                 if (GetErrors(nameof(FcpNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(FcpNumber), _FcpNumber_Not_Valid);
+                    _dataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
@@ -214,7 +214,7 @@ namespace Models
                 _FuelMass_Not_Valid = value;
                 if (GetErrors(nameof(FuelMass)) == null)
                 {
-                    _dataAccess.Set(nameof(FuelMass), _FuelMass_Not_Valid);
+                    _dataAccess.Set(nameof(FuelMass), value);
                 }
                 OnPropertyChanged(nameof(FuelMass));
             }
@@ -247,7 +247,7 @@ namespace Models
                 _CellMass_Not_Valid = value;
                 if (GetErrors(nameof(CellMass)) == null)
                 {
-                    _dataAccess.Set(nameof(CellMass), _CellMass_Not_Valid);
+                    _dataAccess.Set(nameof(CellMass), value);
                 }
                 OnPropertyChanged(nameof(CellMass));
             }
@@ -282,7 +282,7 @@ namespace Models
 
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
+                    _dataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -317,7 +317,7 @@ namespace Models
                 _BetaGammaActivity_Not_Valid = value;
                 if (GetErrors(nameof(BetaGammaActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivity), _BetaGammaActivity_Not_Valid);
+                    _dataAccess.Set(nameof(BetaGammaActivity), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
@@ -377,7 +377,7 @@ namespace Models
                 _AlphaActivity_Not_Valid = value;
                 if (GetErrors(nameof(AlphaActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(AlphaActivity), _AlphaActivity_Not_Valid);
+                    _dataAccess.Set(nameof(AlphaActivity), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivity));
             }

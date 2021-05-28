@@ -42,7 +42,7 @@ namespace Models
                 _Name_Not_Valid = value;
                 if (GetErrors(nameof(Name)) == null)
                 {
-                    _dataAccess.Set(nameof(Name), _Name_Not_Valid);
+                    _dataAccess.Set(nameof(Name), value);
                 }
                 OnPropertyChanged(nameof(Name));
             }
@@ -119,7 +119,7 @@ namespace Models
 
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
+                    _dataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -156,7 +156,7 @@ namespace Models
 
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -362,7 +362,7 @@ namespace Models
                 _ProviderOrRecieverOKPONote_Not_Valid = value;
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), _ProviderOrRecieverOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
@@ -395,7 +395,7 @@ namespace Models
                 _Mass_Not_Valid = value;
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    _dataAccess.Set(nameof(Mass), _Mass_Not_Valid);
+                    _dataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -405,6 +405,11 @@ namespace Models
         private void Mass_Validation()//TODO
         {
             ClearErrors(nameof(Mass));
+            if (Mass <= 0)
+            {
+                AddError(nameof(Mass), "Недопустимое значение");
+                return;
+            }
         }
         //Mass Property
     }

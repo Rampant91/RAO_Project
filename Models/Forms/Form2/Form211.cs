@@ -1,4 +1,5 @@
 ﻿using Models.DataAccess;
+using System.Collections.Generic;
 using System;
 
 namespace Models
@@ -39,7 +40,7 @@ namespace Models
                 _PlotName_Not_Valid = value;
                 if (GetErrors(nameof(PlotName)) == null)
                 {
-                    _dataAccess.Set(nameof(PlotName), _PlotName_Not_Valid);
+                    _dataAccess.Set(nameof(PlotName), value);
                 }
                 OnPropertyChanged(nameof(PlotName));
             }
@@ -72,7 +73,7 @@ namespace Models
                 _PlotKadastrNumber_Not_Valid = value;
                 if (GetErrors(nameof(PlotKadastrNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(PlotKadastrNumber), _PlotKadastrNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PlotKadastrNumber), value);
                 }
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
@@ -105,7 +106,7 @@ namespace Models
                 _PlotCode_Not_Valid = value;
                 if (GetErrors(nameof(PlotCode)) == null)
                 {
-                    _dataAccess.Set(nameof(PlotCode), _PlotCode_Not_Valid);
+                    _dataAccess.Set(nameof(PlotCode), value);
                 }
                 OnPropertyChanged(nameof(PlotCode));
             }
@@ -138,7 +139,7 @@ namespace Models
                 _InfectedArea_Not_Valid = value;
                 if (GetErrors(nameof(InfectedArea)) == null)
                 {
-                    _dataAccess.Set(nameof(InfectedArea), _InfectedArea_Not_Valid);
+                    _dataAccess.Set(nameof(InfectedArea), value);
                 }
                 OnPropertyChanged(nameof(InfectedArea));
             }
@@ -169,19 +170,34 @@ namespace Models
             }
             set
             {
-                _Radionuclids_Not_Valid = value;
+                Radionuclids_Validation(value);
+
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
         //If change this change validation
         private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation()//TODO
+        private void Radionuclids_Validation(string value)//TODO
         {
             ClearErrors(nameof(Radionuclids));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Radionuclids), "Поле не заполнено");
+                return;
+            }
+            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
+            foreach (var item in spr)
+            {
+                if (item.Item2.Equals(value))
+                {
+                    Radionuclids = item.Item2;
+                    return;
+                }
+            }
         }
         //Radionuclids property
 
@@ -204,7 +220,7 @@ namespace Models
                 _RadionuclidNameNote_Not_Valid = value;
                 if (GetErrors(nameof(RadionuclidNameNote)) == null)
                 {
-                    _dataAccess.Set(nameof(RadionuclidNameNote), _RadionuclidNameNote_Not_Valid);
+                    _dataAccess.Set(nameof(RadionuclidNameNote), value);
                 }
                 OnPropertyChanged(nameof(RadionuclidNameNote));
             }
@@ -237,7 +253,7 @@ namespace Models
                 _SpecificActivityOfPlot_Not_Valid = value;
                 if (GetErrors(nameof(SpecificActivityOfPlot)) == null)
                 {
-                    _dataAccess.Set(nameof(SpecificActivityOfPlot), _SpecificActivityOfPlot_Not_Valid);
+                    _dataAccess.Set(nameof(SpecificActivityOfPlot), value);
                 }
                 OnPropertyChanged(nameof(SpecificActivityOfPlot));
             }
@@ -281,7 +297,7 @@ namespace Models
                 _SpecificActivityOfLiquidPart_Not_Valid = value;
                 if (GetErrors(nameof(SpecificActivityOfLiquidPart)) == null)
                 {
-                    _dataAccess.Set(nameof(SpecificActivityOfLiquidPart), _SpecificActivityOfLiquidPart_Not_Valid);
+                    _dataAccess.Set(nameof(SpecificActivityOfLiquidPart), value);
                 }
                 OnPropertyChanged(nameof(SpecificActivityOfLiquidPart));
             }
@@ -325,7 +341,7 @@ namespace Models
                 _SpecificActivityOfDensePart_Not_Valid = value;
                 if (GetErrors(nameof(SpecificActivityOfDensePart)) == null)
                 {
-                    _dataAccess.Set(nameof(SpecificActivityOfDensePart), _SpecificActivityOfDensePart_Not_Valid);
+                    _dataAccess.Set(nameof(SpecificActivityOfDensePart), value);
                 }
                 OnPropertyChanged(nameof(SpecificActivityOfDensePart));
             }

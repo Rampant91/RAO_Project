@@ -14,7 +14,46 @@ namespace Models
         public Form11() : base()
         {
             FormNum = "11";
-            NumberOfFields = 38;
+            NumberOfFields = 42;
+            Validate_all();
+        }
+
+        private void Validate_all()
+        {
+            Validate_base();
+            PackNumberNote_Validation(PackNumberNote);
+            OwnerNote_Validation(OwnerNote);
+            PackTypeNote_Validation(PackTypeNote);
+            ActivityNote_Validation(ActivityNote);
+            Activity_Validation(Activity);
+            Category_Validation(Category);
+            CreationDate_Validation(CreationDate);
+            CreatorOKPONote_Validation(CreatorOKPONote);
+            CreatorOKPO_Validation(CreatorOKPO);
+            FactoryNumberRecoded_Validation(FactoryNumberRecoded);
+            FactoryNumber_Validation(FactoryNumber);
+            Owner_Validation(Owner);
+            PackNameNote_Validation(PackNameNote);
+            PackName_Validation(PackName);
+            PackNumberRecoded_Validation(PackNumberRecoded);
+            PackNumber_Validation(PackNumber);
+            PackTypeNote_Validation(PackTypeNote);
+            PackTypeRecoded_Validation();
+            PackType_Validation(PackType);
+            PassportNumberRecoded_Validation(PassportNumberRecoded);
+            PassportNumber_Validation(PassportNumber);
+            PropertyCode_Validation(PropertyCode);
+            ProviderOrRecieverOKPONote_Validation();
+            ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
+            Quantity_Validation(Quantity);
+            Radionuclids_Validation(Radionuclids);
+            SignedServicePeriod_Validation(SignedServicePeriod);
+            TransporterOKPONote_Validation();
+            TransporterOKPO_Validation(TransporterOKPO);
+            TypeRecoded_Validation(TypeRecoded);
+            Type_Validation(Type);
+            CreationDateNote_Validation(CreationDateNote);
+            PackNumberNote_Validation(PackNumberNote);
         }
 
         public override bool Object_Validation()
@@ -40,22 +79,28 @@ namespace Models
             }
             set
             {
-                _PassportNumber_Not_Valid = value;
+                PassportNumber_Validation(value);
+
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumber), _PassportNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PassportNumber), value);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
         }
         private string _PassportNumber_Not_Valid = "";
-        private void PassportNumber_Validation(string value)
+        public void PassportNumber_Validation(string value)
         {
             ClearErrors(nameof(PassportNumber));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(PassportNumber), "Поле не заполнено");
+                return;
+            }
             if (value.Equals("прим."))
             {
-                if (PassportNumberNote == "")
-                    AddError(nameof(PassportNumberNote), "Поле не может быть пустым");
+                if ((PassportNumberNote==null)||(PassportNumberNote == ""))
+                    AddError(nameof(PassportNumberNote), "Заполните примечание");
             }
         }
 
@@ -78,19 +123,25 @@ namespace Models
             }
             set
             {
-                _PassportNumberNote_Not_Valid = value;
+                PassportNumberNote_Validation(value);
+
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumberNote), _PassportNumberNote_Not_Valid);
+                    _dataAccess.Set(nameof(PassportNumberNote), value);
                 }
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
         }
 
         private string _PassportNumberNote_Not_Valid = "";
-        private void PassportNumberNote_Validation()
+        private void PassportNumberNote_Validation(string value)
         {
             ClearErrors(nameof(PassportNumberNote));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(PassportNumberNote), "Поле не заполнено");
+                return;
+            }
         }
         //PassportNumberNote property
 
@@ -115,7 +166,7 @@ namespace Models
                 _PassportNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumberRecoded), _PassportNumberRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(PassportNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(PassportNumberRecoded));
             }
@@ -146,10 +197,11 @@ namespace Models
             }
             set
             {
-                _Type_Not_Valid = value;
+                Type_Validation(value);
+
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    _dataAccess.Set(nameof(Type), _Type_Not_Valid);
+                    _dataAccess.Set(nameof(Type), value);
                 }
                 OnPropertyChanged(nameof(Type));
             }
@@ -159,7 +211,11 @@ namespace Models
         private void Type_Validation(string value)
         {
             ClearErrors(nameof(Type));
-            List<string> spr = new List<string>();    //HERE BINDS SPRAVOCHNIK
+            List<string> spr = new List<string>
+            {
+                "ГИИД-6",
+                "ГИИД-5"
+            };    //HERE BINDS SPRAVOCHNIK
             foreach (var item in spr)
             {
                 if (item.Equals(value)) return;
@@ -185,10 +241,11 @@ namespace Models
             }
             set
             {
-                _TypeRecoded_Not_Valid = value;
+                TypeRecoded_Validation(value);
+
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(TypeRecoded), _TypeRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(TypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(TypeRecoded));
             }
@@ -198,7 +255,6 @@ namespace Models
         private void TypeRecoded_Validation(string value)
         {
             ClearErrors(nameof(TypeRecoded));
-
         }
         //TypeRecoded property
 
@@ -220,19 +276,26 @@ namespace Models
             }
             set
             {
-                _Radionuclids_Not_Valid = value;
+                Radionuclids_Validation(value);
+                //_Radionuclids_Not_Valid = value;
+                
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
         //If change this change validation
         private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation()//TODO
+        private void Radionuclids_Validation(string value)//TODO
         {
             ClearErrors(nameof(Radionuclids));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Radionuclids), "Поле не заполнено");
+                return;
+            }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
@@ -263,19 +326,25 @@ namespace Models
             }
             set
             {
-                _FactoryNumber_Not_Valid = value;
+                FactoryNumber_Validation(value);
+
                 if (GetErrors(nameof(FactoryNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(FactoryNumber), _FactoryNumber_Not_Valid);
+                    _dataAccess.Set(nameof(FactoryNumber), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumber));
             }
         }
 
         private string _FactoryNumber_Not_Valid = "";
-        private void FactoryNumber_Validation()
+        private void FactoryNumber_Validation(string value)
         {
             ClearErrors(nameof(FactoryNumber));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(FactoryNumber), "Поле не заполнено");
+                return;
+            }
         }
         //FactoryNumber property
 
@@ -299,7 +368,7 @@ namespace Models
                 _FactoryNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(FactoryNumberRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(FactoryNumberRecoded), _FactoryNumberRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(FactoryNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
@@ -335,7 +404,7 @@ namespace Models
 
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
+                    _dataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -345,10 +414,11 @@ namespace Models
         private void Quantity_Validation(int value)//Ready
         {
             ClearErrors(nameof(Quantity));
-            if (value == _Quantity_Not_Valid)
-                AddError(nameof(Quantity), "Поле не заполнено");
             if (value <= 0)
+            {
                 AddError(nameof(Quantity), "Недопустимое значение");
+                return;
+            }
         }
         //Quantity property
 
@@ -375,7 +445,7 @@ namespace Models
 
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
+                    _dataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -390,13 +460,17 @@ namespace Models
                 AddError(nameof(Activity),"Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!((value.Contains('e')|| value.Contains('E'))))
             {
                 AddError(nameof(Activity), "Недопустимое значение");
                 return;
             }
             if (value.Equals("прим."))
+            {
+                if ((Activity == null) || (ActivityNote == ""))
+                    AddError(nameof(ActivityNote), "Заполните примечание");
                 return;
+            }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -428,10 +502,12 @@ namespace Models
             }
             set
             {
-                _ActivityNote_Not_Valid = value;
+                ActivityNote_Validation(value);
+                //_ActivityNote_Not_Valid = value;
+                
                 if (GetErrors(nameof(ActivityNote)) == null)
                 {
-                    _dataAccess.Set(nameof(ActivityNote), _ActivityNote_Not_Valid);
+                    _dataAccess.Set(nameof(ActivityNote), value);
                 }
                 OnPropertyChanged(nameof(ActivityNote));
             }
@@ -462,25 +538,80 @@ namespace Models
             }
             set
             {
-                _CreationDate_Not_Valid = value;
+                CreationDate_Validation(value);
+                //_CreationDate_Not_Valid = value;
                 if (GetErrors(nameof(CreationDate)) == null)
                 {
-                    _dataAccess.Set(nameof(CreationDate), _CreationDate_Not_Valid);
+                    _dataAccess.Set(nameof(CreationDate), value);
                 }
                 OnPropertyChanged(nameof(CreationDate));
             }
         }
         //If change this change validation
-        private string _CreationDate_Not_Valid = "01/01/1921";
+        private string _CreationDate_Not_Valid = "";
         private void CreationDate_Validation(string value)//Ready
         {
             ClearErrors(nameof(CreationDate));
-            if (value.Equals("прим.")) return;
-            var a = new Regex("[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}");
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(CreationDate), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                if ((CreationDateNote == null) || (CreationDateNote == ""))
+                    AddError(nameof(CreationDateNote), "Заполните примечание");
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value))
+            {
                 AddError(nameof(CreationDate), "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value); }
+            catch (Exception)
+            {
+                AddError(nameof(CreationDate), "Недопустимое значение");
+                return;
+            }
         }
         //CreationDate property
+
+        //CreationDateNote property
+        public string CreationDateNote
+        {
+            get
+            {
+                if (GetErrors(nameof(CreationDateNote)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(CreationDateNote));//OK
+                    return tmp != null ? (string)tmp : null;
+                }
+                else
+                {
+                    return _CreationDateNote_Not_Valid;
+                }
+            }
+            set
+            {
+                CreationDateNote_Validation(value);
+                //_CreationDateNote_Not_Valid = value;
+                if (GetErrors(nameof(CreationDateNote)) == null)
+                {
+                    _dataAccess.Set(nameof(CreationDateNote), value);
+                }
+                OnPropertyChanged(nameof(CreationDateNote));
+            }
+        }
+        //If change this change validation
+        private string _CreationDateNote_Not_Valid = "";
+
+        private void CreationDateNote_Validation(string value)
+        {
+            ClearErrors(nameof(CreationDateNote));
+        }
+        //CreationDateNote property
 
         //CreatorOKPO property
         [Attributes.Form_Property("ОКПО изготовителя")]
@@ -504,7 +635,7 @@ namespace Models
                 
                 if (GetErrors(nameof(CreatorOKPO)) == null)
                 {
-                    _dataAccess.Set(nameof(CreatorOKPO), _CreatorOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(CreatorOKPO), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPO));
             }
@@ -519,7 +650,12 @@ namespace Models
                 AddError(nameof(CreatorOKPO),"Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим.")) return;
+            if (value.Equals("прим."))
+            {
+                if ((PassportNumberNote == null) || (PassportNumberNote == ""))
+                    AddError(nameof(CreatorOKPONote), "Заполните примечание");
+                return;
+            }
             foreach (var item in OKSM)
             {
                 if (value.Equals(item)) return;
@@ -552,17 +688,19 @@ namespace Models
             }
             set
             {
-                _CreatorOKPONote_Not_Valid = value;
+                CreatorOKPONote_Validation(value);
+                //_CreatorOKPONote_Not_Valid = value;
+                
                 if (GetErrors(nameof(CreatorOKPONote)) == null)
                 {
-                    _dataAccess.Set(nameof(CreatorOKPONote), _CreatorOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(CreatorOKPONote), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPONote));
             }
         }
 
         private string _CreatorOKPONote_Not_Valid = "";
-        private void CreatorOKPONote_Validation()
+        private void CreatorOKPONote_Validation(string value)
         {
             ClearErrors(nameof(CreatorOKPONote));
         }
@@ -590,7 +728,7 @@ namespace Models
 
                 if (GetErrors(nameof(Category)) == null)
                 {
-                    _dataAccess.Set(nameof(Category), _Category_Not_Valid);
+                    _dataAccess.Set(nameof(Category), value);
                 }
                 OnPropertyChanged(nameof(Category));
             }
@@ -627,7 +765,7 @@ namespace Models
 
                 if (GetErrors(nameof(SignedServicePeriod)) == null)
                 {
-                    _dataAccess.Set(nameof(SignedServicePeriod), _SignedServicePeriod_Not_Valid);
+                    _dataAccess.Set(nameof(SignedServicePeriod), value);
                 }
                 OnPropertyChanged(nameof(SignedServicePeriod));
             }
@@ -664,7 +802,7 @@ namespace Models
 
                 if (GetErrors(nameof(PropertyCode)) == null)
                 {
-                    _dataAccess.Set(nameof(PropertyCode), _PropertyCode_Not_Valid);
+                    _dataAccess.Set(nameof(PropertyCode), value);
                 }
                 OnPropertyChanged(nameof(PropertyCode));
             }
@@ -674,10 +812,49 @@ namespace Models
         private void PropertyCode_Validation(byte value)//Ready
         {
             ClearErrors(nameof(PropertyCode));
+            //if (value == 255)//ok
+            //{
+            //    AddError(nameof(PropertyCode), "Поле не заполнено");
+            //    return;
+            //}
             if (!((value >= 1) && (value <= 9)))
                 AddError(nameof(PropertyCode), "Недопустимое значение");
         }
         //PropertyCode property
+
+        //OwnerNote property
+        public string OwnerNote
+        {
+            get
+            {
+                if (GetErrors(nameof(OwnerNote)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(OwnerNote));//OK
+                    return tmp != null ? (string)tmp : null;
+                }
+                else
+                {
+                    return _OwnerNote_Not_Valid;
+                }
+            }
+            set
+            {
+                OwnerNote_Validation(value);
+
+                if (GetErrors(nameof(OwnerNote)) == null)
+                {
+                    _dataAccess.Set(nameof(OwnerNote), value);
+                }
+                OnPropertyChanged(nameof(OwnerNote));
+            }
+        }
+        //if change this change validation
+        private string _OwnerNote_Not_Valid = "";
+        private void OwnerNote_Validation(string value)
+        {
+            ClearErrors(nameof(OwnerNote));
+        }
+        //OwnerNote property
 
         //Owner property
         [Attributes.Form_Property("Владелец")]
@@ -701,7 +878,7 @@ namespace Models
 
                 if (GetErrors(nameof(Owner)) == null)
                 {
-                    _dataAccess.Set(nameof(Owner), _Owner_Not_Valid);
+                    _dataAccess.Set(nameof(Owner), value);
                 }
                 OnPropertyChanged(nameof(Owner));
             }
@@ -716,7 +893,13 @@ namespace Models
                 AddError(nameof(Owner), "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим.")) return;
+            if (value.Equals("Минобороны")) return;
+            if (value.Equals("прим."))
+            {
+                if ((OwnerNote == null) || OwnerNote.Equals(""))
+                    AddError(nameof(OwnerNote), "Заполните примечание");
+                return;
+            }
             foreach (var item in OKSM)
             {
                 if (value.Equals(item)) return;
@@ -911,7 +1094,7 @@ namespace Models
 
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -926,7 +1109,13 @@ namespace Models
                 AddError(nameof(ProviderOrRecieverOKPO), "Поле не заполнено");
                 return;
             }
-            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
+            if (value.Equals("Минобороны")) return;
+            if (value.Equals("прим."))
+            {
+                if ((ProviderOrRecieverOKPONote == null) || ProviderOrRecieverOKPONote.Equals(""))
+                    AddError(nameof(ProviderOrRecieverOKPONote), "Заполните примечание");
+                return;
+            }
             foreach (var item in OKSM)
             {
                 if (item.Equals(value)) return;
@@ -962,7 +1151,7 @@ namespace Models
                 _ProviderOrRecieverOKPONote_Not_Valid = value;
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), _ProviderOrRecieverOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
@@ -997,7 +1186,7 @@ namespace Models
 
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
-                    _dataAccess.Set(nameof(TransporterOKPO), _TransporterOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(TransporterOKPO), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPO));
             }
@@ -1012,7 +1201,13 @@ namespace Models
                 AddError(nameof(TransporterOKPO), "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим.") || value.Equals("-")) return;
+            if (value.Equals("-")) return;
+            if (value.Equals("прим."))
+            {
+                if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
+                    AddError(nameof(TransporterOKPONote), "Заполните примечание");
+                return;
+            }
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(TransporterOKPO), "Недопустимое значение");
             else
@@ -1044,7 +1239,7 @@ namespace Models
                 _TransporterOKPONote_Not_Valid = value;
                 if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
-                    _dataAccess.Set(nameof(TransporterOKPONote), _TransporterOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(TransporterOKPONote), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPONote));
             }
@@ -1079,7 +1274,7 @@ namespace Models
 
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
+                    _dataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
@@ -1092,6 +1287,12 @@ namespace Models
             if ((value == null) || value.Equals(_PackName_Not_Valid))
             {
                 AddError(nameof(PackName), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                if ((PackNameNote == null) || PackNameNote.Equals(""))
+                    AddError(nameof(PackNameNote), "Заполните примечание");
                 return;
             }
         }
@@ -1114,17 +1315,18 @@ namespace Models
             }
             set
             {
-                _PackNameNote_Not_Valid = value;
+                PackNameNote_Validation(value);
+
                 if (GetErrors(nameof(PackNameNote)) == null)
                 {
-                    _dataAccess.Set(nameof(PackNameNote), _PackNameNote_Not_Valid);
+                    _dataAccess.Set(nameof(PackNameNote), value);
                 }
                 OnPropertyChanged(nameof(PackNameNote));
             }
         }
 
         private string _PackNameNote_Not_Valid = "";
-        private void PackNameNote_Validation()
+        private void PackNameNote_Validation(string value)
         {
             ClearErrors(nameof(PackNameNote));
         }
@@ -1152,7 +1354,7 @@ namespace Models
 
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
+                    _dataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -1165,6 +1367,12 @@ namespace Models
             if ((value == null) || value.Equals(_PackType_Not_Valid))
             {
                 AddError(nameof(PackType), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                if ((PackTypeNote == null) || PackTypeNote.Equals(""))
+                    AddError(nameof(PackTypeNote), "Заполните примечание");
                 return;
             }
         }
@@ -1190,7 +1398,7 @@ namespace Models
                 _PackTypeRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(PackTypeRecoded), _PackTypeRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
@@ -1202,6 +1410,40 @@ namespace Models
             ClearErrors(nameof(PackTypeRecoded));
         }
         //PackTypeRecoded property
+
+        //DocumentNumberNote property
+        public string DocumentNumberNote
+        {
+            get
+            {
+                if (GetErrors(nameof(DocumentNumberNote)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(DocumentNumberNote));//OK
+                    return tmp != null ? (string)tmp : null;
+                }
+                else
+                {
+                    return _DocumentNumberNote_Not_Valid;
+                }
+            }
+            set
+            {
+                DocumentNumberNote_Validation(value);
+
+                if (GetErrors(nameof(DocumentNumberNote)) == null)
+                {
+                    _dataAccess.Set(nameof(DocumentNumberNote), value);
+                }
+                OnPropertyChanged(nameof(DocumentNumberNote));
+            }
+        }
+
+        private string _DocumentNumberNote_Not_Valid = "";
+        private void DocumentNumberNote_Validation(string value)
+        {
+            ClearErrors(nameof(DocumentNumberNote));
+        }
+        //DocumentNumberNote property
 
         //PackTypeNote property
         public string PackTypeNote
@@ -1220,17 +1462,18 @@ namespace Models
             }
             set
             {
-                _PackTypeNote_Not_Valid = value;
+                PackTypeNote_Validation(value);
+
                 if (GetErrors(nameof(PackTypeNote)) == null)
                 {
-                    _dataAccess.Set(nameof(PackTypeNote), _PackTypeNote_Not_Valid);
+                    _dataAccess.Set(nameof(PackTypeNote), value);
                 }
                 OnPropertyChanged(nameof(PackTypeNote));
             }
         }
 
         private string _PackTypeNote_Not_Valid = "";
-        private void PackTypeNote_Validation()
+        private void PackTypeNote_Validation(string value)
         {
             ClearErrors(nameof(PackTypeNote));
         }
@@ -1254,10 +1497,11 @@ namespace Models
             }
             set
             {
-                _PackNumber_Not_Valid = value;
+                PackNumber_Validation(value);
+
                 if (GetErrors(nameof(PackNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(PackNumber), _PackNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PackNumber), value);
                 }
                 OnPropertyChanged(nameof(PackNumber));
             }
@@ -1270,6 +1514,12 @@ namespace Models
             if ((value == null) || value.Equals(_PackNumber_Not_Valid))//ok
             {
                 AddError(nameof(PackNumber), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                if ((PackNumberNote == null) || PackNumberNote.Equals(""))
+                    AddError(nameof(PackNumberNote), "Заполните примечание");
                 return;
             }
         }
@@ -1296,7 +1546,7 @@ namespace Models
                 _PackNumberRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PackNumberRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(PackNumberRecoded), _PackNumberRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(PackNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackNumberRecoded));
             }
@@ -1309,15 +1559,39 @@ namespace Models
         }
         //PackNumberRecoded property
 
-        //private void DocumentNumber_Validation(string value)
-        //{
-        //    ClearErrors(nameof(DocumentNumber));
-        //    if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
-        //    {
-        //        AddError(nameof(DocumentNumber), "Поле не заполнено");
-        //        return;
-        //    }
-        //}
+        //PackNumberNote property
+        public string PackNumberNote
+        {
+            get
+            {
+                if (GetErrors(nameof(PackNumberNote)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(PackNumberNote));//OK
+                    return tmp != null ? (string)tmp : null;
+                }
+                else
+                {
+                    return _PackNumberNote_Not_Valid;
+                }
+            }
+            set
+            {
+                PackNumberNote_Validation(value);
+
+                if (GetErrors(nameof(PackNumberNote)) == null)
+                {
+                    _dataAccess.Set(nameof(PackNumberNote), value);
+                }
+                OnPropertyChanged(nameof(PackNumberNote));
+            }
+        }
+
+        private string _PackNumberNote_Not_Valid = "";
+        private void PackNumberNote_Validation(string value)
+        {
+            ClearErrors(nameof(PackNumberNote));
+        }
+        //PackNumberNote property
 
         protected override void DocumentVid_Validation(byte value)// TO DO
         {
@@ -1349,20 +1623,33 @@ namespace Models
             AddError(nameof(DocumentVid), "Недопустимое значение");
         }
 
-        protected override void OperationCode_Validation(string value1)//OK
+        protected override void DocumentNumber_Validation(string value)
+        {
+            ClearErrors(nameof(DocumentNumber));
+            if (value == "прим.")
+            {
+                if ((DocumentNumberNote == null) || DocumentNumberNote.Equals(""))
+                    AddError(nameof(DocumentNumberNote), "Заполните примечание");
+                return;
+            }
+            if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
+            {
+                AddError(nameof(DocumentNumber), "Поле не заполнено");
+                return;
+            }
+        }
+
+        protected override void OperationCode_Validation(short value)//OK
         {
             ClearErrors(nameof(OperationCode));
-            if (value1 == null)
-            {
-                AddError(nameof(OperationCode), "Недопустимое значение");
-                return;
-            }
-            var value = short.Parse(value1);
-            if (value == _OperationCode_Not_Valid)
-            {
-                AddError(nameof(OperationCode), "Поле не заполнено");
-                return;
-            }
+            //string value1 = arg.ToString();
+            //value1 = (value1.Length == 1) ? "0" + value1 : value1;
+            //if (value1 == null)
+            //{
+            //    AddError(nameof(OperationCode), "Недопустимое значение");
+            //    return;
+            //}
+            //var value = short.Parse(value1);
             List<short> spr = new List<short>()
             {
                 1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,
@@ -1389,6 +1676,58 @@ namespace Models
                 (value == 59) || (value == 76))
                 AddError(nameof(OperationCode), "Код операции не может быть использован для РВ");
             return;
+        }
+
+        protected override void DocumentDate_Validation(string value)
+        {
+            ClearErrors(nameof(DocumentDate));
+            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
+            {
+                AddError(nameof(DocumentDate), "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(DocumentDate), "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value); }
+            catch (Exception)
+            {
+                AddError(nameof(DocumentDate), "Недопустимое значение");
+                return;
+            }
+            short tmp = OperationCode;
+            bool e = (tmp >= 11) && (tmp <= 18);
+            bool b = (tmp >= 41) && (tmp <= 49);
+            bool c = (tmp >= 51) && (tmp <= 59);
+            bool d = (tmp == 65) || (tmp == 68);
+            if (e || b || c || d)
+                if (!value.Equals(OperationDate))
+                    AddError(nameof(DocumentDate), "Заполните примечание");
+        }
+
+        protected override void OperationDate_Validation(string value)
+        {
+            ClearErrors(nameof(OperationDate));
+            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
+            {
+                AddError(nameof(OperationDate), "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(OperationDate), "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value); }
+            catch (Exception)
+            {
+                AddError(nameof(OperationDate), "Недопустимое значение");
+                return;
+            }
         }
     }
 }

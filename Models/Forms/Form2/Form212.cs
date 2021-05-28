@@ -82,7 +82,7 @@ namespace Models
                 _ObjectTypeCode_Not_Valid = value;
                 if (GetErrors(nameof(ObjectTypeCode)) == null)
                 {
-                    _dataAccess.Set(nameof(ObjectTypeCode), _ObjectTypeCode_Not_Valid);
+                    _dataAccess.Set(nameof(ObjectTypeCode), value);
                 }
                 OnPropertyChanged(nameof(ObjectTypeCode));
             }
@@ -113,19 +113,34 @@ namespace Models
             }
             set
             {
-                _Radionuclids_Not_Valid = value;
+                Radionuclids_Validation(value);
+
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
         //If change this change validation
         private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation()//TODO
+        private void Radionuclids_Validation(string value)//TODO
         {
             ClearErrors(nameof(Radionuclids));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Radionuclids), "Поле не заполнено");
+                return;
+            }
+            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
+            foreach (var item in spr)
+            {
+                if (item.Item2.Equals(value))
+                {
+                    Radionuclids = item.Item2;
+                    return;
+                }
+            }
         }
         //Radionuclids property
 
@@ -149,7 +164,7 @@ namespace Models
                 _Activity_Not_Valid = value;
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
+                    _dataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -191,7 +206,7 @@ namespace Models
 
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -399,7 +414,7 @@ namespace Models
                 _ProviderOrRecieverOKPONote_Not_Valid = value;
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), _ProviderOrRecieverOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }

@@ -41,7 +41,7 @@ namespace Models
                 _StoragePlaceName_Not_Valid = value;
                 if (GetErrors(nameof(StoragePlaceName)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceName), _StoragePlaceName_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
@@ -73,7 +73,7 @@ namespace Models
                 _StoragePlaceNameNote_Not_Valid = value;
                 if (GetErrors(nameof(StoragePlaceNameNote)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceNameNote), _StoragePlaceNameNote_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceNameNote), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
@@ -106,7 +106,7 @@ namespace Models
                 _StoragePlaceCode_Not_Valid = value;
                 if (GetErrors(nameof(StoragePlaceCode)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceCode), _StoragePlaceCode_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
@@ -147,7 +147,7 @@ namespace Models
 
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
+                    _dataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
@@ -185,7 +185,7 @@ namespace Models
                 _PackNameNote_Not_Valid = value;
                 if (GetErrors(nameof(PackNameNote)) == null)
                 {
-                    _dataAccess.Set(nameof(PackNameNote), _PackNameNote_Not_Valid);
+                    _dataAccess.Set(nameof(PackNameNote), value);
                 }
                 OnPropertyChanged(nameof(PackNameNote));
             }
@@ -220,7 +220,7 @@ namespace Models
 
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
+                    _dataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -233,6 +233,12 @@ namespace Models
             if ((value == null) || value.Equals(_PackType_Not_Valid))
             {
                 AddError(nameof(PackType), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                if ((PackTypeNote == null) || PackTypeNote.Equals(""))
+                    AddError(nameof(PackTypeNote), "Заполните примечание");
                 return;
             }
         }
@@ -258,7 +264,7 @@ namespace Models
                 _PackTypeRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(PackTypeRecoded), _PackTypeRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
@@ -291,7 +297,7 @@ namespace Models
                 _PackTypeNote_Not_Valid = value;
                 if (GetErrors(nameof(PackTypeNote)) == null)
                 {
-                    _dataAccess.Set(nameof(PackTypeNote), _PackTypeNote_Not_Valid);
+                    _dataAccess.Set(nameof(PackTypeNote), value);
                 }
                 OnPropertyChanged(nameof(PackTypeNote));
             }
@@ -324,7 +330,7 @@ namespace Models
                 _PackQuantity_Not_Valid = value;
                 if (GetErrors(nameof(PackQuantity)) == null)
                 {
-                    _dataAccess.Set(nameof(PackQuantity), _PackQuantity_Not_Valid);
+                    _dataAccess.Set(nameof(PackQuantity), value);
                 }
                 OnPropertyChanged(nameof(PackQuantity));
             }
@@ -359,7 +365,7 @@ namespace Models
                 _CodeRAO_Not_Valid = value;
                 if (GetErrors(nameof(CodeRAO)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeRAO), _CodeRAO_Not_Valid);
+                    _dataAccess.Set(nameof(CodeRAO), value);
                 }
                 OnPropertyChanged(nameof(CodeRAO));
             }
@@ -392,7 +398,7 @@ namespace Models
                 _StatusRAO_Not_Valid = value;
                 if (GetErrors(nameof(StatusRAO)) == null)
                 {
-                    _dataAccess.Set(nameof(StatusRAO), _StatusRAO_Not_Valid);
+                    _dataAccess.Set(nameof(StatusRAO), value);
                 }
                 OnPropertyChanged(nameof(StatusRAO));
             }
@@ -425,7 +431,7 @@ namespace Models
                 _VolumeInPack_Not_Valid = value;
                 if (GetErrors(nameof(VolumeInPack)) == null)
                 {
-                    _dataAccess.Set(nameof(VolumeInPack), _VolumeInPack_Not_Valid);
+                    _dataAccess.Set(nameof(VolumeInPack), value);
                 }
                 OnPropertyChanged(nameof(VolumeInPack));
             }
@@ -458,7 +464,7 @@ namespace Models
                 _MassInPack_Not_Valid = value;
                 if (GetErrors(nameof(MassInPack)) == null)
                 {
-                    _dataAccess.Set(nameof(MassInPack), _MassInPack_Not_Valid);
+                    _dataAccess.Set(nameof(MassInPack), value);
                 }
                 OnPropertyChanged(nameof(MassInPack));
             }
@@ -491,7 +497,7 @@ namespace Models
                 _VolumeOutOfPack_Not_Valid = value;
                 if (GetErrors(nameof(VolumeOutOfPack)) == null)
                 {
-                    _dataAccess.Set(nameof(VolumeOutOfPack), _VolumeOutOfPack_Not_Valid);
+                    _dataAccess.Set(nameof(VolumeOutOfPack), value);
                 }
                 OnPropertyChanged(nameof(VolumeOutOfPack));
             }
@@ -524,7 +530,7 @@ namespace Models
                 _MassOutOfPack_Not_Valid = value;
                 if (GetErrors(nameof(MassOutOfPack)) == null)
                 {
-                    _dataAccess.Set(nameof(MassOutOfPack), _MassOutOfPack_Not_Valid);
+                    _dataAccess.Set(nameof(MassOutOfPack), value);
                 }
                 OnPropertyChanged(nameof(MassOutOfPack));
             }
@@ -560,7 +566,7 @@ namespace Models
 
                 if (GetErrors(nameof(QuantityOZIII)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityOZIII), _QuantityOZIII_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOZIII), value);
                 }
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
@@ -595,7 +601,7 @@ namespace Models
                 _TritiumActivity_Not_Valid = value;
                 if (GetErrors(nameof(TritiumActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(TritiumActivity), _TritiumActivity_Not_Valid);
+                    _dataAccess.Set(nameof(TritiumActivity), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivity));
             }
@@ -656,7 +662,7 @@ namespace Models
                 _BetaGammaActivity_Not_Valid = value;
                 if (GetErrors(nameof(BetaGammaActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivity), _BetaGammaActivity_Not_Valid);
+                    _dataAccess.Set(nameof(BetaGammaActivity), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
@@ -717,7 +723,7 @@ namespace Models
                 _AlphaActivity_Not_Valid = value;
                 if (GetErrors(nameof(AlphaActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(AlphaActivity), _AlphaActivity_Not_Valid);
+                    _dataAccess.Set(nameof(AlphaActivity), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivity));
             }
@@ -778,7 +784,7 @@ namespace Models
                 _TransuraniumActivity_Not_Valid = value;
                 if (GetErrors(nameof(TransuraniumActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(TransuraniumActivity), _TransuraniumActivity_Not_Valid);
+                    _dataAccess.Set(nameof(TransuraniumActivity), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivity));
             }
@@ -839,7 +845,7 @@ namespace Models
                 _MainRadionuclids_Not_Valid = value;
                 if (GetErrors(nameof(MainRadionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(MainRadionuclids), _MainRadionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(MainRadionuclids), value);
                 }
                 OnPropertyChanged(nameof(MainRadionuclids));
             }
@@ -872,7 +878,7 @@ namespace Models
                 _Subsidy_Not_Valid = value;
                 if (GetErrors(nameof(Subsidy)) == null)
                 {
-                    _dataAccess.Set(nameof(Subsidy), _Subsidy_Not_Valid);
+                    _dataAccess.Set(nameof(Subsidy), value);
                 }
                 OnPropertyChanged(nameof(Subsidy));
             }
@@ -915,7 +921,7 @@ namespace Models
                 _FcpNumber_Not_Valid = value;
                 if (GetErrors(nameof(FcpNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(FcpNumber), _FcpNumber_Not_Valid);
+                    _dataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }

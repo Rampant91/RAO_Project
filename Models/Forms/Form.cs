@@ -42,7 +42,7 @@ namespace Models.Abstracts
                 _FormNum_Not_Valid = value;
                 if (GetErrors(nameof(FormNum)) == null)
                 {
-                    _dataAccess.Set(nameof(FormNum), _FormNum_Not_Valid);
+                    _dataAccess.Set(nameof(FormNum), value);
                 }
                 OnPropertyChanged(nameof(FormNum));
             }
@@ -74,7 +74,7 @@ namespace Models.Abstracts
                 _NumberOfFields_Not_Valid = value;
                 if (GetErrors(nameof(NumberOfFields)) == null)
                 {
-                    _dataAccess.Set(nameof(NumberOfFields), _NumberOfFields_Not_Valid);
+                    _dataAccess.Set(nameof(NumberOfFields), value);
                 }
                 OnPropertyChanged(nameof(NumberOfFields));
             }

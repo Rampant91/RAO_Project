@@ -41,7 +41,7 @@ namespace Models
 
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    _dataAccess.Set(nameof(PackName), _PackName_Not_Valid);
+                    _dataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
@@ -81,7 +81,7 @@ namespace Models
 
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    _dataAccess.Set(nameof(PackType), _PackType_Not_Valid);
+                    _dataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -94,6 +94,12 @@ namespace Models
             if ((value == null) || value.Equals(_PackType_Not_Valid))
             {
                 AddError(nameof(PackType), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                //if ((PackTypeNote == null) || PackTypeNote.Equals(""))
+                //    AddError(nameof(PackTypeNote), "Заполните примечание");
                 return;
             }
         }
@@ -119,7 +125,7 @@ namespace Models
                 _PackTypeRecoded_Not_Valid = value;
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(PackTypeRecoded), _PackTypeRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
@@ -152,7 +158,7 @@ namespace Models
                 _Id_Not_Valid = value;
                 if (GetErrors(nameof(Id)) == null)
                 {
-                    _dataAccess.Set(nameof(Id), _Id_Not_Valid);
+                    _dataAccess.Set(nameof(Id), value);
                 }
                 OnPropertyChanged(nameof(Id));
             }
@@ -181,7 +187,7 @@ namespace Models
                 _CreationYear_Not_Valid = value;
                 if (GetErrors(nameof(CreationYear)) == null)
                 {
-                    _dataAccess.Set(nameof(CreationYear), _CreationYear_Not_Valid);
+                    _dataAccess.Set(nameof(CreationYear), value);
                 }
                 OnPropertyChanged(nameof(CreationYear));
             }
@@ -210,7 +216,7 @@ namespace Models
                 _DepletedUraniumMass_Not_Valid = value;
                 if (GetErrors(nameof(DepletedUraniumMass)) == null)
                 {
-                    _dataAccess.Set(nameof(DepletedUraniumMass), _DepletedUraniumMass_Not_Valid);
+                    _dataAccess.Set(nameof(DepletedUraniumMass), value);
                 }
                 OnPropertyChanged(nameof(DepletedUraniumMass));
             }

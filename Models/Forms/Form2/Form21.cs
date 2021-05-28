@@ -40,7 +40,7 @@ namespace Models
                 _RefineMachineName_Not_Valid = value;
                 if (GetErrors(nameof(RefineMachineName)) == null)
                 {
-                    _dataAccess.Set(nameof(RefineMachineName), _RefineMachineName_Not_Valid);
+                    _dataAccess.Set(nameof(RefineMachineName), value);
                 }
                 OnPropertyChanged(nameof(RefineMachineName));
             }
@@ -73,7 +73,7 @@ namespace Models
                 _MachineCode_Not_Valid = value;
                 if (GetErrors(nameof(MachineCode)) == null)
                 {
-                    _dataAccess.Set(nameof(MachineCode), _MachineCode_Not_Valid);
+                    _dataAccess.Set(nameof(MachineCode), value);
                 }
                 OnPropertyChanged(nameof(MachineCode));
             }
@@ -116,7 +116,7 @@ namespace Models
                 _MachinePower_Not_Valid = value;
                 if (GetErrors(nameof(MachinePower)) == null)
                 {
-                    _dataAccess.Set(nameof(MachinePower), _MachinePower_Not_Valid);
+                    _dataAccess.Set(nameof(MachinePower), value);
                 }
                 OnPropertyChanged(nameof(MachinePower));
             }
@@ -149,7 +149,7 @@ namespace Models
                 _NumberOfHoursPerYear_Not_Valid = value;
                 if (GetErrors(nameof(NumberOfHoursPerYear)) == null)
                 {
-                    _dataAccess.Set(nameof(NumberOfHoursPerYear), _NumberOfHoursPerYear_Not_Valid);
+                    _dataAccess.Set(nameof(NumberOfHoursPerYear), value);
                 }
                 OnPropertyChanged(nameof(NumberOfHoursPerYear));
             }
@@ -182,7 +182,7 @@ namespace Models
                 _CodeRAOIn_Not_Valid = value;
                 if (GetErrors(nameof(CodeRAOIn)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeRAOIn), _CodeRAOIn_Not_Valid);
+                    _dataAccess.Set(nameof(CodeRAOIn), value);
                 }
                 OnPropertyChanged(nameof(CodeRAOIn));
             }
@@ -215,7 +215,7 @@ namespace Models
                 _StatusRAOIn_Not_Valid = value;
                 if (GetErrors(nameof(StatusRAOIn)) == null)
                 {
-                    _dataAccess.Set(nameof(StatusRAOIn), _StatusRAOIn_Not_Valid);
+                    _dataAccess.Set(nameof(StatusRAOIn), value);
                 }
                 OnPropertyChanged(nameof(StatusRAOIn));
             }
@@ -248,7 +248,7 @@ namespace Models
                 _VolumeIn_Not_Valid = value;
                 if (GetErrors(nameof(VolumeIn)) == null)
                 {
-                    _dataAccess.Set(nameof(VolumeIn), _VolumeIn_Not_Valid);
+                    _dataAccess.Set(nameof(VolumeIn), value);
                 }
                 OnPropertyChanged(nameof(VolumeIn));
             }
@@ -281,7 +281,7 @@ namespace Models
                 _MassIn_Not_Valid = value;
                 if (GetErrors(nameof(MassIn)) == null)
                 {
-                    _dataAccess.Set(nameof(MassIn), _MassIn_Not_Valid);
+                    _dataAccess.Set(nameof(MassIn), value);
                 }
                 OnPropertyChanged(nameof(MassIn));
             }
@@ -316,7 +316,7 @@ namespace Models
 
                 if (GetErrors(nameof(QuantityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityIn), _QuantityIn_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityIn), value);
                 }
                 OnPropertyChanged(nameof(QuantityIn));
             }
@@ -351,7 +351,7 @@ namespace Models
                 _TritiumActivityIn_Not_Valid = value;
                 if (GetErrors(nameof(TritiumActivityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(TritiumActivityIn), _TritiumActivityIn_Not_Valid);
+                    _dataAccess.Set(nameof(TritiumActivityIn), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivityIn));
             }
@@ -402,7 +402,7 @@ namespace Models
                 _BetaGammaActivityIn_Not_Valid = value;
                 if (GetErrors(nameof(BetaGammaActivityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivityIn), _BetaGammaActivityIn_Not_Valid);
+                    _dataAccess.Set(nameof(BetaGammaActivityIn), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivityIn));
             }
@@ -463,7 +463,7 @@ namespace Models
                 _AlphaActivityIn_Not_Valid = value;
                 if (GetErrors(nameof(AlphaActivityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(AlphaActivityIn), _AlphaActivityIn_Not_Valid);
+                    _dataAccess.Set(nameof(AlphaActivityIn), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivityIn));
             }
@@ -514,7 +514,7 @@ namespace Models
                 _TransuraniumActivityIn_Not_Valid = value;
                 if (GetErrors(nameof(TransuraniumActivityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(TransuraniumActivityIn), _TransuraniumActivityIn_Not_Valid);
+                    _dataAccess.Set(nameof(TransuraniumActivityIn), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivityIn));
             }
@@ -565,7 +565,7 @@ namespace Models
                 _CodeRAOout_Not_Valid = value;
                 if (GetErrors(nameof(CodeRAOout)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeRAOout), _CodeRAOout_Not_Valid);
+                    _dataAccess.Set(nameof(CodeRAOout), value);
                 }
                 OnPropertyChanged(nameof(CodeRAOout));
             }
@@ -598,7 +598,7 @@ namespace Models
                 _StatusRAOout_Not_Valid = value;
                 if (GetErrors(nameof(StatusRAOout)) == null)
                 {
-                    _dataAccess.Set(nameof(StatusRAOout), _StatusRAOout_Not_Valid);
+                    _dataAccess.Set(nameof(StatusRAOout), value);
                 }
                 OnPropertyChanged(nameof(StatusRAOout));
             }
@@ -631,7 +631,7 @@ namespace Models
                 _VolumeOut_Not_Valid = value;
                 if (GetErrors(nameof(VolumeOut)) == null)
                 {
-                    _dataAccess.Set(nameof(VolumeOut), _VolumeOut_Not_Valid);
+                    _dataAccess.Set(nameof(VolumeOut), value);
                 }
                 OnPropertyChanged(nameof(VolumeOut));
             }
@@ -664,7 +664,7 @@ namespace Models
                 _MassOut_Not_Valid = value;
                 if (GetErrors(nameof(MassOut)) == null)
                 {
-                    _dataAccess.Set(nameof(MassOut), _MassOut_Not_Valid);
+                    _dataAccess.Set(nameof(MassOut), value);
                 }
                 OnPropertyChanged(nameof(MassOut));
             }
@@ -699,7 +699,7 @@ namespace Models
 
                 if (GetErrors(nameof(QuantityOZIIIout)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityOZIIIout), _QuantityOZIIIout_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOZIIIout), value);
                 }
                 OnPropertyChanged(nameof(QuantityOZIIIout));
             }
@@ -734,7 +734,7 @@ namespace Models
                 _TritiumActivityOut_Not_Valid = value;
                 if (GetErrors(nameof(TritiumActivityOut)) == null)
                 {
-                    _dataAccess.Set(nameof(TritiumActivityOut), _TritiumActivityOut_Not_Valid);
+                    _dataAccess.Set(nameof(TritiumActivityOut), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivityOut));
             }
@@ -785,7 +785,7 @@ namespace Models
                 _BetaGammaActivityOut_Not_Valid = value;
                 if (GetErrors(nameof(BetaGammaActivityOut)) == null)
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivityOut), _BetaGammaActivityOut_Not_Valid);
+                    _dataAccess.Set(nameof(BetaGammaActivityOut), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivityOut));
             }
@@ -836,7 +836,7 @@ namespace Models
                 _AlphaActivityOut_Not_Valid = value;
                 if (GetErrors(nameof(AlphaActivityOut)) == null)
                 {
-                    _dataAccess.Set(nameof(AlphaActivityOut), _AlphaActivityOut_Not_Valid);
+                    _dataAccess.Set(nameof(AlphaActivityOut), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivityOut));
             }
@@ -887,7 +887,7 @@ namespace Models
                 _TransuraniumActivityOut_Not_Valid = value;
                 if (GetErrors(nameof(TransuraniumActivityOut)) == null)
                 {
-                    _dataAccess.Set(nameof(TransuraniumActivityOut), _TransuraniumActivityOut_Not_Valid);
+                    _dataAccess.Set(nameof(TransuraniumActivityOut), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivityOut));
             }
