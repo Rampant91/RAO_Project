@@ -14,19 +14,30 @@ namespace Client_App.Short_Visual
         //Полный вывод
         public static void FormF_Visual(in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
-            pnl0.Children.Add(Form0_Visual(pnl0.FindNameScope()));
-            pnlx.Children.Add(FormX_Visual(pnlx.FindNameScope()));
+            var grd = Form0_Visual(pnl0.FindNameScope());
+            pnl0.Children.Add(grd);
+            pnlx.Children.Add(FormX_Visual(pnlx.FindNameScope(),grd));
             pnlb.Children.Add(FormB_Visual());
         }
 
         //Форма 10
-        static DataGrid Form0_Visual(INameScope scp)
+        static Control Form0_Visual(INameScope scp)
         {
-            DataGrid grd = new DataGrid();
-            grd.IsReadOnly = true;
-            grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-            grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            grd.Bind(DataGrid.ItemsProperty, new Binding("Local_Reports.Reports_Collection"));
+            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            {
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+            };
+
+            grd.Type = "0/0";
+            grd.Name = "Form10AllDataGrid_";
+
+            Binding b = new Binding();
+            b.Path = "DataContext.Local_Reports.Reports_Collection";
+            b.ElementName = "MainWindow";
+            b.NameScope = new WeakReference<INameScope>(scp);
+
+            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();
@@ -52,230 +63,47 @@ namespace Client_App.Short_Visual
 
             grd.ContextMenu = cntx;
 
-            DataGridTemplateColumn clm1 = new DataGridTemplateColumn();
-            clm1.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
-            clm1.Header = new Button
-            {
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
-                GetProperty("RegNo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "10/RegNo"
-            };
-            clm1.CellTemplate = new FuncDataTemplate<Collections.Reports>((x, e) =>
-                    new TextBlock
-                    {
-                        [!TextBlock.TextProperty] = new Binding("Master.RegNo"),
-                    });
-            grd.Columns.Add(clm1);
-
-            DataGridTemplateColumn clm2 = new DataGridTemplateColumn();
-            clm2.Width = new DataGridLength(3, DataGridLengthUnitType.Star);
-            clm2.Header = new Button
-            {
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
-                GetProperty("ShortJurLico").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "10/ShortJurLico"
-            };
-            clm2.CellTemplate = new FuncDataTemplate<Collections.Reports>((x, e) =>
-                    new TextBlock
-                    {
-                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                        [!TextBlock.TextProperty] = new Binding("Master.ShortJurLico"),
-                    });
-            grd.Columns.Add(clm2);
-
-            DataGridTemplateColumn clm3 = new DataGridTemplateColumn();
-            clm3.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
-            clm3.Header = new Button
-            {
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
-                GetProperty("Okpo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "10/Okpo"
-            };
-            clm3.CellTemplate = new FuncDataTemplate<Collections.Reports>((x, e) =>
-                    new TextBlock
-                    {
-                        [!TextBlock.TextProperty] = new Binding("Master.Okpo"),
-                    });
-            grd.Columns.Add(clm3);
             return grd;
         }
 
         //Форма 1X
-        static Control FormX_Visual(INameScope scp)
+        static Control FormX_Visual(INameScope scp,Control ctrl)
         {
             Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                [!Controls.DataGrid.DataGrid.ItemsProperty]=ctrl[!Controls.DataGrid.DataGrid.SelectedItemsProperty]
             };
 
-            grd.Type = "0/0";
-            grd.Name = "Form1AllDataGrid_";
+            //grd.Type = "0/1";
+            //grd.Name = "Form1AllDataGrid_";
 
-            Binding b = new Binding();
-            b.Path = "DataContext.Local_Reports.Reports_Collection[0].Report_Collection";
-            b.ElementName = "MainWindow";
-            b.NameScope = new WeakReference<INameScope>(scp);
+            //Binding b = new Binding();
+            //b.Path = "DataContext";
+            //b.ElementName = "Form10AllDataGrid_";
+            //b.NameScope = new WeakReference<INameScope>(scp);
+            //b.Mode = BindingMode.TwoWay;
 
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            //grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
-            //DataGrid grd = new DataGrid();
-            //grd.Width = 300;
-            //grd.Height = 300;
-            //grd.RowHeight = 20;
-            //grd.ColumnHeaderHeight = 100;
-            //grd.Bind(DataGrid.ItemsProperty,b);
-            //grd.HeadersVisibility = DataGridHeadersVisibility.All;
-            //// Test
-            ////var cntx = new ContextMenu();
-            ////List<MenuItem> itms = new List<MenuItem>();
-            ////itms.Add(new MenuItem
-            ////{
-            ////    Header = "Изменить форму",
-            ////    [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
-            ////    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
-            ////});
-            ////itms.Add(new MenuItem
-            ////{
-            ////    Header = "Удалить форму",
-            ////    [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
-            ////    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
-            ////});
-            ////cntx.Items = itms;
+            var cntx = new ContextMenu();
+            List<MenuItem> itms = new List<MenuItem>();
+            itms.Add(new MenuItem
+            {
+                Header = "Изменить форму",
+                [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
+                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+            });
+            itms.Add(new MenuItem
+            {
+                Header = "Удалить форму",
+                [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
+                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+            });
+            cntx.Items = itms;
 
-            ////grd.ContextMenu = cntx;
-
-            //DataGridTemplateColumn clm1 = new DataGridTemplateColumn();
-            //clm1.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
-            //clm1.Header = new Button
-            //{
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    Content = ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form1,Models").
-            //    GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-            //    [!Button.CommandProperty] = new Binding("AddSort"),
-            //    CommandParameter = "1/NumberInOrder"
-            //};
-
-            //clm1.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
-            //        new TextBlock
-            //        {
-            //            [!TextBlock.TextProperty] = new Binding("NumberInOrder"),
-            //        });
-            //grd.Columns.Add(clm1);
-
-            //DataGridTemplateColumn clm2 = new DataGridTemplateColumn();
-            //clm2.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
-            //clm2.Header = new Button
-            //{
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    Content = ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form1,Models").
-            //    GetProperty("FormNum").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-            //    [!Button.CommandProperty] = new Binding("AddSort"),
-            //    CommandParameter = "1/FormNum"
-            //};
-            //clm2.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
-            //        new TextBlock
-            //        {
-            //            [!TextBlock.TextProperty] = new Binding("FormNum"),
-            //        });
-            ////grd.Columns.Add(clm2);
-
-            //DataGridTemplateColumn clm3 = new DataGridTemplateColumn();
-            //clm3.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
-            //clm3.Header = new Button
-            //{
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-            //    GetProperty("StartPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-            //    [!Button.CommandProperty] = new Binding("AddSort"),
-            //    CommandParameter = "_/StartPeriod"
-            //};
-            //Binding bnd = new Binding("StartPeriod");
-            //bnd.StringFormat = "{0:d}";
-            //clm3.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
-            //        new TextBlock
-            //        {
-            //            [!TextBlock.TextProperty] = bnd,
-            //        });
-            ////grd.Columns.Add(clm3);
-
-            //DataGridTemplateColumn clm4 = new DataGridTemplateColumn();
-            //clm4.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
-            //clm4.Header = new Button
-            //{
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-            //    GetProperty("EndPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-            //    [!Button.CommandProperty] = new Binding("AddSort"),
-            //    CommandParameter = "_/EndPeriod"
-            //};
-            //bnd = new Binding("EndPeriod");
-            //bnd.StringFormat = "{0:d}";
-            //clm4.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
-            //        new TextBlock
-            //        {
-            //            [!TextBlock.TextProperty] = bnd,
-            //        });
-            ////grd.Columns.Add(clm4);
-
-            //DataGridTemplateColumn clm5 = new DataGridTemplateColumn();
-            //clm5.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
-            //clm5.Header = new Button
-            //{
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-            //    GetProperty("ExportDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-            //    [!Button.CommandProperty] = new Binding("AddSort"),
-            //    CommandParameter = "_/ExportDate"
-            //};
-            //bnd = new Binding("ExportDate");
-            //bnd.StringFormat = "{0:d}";
-            //clm5.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
-            //        new TextBlock
-            //        {
-            //            [!TextBlock.TextProperty] = bnd,
-            //        });
-            ////grd.Columns.Add(clm5);
-
-            //DataGridTemplateColumn clm6 = new DataGridTemplateColumn();
-            //clm6.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
-            //clm6.Header = new Button
-            //{
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-            //    GetProperty("IsCorrection").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-            //    [!Button.CommandProperty] = new Binding("AddSort"),
-            //    CommandParameter = "_/IsCorrection"
-            //};
-            //clm6.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
-            //        new TextBlock
-            //        {
-            //            [!TextBlock.TextProperty] = new Binding("IsCorrection"),
-            //        });
-            ////grd.Columns.Add(clm6);
-            //DataGridTemplateColumn clm7 = new DataGridTemplateColumn();
-            //clm7.Width = new DataGridLength(2, DataGridLengthUnitType.Star);
-            //clm7.Header = new Button
-            //{
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    Content = ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-            //    GetProperty("Comments").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-            //    [!Button.CommandProperty] = new Binding("AddSort"),
-            //    CommandParameter = "_/Comments"
-            //};
-            //clm7.CellTemplate = new FuncDataTemplate<Collections.Report>((x, e) =>
-            //        new TextBlock
-            //        {
-            //            [!TextBlock.TextProperty] = new Binding("Comments"),
-            //        });
-            ////.Columns.Add(clm7);
-            //// Test
+            grd.ContextMenu = cntx;
             return grd;
         }
 

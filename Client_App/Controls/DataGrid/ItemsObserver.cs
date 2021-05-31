@@ -36,11 +36,11 @@ namespace Client_App.Controls.DataGrid
         {
             if(obj.NewValue.Value!=null)
             {
-                var val = obj.NewValue.Value;
-                foreach (var item in val)
-                {
-                    ((Report)item).PropertyChanged += Handler;
-                }
+                //var val = obj.NewValue.Value;
+                //foreach (var item in val)
+                //{
+                //    ((Report)item).PropertyChanged += Handler;
+                //}
                 Handler("ALL",null);
             }
         }

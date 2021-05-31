@@ -26,21 +26,41 @@ namespace Client_App.Controls.DataGrid
         public IEnumerable Items
         {
             get { return _items; }
-            set 
-            { 
-                SetAndRaise(ItemsProperty, ref _items, value);
-                Update();
+            set
+            {
+                if (value != null)
+                {
+                    SetAndRaise(ItemsProperty, ref _items, value);
+                    Update();
+                }
             }
         }
 
         public static readonly DirectProperty<DataGrid, IEnumerable> SelectedItemsProperty =
                 AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable>(
-        nameof(SelectedItems),
-        o => o.SelectedItems);
+                    nameof(SelectedItems),
+                    o => o.SelectedItems,
+                    (o, v) => o.SelectedItems = v);
 
+        private IEnumerable _selecteditems =new ObservableCollection<object>();
         public IEnumerable SelectedItems
         {
-            get { return FindSelectedItems(); }
+            get
+            {
+                return _selecteditems;
+            }
+            set
+            {
+                ObservableCollection<object> lst = new ObservableCollection<object>();
+                foreach (var item in FindSelectedItems())
+                {
+                    if (!lst.Contains(item))
+                    {
+                        lst.Add(item);
+                    }
+                }
+                SetAndRaise(SelectedItemsProperty, ref _selecteditems, lst);
+            }
         }
 
         public static readonly DirectProperty<DataGrid, string> TypeProperty =
@@ -52,22 +72,11 @@ namespace Client_App.Controls.DataGrid
         public string Type
         {
             get { return _type; }
-            set { 
+            set
+            {
                 SetAndRaise(TypeProperty, ref _type, value);
                 Update();
             }
-        }
-
-        public static new readonly DirectProperty<DataGrid, string> NameProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, string>(
-        nameof(Name),
-        o => o.Name,
-        (o, v) => o.Name = v);
-        private string _Name = "";
-        public new string Name
-        {
-            get { return _Name; }
-            set { SetAndRaise(NameProperty, ref _Name, value); }
         }
 
         public Panel Columns { get; set; }
@@ -75,10 +84,7 @@ namespace Client_App.Controls.DataGrid
 
         public DataGrid()
         {
-            this.DataContext = new Support.DataGrid_DataContext(this);
             InitializeComponent();
-            Columns =this.FindControl<Panel>("Columns");
-            Rows=this.FindControl<StackPanel>("Rows");
 
             ItemsProperty.Changed.Subscribe(new ItemsObserver(Rows, ItemsChanged));
             this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
@@ -91,33 +97,29 @@ namespace Client_App.Controls.DataGrid
             ItemsChanged("ALL", null);
             MakeHeader();
         }
-        
+
         void ItemsChanged(object sender, PropertyChangedEventArgs args)
         {
-            if(Items!=null)
+            if (Items != null)
             {
                 if (sender != null)
                 {
-                    if(sender is string)
+                    if (sender is string)
                     {
-                        if((string)sender=="ALL")
+                        if ((string)sender == "ALL")
                         {
                             Rows.Children.Clear();
                             int count = 0;
-                            foreach(var item in Items)
+                            foreach (var item in Items)
                             {
-                                var it = (Report)item;
-                                if(it.ReportId!=null)
+                                var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count);
+                                if (tmp != null)
                                 {
-                                    var tmp = Support.RenderDataGridRow.Render.GetControl(Type,Name+count);
-                                    if(tmp!=null)
-                                    {
-                                        Panel pnl = new Panel() { Name = this.Name + count };
-                                        count++;
-                                        pnl.Children.Add(tmp);
-                                        pnl.DataContext = item;
-                                        Rows.Children.Add(pnl);
-                                    }
+                                    Panel pnl = new Panel() { Name = this.Name + count };
+                                    count++;
+                                    pnl.Children.Add(tmp);
+                                    pnl.DataContext = item;
+                                    Rows.Children.Add(pnl);
                                 }
                             }
                         }
@@ -130,9 +132,9 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
-
         Control _firstControl = null;
-        Control FirstControl { 
+        Control FirstControl
+        {
             get
             {
                 return _firstControl;
@@ -157,9 +159,9 @@ namespace Client_App.Controls.DataGrid
             }
         }
         bool IsMouseDown = false;
-        bool IsXYinBounds(Point XY,Rect ctrl)
+        bool IsXYinBounds(Point XY, Rect ctrl)
         {
-            if(XY.X>ctrl.X&&XY.X<ctrl.X+ ctrl.Width)
+            if (XY.X > ctrl.X && XY.X < ctrl.X + ctrl.Width)
             {
                 if (XY.Y > ctrl.Y && XY.Y < ctrl.Y + ctrl.Height)
                 {
@@ -197,11 +199,11 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
-        IEnumerable<Report> FindSelectedItems()
+        IEnumerable FindSelectedItems()
         {
             foreach (Panel item in FindSelectedControls())
             {
-                yield return (Report)item.DataContext;
+                yield return item.DataContext;
             }
         }
         void RenderSelectedControls()
@@ -249,7 +251,7 @@ namespace Client_App.Controls.DataGrid
         public void PanelPointerDown(object sender, PointerPressedEventArgs args)
         {
             var mouse = args.GetCurrentPoint((DataGrid)sender);
-            if (mouse.Properties.PointerUpdateKind==PointerUpdateKind.LeftButtonPressed)
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
             {
                 IsMouseDown = true;
                 ClearAllControls();
@@ -283,9 +285,9 @@ namespace Client_App.Controls.DataGrid
             var mouse = args.GetCurrentPoint((DataGrid)sender);
             if (IsMouseDown)
             {
-                if(LastControl!=null)
+                if (LastControl != null)
                 {
-                    if(IsXYinBounds(mouse.Position,LastControl.Bounds))
+                    if (IsXYinBounds(mouse.Position, LastControl.Bounds))
                     {
                         return;
                     }
@@ -299,6 +301,7 @@ namespace Client_App.Controls.DataGrid
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 IsMouseDown = false;
+                SelectedItems = new ObservableCollection<object>();
             }
         }
 
@@ -311,6 +314,42 @@ namespace Client_App.Controls.DataGrid
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+            Init();
+        }
+        void Init()
+        {
+            Border brd = new Border();
+            brd.BorderThickness = Thickness.Parse("1");
+            brd.BorderBrush = new SolidColorBrush(Color.Parse("Gray"));
+
+            Grid grd = new Grid();
+            RowDefinition rd = new RowDefinition();
+            rd.Height = GridLength.Parse("30");
+            grd.RowDefinitions.Add(rd);
+            grd.RowDefinitions.Add(new RowDefinition());
+            brd.Child = grd;
+
+            Panel pnl = new Panel();
+            pnl.SetValue(Grid.RowProperty, 0);
+            pnl.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            grd.Children.Add(pnl);
+            Columns = pnl;
+
+            ScrollViewer vw = new ScrollViewer();
+            vw.SetValue(Grid.RowProperty, 1);
+            vw.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
+            grd.Children.Add(vw);
+
+            StackPanel stck = new StackPanel();
+            stck.Margin = Thickness.Parse("0,-1,0,0");
+            stck.Spacing = -1;
+            stck.Orientation = Avalonia.Layout.Orientation.Vertical;
+            stck.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            stck.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+            vw.Content = stck;
+            Rows = stck;
+
+            this.Content = brd;
         }
     }
 }

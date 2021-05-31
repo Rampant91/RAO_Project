@@ -2,23 +2,29 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Collections;
-
+using System.Collections;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
 namespace Client_App.Views
 {
     public class FormChangeOrCreate : Window
     {
         string _param = "";
-        public FormChangeOrCreate(string param, string DBPath, Report rep)
+        public FormChangeOrCreate(string param, string DBPath, ObservableCollection<object> rep)
         {
             var tmp = new ViewModels.ChangeOrCreateVM();
             if (DBPath != null)
             {
                 tmp.DBPath = DBPath;
-                tmp.Storage = rep;
+                tmp.Storage = (Report)rep[0];
             }
             else
             {
-                tmp.Storage = rep;
+                foreach (var item in rep)
+                {
+                    tmp.Storage = (Report)rep[0];
+                    break;
+                }
             }
 
             this.DataContext = tmp;

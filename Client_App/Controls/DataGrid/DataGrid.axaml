@@ -4,20 +4,5 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="200"
              x:Class="Client_App.Controls.DataGrid.DataGrid">
-  <Border BorderThickness="1" BorderBrush="Gray">
-    <Grid>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="30"></RowDefinition>
-        <RowDefinition></RowDefinition>
-      </Grid.RowDefinitions>
-      <Panel Grid.Row="0" Name="Columns" HorizontalAlignment="Stretch">
-
-      </Panel>
-      <ScrollViewer Grid.Row="1" Background="WhiteSmoke">
-        <StackPanel Margin="0,-1,0,0" Name="Rows" Spacing="-1" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-
-        </StackPanel>
-      </ScrollViewer>
-    </Grid>
-  </Border>
+  
 </UserControl>
