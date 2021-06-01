@@ -96,12 +96,6 @@ namespace Models
                 AddError(nameof(PackType), "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим."))
-            {
-                //if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                //    AddError(nameof(PackTypeNote), "Заполните примечание");
-                return;
-            }
         }
         //PackType property
 

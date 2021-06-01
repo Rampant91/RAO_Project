@@ -18,7 +18,6 @@ namespace Models
 
         private void Validate_all()
         {
-            Validate_base();
             CreationDateNote_Validation(CreationDate);
             CreationDate_Validation(CreationDate);
             CreatorOKPONote_Validation(CreatorOKPONote);
@@ -1428,46 +1427,6 @@ namespace Models
             if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
             {
                 AddError(nameof(DocumentNumber), "Поле не заполнено");
-                return;
-            }
-        }
-
-        protected override void DocumentDate_Validation(string value)
-        {
-            ClearErrors(nameof(DocumentDate));
-            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
-            {
-                AddError(nameof(DocumentDate), "Поле не заполнено");
-                return;
-            }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
-            {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
-                return;
-            }
-            try { DateTimeOffset.Parse(value); }
-            catch (Exception)
-            {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
-                return;
-            }
-            short tmp = OperationCode;
-            bool af = (tmp >= 11) && (tmp <= 18);
-            bool b = (tmp >= 41) && (tmp <= 49);
-            bool c = (tmp >= 53) && (tmp <= 59);
-            bool d = (tmp == 65) || (tmp == 68);
-            if (af || b || c || d)
-                if (!value.Equals(OperationDate))
-                    AddError(nameof(DocumentDate), "Заполните примечание");
-        }
-
-        protected override void OperationDate_Validation(string value)
-        {
-            ClearErrors(nameof(OperationDate));
-            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
-            {
-                AddError(nameof(OperationDate), "Поле не заполнено");
                 return;
             }
         }

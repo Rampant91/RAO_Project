@@ -673,7 +673,7 @@ namespace Models
         }
 
         private string _TransporterOKPO_Not_Valid = "";
-        private void TransporterOKPO_Validation(string value)//TODO
+        private void TransporterOKPO_Validation(string value)//Done
         {
             ClearErrors(nameof(TransporterOKPO));
             if ((value == null) || value.Equals(_TransporterOKPO_Not_Valid))
@@ -681,7 +681,13 @@ namespace Models
                 AddError(nameof(TransporterOKPO), "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим.") || value.Equals("-")) return;
+            if (value.Equals("-")) return;
+            if (value.Equals("прим."))
+            {
+                if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
+                    AddError(nameof(TransporterOKPONote), "Заполните примечание");
+                return;
+            }
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(TransporterOKPO), "Недопустимое значение");
             else
@@ -1338,25 +1344,5 @@ namespace Models
             ClearErrors(nameof(FcpNumber));
         }
         //FcpNumber property
-
-        protected override void DocumentDate_Validation(string value)
-        {
-            ClearErrors(nameof(DocumentDate));
-            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
-            {
-                AddError(nameof(DocumentDate), "Поле не заполнено");
-                return;
-            }
-        }
-
-        protected override void OperationDate_Validation(string value)
-        {
-            ClearErrors(nameof(OperationDate));
-            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
-            {
-                AddError(nameof(OperationDate), "Поле не заполнено");
-                return;
-            }
-        }
     }
 }

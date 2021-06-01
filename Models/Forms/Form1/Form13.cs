@@ -523,7 +523,7 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _CreationDate_Not_Valid = "01/01/1921";
+        private string _CreationDate_Not_Valid = "01.01.1921";
         private void CreationDate_Validation(string value)//Ready
         {
             ClearErrors(nameof(CreationDate));
@@ -1524,48 +1524,6 @@ namespace Models
                 "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН",
                 "ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН",
                 "ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ","ЮЖНЫЙ СУДАН"};
-        private void DocumentDate_Validation(DateTimeOffset value)
-        {
-            ClearErrors(nameof(DocumentDate));
-            short tmp = OperationCode;
-            bool a = (tmp >= 11) && (tmp <= 18);
-            bool b = (tmp >= 41) && (tmp <= 49);
-            bool c = (tmp >= 51) && (tmp <= 59);
-            bool d = (tmp == 65) || (tmp == 68);
-            if (a || b || c || d)
-                if (!value.Date.Equals(DateTimeOffset.Parse(OperationDate).Date))
-                    AddError(nameof(DocumentDate), "Заполните примечание");
-        }
-
-        protected override void DocumentDate_Validation(string value)
-        {
-            ClearErrors(nameof(DocumentDate));
-            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
-            {
-                AddError(nameof(DocumentDate), "Поле не заполнено");
-                return;
-            }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
-            {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
-                return;
-            }
-            try { DateTimeOffset.Parse(value); }
-            catch (Exception)
-            {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
-                return;
-            }
-            short tmp = OperationCode;
-            bool af = (tmp >= 11) && (tmp <= 18);
-            bool b = (tmp >= 41) && (tmp <= 49);
-            bool c = (tmp >= 51) && (tmp <= 59);
-            bool d = (tmp == 65) || (tmp == 68);
-            if (af || b || c || d)
-                if (!value.Equals(OperationDate))
-                    AddError(nameof(DocumentDate), "Заполните примечание");
-        }
 
         protected override void DocumentNumber_Validation(string value)
         {
@@ -1579,16 +1537,6 @@ namespace Models
             if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
             {
                 AddError(nameof(DocumentNumber), "Поле не заполнено");
-                return;
-            }
-        }
-
-        protected override void OperationDate_Validation(string value)
-        {
-            ClearErrors(nameof(OperationDate));
-            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
-            {
-                AddError(nameof(OperationDate), "Поле не заполнено");
                 return;
             }
         }

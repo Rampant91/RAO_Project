@@ -13,7 +13,7 @@ namespace Models
         public Form17() : base()
         {
             FormNum = "17";
-            NumberOfFields = 42;
+            NumberOfFields = 43;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -57,6 +57,12 @@ namespace Models
             if ((value == null) || value.Equals(_PackName_Not_Valid))
             {
                 AddError(nameof(PackName), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                if ((PackNameNote == null) || PackNameNote.Equals(""))
+                    AddError(nameof(PackNameNote), "Заполните примечание");
                 return;
             }
         }
@@ -244,8 +250,53 @@ namespace Models
                 AddError(nameof(PackNumber), "Поле не заполнено");
                 return;
             }
+            if (value.Equals("прим."))
+            {
+                if ((PackNumberNote == null) || PackNumberNote.Equals(""))
+                    AddError(nameof(PackNumberNote), "Заполните примечание");
+                return;
+            }
         }
         //PackNumber property
+
+        //PackNumberNote property
+        public string PackNumberNote
+        {
+            get
+            {
+                if (GetErrors(nameof(PackNumberNote)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(PackNumberNote));//OK
+                    return tmp != null ? (string)tmp : null;
+                }
+                else
+                {
+                    return _PackNumberNote_Not_Valid;
+                }
+            }
+            set
+            {
+                PackNumberNote_Validation(value);
+
+                if (GetErrors(nameof(PackNumberNote)) == null)
+                {
+                    _dataAccess.Set(nameof(PackNumberNote), value);
+                }
+                OnPropertyChanged(nameof(PackNumberNote));
+            }
+        }
+
+        private string _PackNumberNote_Not_Valid = "";
+        private void PackNumberNote_Validation(string value)
+        {
+            ClearErrors(nameof(PackNumberNote));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(PackNumberNote), "Поле не заполнено");
+                return;
+            }
+        }
+        //PackNumberNote property
 
         //PackNumberRecoded property
         [Attributes.Form_Property("Номер упаковки")]
@@ -829,7 +880,7 @@ namespace Models
         }
 
         private string _TransporterOKPO_Not_Valid = "";
-        private void TransporterOKPO_Validation(string value)//TODO
+        private void TransporterOKPO_Validation(string value)//Done
         {
             ClearErrors(nameof(TransporterOKPO));
             if ((value == null) || value.Equals(_TransporterOKPO_Not_Valid))
@@ -837,7 +888,13 @@ namespace Models
                 AddError(nameof(TransporterOKPO), "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим.") || value.Equals("-")) return;
+            if (value.Equals("-")) return;
+            if (value.Equals("прим."))
+            {
+                if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
+                    AddError(nameof(TransporterOKPONote), "Заполните примечание");
+                return;
+            }
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(TransporterOKPO), "Недопустимое значение");
             else
@@ -1532,25 +1589,5 @@ namespace Models
                 }
         }
         //RefineOrSortRAOCode property
-
-        protected override void DocumentDate_Validation(string value)
-        {
-            ClearErrors(nameof(DocumentDate));
-            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
-            {
-                AddError(nameof(DocumentDate), "Поле не заполнено");
-                return;
-            }
-        }
-
-        protected override void OperationDate_Validation(string value)
-        {
-            ClearErrors(nameof(OperationDate));
-            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
-            {
-                AddError(nameof(OperationDate), "Поле не заполнено");
-                return;
-            }
-        }
     }
 }

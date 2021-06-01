@@ -20,7 +20,6 @@ namespace Models
 
         private void Validate_all()
         {
-            Validate_base();
             PackNumberNote_Validation(PackNumberNote);
             OwnerNote_Validation(OwnerNote);
             PackTypeNote_Validation(PackTypeNote);
@@ -1593,36 +1592,6 @@ namespace Models
         }
         //PackNumberNote property
 
-        protected override void DocumentVid_Validation(byte value)// TO DO
-        {
-            ClearErrors(nameof(DocumentVid));
-            List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>
-            {
-                new Tuple<byte, string>(0,""),
-                new Tuple<byte, string>(1,""),
-                new Tuple<byte, string>(2,""),
-                new Tuple<byte, string>(3,""),
-                new Tuple<byte, string>(4,""),
-                new Tuple<byte, string>(5,""),
-                new Tuple<byte, string>(6,""),
-                new Tuple<byte, string>(7,""),
-                new Tuple<byte, string>(8,""),
-                new Tuple<byte, string>(9,""),
-                new Tuple<byte, string>(10,""),
-                new Tuple<byte, string>(11,""),
-                new Tuple<byte, string>(12,""),
-                new Tuple<byte, string>(13,""),
-                new Tuple<byte, string>(14,""),
-                new Tuple<byte, string>(15,""),
-                new Tuple<byte, string>(19,"")
-            };   //HERE BINDS SPRAVOCHNICK
-            foreach (var item in spr)
-            {
-                if (item.Item1 == value) return;
-            }
-            AddError(nameof(DocumentVid), "Недопустимое значение");
-        }
-
         protected override void DocumentNumber_Validation(string value)
         {
             ClearErrors(nameof(DocumentNumber));
@@ -1642,14 +1611,6 @@ namespace Models
         protected override void OperationCode_Validation(short value)//OK
         {
             ClearErrors(nameof(OperationCode));
-            //string value1 = arg.ToString();
-            //value1 = (value1.Length == 1) ? "0" + value1 : value1;
-            //if (value1 == null)
-            //{
-            //    AddError(nameof(OperationCode), "Недопустимое значение");
-            //    return;
-            //}
-            //var value = short.Parse(value1);
             List<short> spr = new List<short>()
             {
                 1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,
@@ -1676,58 +1637,6 @@ namespace Models
                 (value == 59) || (value == 76))
                 AddError(nameof(OperationCode), "Код операции не может быть использован для РВ");
             return;
-        }
-
-        protected override void DocumentDate_Validation(string value)
-        {
-            ClearErrors(nameof(DocumentDate));
-            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
-            {
-                AddError(nameof(DocumentDate), "Поле не заполнено");
-                return;
-            }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
-            {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
-                return;
-            }
-            try { DateTimeOffset.Parse(value); }
-            catch (Exception)
-            {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
-                return;
-            }
-            short tmp = OperationCode;
-            bool e = (tmp >= 11) && (tmp <= 18);
-            bool b = (tmp >= 41) && (tmp <= 49);
-            bool c = (tmp >= 51) && (tmp <= 59);
-            bool d = (tmp == 65) || (tmp == 68);
-            if (e || b || c || d)
-                if (!value.Equals(OperationDate))
-                    AddError(nameof(DocumentDate), "Заполните примечание");
-        }
-
-        protected override void OperationDate_Validation(string value)
-        {
-            ClearErrors(nameof(OperationDate));
-            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
-            {
-                AddError(nameof(OperationDate), "Поле не заполнено");
-                return;
-            }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
-            {
-                AddError(nameof(OperationDate), "Недопустимое значение");
-                return;
-            }
-            try { DateTimeOffset.Parse(value); }
-            catch (Exception)
-            {
-                AddError(nameof(OperationDate), "Недопустимое значение");
-                return;
-            }
         }
     }
 }

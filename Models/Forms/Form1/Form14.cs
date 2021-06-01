@@ -13,7 +13,7 @@ namespace Models
         public Form14() : base()
         {
             FormNum = "14";
-            NumberOfFields = 34;
+            NumberOfFields = 35;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -938,7 +938,7 @@ namespace Models
         }
 
         private string _TransporterOKPO_Not_Valid = "";
-        private void TransporterOKPO_Validation(string value)//TODO
+        private void TransporterOKPO_Validation(string value)//Done
         {
             ClearErrors(nameof(TransporterOKPO));
             if ((value == null) || value.Equals(_TransporterOKPO_Not_Valid))
@@ -946,7 +946,13 @@ namespace Models
                 AddError(nameof(TransporterOKPO), "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим.") || value.Equals("-")) return;
+            if (value.Equals("-")) return;
+            if (value.Equals("прим."))
+            {
+                if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
+                    AddError(nameof(TransporterOKPONote), "Заполните примечание");
+                return;
+            }
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(TransporterOKPO), "Недопустимое значение");
             else
@@ -1026,6 +1032,12 @@ namespace Models
             if ((value == null) || value.Equals(_PackName_Not_Valid))
             {
                 AddError(nameof(PackName), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                if ((PackNameNote == null) || PackNameNote.Equals(""))
+                    AddError(nameof(PackNameNote), "Заполните примечание");
                 return;
             }
         }
@@ -1212,8 +1224,53 @@ namespace Models
                 AddError(nameof(PackNumber), "Поле не заполнено");
                 return;
             }
+            if (value.Equals("прим."))
+            {
+                if ((PackNumberNote == null) || PackNumberNote.Equals(""))
+                    AddError(nameof(PackNumberNote), "Заполните примечание");
+                return;
+            }
         }
         //PackNumber property
+
+        //PackNumberNote property
+        public string PackNumberNote
+        {
+            get
+            {
+                if (GetErrors(nameof(PackNumberNote)) == null)
+                {
+                    var tmp = _dataAccess.Get(nameof(PackNumberNote));//OK
+                    return tmp != null ? (string)tmp : null;
+                }
+                else
+                {
+                    return _PackNumberNote_Not_Valid;
+                }
+            }
+            set
+            {
+                PackNumberNote_Validation(value);
+
+                if (GetErrors(nameof(PackNumberNote)) == null)
+                {
+                    _dataAccess.Set(nameof(PackNumberNote), value);
+                }
+                OnPropertyChanged(nameof(PackNumberNote));
+            }
+        }
+
+        private string _PackNumberNote_Not_Valid = "";
+        private void PackNumberNote_Validation(string value)
+        {
+            ClearErrors(nameof(PackNumberNote));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(PackNumberNote), "Поле не заполнено");
+                return;
+            }
+        }
+        //PackNumberNote property
 
         //PackNumberRecoded property
         [Attributes.Form_Property("Номер упаковки")]
@@ -1248,19 +1305,6 @@ namespace Models
         }
         //PackNumberRecoded property
 
-        private void DocumentDate_Validation(DateTimeOffset value)
-        {
-            ClearErrors(nameof(DocumentDate));
-            short tmp = OperationCode;
-            bool a = (tmp >= 11) && (tmp <= 18);
-            bool b = (tmp >= 41) && (tmp <= 49);
-            bool c = (tmp >= 51) && (tmp <= 59);
-            bool d = (tmp == 65) || (tmp == 68);
-            if (a || b || c || d)
-                if (!value.Date.Equals(DateTimeOffset.Parse(OperationDate).Date))
-                    AddError(nameof(DocumentDate), "Заполните примечание");
-        }
-
         protected override void DocumentNumber_Validation(string value)
         {
             ClearErrors(nameof(DocumentNumber));
@@ -1275,36 +1319,6 @@ namespace Models
                 AddError(nameof(DocumentNumber), "Поле не заполнено");
                 return;
             }
-        }
-
-        protected override void DocumentDate_Validation(string value)
-        {
-            ClearErrors(nameof(DocumentDate));
-            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
-            {
-                AddError(nameof(DocumentDate), "Поле не заполнено");
-                return;
-            }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
-            {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
-                return;
-            }
-            try { DateTimeOffset.Parse(value); }
-            catch (Exception)
-            {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
-                return;
-            }
-            short tmp = OperationCode;
-            bool af = (tmp >= 11) && (tmp <= 18);
-            bool b = (tmp >= 41) && (tmp <= 49);
-            bool c = (tmp >= 51) && (tmp <= 59);
-            bool d = (tmp == 65) || (tmp == 68);
-            if (af || b || c || d)
-                if (!value.Equals(OperationDate))
-                    AddError(nameof(DocumentDate), "Заполните примечание");
         }
 
         //DocumentNumberNote property
@@ -1345,15 +1359,5 @@ namespace Models
             }
         }
         //DocumentNumberNote property
-
-        protected override void OperationDate_Validation(string value)
-        {
-            ClearErrors(nameof(OperationDate));
-            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
-            {
-                AddError(nameof(OperationDate), "Поле не заполнено");
-                return;
-            }
-        }
     }
 }

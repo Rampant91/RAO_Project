@@ -1,5 +1,7 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace Models.Abstracts
 {
@@ -135,7 +137,7 @@ namespace Models.Abstracts
                     var tmp = _dataAccess.Get(nameof(OperationDate));
                     if (tmp == null)
                         return _OperationDate_Not_Valid;
-                    return ((DateTimeOffset)tmp).Date.ToString("dd/MM/yyyy");// дает дату в формате дд.мм.гггг
+                    return ((DateTimeOffset)tmp).Date.ToString("dd.MM.yyyy");// дает дату в формате дд.мм.гггг
                 }
                 else
                 {
@@ -156,7 +158,27 @@ namespace Models.Abstracts
 
         protected string _OperationDate_Not_Valid = "";
 
-        protected virtual void OperationDate_Validation(string value) { }
+        protected void OperationDate_Validation(string value)
+        {
+            ClearErrors(nameof(OperationDate));
+            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
+            {
+                AddError(nameof(OperationDate), "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(OperationDate), "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value); }
+            catch (Exception)
+            {
+                AddError(nameof(OperationDate), "Недопустимое значение");
+                return;
+            }
+        }
         //OperationDate property
 
         //DocumentVid property
@@ -188,8 +210,35 @@ namespace Models.Abstracts
         }
 
         private byte _DocumentVid_Not_Valid = 255;
-        protected virtual void DocumentVid_Validation(byte value)//Ok
-        { }
+        protected void DocumentVid_Validation(byte value)// TO DO
+        {
+            ClearErrors(nameof(DocumentVid));
+            List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>
+            {
+                new Tuple<byte, string>(0,""),
+                new Tuple<byte, string>(1,""),
+                new Tuple<byte, string>(2,""),
+                new Tuple<byte, string>(3,""),
+                new Tuple<byte, string>(4,""),
+                new Tuple<byte, string>(5,""),
+                new Tuple<byte, string>(6,""),
+                new Tuple<byte, string>(7,""),
+                new Tuple<byte, string>(8,""),
+                new Tuple<byte, string>(9,""),
+                new Tuple<byte, string>(10,""),
+                new Tuple<byte, string>(11,""),
+                new Tuple<byte, string>(12,""),
+                new Tuple<byte, string>(13,""),
+                new Tuple<byte, string>(14,""),
+                new Tuple<byte, string>(15,""),
+                new Tuple<byte, string>(19,"")
+            };   //HERE BINDS SPRAVOCHNICK
+            foreach (var item in spr)
+            {
+                if (item.Item1 == value) return;
+            }
+            AddError(nameof(DocumentVid), "Недопустимое значение");
+        }
         //DocumentVid property
 
         //DocumentNumber property
@@ -269,7 +318,7 @@ namespace Models.Abstracts
                     var tmp = _dataAccess.Get(nameof(DocumentDate));//OK
                     if (tmp == null)
                         return _DocumentDate_Not_Valid;
-                    return ((DateTimeOffset)tmp).Date.ToString("dd/MM/yyyy");// дает дату в формате дд.мм.гггг
+                    return ((DateTimeOffset)tmp).Date.ToString("dd.MM.yyyy");// дает дату в формате дд.мм.гггг
                 }
                 else
                 {
@@ -290,7 +339,34 @@ namespace Models.Abstracts
         //if change this change validation
         protected string _DocumentDate_Not_Valid = "";
 
-        protected virtual void DocumentDate_Validation(string value) { }
+        protected void DocumentDate_Validation(string value)
+        {
+            ClearErrors(nameof(DocumentDate));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(DocumentDate), "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(DocumentDate), "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value); }
+            catch (Exception)
+            {
+                AddError(nameof(DocumentDate), "Недопустимое значение");
+                return;
+            }
+            bool ab = (OperationCode >= 11) && (OperationCode <= 18);
+            bool b = (OperationCode >= 41) && (OperationCode <= 49);
+            bool c = (OperationCode >= 51) && (OperationCode <= 59);
+            bool d = (OperationCode == 65) || (OperationCode == 68);
+            if (ab || b || c || d)
+                if (!value.Equals(OperationDate))
+                    AddError(nameof(DocumentDate), "Заполните примечание");
+        }
         //DocumentDate property
 
         //DocumentDateNote property

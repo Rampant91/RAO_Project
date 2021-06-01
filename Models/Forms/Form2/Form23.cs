@@ -496,7 +496,7 @@ namespace Models
             }
         }
         //if change this change validation
-        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
+        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01.01.1921");
         private void DocumentDate_Validation(DateTimeOffset value)//Ready
         {
             ClearErrors(nameof(DocumentDate));
