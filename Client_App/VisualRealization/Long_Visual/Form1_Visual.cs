@@ -661,12 +661,12 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddRowN"),
             });
-            itms.Add(new MenuItem
-            {
-                Header = "Удалить строку",
-                [!MenuItem.CommandProperty] = new Binding("DeleteRowN"),
-                [!MenuItem.CommandParameterProperty] = new Binding("#parent[2].SelectedItem"),
-            });
+            //itms.Add(new MenuItem
+            //{
+            //    Header = "Удалить строку",
+            //    [!MenuItem.CommandProperty] = new Binding("DeleteRowN"),
+            //    [!MenuItem.CommandParameterProperty] = new Binding("#parent[2].SelectedItem"),
+            //});
             cntx.Items = itms;
 
             bgrd.ContextMenu = cntx;

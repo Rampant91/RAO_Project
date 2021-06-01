@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Avalonia.Data;
 
 namespace Client_App.Controls.Support.RenderDataGridHeader
 {
@@ -33,7 +35,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
         }
         static Control Get1()
         {
-            return new TextBlock { Text="Test" };
+            return null;
         }
         static Control Get2()
         {

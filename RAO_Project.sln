@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RAO_App", "RAO_App\RAO_App.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers", "Helpers\Helpers.csproj", "{6BB2A094-482F-464A-A3EF-F780DB084221}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_App", "Test_App\Test_App.csproj", "{2E6E671E-4CB4-4664-AE4B-448381F74AAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test_App", "Test_App\Test_App.csproj", "{2E6E671E-4CB4-4664-AE4B-448381F74AAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

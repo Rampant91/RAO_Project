@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Specialized;
 
 namespace Collections
 {
@@ -18,21 +19,113 @@ namespace Collections
         public Report(IDataAccess Access)
         {
             _dataAccess = Access;
+            Init();
         }
 
         public Report()
         {
             _dataAccess = new Models.DataAccess.RamAccess();
+            Init();
+        }
+
+        void Init()
+        {
+            Rows10.CollectionChanged += CollectionChanged;
+            Rows11.CollectionChanged += CollectionChanged;
+            Rows12.CollectionChanged += CollectionChanged;
+            Rows13.CollectionChanged += CollectionChanged;
+            Rows14.CollectionChanged += CollectionChanged;
+            Rows15.CollectionChanged += CollectionChanged;
+            Rows16.CollectionChanged += CollectionChanged;
+            Rows17.CollectionChanged += CollectionChanged;
+            Rows18.CollectionChanged += CollectionChanged;
+            Rows19.CollectionChanged += CollectionChanged;
+
+            Rows20.CollectionChanged += CollectionChanged;
+            Rows21.CollectionChanged += CollectionChanged;
+            Rows22.CollectionChanged += CollectionChanged;
+            Rows23.CollectionChanged += CollectionChanged;
+            Rows24.CollectionChanged += CollectionChanged;
+            Rows25.CollectionChanged += CollectionChanged;
+            Rows26.CollectionChanged += CollectionChanged;
+            Rows27.CollectionChanged += CollectionChanged;
+            Rows28.CollectionChanged += CollectionChanged;
+            Rows29.CollectionChanged += CollectionChanged;
+            Rows210.CollectionChanged += CollectionChanged;
+            Rows211.CollectionChanged += CollectionChanged;
+            Rows212.CollectionChanged += CollectionChanged;
+
+            Rows30.CollectionChanged += CollectionChanged;
+            Rows31.CollectionChanged += CollectionChanged;
+            Rows31_1.CollectionChanged += CollectionChanged;
+            Rows32.CollectionChanged += CollectionChanged;
+            Rows32_1.CollectionChanged += CollectionChanged;
+            Rows32_2.CollectionChanged += CollectionChanged;
+            Rows32_3.CollectionChanged += CollectionChanged;
+
+            Rows40.CollectionChanged += CollectionChanged;
+            Rows41.CollectionChanged += CollectionChanged;
+
+            Rows50.CollectionChanged += CollectionChanged;
+            Rows51.CollectionChanged += CollectionChanged;
+            Rows52.CollectionChanged += CollectionChanged;
+            Rows53.CollectionChanged += CollectionChanged;
+            Rows54.CollectionChanged += CollectionChanged;
+            Rows55.CollectionChanged += CollectionChanged;
+            Rows56.CollectionChanged += CollectionChanged;
+            Rows57.CollectionChanged += CollectionChanged;
+        }
+
+        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows10));
+            OnPropertyChanged(nameof(Rows11));
+            OnPropertyChanged(nameof(Rows12));
+            OnPropertyChanged(nameof(Rows13));
+            OnPropertyChanged(nameof(Rows14));
+            OnPropertyChanged(nameof(Rows15));
+            OnPropertyChanged(nameof(Rows16));
+            OnPropertyChanged(nameof(Rows17));
+            OnPropertyChanged(nameof(Rows18));
+            OnPropertyChanged(nameof(Rows19));
+
+            OnPropertyChanged(nameof(Rows20));
+            OnPropertyChanged(nameof(Rows21));
+            OnPropertyChanged(nameof(Rows22));
+            OnPropertyChanged(nameof(Rows23));
+            OnPropertyChanged(nameof(Rows24));
+            OnPropertyChanged(nameof(Rows25));
+            OnPropertyChanged(nameof(Rows26));
+            OnPropertyChanged(nameof(Rows27));
+            OnPropertyChanged(nameof(Rows28));
+            OnPropertyChanged(nameof(Rows29));
+            OnPropertyChanged(nameof(Rows210));
+            OnPropertyChanged(nameof(Rows211));
+            OnPropertyChanged(nameof(Rows212));
+
+            OnPropertyChanged(nameof(Rows30));
+            OnPropertyChanged(nameof(Rows31));
+            OnPropertyChanged(nameof(Rows31_1));
+            OnPropertyChanged(nameof(Rows32));
+            OnPropertyChanged(nameof(Rows32_1));
+            OnPropertyChanged(nameof(Rows32_2));
+            OnPropertyChanged(nameof(Rows32_3));
+
+            OnPropertyChanged(nameof(Rows40));
+            OnPropertyChanged(nameof(Rows41));
+
+            OnPropertyChanged(nameof(Rows50));
+            OnPropertyChanged(nameof(Rows51));
+            OnPropertyChanged(nameof(Rows52));
+            OnPropertyChanged(nameof(Rows53));
+            OnPropertyChanged(nameof(Rows54));
+            OnPropertyChanged(nameof(Rows55));
+            OnPropertyChanged(nameof(Rows56));
+            OnPropertyChanged(nameof(Rows57));
         }
 
         [Key]
         public int ReportId { get; set; }
-
-        void Update(object sender, EventArgs args)
-        {
-            OnPropertyChanged("GetFilteredRows10");
-            OnPropertyChanged("Rows10");
-        }
 
         public virtual ObservableCollection<Models.Form10> Rows10
         {
@@ -1437,7 +1530,57 @@ namespace Collections
         }
 
         [Form_Property("Форма")]
-        public string FormNum { get; set; }
+        public string FormNum 
+        {
+            get
+            {
+                if (Rows10.Count > 0) { return "10"; }
+                if (Rows11.Count > 0) { return "11"; }
+                if (Rows12.Count > 0) { return "12"; }
+                if (Rows13.Count > 0) { return "13"; }
+                if (Rows14.Count > 0) { return "14"; }
+                if (Rows15.Count > 0) { return "15"; }
+                if (Rows16.Count > 0) { return "16"; }
+                if (Rows17.Count > 0) { return "17"; }
+                if (Rows18.Count > 0) { return "18"; }
+                if (Rows19.Count > 0) { return "19"; }
+
+                if (Rows20.Count > 0) { return "20"; }
+                if (Rows21.Count > 0) { return "21"; }
+                if (Rows22.Count > 0) { return "22"; }
+                if (Rows23.Count > 0) { return "23"; }
+                if (Rows24.Count > 0) { return "24"; }
+                if (Rows25.Count > 0) { return "25"; }
+                if (Rows26.Count > 0) { return "26"; }
+                if (Rows27.Count > 0) { return "27"; }
+                if (Rows28.Count > 0) { return "28"; }
+                if (Rows29.Count > 0) { return "29"; }
+                if (Rows210.Count > 0) { return "210"; }
+                if (Rows211.Count > 0) { return "211"; }
+                if (Rows212.Count > 0) { return "212"; }
+
+                if (Rows30.Count > 0) { return "30"; }
+                if (Rows31.Count > 0) { return "31"; }
+                if (Rows31_1.Count > 0) { return "31_1"; }
+                if (Rows32.Count > 0) { return "32"; }
+                if (Rows32_1.Count > 0) { return "32_1"; }
+                if (Rows32_2.Count > 0) { return "32_2"; }
+                if (Rows32_3.Count > 0) { return "32_3"; }
+
+                if (Rows40.Count > 0) { return "40"; }
+                if (Rows41.Count > 0) { return "41"; }
+
+                if (Rows50.Count > 0) { return "50"; }
+                if (Rows51.Count > 0) { return "51"; }
+                if (Rows52.Count > 0) { return "52"; }
+                if (Rows53.Count > 0) { return "53"; }
+                if (Rows54.Count > 0) { return "54"; }
+                if (Rows55.Count > 0) { return "55"; }
+                if (Rows56.Count > 0) { return "56"; }
+                if (Rows57.Count > 0) { return "57"; }
+                return "0";
+            }
+        }
 
         //IsCorrection 
         [Form_Property("Корректирующий отчет")]

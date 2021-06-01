@@ -4,20 +4,5 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="200"
              x:Class="Client_App.Controls.DataGrid.DataGrid">
-  <Panel>
-    <Panel.ContextMenu>
-      <ContextMenu>
-        <MenuItem Header="Add Row" Command="{Binding AddRow}"/>
-        <MenuItem Header="Delete Row" Command="{Binding DeleteRow}"/>
-      </ContextMenu>
-    </Panel.ContextMenu>
-    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-      <StackPanel Name="Columns" Orientation="Horizontal">
-
-      </StackPanel>
-      <StackPanel Name="Rows" Orientation="Vertical">
-        
-      </StackPanel>
-    </StackPanel>
-  </Panel>
+  
 </UserControl>
