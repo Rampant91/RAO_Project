@@ -523,11 +523,11 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _CreationDate_Not_Valid = "01.01.1921";
+        private string _CreationDate_Not_Valid = "";
         private void CreationDate_Validation(string value)//Ready
         {
             ClearErrors(nameof(CreationDate));
-            if ((value == null) || value.Equals("01/01/1921"))
+            if ((value == null) || value.Equals(""))
             {
                 AddError(nameof(CreationDate), "Поле не заполнено");
                 return;
