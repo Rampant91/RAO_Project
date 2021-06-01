@@ -6,6 +6,7 @@ using Models.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 namespace Client_App.Short_Visual
 {
@@ -14,10 +15,19 @@ namespace Client_App.Short_Visual
         //Полный вывод
         public static void FormF_Visual(in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
-            var grd = Form0_Visual(pnl0.FindNameScope());
-            pnl0.Children.Add(grd);
-            pnlx.Children.Add(FormX_Visual(pnlx.FindNameScope(),grd));
-            pnlb.Children.Add(FormB_Visual());
+            var tp = pnl0.FindNameScope();
+            var grd1 = (Controls.DataGrid.DataGrid)Form0_Visual(tp);
+            pnl0.Children.Add(grd1);
+
+            NameScope scp = new NameScope();
+            scp.Register(grd1.Name, grd1);
+            scp.Complete();
+            var grd2 = (Controls.DataGrid.DataGrid)FormX_Visual(scp);
+            pnlx.Children.Add(grd2);
+
+
+            var grd3 = FormB_Visual();
+            pnlb.Children.Add(grd3);
         }
 
         //Форма 10
@@ -67,25 +77,23 @@ namespace Client_App.Short_Visual
         }
 
         //Форма 1X
-        static Control FormX_Visual(INameScope scp,Control ctrl)
+        static Control FormX_Visual(INameScope scp)
         {
             Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
             {
+                Type= "0/1",
+                Name= "Form1AllDataGrid_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
-                [!Controls.DataGrid.DataGrid.ItemsProperty]=ctrl[!Controls.DataGrid.DataGrid.SelectedItemsProperty]
             };
 
-            //grd.Type = "0/1";
-            //grd.Name = "Form1AllDataGrid_";
+            Binding b = new Binding();
+            b.Path = "SelectedItems";
+            b.ElementName = "Form10AllDataGrid_";
+            b.NameScope = new WeakReference<INameScope>(scp);
+            b.Converter = new Converters.ReportsToReport_Converter();
 
-            //Binding b = new Binding();
-            //b.Path = "DataContext";
-            //b.ElementName = "Form10AllDataGrid_";
-            //b.NameScope = new WeakReference<INameScope>(scp);
-            //b.Mode = BindingMode.TwoWay;
-
-            //grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();

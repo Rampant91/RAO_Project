@@ -270,11 +270,14 @@ namespace Client_App.Controls.DataGrid
                 foreach (Border it in stack.Children)
                 {
                     var child = (Panel)it.Child;
-                    var pnt = child.TransformedBounds.Value.Bounds.TransformToAABB(child.TransformedBounds.Value.Transform);
-                    var mpnt = mouse.Position.Transform(this.TransformedBounds.Value.Transform);
-                    if (IsXYinBounds(mpnt, pnt))
+                    if (child.TransformedBounds != null)
                     {
-                        return child;
+                        var pnt = child.TransformedBounds.Value.Bounds.TransformToAABB(child.TransformedBounds.Value.Transform);
+                        var mpnt = mouse.Position.Transform(this.TransformedBounds.Value.Transform);
+                        if (IsXYinBounds(mpnt, pnt))
+                        {
+                            return child;
+                        }
                     }
                 }
             }

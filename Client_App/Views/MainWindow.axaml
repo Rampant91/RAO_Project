@@ -12,10 +12,6 @@
         Title="РАО"
         x:Name="MainWindow"
         Background="#D3D3D3">
-  <Window.Resources>
-    <Converters:WindowPercentConverter_Height x:Key="WindowPercentConverter_Height"/>
-    <Converters:WindowPercentConverter_Width x:Key="WindowPercentConverter_Width"/>
-  </Window.Resources>
 	<DockPanel>
 		<Menu Height="20" DockPanel.Dock="Top">
       <MenuItem Header="_Приложение РАО">

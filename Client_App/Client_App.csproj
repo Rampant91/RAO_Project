@@ -18,9 +18,6 @@
     <Compile Remove="Assets\Converters.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AvaloniaResource Include="Converters\WindowPercentConverter.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.5" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.10.5" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.5" />
