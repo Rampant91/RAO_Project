@@ -642,7 +642,6 @@ namespace Models
         private void StoragePlaceName_Validation(string value)//Ready
         {
             ClearErrors(nameof(StoragePlaceName));
-            ClearErrors(nameof(StoragePlaceName));
             if (string.IsNullOrEmpty(value)) return;
             var spr = new List<string>();
             if (!spr.Contains(value))
@@ -715,25 +714,10 @@ namespace Models
         private void StoragePlaceCode_Validation(string value)//TODO
         {
             ClearErrors(nameof(StoragePlaceCode));
+            if (string.IsNullOrEmpty(value)|| value.Equals("-")) return;
             var lst = new List<string>();//HERE binds spr
-            foreach (var item in lst)
-            {
-                if (item.Equals(value)) return;
-            }
-            AddError(nameof(StoragePlaceCode), "Такого значения нет в справочнике");
-            //ClearErrors(nameof(StoragePlaceCode));
-            //if (!(value == "-"))
-            //    if (value.Length != 8)
-            //        AddError(nameof(StoragePlaceCode), "Недопустимое значение");
-            //    else
-            //        for (int i = 0; i < 8; i++)
-            //        {
-            //            if (!((value[i] >= '0') && (value[i] <= '9')))
-            //            {
-            //                AddError(nameof(StoragePlaceCode), "Недопустимое значение");
-            //                return;
-            //            }
-            //        }
+            if(!lst.Contains(value))
+            AddError(nameof(StoragePlaceCode), "Недопустимое значение");
         }
         //StoragePlaceCode property
 
@@ -767,6 +751,17 @@ namespace Models
         private void CodeRAO_Validation(string value)//TODO
         {
             ClearErrors(nameof(CodeRAO));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(CodeRAO), "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{11}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(CodeRAO), "Недопустимое значение");
+                return;
+            }
         }
         //CodeRAO property
 
@@ -800,18 +795,43 @@ namespace Models
         private void StatusRAO_Validation(string value)//TODO
         {
             ClearErrors(nameof(StatusRAO));
+            if (value.Length == 1)
+            {
+                int tmp;
+                try
+                {
+                    tmp = int.Parse(value);
+                    if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
+                    {
+                        AddError(nameof(StatusRAO), "Недопустимое значение");
+                    }
+                }
+                catch (Exception)
+                {
+                    AddError(nameof(StatusRAO), "Недопустимое значение");
+                }
+                return;
+            }
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(StatusRAO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(StatusRAO), "Недопустимое значение");
+            }
         }
         //StatusRAO property
 
         //Volume20 property
         [Attributes.Form_Property("Объем, куб. м")]
-        public double Volume20
+        public string Volume20
         {
             get
             {
                 if (GetErrors(nameof(Volume20)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Volume20));
+                    return (string)_dataAccess.Get(nameof(Volume20));
                 }
                 else
                 {
@@ -829,22 +849,43 @@ namespace Models
             }
         }
 
-        private double _Volume20_Not_Valid = -1;
-        private void Volume20_Validation(double value)//TODO
+        private string _Volume20_Not_Valid = "";
+        private void Volume20_Validation(string value)//TODO
         {
             ClearErrors(nameof(Volume20));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Volume20), "Поле не заполнено");
+                return;
+            }
+            if (!((value.Contains('e') || value.Contains('E'))))
+            {
+                AddError(nameof(Volume20), "Недопустимое значение");
+                return;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(Volume20), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(Volume20), "Недопустимое значение");
+            }
         }
         //Volume20 property
 
         //Mass21 Property
         [Attributes.Form_Property("Масса, т")]
-        public double Mass21
+        public string Mass21
         {
             get
             {
                 if (GetErrors(nameof(Mass21)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass21));
+                    return (string)_dataAccess.Get(nameof(Mass21));
                 }
                 else
                 {
@@ -862,10 +903,31 @@ namespace Models
             }
         }
 
-        private double _Mass21_Not_Valid = -1;
-        private void Mass21_Validation(double value)//TODO
+        private string _Mass21_Not_Valid = "";
+        private void Mass21_Validation(string value)//TODO
         {
             ClearErrors(nameof(Mass21));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Mass21), "Поле не заполнено");
+                return;
+            }
+            if (!((value.Contains('e') || value.Contains('E'))))
+            {
+                AddError(nameof(Mass21), "Недопустимое значение");
+                return;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(Mass21), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(Mass21), "Недопустимое значение");
+            }
         }
         //Mass21 Property
 
@@ -904,23 +966,16 @@ namespace Models
                 AddError(nameof(TritiumActivity), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(TritiumActivity), "Недопустимое значение");
                 return;
-            }
-            string tmp = value;
-            int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
-            {
-                tmp = tmp.Remove(len - 1, 1);
-                tmp = tmp.Remove(0, 1);
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                     AddError(nameof(TritiumActivity), "Число должно быть больше нуля");
             }
             catch
@@ -965,23 +1020,16 @@ namespace Models
                 AddError(nameof(BetaGammaActivity), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(BetaGammaActivity), "Недопустимое значение");
                 return;
-            }
-            string tmp = value;
-            int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
-            {
-                tmp = tmp.Remove(len - 1, 1);
-                tmp = tmp.Remove(0, 1);
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                     AddError(nameof(BetaGammaActivity), "Число должно быть больше нуля");
             }
             catch
@@ -1026,23 +1074,16 @@ namespace Models
                 AddError(nameof(AlphaActivity), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(AlphaActivity), "Недопустимое значение");
                 return;
-            }
-            string tmp = value;
-            int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
-            {
-                tmp = tmp.Remove(len - 1, 1);
-                tmp = tmp.Remove(0, 1);
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                     AddError(nameof(AlphaActivity), "Число должно быть больше нуля");
             }
             catch
@@ -1087,23 +1128,16 @@ namespace Models
                 AddError(nameof(TransuraniumActivity), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(TransuraniumActivity), "Недопустимое значение");
                 return;
-            }
-            string tmp = value;
-            int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
-            {
-                tmp = tmp.Remove(len - 1, 1);
-                tmp = tmp.Remove(0, 1);
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                     AddError(nameof(TransuraniumActivity), "Число должно быть больше нуля");
             }
             catch
@@ -1143,17 +1177,28 @@ namespace Models
         private void RefineOrSortRAOCode_Validation(string value)//TODO
         {
             ClearErrors(nameof(RefineOrSortRAOCode));
-            if (value.Length != 2)
-                AddError(nameof(RefineOrSortRAOCode), "Недопустимое значение");
-            else
-                for (int i = 0; i < 2; i++)
+            if (OperationCode == 55)
+            {
+                if (string.IsNullOrEmpty(value))
                 {
-                    if (!((value[i] >= '0') && (value[i] <= '9')))
-                    {
-                        AddError(nameof(RefineOrSortRAOCode), "Недопустимое значение");
-                        return;
-                    }
+                    AddError(nameof(RefineOrSortRAOCode), "Поле не заполнено");
+                    return;
                 }
+                var a = new Regex("^[0-9][0-9]$");
+                if (!a.IsMatch(value))
+                {
+                    AddError(nameof(RefineOrSortRAOCode), "Недопустимое значение");
+                    return;
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    AddError(nameof(RefineOrSortRAOCode), "Недопустимое значение");
+                    return;
+                }
+            }
         }
         //RefineOrSortRAOCode property
 
@@ -1187,6 +1232,7 @@ namespace Models
         private void Subsidy_Validation(string value)//Ready
         {
             ClearErrors(nameof(Subsidy));
+            if ((value == null) || value.Equals("")) return;
             try
             {
                 int tmp = Int32.Parse(value);

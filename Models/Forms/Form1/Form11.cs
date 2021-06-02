@@ -382,14 +382,13 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity//эталон свойства с валидацией
+        public int? Quantity
         {
             get
             {
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Quantity));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return (int?)_dataAccess.Get(nameof(Quantity));//OK;
                 }
                 else
                 {
@@ -399,7 +398,6 @@ namespace Models
             set
             {
                 Quantity_Validation(value);
-                //_Quantity_Not_Valid = value;
 
                 if (GetErrors(nameof(Quantity)) == null)
                 {
@@ -409,10 +407,14 @@ namespace Models
             }
         }
         // positive int.
-        private int _Quantity_Not_Valid = -1;
-        private void Quantity_Validation(int value)//Ready
+        private int? _Quantity_Not_Valid = null;
+        private void Quantity_Validation(int? value)//Ready
         {
             ClearErrors(nameof(Quantity));
+            if (value == null)
+            {
+                AddError(nameof(Quantity), "Поле не заполнено");
+            }
             if (value <= 0)
             {
                 AddError(nameof(Quantity), "Недопустимое значение");
