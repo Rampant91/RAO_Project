@@ -57,13 +57,13 @@ namespace Client_App.Long_Visual
                 Text = "Дата конца периода:",
                 [Grid.ColumnProperty] = 0,
             });
-            topPnl1.Children.Add(new DatePicker
+            topPnl1.Children.Add(new TextBox
             {
                 Height = 30,
                 Margin = Thickness.Parse("5,0,0,0"),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!DatePicker.SelectedDateProperty] = new Binding("Storage.EndPeriod", BindingMode.TwoWay),
+                [!TextBox.TextProperty] = new Binding("Storage.EndPeriod", BindingMode.TwoWay),
                 [Grid.ColumnProperty] = 2,
 
             });
