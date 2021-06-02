@@ -1715,14 +1715,14 @@ namespace Collections
 
         //StartPeriod
         [Form_Property("Начало")]
-        public DateTimeOffset StartPeriod
+        public string StartPeriod
         {
             get
             {
                 if (GetErrors(nameof(StartPeriod)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(StartPeriod));
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01.01.1921");
+                    var tmp = (string)_dataAccess.Get(nameof(StartPeriod));
+                    return tmp;
                 }
                 else
                 {
@@ -1739,7 +1739,7 @@ namespace Collections
                 OnPropertyChanged(nameof(StartPeriod));
             }
         }
-        private DateTimeOffset _StartPeriod_Not_Valid = DateTimeOffset.Now;
+        private string _StartPeriod_Not_Valid;
         private void StartPeriod_Validation()
         {
             ClearErrors(nameof(StartPeriod));
@@ -1754,14 +1754,14 @@ namespace Collections
 
         //EndPeriod
         [Form_Property("Конец")]
-        public DateTimeOffset EndPeriod
+        public string EndPeriod
         {
             get
             {
                 if (GetErrors(nameof(EndPeriod)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(EndPeriod));
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01.01.1921");
+                    var tmp = (string)_dataAccess.Get(nameof(EndPeriod));
+                    return tmp;
                 }
                 else
                 {
@@ -1778,10 +1778,11 @@ namespace Collections
                 OnPropertyChanged(nameof(EndPeriod));
             }
         }
-        private DateTimeOffset _EndPeriod_Not_Valid = DateTimeOffset.Now;
+        private string _EndPeriod_Not_Valid;
         private void EndPeriod_Validation()
         {
             ClearErrors(nameof(EndPeriod));
+            AddError(nameof(EndPeriod), "Не заполнено начало периода");
             if (_EndPeriod_Not_Valid.Equals(DateTimeOffset.MinValue))
                 AddError(nameof(EndPeriod), "Не заполнено начало периода");
             else

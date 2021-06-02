@@ -11,7 +11,7 @@ namespace DBRealization
 {
     public class DBModel : DbContext
     {
-        string _path{get;set;}
+        public string _path{get;set;}
         public DBModel(string Path) 
         {
             _path = Path;
@@ -129,6 +129,25 @@ namespace DBRealization
             this.reports.Include(x => x.Report_Collection).Load();
             this.reports.Include(x => x.Master).Load();
             this.report.Include(x => x.Rows11).Load();
+        }
+
+        public void UndoChanges()
+        {
+            foreach (var entry in this.ChangeTracker.Entries())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        entry.State = EntityState.Unchanged;
+                        break;
+                    case EntityState.Deleted:
+                        entry.Reload();
+                        break;
+                    case EntityState.Added:
+                        entry.State = EntityState.Detached;
+                        break;
+                }
+            }
         }
 
         public DbSet<Collections.DBObservable> coll_reports { get; set; }

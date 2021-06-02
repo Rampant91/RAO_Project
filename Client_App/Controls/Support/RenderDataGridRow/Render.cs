@@ -24,7 +24,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                         ctrl = Support.RenderDataGridRow.Main.GetControl(formT2,Name);
                         break;
                     case "1":
-                        ctrl = Support.RenderDataGridRow.Form1.GetControl(formT2);
+                        ctrl = Support.RenderDataGridRow.Form1.GetControl(formT2,Name);
                         break;
                     case "2":
                         ctrl = Support.RenderDataGridRow.Form2.GetControl(formT2);

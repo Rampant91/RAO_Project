@@ -100,6 +100,19 @@ namespace Client_App.ViewModels
 
         }
 
+        public void UpdateAll()
+        {
+            dbm = new DBRealization.DBModel(_DBPath);
+            var t = dbm.Database.EnsureCreated();
+
+            dbm.LoadAllTables();
+
+            Local_Reports = dbm.coll_reports.First();
+            dbm.SaveChanges();
+
+            Local_Reports.PropertyChanged += Local_ReportsChanged;
+        }
+
         void _AddSort(string param)
         {
             var type = param.Split('/')[0];
@@ -124,11 +137,8 @@ namespace Client_App.ViewModels
                 //}
                 var obj = dbm.coll_reports.Find(1).Reports_Collection[0];
                 obj.Report_Collection.Add(rt);
-                ObservableCollection<object> lst = new ObservableCollection<object>();
-                lst.Add(rt);
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param, DBPath, lst);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param, DBPath, rt,dbm);
                 await frm.ShowDialog<Models.Abstracts.Form>(desktop.MainWindow);
-                dbm.SaveChanges();
             }
         }
 
@@ -140,7 +150,9 @@ namespace Client_App.ViewModels
                 {
                     if (param.Count != 0)
                     {
-                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate("11", DBPath, param);
+                        var obj = param[0];
+                        var rep = (Report)obj;
+                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum, DBPath, rep,dbm);
                         await frm.ShowDialog(desktop.MainWindow);
                     }
                 }
