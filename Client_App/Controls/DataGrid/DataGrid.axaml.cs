@@ -12,7 +12,16 @@ using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid
 {
-
+    public enum ChooseMode
+    {
+        Cell=0,
+        Line
+    }
+    public enum MultilineMode
+    {
+        Multi=0,
+        Single
+    }
     public class DataGrid : UserControl
     {
         public static readonly DirectProperty<DataGrid, IEnumerable> ItemsProperty =
@@ -79,6 +88,33 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
+        public static readonly StyledProperty<ChooseMode> ChooseModeProperty =
+            AvaloniaProperty.Register<DataGrid, ChooseMode>(nameof(ChooseMode));
+
+        public ChooseMode ChooseMode
+        {
+            get { return GetValue(ChooseModeProperty); }
+            set { SetValue(ChooseModeProperty, value); }
+        }
+
+        public static readonly StyledProperty<MultilineMode> MultilineModeProperty =
+            AvaloniaProperty.Register<DataGrid, MultilineMode>(nameof(MultilineMode));
+
+        public MultilineMode MultilineMode
+        {
+            get { return GetValue(MultilineModeProperty); }
+            set { SetValue(MultilineModeProperty, value); }
+        }
+
+        public static readonly StyledProperty<Brush> ChooseColorProperty =
+            AvaloniaProperty.Register<DataGrid, Brush>(nameof(ChooseColor));
+
+        public Brush ChooseColor
+        {
+            get { return GetValue(ChooseColorProperty); }
+            set { SetValue(ChooseColorProperty, value); }
+        }
+
         public Panel Columns { get; set; }
         public StackPanel Rows { get; set; }
 
@@ -86,7 +122,7 @@ namespace Client_App.Controls.DataGrid
         {
             InitializeComponent();
 
-            ItemsProperty.Changed.Subscribe(new ItemsObserver(Rows, ItemsChanged));
+            //ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
             this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
             this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
             this.AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
@@ -172,6 +208,90 @@ namespace Client_App.Controls.DataGrid
         }
         IEnumerable<Control> FindSelectedControls()
         {
+            if (ChooseMode == Controls.DataGrid.ChooseMode.Line)
+            {
+                if (MultilineMode == Controls.DataGrid.MultilineMode.Single)
+                {
+                    foreach (var item in FindSelectedControls_Line_Single())
+                    {
+                        yield return item;
+                    }
+                }
+                if (MultilineMode == Controls.DataGrid.MultilineMode.Multi)
+                {
+                    foreach (var item in FindSelectedControls_Line_Multi())
+                    {
+                        yield return item;
+                    }
+                }
+            }
+            if (ChooseMode == Controls.DataGrid.ChooseMode.Cell)
+            {
+                if (MultilineMode == Controls.DataGrid.MultilineMode.Single)
+                {
+                    foreach (var item in FindSelectedControls_Cell_Single())
+                    {
+                        yield return item;
+                    }
+                }
+                if (MultilineMode == Controls.DataGrid.MultilineMode.Multi)
+                {
+                    foreach (var item in FindSelectedControls_Cell_Multi())
+                    {
+                        yield return item;
+                    }
+                }
+            }
+        }
+        IEnumerable<Control> FindSelectedControls_Cell_Single()
+        {
+            if (FirstControl != null && LastControl != null)
+            {
+                var tp11 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[0]);
+                var tp12 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[1]);
+                var tp21 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[0]);
+                var tp22 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[1]);
+
+                var stack = (StackPanel)LastControl.Parent.Parent;
+                foreach (Border it in stack.Children)
+                {
+                    var child = (Panel)it.Child;
+                    var tpl1 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[0]);
+                    var tpl2 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[1]);
+                    if (tpl1 <= System.Math.Max(tp11, tp21) && tpl1 >= System.Math.Min(tp11, tp21))
+                    {
+                        if (tpl2 <= System.Math.Max(tp12, tp22) && tpl2 >= System.Math.Min(tp12, tp22))
+                        {
+                            yield return child;
+                        }
+                    }
+                }
+            }
+        }
+        IEnumerable<Control> FindSelectedControls_Line_Single()
+        {
+            if (FirstControl != null && LastControl != null)
+            {
+                var tp11 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[0]);
+                var tp12 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[1]);
+                var tp21 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[0]);
+                var tp22 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[1]);
+
+                var stack = (StackPanel)LastControl.Parent.Parent;
+                foreach (Border it in stack.Children)
+                {
+                    var child = (Panel)it.Child;
+                    var tpl1 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[0]);
+                    var tpl2 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[1]);
+                    if (tpl1 <= System.Math.Max(tp11, tp21) && tpl1 >= System.Math.Min(tp11, tp21))
+                    {
+                        yield return child;
+                    }
+                }
+            }
+        }
+        IEnumerable<Control> FindSelectedControls_Cell_Multi()
+        {
             if (FirstControl != null && LastControl != null)
             {
                 var tp11 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[0]);
@@ -199,6 +319,32 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
+        IEnumerable<Control> FindSelectedControls_Line_Multi()
+        {
+            if (FirstControl != null && LastControl != null)
+            {
+                var tp11 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[0]);
+                var tp12 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[1]);
+                var tp21 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[0]);
+                var tp22 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[1]);
+
+                var list = Rows.Children;
+                foreach (Panel item in list)
+                {
+                    var stack = (StackPanel)item.Children[0];
+                    foreach (Border it in stack.Children)
+                    {
+                        var child = (Panel)it.Child;
+                        var tpl1 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[0]);
+                        var tpl2 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[1]);
+                        if (tpl1 <= System.Math.Max(tp11, tp21) && tpl1 >= System.Math.Min(tp11, tp21))
+                        {
+                            yield return child;
+                        }
+                    }
+                }
+            }
+        }
         IEnumerable FindSelectedItems()
         {
             foreach (Panel item in FindSelectedControls())
@@ -206,12 +352,47 @@ namespace Client_App.Controls.DataGrid
                 yield return item.DataContext;
             }
         }
+
         void RenderSelectedControls()
+        {
+            ClearElseControls();
+            if (ChooseMode == Controls.DataGrid.ChooseMode.Line)
+            {
+                RenderSelectedControls_Line();
+            }
+            if (ChooseMode == Controls.DataGrid.ChooseMode.Cell)
+            {
+                RenderSelectedControls_Cell();
+            }
+        }
+        void RenderSelectedControls_Cell()
         {
             ClearElseControls();
             foreach (Panel item in FindSelectedControls())
             {
-                item.Background = new SolidColorBrush(Color.FromArgb(150, 255, 0, 0));
+                if (ChooseColor != null)
+                {
+                    item.Background = ChooseColor;
+                }
+                else
+                {
+                    item.Background = new SolidColorBrush(Color.FromArgb(60, 120, 216, 250));
+                }
+            }
+        }
+        void RenderSelectedControls_Line()
+        {
+            ClearElseControls();
+            foreach (Panel item in FindSelectedControls())
+            {
+                if (ChooseColor != null)
+                {
+                    item.Background = ChooseColor;
+                }
+                else
+                {
+                    item.Background = new SolidColorBrush(Color.FromArgb(60, 120, 216, 250));
+                }
             }
         }
 
@@ -234,7 +415,6 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
-
         void ClearAllControls()
         {
             var list = Rows.Children;
@@ -246,18 +426,6 @@ namespace Client_App.Controls.DataGrid
                     var child = (Panel)it.Child;
                     child.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 }
-            }
-        }
-        public void PanelPointerDown(object sender, PointerPressedEventArgs args)
-        {
-            var mouse = args.GetCurrentPoint((DataGrid)sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
-            {
-                IsMouseDown = true;
-                ClearAllControls();
-
-                LastControl = null;
-                FirstControl = FindPressedControl(mouse);
             }
         }
 
@@ -282,6 +450,18 @@ namespace Client_App.Controls.DataGrid
                 }
             }
             return null;
+        }
+        public void PanelPointerDown(object sender, PointerPressedEventArgs args)
+        {
+            var mouse = args.GetCurrentPoint((DataGrid)sender);
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+            {
+                IsMouseDown = true;
+                ClearAllControls();
+
+                LastControl = FindPressedControl(mouse);
+                FirstControl = FindPressedControl(mouse);
+            }
         }
         public void PanelPointerMoved(object sender, PointerEventArgs args)
         {

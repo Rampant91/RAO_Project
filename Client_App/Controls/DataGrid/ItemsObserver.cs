@@ -16,11 +16,11 @@ namespace Client_App.Controls.DataGrid
 {
     public class ItemsObserver : IObserver<AvaloniaPropertyChangedEventArgs<IEnumerable>>
     {
-        public Panel _ctrl { get; set; }
+        //public StackPanel _ctrl { get; set; }
         private PropertyChangedEventHandler Handler{ get; set; }
-        public ItemsObserver(Panel ctrl,PropertyChangedEventHandler handler)
+        public ItemsObserver(PropertyChangedEventHandler handler)
         {
-            this._ctrl = ctrl;
+            //this._ctrl = ctrl;
             this.Handler = handler;
         }
         public void OnCompleted()
@@ -36,11 +36,11 @@ namespace Client_App.Controls.DataGrid
         {
             if(obj.NewValue.Value!=null)
             {
-                //var val = obj.NewValue.Value;
-                //foreach (var item in val)
-                //{
-                //    ((Report)item).PropertyChanged += Handler;
-                //}
+                ////var val = obj.NewValue.Value;
+                ////foreach (var item in val)
+                ////{
+                ////    ((Report)item).PropertyChanged += Handler;
+                ////}
                 Handler("ALL",null);
             }
         }

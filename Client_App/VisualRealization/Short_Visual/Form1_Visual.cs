@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections;
+using Avalonia.Media;
 
 namespace Client_App.Short_Visual
 {
@@ -37,6 +38,8 @@ namespace Client_App.Short_Visual
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = Controls.DataGrid.MultilineMode.Single,
+                ChooseMode=Controls.DataGrid.ChooseMode.Line
             };
 
             grd.Type = "0/0";
@@ -81,10 +84,12 @@ namespace Client_App.Short_Visual
         {
             Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
             {
-                Type= "0/1",
-                Name= "Form1AllDataGrid_",
+                Type = "0/1",
+                Name = "Form1AllDataGrid_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = Controls.DataGrid.MultilineMode.Single,
+                ChooseMode = Controls.DataGrid.ChooseMode.Line
             };
 
             Binding b = new Binding();
