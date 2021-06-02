@@ -24,12 +24,12 @@ namespace Client_App.Views
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
+            
             var cntx=this.DataContext as ViewModels.MainWindowVM;
             if(cntx!=null)
             {
                 cntx.dbm.SaveChanges();
             }
-
         }
         private void Init()
         {

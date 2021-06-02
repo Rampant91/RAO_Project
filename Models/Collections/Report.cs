@@ -1534,51 +1534,12 @@ namespace Collections
         {
             get
             {
-                if (Rows10.Count > 0) { return "10"; }
-                if (Rows11.Count > 0) { return "11"; }
-                if (Rows12.Count > 0) { return "12"; }
-                if (Rows13.Count > 0) { return "13"; }
-                if (Rows14.Count > 0) { return "14"; }
-                if (Rows15.Count > 0) { return "15"; }
-                if (Rows16.Count > 0) { return "16"; }
-                if (Rows17.Count > 0) { return "17"; }
-                if (Rows18.Count > 0) { return "18"; }
-                if (Rows19.Count > 0) { return "19"; }
-
-                if (Rows20.Count > 0) { return "20"; }
-                if (Rows21.Count > 0) { return "21"; }
-                if (Rows22.Count > 0) { return "22"; }
-                if (Rows23.Count > 0) { return "23"; }
-                if (Rows24.Count > 0) { return "24"; }
-                if (Rows25.Count > 0) { return "25"; }
-                if (Rows26.Count > 0) { return "26"; }
-                if (Rows27.Count > 0) { return "27"; }
-                if (Rows28.Count > 0) { return "28"; }
-                if (Rows29.Count > 0) { return "29"; }
-                if (Rows210.Count > 0) { return "210"; }
-                if (Rows211.Count > 0) { return "211"; }
-                if (Rows212.Count > 0) { return "212"; }
-
-                if (Rows30.Count > 0) { return "30"; }
-                if (Rows31.Count > 0) { return "31"; }
-                if (Rows31_1.Count > 0) { return "31_1"; }
-                if (Rows32.Count > 0) { return "32"; }
-                if (Rows32_1.Count > 0) { return "32_1"; }
-                if (Rows32_2.Count > 0) { return "32_2"; }
-                if (Rows32_3.Count > 0) { return "32_3"; }
-
-                if (Rows40.Count > 0) { return "40"; }
-                if (Rows41.Count > 0) { return "41"; }
-
-                if (Rows50.Count > 0) { return "50"; }
-                if (Rows51.Count > 0) { return "51"; }
-                if (Rows52.Count > 0) { return "52"; }
-                if (Rows53.Count > 0) { return "53"; }
-                if (Rows54.Count > 0) { return "54"; }
-                if (Rows55.Count > 0) { return "55"; }
-                if (Rows56.Count > 0) { return "56"; }
-                if (Rows57.Count > 0) { return "57"; }
-                return "0";
+                return (string)_dataAccess.Get(nameof(FormNum));
+            }
+            set
+            {
+                _dataAccess.Set(nameof(FormNum), value);
+                OnPropertyChanged(nameof(FormNum));
             }
         }
 
