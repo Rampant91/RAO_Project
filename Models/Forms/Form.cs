@@ -103,6 +103,7 @@ namespace Models.Abstracts
         protected readonly Dictionary<string, List<string>> _errorsByPropertyName = new Dictionary<string, List<string>>();
         public bool HasErrors => _errorsByPropertyName.Any();
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
         public IEnumerable GetErrors(string propertyName)
         {
             var tmp = _errorsByPropertyName.ContainsKey(propertyName) ?
@@ -123,7 +124,7 @@ namespace Models.Abstracts
         }
         protected void OnErrorsChanged(string propertyName)
         {
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+            _ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
         protected void ClearErrors(string propertyName)
         {
