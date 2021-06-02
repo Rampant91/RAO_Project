@@ -10,6 +10,9 @@
         public const string doubleNotNullDeclaration = " float(53) not null, ";
         public const string boolNotNullDeclaration = " boolean not null, ";
         public const string floatNotNullDeclaration = " float(24) not null, ";
+        public const string shortNullDeclaration = " smallint null, ";
+        public const string intNullDeclaration = " int null, ";
+        public const string doubleNullDeclaration = " float(53) null, ";
         //Const_Params
 
         //Список всех форм
@@ -27,7 +30,7 @@
                 "CorrectionNumber" + shortNotNullDeclaration +
                 "OperationCode" + strNotNullDeclaration +
                 "OperationDate" + dateNotNullDeclaration +
-                "DocumentVid" + shortNotNullDeclaration +
+                "DocumentVid" + shortNullDeclaration +
                 "DocumentNumber" + strNotNullDeclaration +
                 "DocumentNumberRecoded" + strNotNullDeclaration +
                 "DocumentDateNote" + strNotNullDeclaration +
@@ -272,10 +275,10 @@
             return
                 Form1() + "," +
             "SpecificActivity" + strNotNullDeclaration +
-            "VolumeOutOfPack" + doubleNotNullDeclaration +
+            "VolumeOutOfPack" + strNotNullDeclaration +
             "PackFactoryNumber" + strNotNullDeclaration +
-            "MassOutOfPack" + doubleNotNullDeclaration +
-            "FormingDate" + dateNotNullDeclaration +
+            "MassOutOfPack" + strNotNullDeclaration +
+            "FormingDate" + strNotNullDeclaration +
             "CodeRAO" + strNotNullDeclaration +
             "AlphaActivity" + strNotNullDeclaration +
             "BetaGammaActivity" + strNotNullDeclaration +
@@ -292,7 +295,7 @@
             "Mass" + strNotNullDeclaration +
             "PassportNumber" + strNotNullDeclaration +
             "Radionuclids" + strNotNullDeclaration +
-            "Quantity" + intNotNullDeclaration +
+            "Quantity" + intNullDeclaration +
             "ProviderOrRecieverOKPO" + strNotNullDeclaration +
             "ProviderOrRecieverOKPONote" + strNotNullDeclaration +
             "TransporterOKPO" + strNotNullDeclaration +
@@ -312,10 +315,10 @@
                 Form1() + "," +
             "Volume20" + doubleNotNullDeclaration +
             "Volume6" + doubleNotNullDeclaration +
-            "SaltConcentration" + doubleNotNullDeclaration +
+            "SaltConcentration" + doubleNullDeclaration +
             "SpecificActivity" + strNotNullDeclaration +
-            "Mass21" + doubleNotNullDeclaration +
-            "Mass7" + doubleNotNullDeclaration +
+            "Mass21" + strNotNullDeclaration +
+            "Mass7" + strNotNullDeclaration +
             "IndividualNumberZHRO" + strNotNullDeclaration +
             "IndividualNumberZHROrecoded" + strNotNullDeclaration +
             "CodeRAO" + strNotNullDeclaration +
