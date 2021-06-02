@@ -138,15 +138,12 @@ namespace Models
                 return;
             }
             if (value.Equals("прим.")) return;
-            foreach (var item in OKSM)
-            {
-                if (value.Equals(item)) return;
-            }
+            if (OKSM.Contains(value)) return;
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(CreatorOKPO), "Недопустимое значение");
             else
             {
-                var mask = new Regex("[0123456789_]*");
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value))
                     AddError(nameof(CreatorOKPO), "Недопустимое значение");
             }

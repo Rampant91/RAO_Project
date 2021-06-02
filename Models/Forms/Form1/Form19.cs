@@ -158,7 +158,7 @@ namespace Models
         }
         //Activity property
 
-        protected override void OperationCode_Validation(short arg)//OK
+        protected override void OperationCode_Validation(short? arg)//OK
         {
             ClearErrors(nameof(OperationCode));
             string value1 = arg.ToString();

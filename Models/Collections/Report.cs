@@ -1722,7 +1722,7 @@ namespace Collections
                 if (GetErrors(nameof(StartPeriod)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(StartPeriod));
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01.01.1921");
                 }
                 else
                 {
@@ -1761,7 +1761,7 @@ namespace Collections
                 if (GetErrors(nameof(EndPeriod)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(EndPeriod));
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
+                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01.01.1921");
                 }
                 else
                 {
