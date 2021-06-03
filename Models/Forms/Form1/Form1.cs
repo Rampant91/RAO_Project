@@ -1,5 +1,7 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace Models.Abstracts
 {
@@ -8,318 +10,297 @@ namespace Models.Abstracts
         [Attributes.Form_Property("Форма")]
         public Form1() : base()
         {
+            Validate_base();
+        }
 
+        protected void Validate_base()
+        {
+            OperationCode_Validation(OperationCode);
+            OperationDate_Validation(OperationDate);
+            DocumentNumber_Validation(DocumentNumber);
+            DocumentVid_Validation(DocumentVid);
+            DocumentNumberRecoded_Validation(DocumentNumberRecoded);
+            DocumentDate_Validation(DocumentDate);
+            DocumentDateNote_Validation(DocumentDateNote);
         }
 
         //NumberInOrder property
         [Attributes.Form_Property("№ п/п")]
-        public int NumberInOrder
+        public IDataAccess<int> NumberInOrder
         {
             get
             {
-                if (GetErrors(nameof(NumberInOrder)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(NumberInOrder));
-                    return tmp != null ? (int)tmp : -1;
-                }
-                else
-                {
-                    return _NumberInOrder_Not_Valid;
-                }
+                    return _dataAccess.Get<int>(nameof(NumberInOrder));
             }
             set
             {
-                _NumberInOrder_Not_Valid = value;
-                if (GetErrors(nameof(NumberInOrder)) == null)
-                {
-                    _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(NumberInOrder), value);
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        private int _NumberInOrder_Not_Valid = -1;
         //private void NumberInOrder_Validation()
         //{
-        //    ClearErrors(nameof(NumberInOrder));
+        //    value.ClearErrors();
         //}
         //NumberInOrder property
 
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
-        public byte CorrectionNumber
+        public IDataAccess<byte> CorrectionNumber
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(CorrectionNumber));
-                    return tmp != null ? (byte)tmp : (byte)0;
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
+                    return _dataAccess.Get<byte>(nameof(CorrectionNumber));
             }
             set
             {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) == null)
-                {
-                    _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(CorrectionNumber), value);
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
 
-        private byte _CorrectionNumber_Not_Valid = 255;
         //private void CorrectionNumber_Validation()
         //{
-        //    ClearErrors(nameof(CorrectionNumber));
+        //    value.ClearErrors();
         //}
         //CorrectionNumber property
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public short OperationCode
+        public IDataAccess<short?> OperationCode
         {
             get
             {
-                if (GetErrors(nameof(OperationCode)) == null)
-                {
-                    string tmp = (string)_dataAccess.Get(nameof(OperationCode));
-                    return tmp != null ? short.Parse(tmp) : (short)-1;
-                }
-                else
-                {
-                    return _OperationCode_Not_Valid;
-                }
+                    return _dataAccess.Get<short?>(nameof(OperationCode));
             }
             set
             {
-                var tmp1 = value.ToString();
-                if (tmp1.Length == 1) tmp1 = "0" + tmp1;
-
-                OperationCode_Validation(tmp1);
-                //_OperationCode_Not_Valid = value;
-
-                if (GetErrors(nameof(OperationCode)) == null)
-                {
-                    var tmp = _OperationCode_Not_Valid.ToString();
-                    if (tmp.Length == 1) tmp = "0" + tmp;
-                    _dataAccess.Set(nameof(OperationCode), tmp);
-                }
+                    _dataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        protected virtual void OperationCode_Validation(string arg) { }
+        protected virtual void OperationCode_Validation(IDataAccess<short?> arg) { }
 
-        protected short _OperationCode_Not_Valid = -1;
         //OprationCode property
-
+        
         //OperationDate property
         [Attributes.Form_Property("Дата операции")]
-        public DateTimeOffset OperationDate
+        public IDataAccess<string> OperationDate
         {
             get
             {
-                if (GetErrors(nameof(OperationDate)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(OperationDate));
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.Parse("01/01/1921");
-                }
-                else
-                {
-                    return _OperationDate_Not_Valid;
-                }
+                return _dataAccess.Get<string>(nameof(OperationDate));
             }
             set
             {
-                _OperationDate_Not_Valid = value;
-                if (GetErrors(nameof(OperationDate)) == null)
-                {
-                    _dataAccess.Set(nameof(OperationDate), _OperationDate_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(OperationDate), value);
                 OnPropertyChanged(nameof(OperationDate));
             }
         }
 
-        private DateTimeOffset _OperationDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
-        private void OperationDate_Validation()
+        protected virtual void OperationDate_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(OperationDate));
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError( "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError( "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError( "Недопустимое значение");
+                return;
+            }
         }
         //OperationDate property
 
         //DocumentVid property
         [Attributes.Form_Property("Вид документа")]
-        public byte DocumentVid
+        public IDataAccess<byte?> DocumentVid
         {
             get
             {
-                if (GetErrors(nameof(DocumentVid)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(DocumentVid));//Ok
-                    return tmp != null ? (byte)tmp : (byte)0;
-                }
-                else
-                {
-                    return _DocumentVid_Not_Valid;
-                }
+                    return _dataAccess.Get<byte?>(nameof(DocumentVid));//Ok
             }
             set
             {
-                DocumentVid_Validation(value);
-
-                if (GetErrors(nameof(DocumentVid)) == null)
-                {
-                    _dataAccess.Set(nameof(DocumentVid), _DocumentVid_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(DocumentVid), value);
                 OnPropertyChanged(nameof(DocumentVid));
             }
         }
 
-        private byte _DocumentVid_Not_Valid = 255;
-        protected virtual void DocumentVid_Validation(byte value)//Ok
+        protected virtual void DocumentVid_Validation(IDataAccess<byte?> value)// TO DO
         {
-            ClearErrors(nameof(DocumentVid));
+            value.ClearErrors();
+            if (value == null)
+            {
+                value.AddError( "Недопустимое значение");
+                return;
+            }
+            List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>
+            {
+                new Tuple<byte, string>(0,""),
+                new Tuple<byte, string>(1,""),
+                new Tuple<byte, string>(2,""),
+                new Tuple<byte, string>(3,""),
+                new Tuple<byte, string>(4,""),
+                new Tuple<byte, string>(5,""),
+                new Tuple<byte, string>(6,""),
+                new Tuple<byte, string>(7,""),
+                new Tuple<byte, string>(8,""),
+                new Tuple<byte, string>(9,""),
+                new Tuple<byte, string>(10,""),
+                new Tuple<byte, string>(11,""),
+                new Tuple<byte, string>(12,""),
+                new Tuple<byte, string>(13,""),
+                new Tuple<byte, string>(14,""),
+                new Tuple<byte, string>(15,""),
+                new Tuple<byte, string>(19,"")
+            };   //HERE BINDS SPRAVOCHNICK
+            foreach (var item in spr)
+            {
+                if (item.Item1 == value.Value) return;
+            }
+            value.AddError( "Недопустимое значение");
         }
         //DocumentVid property
 
         //DocumentNumber property
         [Attributes.Form_Property("Номер документа")]
-        public string DocumentNumber
+        public IDataAccess<string> DocumentNumber
         {
             get
             {
-                if (GetErrors(nameof(DocumentNumber)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(DocumentNumber));//Ok
-                    return tmp != null ? (string)tmp : null;
-                }
-                else
-                {
-                    return _DocumentNumber_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(DocumentNumber));//Ok
             }
             set
             {
-                DocumentNumber_Validation(value);
-
-                if (GetErrors(nameof(DocumentNumber)) == null)
-                {
-                    _dataAccess.Set(nameof(DocumentNumber), _DocumentNumber_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(DocumentNumber), value);
                 OnPropertyChanged(nameof(DocumentNumber));
             }
         }
 
-        private string _DocumentNumber_Not_Valid = "";
-        private void DocumentNumber_Validation(string value)//Ready
-        {
-            ClearErrors(nameof(DocumentNumber));
-            if ((value == null) || value=="")//ok
-            {
-                AddError(nameof(DocumentNumber), "Поле не заполнено");
-                return;
-            }
-        }
+        protected virtual void DocumentNumber_Validation(IDataAccess<string> value)//Ready
+        { }
         //DocumentNumber property
 
         //DocumentNumberRecoded property
-        public string DocumentNumberRecoded
+        public IDataAccess<string> DocumentNumberRecoded
         {
             get
             {
-                if (GetErrors(nameof(DocumentNumberRecoded)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(DocumentNumberRecoded));//ok
-                    return tmp != null ? (string)tmp : null;
-                }
-                else
-                {
-                    return _DocumentNumberRecoded_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(DocumentNumberRecoded));//ok
             }
             set
             {
-                _DocumentNumberRecoded_Not_Valid = value;
-                if (GetErrors(nameof(DocumentNumberRecoded)) == null)
-                {
-                    _dataAccess.Set(nameof(DocumentNumberRecoded), _DocumentNumberRecoded_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(DocumentNumberRecoded), value);
                 OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
         }
 
-        private string _DocumentNumberRecoded_Not_Valid = "";
-        //private void DocumentNumberRecoded_Validation(string value)//Ready
-        //{
-        //    ClearErrors(nameof(DocumentNumberRecoded));
-        //}
+        private void DocumentNumberRecoded_Validation(IDataAccess<string> value)//Ready
+        {
+            value.ClearErrors();
+        }
         //DocumentNumberRecoded property
 
         //DocumentDate property
         [Attributes.Form_Property("Дата документа")]
-        public DateTimeOffset DocumentDate
+        public IDataAccess<string> DocumentDate
         {
             get
             {
-                if (GetErrors(nameof(DocumentDate)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(DocumentDate));//OK
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
-                }
-                else
-                {
-                    return _DocumentDate_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(DocumentDate));//OK
             }
             set
             {
-                _DocumentDate_Not_Valid = value;
-                if (GetErrors(nameof(DocumentDate)) == null)
-                {
-                    _dataAccess.Set(nameof(DocumentDate), _DocumentDate_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(DocumentDate), value);
                 OnPropertyChanged(nameof(DocumentDate));
             }
         }
         //if change this change validation
-        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
+
+        protected List<string> OKSM = new List<string>
+            {
+                "АФГАНИСТАН","АЛБАНИЯ","АНТАРКТИДА","АЛЖИР","АМЕРИКАНСКОЕ САМОА","АНДОРРА","АНГОЛА","АНТИГУА И БАРБУДА","АЗЕРБАЙДЖАН","АРГЕНТИНА","АВСТРАЛИЯ","АВСТРИЯ","БАГАМЫ","БАХРЕЙН",
+                "БАНГЛАДЕШ","АРМЕНИЯ","БАРБАДОС","БЕЛЬГИЯ","БЕРМУДЫ","БУТАН","БОЛИВИЯ, МНОГОНАЦИОНАЛЬНОЕ ГОСУДАРСТВО","БОСНИЯ И ГЕРЦЕГОВИНА","БОТСВАНА","ОСТРОВ БУВЕ","БРАЗИЛИЯ","БЕЛИЗ",
+                "БРИТАНСКАЯ ТЕРРИТОРИЯ В ИНДИЙСКОМ ОКЕАНЕ","СОЛОМОНОВЫ ОСТРОВА","ВИРГИНСКИЕ ОСТРОВА (БРИТАНСКИЕ)","БРУНЕЙ-ДАРУССАЛАМ","БОЛГАРИЯ","МЬЯНМА","БУРУНДИ","БЕЛАРУСЬ","КАМБОДЖА",
+                "КАМЕРУН","КАНАДА","КАБО-ВЕРДЕ","ОСТРОВА КАЙМАН","ЦЕНТРАЛЬНО-АФРИКАНСКАЯ РЕСПУБЛИКА","ШРИ-ЛАНКА","ЧАД","ЧИЛИ","КИТАЙ","ТАЙВАНЬ (КИТАЙ)","ОСТРОВ РОЖДЕСТВА","КОКОСОВЫЕ (КИЛИНГ) ОСТРОВА",
+                "КОЛУМБИЯ","КОМОРЫ","МАЙОТТА","КОНГО","КОНГО, ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","ОСТРОВА КУКА","КОСТА-РИКА","ХОРВАТИЯ","КУБА","КИПР","ЧЕХИЯ","БЕНИН","ДАНИЯ","ДОМИНИКА","ДОМИНИКАНСКАЯ РЕСПУБЛИКА",
+                "ЭКВАДОР","ЭЛЬ-САЛЬВАДОР","ЭКВАТОРИАЛЬНАЯ ГВИНЕЯ","ЭФИОПИЯ","ЭРИТРЕЯ","ЭСТОНИЯ","ФАРЕРСКИЕ ОСТРОВА","ФОЛКЛЕНДСКИЕ ОСТРОВА (МАЛЬВИНСКИЕ)","ЮЖНАЯ ДЖОРДЖИЯ И ЮЖНЫЕ САНДВИЧЕВЫ ОСТРОВА",
+                "ФИНЛЯНДИЯ","ЭЛАНДСКИЕ ОСТРОВА","ФРАНЦИЯ","ФРАНЦУЗСКАЯ ГВИАНА","БОНЭЙР, СИНТ-ЭСТАТИУС И САБА","НОВАЯ КАЛЕДОНИЯ","ВАНУАТУ","НОВАЯ ЗЕЛАНДИЯ","НИКАРАГУА","НИГЕР","ФИДЖИ",
+                "ФРАНЦУЗСКАЯ ПОЛИНЕЗИЯ","ФРАНЦУЗСКИЕ ЮЖНЫЕ ТЕРРИТОРИИ","ДЖИБУТИ","ГАБОН","ГРУЗИЯ","ГАМБИЯ","ПАЛЕСТИНА, ГОСУДАРСТВО","ГЕРМАНИЯ","ГАНА","ГИБРАЛТАР","КИРИБАТИ","МАЛИ","МАЛЬТА",
+                "ГРЕЦИЯ","ГРЕНЛАНДИЯ","ГРЕНАДА","ГВАДЕЛУПА","ГУАМ","ГВАТЕМАЛА","ГВИНЕЯ","ГАЙАНА","ГАИТИ","ОСТРОВ ХЕРД И ОСТРОВА МАКДОНАЛЬД","ПАПСКИЙ ПРЕСТОЛ (ГОСУДАРСТВО - ГОРОД ВАТИКАН)",
+                "ГОНДУРАС","ГОНКОНГ","ВЕНГРИЯ","ИСЛАНДИЯ","ИНДИЯ","ИНДОНЕЗИЯ","ИРАН (ИСЛАМСКАЯ РЕСПУБЛИКА)","ИРАК","ИРЛАНДИЯ","ИЗРАИЛЬ","ИТАЛИЯ","КОТ Д'ИВУАР","ЯМАЙКА","ЯПОНИЯ","МАЛЬДИВЫ",
+                "КАЗАХСТАН","ИОРДАНИЯ","КЕНИЯ","КОРЕЯ, НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","КОРЕЯ, РЕСПУБЛИКА","КУВЕЙТ","КИРГИЗИЯ","НИГЕРИЯ","НИУЭ","ОСТРОВ НОРФОЛК","НОРВЕГИЯ","СЕВЕРНЫЕ МАРИАНСКИЕ ОСТРОВА",
+                "ЛАОССКАЯ НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","ЛИВАН","ЛЕСОТО","ЛАТВИЯ","ЛИБЕРИЯ","ЛИВИЯ","ЛИХТЕНШТЕЙН","ЛИТВА","ЛЮКСЕМБУРГ","МАКАО","МАДАГАСКАР","МАЛАВИ","МАЛАЙЗИЯ",
+                "МАРТИНИКА","МАВРИТАНИЯ","МАВРИКИЙ","МЕКСИКА","МОНАКО","МОНГОЛИЯ","МОЛДОВА, РЕСПУБЛИКА","ЧЕРНОГОРИЯ","МОНТСЕРРАТ","МАРОККО","МОЗАМБИК","ОМАН","НАМИБИЯ","НАУРУ","НЕПАЛ",
+                "АРУБА","СЕН-МАРТЕН (нидерландская часть)","МАЛЫЕ ТИХООКЕАНСКИЕ ОТДАЛЕННЫЕ ОСТРОВА СОЕДИНЕННЫХ ШТАТОВ","МИКРОНЕЗИЯ, ФЕДЕРАТИВНЫЕ ШТАТЫ","МАРШАЛЛОВЫ ОСТРОВА","КЮРАСАО",
+                "ПАЛАУ","ПАКИСТАН","ПАНАМА","ПАПУА-НОВАЯ ГВИНЕЯ","ПАРАГВАЙ","ПЕРУ","ФИЛИППИНЫ","ПИТКЕРН","ПОЛЬША","ПОРТУГАЛИЯ","ГВИНЕЯ-БИСАУ","ТИМОР-ЛЕСТЕ","ШВЕЦИЯ","ШВЕЙЦАРИЯ","НИДЕРЛАНДЫ",
+                "ПУЭРТО-РИКО","КАТАР","РЕЮНЬОН","РУМЫНИЯ","РОССИЯ","РУАНДА","СЕН-БАРТЕЛЕМИ","СВЯТАЯ ЕЛЕНА, ОСТРОВ ВОЗНЕСЕНИЯ, ТРИСТАН-ДА-КУНЬЯ","СЕНТ-КИТС И НЕВИС","АНГИЛЬЯ","СЕНТ-ЛЮСИЯ",
+                "СЕН-МАРТЕН (французская часть)","СЕН-ПЬЕР И МИКЕЛОН","СЕНТ-ВИНСЕНТ И ГРЕНАДИНЫ","САН-МАРИНО","САН-ТОМЕ И ПРИНСИПИ","САУДОВСКАЯ АРАВИЯ","СЕНЕГАЛ","СЕРБИЯ","СЕЙШЕЛЫ","ЮЖНЫЙ СУДАН",
+                "СЬЕРРА-ЛЕОНЕ","СИНГАПУР","СЛОВАКИЯ","ВЬЕТНАМ","СЛОВЕНИЯ","СОМАЛИ","ЮЖНАЯ АФРИКА","ЗИМБАБВЕ","ИСПАНИЯ","ЗАПАДНАЯ САХАРА","СУДАН","СУРИНАМ","ШПИЦБЕРГЕН И ЯН МАЙЕН","ЭСВАТИНИ",
+                "СИРИЙСКАЯ АРАБСКАЯ РЕСПУБЛИКА","ТАДЖИКИСТАН","ТАИЛАНД","ТОГО","ТОКЕЛАУ","ТОНГА","ТРИНИДАД И ТОБАГО","ОБЪЕДИНЕННЫЕ АРАБСКИЕ ЭМИРАТЫ","ТУНИС","ТУРЦИЯ","ТУРКМЕНИСТАН","ОСТРОВА ТЕРКС И КАЙКОС",
+                "ТУВАЛУ","УГАНДА","УКРАИНА","СЕВЕРНАЯ МАКЕДОНИЯ","ЕГИПЕТ","СОЕДИНЕННОЕ КОРОЛЕВСТВО","ГЕРНСИ","ДЖЕРСИ","ОСТРОВ МЭН","ТАНЗАНИЯ, ОБЪЕДИНЕННАЯ РЕСПУБЛИКА","СОЕДИНЕННЫЕ ШТАТЫ",
+                "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН","ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН","ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ"
+            };
+
+        protected virtual void DocumentDate_Validation(IDataAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value == null) || value.Equals(""))
+            {
+                value.AddError( "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError( "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError( "Недопустимое значение");
+                return;
+            }
+            bool ab = (OperationCode.Value >= 11) && (OperationCode.Value <= 18);
+            bool b = (OperationCode.Value >= 41) && (OperationCode.Value <= 49);
+            bool c = (OperationCode.Value >= 51) && (OperationCode.Value <= 59);
+            bool d = (OperationCode.Value == 65) || (OperationCode.Value == 68);
+            if (ab || b || c || d)
+                if (!value.Equals(OperationDate))
+                    value.AddError( "Заполните примечание");
+        }
         //DocumentDate property
 
         //DocumentDateNote property
         [Attributes.Form_Property("Дата документа")]
-        public string DocumentDateNote
+        public IDataAccess<string> DocumentDateNote
         {
             get
             {
-                if (GetErrors(nameof(DocumentDateNote)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(DocumentDateNote));
-                    return tmp != null ? (string)tmp : null;
-                }
-                else
-                {
-                    return _DocumentDateNote_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(DocumentDateNote));
             }
             set
             {
-                _DocumentDateNote_Not_Valid = value;
-                if (GetErrors(nameof(DocumentDateNote)) == null)
-                {
-                    _dataAccess.Set(nameof(DocumentDateNote), _DocumentDateNote_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(DocumentDateNote), value);
                 OnPropertyChanged(nameof(DocumentDateNote));
             }
         }
         //if change this change validation
-        private string _DocumentDateNote_Not_Valid = "-";
 
-        private void DocumentDateNote_Validation(string value)
+        private void DocumentDateNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(DocumentDate));
+            value.ClearErrors();
         }
         //DocumentDateNote property
     }

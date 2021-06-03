@@ -39,7 +39,7 @@ namespace Models
                 _PermissionNumber_Not_Valid = value;
                 if (GetErrors(nameof(PermissionNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionNumber), _PermissionNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionNumber), value);
                 }
                 OnPropertyChanged(nameof(PermissionNumber));
             }
@@ -72,7 +72,7 @@ namespace Models
                 _PermissionIssueDate_Not_Valid = value;
                 if (GetErrors(nameof(PermissionIssueDate)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionIssueDate), _PermissionIssueDate_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionIssueDate), value);
                 }
                 OnPropertyChanged(nameof(PermissionIssueDate));
             }
@@ -105,7 +105,7 @@ namespace Models
                 _PermissionDocumentName_Not_Valid = value;
                 if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionDocumentName), _PermissionDocumentName_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionDocumentName), value);
                 }
                 OnPropertyChanged(nameof(PermissionDocumentName));
             }
@@ -138,7 +138,7 @@ namespace Models
                 _ValidBegin_Not_Valid = value;
                 if (GetErrors(nameof(ValidBegin)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidBegin), _ValidBegin_Not_Valid);
+                    _dataAccess.Set(nameof(ValidBegin), value);
                 }
                 OnPropertyChanged(nameof(ValidBegin));
             }
@@ -171,7 +171,7 @@ namespace Models
                 _ValidThru_Not_Valid = value;
                 if (GetErrors(nameof(ValidThru)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidThru), _ValidThru_Not_Valid);
+                    _dataAccess.Set(nameof(ValidThru), value);
                 }
                 OnPropertyChanged(nameof(ValidThru));
             }
@@ -203,7 +203,7 @@ namespace Models
                 _RadionuclidNameNote_Not_Valid = value;
                 if (GetErrors(nameof(RadionuclidNameNote)) == null)
                 {
-                    _dataAccess.Set(nameof(RadionuclidNameNote), _RadionuclidNameNote_Not_Valid);
+                    _dataAccess.Set(nameof(RadionuclidNameNote), value);
                 }
                 OnPropertyChanged(nameof(RadionuclidNameNote));
             }
@@ -236,7 +236,7 @@ namespace Models
                 _AllowedWasteValue_Not_Valid = value;
                 if (GetErrors(nameof(AllowedWasteValue)) == null)
                 {
-                    _dataAccess.Set(nameof(AllowedWasteValue), _AllowedWasteValue_Not_Valid);
+                    _dataAccess.Set(nameof(AllowedWasteValue), value);
                 }
                 OnPropertyChanged(nameof(AllowedWasteValue));
             }
@@ -268,7 +268,7 @@ namespace Models
                 _AllowedWasteValueNote_Not_Valid = value;
                 if (GetErrors(nameof(AllowedWasteValueNote)) == null)
                 {
-                    _dataAccess.Set(nameof(AllowedWasteValueNote), _AllowedWasteValueNote_Not_Valid);
+                    _dataAccess.Set(nameof(AllowedWasteValueNote), value);
                 }
                 OnPropertyChanged(nameof(AllowedWasteValueNote));
             }
@@ -301,7 +301,7 @@ namespace Models
                 _FactedWasteValue_Not_Valid = value;
                 if (GetErrors(nameof(FactedWasteValue)) == null)
                 {
-                    _dataAccess.Set(nameof(FactedWasteValue), _FactedWasteValue_Not_Valid);
+                    _dataAccess.Set(nameof(FactedWasteValue), value);
                 }
                 OnPropertyChanged(nameof(FactedWasteValue));
             }
@@ -333,7 +333,7 @@ namespace Models
                 _FactedWasteValueNote_Not_Valid = value;
                 if (GetErrors(nameof(FactedWasteValueNote)) == null)
                 {
-                    _dataAccess.Set(nameof(FactedWasteValueNote), _FactedWasteValueNote_Not_Valid);
+                    _dataAccess.Set(nameof(FactedWasteValueNote), value);
                 }
                 OnPropertyChanged(nameof(FactedWasteValueNote));
             }
@@ -366,7 +366,7 @@ namespace Models
                 _WasteOutbreakPreviousYear_Not_Valid = value;
                 if (GetErrors(nameof(WasteOutbreakPreviousYear)) == null)
                 {
-                    _dataAccess.Set(nameof(WasteOutbreakPreviousYear), _WasteOutbreakPreviousYear_Not_Valid);
+                    _dataAccess.Set(nameof(WasteOutbreakPreviousYear), value);
                 }
                 OnPropertyChanged(nameof(WasteOutbreakPreviousYear));
             }

@@ -81,19 +81,34 @@ namespace Models
             }
             set
             {
-                _Radionuclids_Not_Valid = value;
+                Radionuclids_Validation(value);
+
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
         //If change this change validation
         private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation()//TODO
+        private void Radionuclids_Validation(string value)//TODO
         {
             ClearErrors(nameof(Radionuclids));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Radionuclids), "Поле не заполнено");
+                return;
+            }
+            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
+            foreach (var item in spr)
+            {
+                if (item.Item2.Equals(value))
+                {
+                    Radionuclids = item.Item2;
+                    return;
+                }
+            }
         }
         //Radionuclids property
 
@@ -117,7 +132,7 @@ namespace Models
                 _Kategory_Not_Valid = value;
                 if (GetErrors(nameof(Kategory)) == null)
                 {
-                    _dataAccess.Set(nameof(Kategory), _Kategory_Not_Valid);
+                    _dataAccess.Set(nameof(Kategory), value);
                 }
                 OnPropertyChanged(nameof(Kategory));
             }
@@ -151,7 +166,7 @@ namespace Models
                 _Activity_Not_Valid = value;
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    _dataAccess.Set(nameof(Activity), _Activity_Not_Valid);
+                    _dataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -208,7 +223,7 @@ namespace Models
 
                 if (GetErrors(nameof(Quantity)) == null)
                 {
-                    _dataAccess.Set(nameof(Quantity), _Quantity_Not_Valid);
+                    _dataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -219,7 +234,10 @@ namespace Models
         {
             ClearErrors(nameof(Quantity));
             if (value <= 0)
+            {
                 AddError(nameof(Quantity), "Недопустимое значение");
+                return;
+            }
         }
         //Quantity property
 
@@ -245,7 +263,7 @@ namespace Models
 
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -261,15 +279,12 @@ namespace Models
                 return;
             }
             if (value.Equals("Минобороны") || value.Equals("прим.")) return;
-            foreach (var item in OKSM)
-            {
-                if (item.Equals(value)) return;
-            }
+            if (OKSM.Contains(value)) return;
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
             else
             {
-                var mask = new Regex("[0123456789_]*");
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value))
                     AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
             }
@@ -453,7 +468,7 @@ namespace Models
                 _ProviderOrRecieverOKPONote_Not_Valid = value;
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), _ProviderOrRecieverOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }

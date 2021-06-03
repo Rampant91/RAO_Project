@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Specialized;
 
 namespace Collections
 {
@@ -17,13 +18,35 @@ namespace Collections
         public Reports(IDataAccess Access)
         {
             _dataAccess = Access;
-
+            Init();
         }
         public Reports()
         {
             _dataAccess = new Models.DataAccess.RamAccess();
-
+            Init();
         }
+
+        void Init()
+        {
+            Report_Collection.CollectionChanged += CollectionChanged;
+        }
+
+        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Report_Collection));
+
+            if (args.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach(var item in args.NewItems)
+                {
+                    ((Report)item).PropertyChanged += (x, e) =>
+                    {
+                        OnPropertyChanged(nameof(Report_Collection));
+                    };
+                }
+            }
+        }
+
         [Key]
         public int ReportsId { get; set; }
 

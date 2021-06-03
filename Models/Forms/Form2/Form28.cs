@@ -39,7 +39,7 @@ namespace Models
                 _PermissionNumber_Not_Valid = value;
                 if (GetErrors(nameof(PermissionNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionNumber), _PermissionNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionNumber), value);
                 }
                 OnPropertyChanged(nameof(PermissionNumber));
             }
@@ -72,7 +72,7 @@ namespace Models
                 _PermissionIssueDate_Not_Valid = value;
                 if (GetErrors(nameof(PermissionIssueDate)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionIssueDate), _PermissionIssueDate_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionIssueDate), value);
                 }
                 OnPropertyChanged(nameof(PermissionIssueDate));
             }
@@ -105,7 +105,7 @@ namespace Models
                 _PermissionDocumentName_Not_Valid = value;
                 if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionDocumentName), _PermissionDocumentName_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionDocumentName), value);
                 }
                 OnPropertyChanged(nameof(PermissionDocumentName));
             }
@@ -138,7 +138,7 @@ namespace Models
                 _ValidBegin_Not_Valid = value;
                 if (GetErrors(nameof(ValidBegin)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidBegin), _ValidBegin_Not_Valid);
+                    _dataAccess.Set(nameof(ValidBegin), value);
                 }
                 OnPropertyChanged(nameof(ValidBegin));
             }
@@ -171,7 +171,7 @@ namespace Models
                 _ValidThru_Not_Valid = value;
                 if (GetErrors(nameof(ValidThru)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidThru), _ValidThru_Not_Valid);
+                    _dataAccess.Set(nameof(ValidThru), value);
                 }
                 OnPropertyChanged(nameof(ValidThru));
             }
@@ -204,7 +204,7 @@ namespace Models
                 _PermissionNumber1_Not_Valid = value;
                 if (GetErrors(nameof(PermissionNumber1)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionNumber1), _PermissionNumber1_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionNumber1), value);
                 }
                 OnPropertyChanged(nameof(PermissionNumber1));
             }
@@ -237,7 +237,7 @@ namespace Models
                 _PermissionIssueDate1_Not_Valid = value;
                 if (GetErrors(nameof(PermissionIssueDate1)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionIssueDate1), _PermissionIssueDate1_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionIssueDate1), value);
                 }
                 OnPropertyChanged(nameof(PermissionIssueDate1));
             }
@@ -270,7 +270,7 @@ namespace Models
                 _PermissionDocumentName1_Not_Valid = value;
                 if (GetErrors(nameof(PermissionDocumentName1)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionDocumentName1), _PermissionDocumentName1_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionDocumentName1), value);
                 }
                 OnPropertyChanged(nameof(PermissionDocumentName1));
             }
@@ -303,7 +303,7 @@ namespace Models
                 _ValidBegin1_Not_Valid = value;
                 if (GetErrors(nameof(ValidBegin1)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidBegin1), _ValidBegin1_Not_Valid);
+                    _dataAccess.Set(nameof(ValidBegin1), value);
                 }
                 OnPropertyChanged(nameof(ValidBegin1));
             }
@@ -336,7 +336,7 @@ namespace Models
                 _ValidThru1_Not_Valid = value;
                 if (GetErrors(nameof(ValidThru1)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidThru1), _ValidThru1_Not_Valid);
+                    _dataAccess.Set(nameof(ValidThru1), value);
                 }
                 OnPropertyChanged(nameof(ValidThru1));
             }
@@ -369,7 +369,7 @@ namespace Models
                 _PermissionNumber2_Not_Valid = value;
                 if (GetErrors(nameof(PermissionNumber2)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionNumber2), _PermissionNumber2_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionNumber2), value);
                 }
                 OnPropertyChanged(nameof(PermissionNumber2));
             }
@@ -402,7 +402,7 @@ namespace Models
                 _PermissionIssueDate2_Not_Valid = value;
                 if (GetErrors(nameof(PermissionIssueDate2)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionIssueDate2), _PermissionIssueDate2_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionIssueDate2), value);
                 }
                 OnPropertyChanged(nameof(PermissionIssueDate2));
             }
@@ -435,7 +435,7 @@ namespace Models
                 _PermissionDocumentName2_Not_Valid = value;
                 if (GetErrors(nameof(PermissionDocumentName)) == null)
                 {
-                    _dataAccess.Set(nameof(PermissionDocumentName2), _PermissionDocumentName2_Not_Valid);
+                    _dataAccess.Set(nameof(PermissionDocumentName2), value);
                 }
                 OnPropertyChanged(nameof(PermissionDocumentName2));
             }
@@ -468,7 +468,7 @@ namespace Models
                 _ValidBegin2_Not_Valid = value;
                 if (GetErrors(nameof(ValidBegin2)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidBegin2), _ValidBegin2_Not_Valid);
+                    _dataAccess.Set(nameof(ValidBegin2), value);
                 }
                 OnPropertyChanged(nameof(ValidBegin2));
             }
@@ -501,7 +501,7 @@ namespace Models
                 _ValidThru2_Not_Valid = value;
                 if (GetErrors(nameof(ValidThru2)) == null)
                 {
-                    _dataAccess.Set(nameof(ValidThru2), _ValidThru2_Not_Valid);
+                    _dataAccess.Set(nameof(ValidThru2), value);
                 }
                 OnPropertyChanged(nameof(ValidThru2));
             }
@@ -534,7 +534,7 @@ namespace Models
                 _WasteSourceName_Not_Valid = value;
                 if (GetErrors(nameof(WasteSourceName)) == null)
                 {
-                    _dataAccess.Set(nameof(WasteSourceName), _WasteSourceName_Not_Valid);
+                    _dataAccess.Set(nameof(WasteSourceName), value);
                 }
                 OnPropertyChanged(nameof(WasteSourceName));
             }
@@ -567,7 +567,7 @@ namespace Models
                 _WasteRecieverName_Not_Valid = value;
                 if (GetErrors(nameof(WasteRecieverName)) == null)
                 {
-                    _dataAccess.Set(nameof(WasteRecieverName), _WasteRecieverName_Not_Valid);
+                    _dataAccess.Set(nameof(WasteRecieverName), value);
                 }
                 OnPropertyChanged(nameof(WasteRecieverName));
             }
@@ -600,7 +600,7 @@ namespace Models
                 _RecieverTypeCode_Not_Valid = value;
                 if (GetErrors(nameof(RecieverTypeCode)) == null)
                 {
-                    _dataAccess.Set(nameof(RecieverTypeCode), _RecieverTypeCode_Not_Valid);
+                    _dataAccess.Set(nameof(RecieverTypeCode), value);
                 }
                 OnPropertyChanged(nameof(RecieverTypeCode));
             }
@@ -633,7 +633,7 @@ namespace Models
                 _PoolDistrictName_Not_Valid = value;
                 if (GetErrors(nameof(PoolDistrictName)) == null)
                 {
-                    _dataAccess.Set(nameof(PoolDistrictName), _PoolDistrictName_Not_Valid);
+                    _dataAccess.Set(nameof(PoolDistrictName), value);
                 }
                 OnPropertyChanged(nameof(PoolDistrictName));
             }
@@ -666,7 +666,7 @@ namespace Models
                 _AllowedWasteRemovalVolume_Not_Valid = value;
                 if (GetErrors(nameof(AllowedWasteRemovalVolume)) == null)
                 {
-                    _dataAccess.Set(nameof(AllowedWasteRemovalVolume), _AllowedWasteRemovalVolume_Not_Valid);
+                    _dataAccess.Set(nameof(AllowedWasteRemovalVolume), value);
                 }
                 OnPropertyChanged(nameof(AllowedWasteRemovalVolume));
             }
@@ -699,7 +699,7 @@ namespace Models
                 _RemovedWasteVolume_Not_Valid = value;
                 if (GetErrors(nameof(RemovedWasteVolume)) == null)
                 {
-                    _dataAccess.Set(nameof(RemovedWasteVolume), _RemovedWasteVolume_Not_Valid);
+                    _dataAccess.Set(nameof(RemovedWasteVolume), value);
                 }
                 OnPropertyChanged(nameof(RemovedWasteVolume));
             }
@@ -731,7 +731,7 @@ namespace Models
                 _RemovedWasteVolumeNote_Not_Valid = value;
                 if (GetErrors(nameof(RemovedWasteVolumeNote)) == null)
                 {
-                    _dataAccess.Set(nameof(RemovedWasteVolumeNote), _RemovedWasteVolumeNote_Not_Valid);
+                    _dataAccess.Set(nameof(RemovedWasteVolumeNote), value);
                 }
                 OnPropertyChanged(nameof(RemovedWasteVolumeNote));
             }

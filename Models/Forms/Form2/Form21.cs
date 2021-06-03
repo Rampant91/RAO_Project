@@ -1,5 +1,6 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Text.RegularExpressions;
 using System.Globalization;
 
 namespace Models
@@ -37,17 +38,17 @@ namespace Models
             }
             set
             {
-                _RefineMachineName_Not_Valid = value;
+                RefineMachineName_Validation(value);
                 if (GetErrors(nameof(RefineMachineName)) == null)
                 {
-                    _dataAccess.Set(nameof(RefineMachineName), _RefineMachineName_Not_Valid);
+                    _dataAccess.Set(nameof(RefineMachineName), value);
                 }
                 OnPropertyChanged(nameof(RefineMachineName));
             }
         }
 
         private string _RefineMachineName_Not_Valid = "";
-        private void RefineMachineName_Validation()
+        private void RefineMachineName_Validation(string value)
         {
             ClearErrors(nameof(RefineMachineName));
         }
@@ -55,13 +56,13 @@ namespace Models
 
         //MachineCode property
         [Attributes.Form_Property("Код установки переработки")]
-        public short MachineCode
+        public byte? MachineCode
         {
             get
             {
                 if (GetErrors(nameof(MachineCode)) == null)
                 {
-                    return (short)_dataAccess.Get(nameof(MachineCode));
+                    return (byte?)_dataAccess.Get(nameof(MachineCode));
                 }
                 else
                 {
@@ -70,19 +71,20 @@ namespace Models
             }
             set
             {
-                _MachineCode_Not_Valid = value;
+                MachineCode_Validation(value);
                 if (GetErrors(nameof(MachineCode)) == null)
                 {
-                    _dataAccess.Set(nameof(MachineCode), _MachineCode_Not_Valid);
+                    _dataAccess.Set(nameof(MachineCode), value);
                 }
                 OnPropertyChanged(nameof(MachineCode));
             }
         }
 
-        private short _MachineCode_Not_Valid = 0;
-        private void MachineCode_Validation(short value)//TODO
+        private byte? _MachineCode_Not_Valid = 0;
+        private void MachineCode_Validation(byte? value)//TODO
         {
             ClearErrors(nameof(MachineCode));
+            if (value == null) return;
             bool a = (value >= 11) && (value <= 17);
             bool b = (value >= 21) && (value <= 24);
             bool c = (value >= 31) && (value <= 32);
@@ -113,10 +115,10 @@ namespace Models
             }
             set
             {
-                _MachinePower_Not_Valid = value;
+                MachinePower_Validation(value);
                 if (GetErrors(nameof(MachinePower)) == null)
                 {
-                    _dataAccess.Set(nameof(MachinePower), _MachinePower_Not_Valid);
+                    _dataAccess.Set(nameof(MachinePower), value);
                 }
                 OnPropertyChanged(nameof(MachinePower));
             }
@@ -126,18 +128,43 @@ namespace Models
         private void MachinePower_Validation(string value)//TODO
         {
             ClearErrors(nameof(MachinePower));
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                
+            }
+            string tmp = value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(MachinePower), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(MachinePower), "Недопустимое значение");
+            }
         }
         //MachinePower property
 
         //NumberOfHoursPerYear property
         [Attributes.Form_Property("Количество часов работы за год")]
-        public int NumberOfHoursPerYear
+        public string NumberOfHoursPerYear
         {
             get
             {
                 if (GetErrors(nameof(NumberOfHoursPerYear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(NumberOfHoursPerYear));
+                    return (string)_dataAccess.Get(nameof(NumberOfHoursPerYear));
                 }
                 else
                 {
@@ -146,19 +173,44 @@ namespace Models
             }
             set
             {
-                _NumberOfHoursPerYear_Not_Valid = value;
+                NumberOfHoursPerYear_Validation(value);
                 if (GetErrors(nameof(NumberOfHoursPerYear)) == null)
                 {
-                    _dataAccess.Set(nameof(NumberOfHoursPerYear), _NumberOfHoursPerYear_Not_Valid);
+                    _dataAccess.Set(nameof(NumberOfHoursPerYear), value);
                 }
                 OnPropertyChanged(nameof(NumberOfHoursPerYear));
             }
         }
 
-        private int _NumberOfHoursPerYear_Not_Valid = -1;
-        private void NumberOfHoursPerYear_Validation(int value)//TODO
+        private string _NumberOfHoursPerYear_Not_Valid = "";
+        private void NumberOfHoursPerYear_Validation(string value)//TODO
         {
             ClearErrors(nameof(NumberOfHoursPerYear));
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+            if (value.Equals("прим.")||value.Equals("0"))
+            {
+
+            }
+            string tmp = value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(NumberOfHoursPerYear), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(NumberOfHoursPerYear), "Недопустимое значение");
+            }
         }
         //NumberOfHoursPerYear property
 
@@ -179,10 +231,10 @@ namespace Models
             }
             set
             {
-                _CodeRAOIn_Not_Valid = value;
+                CodeRAOIn_Validation(value);
                 if (GetErrors(nameof(CodeRAOIn)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeRAOIn), _CodeRAOIn_Not_Valid);
+                    _dataAccess.Set(nameof(CodeRAOIn), value);
                 }
                 OnPropertyChanged(nameof(CodeRAOIn));
             }
@@ -192,6 +244,16 @@ namespace Models
         private void CodeRAOIn_Validation(string value)//TODO
         {
             ClearErrors(nameof(CodeRAOIn));
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+            var a = new Regex("^[0-9]{11}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(CodeRAOIn), "Недопустимое значение");
+                return;
+            }
         }
         //CodeRAOIn property
 
@@ -212,31 +274,57 @@ namespace Models
             }
             set
             {
-                _StatusRAOIn_Not_Valid = value;
+                StatusRAOIn_Validation(value);
                 if (GetErrors(nameof(StatusRAOIn)) == null)
                 {
-                    _dataAccess.Set(nameof(StatusRAOIn), _StatusRAOIn_Not_Valid);
+                    _dataAccess.Set(nameof(StatusRAOIn), value);
                 }
                 OnPropertyChanged(nameof(StatusRAOIn));
             }
         }
 
         private string _StatusRAOIn_Not_Valid = "";
-        private void StatusRAO_Validation(string value)//TODO
+        private void StatusRAOIn_Validation(string value)//TODO
         {
             ClearErrors(nameof(StatusRAOIn));
+            if (string.IsNullOrEmpty(value)) return;
+            if (value.Length == 1)
+            {
+                int tmp;
+                try
+                {
+                    tmp = int.Parse(value);
+                    if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
+                    {
+                        AddError(nameof(StatusRAOIn), "Недопустимое значение");
+                    }
+                }
+                catch (Exception)
+                {
+                    AddError(nameof(StatusRAOIn), "Недопустимое значение");
+                }
+                return;
+            }
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(StatusRAOIn), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(StatusRAOIn), "Недопустимое значение");
+            }
         }
         //StatusRAOIn property
 
         //VolumeIn property
         [Attributes.Form_Property("Объем, куб. м")]
-        public double VolumeIn
+        public string VolumeIn//SUMMARIZABLE
         {
             get
             {
                 if (GetErrors(nameof(VolumeIn)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(VolumeIn));
+                    return (string)_dataAccess.Get(nameof(VolumeIn));
                 }
                 else
                 {
@@ -245,31 +333,59 @@ namespace Models
             }
             set
             {
-                _VolumeIn_Not_Valid = value;
+                VolumeIn_Validation(value);
                 if (GetErrors(nameof(VolumeIn)) == null)
                 {
-                    _dataAccess.Set(nameof(VolumeIn), _VolumeIn_Not_Valid);
+                    _dataAccess.Set(nameof(VolumeIn), value);
                 }
                 OnPropertyChanged(nameof(VolumeIn));
             }
         }
 
-        private double _VolumeIn_Not_Valid = -1;
-        private void VolumeIn_Validation(double value)//TODO
+        private string _VolumeIn_Not_Valid = "";
+        private void VolumeIn_Validation(string value)//TODO
         {
             ClearErrors(nameof(VolumeIn));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(VolumeIn), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(VolumeIn), "Недопустимое значение");
+                return;
+            }
+            string tmp = value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(VolumeIn), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(VolumeIn), "Недопустимое значение");
+            }
         }
         //VolumeIn property
 
         //MassIn Property
         [Attributes.Form_Property("Масса, т")]
-        public double MassIn
+        public string MassIn//SUMMARIZABLE
         {
             get
             {
                 if (GetErrors(nameof(MassIn)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassIn));
+                    return (string)_dataAccess.Get(nameof(MassIn));
                 }
                 else
                 {
@@ -278,32 +394,60 @@ namespace Models
             }
             set
             {
-                _MassIn_Not_Valid = value;
+                MassIn_Validation(value);
                 if (GetErrors(nameof(MassIn)) == null)
                 {
-                    _dataAccess.Set(nameof(MassIn), _MassIn_Not_Valid);
+                    _dataAccess.Set(nameof(MassIn), value);
                 }
                 OnPropertyChanged(nameof(MassIn));
             }
         }
 
-        private double _MassIn_Not_Valid = -1;
-        private void MassIn_Validation()//TODO
+        private string _MassIn_Not_Valid = "";
+        private void MassIn_Validation(string value)//TODO
         {
             ClearErrors(nameof(MassIn));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(MassIn), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(MassIn), "Недопустимое значение");
+                return;
+            }
+            string tmp = value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(MassIn), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(MassIn), "Недопустимое значение");
+            }
         }
         //MassIn Property
 
         //QuantityIn property
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public int QuantityIn
+        public string QuantityIn//SUMMARIZABLE
         {
             get
             {
                 if (GetErrors(nameof(QuantityIn)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(QuantityIn));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return tmp != null ? (string)tmp : "";
                 }
                 else
                 {
@@ -316,24 +460,46 @@ namespace Models
 
                 if (GetErrors(nameof(QuantityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityIn), _QuantityIn_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityIn), value);
                 }
                 OnPropertyChanged(nameof(QuantityIn));
             }
         }
         // positive int.
-        private int _QuantityIn_Not_Valid = -1;
-        private void QuantityIn_Validation(int value)//Ready
+        private string _QuantityIn_Not_Valid = "";
+        private void QuantityIn_Validation(string value1)//Ready
         {
             ClearErrors(nameof(QuantityIn));
-            if (value <= 0)
+            if (string.IsNullOrEmpty(value1)) return;
+            if (value1.Equals("-")) return;
+            if (value1.Equals("прим."))
+            {
+
+            }
+            string tmp = value1;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            int value;
+            try
+            {
+                value = int.Parse(tmp);
+                if (value <= 0)
+                    AddError(nameof(QuantityIn), "Число должно быть больше нуля");
+            }
+            catch
+            {
                 AddError(nameof(QuantityIn), "Недопустимое значение");
+            }
         }
         //QuantityIn property
 
         //TritiumActivityIn property
         [Attributes.Form_Property("Активность трития, Бк")]
-        public string TritiumActivityIn
+        public string TritiumActivityIn//SUMMARIZABLE
         {
             get
             {
@@ -348,10 +514,10 @@ namespace Models
             }
             set
             {
-                _TritiumActivityIn_Not_Valid = value;
+                TritiumActivityIn_Validation(value);
                 if (GetErrors(nameof(TritiumActivityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(TritiumActivityIn), _TritiumActivityIn_Not_Valid);
+                    _dataAccess.Set(nameof(TritiumActivityIn), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivityIn));
             }
@@ -361,6 +527,17 @@ namespace Models
         private void TritiumActivityIn_Validation(string value)//TODO
         {
             ClearErrors(nameof(TritiumActivityIn));
+            if (string.IsNullOrEmpty(value))
+            {
+                AddError(nameof(TritiumActivityIn), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("-")) return;
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(TritiumActivityIn), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -384,7 +561,7 @@ namespace Models
 
         //BetaGammaActivityIn property
         [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public string BetaGammaActivityIn
+        public string BetaGammaActivityIn//SUMMARIZABLE
         {
             get
             {
@@ -399,25 +576,26 @@ namespace Models
             }
             set
             {
-                _BetaGammaActivityIn_Not_Valid = value;
+                BetaGammaActivityIn_Validation(value);
                 if (GetErrors(nameof(BetaGammaActivityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivityIn), _BetaGammaActivityIn_Not_Valid);
+                    _dataAccess.Set(nameof(BetaGammaActivityIn), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivityIn));
             }
         }
 
         private string _BetaGammaActivityIn_Not_Valid = "";
-        private void BetaGammaActivity_Validation(string value)//TODO
+        private void BetaGammaActivityIn_Validation(string value)//TODO
         {
             ClearErrors(nameof(BetaGammaActivityIn));
-            if ((value==null)||(value.Equals("")))
+            if (string.IsNullOrEmpty(value))
             {
                 AddError(nameof(BetaGammaActivityIn), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (value.Equals("-")) return;
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(BetaGammaActivityIn), "Недопустимое значение");
                 return;
@@ -445,7 +623,7 @@ namespace Models
 
         //AlphaActivityIn property
         [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public string AlphaActivityIn
+        public string AlphaActivityIn//SUMMARIZABLE
         {
             get
             {
@@ -460,10 +638,10 @@ namespace Models
             }
             set
             {
-                _AlphaActivityIn_Not_Valid = value;
+                AlphaActivityIn_Validation(value);
                 if (GetErrors(nameof(AlphaActivityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(AlphaActivityIn), _AlphaActivityIn_Not_Valid);
+                    _dataAccess.Set(nameof(AlphaActivityIn), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivityIn));
             }
@@ -473,6 +651,17 @@ namespace Models
         private void AlphaActivityIn_Validation(string value)//TODO
         {
             ClearErrors(nameof(AlphaActivityIn));
+            if (string.IsNullOrEmpty(value))
+            {
+                AddError(nameof(AlphaActivityIn), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("-")) return;
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(AlphaActivityIn), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -496,7 +685,7 @@ namespace Models
 
         //TransuraniumActivityIn property
         [Attributes.Form_Property("Активность трансурановых, Бк")]
-        public string TransuraniumActivityIn
+        public string TransuraniumActivityIn//SUMMARIZABLE
         {
             get
             {
@@ -511,10 +700,10 @@ namespace Models
             }
             set
             {
-                _TransuraniumActivityIn_Not_Valid = value;
+                TransuraniumActivityIn_Validation(value);
                 if (GetErrors(nameof(TransuraniumActivityIn)) == null)
                 {
-                    _dataAccess.Set(nameof(TransuraniumActivityIn), _TransuraniumActivityIn_Not_Valid);
+                    _dataAccess.Set(nameof(TransuraniumActivityIn), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivityIn));
             }
@@ -524,6 +713,17 @@ namespace Models
         private void TransuraniumActivityIn_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransuraniumActivityIn));
+            if (string.IsNullOrEmpty(value))
+            {
+                AddError(nameof(TransuraniumActivityIn), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("-")) return;
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(TransuraniumActivityIn), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -562,10 +762,10 @@ namespace Models
             }
             set
             {
-                _CodeRAOout_Not_Valid = value;
+                CodeRAOout_Validation(value);
                 if (GetErrors(nameof(CodeRAOout)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeRAOout), _CodeRAOout_Not_Valid);
+                    _dataAccess.Set(nameof(CodeRAOout), value);
                 }
                 OnPropertyChanged(nameof(CodeRAOout));
             }
@@ -575,6 +775,16 @@ namespace Models
         private void CodeRAOout_Validation(string value)//TODO
         {
             ClearErrors(nameof(CodeRAOout));
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+            var a = new Regex("^[0-9]{11}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(CodeRAOout), "Недопустимое значение");
+                return;
+            }
         }
         //CodeRAOout property
 
@@ -595,10 +805,10 @@ namespace Models
             }
             set
             {
-                _StatusRAOout_Not_Valid = value;
+                StatusRAOout_Validation(value);
                 if (GetErrors(nameof(StatusRAOout)) == null)
                 {
-                    _dataAccess.Set(nameof(StatusRAOout), _StatusRAOout_Not_Valid);
+                    _dataAccess.Set(nameof(StatusRAOout), value);
                 }
                 OnPropertyChanged(nameof(StatusRAOout));
             }
@@ -608,18 +818,44 @@ namespace Models
         private void StatusRAOout_Validation(string value)//TODO
         {
             ClearErrors(nameof(StatusRAOout));
+            if (string.IsNullOrEmpty(value)) return;
+            if (value.Length == 1)
+            {
+                int tmp;
+                try
+                {
+                    tmp = int.Parse(value);
+                    if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
+                    {
+                        AddError(nameof(StatusRAOout), "Недопустимое значение");
+                    }
+                }
+                catch (Exception)
+                {
+                    AddError(nameof(StatusRAOout), "Недопустимое значение");
+                }
+                return;
+            }
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(StatusRAOout), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(StatusRAOout), "Недопустимое значение");
+            }
         }
         //StatusRAOout property
 
         //VolumeOut property
         [Attributes.Form_Property("Объем, куб. м")]
-        public double VolumeOut
+        public string VolumeOut//SUMMARIZABLE
         {
             get
             {
                 if (GetErrors(nameof(VolumeOut)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(VolumeOut));
+                    return (string)_dataAccess.Get(nameof(VolumeOut));
                 }
                 else
                 {
@@ -628,31 +864,59 @@ namespace Models
             }
             set
             {
-                _VolumeOut_Not_Valid = value;
+                VolumeOut_Validation(value);
                 if (GetErrors(nameof(VolumeOut)) == null)
                 {
-                    _dataAccess.Set(nameof(VolumeOut), _VolumeOut_Not_Valid);
+                    _dataAccess.Set(nameof(VolumeOut), value);
                 }
                 OnPropertyChanged(nameof(VolumeOut));
             }
         }
 
-        private double _VolumeOut_Not_Valid = -1;
-        private void VolumeOut_Validation(double value)//TODO
+        private string _VolumeOut_Not_Valid = "";
+        private void VolumeOut_Validation(string value)//TODO
         {
             ClearErrors(nameof(VolumeOut));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(VolumeOut), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(VolumeOut), "Недопустимое значение");
+                return;
+            }
+            string tmp = value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(VolumeOut), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(VolumeOut), "Недопустимое значение");
+            }
         }
         //VolumeOut property
 
         //MassOut Property
         [Attributes.Form_Property("Масса, т")]
-        public double MassOut
+        public string MassOut//SUMMARIZABLE
         {
             get
             {
                 if (GetErrors(nameof(MassOut)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(MassOut));
+                    return (string)_dataAccess.Get(nameof(MassOut));
                 }
                 else
                 {
@@ -661,32 +925,60 @@ namespace Models
             }
             set
             {
-                _MassOut_Not_Valid = value;
+                MassOut_Validation(value);
                 if (GetErrors(nameof(MassOut)) == null)
                 {
-                    _dataAccess.Set(nameof(MassOut), _MassOut_Not_Valid);
+                    _dataAccess.Set(nameof(MassOut), value);
                 }
                 OnPropertyChanged(nameof(MassOut));
             }
         }
 
-        private double _MassOut_Not_Valid = -1;
-        private void MassOut_Validation()//TODO
+        private string _MassOut_Not_Valid = "";
+        private void MassOut_Validation(string value)//TODO
         {
             ClearErrors(nameof(MassOut));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(MassOut), "Поле не заполнено");
+                return;
+            }
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(MassOut), "Недопустимое значение");
+                return;
+            }
+            string tmp = value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(MassOut), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(MassOut), "Недопустимое значение");
+            }
         }
         //MassOut Property
 
         //QuantityOZIIIout property
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public int QuantityOZIIIout
+        public string QuantityOZIIIout//SUMMARIZABLE
         {
             get
             {
                 if (GetErrors(nameof(QuantityOZIIIout)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(QuantityOZIIIout));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return tmp != null ? (string)tmp : "";
                 }
                 else
                 {
@@ -699,24 +991,46 @@ namespace Models
 
                 if (GetErrors(nameof(QuantityOZIIIout)) == null)
                 {
-                    _dataAccess.Set(nameof(QuantityOZIIIout), _QuantityOZIIIout_Not_Valid);
+                    _dataAccess.Set(nameof(QuantityOZIIIout), value);
                 }
                 OnPropertyChanged(nameof(QuantityOZIIIout));
             }
         }
         // positive int.
-        private int _QuantityOZIIIout_Not_Valid = -1;
-        private void QuantityOZIIIout_Validation(int value)//Ready
+        private string _QuantityOZIIIout_Not_Valid = "";
+        private void QuantityOZIIIout_Validation(string value1)//Ready
         {
             ClearErrors(nameof(QuantityOZIIIout));
-            if (value <= 0)
+            if (string.IsNullOrEmpty(value1)) return;
+            if (value1.Equals("-")) return;
+            if (value1.Equals("прим."))
+            {
+
+            }
+            string tmp = value1;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            int value;
+            try
+            {
+                value = int.Parse(tmp);
+                if (value <= 0)
+                    AddError(nameof(QuantityOZIIIout), "Число должно быть больше нуля");
+            }
+            catch
+            {
                 AddError(nameof(QuantityOZIIIout), "Недопустимое значение");
+            }
         }
         //QuantityOZIIIout property
 
         //TritiumActivityOut property
         [Attributes.Form_Property("Активность трития, Бк")]
-        public string TritiumActivityOut
+        public string TritiumActivityOut//SUMMARIZABLE
         {
             get
             {
@@ -731,10 +1045,10 @@ namespace Models
             }
             set
             {
-                _TritiumActivityOut_Not_Valid = value;
+                TritiumActivityOut_Validation(value);
                 if (GetErrors(nameof(TritiumActivityOut)) == null)
                 {
-                    _dataAccess.Set(nameof(TritiumActivityOut), _TritiumActivityOut_Not_Valid);
+                    _dataAccess.Set(nameof(TritiumActivityOut), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivityOut));
             }
@@ -744,6 +1058,17 @@ namespace Models
         private void TritiumActivityOut_Validation(string value)//TODO
         {
             ClearErrors(nameof(TritiumActivityOut));
+            if (string.IsNullOrEmpty(value))
+            {
+                AddError(nameof(TritiumActivityOut), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("-")) return;
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(TritiumActivityOut), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -767,7 +1092,7 @@ namespace Models
 
         //BetaGammaActivityOut property
         [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public string BetaGammaActivityOut
+        public string BetaGammaActivityOut//SUMMARIZABLE
         {
             get
             {
@@ -782,10 +1107,10 @@ namespace Models
             }
             set
             {
-                _BetaGammaActivityOut_Not_Valid = value;
+                BetaGammaActivityOut_Validation(value);
                 if (GetErrors(nameof(BetaGammaActivityOut)) == null)
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivityOut), _BetaGammaActivityOut_Not_Valid);
+                    _dataAccess.Set(nameof(BetaGammaActivityOut), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivityOut));
             }
@@ -795,6 +1120,17 @@ namespace Models
         private void BetaGammaActivityOut_Validation(string value)//TODO
         {
             ClearErrors(nameof(BetaGammaActivityOut));
+            if (string.IsNullOrEmpty(value))
+            {
+                AddError(nameof(BetaGammaActivityOut), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("-")) return;
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(BetaGammaActivityOut), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -818,7 +1154,7 @@ namespace Models
 
         //AlphaActivityOut property
         [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public string AlphaActivityOut
+        public string AlphaActivityOut//SUMMARIZABLE
         {
             get
             {
@@ -833,10 +1169,10 @@ namespace Models
             }
             set
             {
-                _AlphaActivityOut_Not_Valid = value;
+                AlphaActivityOut_Validation(value);
                 if (GetErrors(nameof(AlphaActivityOut)) == null)
                 {
-                    _dataAccess.Set(nameof(AlphaActivityOut), _AlphaActivityOut_Not_Valid);
+                    _dataAccess.Set(nameof(AlphaActivityOut), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivityOut));
             }
@@ -846,6 +1182,17 @@ namespace Models
         private void AlphaActivityOut_Validation(string value)//TODO
         {
             ClearErrors(nameof(AlphaActivityOut));
+            if (string.IsNullOrEmpty(value))
+            {
+                AddError(nameof(AlphaActivityOut), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("-")) return;
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(AlphaActivityOut), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -869,7 +1216,7 @@ namespace Models
 
         //TransuraniumActivityOut property
         [Attributes.Form_Property("Активность трансурановых, Бк")]
-        public string TransuraniumActivityOut
+        public string TransuraniumActivityOut//SUMMARIZABLE
         {
             get
             {
@@ -884,10 +1231,10 @@ namespace Models
             }
             set
             {
-                _TransuraniumActivityOut_Not_Valid = value;
+                TransuraniumActivityOut_Validation(value);
                 if (GetErrors(nameof(TransuraniumActivityOut)) == null)
                 {
-                    _dataAccess.Set(nameof(TransuraniumActivityOut), _TransuraniumActivityOut_Not_Valid);
+                    _dataAccess.Set(nameof(TransuraniumActivityOut), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivityOut));
             }
@@ -897,6 +1244,17 @@ namespace Models
         private void TransuraniumActivityOut_Validation(string value)//TODO
         {
             ClearErrors(nameof(TransuraniumActivityOut));
+            if (string.IsNullOrEmpty(value))
+            {
+                AddError(nameof(TransuraniumActivityOut), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("-")) return;
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(TransuraniumActivityOut), "Недопустимое значение");
+                return;
+            }
             string tmp = value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))

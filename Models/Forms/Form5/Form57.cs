@@ -83,7 +83,7 @@ namespace Models
                 AddError(nameof(Okpo), "Недопустимое значение");
             else
             {
-                var mask = new Regex("[0123456789_]*");
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value))
                     AddError(nameof(Okpo), "Недопустимое значение");
             }

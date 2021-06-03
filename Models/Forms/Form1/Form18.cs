@@ -39,10 +39,10 @@ namespace Models
             }
             set
             {
-                _IndividualNumberZHRO_Not_Valid = value;
+                IndividualNumberZHRO_Validation(value);
                 if (GetErrors(nameof(IndividualNumberZHRO)) == null)
                 {
-                    _dataAccess.Set(nameof(IndividualNumberZHRO), _IndividualNumberZHRO_Not_Valid);
+                    _dataAccess.Set(nameof(IndividualNumberZHRO), value);
                 }
                 OnPropertyChanged(nameof(IndividualNumberZHRO));
             }
@@ -71,10 +71,10 @@ namespace Models
             }
             set
             {
-                _IndividualNumberZHROrecoded_Not_Valid = value;
+                IndividualNumberZHROrecoded_Validation(value);
                 if (GetErrors(nameof(IndividualNumberZHROrecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(IndividualNumberZHROrecoded), _IndividualNumberZHROrecoded_Not_Valid);
+                    _dataAccess.Set(nameof(IndividualNumberZHROrecoded), value);
                 }
                 OnPropertyChanged(nameof(IndividualNumberZHROrecoded));
             }
@@ -105,19 +105,30 @@ namespace Models
             }
             set
             {
-                _PassportNumber_Not_Valid = value;
+                PassportNumber_Validation(value);
+
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumber), _PassportNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PassportNumber), value);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
         }
 
         private string _PassportNumber_Not_Valid = "";
-        private void PassportNumber_Validation()
+        private void PassportNumber_Validation(string value)
         {
             ClearErrors(nameof(PassportNumber));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(PassportNumber), "Поле не заполнено");
+                return;
+            }
+            if (value.Equals("прим."))
+            {
+                if ((PassportNumberNote == null) || (PassportNumberNote == ""))
+                    AddError(nameof(PassportNumberNote), "Поле не может быть пустым");
+            }
         }
         //PassportNumber property
 
@@ -138,17 +149,17 @@ namespace Models
             }
             set
             {
-                _PassportNumberNote_Not_Valid = value;
+                PassportNumberNote_Validation(value);
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumberNote), _PassportNumberNote_Not_Valid);
+                    _dataAccess.Set(nameof(PassportNumberNote), value);
                 }
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
         }
 
         private string _PassportNumberNote_Not_Valid = "";
-        private void PassportNumberNote_Validation()
+        private void PassportNumberNote_Validation(string value)
         {
             ClearErrors(nameof(PassportNumberNote));
         }
@@ -172,10 +183,10 @@ namespace Models
             }
             set
             {
-                _PassportNumberRecoded_Not_Valid = value;
+                PassportNumberRecoded_Validation(value);
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    _dataAccess.Set(nameof(PassportNumberRecoded), _PassportNumberRecoded_Not_Valid);
+                    _dataAccess.Set(nameof(PassportNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(PassportNumberRecoded));
             }
@@ -190,13 +201,13 @@ namespace Models
 
         //Volume6 property
         [Attributes.Form_Property("Объем, куб. м")]
-        public double Volume6
+        public string Volume6
         {
             get
             {
                 if (GetErrors(nameof(Volume6)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Volume6));
+                    return (string)_dataAccess.Get(nameof(Volume6));
                 }
                 else
                 {
@@ -205,31 +216,49 @@ namespace Models
             }
             set
             {
-                _Volume6_Not_Valid = value;
+                Volume6_Validation(value);
                 if (GetErrors(nameof(Volume6)) == null)
                 {
-                    _dataAccess.Set(nameof(Volume6), _Volume6_Not_Valid);
+                    _dataAccess.Set(nameof(Volume6), value);
                 }
                 OnPropertyChanged(nameof(Volume6));
             }
         }
 
-        private double _Volume6_Not_Valid = -1;
-        private void Volume6_Validation(double value)//TODO
+        private string _Volume6_Not_Valid = "";
+        private void Volume6_Validation(string value)//TODO
         {
             ClearErrors(nameof(Volume6));
+            if (string.IsNullOrEmpty(value)) return;
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(Volume6), "Недопустимое значение");
+                return;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(Volume6), "Число должно быть больше нуля");
+            }
+            catch (Exception)
+            {
+                AddError(nameof(Volume6), "Недопустимое значение");
+                return;
+            }
         }
         //Volume6 property
 
         //Mass7 Property
         [Attributes.Form_Property("Масса, т")]
-        public double Mass7
+        public string Mass7
         {
             get
             {
                 if (GetErrors(nameof(Mass7)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass7));
+                    return (string)_dataAccess.Get(nameof(Mass7));
                 }
                 else
                 {
@@ -238,31 +267,49 @@ namespace Models
             }
             set
             {
-                _Mass7_Not_Valid = value;
+                Mass7_Validation(value);
                 if (GetErrors(nameof(Mass7)) == null)
                 {
-                    _dataAccess.Set(nameof(Mass7), _Mass7_Not_Valid);
+                    _dataAccess.Set(nameof(Mass7), value);
                 }
                 OnPropertyChanged(nameof(Mass7));
             }
         }
 
-        private double _Mass7_Not_Valid = -1;
-        private void Mass7_Validation()//TODO
+        private string _Mass7_Not_Valid = "";
+        private void Mass7_Validation(string value)//TODO
         {
             ClearErrors(nameof(Mass7));
+            if (string.IsNullOrEmpty(value)) return;
+            if (!(value.Contains('e') || value.Contains('E')))
+            {
+                AddError(nameof(Mass7), "Недопустимое значение");
+                return;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(Mass7), "Число должно быть больше нуля");
+            }
+            catch (Exception)
+            {
+                AddError(nameof(Mass7), "Недопустимое значение");
+                return;
+            }
         }
         //Mass7 Property
 
         //SaltConcentration property
         [Attributes.Form_Property("Солесодержание, г/л")]
-        public double SaltConcentration
+        public double? SaltConcentration
         {
             get
             {
                 if (GetErrors(nameof(SaltConcentration)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(SaltConcentration));
+                    return (double?)_dataAccess.Get(nameof(SaltConcentration));
                 }
                 else
                 {
@@ -271,19 +318,25 @@ namespace Models
             }
             set
             {
-                _SaltConcentration_Not_Valid = value;
+                SaltConcentration_Validation(value);
                 if (GetErrors(nameof(SaltConcentration)) == null)
                 {
-                    _dataAccess.Set(nameof(SaltConcentration), _SaltConcentration_Not_Valid);
+                    _dataAccess.Set(nameof(SaltConcentration), value);
                 }
                 OnPropertyChanged(nameof(SaltConcentration));
             }
         }
 
-        private double _SaltConcentration_Not_Valid = -1;
-        private void SaltConcentration_Validation(double value)
+        private double? _SaltConcentration_Not_Valid = null;
+        private void SaltConcentration_Validation(double? value)
         {
             ClearErrors(nameof(SaltConcentration));
+            if (value==null) return;
+            if (value <= 0)
+            {
+                AddError(nameof(SaltConcentration), "Недопустимое значение");
+                return;
+            }
         }
         //SaltConcentration property
 
@@ -305,19 +358,34 @@ namespace Models
             }
             set
             {
-                _Radionuclids_Not_Valid = value;
+                Radionuclids_Validation(value);
+
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    _dataAccess.Set(nameof(Radionuclids), _Radionuclids_Not_Valid);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
         //If change this change validation
         private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation()//TODO
+        private void Radionuclids_Validation(string value)//TODO
         {
             ClearErrors(nameof(Radionuclids));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Radionuclids), "Поле не заполнено");
+                return;
+            }
+            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
+            foreach (var item in spr)
+            {
+                if (item.Item2.Equals(value))
+                {
+                    Radionuclids = item.Item2;
+                    return;
+                }
+            }
         }
         //Radionuclids property
 
@@ -338,10 +406,10 @@ namespace Models
             }
             set
             {
-                _SpecificActivity_Not_Valid = value;
+                SpecificActivity_Validation(value);
                 if (GetErrors(nameof(SpecificActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(SpecificActivity), _SpecificActivity_Not_Valid);
+                    _dataAccess.Set(nameof(SpecificActivity), value);
                 }
                 OnPropertyChanged(nameof(SpecificActivity));
             }
@@ -356,7 +424,7 @@ namespace Models
                 AddError(nameof(SpecificActivity), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Contains('e')||value.Contains('E')))
             {
                 AddError(nameof(SpecificActivity), "Недопустимое значение");
                 return;
@@ -397,7 +465,7 @@ namespace Models
 
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), _ProviderOrRecieverOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -409,181 +477,19 @@ namespace Models
             ClearErrors(nameof(ProviderOrRecieverOKPO));
             if ((value == null) || value.Equals(_ProviderOrRecieverOKPO_Not_Valid))
             {
-                AddError(nameof(ProviderOrRecieverOKPO), "Поле не заполнено");
                 return;
             }
             if (value.Equals("Минобороны") || value.Equals("прим.")) return;
-            foreach (var item in OKSM)
-            {
-                if (item.Equals(value)) return;
-            }
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
             else
             {
-                var mask = new Regex("[0123456789_]*");
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value))
                     AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
             }
         }
         //ProviderOrRecieverOKPO property
-
-        private List<string> OKSM = new List<string>
-            {
-                "АФГАНИСТАН",
-                "АЛБАНИЯ",
-                "АНТАРКТИДА",
-                "АЛЖИР",
-                "АМЕРИКАНСКОЕ САМОА",
-                "АНДОРРА",
-                "АНГОЛА",
-                "АНТИГУА И БАРБУДА",
-                "АЗЕРБАЙДЖАН",
-                "АРГЕНТИНА",
-                "АВСТРАЛИЯ",
-                "АВСТРИЯ",
-                "БАГАМЫ",
-                "БАХРЕЙН",
-                "БАНГЛАДЕШ",
-                "АРМЕНИЯ",
-                "БАРБАДОС",
-                "БЕЛЬГИЯ",
-                "БЕРМУДЫ",
-                "БУТАН",
-                "БОЛИВИЯ, МНОГОНАЦИОНАЛЬНОЕ ГОСУДАРСТВО",
-                "БОСНИЯ И ГЕРЦЕГОВИНА",
-                "БОТСВАНА",
-                "ОСТРОВ БУВЕ",
-                "БРАЗИЛИЯ",
-                "БЕЛИЗ",
-                "БРИТАНСКАЯ ТЕРРИТОРИЯ В ИНДИЙСКОМ ОКЕАНЕ",
-                "СОЛОМОНОВЫ ОСТРОВА",
-                "ВИРГИНСКИЕ ОСТРОВА (БРИТАНСКИЕ)",
-                "БРУНЕЙ-ДАРУССАЛАМ",
-                "БОЛГАРИЯ",
-                "МЬЯНМА",
-                "БУРУНДИ",
-                "БЕЛАРУСЬ",
-                "КАМБОДЖА",
-                "КАМЕРУН",
-                "КАНАДА",
-                "КАБО-ВЕРДЕ",
-                "ОСТРОВА КАЙМАН",
-                "ЦЕНТРАЛЬНО-АФРИКАНСКАЯ РЕСПУБЛИКА",
-                "ШРИ-ЛАНКА",
-                "ЧАД",
-                "ЧИЛИ",
-                "КИТАЙ",
-                "ТАЙВАНЬ (КИТАЙ)",
-                "ОСТРОВ РОЖДЕСТВА",
-                "КОКОСОВЫЕ (КИЛИНГ) ОСТРОВА",
-                "КОЛУМБИЯ",
-                "КОМОРЫ",
-                "МАЙОТТА",
-                "КОНГО",
-                "КОНГО, ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА",
-                "ОСТРОВА КУКА",
-                "КОСТА-РИКА",
-                "ХОРВАТИЯ",
-                "КУБА",
-                "КИПР",
-                "ЧЕХИЯ",
-                "БЕНИН",
-                "ДАНИЯ",
-                "ДОМИНИКА",
-                "ДОМИНИКАНСКАЯ РЕСПУБЛИКА",
-                "ЭКВАДОР",
-                "ЭЛЬ-САЛЬВАДОР",
-                "ЭКВАТОРИАЛЬНАЯ ГВИНЕЯ",
-                "ЭФИОПИЯ",
-                "ЭРИТРЕЯ",
-                "ЭСТОНИЯ",
-                "ФАРЕРСКИЕ ОСТРОВА",
-                "ФОЛКЛЕНДСКИЕ ОСТРОВА (МАЛЬВИНСКИЕ)",
-                "ЮЖНАЯ ДЖОРДЖИЯ И ЮЖНЫЕ САНДВИЧЕВЫ ОСТРОВА",
-                "ФИДЖИ",
-                "ФИНЛЯНДИЯ",
-                "ЭЛАНДСКИЕ ОСТРОВА",
-                "ФРАНЦИЯ",
-                "ФРАНЦУЗСКАЯ ГВИАНА",
-                "ФРАНЦУЗСКАЯ ПОЛИНЕЗИЯ",
-                "ФРАНЦУЗСКИЕ ЮЖНЫЕ ТЕРРИТОРИИ",
-                "ДЖИБУТИ",
-                "ГАБОН",
-                "ГРУЗИЯ",
-                "ГАМБИЯ",
-                "ПАЛЕСТИНА, ГОСУДАРСТВО",
-                "ГЕРМАНИЯ",
-                "ГАНА",
-                "ГИБРАЛТАР",
-                "КИРИБАТИ",
-                "ГРЕЦИЯ",
-                "ГРЕНЛАНДИЯ",
-                "ГРЕНАДА",
-                "ГВАДЕЛУПА",
-                "ГУАМ",
-                "ГВАТЕМАЛА",
-                "ГВИНЕЯ",
-                "ГАЙАНА",
-                "ГАИТИ",
-                "ОСТРОВ ХЕРД И ОСТРОВА МАКДОНАЛЬД",
-                "ПАПСКИЙ ПРЕСТОЛ (ГОСУДАРСТВО - ГОРОД ВАТИКАН)",
-                "ГОНДУРАС",
-                "ГОНКОНГ",
-                "ВЕНГРИЯ",
-                "ИСЛАНДИЯ",
-                "ИНДИЯ",
-                "ИНДОНЕЗИЯ",
-                "ИРАН (ИСЛАМСКАЯ РЕСПУБЛИКА)",
-                "ИРАК","ИРЛАНДИЯ",
-                "ИЗРАИЛЬ","ИТАЛИЯ","КОТ Д'ИВУАР","ЯМАЙКА","ЯПОНИЯ",
-                "КАЗАХСТАН","ИОРДАНИЯ","КЕНИЯ","КОРЕЯ, НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","КОРЕЯ, РЕСПУБЛИКА","КУВЕЙТ","КИРГИЗИЯ",
-                "ЛАОССКАЯ НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","ЛИВАН","ЛЕСОТО","ЛАТВИЯ","ЛИБЕРИЯ","ЛИВИЯ","ЛИХТЕНШТЕЙН",
-                "ЛИТВА",
-                "ЛЮКСЕМБУРГ",
-                "МАКАО",
-                "МАДАГАСКАР","МАЛАВИ",
-                "МАЛАЙЗИЯ",
-                "МАЛЬДИВЫ",
-                "МАЛИ",
-                "МАЛЬТА",
-                "МАРТИНИКА",
-                "МАВРИТАНИЯ",
-                "МАВРИКИЙ",
-                "МЕКСИКА",
-                "МОНАКО",
-                "МОНГОЛИЯ",
-                "МОЛДОВА, РЕСПУБЛИКА",
-                "ЧЕРНОГОРИЯ",
-                "МОНТСЕРРАТ",
-                "МАРОККО",
-                "МОЗАМБИК",
-                "ОМАН",
-                "НАМИБИЯ",
-                "НАУРУ",
-                "НЕПАЛ",
-                "НИДЕРЛАНДЫ",
-                "КЮРАСАО",
-                "АРУБА",
-                "СЕН-МАРТЕН (нидерландская часть)",
-                "БОНЭЙР, СИНТ-ЭСТАТИУС И САБА","НОВАЯ КАЛЕДОНИЯ","ВАНУАТУ","НОВАЯ ЗЕЛАНДИЯ","НИКАРАГУА","НИГЕР",
-                "НИГЕРИЯ","НИУЭ","ОСТРОВ НОРФОЛК","НОРВЕГИЯ","СЕВЕРНЫЕ МАРИАНСКИЕ ОСТРОВА",
-                "МАЛЫЕ ТИХООКЕАНСКИЕ ОТДАЛЕННЫЕ ОСТРОВА СОЕДИНЕННЫХ ШТАТОВ","МИКРОНЕЗИЯ, ФЕДЕРАТИВНЫЕ ШТАТЫ","МАРШАЛЛОВЫ ОСТРОВА",
-                "ПАЛАУ","ПАКИСТАН","ПАНАМА","ПАПУА-НОВАЯ ГВИНЕЯ","ПАРАГВАЙ","ПЕРУ",
-                "ФИЛИППИНЫ","ПИТКЕРН","ПОЛЬША","ПОРТУГАЛИЯ","ГВИНЕЯ-БИСАУ","ТИМОР-ЛЕСТЕ",
-                "ПУЭРТО-РИКО","КАТАР","РЕЮНЬОН","РУМЫНИЯ","РОССИЯ","РУАНДА","СЕН-БАРТЕЛЕМИ",
-                "СВЯТАЯ ЕЛЕНА, ОСТРОВ ВОЗНЕСЕНИЯ, ТРИСТАН-ДА-КУНЬЯ","СЕНТ-КИТС И НЕВИС","АНГИЛЬЯ","СЕНТ-ЛЮСИЯ",
-                "СЕН-МАРТЕН (французская часть)","СЕН-ПЬЕР И МИКЕЛОН","СЕНТ-ВИНСЕНТ И ГРЕНАДИНЫ",
-                "САН-МАРИНО","САН-ТОМЕ И ПРИНСИПИ","САУДОВСКАЯ АРАВИЯ","СЕНЕГАЛ","СЕРБИЯ","СЕЙШЕЛЫ",
-                "СЬЕРРА-ЛЕОНЕ","СИНГАПУР","СЛОВАКИЯ","ВЬЕТНАМ","СЛОВЕНИЯ","СОМАЛИ","ЮЖНАЯ АФРИКА","ЗИМБАБВЕ","ИСПАНИЯ",
-                "ЗАПАДНАЯ САХАРА","СУДАН","СУРИНАМ","ШПИЦБЕРГЕН И ЯН МАЙЕН","ЭСВАТИНИ","ШВЕЦИЯ","ШВЕЙЦАРИЯ",
-                "СИРИЙСКАЯ АРАБСКАЯ РЕСПУБЛИКА","ТАДЖИКИСТАН","ТАИЛАНД","ТОГО","ТОКЕЛАУ","ТОНГА","ТРИНИДАД И ТОБАГО",
-                "ОБЪЕДИНЕННЫЕ АРАБСКИЕ ЭМИРАТЫ","ТУНИС","ТУРЦИЯ","ТУРКМЕНИСТАН","ОСТРОВА ТЕРКС И КАЙКОС",
-                "ТУВАЛУ","УГАНДА","УКРАИНА","СЕВЕРНАЯ МАКЕДОНИЯ","ЕГИПЕТ",
-                "СОЕДИНЕННОЕ КОРОЛЕВСТВО","ГЕРНСИ","ДЖЕРСИ","ОСТРОВ МЭН","ТАНЗАНИЯ, ОБЪЕДИНЕННАЯ РЕСПУБЛИКА","СОЕДИНЕННЫЕ ШТАТЫ",
-                "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН",
-                "ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН",
-                "ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ","ЮЖНЫЙ СУДАН"};
 
         //ProviderOrRecieverOKPONote property
         public string ProviderOrRecieverOKPONote
@@ -602,17 +508,17 @@ namespace Models
             }
             set
             {
-                _ProviderOrRecieverOKPONote_Not_Valid = value;
+                ProviderOrRecieverOKPONote_Validation(value);
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), _ProviderOrRecieverOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
         }
 
         private string _ProviderOrRecieverOKPONote_Not_Valid = "";
-        private void ProviderOrRecieverOKPONote_Validation()
+        private void ProviderOrRecieverOKPONote_Validation(string value)
         {
             ClearErrors(nameof(ProviderOrRecieverOKPONote));
         }
@@ -640,27 +546,33 @@ namespace Models
 
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
-                    _dataAccess.Set(nameof(TransporterOKPO), _TransporterOKPO_Not_Valid);
+                    _dataAccess.Set(nameof(TransporterOKPO), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
 
         private string _TransporterOKPO_Not_Valid = "";
-        private void TransporterOKPO_Validation(string value)//TODO
+        private void TransporterOKPO_Validation(string value)//Done
         {
             ClearErrors(nameof(TransporterOKPO));
-            if ((value == null) || value.Equals(_TransporterOKPO_Not_Valid))
+            if (string.IsNullOrEmpty(value))
             {
-                AddError(nameof(TransporterOKPO), "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим.") || value.Equals("-")) return;
+            if (value.Equals("-")) return;
+            if (value.Equals("Минобороны")) return;
+            if (value.Equals("прим."))
+            {
+                if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
+                    AddError(nameof(TransporterOKPONote), "Заполните примечание");
+                return;
+            }
             if ((value.Length != 8) && (value.Length != 14))
                 AddError(nameof(TransporterOKPO), "Недопустимое значение");
             else
             {
-                var mask = new Regex("[0123456789_]*");
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value))
                     AddError(nameof(TransporterOKPO), "Недопустимое значение");
             }
@@ -684,17 +596,17 @@ namespace Models
             }
             set
             {
-                _TransporterOKPONote_Not_Valid = value;
+                TransporterOKPONote_Validation(value);
                 if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
-                    _dataAccess.Set(nameof(TransporterOKPONote), _TransporterOKPONote_Not_Valid);
+                    _dataAccess.Set(nameof(TransporterOKPONote), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPONote));
             }
         }
 
         private string _TransporterOKPONote_Not_Valid = "";
-        private void TransporterOKPONote_Validation()
+        private void TransporterOKPONote_Validation(string value)
         {
             ClearErrors(nameof(TransporterOKPONote));
         }
@@ -717,10 +629,10 @@ namespace Models
             }
             set
             {
-                _StoragePlaceName_Not_Valid = value;
+                StoragePlaceName_Validation(value);
                 if (GetErrors(nameof(StoragePlaceName)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceName), _StoragePlaceName_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
@@ -730,6 +642,13 @@ namespace Models
         private void StoragePlaceName_Validation(string value)//Ready
         {
             ClearErrors(nameof(StoragePlaceName));
+            if (string.IsNullOrEmpty(value)) return;
+            var spr = new List<string>();
+            if (!spr.Contains(value))
+            {
+                AddError(nameof(StoragePlaceName), "Недопустимое значение");
+                return;
+            }
         }
         //StoragePlaceName property
 
@@ -749,10 +668,10 @@ namespace Models
             }
             set
             {
-                _StoragePlaceNameNote_Not_Valid = value;
+                StoragePlaceNameNote_Validation(value);
                 if (GetErrors(nameof(StoragePlaceNameNote)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceNameNote), _StoragePlaceNameNote_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceNameNote), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
@@ -782,10 +701,10 @@ namespace Models
             }
             set
             {
-                _StoragePlaceCode_Not_Valid = value;
+                StoragePlaceCode_Validation(value);
                 if (GetErrors(nameof(StoragePlaceCode)) == null)
                 {
-                    _dataAccess.Set(nameof(StoragePlaceCode), _StoragePlaceCode_Not_Valid);
+                    _dataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
@@ -795,25 +714,10 @@ namespace Models
         private void StoragePlaceCode_Validation(string value)//TODO
         {
             ClearErrors(nameof(StoragePlaceCode));
+            if (string.IsNullOrEmpty(value)|| value.Equals("-")) return;
             var lst = new List<string>();//HERE binds spr
-            foreach (var item in lst)
-            {
-                if (item.Equals(value)) return;
-            }
-            AddError(nameof(StoragePlaceCode), "Такого значения нет в справочнике");
-            //ClearErrors(nameof(StoragePlaceCode));
-            //if (!(value == "-"))
-            //    if (value.Length != 8)
-            //        AddError(nameof(StoragePlaceCode), "Недопустимое значение");
-            //    else
-            //        for (int i = 0; i < 8; i++)
-            //        {
-            //            if (!((value[i] >= '0') && (value[i] <= '9')))
-            //            {
-            //                AddError(nameof(StoragePlaceCode), "Недопустимое значение");
-            //                return;
-            //            }
-            //        }
+            if(!lst.Contains(value))
+            AddError(nameof(StoragePlaceCode), "Недопустимое значение");
         }
         //StoragePlaceCode property
 
@@ -834,10 +738,10 @@ namespace Models
             }
             set
             {
-                _CodeRAO_Not_Valid = value;
+                CodeRAO_Validation(value);
                 if (GetErrors(nameof(CodeRAO)) == null)
                 {
-                    _dataAccess.Set(nameof(CodeRAO), _CodeRAO_Not_Valid);
+                    _dataAccess.Set(nameof(CodeRAO), value);
                 }
                 OnPropertyChanged(nameof(CodeRAO));
             }
@@ -847,6 +751,17 @@ namespace Models
         private void CodeRAO_Validation(string value)//TODO
         {
             ClearErrors(nameof(CodeRAO));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(CodeRAO), "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{11}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(CodeRAO), "Недопустимое значение");
+                return;
+            }
         }
         //CodeRAO property
 
@@ -867,10 +782,10 @@ namespace Models
             }
             set
             {
-                _StatusRAO_Not_Valid = value;
+                StatusRAO_Validation(value);
                 if (GetErrors(nameof(StatusRAO)) == null)
                 {
-                    _dataAccess.Set(nameof(StatusRAO), _StatusRAO_Not_Valid);
+                    _dataAccess.Set(nameof(StatusRAO), value);
                 }
                 OnPropertyChanged(nameof(StatusRAO));
             }
@@ -880,18 +795,43 @@ namespace Models
         private void StatusRAO_Validation(string value)//TODO
         {
             ClearErrors(nameof(StatusRAO));
+            if (value.Length == 1)
+            {
+                int tmp;
+                try
+                {
+                    tmp = int.Parse(value);
+                    if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
+                    {
+                        AddError(nameof(StatusRAO), "Недопустимое значение");
+                    }
+                }
+                catch (Exception)
+                {
+                    AddError(nameof(StatusRAO), "Недопустимое значение");
+                }
+                return;
+            }
+            if ((value.Length != 8) && (value.Length != 14))
+                AddError(nameof(StatusRAO), "Недопустимое значение");
+            else
+            {
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+                if (!mask.IsMatch(value))
+                    AddError(nameof(StatusRAO), "Недопустимое значение");
+            }
         }
         //StatusRAO property
 
         //Volume20 property
         [Attributes.Form_Property("Объем, куб. м")]
-        public double Volume20
+        public string Volume20
         {
             get
             {
                 if (GetErrors(nameof(Volume20)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Volume20));
+                    return (string)_dataAccess.Get(nameof(Volume20));
                 }
                 else
                 {
@@ -900,31 +840,52 @@ namespace Models
             }
             set
             {
-                _Volume20_Not_Valid = value;
+                Volume20_Validation(value);
                 if (GetErrors(nameof(Volume20)) == null)
                 {
-                    _dataAccess.Set(nameof(Volume20), _Volume20_Not_Valid);
+                    _dataAccess.Set(nameof(Volume20), value);
                 }
                 OnPropertyChanged(nameof(Volume20));
             }
         }
 
-        private double _Volume20_Not_Valid = -1;
-        private void Volume20_Validation(double value)//TODO
+        private string _Volume20_Not_Valid = "";
+        private void Volume20_Validation(string value)//TODO
         {
             ClearErrors(nameof(Volume20));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Volume20), "Поле не заполнено");
+                return;
+            }
+            if (!((value.Contains('e') || value.Contains('E'))))
+            {
+                AddError(nameof(Volume20), "Недопустимое значение");
+                return;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(Volume20), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(Volume20), "Недопустимое значение");
+            }
         }
         //Volume20 property
 
         //Mass21 Property
         [Attributes.Form_Property("Масса, т")]
-        public double Mass21
+        public string Mass21
         {
             get
             {
                 if (GetErrors(nameof(Mass21)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass21));
+                    return (string)_dataAccess.Get(nameof(Mass21));
                 }
                 else
                 {
@@ -933,19 +894,40 @@ namespace Models
             }
             set
             {
-                _Mass21_Not_Valid = value;
+                Mass21_Validation(value);
                 if (GetErrors(nameof(Mass21)) == null)
                 {
-                    _dataAccess.Set(nameof(Mass21), _Mass21_Not_Valid);
+                    _dataAccess.Set(nameof(Mass21), value);
                 }
                 OnPropertyChanged(nameof(Mass21));
             }
         }
 
-        private double _Mass21_Not_Valid = -1;
-        private void Mass21_Validation()//TODO
+        private string _Mass21_Not_Valid = "";
+        private void Mass21_Validation(string value)//TODO
         {
             ClearErrors(nameof(Mass21));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(Mass21), "Поле не заполнено");
+                return;
+            }
+            if (!((value.Contains('e') || value.Contains('E'))))
+            {
+                AddError(nameof(Mass21), "Недопустимое значение");
+                return;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(Mass21), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(Mass21), "Недопустимое значение");
+            }
         }
         //Mass21 Property
 
@@ -966,10 +948,10 @@ namespace Models
             }
             set
             {
-                _TritiumActivity_Not_Valid = value;
+                TritiumActivity_Validation(value);
                 if (GetErrors(nameof(TritiumActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(TritiumActivity), _TritiumActivity_Not_Valid);
+                    _dataAccess.Set(nameof(TritiumActivity), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivity));
             }
@@ -984,23 +966,16 @@ namespace Models
                 AddError(nameof(TritiumActivity), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(TritiumActivity), "Недопустимое значение");
                 return;
-            }
-            string tmp = value;
-            int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
-            {
-                tmp = tmp.Remove(len - 1, 1);
-                tmp = tmp.Remove(0, 1);
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                     AddError(nameof(TritiumActivity), "Число должно быть больше нуля");
             }
             catch
@@ -1027,10 +1002,10 @@ namespace Models
             }
             set
             {
-                _BetaGammaActivity_Not_Valid = value;
+                BetaGammaActivity_Validation(value);
                 if (GetErrors(nameof(BetaGammaActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivity), _BetaGammaActivity_Not_Valid);
+                    _dataAccess.Set(nameof(BetaGammaActivity), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
@@ -1045,23 +1020,16 @@ namespace Models
                 AddError(nameof(BetaGammaActivity), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(BetaGammaActivity), "Недопустимое значение");
                 return;
-            }
-            string tmp = value;
-            int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
-            {
-                tmp = tmp.Remove(len - 1, 1);
-                tmp = tmp.Remove(0, 1);
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                     AddError(nameof(BetaGammaActivity), "Число должно быть больше нуля");
             }
             catch
@@ -1088,10 +1056,10 @@ namespace Models
             }
             set
             {
-                _AlphaActivity_Not_Valid = value;
+                AlphaActivity_Validation(value);
                 if (GetErrors(nameof(AlphaActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(AlphaActivity), _AlphaActivity_Not_Valid);
+                    _dataAccess.Set(nameof(AlphaActivity), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivity));
             }
@@ -1106,23 +1074,16 @@ namespace Models
                 AddError(nameof(AlphaActivity), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(AlphaActivity), "Недопустимое значение");
                 return;
-            }
-            string tmp = value;
-            int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
-            {
-                tmp = tmp.Remove(len - 1, 1);
-                tmp = tmp.Remove(0, 1);
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                     AddError(nameof(AlphaActivity), "Число должно быть больше нуля");
             }
             catch
@@ -1149,10 +1110,10 @@ namespace Models
             }
             set
             {
-                _TransuraniumActivity_Not_Valid = value;
+                TransuraniumActivity_Validation(value);
                 if (GetErrors(nameof(TransuraniumActivity)) == null)
                 {
-                    _dataAccess.Set(nameof(TransuraniumActivity), _TransuraniumActivity_Not_Valid);
+                    _dataAccess.Set(nameof(TransuraniumActivity), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivity));
             }
@@ -1167,23 +1128,16 @@ namespace Models
                 AddError(nameof(TransuraniumActivity), "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(TransuraniumActivity), "Недопустимое значение");
                 return;
-            }
-            string tmp = value;
-            int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
-            {
-                tmp = tmp.Remove(len - 1, 1);
-                tmp = tmp.Remove(0, 1);
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                     AddError(nameof(TransuraniumActivity), "Число должно быть больше нуля");
             }
             catch
@@ -1210,10 +1164,10 @@ namespace Models
             }
             set
             {
-                _RefineOrSortRAOCode_Not_Valid = value;
+                RefineOrSortRAOCode_Validation(value);
                 if (GetErrors(nameof(RefineOrSortRAOCode)) == null)
                 {
-                    _dataAccess.Set(nameof(RefineOrSortRAOCode), _RefineOrSortRAOCode_Not_Valid);
+                    _dataAccess.Set(nameof(RefineOrSortRAOCode), value);
                 }
                 OnPropertyChanged(nameof(RefineOrSortRAOCode));
             }
@@ -1223,17 +1177,28 @@ namespace Models
         private void RefineOrSortRAOCode_Validation(string value)//TODO
         {
             ClearErrors(nameof(RefineOrSortRAOCode));
-            if (value.Length != 2)
-                AddError(nameof(RefineOrSortRAOCode), "Недопустимое значение");
-            else
-                for (int i = 0; i < 2; i++)
+            if (OperationCode == 55)
+            {
+                if (string.IsNullOrEmpty(value))
                 {
-                    if (!((value[i] >= '0') && (value[i] <= '9')))
-                    {
-                        AddError(nameof(RefineOrSortRAOCode), "Недопустимое значение");
-                        return;
-                    }
+                    AddError(nameof(RefineOrSortRAOCode), "Поле не заполнено");
+                    return;
                 }
+                var a = new Regex("^[0-9][0-9]$");
+                if (!a.IsMatch(value))
+                {
+                    AddError(nameof(RefineOrSortRAOCode), "Недопустимое значение");
+                    return;
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    AddError(nameof(RefineOrSortRAOCode), "Недопустимое значение");
+                    return;
+                }
+            }
         }
         //RefineOrSortRAOCode property
 
@@ -1254,10 +1219,10 @@ namespace Models
             }
             set
             {
-                _Subsidy_Not_Valid = value;
+                Subsidy_Validation(value);
                 if (GetErrors(nameof(Subsidy)) == null)
                 {
-                    _dataAccess.Set(nameof(Subsidy), _Subsidy_Not_Valid);
+                    _dataAccess.Set(nameof(Subsidy), value);
                 }
                 OnPropertyChanged(nameof(Subsidy));
             }
@@ -1267,6 +1232,7 @@ namespace Models
         private void Subsidy_Validation(string value)//Ready
         {
             ClearErrors(nameof(Subsidy));
+            if ((value == null) || value.Equals("")) return;
             try
             {
                 int tmp = Int32.Parse(value);
@@ -1297,20 +1263,130 @@ namespace Models
             }
             set
             {
-                _FcpNumber_Not_Valid = value;
+                FcpNumber_Validation(value);
                 if (GetErrors(nameof(FcpNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(FcpNumber), _FcpNumber_Not_Valid);
+                    _dataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
 
         private string _FcpNumber_Not_Valid = "";
-        private void FcpNuber_Validation(string value)//TODO
+        private void FcpNumber_Validation(string value)//TODO
         {
             ClearErrors(nameof(FcpNumber));
         }
         //FcpNumber property
+
+        protected override void OperationCode_Validation(short? value)//OK
+        {
+            ClearErrors(nameof(OperationCode));
+            if (value == null) return;
+            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
+            if (!spr.Contains((short)value))
+            {
+                AddError(nameof(OperationCode), "Недопустимое значение");
+                return;
+            }
+            bool a0 = value == 1;
+            bool a2 = value == 18;
+            bool a3 = value == 55;
+            bool a4 = value == 63;
+            bool a5 = value == 64;
+            bool a6 = value == 68;
+            bool a7 = value == 97;
+            bool a8 = value == 98;
+            bool a9 = value == 99;
+            bool a10 = (value >= 21) && (value <= 29);
+            bool a11 = (value >= 31) && (value <= 39);
+            if (!(a0 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11))
+                AddError(nameof(OperationCode), "Код операции не может быть использован в форме 1.7");
+            return;
+        }
+
+        protected override void OperationDate_Validation(string value)
+        {
+            ClearErrors(nameof(OperationDate));
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(OperationDate), "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value); }
+            catch (Exception)
+            {
+                AddError(nameof(OperationDate), "Недопустимое значение");
+                return;
+            }
+        }
+
+        protected override void DocumentNumber_Validation(string value)
+        {
+            ClearErrors(nameof(DocumentNumber));
+        }
+
+        protected override void DocumentVid_Validation(byte? value)
+        {
+            ClearErrors(nameof(DocumentVid));
+            List<Tuple<byte?, string>> spr = new List<Tuple<byte?, string>>
+            {
+                new Tuple<byte?, string>(0,""),
+                new Tuple<byte?, string>(1,""),
+                new Tuple<byte?, string>(2,""),
+                new Tuple<byte?, string>(3,""),
+                new Tuple<byte?, string>(4,""),
+                new Tuple<byte?, string>(5,""),
+                new Tuple<byte?, string>(6,""),
+                new Tuple<byte?, string>(7,""),
+                new Tuple<byte?, string>(8,""),
+                new Tuple<byte?, string>(9,""),
+                new Tuple<byte?, string>(10,""),
+                new Tuple<byte?, string>(11,""),
+                new Tuple<byte?, string>(12,""),
+                new Tuple<byte?, string>(13,""),
+                new Tuple<byte?, string>(14,""),
+                new Tuple<byte?, string>(15,""),
+                new Tuple<byte?, string>(19,""),
+                new Tuple<byte?, string>(null,"")
+            };   //HERE BINDS SPRAVOCHNICK
+            foreach (var item in spr)
+            {
+                if (item.Item1 == value) return;
+            }
+            AddError(nameof(DocumentVid), "Недопустимое значение");
+        }
+
+        protected override void DocumentDate_Validation(string value)
+        {
+            ClearErrors(nameof(DocumentDate));
+            if ((value == null) || value.Equals(""))
+            {
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(DocumentDate), "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value); }
+            catch (Exception)
+            {
+                AddError(nameof(DocumentDate), "Недопустимое значение");
+                return;
+            }
+            bool b = (OperationCode == 68);
+            bool c = (OperationCode == 52) || (OperationCode == 55);
+            bool d = (OperationCode == 18) || (OperationCode == 51);
+            if (b || c || d)
+                if (!value.Equals(OperationDate))
+                    AddError(nameof(DocumentDate), "Заполните примечание");
+        }
     }
 }

@@ -6,10 +6,14 @@
         public const string strNotNullDeclaration = " varchar(255) not null, ";
         public const string intNotNullDeclaration = " int not null, ";
         public const string shortNotNullDeclaration = " smallint not null, ";
+        public const string byteNullDeclaration = " tinyint null, ";
         public const string dateNotNullDeclaration = " timestamp not null, ";
         public const string doubleNotNullDeclaration = " float(53) not null, ";
         public const string boolNotNullDeclaration = " boolean not null, ";
         public const string floatNotNullDeclaration = " float(24) not null, ";
+        public const string shortNullDeclaration = " smallint null, ";
+        public const string intNullDeclaration = " int null, ";
+        public const string doubleNullDeclaration = " float(53) null, ";
         //Const_Params
 
         //Список всех форм
@@ -27,7 +31,7 @@
                 "CorrectionNumber" + shortNotNullDeclaration +
                 "OperationCode" + strNotNullDeclaration +
                 "OperationDate" + dateNotNullDeclaration +
-                "DocumentVid" + shortNotNullDeclaration +
+                "DocumentVid" + byteNullDeclaration +
                 "DocumentNumber" + strNotNullDeclaration +
                 "DocumentNumberRecoded" + strNotNullDeclaration +
                 "DocumentDateNote" + strNotNullDeclaration +
@@ -81,7 +85,7 @@
                 "Radionuclids" + strNotNullDeclaration +
                 "FactoryNumber" + strNotNullDeclaration +
                 "FactoryNumberRecoded" + strNotNullDeclaration +
-                "Quantity" + intNotNullDeclaration +
+                "Quantity" + intNullDeclaration +
                 "Activity" + strNotNullDeclaration +
                 "ActivityNote" + strNotNullDeclaration +
                 "CreationDate" + strNotNullDeclaration +
@@ -101,6 +105,10 @@
                 "PackTypeRecoded" + strNotNullDeclaration +
                 "PackTypeNote" + strNotNullDeclaration +
                 "PackNumber" + strNotNullDeclaration +
+                "OwnerNote" + strNotNullDeclaration +
+                "ActivityNote" + strNotNullDeclaration +
+                "PackNumberNote" + strNotNullDeclaration +
+                "CreationDateNote" + strNotNullDeclaration +
                 "PackNumberRecoded" + strNotNullDeclaration.Replace(",", "");
         }
 
@@ -268,10 +276,10 @@
             return
                 Form1() + "," +
             "SpecificActivity" + strNotNullDeclaration +
-            "VolumeOutOfPack" + doubleNotNullDeclaration +
+            "VolumeOutOfPack" + strNotNullDeclaration +
             "PackFactoryNumber" + strNotNullDeclaration +
-            "MassOutOfPack" + doubleNotNullDeclaration +
-            "FormingDate" + dateNotNullDeclaration +
+            "MassOutOfPack" + strNotNullDeclaration +
+            "FormingDate" + strNotNullDeclaration +
             "CodeRAO" + strNotNullDeclaration +
             "AlphaActivity" + strNotNullDeclaration +
             "BetaGammaActivity" + strNotNullDeclaration +
@@ -288,7 +296,7 @@
             "Mass" + strNotNullDeclaration +
             "PassportNumber" + strNotNullDeclaration +
             "Radionuclids" + strNotNullDeclaration +
-            "Quantity" + intNotNullDeclaration +
+            "Quantity" + intNullDeclaration +
             "ProviderOrRecieverOKPO" + strNotNullDeclaration +
             "ProviderOrRecieverOKPONote" + strNotNullDeclaration +
             "TransporterOKPO" + strNotNullDeclaration +
@@ -306,12 +314,12 @@
         {
             return
                 Form1() + "," +
-            "Volume20" + doubleNotNullDeclaration +
-            "Volume6" + doubleNotNullDeclaration +
-            "SaltConcentration" + doubleNotNullDeclaration +
+            "Volume20" + strNotNullDeclaration +
+            "Volume6" + strNotNullDeclaration +
+            "SaltConcentration" + doubleNullDeclaration +
             "SpecificActivity" + strNotNullDeclaration +
-            "Mass21" + doubleNotNullDeclaration +
-            "Mass7" + doubleNotNullDeclaration +
+            "Mass21" + strNotNullDeclaration +
+            "Mass7" + strNotNullDeclaration +
             "IndividualNumberZHRO" + strNotNullDeclaration +
             "IndividualNumberZHROrecoded" + strNotNullDeclaration +
             "CodeRAO" + strNotNullDeclaration +
@@ -342,6 +350,7 @@
                 Form1() + "," +
             "Activity" + strNotNullDeclaration +
             "CodeTypeAccObject" + shortNotNullDeclaration +
+            "Quantity" + intNullDeclaration +
             "Radionuclids" + strNotNullDeclaration.Replace(",", "");
         }
         //1_Forms
@@ -381,21 +390,21 @@
             return
                 Form2() + "," +
             "RefineMachineName" + strNotNullDeclaration +
-            "MachineCode" + shortNotNullDeclaration +
+            "MachineCode" + byteNullDeclaration +
             "MachinePower" + strNotNullDeclaration +
-            "NumberOfHoursPerYear" + intNotNullDeclaration +
+            "NumberOfHoursPerYear" + strNotNullDeclaration +
             "CodeRAOIn" + strNotNullDeclaration +
             "StatusRAOIn" + strNotNullDeclaration +
-            "VolumeIn" + doubleNotNullDeclaration +
-            "MassIn" + doubleNotNullDeclaration +
-            "QuantityIn" + intNotNullDeclaration +
+            "VolumeIn" + strNotNullDeclaration +
+            "MassIn" + strNotNullDeclaration +
+            "QuantityIn" + strNotNullDeclaration +
             "CodeRAOout" + strNotNullDeclaration +
             "StatusRAOout" + strNotNullDeclaration +
             "VolumeOut" + doubleNotNullDeclaration +
             "MassOut" + doubleNotNullDeclaration +
             "TritiumActivityIn" + strNotNullDeclaration +
             "TritiumActivityOut" + strNotNullDeclaration +
-            "QuantityOZIIIout" + intNotNullDeclaration +
+            "QuantityOZIIIout" + strNotNullDeclaration +
             "TransuraniumActivityIn" + strNotNullDeclaration +
             "TransuraniumActivityOut" + strNotNullDeclaration +
             "BetaGammaActivityIn" + strNotNullDeclaration +
@@ -414,8 +423,8 @@
             "MainRadionuclids" + strNotNullDeclaration +
             "Subsidy" + strNotNullDeclaration +
             "FcpNumber" + strNotNullDeclaration +
-            "QuantityOZIII" + intNotNullDeclaration +
-            "PackQuantity" + intNotNullDeclaration +
+            "QuantityOZIII" + intNullDeclaration +
+            "PackQuantity" + intNullDeclaration +
             "CodeRAO" + strNotNullDeclaration +
             "StatusRAO" + strNotNullDeclaration +
             "PackName" + strNotNullDeclaration +
@@ -426,10 +435,10 @@
             "StoragePlaceCode" + strNotNullDeclaration +
             "StoragePlaceName" + strNotNullDeclaration +
             "StoragePlaceNameNote" + strNotNullDeclaration +
-            "VolumeOutOfPack" + doubleNotNullDeclaration +
-            "MassOutOfPack" + doubleNotNullDeclaration +
-            "VolumeInPack" + doubleNotNullDeclaration +
-            "MassInPack" + doubleNotNullDeclaration.Replace(",", "");
+            "VolumeOutOfPack" + strNotNullDeclaration +
+            "MassOutOfPack" + strNotNullDeclaration +
+            "VolumeInPack" + strNotNullDeclaration +
+            "MassInPack" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form23()
         {
@@ -449,7 +458,7 @@
             "StoragePlaceName" + strNotNullDeclaration +
             "StoragePlaceNameNote" + strNotNullDeclaration +
             "Volume" + strNotNullDeclaration +
-            "Mass" + doubleNotNullDeclaration.Replace(",", "");
+            "Mass" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form24()
         {

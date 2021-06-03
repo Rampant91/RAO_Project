@@ -31,7 +31,7 @@ namespace Models.Abstracts
                 _CorrectionNumber_Not_Valid = value;
                 if (GetErrors(nameof(CorrectionNumber)) == null)
                 {
-                    _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
+                    _dataAccess.Set(nameof(CorrectionNumber), value);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
@@ -65,7 +65,7 @@ namespace Models.Abstracts
                 _NumberInOrder_Not_Valid = value;
                 if (GetErrors(nameof(NumberInOrder)) == null)
                 {
-                    _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
+                    _dataAccess.Set(nameof(NumberInOrder), value);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
