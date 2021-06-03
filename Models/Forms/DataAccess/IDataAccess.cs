@@ -6,7 +6,7 @@ namespace Models.DataAccess
 {
     public interface IDataAccess<T>
     {
-        Action<T> Handler { get; set; }
+        Func<IDataAccess<T>,bool> Handler { get; set; }
         T Value { get; set; }
 
         void ClearErrors();

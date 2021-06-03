@@ -13,22 +13,22 @@ namespace Collections
 {
     public class Reports : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-        IDataAccess _dataAccess { get; set; }
+        IDataAccessCollection _dataAccess { get; set; }
 
-        public Reports(IDataAccess Access)
+        public Reports(IDataAccessCollection Access)
         {
             _dataAccess = Access;
             Init();
         }
         public Reports()
         {
-            _dataAccess = new Models.DataAccess.RamAccess();
+            _dataAccess = new DataAccessCollection();
             Init();
         }
 
         void Init()
         {
-            Report_Collection.CollectionChanged += CollectionChanged;
+            Report_Collection.Value.CollectionChanged += CollectionChanged;
         }
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -48,74 +48,49 @@ namespace Collections
         }
 
         [Key]
-        public int ReportsId { get; set; }
-
-        public virtual Report Master
+        public IDataAccess<int> ReportsId
         {
             get
             {
-                if (GetErrors(nameof(Master)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(Master));
-                    if (tmp == null)
-                    {
-                        _dataAccess.Set(nameof(Master), new Collections.Report());
-                    }
-                    tmp = _dataAccess.Get(nameof(Master));
-                    return (Collections.Report)tmp;
-                }
-                else
-                {
-                    return _Master_Not_Valid;
-                }
+                return _dataAccess.Get<int>(nameof(ReportsId));
             }
             set
             {
-                _Master_Not_Valid = value;
-                if (GetErrors(nameof(Master)) == null)
-                {
-                    _dataAccess.Set(nameof(Master), _Master_Not_Valid);
-                }
+                _dataAccess.Set(nameof(ReportsId), value);
+                OnPropertyChanged(nameof(ReportsId));
+            }
+        }
+
+        public virtual IDataAccess<Report> Master
+        {
+            get
+            {
+                return _dataAccess.Get<Report>(nameof(Master));
+            }
+            set
+            {
+                _dataAccess.Set(nameof(Master), value);
                 OnPropertyChanged(nameof(Master));
             }
         }
-        private Report _Master_Not_Valid = new Report();
-        private bool Master_Validation()
+        private bool Master_Validation(IDataAccess<Report> value)
         {
             return true;
         }
 
-        public virtual ObservableCollection<Report> Report_Collection
+        public virtual IDataAccess<ObservableCollection<Report>> Report_Collection
         {
             get
             {
-                if (GetErrors(nameof(Report_Collection)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(Report_Collection));
-                    if (tmp == null)
-                    {
-                        _dataAccess.Set(nameof(Report_Collection), new ObservableCollection<Collections.Report>());
-                    }
-                    tmp = _dataAccess.Get(nameof(Report_Collection));
-                    return (ObservableCollection<Collections.Report>)tmp;
-                }
-                else
-                {
-                    return _Report_Collection_Not_Valid;
-                }
+                return _dataAccess.Get<ObservableCollection<Report>>(nameof(Master));
             }
             set
             {
-                _Report_Collection_Not_Valid = value;
-                if (GetErrors(nameof(Report_Collection)) == null)
-                {
-                    _dataAccess.Set(nameof(Report_Collection), _Report_Collection_Not_Valid);
-                }
-                OnPropertyChanged(nameof(Report_Collection));
+                _dataAccess.Set(nameof(Master), value);
+                OnPropertyChanged(nameof(Master));
             }
         }
-        private ObservableCollection<Report> _Report_Collection_Not_Valid = new ObservableCollection<Report>();
-        private bool Report_Collection_Validation()
+        private bool Report_Collection_Validation(IDataAccess<ObservableCollection<Report>> value)
         {
             return true;
         }

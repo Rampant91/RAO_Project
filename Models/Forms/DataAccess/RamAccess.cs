@@ -12,7 +12,7 @@ namespace Models.DataAccess
 {
     public class RamAccess<T> : IDataAccess<T>, INotifyDataErrorInfo
     {
-        public Action<T> Handler { get; set; }
+        public Func<IDataAccess<T>, bool> Handler { get; set; }
 
         T _value;
         public T Value 
@@ -23,11 +23,11 @@ namespace Models.DataAccess
             }
             set
             {
-                Handler(value);
                 Value = value;
+                Handler(this);
             }
         }
-        public RamAccess(Action<T> Handler,T Value)
+        public RamAccess(Func<IDataAccess<T>, bool> Handler,T Value)
         {
             this.Handler = Handler;
             this.Value = Value;
