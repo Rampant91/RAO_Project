@@ -423,8 +423,8 @@
             "MainRadionuclids" + strNotNullDeclaration +
             "Subsidy" + strNotNullDeclaration +
             "FcpNumber" + strNotNullDeclaration +
-            "QuantityOZIII" + intNotNullDeclaration +
-            "PackQuantity" + intNotNullDeclaration +
+            "QuantityOZIII" + intNullDeclaration +
+            "PackQuantity" + intNullDeclaration +
             "CodeRAO" + strNotNullDeclaration +
             "StatusRAO" + strNotNullDeclaration +
             "PackName" + strNotNullDeclaration +
@@ -435,10 +435,10 @@
             "StoragePlaceCode" + strNotNullDeclaration +
             "StoragePlaceName" + strNotNullDeclaration +
             "StoragePlaceNameNote" + strNotNullDeclaration +
-            "VolumeOutOfPack" + doubleNotNullDeclaration +
-            "MassOutOfPack" + doubleNotNullDeclaration +
-            "VolumeInPack" + doubleNotNullDeclaration +
-            "MassInPack" + doubleNotNullDeclaration.Replace(",", "");
+            "VolumeOutOfPack" + strNotNullDeclaration +
+            "MassOutOfPack" + strNotNullDeclaration +
+            "VolumeInPack" + strNotNullDeclaration +
+            "MassInPack" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form23()
         {
@@ -458,7 +458,7 @@
             "StoragePlaceName" + strNotNullDeclaration +
             "StoragePlaceNameNote" + strNotNullDeclaration +
             "Volume" + strNotNullDeclaration +
-            "Mass" + doubleNotNullDeclaration.Replace(",", "");
+            "Mass" + strNotNullDeclaration.Replace(",", "");
         }
         public static string Form24()
         {

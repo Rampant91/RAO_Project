@@ -36,7 +36,7 @@ namespace Models
             }
             set
             {
-                _CodeOYAT_Not_Valid = value;
+                CodeOYAT_Validation(value);
                 if (GetErrors(nameof(CodeOYAT)) == null)
                 {
                     _dataAccess.Set(nameof(CodeOYAT), value);
@@ -46,9 +46,10 @@ namespace Models
         }
 
         private string _CodeOYAT_Not_Valid = "";
-        private void CodeOYAT_Validation()
+        private void CodeOYAT_Validation(string value)
         {
             ClearErrors(nameof(CodeOYAT));
+
         }
         //CodeOYAT property
 
@@ -68,7 +69,7 @@ namespace Models
             }
             set
             {
-                _CodeOYATnote_Not_Valid = value;
+                CodeOYATnote_Validation(value);
                 if (GetErrors(nameof(CodeOYATnote)) == null)
                 {
                     _dataAccess.Set(nameof(CodeOYATnote), value);
@@ -78,7 +79,7 @@ namespace Models
         }
 
         private string _CodeOYATnote_Not_Valid = "";
-        private void CodeOYATnote_Validation()
+        private void CodeOYATnote_Validation(string value)
         {
             ClearErrors(nameof(CodeOYATnote));
         }
@@ -101,7 +102,7 @@ namespace Models
             }
             set
             {
-                _FcpNumber_Not_Valid = value;
+                FcpNumber_Validation(value);
                 if (GetErrors(nameof(FcpNumber)) == null)
                 {
                     _dataAccess.Set(nameof(FcpNumber), value);
@@ -111,7 +112,7 @@ namespace Models
         }
 
         private string _FcpNumber_Not_Valid = "";
-        private void FcpNuber_Validation(string value)//TODO
+        private void FcpNumber_Validation(string value)//TODO
         {
             ClearErrors(nameof(FcpNumber));
         }
@@ -134,7 +135,7 @@ namespace Models
             }
             set
             {
-                _MassCreated_Not_Valid = value;
+                MassCreated_Validation(value);
                 if (GetErrors(nameof(MassCreated)) == null)
                 {
                     _dataAccess.Set(nameof(MassCreated), value);
@@ -144,7 +145,7 @@ namespace Models
         }
 
         private double _MassCreated_Not_Valid = -1;
-        private void MassCreated_Validation()//TODO
+        private void MassCreated_Validation(double value)//TODO
         {
             ClearErrors(nameof(MassCreated));
         }
@@ -169,7 +170,7 @@ namespace Models
             set
             {
                 QuantityCreated_Validation(value);
-                //_QuantityCreated_Not_Valid = value;
+                //_QuantityCreated_Validation(value);
 
                 if (GetErrors(nameof(QuantityCreated)) == null)
                 {
@@ -205,7 +206,7 @@ namespace Models
             }
             set
             {
-                _QuantityCreatedNote_Not_Valid = value;
+                QuantityCreatedNote_Validation(value);
                 if (GetErrors(nameof(QuantityCreatedNote)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityCreatedNote), value);
@@ -240,7 +241,7 @@ namespace Models
             }
             set
             {
-                _MassFromAnothers_Not_Valid = value;
+                MassFromAnothers_Validation(value);
                 if (GetErrors(nameof(MassFromAnothers)) == null)
                 {
                     _dataAccess.Set(nameof(MassFromAnothers), value);
@@ -250,7 +251,7 @@ namespace Models
         }
 
         private double _MassFromAnothers_Not_Valid = -1;
-        private void MassFromAnothers_Validation()//TODO
+        private void MassFromAnothers_Validation(double value)//TODO
         {
             ClearErrors(nameof(MassFromAnothers));
         }
@@ -275,7 +276,7 @@ namespace Models
             set
             {
                 QuantityFromAnothers_Validation(value);
-                //_QuantityFromAnothers_Not_Valid = value;
+                //_QuantityFromAnothers_Validation(value);
                 
                 if (GetErrors(nameof(QuantityFromAnothers)) == null)
                 {
@@ -311,7 +312,7 @@ namespace Models
             }
             set
             {
-                _QuantityFromAnothersNote_Not_Valid = value;
+                QuantityFromAnothersNote_Validation(value);
                 if (GetErrors(nameof(QuantityFromAnothersNote)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityFromAnothersNote), value);
@@ -346,7 +347,7 @@ namespace Models
             }
             set
             {
-                _MassFromAnothersImported_Not_Valid = value;
+                MassFromAnothersImported_Validation(value);
                 if (GetErrors(nameof(MassFromAnothersImported)) == null)
                 {
                     _dataAccess.Set(nameof(MassFromAnothersImported), value);
@@ -356,7 +357,7 @@ namespace Models
         }
 
         private double _MassFromAnothersImported_Not_Valid = -1;
-        private void MassFromAnothersImported_Validation()//TODO
+        private void MassFromAnothersImported_Validation(double value)//TODO
         {
             ClearErrors(nameof(MassFromAnothersImported));
         }
@@ -381,7 +382,7 @@ namespace Models
             set
             {
                 QuantityFromAnothersImported_Validation(value);
-                //_QuantityFromAnothersImported_Not_Valid = value;
+                //_QuantityFromAnothersImported_Validation(value);
 
                 if (GetErrors(nameof(QuantityFromAnothersImported)) == null)
                 {
@@ -417,7 +418,7 @@ namespace Models
             }
             set
             {
-                _QuantityFromImportedNote_Not_Valid = value;
+                QuantityFromImportedNote_Validation(value);
                 if (GetErrors(nameof(QuantityFromAnothersNote)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityFromImportedNote), value);
@@ -452,7 +453,7 @@ namespace Models
             }
             set
             {
-                _MassAnotherReasons_Not_Valid = value;
+                MassAnotherReasons_Validation(value);
                 if (GetErrors(nameof(MassAnotherReasons)) == null)
                 {
                     _dataAccess.Set(nameof(MassAnotherReasons), value);
@@ -462,7 +463,7 @@ namespace Models
         }
 
         private double _MassAnotherReasons_Not_Valid = -1;
-        private void MassAnotherReasons_Validation()//TODO
+        private void MassAnotherReasons_Validation(double value)//TODO
         {
             ClearErrors(nameof(MassAnotherReasons));
         }
@@ -522,7 +523,7 @@ namespace Models
             }
             set
             {
-                _QuantityAnotherReasonsNote_Not_Valid = value;
+                QuantityAnotherReasonsNote_Validation(value);
                 if (GetErrors(nameof(QuantityAnotherReasonsNote)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
@@ -557,7 +558,7 @@ namespace Models
             }
             set
             {
-                _MassTransferredToAnother_Not_Valid = value;
+                MassTransferredToAnother_Validation(value);
                 if (GetErrors(nameof(MassTransferredToAnother)) == null)
                 {
                     _dataAccess.Set(nameof(MassTransferredToAnother), value);
@@ -567,7 +568,7 @@ namespace Models
         }
 
         private double _MassTransferredToAnother_Not_Valid = -1;
-        private void MassTransferredToAnother_Validation()//TODO
+        private void MassTransferredToAnother_Validation(double value)//TODO
         {
             ClearErrors(nameof(MassTransferredToAnother));
         }
@@ -627,7 +628,7 @@ namespace Models
             }
             set
             {
-                _QuantityTransferredToNote_Not_Valid = value;
+                QuantityTransferredToNote_Validation(value);
                 if (GetErrors(nameof(QuantityTransferredToNote)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityTransferredToNote), value);
@@ -662,7 +663,7 @@ namespace Models
             }
             set
             {
-                _MassRefined_Not_Valid = value;
+                MassRefined_Validation(value);
                 if (GetErrors(nameof(MassRefined)) == null)
                 {
                     _dataAccess.Set(nameof(MassRefined), value);
@@ -672,7 +673,7 @@ namespace Models
         }
 
         private double _MassRefined_Not_Valid = -1;
-        private void MassRefined_Validation()//TODO
+        private void MassRefined_Validation(double value)//TODO
         {
             ClearErrors(nameof(MassRefined));
         }
@@ -732,7 +733,7 @@ namespace Models
             }
             set
             {
-                _QuantityRefinedNote_Not_Valid = value;
+                QuantityRefinedNote_Validation(value);
                 if (GetErrors(nameof(QuantityRefinedNote)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityRefinedNote), value);
@@ -767,7 +768,7 @@ namespace Models
             }
             set
             {
-                _MassRemovedFromAccount_Not_Valid = value;
+                MassRemovedFromAccount_Validation(value);
                 if (GetErrors(nameof(MassRemovedFromAccount)) == null)
                 {
                     _dataAccess.Set(nameof(MassRemovedFromAccount), value);
@@ -777,7 +778,7 @@ namespace Models
         }
 
         private double _MassRemovedFromAccount_Not_Valid = -1;
-        private void MassRemovedFromAccount_Validation()//TODO
+        private void MassRemovedFromAccount_Validation(double value)//TODO
         {
             ClearErrors(nameof(MassRemovedFromAccount));
         }
@@ -838,7 +839,7 @@ namespace Models
             }
             set
             {
-                _QuantityRemovedFromNote_Not_Valid = value;
+                QuantityRemovedFromNote_Validation(value);
                 if (GetErrors(nameof(QuantityRemovedFromNote)) == null)
                 {
                     _dataAccess.Set(nameof(QuantityRemovedFromNote), value);
