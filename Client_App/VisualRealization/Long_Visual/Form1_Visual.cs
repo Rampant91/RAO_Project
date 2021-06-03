@@ -108,7 +108,7 @@ namespace Client_App.Long_Visual
                 Margin = Thickness.Parse("5,12,0,0"),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!TextBox.TextProperty] = new Binding("Storage.CorrectionNumber"),
+                [!TextBox.TextProperty] = new Binding("Storage.Value.CorrectionNumber.Value"),
                 [Grid.ColumnProperty] = 1,
             });
 
@@ -143,7 +143,7 @@ namespace Client_App.Long_Visual
             grd.SetValue(Grid.RowProperty, 2);
 
             Binding b = new Binding();
-            b.Path = "DataContext.Storage.Rows11";
+            b.Path = "DataContext.Storage.Value.Rows11.Value";
             b.ElementName = "ChangingPanel";
             b.NameScope = new WeakReference<INameScope>(scp);
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
@@ -177,7 +177,7 @@ namespace Client_App.Long_Visual
             bgrd.SetValue(Grid.RowProperty, 3);
             bgrd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             bgrd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            bgrd.Bind(DataGrid.ItemsProperty, new Binding("Storage.Notes"));
+            bgrd.Bind(DataGrid.ItemsProperty, new Binding("Storage.Value.Notes.Value"));
             bgrd.CanUserResizeColumns = true;
             maingrid.Children.Add(bgrd);
 
@@ -212,7 +212,7 @@ namespace Client_App.Long_Visual
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("RowNumber"),
+                        [!TextBox.TextProperty] = new Binding("RowNumber.Value"),
 
                     });
             bgrd.Columns.Add(clm);
@@ -231,7 +231,7 @@ namespace Client_App.Long_Visual
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("GraphNumber"),
+                        [!TextBox.TextProperty] = new Binding("GraphNumber.Value"),
 
                     });
             bgrd.Columns.Add(clm);
@@ -250,7 +250,7 @@ namespace Client_App.Long_Visual
                     new TextBox
                     {
                         Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("Comment"),
+                        [!TextBox.TextProperty] = new Binding("Comment.Value"),
 
                     });
             bgrd.Columns.Add(clm);
