@@ -1,5 +1,6 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -38,7 +39,7 @@ namespace Models
             }
             set
             {
-                _StoragePlaceName_Not_Valid = value;
+                StoragePlaceName_Validation(value);
                 if (GetErrors(nameof(StoragePlaceName)) == null)
                 {
                     _dataAccess.Set(nameof(StoragePlaceName), value);
@@ -51,6 +52,17 @@ namespace Models
         private void StoragePlaceName_Validation(string value)//Ready
         {
             ClearErrors(nameof(StoragePlaceName));
+            if (string.IsNullOrEmpty(value))
+            {
+                AddError(nameof(StoragePlaceName), "Поле не заполнено");
+                return;
+            }
+            var spr = new List<string>();
+            if (!spr.Contains(value))
+            {
+                AddError(nameof(StoragePlaceName), "Недопустиое значение");
+                return;
+            }
         }
         //StoragePlaceName property
 
@@ -70,7 +82,7 @@ namespace Models
             }
             set
             {
-                _StoragePlaceNameNote_Not_Valid = value;
+                StoragePlaceNameNote_Validation(value);
                 if (GetErrors(nameof(StoragePlaceNameNote)) == null)
                 {
                     _dataAccess.Set(nameof(StoragePlaceNameNote), value);
@@ -103,7 +115,7 @@ namespace Models
             }
             set
             {
-                _StoragePlaceCode_Not_Valid = value;
+                StoragePlaceCode_Validation(value);
                 if (GetErrors(nameof(StoragePlaceCode)) == null)
                 {
                     _dataAccess.Set(nameof(StoragePlaceCode), value);
@@ -116,24 +128,30 @@ namespace Models
         private void StoragePlaceCode_Validation(string value)//TODO
         {
             ClearErrors(nameof(StoragePlaceCode));
-            var lst = new List<string>();//HERE binds spr
-            foreach (var item in lst)
+            if (string.IsNullOrEmpty(value))
             {
-                if (item.Equals(value)) return;
+                AddError(nameof(StoragePlaceName), "Поле не заполнено");
+                return;
             }
-            AddError(nameof(StoragePlaceCode), "Такого значения нет в справочнике");
+            if (value.Equals("-")) return;
+            var spr = new List<string>();
+            if (!spr.Contains(value))
+            {
+                AddError(nameof(StoragePlaceName), "Недопустиое значение");
+                return;
+            }
         }
         //StoragePlaceCode property
 
         //ProjectVolume property
         [Attributes.Form_Property("Проектный объем, куб. м")]
-        public double ProjectVolume
+        public string ProjectVolume
         {
             get
             {
                 if (GetErrors(nameof(ProjectVolume)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(ProjectVolume));
+                    return (string)_dataAccess.Get(nameof(ProjectVolume));
                 }
                 else
                 {
@@ -142,7 +160,7 @@ namespace Models
             }
             set
             {
-                _ProjectVolume_Not_Valid = value;
+                ProjectVolume_Validation(value);
                 if (GetErrors(nameof(ProjectVolume)) == null)
                 {
                     _dataAccess.Set(nameof(ProjectVolume), value);
@@ -151,10 +169,30 @@ namespace Models
             }
         }
 
-        private double _ProjectVolume_Not_Valid = -1;
-        private void ProjectVolume_Validation(double value)//TODO
+        private string _ProjectVolume_Not_Valid = "";
+        private void ProjectVolume_Validation(string value)//TODO
         {
             ClearErrors(nameof(ProjectVolume));
+            if (value.Equals("прим."))
+            {
+
+            }
+            if (!((value.Contains('e') || value.Contains('E'))))
+            {
+                AddError(nameof(ProjectVolume), "Недопустимое значение");
+                return;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(ProjectVolume), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(ProjectVolume), "Недопустимое значение");
+            }
         }
         //ProjectVolume property
 
@@ -174,7 +212,7 @@ namespace Models
             }
             set
             {
-                _ProjectVolumeNote_Not_Valid = value;
+                ProjectVolumeNote_Validation(value);
                 if (GetErrors(nameof(ProjectVolumeNote)) == null)
                 {
                     _dataAccess.Set(nameof(ProjectVolumeNote), value);
@@ -207,7 +245,7 @@ namespace Models
             }
             set
             {
-                _CodeRAO_Not_Valid = value;
+                CodeRAO_Validation(value);
                 if (GetErrors(nameof(CodeRAO)) == null)
                 {
                     _dataAccess.Set(nameof(CodeRAO), value);
@@ -220,18 +258,28 @@ namespace Models
         private void CodeRAO_Validation(string value)//TODO
         {
             ClearErrors(nameof(CodeRAO));
+            if (string.IsNullOrEmpty(value))
+            {
+                return;
+            }
+            var a = new Regex("^[0-9]{11}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(CodeRAO), "Недопустимое значение");
+                return;
+            }
         }
         //CodeRAO property
 
         //Volume property
         [Attributes.Form_Property("Разрешенный объем, куб. м")]
-        public double Volume
+        public string Volume
         {
             get
             {
                 if (GetErrors(nameof(Volume)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Volume));
+                    return (string)_dataAccess.Get(nameof(Volume));
                 }
                 else
                 {
@@ -240,7 +288,7 @@ namespace Models
             }
             set
             {
-                _Volume_Not_Valid = value;
+                Volume_Validation(value);
                 if (GetErrors(nameof(Volume)) == null)
                 {
                     _dataAccess.Set(nameof(Volume), value);
@@ -249,27 +297,39 @@ namespace Models
             }
         }
 
-        private double _Volume_Not_Valid = -1;
-        private void Volume_Validation(double value)//TODO
+        private string _Volume_Not_Valid = "";
+        private void Volume_Validation(string value)//TODO
         {
             ClearErrors(nameof(Volume));
-            if (Volume <= 0)
+            if (string.IsNullOrEmpty(value)) return;
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(Volume), "Недопустимое значение");
                 return;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(Volume), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(Volume), "Недопустимое значение");
             }
         }
         //Volume property
 
         //Mass Property
         [Attributes.Form_Property("Разрешенная масса, т")]
-        public double Mass
+        public string Mass
         {
             get
             {
                 if (GetErrors(nameof(Mass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(Mass));
+                    return (string)_dataAccess.Get(nameof(Mass));
                 }
                 else
                 {
@@ -278,7 +338,7 @@ namespace Models
             }
             set
             {
-                _Mass_Not_Valid = value;
+                Mass_Validation(value);
                 if (GetErrors(nameof(Mass)) == null)
                 {
                     _dataAccess.Set(nameof(Mass), value);
@@ -287,28 +347,39 @@ namespace Models
             }
         }
 
-        private double _Mass_Not_Valid = -1;
-        private void Mass_Validation()//TODO
+        private string _Mass_Not_Valid = "";
+        private void Mass_Validation(string value)//TODO
         {
             ClearErrors(nameof(Mass));
-            if (Mass <= 0)
+            if (string.IsNullOrEmpty(value)) return;
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(Mass), "Недопустимое значение");
                 return;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    AddError(nameof(Mass), "Число должно быть больше нуля");
+            }
+            catch
+            {
+                AddError(nameof(Mass), "Недопустимое значение");
             }
         }
         //Mass Property
 
         //QuantityOZIII property
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public int QuantityOZIII
+        public int? QuantityOZIII
         {
             get
             {
                 if (GetErrors(nameof(QuantityOZIII)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(QuantityOZIII));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return (int?)_dataAccess.Get(nameof(QuantityOZIII));//OK
                 }
                 else
                 {
@@ -327,11 +398,12 @@ namespace Models
             }
         }
         // positive int.
-        private int _QuantityOZIII_Not_Valid = -1;
-        private void QuantityOZIII_Validation(int value)//Ready
+        private int? _QuantityOZIII_Not_Valid = null;
+        private void QuantityOZIII_Validation(int? value)//Ready
         {
             ClearErrors(nameof(QuantityOZIII));
-            if (value <= 0)
+            if (value == null) return;
+            if ((int)value <= 0)
                 AddError(nameof(QuantityOZIII), "Недопустимое значение");
         }
         //QuantityOZIII property
@@ -353,7 +425,7 @@ namespace Models
             }
             set
             {
-                _SummaryActivity_Not_Valid = value;
+                SummaryActivity_Validation(value);
                 if (GetErrors(nameof(SummaryActivity)) == null)
                 {
                     _dataAccess.Set(nameof(SummaryActivity), value);
@@ -366,28 +438,17 @@ namespace Models
         private void SummaryActivity_Validation(string value)//Ready
         {
             ClearErrors(nameof(SummaryActivity));
-            if (value == null || value.Equals(""))
-            {
-                AddError(nameof(SummaryActivity), "Поле не заполнено");
-                return;
-            }
-            if (!(value.Contains('e')))
+            if (string.IsNullOrEmpty(value)) return;
+            if (!(value.Contains('e') || value.Contains('E')))
             {
                 AddError(nameof(SummaryActivity), "Недопустимое значение");
                 return;
-            }
-            string tmp = value;
-            int len = tmp.Length;
-            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
-            {
-                tmp = tmp.Remove(len - 1, 1);
-                tmp = tmp.Remove(0, 1);
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                     AddError(nameof(SummaryActivity), "Число должно быть больше нуля");
             }
             catch
@@ -415,7 +476,7 @@ namespace Models
             }
             set
             {
-                _DocumentNumber_Not_Valid = value;
+                DocumentNumber_Validation(value);
                 if (GetErrors(nameof(DocumentNumber)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentNumber), value);
@@ -453,7 +514,7 @@ namespace Models
             }
             set
             {
-                _DocumentNumberRecoded_Not_Valid = value;
+                DocumentNumberRecoded_Validation(value);
                 if (GetErrors(nameof(DocumentNumberRecoded)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentNumberRecoded), value);
@@ -471,14 +532,16 @@ namespace Models
 
         //DocumentDate property
         [Attributes.Form_Property("Дата документа")]
-        public DateTimeOffset DocumentDate
+        public string DocumentDate
         {
             get
             {
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
                     var tmp = _dataAccess.Get(nameof(DocumentDate));//OK
-                    return tmp != null ? (DateTimeOffset)tmp : DateTimeOffset.MinValue;
+                    if (tmp == null)
+                        return _DocumentDate_Not_Valid;
+                    return ((DateTimeOffset)tmp).Date.ToString("dd.MM.yyyy");// дает дату в формате дд.мм.гггг
                 }
                 else
                 {
@@ -487,31 +550,49 @@ namespace Models
             }
             set
             {
-                _DocumentDate_Not_Valid = value;
+                DocumentDate_Validation(value);
+
                 if (GetErrors(nameof(DocumentDate)) == null)
                 {
-                    _dataAccess.Set(nameof(DocumentDate), value);
+                    _dataAccess.Set(nameof(DocumentDate), DateTimeOffset.Parse(value));
                 }
                 OnPropertyChanged(nameof(DocumentDate));
             }
         }
         //if change this change validation
-        private DateTimeOffset _DocumentDate_Not_Valid = DateTimeOffset.Parse("01.01.1921");
-        private void DocumentDate_Validation(DateTimeOffset value)//Ready
+        protected string _DocumentDate_Not_Valid = "";
+        private void DocumentDate_Validation(string value)//Ready
         {
             ClearErrors(nameof(DocumentDate));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(DocumentDate), "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(DocumentDate), "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value); }
+            catch (Exception)
+            {
+                AddError(nameof(DocumentDate), "Недопустимое значение");
+                return;
+            }
         }
         //DocumentDate property
 
         //ExpirationDate property
         [Attributes.Form_Property("Срок действия документа")]
-        public DateTimeOffset ExpirationDate
+        public string ExpirationDate
         {
             get
             {
                 if (GetErrors(nameof(ExpirationDate)) == null)
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ExpirationDate));
+                    return (string)_dataAccess.Get(nameof(ExpirationDate));
                 }
                 else
                 {
@@ -520,7 +601,7 @@ namespace Models
             }
             set
             {
-                _ExpirationDate_Not_Valid = value;
+                ExpirationDate_Validation(value);
                 if (GetErrors(nameof(ExpirationDate)) == null)
                 {
                     _dataAccess.Set(nameof(ExpirationDate), value);
@@ -529,10 +610,27 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ExpirationDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
-        private void ExpirationDate_Validation(DateTimeOffset value)//TODO
+        private string _ExpirationDate_Not_Valid = "";
+        private void ExpirationDate_Validation(string value)//TODO
         {
             ClearErrors(nameof(ExpirationDate));
+            if ((value == null) || value.Equals(""))
+            {
+                AddError(nameof(ExpirationDate), "Поле не заполнено");
+                return;
+            }
+            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value))
+            {
+                AddError(nameof(ExpirationDate), "Недопустимое значение");
+                return;
+            }
+            try { DateTimeOffset.Parse(value); }
+            catch (Exception)
+            {
+                AddError(nameof(ExpirationDate), "Недопустимое значение");
+                return;
+            }
         }
         //ExpirationDate property
 
@@ -553,7 +651,7 @@ namespace Models
             }
             set
             {
-                _DocumentName_Not_Valid = value;
+                DocumentName_Validation(value);
                 if (GetErrors(nameof(DocumentName)) == null)
                 {
                     _dataAccess.Set(nameof(DocumentName), value);
@@ -566,6 +664,11 @@ namespace Models
         private void DocumentName_Validation(string value)//Ready
         {
             ClearErrors(nameof(DocumentName));
+            if (string.IsNullOrEmpty(value))
+            {
+                AddError(nameof(DocumentName), "Поле не заполнено");
+                return;
+            }
         }
         //DocumentName property
     }

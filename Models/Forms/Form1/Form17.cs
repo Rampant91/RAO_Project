@@ -907,7 +907,7 @@ namespace Models
             if (string.IsNullOrEmpty(value)|| value.Equals("-")) return;
             var lst = new List<string>();//HERE binds spr
             if(!lst.Contains(value))
-            AddError(nameof(StoragePlaceCode), "Такого значения нет в справочнике");
+            AddError(nameof(StoragePlaceCode), "Недопустимое значение");
         }
         //StoragePlaceCode property
 
@@ -1017,7 +1017,6 @@ namespace Models
         private string _CodeRAO_Not_Valid = "";
         private void CodeRAO_Validation(string value)//TODO
         {
-            ClearErrors(nameof(CodeRAO));
             ClearErrors(nameof(CodeRAO));
             if ((value == null) || value.Equals(""))
             {
