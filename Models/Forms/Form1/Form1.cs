@@ -26,156 +26,96 @@ namespace Models.Abstracts
 
         //NumberInOrder property
         [Attributes.Form_Property("№ п/п")]
-        public int NumberInOrder
+        public IDataAccess<int> NumberInOrder
         {
             get
             {
-                if (GetErrors(nameof(NumberInOrder)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(NumberInOrder));
-                    return tmp != null ? (int)tmp : -1;
-                }
-                else
-                {
-                    return _NumberInOrder_Not_Valid;
-                }
+                    return _dataAccess.Get<int>(nameof(NumberInOrder));
             }
             set
             {
-                _NumberInOrder_Not_Valid = value;
-                if (GetErrors(nameof(NumberInOrder)) == null)
-                {
                     _dataAccess.Set(nameof(NumberInOrder), value);
-                }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        private int _NumberInOrder_Not_Valid = -1;
         //private void NumberInOrder_Validation()
         //{
-        //    ClearErrors(nameof(NumberInOrder));
+        //    value.ClearErrors();
         //}
         //NumberInOrder property
 
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
-        public byte CorrectionNumber
+        public IDataAccess<byte> CorrectionNumber
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(CorrectionNumber));
-                    return tmp != null ? (byte)tmp : (byte)0;
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
+                    return _dataAccess.Get<byte>(nameof(CorrectionNumber));
             }
             set
             {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) == null)
-                {
                     _dataAccess.Set(nameof(CorrectionNumber), value);
-                }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
 
-        private byte _CorrectionNumber_Not_Valid = 255;
         //private void CorrectionNumber_Validation()
         //{
-        //    ClearErrors(nameof(CorrectionNumber));
+        //    value.ClearErrors();
         //}
         //CorrectionNumber property
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public short? OperationCode
+        public IDataAccess<short?> OperationCode
         {
             get
             {
-                if (GetErrors(nameof(OperationCode)) == null)
-                {
-                    string tmp = (string)_dataAccess.Get(nameof(OperationCode));
-                    return tmp != null ? short.Parse(tmp) : (short?)null;
-                }
-                else
-                {
-                    return _OperationCode_Not_Valid;
-                }
+                    return _dataAccess.Get<short?>(nameof(OperationCode));
             }
             set
             {
-                OperationCode_Validation(value);
-                //_OperationCode_Not_Valid = value;
-
-                if (GetErrors(nameof(OperationCode)) == null)
-                {
-                    var tmp = value.ToString();
-                    if (tmp.Length == 1) tmp = "0" + tmp;
-                    _dataAccess.Set(nameof(OperationCode), tmp);
-                }
+                    _dataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        protected virtual void OperationCode_Validation(short? arg) { }
+        protected virtual void OperationCode_Validation(IDataAccess<short?> arg) { }
 
-        protected short? _OperationCode_Not_Valid = null;
         //OprationCode property
         
         //OperationDate property
         [Attributes.Form_Property("Дата операции")]
-        public string OperationDate
+        public IDataAccess<string> OperationDate
         {
             get
             {
-                if (GetErrors(nameof(OperationDate)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(OperationDate));
-                    if (tmp == null)
-                        return _OperationDate_Not_Valid;
-                    return ((DateTimeOffset)tmp).Date.ToString("dd.MM.yyyy");// дает дату в формате дд.мм.гггг
-                }
-                else
-                {
-                    return _OperationDate_Not_Valid;
-                }
+                return _dataAccess.Get<string>(nameof(OperationDate));
             }
             set
             {
-                OperationDate_Validation(value);
-
-                if (GetErrors(nameof(OperationDate)) == null)
-                {
-                    _dataAccess.Set(nameof(OperationDate), DateTimeOffset.Parse(value));
-                }
+                    _dataAccess.Set(nameof(OperationDate), value);
                 OnPropertyChanged(nameof(OperationDate));
             }
         }
 
-        protected string _OperationDate_Not_Valid = "";
-
-        protected virtual void OperationDate_Validation(string value)
+        protected virtual void OperationDate_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(OperationDate));
-            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
+            value.ClearErrors();
+            if (value.Value == null)
             {
-                AddError(nameof(OperationDate), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
+            if (!a.IsMatch(value.Value))
             {
-                AddError(nameof(OperationDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            try { DateTimeOffset.Parse(value); }
+            try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                AddError(nameof(OperationDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
         }
@@ -183,38 +123,25 @@ namespace Models.Abstracts
 
         //DocumentVid property
         [Attributes.Form_Property("Вид документа")]
-        public byte? DocumentVid
+        public IDataAccess<byte?> DocumentVid
         {
             get
             {
-                if (GetErrors(nameof(DocumentVid)) == null)
-                {
-                    return (byte?)_dataAccess.Get(nameof(DocumentVid));//Ok
-                }
-                else
-                {
-                    return _DocumentVid_Not_Valid;
-                }
+                    return _dataAccess.Get<byte?>(nameof(DocumentVid));//Ok
             }
             set
             {
-                DocumentVid_Validation(value);
-
-                if (GetErrors(nameof(DocumentVid)) == null)
-                {
                     _dataAccess.Set(nameof(DocumentVid), value);
-                }
                 OnPropertyChanged(nameof(DocumentVid));
             }
         }
 
-        private byte? _DocumentVid_Not_Valid = null;
-        protected virtual void DocumentVid_Validation(byte? value)// TO DO
+        protected virtual void DocumentVid_Validation(IDataAccess<byte?> value)// TO DO
         {
-            ClearErrors(nameof(DocumentVid));
+            value.ClearErrors();
             if (value == null)
             {
-                AddError(nameof(DocumentVid), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
             List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>
@@ -239,109 +166,66 @@ namespace Models.Abstracts
             };   //HERE BINDS SPRAVOCHNICK
             foreach (var item in spr)
             {
-                if (item.Item1 == value) return;
+                if (item.Item1 == value.Value) return;
             }
-            AddError(nameof(DocumentVid), "Недопустимое значение");
+            value.AddError( "Недопустимое значение");
         }
         //DocumentVid property
 
         //DocumentNumber property
         [Attributes.Form_Property("Номер документа")]
-        public string DocumentNumber
+        public IDataAccess<string> DocumentNumber
         {
             get
             {
-                if (GetErrors(nameof(DocumentNumber)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(DocumentNumber));//Ok
-                    return tmp != null ? (string)tmp : null;
-                }
-                else
-                {
-                    return _DocumentNumber_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(DocumentNumber));//Ok
             }
             set
             {
-                DocumentNumber_Validation(value);
-
-                if (GetErrors(nameof(DocumentNumber)) == null)
-                {
                     _dataAccess.Set(nameof(DocumentNumber), value);
-                }
                 OnPropertyChanged(nameof(DocumentNumber));
             }
         }
 
-        protected string _DocumentNumber_Not_Valid = "";
-        protected virtual void DocumentNumber_Validation(string value)//Ready
+        protected virtual void DocumentNumber_Validation(IDataAccess<string> value)//Ready
         { }
         //DocumentNumber property
 
         //DocumentNumberRecoded property
-        public string DocumentNumberRecoded
+        public IDataAccess<string> DocumentNumberRecoded
         {
             get
             {
-                if (GetErrors(nameof(DocumentNumberRecoded)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(DocumentNumberRecoded));//ok
-                    return tmp != null ? (string)tmp : null;
-                }
-                else
-                {
-                    return _DocumentNumberRecoded_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(DocumentNumberRecoded));//ok
             }
             set
             {
-                _DocumentNumberRecoded_Not_Valid = value;
-                if (GetErrors(nameof(DocumentNumberRecoded)) == null)
-                {
                     _dataAccess.Set(nameof(DocumentNumberRecoded), value);
-                }
                 OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
         }
 
-        private string _DocumentNumberRecoded_Not_Valid = "";
-        private void DocumentNumberRecoded_Validation(string value)//Ready
+        private void DocumentNumberRecoded_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(DocumentNumberRecoded));
+            value.ClearErrors();
         }
         //DocumentNumberRecoded property
 
         //DocumentDate property
         [Attributes.Form_Property("Дата документа")]
-        public string DocumentDate
+        public IDataAccess<string> DocumentDate
         {
             get
             {
-                if (GetErrors(nameof(DocumentDate)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(DocumentDate));//OK
-                    if (tmp == null)
-                        return _DocumentDate_Not_Valid;
-                    return ((DateTimeOffset)tmp).Date.ToString("dd.MM.yyyy");// дает дату в формате дд.мм.гггг
-                }
-                else
-                {
-                    return _DocumentDate_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(DocumentDate));//OK
             }
             set
             {
-                DocumentDate_Validation(value);
-
-                if (GetErrors(nameof(DocumentDate)) == null)
-                {
-                    _dataAccess.Set(nameof(DocumentDate), DateTimeOffset.Parse(value));
-                }
+                    _dataAccess.Set(nameof(DocumentDate), value);
                 OnPropertyChanged(nameof(DocumentDate));
             }
         }
         //if change this change validation
-        protected string _DocumentDate_Not_Valid = "";
 
         protected List<string> OKSM = new List<string>
             {
@@ -368,68 +252,55 @@ namespace Models.Abstracts
                 "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН","ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН","ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ"
             };
 
-        protected virtual void DocumentDate_Validation(string value)
+        protected virtual void DocumentDate_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(DocumentDate));
+            value.ClearErrors();
             if ((value == null) || value.Equals(""))
             {
-                AddError(nameof(DocumentDate), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
+            if (!a.IsMatch(value.Value))
             {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            try { DateTimeOffset.Parse(value); }
+            try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            bool ab = (OperationCode >= 11) && (OperationCode <= 18);
-            bool b = (OperationCode >= 41) && (OperationCode <= 49);
-            bool c = (OperationCode >= 51) && (OperationCode <= 59);
-            bool d = (OperationCode == 65) || (OperationCode == 68);
+            bool ab = (OperationCode.Value >= 11) && (OperationCode.Value <= 18);
+            bool b = (OperationCode.Value >= 41) && (OperationCode.Value <= 49);
+            bool c = (OperationCode.Value >= 51) && (OperationCode.Value <= 59);
+            bool d = (OperationCode.Value == 65) || (OperationCode.Value == 68);
             if (ab || b || c || d)
                 if (!value.Equals(OperationDate))
-                    AddError(nameof(DocumentDate), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
         }
         //DocumentDate property
 
         //DocumentDateNote property
         [Attributes.Form_Property("Дата документа")]
-        public string DocumentDateNote
+        public IDataAccess<string> DocumentDateNote
         {
             get
             {
-                if (GetErrors(nameof(DocumentDateNote)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(DocumentDateNote));
-                    return tmp != null ? (string)tmp : null;
-                }
-                else
-                {
-                    return _DocumentDateNote_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(DocumentDateNote));
             }
             set
             {
-                _DocumentDateNote_Not_Valid = value;
-                if (GetErrors(nameof(DocumentDateNote)) == null)
-                {
                     _dataAccess.Set(nameof(DocumentDateNote), value);
-                }
                 OnPropertyChanged(nameof(DocumentDateNote));
             }
         }
         //if change this change validation
-        private string _DocumentDateNote_Not_Valid = "-";
 
-        private void DocumentDateNote_Validation(string value)
+        private void DocumentDateNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(DocumentDateNote));
+            value.ClearErrors();
         }
         //DocumentDateNote property
     }
