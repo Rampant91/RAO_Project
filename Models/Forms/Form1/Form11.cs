@@ -62,7 +62,7 @@ namespace Models
 
         //PassportNumber property
         [Attributes.Form_Property("Номер паспорта")]
-        public string PassportNumber
+        public IDataAccess PassportNumber
         {
             get
             {

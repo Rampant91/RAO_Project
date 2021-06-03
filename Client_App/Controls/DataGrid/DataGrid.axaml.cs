@@ -148,7 +148,7 @@ namespace Client_App.Controls.DataGrid
                             int count = 0;
                             foreach (var item in Items)
                             {
-                                var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count);
+                                var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count,item);
                                 if (tmp != null)
                                 {
                                     Panel pnl = new Panel() { Name = this.Name + count };

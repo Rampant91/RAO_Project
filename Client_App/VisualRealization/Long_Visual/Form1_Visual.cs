@@ -147,6 +147,7 @@ namespace Client_App.Long_Visual
             b.ElementName = "ChangingPanel";
             b.NameScope = new WeakReference<INameScope>(scp);
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();

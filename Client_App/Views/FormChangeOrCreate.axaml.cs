@@ -1,18 +1,19 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Collections;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Avalonia.Controls.ApplicationLifetimes;
 using System.ComponentModel;
+using Avalonia.ReactiveUI;
+using ReactiveUI;
+using ReactiveUI.Validation;
+using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Formatters;
+using Collections;
+using Avalonia.Controls.ApplicationLifetimes;
+
 namespace Client_App.Views
 {
-    public class FormChangeOrCreate : Window
+    public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     {
         string _param = "";
         public DBRealization.DBModel dbm;

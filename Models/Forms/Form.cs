@@ -10,80 +10,56 @@ using Avalonia.Data;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : INotifyPropertyChanged, INotifyDataErrorInfo
+    public abstract class Form : INotifyPropertyChanged
     {
-        protected IDataAccess _dataAccess { get; set; }
+        protected IDataAccessCollection _dataAccess { get; set; }
 
         public Form()
         {
-            _dataAccess = new RamAccess();
+            _dataAccess = new DataAccessCollection();
         }
+
+
 
         [Key]
         public int RowId { get; set; }
 
         //FormNum property
         [Attributes.Form_Property("Форма")]
-        public string FormNum
+        public IDataAccess<string> FormNum
         {
             get
             {
-                if (GetErrors(nameof(FormNum)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(FormNum));
-                    return tmp != null ? (string)tmp : null;
-                }
-                else
-                {
-                    return _FormNum_Not_Valid;
-                }
+                return _dataAccess.Get<string>(nameof(FormNum));
             }
             set
             {
-                _FormNum_Not_Valid = value;
-                if (GetErrors(nameof(FormNum)) == null)
-                {
-                    _dataAccess.Set(nameof(FormNum), value);
-                }
+                _dataAccess.Set(nameof(FormNum), value);
                 OnPropertyChanged(nameof(FormNum));
             }
         }
-        private string _FormNum_Not_Valid;
-        private void FormNum_Validation(string value)//Ready
+        private void FormNum_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(FormNum));
+            value.ClearErrors();
         }
         //FormNum property
 
         //NumberOfFields property
-        public int NumberOfFields
+        public IDataAccess<int> NumberOfFields
         {
             get
             {
-                if (GetErrors(nameof(NumberOfFields)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(NumberOfFields));
-                    return tmp != null ? (int)tmp : -1;
-                }
-                else
-                {
-                    return _NumberOfFields_Not_Valid;
-                }
+                return _dataAccess.Get<int>(nameof(NumberOfFields));
             }
             set
             {
-                _NumberOfFields_Not_Valid = value;
-                if (GetErrors(nameof(NumberOfFields)) == null)
-                {
-                    _dataAccess.Set(nameof(NumberOfFields), value);
-                }
+                _dataAccess.Set(nameof(NumberOfFields), value);
                 OnPropertyChanged(nameof(NumberOfFields));
             }
         }
-        private int _NumberOfFields_Not_Valid = -1;
-        private void NumberOfFields_Validation()
+        private void NumberOfFields_Validation(IDataAccess<int> value)
         {
-            ClearErrors(nameof(NumberOfFields));
+            value.ClearErrors();
         }
         //NumberOfFields property
 
@@ -99,52 +75,5 @@ namespace Models.Abstracts
         }
         public event PropertyChangedEventHandler PropertyChanged;
         //Property Changed
-
-        //Data Validation
-        protected readonly Dictionary<string, List<string>> _errorsByPropertyName = new Dictionary<string, List<string>>();
-        public bool HasErrors => _errorsByPropertyName.Any();
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-        public IEnumerable GetErrors(string propertyName)
-        {
-            var tmp = _errorsByPropertyName.ContainsKey(propertyName) ?
-                _errorsByPropertyName[propertyName] : null;
-            if (tmp != null)
-            {
-                List<Exception> lst = new List<Exception>();
-                foreach (var item in tmp)
-                {
-                    lst.Add(new Exception(item));
-                }
-                return lst;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        protected void OnErrorsChanged(string propertyName)
-        {
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-        }
-        protected void ClearErrors(string propertyName)
-        {
-            if (_errorsByPropertyName.ContainsKey(propertyName))
-            {
-                _errorsByPropertyName.Remove(propertyName);
-                OnErrorsChanged(propertyName);
-            }
-        }
-        protected void AddError(string propertyName, string error)
-        {
-            if (!_errorsByPropertyName.ContainsKey(propertyName))
-                _errorsByPropertyName[propertyName] = new List<string>();
-
-            if (!_errorsByPropertyName[propertyName].Contains(error))
-            {
-                _errorsByPropertyName[propertyName].Add(error);
-                OnErrorsChanged(propertyName);
-            }
-        }
-        //Data Validation
     }
 }

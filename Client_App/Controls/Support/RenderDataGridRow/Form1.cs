@@ -16,12 +16,12 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Form1
     {
-        public static Control GetControl(string type,string Name)
+        public static Control GetControl(string type, string Name, object Context)
         {
             switch (type)
             {
                 case "0": return Get0();
-                case "1": return Get1(Name);
+                case "1": return Get1(Name, Context);
                 case "2": return Get2();
                 case "3": return Get3();
                 case "4": return Get4();
@@ -41,7 +41,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         static int Wdth1 = 100;
         static int RowHeight1 = 30;
         static Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-        static Control Get1Row(int starWidth, string Name, Binding Text)
+        static Control Get1Row(int starWidth, string Name, string Binding, object Context)
         {
             Border brd = new Border()
             {
@@ -54,13 +54,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             pnl.Width = starWidth * Wdth1;
             pnl.Height = RowHeight1;
 
-            TextBox txt = new TextBox();
-            Text.Mode = BindingMode.TwoWay;
-            
-            txt.Bind(TextBlock.TextProperty, Text);
-            //txt.TextAlignment = Avalonia.Media.TextAlignment.Center;
-            txt.Background = new SolidColorBrush(new Color(0,0,0,0));
-            //txt.Padding = Thickness.Parse("0,5,0,5");
+            var txt = new Controls.DataGrid.Cell(Context, Binding);
+            txt.Background = new SolidColorBrush(new Color(0, 0, 0, 0));
             txt.Width = starWidth * Wdth1;
 
             brd.Child = pnl;
@@ -68,37 +63,37 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return brd;
         }
-        static Control Get1(string Name)
+        static Control Get1(string Name, object Context)
         {
             StackPanel stck = new StackPanel();
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
             stck.Spacing = -1;
 
-            stck.Children.Add(Get1Row(1, Name + "_" + 1, new Binding("NumberInOrder")));
-            stck.Children.Add(Get1Row(2, Name + "_" + 2, new Binding("OperationCode")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 3, new Binding("OperationDate")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 4, new Binding("PassportNumber")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 5, new Binding("Type")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 6, new Binding("Radionuclids")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 7, new Binding("FactoryNumber")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 8, new Binding("Quantity")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 9, new Binding("Activity")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 10, new Binding("CreatorOKPO")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 11, new Binding("CreationDate")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 12, new Binding("Category")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 13, new Binding("SignedServicePeriod")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 14, new Binding("PropertyCode")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 15, new Binding("Owner")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 16, new Binding("DocumentVid")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 17, new Binding("DocumentNumber")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 18, new Binding("DocumentDate")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 19, new Binding("ProviderOrRecieverOKPO")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 20, new Binding("TransporterOKPO")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 21, new Binding("PackName")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 22, new Binding("PackType")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 23, new Binding("PackNumber")));
+            stck.Children.Add(Get1Row(1, Name + "_" + 1, "NumberInOrder", Context));
+            stck.Children.Add(Get1Row(2, Name + "_" + 2, "OperationCode", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 3, "OperationDate", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 4, "PassportNumber", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 5, "Type", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 6, "Radionuclids", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 7, "FactoryNumber", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 8, "Quantity", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 9, "Activity", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 10, "CreatorOKPO", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 11, "CreationDate", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 12, "Category", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 13, "SignedServicePeriod", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 14, "PropertyCode", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 15, "Owner", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 16, "DocumentVid", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 17, "DocumentNumber", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 18, "DocumentDate", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 19, "ProviderOrRecieverOKPO", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 20, "TransporterOKPO", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 21, "PackName", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 22, "PackType", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 23, "PackNumber", Context));
 
-            //var bd = new Binding("StartPeriod");
+            //var bd = "StartPeriod";
             //bd.StringFormat = "{0:d}";
 
             return stck;
