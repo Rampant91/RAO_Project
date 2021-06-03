@@ -51,7 +51,7 @@ namespace Models
         private int _RowNumber_Not_Valid;
         private void RowNumber_Validation()
         {
-            ClearErrors(nameof(RowNumber));
+            value.ClearErrors();
         }
         //RowNumber property
 
@@ -83,7 +83,7 @@ namespace Models
         private int _GraphNumber_Not_Valid;
         private void GraphNumber_Validation()
         {
-            ClearErrors(nameof(RowNumber));
+            value.ClearErrors();
         }
         //GraphNumber property
 
@@ -115,7 +115,7 @@ namespace Models
         private string _Comment_Not_Valid;
         private void Comment_Validation()
         {
-            ClearErrors(nameof(RowNumber));
+            value.ClearErrors();
         }
         //Comment property
 

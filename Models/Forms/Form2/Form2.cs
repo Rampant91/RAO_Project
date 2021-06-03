@@ -16,20 +16,20 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(CorrectionNumber));
+                    var tmp = _dataAccess.Get<string>(nameof(CorrectionNumber));
                     return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
                 {
-                    return _CorrectionNumber_Not_Valid;
+                    
                 }
             }
             set
             {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(CorrectionNumber), value);
                 }
@@ -37,10 +37,9 @@ namespace Models.Abstracts
             }
         }
 
-        private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
+                private void CorrectionNumber_Validation()
         {
-            ClearErrors(nameof(CorrectionNumber));
+            value.ClearErrors();
         }
         //CorrectionNumber property
 
@@ -50,20 +49,20 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(NumberInOrder)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(NumberInOrder));
+                    var tmp = _dataAccess.Get<string>(nameof(NumberInOrder));
                     return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
-                    return _NumberInOrder_Not_Valid;
+                    
                 }
             }
             set
             {
-                _NumberInOrder_Not_Valid = value;
-                if (GetErrors(nameof(NumberInOrder)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(NumberInOrder), value);
                 }
@@ -71,10 +70,9 @@ namespace Models.Abstracts
             }
         }
 
-        private int _NumberInOrder_Not_Valid = -1;
-        private void NumberInOrder_Validation()
+                private void NumberInOrder_Validation()
         {
-            ClearErrors(nameof(NumberInOrder));
+            value.ClearErrors();
         }
         //NumberInOrder property
     }

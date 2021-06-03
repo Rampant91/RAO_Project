@@ -1605,7 +1605,7 @@ namespace Collections
         private byte _CorrectionNumber_Not_Valid = 255;
         private void CorrectionNumber_Validation()
         {
-            ClearErrors(nameof(CorrectionNumber));
+            value.ClearErrors();
         }
         //CorrectionNumber property
 
@@ -1742,13 +1742,13 @@ namespace Collections
         private string _StartPeriod_Not_Valid;
         private void StartPeriod_Validation()
         {
-            ClearErrors(nameof(StartPeriod));
+            value.ClearErrors();
             if (_StartPeriod_Not_Valid.Equals(DateTimeOffset.MinValue))
-                AddError(nameof(StartPeriod), "Не заполнено начало периода");
+                value.AddError( "Не заполнено начало периода");
             else
                 if (!EndPeriod.Equals(DateTimeOffset.MinValue))
                 if (_StartPeriod_Not_Valid.CompareTo(_EndPeriod_Not_Valid) > 0)
-                    AddError(nameof(StartPeriod), "Начало периода не может быть позже его конца");
+                    value.AddError( "Начало периода не может быть позже его конца");
         }
         //StartPeriod
 
@@ -1782,13 +1782,13 @@ namespace Collections
         private void EndPeriod_Validation()
         {
             ClearErrors(nameof(EndPeriod));
-            AddError(nameof(EndPeriod), "Не заполнено начало периода");
+            value.AddError( "Не заполнено начало периода");
             if (_EndPeriod_Not_Valid.Equals(DateTimeOffset.MinValue))
-                AddError(nameof(EndPeriod), "Не заполнено начало периода");
+                value.AddError( "Не заполнено начало периода");
             else
                 if (!EndPeriod.Equals(DateTimeOffset.MinValue))
                 if (_StartPeriod_Not_Valid.CompareTo(_EndPeriod_Not_Valid) > 0)
-                    AddError(nameof(EndPeriod), "Начало периода не может быть позже его конца");
+                    value.AddError( "Начало периода не может быть позже его конца");
         }
         //EndPeriod
 

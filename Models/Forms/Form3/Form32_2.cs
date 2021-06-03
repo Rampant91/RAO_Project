@@ -21,18 +21,18 @@ namespace Models
 
         //PackName property
         [Attributes.Form_Property("Наименование упаковки")]
-        public string PackName
+        public IDataAccess<string> PackName
         {
             get
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackName));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackName));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackName_Not_Valid;
+                    
                 }
             }
             set
@@ -47,13 +47,13 @@ namespace Models
             }
         }
 
-        private string _PackName_Not_Valid = "";
-        private void PackName_Validation(string value)
+
+        private void PackName_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PackName));
-            if ((value == null) || value.Equals(_PackName_Not_Valid))
+            value.ClearErrors();
+            if ((value.Value == null))
             {
-                AddError(nameof(PackName), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
         }
@@ -61,18 +61,18 @@ namespace Models
 
         //PackType property
         [Attributes.Form_Property("Тип упаковки")]
-        public string PackType
+        public IDataAccess<string> PackType
         {
             get
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackType));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackType));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackType_Not_Valid;
+                    
                 }
             }
             set
@@ -87,36 +87,36 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _PackType_Not_Valid = "";
-        private void PackType_Validation(string value)//Ready
+
+        private void PackType_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(PackType));
-            if ((value == null) || value.Equals(_PackType_Not_Valid))
+            value.ClearErrors();
+            if ((value.Value == null))
             {
-                AddError(nameof(PackType), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
         }
         //PackType property
 
         //PackTypeRecoded property
-        public string PackTypeRecoded
+        public IDataAccess<string> PackTypeRecoded
         {
             get
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackTypeRecoded));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackTypeRecoded_Not_Valid;
+                    
                 }
             }
             set
             {
-                _PackTypeRecoded_Not_Valid = value;
+
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), value);
@@ -125,31 +125,31 @@ namespace Models
             }
         }
 
-        private string _PackTypeRecoded_Not_Valid = "";
+
         private void PackTypeRecoded_Validation()
         {
-            ClearErrors(nameof(PackTypeRecoded));
+            value.ClearErrors();
         }
         //PackTypeRecoded property
 
         //Id property
         [Attributes.Form_Property("Идентификационный номер")]
-        public string Id
+        public IDataAccess<string> Id
         {
             get
             {
                 if (GetErrors(nameof(Id)) == null)
                 {
-                    return (string)_dataAccess.Get(nameof(Id));
+                    return _dataAccess.Get<string>(nameof(Id));
                 }
                 else
                 {
-                    return _Id_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Id_Not_Valid = value;
+
                 if (GetErrors(nameof(Id)) == null)
                 {
                     _dataAccess.Set(nameof(Id), value);
@@ -158,7 +158,7 @@ namespace Models
             }
         }
 
-        private string _Id_Not_Valid = "";
+
         //Id property
 
         //CreationYear property
@@ -169,16 +169,16 @@ namespace Models
             {
                 if (GetErrors(nameof(CreationYear)) == null)
                 {
-                    return (int)_dataAccess.Get(nameof(CreationYear));
+                    return _dataAccess.Get<string>(nameof(CreationYear));
                 }
                 else
                 {
-                    return _CreationYear_Not_Valid;
+                    
                 }
             }
             set
             {
-                _CreationYear_Not_Valid = value;
+
                 if (GetErrors(nameof(CreationYear)) == null)
                 {
                     _dataAccess.Set(nameof(CreationYear), value);
@@ -187,7 +187,7 @@ namespace Models
             }
         }
 
-        private int _CreationYear_Not_Valid = -1;
+
         //CreationYear property
 
         //DepletedUraniumMass property
@@ -198,16 +198,16 @@ namespace Models
             {
                 if (GetErrors(nameof(DepletedUraniumMass)) == null)
                 {
-                    return (double)_dataAccess.Get(nameof(DepletedUraniumMass));
+                    return _dataAccess.Get<string>(nameof(DepletedUraniumMass));
                 }
                 else
                 {
-                    return _DepletedUraniumMass_Not_Valid;
+                    
                 }
             }
             set
             {
-                _DepletedUraniumMass_Not_Valid = value;
+
                 if (GetErrors(nameof(DepletedUraniumMass)) == null)
                 {
                     _dataAccess.Set(nameof(DepletedUraniumMass), value);
@@ -216,7 +216,7 @@ namespace Models
             }
         }
 
-        private double _DepletedUraniumMass_Not_Valid = -1;
+
         //DepletedUraniumMass property
     }
 }

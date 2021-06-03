@@ -108,7 +108,7 @@ namespace Models
                 private void PassportNumberNote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;

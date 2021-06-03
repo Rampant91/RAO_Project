@@ -22,12 +22,12 @@ namespace Models
             return false;
         }
 
-        protected override void OperationCode_Validation(short? value)//OK
+        protected override void OperationCode_Validation(IDataAccess<short?> value)//OK
         {
-            ClearErrors(nameof(OperationCode));
-            if (value == _OperationCode_Not_Valid)
+            value.ClearErrors();
+            if (value.Value == _OperationCode_Not_Valid)
             {
-                AddError(nameof(OperationCode), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
@@ -38,7 +38,7 @@ namespace Models
             }
             if (!flag)
             {
-                AddError(nameof(OperationCode), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
             if ((value==1) || (value==13) ||
@@ -49,23 +49,23 @@ namespace Models
             (value==52) || (value==55) ||
             (value==56) || (value==57) ||
             (value==59) || (value==76))
-                AddError(nameof(OperationCode), "Код операции не может быть использован для РВ");
+                value.AddError( "Код операции не может быть использован для РВ");
             return;
         }
 
         //OwnerNote property
-        public string OwnerNote
+        public IDataAccess<string> OwnerNote
         {
             get
             {
                 if (GetErrors(nameof(OwnerNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(OwnerNote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(OwnerNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _OwnerNote_Not_Valid;
+                    
                 }
             }
             set
@@ -80,27 +80,27 @@ namespace Models
             }
         }
         //if change this change validation
-        private string _OwnerNote_Not_Valid = "";
-        private void OwnerNote_Validation(string value)
+
+        private void OwnerNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(OwnerNote));
+            value.ClearErrors();
         }
         //OwnerNote property
 
         //PassportNumber property
         [Attributes.Form_Property("Номер паспорта")]
-        public string PassportNumber
+        public IDataAccess<string> PassportNumber
         {
             get
             {
                 if (GetErrors(nameof(PassportNumber)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PassportNumber));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PassportNumber));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PassportNumber_Not_Valid;
+                    
                 }
             }
             set
@@ -115,36 +115,36 @@ namespace Models
             }
         }
 
-        private string _PassportNumber_Not_Valid = "";
-        public void PassportNumber_Validation(string value)
+
+        public void PassportNumber_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PassportNumber));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(PassportNumber), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("прим."))
             {
                 if ((PassportNumberNote==null)||(PassportNumberNote == ""))
-                    AddError(nameof(PassportNumberNote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
             }
         }
         //PassportNumber property
 
         //PassportNumberNote property
-        public string PassportNumberNote
+        public IDataAccess<string> PassportNumberNote
         {
             get
             {
                 if (GetErrors(nameof(PassportNumberNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PassportNumberNote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PassportNumberNote_Not_Valid;
+                    
                 }
             }
             set
@@ -158,13 +158,13 @@ namespace Models
             }
         }
 
-        private string _PassportNumberNote_Not_Valid = "";
-        private void PassportNumberNote_Validation(string value)
+
+        private void PassportNumberNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PassportNumberNote));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(PassportNumberNote),"Поле не заполнено");
+                value.AddError("Поле не заполнено");
                 return;
             }
         }
@@ -172,18 +172,18 @@ namespace Models
 
         //PassportNumberRecoded property
         [Attributes.Form_Property("Номер упаковки")]
-        public string PassportNumberRecoded
+        public IDataAccess<string> PassportNumberRecoded
         {
             get
             {
                 if (GetErrors(nameof(PassportNumberRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PassportNumberRecoded));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PassportNumberRecoded));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PassportNumberRecoded_Not_Valid;
+                    
                 }
             }
             set
@@ -197,27 +197,27 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _PassportNumberRecoded_Not_Valid = "";
-        private void PassportNumberRecoded_Validation(string value)//Ready
+
+        private void PassportNumberRecoded_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(PassportNumberRecoded));
+            value.ClearErrors();
         }
         //PassportNumberRecoded property
 
         //Type property
         [Attributes.Form_Property("Тип")]
-        public string Type
+        public IDataAccess<string> Type
         {
             get
             {
                 if (GetErrors(nameof(Type)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Type));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(Type));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _Type_Not_Valid;
+                    
                 }
             }
             set
@@ -231,26 +231,26 @@ namespace Models
             }
         }
 
-        private string _Type_Not_Valid = "";
-        private void Type_Validation(string value)
+
+        private void Type_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Type));
+            value.ClearErrors();
         }
         //Type property
 
         //TypeRecoded property
-        public string TypeRecoded
+        public IDataAccess<string> TypeRecoded
         {
             get
             {
                 if (GetErrors(nameof(TypeRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(TypeRecoded));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(TypeRecoded));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _TypeRecoded_Not_Valid;
+                    
                 }
             }
             set
@@ -264,27 +264,27 @@ namespace Models
             }
         }
 
-        private string _TypeRecoded_Not_Valid = "";
-        private void TypeRecoded_Validation(string value)
+
+        private void TypeRecoded_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(TypeRecoded));
+            value.ClearErrors();
         }
         //TypeRecoded property
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public string Radionuclids
+        public IDataAccess<string> Radionuclids
         {
             get
             {
                 if (GetErrors(nameof(Radionuclids)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(Radionuclids));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _Radionuclids_Not_Valid;
+                    
                 }
             }
             set
@@ -299,13 +299,13 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation(string value)//TODO
+
+        private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(Radionuclids));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(Radionuclids), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
@@ -322,18 +322,18 @@ namespace Models
 
         //FactoryNumber property
         [Attributes.Form_Property("Заводской номер")]
-        public string FactoryNumber
+        public IDataAccess<string> FactoryNumber
         {
             get
             {
                 if (GetErrors(nameof(FactoryNumber)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(FactoryNumber));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(FactoryNumber));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _FactoryNumber_Not_Valid;
+                    
                 }
             }
             set
@@ -347,31 +347,31 @@ namespace Models
             }
         }
 
-        private string _FactoryNumber_Not_Valid = "";
-        private void FactoryNumber_Validation(string value)
+
+        private void FactoryNumber_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(FactoryNumber));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(FactoryNumber), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
         }
         //FactoryNumber property
 
         //FactoryNumberRecoded property
-        public string FactoryNumberRecoded
+        public IDataAccess<string> FactoryNumberRecoded
         {
             get
             {
                 if (GetErrors(nameof(FactoryNumberRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(FactoryNumberRecoded));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _FactoryNumberRecoded_Not_Valid;
+                    
                 }
             }
             set
@@ -385,27 +385,27 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _FactoryNumberRecoded_Not_Valid = "";
-        private void FactoryNumberRecoded_Validation(string value)//Ready
+
+        private void FactoryNumberRecoded_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(FactoryNumberRecoded));
+            value.ClearErrors();
         }
         //FactoryNumberRecoded property
 
         //Activity property
         [Attributes.Form_Property("Активность, Бк")]
-        public string Activity
+        public IDataAccess<string> Activity
         {
             get
             {
                 if (GetErrors(nameof(Activity)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Activity));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(Activity));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _Activity_Not_Valid;
+                    
                 }
             }
             set
@@ -419,54 +419,54 @@ namespace Models
             }
         }
 
-        private string _Activity_Not_Valid = "";
-        private void Activity_Validation(string value)//Ready
+
+        private void Activity_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(Activity));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(Activity), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
 
             if (value.Equals("прим."))
             {
                 if ((ActivityNote == null) || ActivityNote.Equals(""))
-                    AddError(nameof(ActivityNote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
-            if (!((value.Contains('e'))|| (value.Contains('E'))))
+            if (!((value.Value.Contains('e'))|| (value.Value.Contains('E'))))
             {
-                AddError(nameof(Activity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    AddError(nameof(Activity), "Число должно быть больше нуля");
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    value.AddError( "Число должно быть больше нуля");
             }
             catch
             {
-                AddError(nameof(Activity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
             }
         }
         //Activity property
 
         //ActivityNote property
-        public string ActivityNote
+        public IDataAccess<string> ActivityNote
         {
             get
             {
                 if (GetErrors(nameof(ActivityNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(ActivityNote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(ActivityNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _ActivityNote_Not_Valid;
+                    
                 }
             }
             set
@@ -482,27 +482,27 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _ActivityNote_Not_Valid = "";
-        private void ActivityNote_Validation(string value)//Ready
+
+        private void ActivityNote_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(ActivityNote));
+            value.ClearErrors();
         }
         //ActivityNote property
 
         //CreationDate property
         [Attributes.Form_Property("Дата изготовления")]
-        public string CreationDate
+        public IDataAccess<string> CreationDate
         {
             get
             {
                 if (GetErrors(nameof(CreationDate)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(CreationDate));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(CreationDate));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _CreationDate_Not_Valid;
+                    
                 }
             }
             set
@@ -518,49 +518,49 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _CreationDate_Not_Valid = "";
-        private void CreationDate_Validation(string value)//Ready
+
+        private void CreationDate_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(CreationDate));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(CreationDate), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("прим."))
             {
                 if ((CreationDateNote == null) || CreationDateNote.Equals(""))
-                    AddError(nameof(CreationDateNote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
+            if (!a.IsMatch(value.Value))
             {
-                AddError(nameof(CreationDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            try { DateTimeOffset.Parse(value); }
+            try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                AddError(nameof(CreationDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
         }
         //CreationDate property RDY
 
         //CreationDateNote property
-        public string CreationDateNote
+        public IDataAccess<string> CreationDateNote
         {
             get
             {
                 if (GetErrors(nameof(CreationDateNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(CreationDateNote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(CreationDateNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _CreationDateNote_Not_Valid;
+                    
                 }
             }
             set
@@ -575,28 +575,28 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _CreationDateNote_Not_Valid = "";
 
-        private void CreationDateNote_Validation(string value)
+
+        private void CreationDateNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(CreationDateNote));
+            value.ClearErrors();
         }
         //CreationDateNote property
 
         //CreatorOKPO property
         [Attributes.Form_Property("ОКПО изготовителя")]
-        public string CreatorOKPO
+        public IDataAccess<string> CreatorOKPO
         {
             get
             {
                 if (GetErrors(nameof(CreatorOKPO)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(CreatorOKPO));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _CreatorOKPO_Not_Valid;
+                    
                 }
             }
             set
@@ -611,46 +611,46 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _CreatorOKPO_Not_Valid = "";
-        private void CreatorOKPO_Validation(string value)//TODO
+
+        private void CreatorOKPO_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(CreatorOKPO));
-            if ((value == null) || (value.Equals("")))
+            value.ClearErrors();
+            if ((value.Value == null) || (value.Equals("")))
             {
-                AddError(nameof(CreatorOKPO), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("прим."))
             {
                 if ((CreatorOKPONote == null) || CreatorOKPONote.Equals(""))
-                    AddError(nameof(CreatorOKPONote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
             if (OKSM.Contains(value)) return;
             if ((value.Length != 8) && (value.Length != 14))
-                AddError(nameof(CreatorOKPO), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
             else
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value))
-                    AddError(nameof(CreatorOKPO), "Недопустимое значение");
+                if (!mask.IsMatch(value.Value))
+                    value.AddError( "Недопустимое значение");
             }
         }
         //CreatorOKPO property
 
         //CreatorOKPONote property
-        public string CreatorOKPONote
+        public IDataAccess<string> CreatorOKPONote
         {
             get
             {
                 if (GetErrors(nameof(CreatorOKPONote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(CreatorOKPONote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _CreatorOKPONote_Not_Valid;
+                    
                 }
             }
             set
@@ -666,10 +666,10 @@ namespace Models
             }
         }
 
-        private string _CreatorOKPONote_Not_Valid = "";
-        private void CreatorOKPONote_Validation(string value)
+
+        private void CreatorOKPONote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(CreatorOKPONote));
+            value.ClearErrors();
         }
         //CreatorOKPONote property
 
@@ -681,11 +681,11 @@ namespace Models
             {
                 if (GetErrors(nameof(AggregateState)) == null)
                 {
-                    return (byte)_dataAccess.Get(nameof(AggregateState));
+                    return _dataAccess.Get<string>(nameof(AggregateState));
                 }
                 else
                 {
-                    return _AggregateState_Not_Valid;
+                    
                 }
             }
             set
@@ -699,12 +699,12 @@ namespace Models
             }
         }
 
-        private byte _AggregateState_Not_Valid = 0;
+
         private void AggregateState_Validation(byte value)//Ready
         {
-            ClearErrors(nameof(AggregateState));
+            value.ClearErrors();
             if ((value != 1) && (value != 2) && (value != 3))
-                AddError(nameof(AggregateState), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
         }
         //AggregateState property
 
@@ -716,12 +716,12 @@ namespace Models
             {
                 if (GetErrors(nameof(PropertyCode)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PropertyCode));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PropertyCode));//OK
                     return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
                 {
-                    return _PropertyCode_Not_Valid;
+                    
                 }
             }
             set
@@ -736,34 +736,34 @@ namespace Models
             }
         }
 
-        private byte _PropertyCode_Not_Valid = 255;
+
         private void PropertyCode_Validation(byte value)//Ready
         {
-            ClearErrors(nameof(PropertyCode));
-            //if (value == 255)//ok
+            value.ClearErrors();
+            //if (value.Value == 255)//ok
             //{
-            //    AddError(nameof(PropertyCode), "Поле не заполнено");
+            //    value.AddError( "Поле не заполнено");
             //    return;
             //}
             if (!((value >= 1) && (value <= 9)))
-                AddError(nameof(PropertyCode), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
         }
         //PropertyCode property
 
         //Owner property
         [Attributes.Form_Property("Владелец")]
-        public string Owner
+        public IDataAccess<string> Owner
         {
             get
             {
                 if (GetErrors(nameof(Owner)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(Owner));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(Owner));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _Owner_Not_Valid;
+                    
                 }
             }
             set
@@ -778,48 +778,48 @@ namespace Models
             }
         }
         //if change this change validation
-        private string _Owner_Not_Valid = "";
-        private void Owner_Validation(string value)//Ready
+
+        private void Owner_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(Owner));
-            if ((value == null) || value.Equals(_Owner_Not_Valid))
+            value.ClearErrors();
+            if ((value.Value == null))
             {
-                AddError(nameof(Owner), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("Минобороны")) return;
             if (value.Equals("прим."))
             {
                 if ((OwnerNote == null) || OwnerNote.Equals(""))
-                    AddError(nameof(OwnerNote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
             if (OKSM.Contains(value)) return;
             if ((value.Length != 8) && (value.Length != 14))
-                AddError(nameof(Owner), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
             else
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value))
-                    AddError(nameof(Owner), "Недопустимое значение");
+                if (!mask.IsMatch(value.Value))
+                    value.AddError( "Недопустимое значение");
             }
         }
         //Owner property
 
         //ProviderOrRecieverOKPO property
         [Attributes.Form_Property("ОКПО поставщика/получателя")]
-        public string ProviderOrRecieverOKPO
+        public IDataAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPO));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _ProviderOrRecieverOKPO_Not_Valid;
+                    
                 }
             }
             set
@@ -834,20 +834,20 @@ namespace Models
             }
         }
 
-        private string _ProviderOrRecieverOKPO_Not_Valid = "";
-        private void ProviderOrRecieverOKPO_Validation(string value)//TODO
+
+        private void ProviderOrRecieverOKPO_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(ProviderOrRecieverOKPO));
-            if ((value == null) || value.Equals(_ProviderOrRecieverOKPO_Not_Valid))
+            value.ClearErrors();
+            if ((value.Value == null))
             {
-                AddError(nameof(ProviderOrRecieverOKPO), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("Минобороны")) return;
             if (value.Equals("прим."))
             {
                 if ((ProviderOrRecieverOKPONote == null) || ProviderOrRecieverOKPONote.Equals(""))
-                    AddError(nameof(ProviderOrRecieverOKPONote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
             bool a = (OperationCode >= 10) && (OperationCode <= 12);
@@ -864,29 +864,29 @@ namespace Models
             }
             if (OKSM.Contains(value)) return;
             if ((value.Length != 8) && (value.Length != 14))
-                AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
             else
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value))
-                    AddError(nameof(ProviderOrRecieverOKPO), "Недопустимое значение");
+                if (!mask.IsMatch(value.Value))
+                    value.AddError( "Недопустимое значение");
             }
         }
         //ProviderOrRecieverOKPO property
 
         //ProviderOrRecieverOKPONote property
-        public string ProviderOrRecieverOKPONote
+        public IDataAccess<string> ProviderOrRecieverOKPONote
         {
             get
             {
                 if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(ProviderOrRecieverOKPONote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _ProviderOrRecieverOKPONote_Not_Valid;
+                    
                 }
             }
             set
@@ -900,13 +900,13 @@ namespace Models
             }
         }
 
-        private string _ProviderOrRecieverOKPONote_Not_Valid = "";
-        private void ProviderOrRecieverOKPONote_Validation(string value)
+
+        private void ProviderOrRecieverOKPONote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(ProviderOrRecieverOKPONote));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(ProviderOrRecieverOKPONote), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
         }
@@ -914,18 +914,18 @@ namespace Models
 
         //TransporterOKPO property
         [Attributes.Form_Property("ОКПО перевозчика")]
-        public string TransporterOKPO
+        public IDataAccess<string> TransporterOKPO
         {
             get
             {
                 if (GetErrors(nameof(TransporterOKPO)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(TransporterOKPO));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(TransporterOKPO));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _TransporterOKPO_Not_Valid;
+                    
                 }
             }
             set
@@ -940,46 +940,46 @@ namespace Models
             }
         }
 
-        private string _TransporterOKPO_Not_Valid = "";
-        private void TransporterOKPO_Validation(string value)//TODO
+
+        private void TransporterOKPO_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(TransporterOKPO));
-            if ((value == null) || value.Equals(_TransporterOKPO_Not_Valid))
+            value.ClearErrors();
+            if ((value.Value == null))
             {
-                AddError(nameof(TransporterOKPO), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("-")) return;
             if (value.Equals("прим."))
             {
                 if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
-                    AddError(nameof(TransporterOKPONote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
             if ((value.Length != 8) && (value.Length != 14))
-                AddError(nameof(TransporterOKPO), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
             else
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value))
-                    AddError(nameof(TransporterOKPO), "Недопустимое значение");
+                if (!mask.IsMatch(value.Value))
+                    value.AddError( "Недопустимое значение");
             }
         }
         //TransporterOKPO property
 
         //TransporterOKPONote property
-        public string TransporterOKPONote
+        public IDataAccess<string> TransporterOKPONote
         {
             get
             {
                 if (GetErrors(nameof(TransporterOKPONote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(TransporterOKPONote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _TransporterOKPONote_Not_Valid;
+                    
                 }
             }
             set
@@ -993,27 +993,27 @@ namespace Models
             }
         }
 
-        private string _TransporterOKPONote_Not_Valid = "";
-        private void TransporterOKPONote_Validation(string value)
+
+        private void TransporterOKPONote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(TransporterOKPONote));
+            value.ClearErrors();
         }
         //TransporterOKPONote property
 
         //PackName property
         [Attributes.Form_Property("Наименование упаковки")]
-        public string PackName
+        public IDataAccess<string> PackName
         {
             get
             {
                 if (GetErrors(nameof(PackName)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackName));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackName));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackName_Not_Valid;
+                    
                 }
             }
             set
@@ -1028,37 +1028,37 @@ namespace Models
             }
         }
 
-        private string _PackName_Not_Valid = "";
-        private void PackName_Validation(string value)
+
+        private void PackName_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PackName));
-            if ((value == null) || value.Equals(_PackName_Not_Valid))
+            value.ClearErrors();
+            if ((value.Value == null))
             {
-                AddError(nameof(PackName), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("прим."))
             {
                 if ((PackNameNote == null) || PackNameNote.Equals(""))
-                    AddError(nameof(PackNameNote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
         }
         //PackName property
 
         //PackNameNote property
-        public string PackNameNote
+        public IDataAccess<string> PackNameNote
         {
             get
             {
                 if (GetErrors(nameof(PackNameNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackNameNote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackNameNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackNameNote_Not_Valid;
+                    
                 }
             }
             set
@@ -1072,13 +1072,13 @@ namespace Models
             }
         }
 
-        private string _PackNameNote_Not_Valid = "";
-        private void PackNameNote_Validation(string value)
+
+        private void PackNameNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PackNameNote));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(PackNameNote), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
         }
@@ -1086,18 +1086,18 @@ namespace Models
 
         //PackType property
         [Attributes.Form_Property("Тип упаковки")]
-        public string PackType
+        public IDataAccess<string> PackType
         {
             get
             {
                 if (GetErrors(nameof(PackType)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackType));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackType));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackType_Not_Valid;
+                    
                 }
             }
             set
@@ -1112,37 +1112,37 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _PackType_Not_Valid = "";
-        private void PackType_Validation(string value)//Ready
+
+        private void PackType_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(PackType));
-            if ((value == null) || value.Equals(_PackType_Not_Valid))
+            value.ClearErrors();
+            if ((value.Value == null))
             {
-                AddError(nameof(PackType), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("прим."))
             {
                 if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                    AddError(nameof(PackTypeNote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
         }
         //PackType property
 
         //PackTypeRecoded property
-        public string PackTypeRecoded
+        public IDataAccess<string> PackTypeRecoded
         {
             get
             {
                 if (GetErrors(nameof(PackTypeRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackTypeRecoded));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackTypeRecoded_Not_Valid;
+                    
                 }
             }
             set
@@ -1156,26 +1156,26 @@ namespace Models
             }
         }
 
-        private string _PackTypeRecoded_Not_Valid = "";
-        private void PackTypeRecoded_Validation(string value)
+
+        private void PackTypeRecoded_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PackTypeRecoded));
+            value.ClearErrors();
         }
         //PackTypeRecoded property
 
         //PackTypeNote property
-        public string PackTypeNote
+        public IDataAccess<string> PackTypeNote
         {
             get
             {
                 if (GetErrors(nameof(PackTypeNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackTypeNote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackTypeNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackTypeNote_Not_Valid;
+                    
                 }
             }
             set
@@ -1189,27 +1189,27 @@ namespace Models
             }
         }
 
-        private string _PackTypeNote_Not_Valid = "";
-        private void PackTypeNote_Validation(string value)
+
+        private void PackTypeNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PackTypeNote));
+            value.ClearErrors();
         }
         //PackTypeNote property
 
         //PackNumber property
         [Attributes.Form_Property("Номер упаковки")]
-        public string PackNumber
+        public IDataAccess<string> PackNumber
         {
             get
             {
                 if (GetErrors(nameof(PackNumber)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackNumber));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackNumber));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackNumber_Not_Valid;
+                    
                 }
             }
             set
@@ -1224,37 +1224,37 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _PackNumber_Not_Valid = "";
-        private void PackNumber_Validation(string value)//Ready
+
+        private void PackNumber_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(PackNumber));
-            if ((value == null) || value.Equals(_PackNumber_Not_Valid))//ok
+            value.ClearErrors();
+            if ((value.Value == null))//ok
             {
-                AddError(nameof(PackNumber), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("прим."))
             {
                 if ((PackNumberNote == null) || PackNumberNote.Equals(""))
-                    AddError(nameof(PackNumberNote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
         }
         //PackNumber property
 
         //PackNumberNote property
-        public string PackNumberNote
+        public IDataAccess<string> PackNumberNote
         {
             get
             {
                 if (GetErrors(nameof(PackNumberNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackNumberNote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackNumberNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackNumberNote_Not_Valid;
+                    
                 }
             }
             set
@@ -1269,31 +1269,31 @@ namespace Models
             }
         }
 
-        private string _PackNumberNote_Not_Valid = "";
-        private void PackNumberNote_Validation(string value)
+
+        private void PackNumberNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PackNumberNote));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(PackNumberNote), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
         }
         //PackNumberNote property
 
         //DocumentNumberNote property
-        public string DocumentNumberNote
+        public IDataAccess<string> DocumentNumberNote
         {
             get
             {
                 if (GetErrors(nameof(DocumentNumberNote)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(DocumentNumberNote));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(DocumentNumberNote));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _DocumentNumberNote_Not_Valid;
+                    
                 }
             }
             set
@@ -1308,13 +1308,13 @@ namespace Models
             }
         }
 
-        private string _DocumentNumberNote_Not_Valid = "";
-        private void DocumentNumberNote_Validation(string value)
+
+        private void DocumentNumberNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(DocumentNumberNote));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Equals(""))
             {
-                AddError(nameof(DocumentNumberNote), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
         }
@@ -1322,18 +1322,18 @@ namespace Models
 
         //PackNumberRecoded property
         [Attributes.Form_Property("Номер упаковки")]
-        public string PackNumberRecoded
+        public IDataAccess<string> PackNumberRecoded
         {
             get
             {
                 if (GetErrors(nameof(PackNumberRecoded)) == null)
                 {
-                    var tmp = _dataAccess.Get(nameof(PackNumber));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(PackNumber));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _PackNumberRecoded_Not_Valid;
+                    
                 }
             }
             set
@@ -1347,25 +1347,25 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _PackNumberRecoded_Not_Valid = "";
-        private void PackNumberRecoded_Validation(string value)//Ready
+
+        private void PackNumberRecoded_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(PackNumberRecoded));
+            value.ClearErrors();
         }
         //PackNumberRecoded property
 
-        protected override void DocumentNumber_Validation(string value)
+        protected override void DocumentNumber_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(DocumentNumber));
-            if (value == "прим.")
+            value.ClearErrors();
+            if (value.Value == "прим.")
             {
                 if ((DocumentNumberNote == null) || DocumentNumberNote.Equals(""))
-                    AddError(nameof(DocumentNumberNote), "Заполните примечание");
+                    value.AddError( "Заполните примечание");
                 return;
             }
-            if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
+            if ((value.Value == null))//ok
             {
-                AddError(nameof(DocumentNumber), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
         }

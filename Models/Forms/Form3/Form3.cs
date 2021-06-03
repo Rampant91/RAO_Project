@@ -16,20 +16,20 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(CorrectionNumber));
+                    var tmp = _dataAccess.Get<string>(nameof(CorrectionNumber));
                     return tmp != null ? (byte)tmp : (byte)0;
                 }
                 else
                 {
-                    return _CorrectionNumber_Not_Valid;
+                    
                 }
             }
             set
             {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
                 }
@@ -37,10 +37,10 @@ namespace Models.Abstracts
             }
         }
 
-        private byte _CorrectionNumber_Not_Valid = 255;
+        
         private void CorrectionNumber_Validation()
         {
-            ClearErrors(nameof(CorrectionNumber));
+            value.ClearErrors();
         }
         //CorrectionNumber property
 
@@ -50,19 +50,19 @@ namespace Models.Abstracts
         {
             get
             {
-                if (GetErrors(nameof(NotificationDate)) == null)
+                
                 {
-                    return (DateTimeOffset)_dataAccess.Get(nameof(NotificationDate));
+                    return _dataAccess.Get<string>(nameof(NotificationDate));
                 }
                 else
                 {
-                    return _NotificationDate_Not_Valid;
+                    
                 }
             }
             set
             {
-                _NotificationDate_Not_Valid = value;
-                if (GetErrors(nameof(NotificationDate)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(NotificationDate), _NotificationDate_Not_Valid);
                 }
@@ -70,7 +70,7 @@ namespace Models.Abstracts
             }
         }
 
-        private DateTimeOffset _NotificationDate_Not_Valid = DateTimeOffset.Parse("01/01/1921");
+        
         //NotificationDate property
     }
 }

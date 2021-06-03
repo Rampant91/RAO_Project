@@ -21,24 +21,24 @@ namespace Models
 
         //NameIOU property
         [Attributes.Form_Property("Наименование ИОУ")]
-        public string NameIOU
+        public IDataAccess<string> NameIOU
         {
             get
             {
-                if (GetErrors(nameof(NameIOU)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(NameIOU));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(NameIOU));//OK
                     return tmp != null ? (string)tmp : null;
                 }
                 else
                 {
-                    return _NameIOU_Not_Valid;
+                    
                 }
             }
             set
             {
-                _NameIOU_Not_Valid = value;
-                if (GetErrors(nameof(NameIOU)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(NameIOU), value);
                 }
@@ -46,10 +46,10 @@ namespace Models
             }
         }
 
-        private string _NameIOU_Not_Valid = "";
-        private void NameIOU_Validation(string value)//TODO
+
+        private void NameIOU_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(NameIOU));
+            value.ClearErrors();
         }
         //NameIOU property
 
@@ -59,22 +59,22 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Quantity)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(Quantity));//OK
+                    var tmp = _dataAccess.Get<string>(nameof(Quantity));//OK
                     return tmp != null ? (int)tmp : -1;
                 }
                 else
                 {
-                    return _Quantity_Not_Valid;
+                    
                 }
             }
             set
             {
                 Quantity_Validation(value);
-                //_Quantity_Not_Valid = value;
 
-                if (GetErrors(nameof(Quantity)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(Quantity), value);
                 }
@@ -82,12 +82,12 @@ namespace Models
             }
         }
         // positive int.
-        private int _Quantity_Not_Valid = -1;
+
         private void Quantity_Validation(int value)//Ready
         {
-            ClearErrors(nameof(Quantity));
+            value.ClearErrors();
             if (value <= 0)
-                AddError(nameof(Quantity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
         }
         //Quantity property
 
@@ -97,19 +97,19 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Mass)) == null)
+                
                 {
-                    return (double)_dataAccess.Get(nameof(Mass));
+                    return _dataAccess.Get<string>(nameof(Mass));
                 }
                 else
                 {
-                    return _Mass_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Mass_Not_Valid = value;
-                if (GetErrors(nameof(Mass)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(Mass), value);
                 }
@@ -117,13 +117,13 @@ namespace Models
             }
         }
 
-        private double _Mass_Not_Valid = -1;
+
         private void Mass_Validation()//TODO
         {
-            ClearErrors(nameof(Mass));
+            value.ClearErrors();
             if (Mass <= 0)
             {
-                AddError(nameof(Mass), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
         }

@@ -40,7 +40,7 @@ namespace Models.Abstracts
         private int _NumberInOrder_Not_Valid = -1;
         private void NumberInOrder_Validation()
         {
-            ClearErrors(nameof(NumberInOrder));
+            value.ClearErrors();
         }
         //NumberInOrder property
 
@@ -74,7 +74,7 @@ namespace Models.Abstracts
         private byte _CorrectionNumber_Not_Valid = 255;
         private void CorrectionNumber_Validation()
         {
-            ClearErrors(nameof(CorrectionNumber));
+            value.ClearErrors();
         }
         //CorrectionNumber property
     }

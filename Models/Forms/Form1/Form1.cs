@@ -139,7 +139,7 @@ namespace Models.Abstracts
         protected virtual void DocumentVid_Validation(IDataAccess<byte?> value)// TO DO
         {
             value.ClearErrors();
-            if (value == null)
+            if (value.Value == null)
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -255,7 +255,7 @@ namespace Models.Abstracts
         protected virtual void DocumentDate_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
