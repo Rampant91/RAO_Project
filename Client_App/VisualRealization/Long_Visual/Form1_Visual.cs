@@ -12,14 +12,13 @@ namespace Client_App.Long_Visual
 {
     public class Form1_Visual
     {
-        //Форма 10
         public static DataGrid Form10_Visual()
         {
             DataGrid grd = new DataGrid();
 
             return grd;
         }
-        public static Grid Form11_Visual()
+        public static Grid Form11_Visual(INameScope scp)
         {
             Grid maingrid = new Grid();
             var row = new RowDefinition();
@@ -57,13 +56,13 @@ namespace Client_App.Long_Visual
                 Text = "Дата конца периода:",
                 [Grid.ColumnProperty] = 0,
             });
-            topPnl1.Children.Add(new DatePicker
+            topPnl1.Children.Add(new TextBox
             {
                 Height = 30,
                 Margin = Thickness.Parse("5,0,0,0"),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!DatePicker.SelectedDateProperty] = new Binding("Storage.EndPeriod", BindingMode.TwoWay),
+                [!TextBox.TextProperty] = new Binding("Storage.EndPeriod", BindingMode.TwoWay),
                 [Grid.ColumnProperty] = 2,
 
             });
@@ -136,12 +135,19 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            DataGrid grd = new DataGrid();
-            grd.Name = "ReportGrid";
-            grd.CanUserResizeColumns = true;
+            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid();
+            grd.Name = "Form11Data_";
+            grd.Type = "1/1";
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            grd.Bind(DataGrid.ItemsProperty, new Binding("Storage.Rows11"));
+            grd.SetValue(Grid.RowProperty, 2);
+
+            Binding b = new Binding();
+            b.Path = "DataContext.Storage.Rows11";
+            b.ElementName = "ChangingPanel";
+            b.NameScope = new WeakReference<INameScope>(scp);
+            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            
 
             var cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>();
@@ -165,485 +171,6 @@ namespace Client_App.Long_Visual
 
             grd.ContextMenu = cntx;
 
-            DataGridTemplateColumn clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new TextBlock
-            {
-
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBlock
-                    {
-
-                    });
-            grd.Columns.Add(clm);
-
-            int FontSizeGlobal = 11;
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "NumberInOrder"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("NumberInOrder"),
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "OperationCode"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        FontSize = FontSizeGlobal,
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("OperationCode"),
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "OperationDate"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        FontSize = FontSizeGlobal,
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("OperationDate"),
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "PassportNumber"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        FontSize = FontSizeGlobal,
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("PassportNumber"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "Type"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        FontSize = FontSizeGlobal,
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("Type"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "Radionuclids"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("Radionuclids"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("FactoryNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "FactoryNumber"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("FactoryNumber"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("Quantity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "Quantity"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("Quantity"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("Activity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "Activity"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("Activity"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("CreatorOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "CreatorOKPO"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("CreatorOKPO"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("CreationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "CreationDate"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("CreationDate"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("Category").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "Category"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("Category"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("SignedServicePeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "SignedServicePeriod"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("SignedServicePeriod"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "PropertyCode"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("PropertyCode"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "Owner"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("Owner"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("DocumentVid").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "DocumentVid"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("DocumentVid"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("DocumentNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "DocumentNumber"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("DocumentNumber"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("DocumentDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "DocumentDate"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("DocumentDate"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "ProviderOrRecieverOKPO"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("ProviderOrRecieverOKPO"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "TransporterOKPO"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("TransporterOKPO"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "PackName"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("PackName"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "PackType"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("PackType"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                FontSize = FontSizeGlobal,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
-                GetProperty("PackNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "PackNumber"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("PackNumber"),
-
-                    });
-            grd.Columns.Add(clm);
-
-            grd.SetValue(Grid.RowProperty, 2);
-            grd.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
-
             maingrid.Children.Add(grd);
 
             DataGrid bgrd = new DataGrid();
@@ -659,19 +186,19 @@ namespace Client_App.Long_Visual
             itms.Add(new MenuItem
             {
                 Header = "Добавить строку",
-                [!MenuItem.CommandProperty] = new Binding("AddRowN"),
+                [!MenuItem.CommandProperty] = new Binding("AddRow"),
             });
             //itms.Add(new MenuItem
             //{
             //    Header = "Удалить строку",
-            //    [!MenuItem.CommandProperty] = new Binding("DeleteRowN"),
+            //    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
             //    [!MenuItem.CommandParameterProperty] = new Binding("#parent[2].SelectedItem"),
             //});
             cntx.Items = itms;
 
             bgrd.ContextMenu = cntx;
 
-            clm = new DataGridTemplateColumn();
+            var clm = new DataGridTemplateColumn();
             clm.Width = DataGridLength.SizeToHeader;
             clm.Header = new Button
             {

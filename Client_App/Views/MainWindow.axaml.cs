@@ -3,10 +3,14 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using System;
 using System.ComponentModel;
+using Avalonia.ReactiveUI;
+using ReactiveUI;
+using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Formatters;
 
 namespace Client_App.Views
 {
-    public class MainWindow : Window
+    public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     {
         public MainWindow()
         {
@@ -24,12 +28,12 @@ namespace Client_App.Views
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
+            
             var cntx=this.DataContext as ViewModels.MainWindowVM;
             if(cntx!=null)
             {
                 cntx.dbm.SaveChanges();
             }
-
         }
         private void Init()
         {

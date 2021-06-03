@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System;
 
 namespace Models.DataAccess
 {
-    public interface IDataAccess
+    public interface IDataAccess<T>
     {
-        object Get(string key);
-        void Set(string key,object obj);
+        Action<T> Handler { get; set; }
+        T Value { get; set; }
+
+        void ClearErrors();
+        void AddError(string error);
     }
 }

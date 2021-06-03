@@ -1,35 +1,90 @@
-﻿using System;
+﻿using Models.DataAccess;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations;
+using Avalonia.Data;
 
 namespace Models.DataAccess
 {
-    public class RamAccess : IDataAccess
+    public class RamAccess<T> : IDataAccess<T>, INotifyDataErrorInfo
     {
-        Dictionary<string,object> Data { get; set; }
+        public Action<T> Handler { get; set; }
 
-        public RamAccess()
+        T _value;
+        public T Value 
         {
-            Data = new Dictionary<string, object>();
+            get
+            {
+                return Value;
+            }
+            set
+            {
+                Handler(value);
+                Value = value;
+            }
+        }
+        public RamAccess(Action<T> Handler,T Value)
+        {
+            this.Handler = Handler;
+            this.Value = Value;
         }
 
-        public object Get(string key)
+        public void ClearErrors()
         {
-            if(Data.ContainsKey(key))
+            ClearErrors("Value");
+        }
+        public void AddError(string error)
+        {
+            AddError("Value",error);
+        }
+
+
+        //Data Validation
+        protected readonly List<string> _errorsByPropertyName = new List<string>();
+        public bool HasErrors => _errorsByPropertyName.Any();
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        public IEnumerable GetErrors(string propertyName)
+        {
+            var tmp = _errorsByPropertyName.Count>0 ?
+                _errorsByPropertyName : null;
+            if (tmp != null)
             {
-                return Data[key];
+                List<Exception> lst = new List<Exception>();
+                foreach (var item in tmp)
+                {
+                    lst.Add(new Exception(item));
+                }
+                return lst;
             }
             else
             {
                 return null;
             }
         }
-        public void Set(string key,object obj)
+        protected void OnErrorsChanged(string propertyName)
         {
-            if (obj != null)
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+        protected void ClearErrors(string propertyName)
+        {
+            if (_errorsByPropertyName.Count>0)
             {
-                Data[key] = obj;
+                _errorsByPropertyName.Remove(propertyName);
+                OnErrorsChanged(propertyName);
             }
         }
+        protected void AddError(string propertyName, string error)
+        {
+            if (!_errorsByPropertyName.Contains(error))
+            {
+                _errorsByPropertyName.Add(error);
+                OnErrorsChanged(propertyName);
+            }
+        }
+        //Data Validation
     }
 }

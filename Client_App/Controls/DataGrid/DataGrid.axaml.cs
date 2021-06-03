@@ -148,7 +148,7 @@ namespace Client_App.Controls.DataGrid
                             int count = 0;
                             foreach (var item in Items)
                             {
-                                var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count);
+                                var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count,item);
                                 if (tmp != null)
                                 {
                                     Panel pnl = new Panel() { Name = this.Name + count };
@@ -501,16 +501,30 @@ namespace Client_App.Controls.DataGrid
         }
         void Init()
         {
+
             Border brd = new Border();
             brd.BorderThickness = Thickness.Parse("1");
             brd.BorderBrush = new SolidColorBrush(Color.Parse("Gray"));
+
+            ScrollViewer vwm = new ScrollViewer();
+            //vw.SetValue(Grid.RowProperty, 1);
+            vwm.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
+            vwm.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            vwm.HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            vwm.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled;
+            vwm.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
+            brd.Child = vwm;
+
+            Panel p = new Panel();
+            p.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            vwm.Content = p;
 
             Grid grd = new Grid();
             RowDefinition rd = new RowDefinition();
             rd.Height = GridLength.Parse("30");
             grd.RowDefinitions.Add(rd);
             grd.RowDefinitions.Add(new RowDefinition());
-            brd.Child = grd;
+            p.Children.Add(grd);
 
             Panel pnl = new Panel();
             pnl.SetValue(Grid.RowProperty, 0);
@@ -521,6 +535,8 @@ namespace Client_App.Controls.DataGrid
             ScrollViewer vw = new ScrollViewer();
             vw.SetValue(Grid.RowProperty, 1);
             vw.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
+            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled;
+            vw.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
             grd.Children.Add(vw);
 
             StackPanel stck = new StackPanel();

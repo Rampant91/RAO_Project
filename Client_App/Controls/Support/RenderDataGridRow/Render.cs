@@ -10,7 +10,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Render
     {
-        public static Control GetControl(string Type,string Name)
+        public static Control GetControl(string Type,string Name,object Context)
         {
             Control ctrl = null;
             if (Type != "")
@@ -24,7 +24,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                         ctrl = Support.RenderDataGridRow.Main.GetControl(formT2,Name);
                         break;
                     case "1":
-                        ctrl = Support.RenderDataGridRow.Form1.GetControl(formT2);
+                        ctrl = Support.RenderDataGridRow.Form1.GetControl(formT2,Name,Context);
                         break;
                     case "2":
                         ctrl = Support.RenderDataGridRow.Form2.GetControl(formT2);
