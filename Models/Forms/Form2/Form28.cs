@@ -21,7 +21,7 @@ namespace Models
 
         //PermissionNumber property
         [Attributes.Form_Property("Номер разрешительного документа")]
-        public IDataAccess<string> PermissionNumber
+        public RamAccess<string> PermissionNumber
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Models
 
         //PermissionIssueDate property
         [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public IDataAccess<string> PermissionIssueDate
+        public RamAccess<string> PermissionIssueDate
         {
             get
             {
@@ -87,7 +87,7 @@ namespace Models
 
         //PermissionDocumentName property
         [Attributes.Form_Property("Наименование разрешительного документа")]
-        public IDataAccess<string> PermissionDocumentName
+        public RamAccess<string> PermissionDocumentName
         {
             get
             {
@@ -120,7 +120,7 @@ namespace Models
 
         //ValidBegin property
         [Attributes.Form_Property("Действует с")]
-        public IDataAccess<string> ValidBegin
+        public RamAccess<string> ValidBegin
         {
             get
             {
@@ -153,7 +153,7 @@ namespace Models
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
-        public IDataAccess<string> ValidThru
+        public RamAccess<string> ValidThru
         {
             get
             {
@@ -186,7 +186,7 @@ namespace Models
 
         //PermissionNumber1 property
         [Attributes.Form_Property("Номер разрешительного документа")]
-        public IDataAccess<string> PermissionNumber1
+        public RamAccess<string> PermissionNumber1
         {
             get
             {
@@ -208,7 +208,7 @@ namespace Models
 
         //PermissionIssueDate1 property
         [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public IDataAccess<string> PermissionIssueDate1
+        public RamAccess<string> PermissionIssueDate1
         {
             get
             {
@@ -236,7 +236,7 @@ namespace Models
 
         //PermissionDocumentName1 property
         [Attributes.Form_Property("Наименование разрешительного документа")]
-        public IDataAccess<string> PermissionDocumentName1
+        public RamAccess<string> PermissionDocumentName1
         {
             get
             {
@@ -264,7 +264,7 @@ namespace Models
 
         //ValidBegin1 property
         [Attributes.Form_Property("Действует с")]
-        public IDataAccess<string> ValidBegin1
+        public RamAccess<string> ValidBegin1
         {
             get
             {
@@ -292,7 +292,7 @@ namespace Models
 
         //ValidThru1 property
         [Attributes.Form_Property("Действует по")]
-        public IDataAccess<string> ValidThru1
+        public RamAccess<string> ValidThru1
         {
             get
             {
@@ -314,7 +314,7 @@ namespace Models
 
         //PermissionNumber2 property
         [Attributes.Form_Property("Номер разрешительного документа")]
-        public IDataAccess<string> PermissionNumber2
+        public RamAccess<string> PermissionNumber2
         {
             get
             {
@@ -336,7 +336,7 @@ namespace Models
 
         //PermissionIssueDate2 property
         [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public IDataAccess<string> PermissionIssueDate2
+        public RamAccess<string> PermissionIssueDate2
         {
             get
             {
@@ -364,7 +364,7 @@ namespace Models
 
         //PermissionDocumentName2 property
         [Attributes.Form_Property("Наименование разрешительного документа")]
-        public IDataAccess<string> PermissionDocumentName2
+        public RamAccess<string> PermissionDocumentName2
         {
             get
             {
@@ -396,7 +396,7 @@ namespace Models
 
         //ValidBegin2 property
         [Attributes.Form_Property("Действует с")]
-        public IDataAccess<string> ValidBegin2
+        public RamAccess<string> ValidBegin2
         {
             get
             {
@@ -418,7 +418,7 @@ namespace Models
 
         //ValidThru2 property
         [Attributes.Form_Property("Действует по")]
-        public IDataAccess<string> ValidThru2
+        public RamAccess<string> ValidThru2
         {
             get
             {
@@ -446,7 +446,7 @@ namespace Models
 
         //WasteSourceName property
         [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
-        public IDataAccess<string> WasteSourceName
+        public RamAccess<string> WasteSourceName
         {
             get
             {
@@ -479,7 +479,7 @@ namespace Models
 
         //WasteRecieverName property
         [Attributes.Form_Property("Наименование приемника отведенных вод")]
-        public IDataAccess<string> WasteRecieverName
+        public RamAccess<string> WasteRecieverName
         {
             get
             {
@@ -512,7 +512,7 @@ namespace Models
 
         //RecieverTypeCode property
         [Attributes.Form_Property("Код типа приемника отведенных вод")]
-        public IDataAccess<string> RecieverTypeCode
+        public RamAccess<string> RecieverTypeCode
         {
             get
             {
@@ -545,7 +545,7 @@ namespace Models
 
         //PoolDistrictName property
         [Attributes.Form_Property("Наименование бассейнового округа приемника отведенных вод")]
-        public IDataAccess<string> PoolDistrictName
+        public RamAccess<string> PoolDistrictName
         {
             get
             {
@@ -578,7 +578,7 @@ namespace Models
 
         //AllowedWasteRemovalVolume property
         [Attributes.Form_Property("Допустимый объем водоотведения за год, тыс. куб. м")]
-        public IDataAccess<double> AllowedWasteRemovalVolume
+        public RamAccess<double> AllowedWasteRemovalVolume
         {
             get
             {
@@ -611,7 +611,7 @@ namespace Models
 
         //RemovedWasteVolume property
         [Attributes.Form_Property("Отведено за отчетный период, тыс. куб. м")]
-        public IDataAccess<double> RemovedWasteVolume
+        public RamAccess<double> RemovedWasteVolume
         {
             get
             {
@@ -643,7 +643,7 @@ namespace Models
         //RemovedWasteVolume property
 
         //RemovedWasteVolumeNote property
-        public IDataAccess<double> RemovedWasteVolumeNote
+        public RamAccess<double> RemovedWasteVolumeNote
         {
             get
             {

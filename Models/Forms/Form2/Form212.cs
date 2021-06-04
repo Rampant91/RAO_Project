@@ -23,7 +23,7 @@ namespace Models
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public IDataAccess<short> OperationCode
+        public RamAccess<short> OperationCode
         {
             get
             {
@@ -47,7 +47,7 @@ namespace Models
 
         //ObjectTypeCode property
         [Attributes.Form_Property("Код типа объектов учета")]
-        public IDataAccess<string> ObjectTypeCode
+        public RamAccess<string> ObjectTypeCode
         {
             get
             {
@@ -80,7 +80,7 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public IDataAccess<string> Radionuclids
+        public RamAccess<string> Radionuclids
         {
             get
             {
@@ -129,7 +129,7 @@ namespace Models
 
         //Activity property
         [Attributes.Form_Property("Активность, Бк")]
-        public IDataAccess<double> Activity
+        public RamAccess<double> Activity
         {
             get
             {
@@ -169,7 +169,7 @@ namespace Models
 
         //ProviderOrRecieverOKPO property
         [Attributes.Form_Property("ОКПО поставщика/получателя")]
-        public IDataAccess<string> ProviderOrRecieverOKPO
+        public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
@@ -375,7 +375,7 @@ namespace Models
                 "ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ","ЮЖНЫЙ СУДАН"};
 
         //ProviderOrRecieverOKPONote property
-        public IDataAccess<string> ProviderOrRecieverOKPONote
+        public RamAccess<string> ProviderOrRecieverOKPONote
         {
             get
             {

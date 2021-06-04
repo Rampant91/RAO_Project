@@ -12,7 +12,7 @@ namespace Models.Abstracts
 
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
-        public IDataAccess<byte> CorrectionNumber
+        public RamAccess<byte> CorrectionNumber
         {
             get
             {
@@ -46,7 +46,7 @@ namespace Models.Abstracts
 
         //NotificationDate property
         [Attributes.Form_Property("Дата уведомления")]
-        public IDataAccess<string> NotificationDate
+        public RamAccess<string> NotificationDate
         {
             get
             {

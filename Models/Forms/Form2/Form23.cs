@@ -24,7 +24,7 @@ namespace Models
 
         //StoragePlaceName property
         [Attributes.Form_Property("Наименование ПХ")]
-        public IDataAccess<string> StoragePlaceName
+        public RamAccess<string> StoragePlaceName
         {
             get
             {
@@ -67,7 +67,7 @@ namespace Models
         //StoragePlaceName property
 
         //StoragePlaceNameNote property
-        public IDataAccess<string> StoragePlaceNameNote
+        public RamAccess<string> StoragePlaceNameNote
         {
             get
             {
@@ -100,7 +100,7 @@ namespace Models
 
         //StoragePlaceCode property
         [Attributes.Form_Property("Код ПХ")]
-        public IDataAccess<string> StoragePlaceCode //8 cyfer code or - .
+        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
@@ -145,7 +145,7 @@ namespace Models
 
         //ProjectVolume property
         [Attributes.Form_Property("Проектный объем, куб. м")]
-        public IDataAccess<string> ProjectVolume
+        public RamAccess<string> ProjectVolume
         {
             get
             {
@@ -197,7 +197,7 @@ namespace Models
         //ProjectVolume property
 
         //ProjectVolumeNote property
-        public IDataAccess<double> ProjectVolumeNote
+        public RamAccess<double> ProjectVolumeNote
         {
             get
             {
@@ -226,7 +226,7 @@ namespace Models
 
         //CodeRAO property
         [Attributes.Form_Property("Код РАО")]
-        public IDataAccess<string> CodeRAO
+        public RamAccess<string> CodeRAO
         {
             get
             {
@@ -269,7 +269,7 @@ namespace Models
 
         //Volume property
         [Attributes.Form_Property("Разрешенный объем, куб. м")]
-        public IDataAccess<string> Volume
+        public RamAccess<string> Volume
         {
             get
             {
@@ -319,7 +319,7 @@ namespace Models
 
         //Mass Property
         [Attributes.Form_Property("Разрешенная масса, т")]
-        public IDataAccess<string> Mass
+        public RamAccess<string> Mass
         {
             get
             {
@@ -369,7 +369,7 @@ namespace Models
 
         //QuantityOZIII property
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public IDataAccess<int?> QuantityOZIII
+        public RamAccess<int?> QuantityOZIII
         {
             get
             {
@@ -406,7 +406,7 @@ namespace Models
 
         //SummaryActivity property
         [Attributes.Form_Property("Суммарная активность, Бк")]
-        public IDataAccess<string> SummaryActivity
+        public RamAccess<string> SummaryActivity
         {
             get
             {
@@ -456,7 +456,7 @@ namespace Models
 
         //DocumentNumber property
         [Attributes.Form_Property("Номер документа")]
-        public IDataAccess<string> DocumentNumber
+        public RamAccess<string> DocumentNumber
         {
             get
             {
@@ -494,7 +494,7 @@ namespace Models
         //DocumentNumber property
 
         //DocumentNumberRecoded property
-        public IDataAccess<string> DocumentNumberRecoded
+        public RamAccess<string> DocumentNumberRecoded
         {
             get
             {
@@ -528,7 +528,7 @@ namespace Models
 
         //DocumentDate property
         [Attributes.Form_Property("Дата документа")]
-        public IDataAccess<string> DocumentDate
+        public RamAccess<string> DocumentDate
         {
             get
             {
@@ -574,7 +574,7 @@ namespace Models
 
         //ExpirationDate property
         [Attributes.Form_Property("Срок действия документа")]
-        public IDataAccess<string> ExpirationDate
+        public RamAccess<string> ExpirationDate
         {
             get
             {
@@ -624,7 +624,7 @@ namespace Models
 
         //DocumentName property
         [Attributes.Form_Property("Наименование документа")]
-        public IDataAccess<string> DocumentName
+        public RamAccess<string> DocumentName
         {
             get
             {

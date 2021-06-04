@@ -23,7 +23,7 @@ namespace Models
 
         //Name property
         [Attributes.Form_Property("Наименование")]
-        public IDataAccess<string> Name
+        public RamAccess<string> Name
         {
             get
             {
@@ -57,7 +57,7 @@ namespace Models
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public IDataAccess<short> OperationCode
+        public RamAccess<short> OperationCode
         {
             get
             {
@@ -81,7 +81,7 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public IDataAccess<int> Quantity
+        public RamAccess<int> Quantity
         {
             get
             {
@@ -122,7 +122,7 @@ namespace Models
 
         //ProviderOrRecieverOKPO property
         [Attributes.Form_Property("ОКПО поставщика/получателя")]
-        public IDataAccess<string> ProviderOrRecieverOKPO
+        public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
@@ -326,7 +326,7 @@ namespace Models
                 "ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН",
                 "ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ","ЮЖНЫЙ СУДАН"};
         //ProviderOrRecieverOKPONote property
-        public IDataAccess<string> ProviderOrRecieverOKPONote
+        public RamAccess<string> ProviderOrRecieverOKPONote
         {
             get
             {
@@ -360,7 +360,7 @@ namespace Models
 
         //Mass Property
         [Attributes.Form_Property("Масса, кг")]
-        public IDataAccess<double> Mass
+        public RamAccess<double> Mass
         {
             get
             {

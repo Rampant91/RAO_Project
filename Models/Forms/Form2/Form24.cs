@@ -21,7 +21,7 @@ namespace Models
 
         //CodeOYAT property
         [Attributes.Form_Property("Код ОЯТ")]
-        public IDataAccess<string> CodeOYAT
+        public RamAccess<string> CodeOYAT
         {
             get
             {
@@ -53,7 +53,7 @@ namespace Models
         //CodeOYAT property
 
         //CodeOYATnote property
-        public IDataAccess<string> CodeOYATnote
+        public RamAccess<string> CodeOYATnote
         {
             get
             {
@@ -85,7 +85,7 @@ namespace Models
 
         //FcpNumber property
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public IDataAccess<string> FcpNumber
+        public RamAccess<string> FcpNumber
         {
             get
             {
@@ -117,7 +117,7 @@ namespace Models
 
         //MassCreated Property
         [Attributes.Form_Property("Масса образованного, т")]
-        public IDataAccess<double> MassCreated
+        public RamAccess<double> MassCreated
         {
             get
             {
@@ -149,7 +149,7 @@ namespace Models
 
         //QuantityCreated property
         [Attributes.Form_Property("Количество образованного, шт.")]
-        public IDataAccess<int> QuantityCreated
+        public RamAccess<int> QuantityCreated
         {
             get
             {
@@ -185,7 +185,7 @@ namespace Models
         //QuantityCreated property
 
         //QuantityCreatedNote property
-        public IDataAccess<int> QuantityCreatedNote
+        public RamAccess<int> QuantityCreatedNote
         {
             get
             {
@@ -220,7 +220,7 @@ namespace Models
 
         //MassFromAnothers Property
         [Attributes.Form_Property("Масса поступившего от сторонних, т")]
-        public IDataAccess<double> MassFromAnothers
+        public RamAccess<double> MassFromAnothers
         {
             get
             {
@@ -248,7 +248,7 @@ namespace Models
 
         //QuantityFromAnothers property
         [Attributes.Form_Property("Количество поступившего от сторонних, шт.")]
-        public IDataAccess<int> QuantityFromAnothers
+        public RamAccess<int> QuantityFromAnothers
         {
             get
             {
@@ -278,7 +278,7 @@ namespace Models
         //QuantityFromAnothers property
 
         //QuantityFromAnothersNote property
-        public IDataAccess<int> QuantityFromAnothersNote
+        public RamAccess<int> QuantityFromAnothersNote
         {
             get
             {
@@ -309,7 +309,7 @@ namespace Models
 
         //MassFromAnothersImported Property
         [Attributes.Form_Property("Масса импортированного от сторонних, т")]
-        public IDataAccess<double> MassFromAnothersImported
+        public RamAccess<double> MassFromAnothersImported
         {
             get
             {
@@ -341,7 +341,7 @@ namespace Models
 
         //QuantityFromAnothersImported property
         [Attributes.Form_Property("Количество импортированного от сторонних, шт.")]
-        public IDataAccess<int> QuantityFromAnothersImported
+        public RamAccess<int> QuantityFromAnothersImported
         {
             get
             {
@@ -377,7 +377,7 @@ namespace Models
         //QuantityFromAnothersImported property
 
         //QuantityFromImportedNote property
-        public IDataAccess<int> QuantityFromImportedNote
+        public RamAccess<int> QuantityFromImportedNote
         {
             get
             {
@@ -412,7 +412,7 @@ namespace Models
 
         //MassAnotherReasons Property
         [Attributes.Form_Property("Масса поставленного на учет по другим причинам, т")]
-        public IDataAccess<double> MassAnotherReasons
+        public RamAccess<double> MassAnotherReasons
         {
             get
             {
@@ -444,7 +444,7 @@ namespace Models
 
         //QuantityAnotherReasons property
         [Attributes.Form_Property("Количество поступившего на учет по другим причинам, шт.")]
-        public IDataAccess<int> QuantityAnotherReasons
+        public RamAccess<int> QuantityAnotherReasons
         {
             get
             {
@@ -479,7 +479,7 @@ namespace Models
         //QuantityAnotherReasons property
 
         //QuantityAnotherReasonsNote property
-        public IDataAccess<int> QuantityAnotherReasonsNote
+        public RamAccess<int> QuantityAnotherReasonsNote
         {
             get
             {
@@ -514,7 +514,7 @@ namespace Models
 
         //MassTransferredToAnother Property
         [Attributes.Form_Property("Масса переданного сторонним, т")]
-        public IDataAccess<double> MassTransferredToAnother
+        public RamAccess<double> MassTransferredToAnother
         {
             get
             {
@@ -542,7 +542,7 @@ namespace Models
 
         //QuantityTransferredToAnother property
         [Attributes.Form_Property("Количество переданного сторонним, шт.")]
-        public IDataAccess<int> QuantityTransferredToAnother
+        public RamAccess<int> QuantityTransferredToAnother
         {
             get
             {
@@ -577,7 +577,7 @@ namespace Models
         //QuantityTransferredToAnother property
 
         //QuantityTransferredToNote property
-        public IDataAccess<int> QuantityTransferredToNote
+        public RamAccess<int> QuantityTransferredToNote
         {
             get
             {
@@ -612,7 +612,7 @@ namespace Models
 
         //MassRefined Property
         [Attributes.Form_Property("Масса переработанного, т")]
-        public IDataAccess<double> MassRefined
+        public RamAccess<double> MassRefined
         {
             get
             {
@@ -640,7 +640,7 @@ namespace Models
 
         //QuantityRefined property
         [Attributes.Form_Property("Количество переработанного, шт.")]
-        public IDataAccess<int> QuantityRefined
+        public RamAccess<int> QuantityRefined
         {
             get
             {
@@ -675,7 +675,7 @@ namespace Models
         //QuantityRefined property
 
         //QuantityRefinedNote property
-        public IDataAccess<int> QuantityRefinedNote
+        public RamAccess<int> QuantityRefinedNote
         {
             get
             {
@@ -710,7 +710,7 @@ namespace Models
 
         //MassRemovedFromAccount Property
         [Attributes.Form_Property("Масса снятого с учета, т")]
-        public IDataAccess<double> MassRemovedFromAccount
+        public RamAccess<double> MassRemovedFromAccount
         {
             get
             {
@@ -742,7 +742,7 @@ namespace Models
 
         //QuantityRemovedFromAccount property
         [Attributes.Form_Property("Количество снятого с учета, шт.")]
-        public IDataAccess<int> QuantityRemovedFromAccount
+        public RamAccess<int> QuantityRemovedFromAccount
         {
             get
             {
@@ -778,7 +778,7 @@ namespace Models
 
         //QuantityRemovedFromNote property
         [Attributes.Form_Property("Количество снятого с учета, шт.")]
-        public IDataAccess<int> QuantityRemovedFromNote
+        public RamAccess<int> QuantityRemovedFromNote
         {
             get
             {

@@ -23,7 +23,7 @@ namespace Models
 
         //RecieverName property
         [Attributes.Form_Property("Получатель")]
-        public IDataAccess<string> RecieverName
+        public RamAccess<string> RecieverName
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Models
 
         //RecieverAddress property
         [Attributes.Form_Property("Адрес получателя")]
-        public IDataAccess<string> RecieverAddress
+        public RamAccess<string> RecieverAddress
         {
             get
             {
@@ -85,7 +85,7 @@ namespace Models
 
         //RecieverFactAddress property
         [Attributes.Form_Property("Фактический адрес получателя")]
-        public IDataAccess<string> RecieverFactAddress
+        public RamAccess<string> RecieverFactAddress
         {
             get
             {
@@ -115,7 +115,7 @@ namespace Models
 
         //LicenseId property
         [Attributes.Form_Property("Номер лицензии")]
-        public IDataAccess<string> LicenseId
+        public RamAccess<string> LicenseId
         {
             get
             {
@@ -145,7 +145,7 @@ namespace Models
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
-        public IDataAccess<string> ValidThru
+        public RamAccess<string> ValidThru
         {
             get
             {
@@ -175,7 +175,7 @@ namespace Models
 
         //SuggestedSolutionDate property
         [Attributes.Form_Property("")]
-        public IDataAccess<string> SuggestedSolutionDate
+        public RamAccess<string> SuggestedSolutionDate
         {
             get
             {
@@ -205,7 +205,7 @@ namespace Models
 
         //UserName property
         [Attributes.Form_Property("Наименование пользователя")]
-        public IDataAccess<string> UserName
+        public RamAccess<string> UserName
         {
             get
             {
@@ -235,7 +235,7 @@ namespace Models
 
         //UserAddress property
         [Attributes.Form_Property("Адрес")]
-        public IDataAccess<string> UserAddress
+        public RamAccess<string> UserAddress
         {
             get
             {
@@ -265,7 +265,7 @@ namespace Models
 
         //UserFactAddress property
         [Attributes.Form_Property("Фактический адрес")]
-        public IDataAccess<string> UserFactAddress
+        public RamAccess<string> UserFactAddress
         {
             get
             {
@@ -295,7 +295,7 @@ namespace Models
 
         //UserTelephone property
         [Attributes.Form_Property("Телефон")]
-        public IDataAccess<string> UserTelephone
+        public RamAccess<string> UserTelephone
         {
             get
             {
@@ -326,7 +326,7 @@ namespace Models
 
         //UserFax property
         [Attributes.Form_Property("Факс")]
-        public IDataAccess<string> UserFax
+        public RamAccess<string> UserFax
         {
             get
             {
@@ -356,7 +356,7 @@ namespace Models
 
         //Email property
         [Attributes.Form_Property("Электронная почта")]
-        public IDataAccess<string> Email
+        public RamAccess<string> Email
         {
             get
             {
@@ -386,7 +386,7 @@ namespace Models
 
         //ZriUsageScope property
         [Attributes.Form_Property("Область применения ЗРИ")]
-        public IDataAccess<string> ZriUsageScope
+        public RamAccess<string> ZriUsageScope
         {
             get
             {
@@ -416,7 +416,7 @@ namespace Models
 
         //ContractId property
         [Attributes.Form_Property("Номер контракта")]
-        public IDataAccess<string> ContractId
+        public RamAccess<string> ContractId
         {
             get
             {
@@ -446,7 +446,7 @@ namespace Models
 
         //ContractDate property
         [Attributes.Form_Property("Дата контракта")]
-        public IDataAccess<string> ContractDate
+        public RamAccess<string> ContractDate
         {
             get
             {
@@ -476,7 +476,7 @@ namespace Models
 
         //CountryCreator property
         [Attributes.Form_Property("Страна-изготовитель")]
-        public IDataAccess<string> CountryCreator
+        public RamAccess<string> CountryCreator
         {
             get
             {

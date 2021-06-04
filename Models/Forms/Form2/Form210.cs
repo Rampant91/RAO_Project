@@ -21,7 +21,7 @@ namespace Models
 
         //IndicatorName property
         [Attributes.Form_Property("Наименование показателя")]
-        public IDataAccess<string> IndicatorName
+        public RamAccess<string> IndicatorName
         {
             get
             {
@@ -42,7 +42,7 @@ namespace Models
 
         //PlotName property
         [Attributes.Form_Property("Наименование участка")]
-        public IDataAccess<string> PlotName
+        public RamAccess<string> PlotName
         {
             get
             {
@@ -74,7 +74,7 @@ namespace Models
 
         //PlotKadastrNumber property
         [Attributes.Form_Property("Кадастровый номер участка")]
-        public IDataAccess<string> PlotKadastrNumber
+        public RamAccess<string> PlotKadastrNumber
         {
             get
             {
@@ -106,7 +106,7 @@ namespace Models
 
         //PlotCode property
         [Attributes.Form_Property("Код участка")]
-        public IDataAccess<string> PlotCode
+        public RamAccess<string> PlotCode
         {
             get
             {
@@ -138,7 +138,7 @@ namespace Models
 
         //InfectedArea property
         [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public IDataAccess<int?> InfectedArea
+        public RamAccess<int?> InfectedArea
         {
             get
             {
@@ -170,7 +170,7 @@ namespace Models
 
         //AvgGammaRaysDosePower property
         [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]
-        public IDataAccess<double> AvgGammaRaysDosePower
+        public RamAccess<double> AvgGammaRaysDosePower
         {
             get
             {
@@ -202,7 +202,7 @@ namespace Models
 
         //MaxGammaRaysDosePower property
         [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
-        public IDataAccess<double> MaxGammaRaysDosePower
+        public RamAccess<double> MaxGammaRaysDosePower
         {
             get
             {
@@ -234,7 +234,7 @@ namespace Models
 
         //WasteDensityAlpha property
         [Attributes.Form_Property("Средняя плотность загрязнения альфа-излучающими радионуклидами, Бк/кв. м")]
-        public IDataAccess<double> WasteDensityAlpha
+        public RamAccess<double> WasteDensityAlpha
         {
             get
             {
@@ -266,7 +266,7 @@ namespace Models
 
         //WasteDensityBeta property
         [Attributes.Form_Property("Средняя плотность загрязнения бета-излучающими радионуклидами, Бк/кв. м")]
-        public IDataAccess<double> WasteDensityBeta
+        public RamAccess<double> WasteDensityBeta
         {
             get
             {
@@ -298,7 +298,7 @@ namespace Models
 
         //FcpNumber property
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public IDataAccess<string> FcpNumber
+        public RamAccess<string> FcpNumber
         {
             get
             {

@@ -23,7 +23,7 @@ namespace Models
 
         //RegNo property
         [Attributes.Form_Property("Регистрационный номер")]
-        public IDataAccess<string> RegNo
+        public RamAccess<string> RegNo
         {
             get
             {
@@ -41,7 +41,7 @@ namespace Models
 
         //Okpo property
         [Attributes.Form_Property("ОКПО")]
-        public IDataAccess<string> Okpo
+        public RamAccess<string> Okpo
         {
             get
             {
@@ -70,7 +70,7 @@ namespace Models
 
         //OrgName property
         [Attributes.Form_Property("Наименование организации")]
-        public IDataAccess<string> OrgName
+        public RamAccess<string> OrgName
         {
             get
             {
@@ -88,7 +88,7 @@ namespace Models
 
         //DocumentNameNumber property
         [Attributes.Form_Property("Наименование и номер докумета о признании")]
-        public IDataAccess<string> DocumentNameNumber
+        public RamAccess<string> DocumentNameNumber
         {
             get
             {
@@ -106,7 +106,7 @@ namespace Models
 
         //PermissionNameNumber property
         [Attributes.Form_Property("Наименование и номер разрешительного докумета")]
-        public IDataAccess<string> PermissionNameNumber
+        public RamAccess<string> PermissionNameNumber
         {
             get
             {
@@ -124,7 +124,7 @@ namespace Models
 
         //AllowedActivity property
         [Attributes.Form_Property("Разрешенный вид деятельности")]
-        public IDataAccess<string> AllowedActivity
+        public RamAccess<string> AllowedActivity
         {
             get
             {
@@ -170,7 +170,7 @@ namespace Models
 
         //Note property
         [Attributes.Form_Property("Примечание")]
-        public IDataAccess<string> Note
+        public RamAccess<string> Note
         {
             get
             {

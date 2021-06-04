@@ -21,7 +21,7 @@ namespace Models
 
         //PackName property
         [Attributes.Form_Property("Наименование упаковки")]
-        public IDataAccess<string> PackName
+        public RamAccess<string> PackName
         {
             get
             {
@@ -61,7 +61,7 @@ namespace Models
 
         //PackType property
         [Attributes.Form_Property("Тип упаковки")]
-        public IDataAccess<string> PackType
+        public RamAccess<string> PackType
         {
             get
             {
@@ -100,7 +100,7 @@ namespace Models
         //PackType property
 
         //PackTypeRecoded property
-        public IDataAccess<string> PackTypeRecoded
+        public RamAccess<string> PackTypeRecoded
         {
             get
             {
@@ -134,7 +134,7 @@ namespace Models
 
         //Id property
         [Attributes.Form_Property("Идентификационный номер")]
-        public IDataAccess<string> Id
+        public RamAccess<string> Id
         {
             get
             {
@@ -163,7 +163,7 @@ namespace Models
 
         //CreationYear property
         [Attributes.Form_Property("Год изготовления")]
-        public IDataAccess<int> CreationYear
+        public RamAccess<int> CreationYear
         {
             get
             {
@@ -192,7 +192,7 @@ namespace Models
 
         //DepletedUraniumMass property
         [Attributes.Form_Property("Масса обедненного урана")]
-        public IDataAccess<double> DepletedUraniumMass
+        public RamAccess<double> DepletedUraniumMass
         {
             get
             {

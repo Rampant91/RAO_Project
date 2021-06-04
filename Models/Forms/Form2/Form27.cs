@@ -21,7 +21,7 @@ namespace Models
 
         //PermissionNumber property
         [Attributes.Form_Property("Номер разрешительного документа")]
-        public IDataAccess<string> PermissionNumber
+        public RamAccess<string> PermissionNumber
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Models
 
         //PermissionIssueDate property
         [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public IDataAccess<string> PermissionIssueDate
+        public RamAccess<string> PermissionIssueDate
         {
             get
             {
@@ -87,7 +87,7 @@ namespace Models
 
         //PermissionDocumentName property
         [Attributes.Form_Property("Наименование разрешительного документа")]
-        public IDataAccess<string> PermissionDocumentName
+        public RamAccess<string> PermissionDocumentName
         {
             get
             {
@@ -120,7 +120,7 @@ namespace Models
 
         //ValidBegin property
         [Attributes.Form_Property("Действует с")]
-        public IDataAccess<string> ValidBegin
+        public RamAccess<string> ValidBegin
         {
             get
             {
@@ -153,7 +153,7 @@ namespace Models
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
-        public IDataAccess<string> ValidThru
+        public RamAccess<string> ValidThru
         {
             get
             {
@@ -185,7 +185,7 @@ namespace Models
         //ValidThru property
 
         //RadionuclidNameNote property
-        public IDataAccess<string> RadionuclidNameNote
+        public RamAccess<string> RadionuclidNameNote
         {
             get
             {
@@ -218,7 +218,7 @@ namespace Models
 
         //AllowedWasteValue property
         [Attributes.Form_Property("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]
-        public IDataAccess<string> AllowedWasteValue
+        public RamAccess<string> AllowedWasteValue
         {
             get
             {
@@ -250,7 +250,7 @@ namespace Models
         //AllowedWasteValue property
 
         //AllowedWasteValueNote property
-        public IDataAccess<string> AllowedWasteValueNote
+        public RamAccess<string> AllowedWasteValueNote
         {
             get
             {
@@ -283,7 +283,7 @@ namespace Models
 
         //FactedWasteValue property
         [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]
-        public IDataAccess<string> FactedWasteValue
+        public RamAccess<string> FactedWasteValue
         {
             get
             {
@@ -315,7 +315,7 @@ namespace Models
         //FactedWasteValue property
 
         //FactedWasteValueNote property
-        public IDataAccess<string> FactedWasteValueNote
+        public RamAccess<string> FactedWasteValueNote
         {
             get
             {
@@ -348,7 +348,7 @@ namespace Models
 
         //WasteOutbreakPreviousYear property
         [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]
-        public IDataAccess<string> WasteOutbreakPreviousYear
+        public RamAccess<string> WasteOutbreakPreviousYear
         {
             get
             {

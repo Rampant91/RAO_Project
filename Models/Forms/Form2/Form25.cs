@@ -22,7 +22,7 @@ namespace Models
 
         //StoragePlaceName property
         [Attributes.Form_Property("Наименование ПХ")]
-        public IDataAccess<string> StoragePlaceName
+        public RamAccess<string> StoragePlaceName
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Models
 
         //CodeOYAT property
         [Attributes.Form_Property("Код ОЯТ")]
-        public IDataAccess<string> CodeOYAT
+        public RamAccess<string> CodeOYAT
         {
             get
             {
@@ -85,7 +85,7 @@ namespace Models
         //CodeOYAT property
 
         //CodeOYATnote property
-        public IDataAccess<string> CodeOYATnote
+        public RamAccess<string> CodeOYATnote
         {
             get
             {
@@ -116,7 +116,7 @@ namespace Models
 
         //StoragePlaceCode property
         [Attributes.Form_Property("Код ПХ")]
-        public IDataAccess<string> StoragePlaceCode //8 cyfer code or - .
+        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
@@ -159,7 +159,7 @@ namespace Models
 
         //FcpNumber property
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public IDataAccess<string> FcpNumber
+        public RamAccess<string> FcpNumber
         {
             get
             {
@@ -191,7 +191,7 @@ namespace Models
 
         //FuelMass property
         [Attributes.Form_Property("Масса топлива, т")]
-        public IDataAccess<double> FuelMass
+        public RamAccess<double> FuelMass
         {
             get
             {
@@ -223,7 +223,7 @@ namespace Models
 
         //CellMass property
         [Attributes.Form_Property("Масса ОТВС(ТВЭЛ, выемной части реактора), т")]
-        public IDataAccess<double> CellMass
+        public RamAccess<double> CellMass
         {
             get
             {
@@ -255,7 +255,7 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public IDataAccess<int> Quantity
+        public RamAccess<int> Quantity
         {
             get
             {
@@ -291,7 +291,7 @@ namespace Models
 
         //BetaGammaActivity property
         [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public IDataAccess<string> BetaGammaActivity
+        public RamAccess<string> BetaGammaActivity
         {
             get
             {
@@ -350,7 +350,7 @@ namespace Models
 
         //AlphaActivity property
         [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public IDataAccess<string> AlphaActivity
+        public RamAccess<string> AlphaActivity
         {
             get
             {

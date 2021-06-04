@@ -12,7 +12,7 @@ namespace Models.Abstracts
 
         //NumberInOrder property
         [Attributes.Form_Property("№ п/п")]
-        public IDataAccess<int> NumberInOrder
+        public RamAccess<int> NumberInOrder
         {
             get
             {
@@ -34,7 +34,7 @@ namespace Models.Abstracts
 
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
-        public IDataAccess<byte> CorrectionNumber
+        public RamAccess<byte> CorrectionNumber
         {
             get
             {

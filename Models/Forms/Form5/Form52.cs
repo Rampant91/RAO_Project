@@ -22,7 +22,7 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public IDataAccess<string> Radionuclids
+        public RamAccess<string> Radionuclids
         {
             get
             {
@@ -71,7 +71,7 @@ namespace Models
 
         //Kategory property
         [Attributes.Form_Property("Категория")]
-        public IDataAccess<short> Kategory
+        public RamAccess<short> Kategory
         {
             get
             {
@@ -104,7 +104,7 @@ namespace Models
 
         //Activity property
         [Attributes.Form_Property("Активность, Бк")]
-        public IDataAccess<string> Activity
+        public RamAccess<string> Activity
         {
             get
             {
@@ -159,7 +159,7 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public IDataAccess<int> Quantity
+        public RamAccess<int> Quantity
         {
             get
             {

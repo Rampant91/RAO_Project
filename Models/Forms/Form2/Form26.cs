@@ -21,7 +21,7 @@ namespace Models
 
         //SourcesQuantity property
         [Attributes.Form_Property("Количество источников, шт.")]
-        public IDataAccess<int> SourcesQuantity
+        public RamAccess<int> SourcesQuantity
         {
             get
             {
@@ -51,7 +51,7 @@ namespace Models
 
         //ObservedSourceNumber property
         [Attributes.Form_Property("Номер наблюдательной скважины")]
-        public IDataAccess<string> ObservedSourceNumber
+        public RamAccess<string> ObservedSourceNumber
         {
             get
             {
@@ -72,7 +72,7 @@ namespace Models
 
         //ControlledAreaName property
         [Attributes.Form_Property("Наименование зоны контроля")]
-        public IDataAccess<string> ControlledAreaName
+        public RamAccess<string> ControlledAreaName
         {
             get
             {
@@ -93,7 +93,7 @@ namespace Models
 
         //SupposedWasteSource property
         [Attributes.Form_Property("Предполагаемый источник поступления радиоактивных веществ")]
-        public IDataAccess<string> SupposedWasteSource
+        public RamAccess<string> SupposedWasteSource
         {
             get
             {
@@ -114,7 +114,7 @@ namespace Models
 
         //DistanceToWasteSource property
         [Attributes.Form_Property("Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м")]
-        public IDataAccess<int> DistanceToWasteSource
+        public RamAccess<int> DistanceToWasteSource
         {
             get
             {
@@ -139,7 +139,7 @@ namespace Models
 
         //TestDepth property
         [Attributes.Form_Property("Глубина отбора проб, м")]
-        public IDataAccess<int> TestDepth
+        public RamAccess<int> TestDepth
         {
             get
             {
@@ -170,7 +170,7 @@ namespace Models
         //TestDepth property
 
         //TestDepthNote property
-        public IDataAccess<int> TestDepthNote
+        public RamAccess<int> TestDepthNote
         {
             get
             {
@@ -202,7 +202,7 @@ namespace Models
 
         //RadionuclidName property
         [Attributes.Form_Property("Радионуклид")]
-        public IDataAccess<string> RadionuclidName
+        public RamAccess<string> RadionuclidName
         {
             get
             {
@@ -230,7 +230,7 @@ namespace Models
 
         //AverageYearConcentration property
         [Attributes.Form_Property("Среднегодовое содержание радионуклида, Бк/кг")]
-        public IDataAccess<double> AverageYearConcentration
+        public RamAccess<double> AverageYearConcentration
         {
             get
             {

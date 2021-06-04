@@ -24,7 +24,7 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public IDataAccess<int>? Quantity
+        public RamAccess<int>? Quantity
         {
             get
             {
@@ -59,7 +59,7 @@ namespace Models
 
         //CodeTypeAccObject property
         [Attributes.Form_Property("Код типа объектов учета")]
-        public IDataAccess<short?> CodeTypeAccObject
+        public RamAccess<short?> CodeTypeAccObject
         {
             get
             {
@@ -103,7 +103,7 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public IDataAccess<string> Radionuclids
+        public RamAccess<string> Radionuclids
         {
             get
             {
@@ -152,7 +152,7 @@ namespace Models
 
         //Activity property
         [Attributes.Form_Property("Активность, Бк")]
-        public IDataAccess<string> Activity
+        public RamAccess<string> Activity
         {
             get
             {

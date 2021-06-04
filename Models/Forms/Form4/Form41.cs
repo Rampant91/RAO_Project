@@ -22,7 +22,7 @@ namespace Models
 
         //NumberInOrder property
         [Attributes.Form_Property("№ п/п")]
-        public IDataAccess<int> NumberInOrder
+        public RamAccess<int> NumberInOrder
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Models
 
         //RegNo property
         [Attributes.Form_Property("Регистрационный номер")]
-        public IDataAccess<string> RegNo
+        public RamAccess<string> RegNo
         {
             get
             {
@@ -85,7 +85,7 @@ namespace Models
 
         //Okpo property
         [Attributes.Form_Property("ОКПО")]
-        public IDataAccess<string> Okpo
+        public RamAccess<string> Okpo
         {
             get
             {
@@ -125,7 +125,7 @@ namespace Models
 
         //OrgName property
         [Attributes.Form_Property("Наименование организации")]
-        public IDataAccess<string> OrgName
+        public RamAccess<string> OrgName
         {
             get
             {
@@ -154,7 +154,7 @@ namespace Models
 
         //LicenseInfo property
         [Attributes.Form_Property("Сведения о лицензии")]
-        public IDataAccess<string> LicenseInfo
+        public RamAccess<string> LicenseInfo
         {
             get
             {
@@ -183,7 +183,7 @@ namespace Models
 
         //QuantityOfFormsInv property
         [Attributes.Form_Property("Количество отчетных форм по инвентаризации, шт.")]
-        public IDataAccess<int> QuantityOfFormsInv
+        public RamAccess<int> QuantityOfFormsInv
         {
             get
             {
@@ -223,7 +223,7 @@ namespace Models
 
         //QuantityOfFormsOper property
         [Attributes.Form_Property("Количество форм оперативных отчетов, шт.")]
-        public IDataAccess<int> QuantityOfFormsOper
+        public RamAccess<int> QuantityOfFormsOper
         {
             get
             {
@@ -260,7 +260,7 @@ namespace Models
 
         //QuantityOfFormsYear property
         [Attributes.Form_Property("Количество форм годовых отчетов, шт.")]
-        public IDataAccess<int> QuantityOfFormsYear
+        public RamAccess<int> QuantityOfFormsYear
         {
             get
             {
@@ -297,7 +297,7 @@ namespace Models
 
         //Notes property
         [Attributes.Form_Property("Примечания")]
-        public IDataAccess<string> Notes
+        public RamAccess<string> Notes
         {
             get
             {
