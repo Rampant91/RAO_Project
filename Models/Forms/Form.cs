@@ -22,7 +22,7 @@ namespace Models.Abstracts
 
 
         [Key]
-        public RamAccess<int?> RowId { get; set; }
+        public int RowId { get; set; }
 
         //FormNum property
         [Attributes.Form_Property("Форма")]
