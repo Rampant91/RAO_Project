@@ -7,30 +7,43 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
 using Avalonia.Data;
+using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.DataAccess
 {
-    public class RamAccess<T> : IDataAccess<T>, INotifyDataErrorInfo
+    public class RamAccess<T> : INotifyDataErrorInfo
     {
-        public Func<IDataAccess<T>, bool> Handler { get; set; }
+        [NotMapped]
+        public Func<RamAccess<T>, bool> Handler { get; set; }
+
+        [Key]
+        public int RamAccessID { get; set; }
 
         T _value;
         public T Value 
         {
             get
             {
-                return Value;
+                return _value;
             }
             set
             {
-                Value = value;
-                Handler(this);
+                _value = value;
+                if (Handler != null)
+                {
+                    Handler(this);
+                }
             }
         }
-        public RamAccess(Func<IDataAccess<T>, bool> Handler,T Value)
+        public RamAccess(Func<RamAccess<T>, bool> Handler,T Value)
         {
             this.Handler = Handler;
             this.Value = Value;
+        }
+        public RamAccess()
+        {
+
         }
 
         public void ClearErrors()
@@ -73,7 +86,7 @@ namespace Models.DataAccess
         {
             if (_errorsByPropertyName.Count>0)
             {
-                _errorsByPropertyName.Remove(propertyName);
+                _errorsByPropertyName.Clear();
                 OnErrorsChanged(propertyName);
             }
         }

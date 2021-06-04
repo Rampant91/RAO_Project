@@ -13,23 +13,18 @@ namespace Models.DataAccess
             Data = new Dictionary<string, object>();
         }
 
-        public IDataAccess<T> Get<T>(string key)
+        public void Init<T>(string name,Func<RamAccess<T>, bool> handler,T value)
         {
-            if (Data.ContainsKey(key))
-            {
-                return (IDataAccess<T>)Data[key];
-            }
-            else
-            {
-                return null;
-            }
+            Data.Add(name,new RamAccess<T>(handler,value));
         }
-        public void Set<T>(string key, IDataAccess<T> obj)
+
+        public RamAccess<T> Get<T>(string key)
         {
-            if (obj != null)
-            {
-                Data[key] = obj;
-            }
+            return (RamAccess<T>)Data[key];
+        }
+        public void Set<T>(string key, RamAccess<T> obj)
+        {
+            Data[key] = obj;
         }
     }
 }

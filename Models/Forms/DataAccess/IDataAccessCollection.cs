@@ -6,7 +6,8 @@ namespace Models.DataAccess
 {
     public interface IDataAccessCollection
     {
-        IDataAccess<T> Get<T>(string key);
-        void Set<T>(string key,IDataAccess<T> data);
+        void Init<T>(string name, Func<RamAccess<T>, bool> handler, T value);
+        RamAccess<T> Get<T>(string key);
+        void Set<T>(string key, RamAccess<T> data);
     }
 }
