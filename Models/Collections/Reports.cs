@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Specialized;
+using Models.Collections;
 
 namespace Collections
 {
@@ -28,10 +29,10 @@ namespace Collections
 
         void Init()
         {
-            _dataAccess.Init<ObservableCollection<Report>>(nameof(Report_Collection), Report_Collection_Validation, null);
+            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection), Report_Collection_Validation, null);
             _dataAccess.Init<Report>(nameof(Master), Master_Validation, null);
 
-            Report_Collection = new ObservableCollection<Report>();
+            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
             Report_Collection.CollectionChanged += CollectionChanged;
         }
 
@@ -71,19 +72,19 @@ namespace Collections
             return true;
         }
 
-        public virtual ObservableCollection<Report> Report_Collection
+        public virtual ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
         {
             get
             {
-                return _dataAccess.Get<ObservableCollection<Report>>(nameof(Report_Collection)).Value;
+                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection)).Value;
             }
             set
             {
-                _dataAccess.Get<ObservableCollection<Report>>(nameof(Report_Collection)).Value=value;
+                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection)).Value=value;
                 OnPropertyChanged(nameof(Report_Collection));
             }
         }
-        private bool Report_Collection_Validation(RamAccess<ObservableCollection<Report>> value)
+        private bool Report_Collection_Validation(RamAccess<ObservableCollectionWithItemPropertyChanged<Report>> value)
         {
             return true;
         }

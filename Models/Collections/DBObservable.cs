@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using Models.Collections;
 
 namespace Collections
 {
@@ -27,26 +28,26 @@ namespace Collections
 
         void Init()
         {
-            _dataAccess.Init<ObservableCollection<Reports>>(nameof(Reports_Collection), Reports_Collection_Validation,null);
-            Reports_Collection = new ObservableCollection<Reports>();
+            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Reports>>(nameof(Reports_Collection), Reports_Collection_Validation,null);
+            Reports_Collection = new ObservableCollectionWithItemPropertyChanged<Reports>();
         }
 
         [Key]
         public int DBObservableId { get; set; }
 
-        public virtual ObservableCollection<Reports> Reports_Collection
+        public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
         {
             get
             {
-                return _dataAccess.Get<ObservableCollection<Reports>>(nameof(Reports_Collection)).Value;
+                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Reports>>(nameof(Reports_Collection)).Value;
             }
             set
             {
-                _dataAccess.Get<ObservableCollection<Reports>>(nameof(Reports_Collection)).Value=value;
+                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Reports>>(nameof(Reports_Collection)).Value=value;
                 OnPropertyChanged(nameof(Reports_Collection));
             }
         }
-        private bool Reports_Collection_Validation(RamAccess<ObservableCollection<Reports>> value)
+        private bool Reports_Collection_Validation(RamAccess<ObservableCollectionWithItemPropertyChanged<Reports>> value)
         {
             return true;
         }
