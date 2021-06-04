@@ -12,8 +12,8 @@ namespace Models
     {
         public Form22() : base()
         {
-            FormNum = "22";
-            NumberOfFields = 25;
+            FormNum.Value = "22";
+            NumberOfFields.Value = 25;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -32,7 +32,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceName));
                 }
-                else
+                
                 {
                     
                 }
@@ -52,13 +52,13 @@ namespace Models
         private void StoragePlaceName_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
                 return;
             }
             var spr = new List<string>();
-            if (!spr.Contains(value))
+            if (!spr.Contains(value.Value))
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -75,7 +75,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceNameNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -108,7 +108,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
-                else
+                
                 {
                     
                 }
@@ -128,14 +128,14 @@ namespace Models
         private void StoragePlaceCode_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
                 return;
             }
             if (value.Equals("-")) return;
             var spr = new List<string>();
-            if (!spr.Contains(value))
+            if (!spr.Contains(value.Value))
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -151,10 +151,9 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackName));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackName));//OK
                 }
-                else
+                
                 {
                     
                 }
@@ -185,7 +184,7 @@ namespace Models
                 return;
             }
             var spr = new List<string>();
-            if (!spr.Contains(value))
+            if (!spr.Contains(value.Value))
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -200,10 +199,9 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackNameNote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackNameNote));//OK
                 }
-                else
+                
                 {
                     
                 }
@@ -234,10 +232,9 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackType));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackType));//OK
                 }
-                else
+                
                 {
                     
                 }
@@ -271,7 +268,7 @@ namespace Models
             }
             if (value.Equals("-")) return;
             var spr = new List<string>();
-            if (!spr.Contains(value))
+            if (!spr.Contains(value.Value))
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -286,10 +283,9 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
                 }
-                else
+                
                 {
                     
                 }
@@ -319,10 +315,9 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackTypeNote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
                 }
-                else
+                
                 {
                     
                 }
@@ -347,15 +342,15 @@ namespace Models
 
         //PackQuantity property
         [Attributes.Form_Property("Количество упаковок, шт.")]
-        public int? PackQuantity
+        public IDataAccess<int?> PackQuantity
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackQuantity));
+                    return _dataAccess.Get<int?>(nameof(PackQuantity));
                 }
-                else
+                
                 {
                     
                 }
@@ -372,14 +367,14 @@ namespace Models
         }
         // positive int.
         
-        private void PackQuantity_Validation(int? value)//Ready
+        private void PackQuantity_Validation(IDataAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
             {
                 value.AddError( "Поле не заполнено");
             }
-            if ((int)value <= 0)
+            if ((int)value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //PackQuantity property
@@ -394,7 +389,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(CodeRAO));
                 }
-                else
+                
                 {
                     
                 }
@@ -414,7 +409,7 @@ namespace Models
         private void CodeRAO_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value)) return;
+            if (string.IsNullOrEmpty(value.Value)) return;
             var a = new Regex("^[0-9]{11}$");
             if (!a.IsMatch(value.Value))
             {
@@ -434,7 +429,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(StatusRAO));
                 }
-                else
+                
                 {
                     
                 }
@@ -454,8 +449,8 @@ namespace Models
         private void StatusRAO_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value)) return;
-            if (value.Length == 1)
+            if (string.IsNullOrEmpty(value.Value)) return;
+            if (value.Value.Length == 1)
             {
                 int tmp;
                 try
@@ -472,9 +467,9 @@ namespace Models
                 }
                 return;
             }
-            if ((value.Length != 8) && (value.Length != 14))
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -493,7 +488,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(VolumeInPack));
                 }
-                else
+                
                 {
                     
                 }
@@ -522,7 +517,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -553,7 +548,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(MassInPack));
                 }
-                else
+                
                 {
                     
                 }
@@ -582,7 +577,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -613,7 +608,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(VolumeOutOfPack));
                 }
-                else
+                
                 {
                     
                 }
@@ -643,7 +638,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -674,7 +669,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(MassOutOfPack));
                 }
-                else
+                
                 {
                     
                 }
@@ -704,7 +699,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -727,15 +722,15 @@ namespace Models
 
         //QuantityOZIII property
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public int? QuantityOZIII//SUMMARIZABLE
+        public IDataAccess<int?> QuantityOZIII//SUMMARIZABLE
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityOZIII));//OK
+                    return _dataAccess.Get<int?>(nameof(QuantityOZIII));//OK
                 }
-                else
+                
                 {
                     
                 }
@@ -753,11 +748,11 @@ namespace Models
         }
         // positive int.
         
-        private void QuantityOZIII_Validation(int? value)//Ready
+        private void QuantityOZIII_Validation(IDataAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null) return;
-            if ((int)value <= 0)
+            if ((int)value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityOZIII property
@@ -772,7 +767,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(TritiumActivity));
                 }
-                else
+                
                 {
                     
                 }
@@ -803,7 +798,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -834,7 +829,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(BetaGammaActivity));
                 }
-                else
+                
                 {
                     
                 }
@@ -865,7 +860,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -896,7 +891,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(AlphaActivity));
                 }
-                else
+                
                 {
                     
                 }
@@ -927,7 +922,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -958,7 +953,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(TransuraniumActivity));
                 }
-                else
+                
                 {
                     
                 }
@@ -989,7 +984,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -1020,7 +1015,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(MainRadionuclids));
                 }
-                else
+                
                 {
                     
                 }
@@ -1040,9 +1035,9 @@ namespace Models
         private void MainRadionuclids_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value)) return;
+            if (string.IsNullOrEmpty(value.Value)) return;
             var spr = new List<string>();
-            if (!spr.Contains(value))
+            if (!spr.Contains(value.Value))
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -1060,7 +1055,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(Subsidy));
                 }
-                else
+                
                 {
                     
                 }
@@ -1080,7 +1075,7 @@ namespace Models
         private void Subsidy_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value)) return;
+            if (string.IsNullOrEmpty(value.Value)) return;
             try
             {
                 int tmp = Int32.Parse(value.Value);
@@ -1104,7 +1099,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(FcpNumber));
                 }
-                else
+                
                 {
                     
                 }

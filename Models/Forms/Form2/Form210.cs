@@ -9,8 +9,8 @@ namespace Models
     {
         public Form210() : base()
         {
-            FormNum = "210";
-            NumberOfFields = 12;
+            FormNum.Value = "210";
+            NumberOfFields.Value = 12;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -50,7 +50,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PlotName));
                 }
-                else
+                
                 {
                     
                 }
@@ -60,7 +60,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(PlotName), _PlotName_Not_Valid);
+                    _dataAccess.Set(nameof(PlotName), value);
                 }
                 OnPropertyChanged(nameof(PlotName));
             }
@@ -82,7 +82,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PlotKadastrNumber));
                 }
-                else
+                
                 {
                     
                 }
@@ -92,7 +92,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(PlotKadastrNumber), _PlotKadastrNumber_Not_Valid);
+                    _dataAccess.Set(nameof(PlotKadastrNumber), value);
                 }
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
@@ -114,7 +114,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PlotCode));
                 }
-                else
+                
                 {
                     
                 }
@@ -124,7 +124,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(PlotCode), _PlotCode_Not_Valid);
+                    _dataAccess.Set(nameof(PlotCode), value);
                 }
                 OnPropertyChanged(nameof(PlotCode));
             }
@@ -138,15 +138,15 @@ namespace Models
 
         //InfectedArea property
         [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public int InfectedArea
+        public IDataAccess<int?> InfectedArea
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(InfectedArea));
+                    return _dataAccess.Get<int?>(nameof(InfectedArea));
                 }
-                else
+                
                 {
                     
                 }
@@ -156,13 +156,13 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(InfectedArea), _InfectedArea_Not_Valid);
+                    _dataAccess.Set(nameof(InfectedArea), value);
                 }
                 OnPropertyChanged(nameof(InfectedArea));
             }
         }
 
-                private void InfectedArea_Validation(int value)//TODO
+                private void InfectedArea_Validation(IDataAccess<int?> value)//TODO
         {
             value.ClearErrors();
         }
@@ -170,15 +170,15 @@ namespace Models
 
         //AvgGammaRaysDosePower property
         [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]
-        public double AvgGammaRaysDosePower
+        public IDataAccess<double> AvgGammaRaysDosePower
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(AvgGammaRaysDosePower));
+                    return _dataAccess.Get<double>(nameof(AvgGammaRaysDosePower));
                 }
-                else
+                
                 {
                     
                 }
@@ -188,13 +188,13 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(AvgGammaRaysDosePower), _AvgGammaRaysDosePower_Not_Valid);
+                    _dataAccess.Set(nameof(AvgGammaRaysDosePower), value);
                 }
                 OnPropertyChanged(nameof(AvgGammaRaysDosePower));
             }
         }
 
-                private void AvgGammaRaysDosePower_Validation(double value)//TODO
+                private void AvgGammaRaysDosePower_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -202,15 +202,15 @@ namespace Models
 
         //MaxGammaRaysDosePower property
         [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
-        public double MaxGammaRaysDosePower
+        public IDataAccess<double> MaxGammaRaysDosePower
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MaxGammaRaysDosePower));
+                    return _dataAccess.Get<double>(nameof(MaxGammaRaysDosePower));
                 }
-                else
+                
                 {
                     
                 }
@@ -220,13 +220,13 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(MaxGammaRaysDosePower), _MaxGammaRaysDosePower_Not_Valid);
+                    _dataAccess.Set(nameof(MaxGammaRaysDosePower), value);
                 }
                 OnPropertyChanged(nameof(MaxGammaRaysDosePower));
             }
         }
 
-                private void MaxGammaRaysDosePower_Validation(double value)//TODO
+                private void MaxGammaRaysDosePower_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -234,15 +234,15 @@ namespace Models
 
         //WasteDensityAlpha property
         [Attributes.Form_Property("Средняя плотность загрязнения альфа-излучающими радионуклидами, Бк/кв. м")]
-        public double WasteDensityAlpha
+        public IDataAccess<double> WasteDensityAlpha
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(WasteDensityAlpha));
+                    return _dataAccess.Get<double>(nameof(WasteDensityAlpha));
                 }
-                else
+                
                 {
                     
                 }
@@ -252,13 +252,13 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(WasteDensityAlpha), _WasteDensityAlpha_Not_Valid);
+                    _dataAccess.Set(nameof(WasteDensityAlpha), value);
                 }
                 OnPropertyChanged(nameof(WasteDensityAlpha));
             }
         }
 
-                private void WasteDensityAlpha_Validation(double value)//TODO
+                private void WasteDensityAlpha_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -266,15 +266,15 @@ namespace Models
 
         //WasteDensityBeta property
         [Attributes.Form_Property("Средняя плотность загрязнения бета-излучающими радионуклидами, Бк/кв. м")]
-        public double WasteDensityBeta
+        public IDataAccess<double> WasteDensityBeta
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(WasteDensityBeta));
+                    return _dataAccess.Get<double>(nameof(WasteDensityBeta));
                 }
-                else
+                
                 {
                     
                 }
@@ -284,13 +284,13 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(WasteDensityBeta), _WasteDensityBeta_Not_Valid);
+                    _dataAccess.Set(nameof(WasteDensityBeta), value);
                 }
                 OnPropertyChanged(nameof(WasteDensityBeta));
             }
         }
 
-                private void WasteDensityBeta_Validation(double value)//TODO
+                private void WasteDensityBeta_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -306,7 +306,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(FcpNumber));
                 }
-                else
+                
                 {
                     
                 }
@@ -316,7 +316,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(FcpNumber), _FcpNumber_Not_Valid);
+                    _dataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
