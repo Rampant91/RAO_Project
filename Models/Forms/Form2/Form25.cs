@@ -1,5 +1,6 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Text.RegularExpressions;
 using System.Globalization;
 
 namespace Models
@@ -46,10 +47,9 @@ namespace Models
             }
         }
         //If change this change validation
-                private void StoragePlaceName_Validation(RamAccess<string> value)//Ready
+                private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //StoragePlaceName property
 
         //CodeOYAT property
@@ -78,10 +78,9 @@ namespace Models
             }
         }
 
-                private void CodeOYAT_Validation(RamAccess<string> value)
+                private bool CodeOYAT_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //CodeOYAT property
 
         //CodeOYATnote property
@@ -108,10 +107,9 @@ namespace Models
                 OnPropertyChanged(nameof(CodeOYATnote));
             }
         }
-                private void CodeOYATnote_Validation(RamAccess<string> value)
+                private bool CodeOYATnote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //CodeOYATnote property
 
         //StoragePlaceCode property
@@ -139,21 +137,22 @@ namespace Models
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }
-                private void StoragePlaceCode_Validation(RamAccess<string> value)//TODO
+        private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (!(value.Value == "-"))
                 if (value.Value.Length != 8)
-                    value.AddError( "Недопустимое значение");
-                
-                    for (int i = 0; i < 8; i++)
-                    {
-                        if (!((value.Value[i] >= '0') && (value.Value[i] <= '9')))
-                        {
-                            value.AddError( "Недопустимое значение");
-                            return;
-                        }
-                    }
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            Regex a = new Regex("^[0-9]{8}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //StoragePlaceCode property
 
@@ -183,10 +182,9 @@ namespace Models
             }
         }
 
-                private void FcpNumber_Validation(RamAccess<string> value)//TODO
+                private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //FcpNumber property
 
         //FuelMass property
@@ -215,10 +213,9 @@ namespace Models
             }
         }
 
-                private void FuelMass_Validation(RamAccess<double?> value)//TODO
+                private bool FuelMass_Validation(RamAccess<double?> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //FuelMass property
 
         //CellMass property
@@ -247,10 +244,9 @@ namespace Models
             }
         }
 
-                private void CellMass_Validation(RamAccess<double?> value)//TODO
+                private bool CellMass_Validation(RamAccess<double?> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //CellMass property
 
         //Quantity property
@@ -281,7 +277,7 @@ namespace Models
             }
         }
         // positive int.
-                private void Quantity_Validation(RamAccess<int> value)//Ready
+                private bool Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -315,19 +311,19 @@ namespace Models
             }
         }
 
-                private void BetaGammaActivity_Validation(RamAccess<string> value)//TODO
+        private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors(); if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            string tmp=value.Value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -339,12 +335,15 @@ namespace Models
             try
             {
                 if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                {
+                    value.AddError("Число должно быть больше нуля"); return false;
+                }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            return true;
         }
         //BetaGammaActivity property
 
@@ -374,18 +373,16 @@ namespace Models
             }
         }
 
-                private void AlphaActivity_Validation(RamAccess<string> value)//TODO
+                private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -399,12 +396,15 @@ namespace Models
             try
             {
                 if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
-            }
+                {
+                    value.AddError("Число должно быть больше нуля"); return false;
+                }
+                }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //AlphaActivity property
     }

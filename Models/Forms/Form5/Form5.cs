@@ -26,10 +26,9 @@ namespace Models.Abstracts
         }
 
         private int _NumberInOrder_Not_Valid = -1;
-        private void NumberInOrder_Validation(RamAccess<int> value)
+        private bool NumberInOrder_Validation(RamAccess<int> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //NumberInOrder property
 
         //CorrectionNumber property
@@ -48,10 +47,9 @@ namespace Models.Abstracts
         }
 
         private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation(RamAccess<byte> value)
+        private bool CorrectionNumber_Validation(RamAccess<byte> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //CorrectionNumber property
     }
 }

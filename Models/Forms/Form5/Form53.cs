@@ -46,10 +46,9 @@ namespace Models
         }
 
 
-        private void OperationCode_Validation(RamAccess<string> value)
+        private bool OperationCode_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //OperationCode property
 
         //TypeOfAccountedParts property
@@ -79,11 +78,14 @@ namespace Models
         }
         //1 or 2
  //1 or 2
-        private void TypeOfAccountedParts_Validation(RamAccess<int> value)//Ready
+        private bool TypeOfAccountedParts_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value != 1) && (value.Value != 2))
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //TypeOfAccountedParts property
 
@@ -114,8 +116,9 @@ namespace Models
         }
 
 
-        private void KindOri_Validation(RamAccess<int> value)//TODO
+        private bool KindOri_Validation(RamAccess<int> value)//TODO
         {
+            return true;
         }
         //KindOri property
 
@@ -146,11 +149,14 @@ namespace Models
         }
 
 
-        private void AggregateState_Validation(RamAccess<byte> value)//Ready
+        private bool AggregateState_Validation(RamAccess<byte> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value != 1) && (value.Value != 2) && (value.Value != 3))
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //AggregateState property
 
@@ -183,16 +189,13 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
+        private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("Минобороны") || value.Value.Equals("прим.")) return;
-            if (OKSM.Contains(value.Value)) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;return false;
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
             
@@ -388,10 +391,9 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
+        private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ProviderOrRecieverOKPONote property
 
         //Radionuclids property
@@ -423,23 +425,22 @@ namespace Models
         }
         //If change this change validation
 
-        private void Radionuclids_Validation(RamAccess<string> value)//TODO
+        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;
-                    return;
+                    Radionuclids.Value =item.Item2;return true;
                 }
             }
+            return false;
         }
         //Radionuclids property
 
@@ -471,30 +472,33 @@ namespace Models
         }
 
 
-        private void Activity_Validation(RamAccess<string> value)//Ready
+        private bool Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
                 if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                {
+                    value.AddError("Число должно быть больше нуля");
+                    return false;
+                }
             }
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Activity property
 
@@ -528,14 +532,14 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(RamAccess<int> value)//Ready
+        private bool Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //Quantity property
 
@@ -566,14 +570,14 @@ namespace Models
         }
 
 
-        private void Volume_Validation(RamAccess<double?> value)//TODO
+        private bool Volume_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //Volume property
 
@@ -604,14 +608,14 @@ namespace Models
         }
 
 
-        private void Mass_Validation(RamAccess<double> value)//TODO
+        private bool Mass_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //Mass Property
     }

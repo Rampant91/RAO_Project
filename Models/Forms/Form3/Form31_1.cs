@@ -51,23 +51,22 @@ namespace Models
         }
         //If change this change validation
         
-        private void Radionuclids_Validation(RamAccess<string> value)//TODO
+        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;
-                    return;
+                    Radionuclids.Value =item.Item2;return true;
                 }
             }
+            return false;
         }
         //Radionuclids property
 
@@ -100,11 +99,14 @@ namespace Models
         }
         // positive int.
         
-        private void Quantity_Validation(RamAccess<int> value)//Ready
+        private bool Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //Quantity property
 
@@ -135,18 +137,16 @@ namespace Models
         }
 
         
-        private void SummaryActivity_Validation(RamAccess<string> value)//Ready
+        private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -160,12 +160,16 @@ namespace Models
             try
             {
                 if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
-            }
+                {
+                    value.AddError("Число должно быть больше нуля"); return false;
+                }
+                }
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //SummaryActivity property
     }

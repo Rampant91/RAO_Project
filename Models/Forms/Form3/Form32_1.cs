@@ -50,19 +50,21 @@ namespace Models
             }
         }
 
-                private void PassportNumber_Validation(RamAccess<string> value)
+                private bool PassportNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (value.Value.Equals("прим."))
             {
                 if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
-                    value.AddError( "Поле не может быть пустым");
+                {
+                    value.AddError("Поле не может быть пустым"); return false;
+                }
             }
+            return true;
         }
         //PassportNumber property
 
@@ -92,10 +94,9 @@ namespace Models
             }
         }
 
-                private void PassportNumberNote_Validation(RamAccess<string> value)
+                private bool PassportNumberNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PassportNumberNote property
 
         //CreatorOKPO property
@@ -126,16 +127,13 @@ namespace Models
             }
         }
         //If change this change validation
-                private void CreatorOKPO_Validation(RamAccess<string> value)//TODO
+                private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("прим.")) return;
-            if (OKSM.Contains(value.Value)) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;return false;
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
             
@@ -331,10 +329,9 @@ namespace Models
             }
         }
 
-                private void Type_Validation(RamAccess<string> value)
+                private bool Type_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //Type property
 
         //TypeRecoded property
@@ -363,10 +360,9 @@ namespace Models
             }
         }
 
-                private void TypeRecoded_Validation(RamAccess<string> value)
+                private bool TypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //TypeRecoded property
 
         //Radionuclids property
@@ -397,23 +393,22 @@ namespace Models
             }
         }
         //If change this change validation
-                private void Radionuclids_Validation(RamAccess<string> value)//TODO
+                private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item1.Equals(Type))
                 {
-                    Radionuclids.Value =item.Item2;
-                    return;
+                    Radionuclids.Value =item.Item2;return true;
                 }
             }
+            return false;
         }
         //Radionuclids property
 
@@ -444,14 +439,14 @@ namespace Models
             }
         }
 
-                private void FactoryNumber_Validation(RamAccess<string> value)
+                private bool FactoryNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //FactoryNumber property
 
@@ -481,10 +476,9 @@ namespace Models
             }
         }
         //If change this change validation
-                private void FactoryNumberRecoded_Validation(RamAccess<string> value)//Ready
+                private bool FactoryNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //FactoryNumberRecoded property
 
         //ActivityOnCreation property
@@ -514,7 +508,7 @@ namespace Models
             }
         }
 
-                private void ActivityOnCreation_Validation(RamAccess<string> value)//Ready
+                private bool ActivityOnCreation_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -522,12 +516,16 @@ namespace Models
             try
             {
                 if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
-            }
+                {
+                    value.AddError("Число должно быть больше нуля"); return false;
+                }
+                }
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //ActivityOnCreation property
 
@@ -557,10 +555,9 @@ namespace Models
             }
         }
         //If change this change validation
-                private void CreationDate_Validation(RamAccess<string> value)//Ready
+                private bool CreationDate_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //CreationDate property
 
         //CreatorOKPONote property
@@ -591,10 +588,9 @@ namespace Models
             }
         }
 
-                private void CreatorOKPONote_Validation(RamAccess<string> value)
+                private bool CreatorOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //CreatorOKPONote property
 
         //Kategory property
@@ -612,10 +608,9 @@ namespace Models
             }
         }
 
-                private void Kategory_Validation(RamAccess<short> value)//TODO
+                private bool Kategory_Validation(RamAccess<short> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //Kategory property
 
         //NuclearMaterialPresence property

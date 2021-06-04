@@ -46,10 +46,9 @@ namespace Models
         }
 
         
-        private void PermissionNumber_Validation(RamAccess<string> value)
+        private bool PermissionNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionNumber property
 
         //PermissionIssueDate property
@@ -79,10 +78,9 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate_Validation(RamAccess<string> value)
+        private bool PermissionIssueDate_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionIssueDate property
 
         //PermissionDocumentName property
@@ -112,10 +110,9 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName_Validation(RamAccess<string> value)
+        private bool PermissionDocumentName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionDocumentName property
 
         //ValidBegin property
@@ -145,10 +142,9 @@ namespace Models
         }
 
         
-        private void ValidBegin_Validation(RamAccess<string> value)
+        private bool ValidBegin_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ValidBegin property
 
         //ValidThru property
@@ -178,10 +174,9 @@ namespace Models
         }
 
         
-        private void ValidThru_Validation(RamAccess<string> value)
+        private bool ValidThru_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ValidThru property
 
         //RadionuclidNameNote property
@@ -210,10 +205,9 @@ namespace Models
         }
 
         
-        private void RadionuclidNameNote_Validation(RamAccess<string> value)
+        private bool RadionuclidNameNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //RadionuclidNameNote property
 
         //AllowedWasteValue property
@@ -243,10 +237,9 @@ namespace Models
         }
 
         
-        private void AllowedWasteValue_Validation(RamAccess<string> value)
+        private bool AllowedWasteValue_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //AllowedWasteValue property
 
         //AllowedWasteValueNote property
@@ -275,10 +268,9 @@ namespace Models
         }
 
         
-        private void AllowedWasteValueNote_Validation(RamAccess<string> value)
+        private bool AllowedWasteValueNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //AllowedWasteValueNote property
 
         //FactedWasteValue property
@@ -308,10 +300,9 @@ namespace Models
         }
 
         
-        private void FactedWasteValue_Validation(RamAccess<string> value)
+        private bool FactedWasteValue_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //FactedWasteValue property
 
         //FactedWasteValueNote property
@@ -340,10 +331,9 @@ namespace Models
         }
 
         
-        private void FactedWasteValueNote_Validation(RamAccess<string> value)
+        private bool FactedWasteValueNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //FactedWasteValueNote property
 
         //WasteOutbreakPreviousYear property
@@ -373,10 +363,9 @@ namespace Models
         }
 
         
-        private void WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
+        private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //WasteOutbreakPreviousYear property
     }
 }

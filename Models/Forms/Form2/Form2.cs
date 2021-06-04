@@ -37,10 +37,9 @@ namespace Models.Abstracts
             }
         }
 
-                private void CorrectionNumber_Validation(RamAccess<byte> value)
+                private bool CorrectionNumber_Validation(RamAccess<byte> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //CorrectionNumber property
 
         //NumberInOrder property
@@ -70,10 +69,9 @@ namespace Models.Abstracts
             }
         }
 
-                private void NumberInOrder_Validation(RamAccess<int> value)
+                private bool NumberInOrder_Validation(RamAccess<int> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //NumberInOrder property
     }
 }

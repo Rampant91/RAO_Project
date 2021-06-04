@@ -47,10 +47,9 @@ namespace Models
         }
 
 
-        private void NameIOU_Validation(RamAccess<string> value)//TODO
+        private bool NameIOU_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //NameIOU property
 
         //Quantity property
@@ -83,11 +82,14 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(RamAccess<int> value)//Ready
+        private bool Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            if (value.Value <= 0) {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //Quantity property
 
@@ -118,14 +120,14 @@ namespace Models
         }
 
 
-        private void Mass_Validation(RamAccess<double> value)//TODO
+        private bool Mass_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //Mass Property
     }

@@ -36,10 +36,9 @@ namespace Models
             }
         }
 
-                private void RefineMachineName_Validation(RamAccess<string> value)
+                private bool RefineMachineName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //RefineMachineName property
 
         //MachineCode property
@@ -57,10 +56,9 @@ namespace Models
             }
         }
 
-                private void MachineCode_Validation(RamAccess<byte?> value)//TODO
+                private bool MachineCode_Validation(RamAccess<byte?> value)//TODO
         {
-            value.ClearErrors();
-            if (value.Value == null) return;
+            value.ClearErrors();return false;
             bool a = (value.Value >= 11) && (value.Value <= 17);
             bool b = (value.Value >= 21) && (value.Value <= 24);
             bool c = (value.Value >= 31) && (value.Value <= 32);
@@ -89,12 +87,11 @@ namespace Models
             }
         }
 
-                private void MachinePower_Validation(RamAccess<string> value)//TODO
+                private bool MachinePower_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
-            {
-                return;
+            {return false;
             }
             if (value.Value.Equals("прим."))
             {
@@ -110,8 +107,7 @@ namespace Models
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -135,12 +131,11 @@ namespace Models
             }
         }
 
-                private void NumberOfHoursPerYear_Validation(RamAccess<string> value)//TODO
+                private bool NumberOfHoursPerYear_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
-            {
-                return;
+            {return false;
             }
             if (value.Value.Equals("прим.")||value.Value.Equals("0"))
             {
@@ -156,13 +151,13 @@ namespace Models
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //NumberOfHoursPerYear property
 
@@ -181,18 +176,16 @@ namespace Models
             }
         }
 
-                private void CodeRAOIn_Validation(RamAccess<string> value)//TODO
+                private bool CodeRAOIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
-            {
-                return;
+            {return false;
             }
             var a = new Regex("^[0-9]{11}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
         }
         //CodeRAOIn property
@@ -212,10 +205,9 @@ namespace Models
             }
         }
 
-                private void StatusRAOIn_Validation(RamAccess<string> value)//TODO
+                private bool StatusRAOIn_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value)) return;
+            value.ClearErrors();return false;
             if (value.Value.Length == 1)
             {
                 int tmp;
@@ -230,8 +222,7 @@ namespace Models
                 catch (Exception)
                 {
                     value.AddError( "Недопустимое значение");
-                }
-                return;
+                }return false;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
@@ -259,18 +250,16 @@ namespace Models
             }
         }
 
-                private void VolumeIn_Validation(RamAccess<string> value)//TODO
+                private bool VolumeIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -283,13 +272,13 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //VolumeIn property
 
@@ -308,18 +297,16 @@ namespace Models
             }
         }
 
-                private void MassIn_Validation(RamAccess<string> value)//TODO
+                private bool MassIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -332,8 +319,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -369,11 +355,9 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityIn_Validation(RamAccess<string> value1)//Ready
+                private bool QuantityIn_Validation(RamAccess<string> value1)//Ready
         {
-            value1.ClearErrors();
-            if (string.IsNullOrEmpty(value1.Value)) return;
-            if (value1.Equals("-")) return;
+            value1.ClearErrors();return false;return false;
             if (value1.Equals("прим."))
             {
 
@@ -425,19 +409,16 @@ namespace Models
             }
         }
 
-                private void TritiumActivityIn_Validation(RamAccess<string> value)//TODO
+                private bool TritiumActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("-")) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -450,8 +431,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -486,19 +466,16 @@ namespace Models
             }
         }
 
-                private void BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
+                private bool BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("-")) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -511,8 +488,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -547,19 +523,16 @@ namespace Models
             }
         }
 
-                private void AlphaActivityIn_Validation(RamAccess<string> value)//TODO
+                private bool AlphaActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("-")) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -572,8 +545,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -608,19 +580,16 @@ namespace Models
             }
         }
 
-                private void TransuraniumActivityIn_Validation(RamAccess<string> value)//TODO
+                private bool TransuraniumActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("-")) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -633,8 +602,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -669,18 +637,16 @@ namespace Models
             }
         }
 
-                private void CodeRAOout_Validation(RamAccess<string> value)//TODO
+                private bool CodeRAOout_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
-            {
-                return;
+            {return false;
             }
             var a = new Regex("^[0-9]{11}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
         }
         //CodeRAOout property
@@ -711,10 +677,9 @@ namespace Models
             }
         }
 
-                private void StatusRAOout_Validation(RamAccess<string> value)//TODO
+                private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value)) return;
+            value.ClearErrors();return false;
             if (value.Value.Length == 1)
             {
                 int tmp;
@@ -729,8 +694,7 @@ namespace Models
                 catch (Exception)
                 {
                     value.AddError( "Недопустимое значение");
-                }
-                return;
+                }return false;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
@@ -769,18 +733,16 @@ namespace Models
             }
         }
 
-                private void VolumeOut_Validation(RamAccess<string> value)//TODO
+                private bool VolumeOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -793,13 +755,13 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //VolumeOut property
 
@@ -829,18 +791,16 @@ namespace Models
             }
         }
 
-                private void MassOut_Validation(RamAccess<string> value)//TODO
+                private bool MassOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -853,8 +813,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -891,11 +850,9 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityOZIIIout_Validation(RamAccess<string> value1)//Ready
+                private bool QuantityOZIIIout_Validation(RamAccess<string> value1)//Ready
         {
-            value1.ClearErrors();
-            if (string.IsNullOrEmpty(value1.Value)) return;
-            if (value1.Equals("-")) return;
+            value1.ClearErrors();return false;return false;
             if (value1.Equals("прим."))
             {
 
@@ -947,19 +904,16 @@ namespace Models
             }
         }
 
-                private void TritiumActivityOut_Validation(RamAccess<string> value)//TODO
+                private bool TritiumActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("-")) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -972,8 +926,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -1008,19 +961,16 @@ namespace Models
             }
         }
 
-                private void BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
+                private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("-")) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -1033,8 +983,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -1067,19 +1016,16 @@ namespace Models
             }
         }
 
-                private void AlphaActivityOut_Validation(RamAccess<string> value)//TODO
+                private bool AlphaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("-")) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -1092,8 +1038,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
@@ -1128,19 +1073,16 @@ namespace Models
             }
         }
 
-                private void TransuraniumActivityOut_Validation(RamAccess<string> value)//TODO
+                private bool TransuraniumActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("-")) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             string tmp=value.Value;
             int len = tmp.Length;
@@ -1153,8 +1095,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {

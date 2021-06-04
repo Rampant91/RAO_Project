@@ -48,14 +48,14 @@ namespace Models
         }
 
 
-        private void PackName_Validation(RamAccess<string> value)
+        private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //PackName property
 
@@ -88,14 +88,14 @@ namespace Models
         }
         //If change this change validation
 
-        private void PackType_Validation(RamAccess<string> value)//Ready
+        private bool PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //PackType property
 
@@ -126,10 +126,9 @@ namespace Models
         }
 
 
-        private void PackTypeRecoded_Validation(RamAccess<string> value)
+        private bool PackTypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PackTypeRecoded property
 
         //Id property

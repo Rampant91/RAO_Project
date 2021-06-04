@@ -47,10 +47,9 @@ namespace Models
         }
 
         
-        private void WasteSourceName_Validation(RamAccess<string> value)
+        private bool WasteSourceName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //WasteSourceName property
 
         //RadionuclidName property
@@ -80,10 +79,9 @@ namespace Models
         }
         //If change this change validation
         
-        private void RadionuclidName_Validation(RamAccess<string> value)//TODO
+        private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //RadionuclidName property
 
         //AllowedActivity property
@@ -113,18 +111,16 @@ namespace Models
         }
 
         
-        private void AllowedActivity_Validation(RamAccess<string> value)//Ready
+        private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             if (value.Value != "прим.")
             {
@@ -133,13 +129,17 @@ namespace Models
                 try
                 {
                     if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                        value.AddError( "Число должно быть больше нуля");
-                }
+                    {
+                        value.AddError("Число должно быть больше нуля"); return false;
+                    }
+                    }
                 catch
                 {
                     value.AddError( "Недопустимое значение");
+                    return false;
                 }
             }
+            return true;
         }
         //AllowedActivity property
 
@@ -169,9 +169,9 @@ namespace Models
         }
 
         
-        private void AllowedActivityNote_Validation(RamAccess<string> value)//Ready
+        private bool AllowedActivityNote_Validation(RamAccess<string> value)//Ready
         {
-
+            return true;
         }
         //AllowedActivityNote property
 
@@ -201,31 +201,35 @@ namespace Models
             }
         }
 
-        
-        private void FactedActivity_Validation(RamAccess<string> value)//Ready
+
+        private bool FactedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
                 if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                {
+                    value.AddError("Число должно быть больше нуля"); return false;
+                }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //FactedActivity property
 
@@ -255,9 +259,9 @@ namespace Models
         }
 
         
-        private void FactedActivityNote_Validation(RamAccess<string> value)//Ready
+        private bool FactedActivityNote_Validation(RamAccess<string> value)//Ready
         {
-
+            return true;
         }
         //FactedActivityNote property
     }

@@ -49,10 +49,9 @@ namespace Models
         }
 
 
-        private void Name_Validation(RamAccess<string> value)//TODO
+        private bool Name_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //Name property
 
         //OperationCode property
@@ -71,10 +70,9 @@ namespace Models
         }
 
 
-        private void OperationCode_Validation(RamAccess<short> value)
+        private bool OperationCode_Validation(RamAccess<short> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //OperationCode property
 
         //Quantity property
@@ -107,14 +105,14 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(RamAccess<int> value)//Ready
+        private bool Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //Quantity property
 
@@ -147,16 +145,13 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
+        private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
-                return;
-            }
-            if (value.Value.Equals("Минобороны") || value.Value.Equals("прим.")) return;
-            if (OKSM.Contains(value.Value)) return;
+                value.AddError( "Поле не заполнено");return false;
+            }return false;return false;
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
             
@@ -350,10 +345,9 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
+        private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ProviderOrRecieverOKPONote property
 
         //Mass Property
@@ -383,14 +377,14 @@ namespace Models
         }
 
 
-        private void Mass_Validation(RamAccess<double> value)//TODO
+        private bool Mass_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //Mass Property
     }

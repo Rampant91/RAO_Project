@@ -38,10 +38,9 @@ namespace Models.Abstracts
         }
 
         
-        private void CorrectionNumber_Validation(RamAccess<string> value)
+        private bool CorrectionNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //CorrectionNumber property
 
         //NotificationDate property

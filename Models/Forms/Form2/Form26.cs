@@ -41,11 +41,14 @@ namespace Models
             }
         }
         // positive int.
-                private void SourcesQuantity_Validation(RamAccess<int?> value)//Ready
+                private bool SourcesQuantity_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //SourcesQuantity property
 
@@ -64,10 +67,9 @@ namespace Models
             }
         }
         //If change this change validation
-                private void ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
+                private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ObservedSourceNumber property
 
         //ControlledAreaName property
@@ -85,10 +87,9 @@ namespace Models
             }
         }
         //If change this change validation
-                private void ControlledAreaName_Validation(RamAccess<string> value)//Ready
+                private bool ControlledAreaName_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ControlledAreaName property
 
         //SupposedWasteSource property
@@ -106,10 +107,9 @@ namespace Models
             }
         }
 
-                private void SupposedWasteSource_Validation(RamAccess<string> value)//Ready
+                private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //SupposedWasteSource property
 
         //DistanceToWasteSource property
@@ -131,10 +131,9 @@ namespace Models
             }
         }
 
-                private void DistanceToWasteSource_Validation(RamAccess<int?> value)//Ready
+                private bool DistanceToWasteSource_Validation(RamAccess<int?> value)//Ready
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //DistanceToWasteSource property
 
         //TestDepth property
@@ -163,10 +162,9 @@ namespace Models
             }
         }
 
-                private void TestDepth_Validation(RamAccess<int?> value)//Ready
+                private bool TestDepth_Validation(RamAccess<int?> value)//Ready
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //TestDepth property
 
         //TestDepthNote property
@@ -194,10 +192,9 @@ namespace Models
             }
         }
 
-                private void TestDepthNote_Validation(RamAccess<int?> value)//Ready
+                private bool TestDepthNote_Validation(RamAccess<int?> value)//Ready
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //TestDepthNote property
 
         //RadionuclidName property
@@ -222,10 +219,9 @@ namespace Models
             }
         }
         //If change this change validation
-                private void RadionuclidName_Validation(RamAccess<string> value)//TODO
+                private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //RadionuclidName property
 
         //AverageYearConcentration property
@@ -254,10 +250,9 @@ namespace Models
             }
         }
 
-                private void AverageYearConcentration_Validation(RamAccess<double> value)//TODO
+                private bool AverageYearConcentration_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //AverageYearConcentration property
     }
 }

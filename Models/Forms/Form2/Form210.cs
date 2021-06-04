@@ -34,10 +34,9 @@ namespace Models
             }
         }
 
-                private void IndicatorName_Validation(RamAccess<string> value)//TODO
+                private bool IndicatorName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //IndicatorName property
 
         //PlotName property
@@ -66,10 +65,9 @@ namespace Models
             }
         }
 
-                private void PlotName_Validation(RamAccess<string> value)//TODO
+                private bool PlotName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PlotName property
 
         //PlotKadastrNumber property
@@ -98,10 +96,9 @@ namespace Models
             }
         }
 
-                private void PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
+                private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PlotKadastrNumber property
 
         //PlotCode property
@@ -130,10 +127,9 @@ namespace Models
             }
         }
         //6 symbols code
-                private void PlotCode_Validation(RamAccess<string> value)//TODO
+                private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PlotCode property
 
         //InfectedArea property
@@ -162,10 +158,9 @@ namespace Models
             }
         }
 
-                private void InfectedArea_Validation(RamAccess<int?> value)//TODO
+                private bool InfectedArea_Validation(RamAccess<int?> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //InfectedArea property
 
         //AvgGammaRaysDosePower property
@@ -194,10 +189,9 @@ namespace Models
             }
         }
 
-                private void AvgGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
+                private bool AvgGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //AvgGammaRaysDosePower property
 
         //MaxGammaRaysDosePower property
@@ -226,10 +220,9 @@ namespace Models
             }
         }
 
-                private void MaxGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
+                private bool MaxGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //MaxGammaRaysDosePower property
 
         //WasteDensityAlpha property
@@ -258,10 +251,9 @@ namespace Models
             }
         }
 
-                private void WasteDensityAlpha_Validation(RamAccess<double> value)//TODO
+                private bool WasteDensityAlpha_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //WasteDensityAlpha property
 
         //WasteDensityBeta property
@@ -290,10 +282,9 @@ namespace Models
             }
         }
 
-                private void WasteDensityBeta_Validation(RamAccess<double> value)//TODO
+                private bool WasteDensityBeta_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //WasteDensityBeta property
 
         //FcpNumber property
@@ -322,10 +313,9 @@ namespace Models
             }
         }
 
-                private void FcpNumber_Validation(RamAccess<string> value)//TODO
+                private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //FcpNumber property
     }
 }

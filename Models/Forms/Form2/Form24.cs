@@ -45,10 +45,10 @@ namespace Models
             }
         }
 
-                private void CodeOYAT_Validation(RamAccess<string> value)
+                private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-
+            return true;
         }
         //CodeOYAT property
 
@@ -77,10 +77,9 @@ namespace Models
             }
         }
 
-                private void CodeOYATnote_Validation(RamAccess<string> value)
+                private bool CodeOYATnote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //CodeOYATnote property
 
         //FcpNumber property
@@ -109,10 +108,9 @@ namespace Models
             }
         }
 
-                private void FcpNumber_Validation(RamAccess<string> value)//TODO
+                private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //FcpNumber property
 
         //MassCreated Property
@@ -141,10 +139,9 @@ namespace Models
             }
         }
 
-                private void MassCreated_Validation(RamAccess<double> value)//TODO
+                private bool MassCreated_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //MassCreated Property
 
         //QuantityCreated property
@@ -176,11 +173,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityCreated_Validation(RamAccess<int> value)//Ready
+                private bool QuantityCreated_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityCreated property
 
@@ -210,11 +210,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityCreatedNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityCreatedNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityCreatedNote property
 
@@ -240,10 +243,9 @@ namespace Models
             }
         }
 
-                private void MassFromAnothers_Validation(RamAccess<double> value)//TODO
+                private bool MassFromAnothers_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //MassFromAnothers Property
 
         //QuantityFromAnothers property
@@ -269,7 +271,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromAnothers_Validation(RamAccess<int> value)//Ready
+                private bool QuantityFromAnothers_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -299,11 +301,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromAnothersNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityFromAnothersNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityFromAnothersNote property
 
@@ -333,10 +338,9 @@ namespace Models
             }
         }
 
-                private void MassFromAnothersImported_Validation(RamAccess<double> value)//TODO
+                private bool MassFromAnothersImported_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //MassFromAnothersImported Property
 
         //QuantityFromAnothersImported property
@@ -368,11 +372,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromAnothersImported_Validation(RamAccess<int> value)//Ready
+                private bool QuantityFromAnothersImported_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityFromAnothersImported property
 
@@ -402,11 +409,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromImportedNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityFromImportedNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityFromImportedNote property
 
@@ -436,10 +446,9 @@ namespace Models
             }
         }
 
-                private void MassAnotherReasons_Validation(RamAccess<double> value)//TODO
+                private bool MassAnotherReasons_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //MassAnotherReasons Property
 
         //QuantityAnotherReasons property
@@ -470,11 +479,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityAnotherReasons_Validation(RamAccess<int> value)//Ready
+                private bool QuantityAnotherReasons_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityAnotherReasons property
 
@@ -504,11 +516,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityAnotherReasonsNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityAnotherReasonsNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityAnotherReasonsNote property
 
@@ -534,10 +549,9 @@ namespace Models
             }
         }
 
-                private void MassTransferredToAnother_Validation(RamAccess<double?> value)//TODO
+                private bool MassTransferredToAnother_Validation(RamAccess<double?> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //MassTransferredToAnother Property
 
         //QuantityTransferredToAnother property
@@ -568,11 +582,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityTransferredToAnother_Validation(RamAccess<int> value)//Ready
+                private bool QuantityTransferredToAnother_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityTransferredToAnother property
 
@@ -602,11 +619,15 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityTransferredToNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityTransferredToNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //QuantityTransferredToNote property
 
@@ -632,10 +653,9 @@ namespace Models
             }
         }
 
-                private void MassRefined_Validation(RamAccess<double> value)//TODO
+                private bool MassRefined_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //MassRefined Property
 
         //QuantityRefined property
@@ -666,11 +686,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRefined_Validation(RamAccess<int> value)//Ready
+                private bool QuantityRefined_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false; return false;
+            }
+            return true;
         }
         //QuantityRefined property
 
@@ -700,11 +723,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRefinedNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityRefinedNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityRefinedNote property
 
@@ -734,10 +760,9 @@ namespace Models
             }
         }
 
-                private void MassRemovedFromAccount_Validation(RamAccess<double> value)//TODO
+                private bool MassRemovedFromAccount_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //MassRemovedFromAccount Property
 
         //QuantityRemovedFromAccount property
@@ -768,11 +793,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRemovedFromAccount_Validation(RamAccess<int> value)//Ready
+                private bool QuantityRemovedFromAccount_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityRemovedFromAccount property
 
@@ -803,11 +831,14 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRemovedFromNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityRemovedFromNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityRemovedFromNote property
     }

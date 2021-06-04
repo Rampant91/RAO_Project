@@ -46,10 +46,9 @@ namespace Models
             }
         }
 
-                private void PlotName_Validation(RamAccess<string> value)//TODO
+                private bool PlotName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PlotName property
 
         //PlotKadastrNumber property
@@ -78,10 +77,9 @@ namespace Models
             }
         }
 
-                private void PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
+                private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PlotKadastrNumber property
 
         //PlotCode property
@@ -110,10 +108,9 @@ namespace Models
             }
         }
         //6 symbols code
-                private void PlotCode_Validation(RamAccess<string> value)//TODO
+                private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PlotCode property
 
         //InfectedArea property
@@ -142,10 +139,9 @@ namespace Models
             }
         }
 
-                private void InfectedArea_Validation(RamAccess<int> value)//TODO
+                private bool InfectedArea_Validation(RamAccess<int> value)//TODO
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //InfectedArea property
 
         //Radionuclids property
@@ -176,23 +172,22 @@ namespace Models
             }
         }
         //If change this change validation
-                private void Radionuclids_Validation(RamAccess<string> value)//TODO
+                private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;
-                    return;
+                    Radionuclids.Value =item.Item2;return true;
                 }
             }
+            return false;
         }
         //Radionuclids property
 
@@ -221,10 +216,9 @@ namespace Models
             }
         }
 
-                private void RadionuclidNameNote_Validation(RamAccess<string> value)
+                private bool RadionuclidNameNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //RadionuclidNameNote property
 
         //SpecificActivityOfPlot property
@@ -253,15 +247,15 @@ namespace Models
             }
         }
 
-                private void SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
+                private bool SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
         {
+            return true;
             //value.ClearErrors();
             //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
             //   NumberStyles.AllowExponent;
             //try
             //{
-            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            //        value.AddError( "Число должно быть больше нуля");
+            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             //}
             //catch
             //{
@@ -296,15 +290,15 @@ namespace Models
             }
         }
 
-                private void SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
+                private bool SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
         {
+            return true;
             //value.ClearErrors();
             //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
             //   NumberStyles.AllowExponent;
             //try
             //{
-            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            //        value.AddError( "Число должно быть больше нуля");
+            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             //}
             //catch
             //{
@@ -332,15 +326,15 @@ namespace Models
             }
         }
 
-                private void SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
+                private bool SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
         {
+            return true;
             //value.ClearErrors();
             //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
             //   NumberStyles.AllowExponent;
             //try
             //{
-            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            //        value.AddError( "Число должно быть больше нуля");
+            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             //}
             //catch
             //{

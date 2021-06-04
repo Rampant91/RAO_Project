@@ -48,10 +48,9 @@ namespace Models
         }
 
 
-        private void NumberInOrder_Validation(RamAccess<string> value)
+        private bool NumberInOrder_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //NumberInOrder property
 
         //RegNo property
@@ -109,17 +108,20 @@ namespace Models
             }
         }
 
-        private void Okpo_Validation(RamAccess<string> value)
+        private bool Okpo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //Okpo property
 
@@ -210,14 +212,14 @@ namespace Models
         }
         // positive int.
 
-        private void QuantityOfFormsInv_Validation(RamAccess<int> value)//Ready
+        private bool QuantityOfFormsInv_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //QuantityOfFormsInv property
 
@@ -250,11 +252,14 @@ namespace Models
         }
         // positive int.
 
-        private void QuantityOfFormsOper_Validation(RamAccess<int> value)//Ready
+        private bool QuantityOfFormsOper_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityOfFormsOper property
 
@@ -287,11 +292,14 @@ namespace Models
         }
         // positive int.
 
-        private void QuantityOfFormsYear_Validation(RamAccess<int> value)//Ready
+        private bool QuantityOfFormsYear_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityOfFormsYear property
 

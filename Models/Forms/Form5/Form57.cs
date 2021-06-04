@@ -54,17 +54,21 @@ namespace Models
             }
         }
 
-        private void Okpo_Validation(RamAccess<string> value)
+        private bool Okpo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
+            {
                     value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Okpo property
 
@@ -138,18 +142,16 @@ namespace Models
         }
 
 
-        private void AllowedActivity_Validation(RamAccess<string> value)//Ready
+        private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");
-                return;
+                value.AddError( "Поле не заполнено");return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-                return;
+                value.AddError( "Недопустимое значение");return false;
             }
             if (value.Value != "прим.")
             {
@@ -158,13 +160,18 @@ namespace Models
                 try
                 {
                     if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                        value.AddError( "Число должно быть больше нуля");
+                    {
+                        value.AddError("Число должно быть больше нуля");
+                        return false;
+                    }
                 }
                 catch
                 {
                     value.AddError( "Недопустимое значение");
+                    return false;
                 }
             }
+            return true;
         }
         //AllowedActivity property
 

@@ -46,10 +46,9 @@ namespace Models
         }
 
         
-        private void PermissionNumber_Validation(RamAccess<string> value)
+        private bool PermissionNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionNumber property
 
         //PermissionIssueDate property
@@ -79,10 +78,9 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate_Validation(RamAccess<string> value)
+        private bool PermissionIssueDate_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionIssueDate property
 
         //PermissionDocumentName property
@@ -112,10 +110,9 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName_Validation(RamAccess<string> value)
+        private bool PermissionDocumentName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionDocumentName property
 
         //ValidBegin property
@@ -145,10 +142,9 @@ namespace Models
         }
 
         
-        private void ValidBegin_Validation(RamAccess<string> value)
+        private bool ValidBegin_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ValidBegin property
 
         //ValidThru property
@@ -178,10 +174,9 @@ namespace Models
         }
 
         
-        private void ValidThru_Validation(RamAccess<string> value)
+        private bool ValidThru_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ValidThru property
 
         //PermissionNumber1 property
@@ -200,10 +195,9 @@ namespace Models
         }
 
         
-        private void PermissionNumber1_Validation(RamAccess<string> value)
+        private bool PermissionNumber1_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionNumber1 property
 
         //PermissionIssueDate1 property
@@ -228,10 +222,9 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate1_Validation(RamAccess<string> value)
+        private bool PermissionIssueDate1_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionIssueDate1 property
 
         //PermissionDocumentName1 property
@@ -256,10 +249,9 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName1_Validation(RamAccess<string> value)
+        private bool PermissionDocumentName1_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionDocumentName1 property
 
         //ValidBegin1 property
@@ -284,10 +276,9 @@ namespace Models
         }
 
         
-        private void ValidBegin1_Validation(RamAccess<string> value)
+        private bool ValidBegin1_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ValidBegin1 property
 
         //ValidThru1 property
@@ -306,10 +297,9 @@ namespace Models
         }
 
         
-        private void ValidThru1_Validation(RamAccess<string> value)
+        private bool ValidThru1_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ValidThru1 property
 
         //PermissionNumber2 property
@@ -328,10 +318,9 @@ namespace Models
         }
 
         
-        private void PermissionNumber2_Validation(RamAccess<string> value)
+        private bool PermissionNumber2_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionNumber2 property
 
         //PermissionIssueDate2 property
@@ -356,10 +345,9 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate2_Validation(RamAccess<string> value)
+        private bool PermissionIssueDate2_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionIssueDate property
 
         //PermissionDocumentName2 property
@@ -388,10 +376,9 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName2_Validation(RamAccess<string> value)
+        private bool PermissionDocumentName2_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PermissionDocumentName2 property
 
         //ValidBegin2 property
@@ -410,10 +397,9 @@ namespace Models
         }
 
         
-        private void ValidBegin2_Validation(RamAccess<string> value)
+        private bool ValidBegin2_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ValidBegin2 property
 
         //ValidThru2 property
@@ -438,10 +424,9 @@ namespace Models
         }
 
         
-        private void ValidThru2_Validation(RamAccess<string> value)
+        private bool ValidThru2_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //ValidThru2 property
 
         //WasteSourceName property
@@ -471,10 +456,9 @@ namespace Models
         }
 
         
-        private void WasteSourceName_Validation(RamAccess<string> value)
+        private bool WasteSourceName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //WasteSourceName property
 
         //WasteRecieverName property
@@ -504,10 +488,9 @@ namespace Models
         }
 
         
-        private void WasteRecieverName_Validation(RamAccess<string> value)
+        private bool WasteRecieverName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //WasteRecieverName property
 
         //RecieverTypeCode property
@@ -537,10 +520,9 @@ namespace Models
         }
 
         
-        private void RecieverTypeCode_Validation(RamAccess<string> value)
+        private bool RecieverTypeCode_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //RecieverTypeCode property
 
         //PoolDistrictName property
@@ -570,10 +552,9 @@ namespace Models
         }
 
         
-        private void PoolDistrictName_Validation(RamAccess<string> value)
+        private bool PoolDistrictName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //PoolDistrictName property
 
         //AllowedWasteRemovalVolume property
@@ -603,10 +584,9 @@ namespace Models
         }
 
         
-        private void AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
+        private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //AllowedWasteRemovalVolume property
 
         //RemovedWasteVolume property
@@ -636,10 +616,9 @@ namespace Models
         }
 
         
-        private void RemovedWasteVolume_Validation(RamAccess<string> value)
+        private bool RemovedWasteVolume_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //RemovedWasteVolume property
 
         //RemovedWasteVolumeNote property
@@ -668,10 +647,9 @@ namespace Models
         }
 
         
-        private void RemovedWasteVolumeNote_Validation(RamAccess<string> value)
+        private bool RemovedWasteVolumeNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors();
-        }
+            value.ClearErrors(); return true;}
         //RemovedWasteVolumeNote property
     }
 }
