@@ -9,8 +9,8 @@ namespace Models
     {
         public Form27() : base()
         {
-            FormNum = "27";
-            NumberOfFields = 13;
+            FormNum.Value = "27";
+            NumberOfFields.Value = 13;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -21,23 +21,23 @@ namespace Models
 
         //PermissionNumber property
         [Attributes.Form_Property("Номер разрешительного документа")]
-        public string PermissionNumber
+        public IDataAccess<string> PermissionNumber
         {
             get
             {
-                if (GetErrors(nameof(PermissionNumber)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionNumber));
+                    return _dataAccess.Get<string>(nameof(PermissionNumber));
                 }
-                else
+                
                 {
-                    return _PermissionNumber_Not_Valid;
+                    
                 }
             }
             set
             {
-                _PermissionNumber_Not_Valid = value;
-                if (GetErrors(nameof(PermissionNumber)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(PermissionNumber), value);
                 }
@@ -45,32 +45,32 @@ namespace Models
             }
         }
 
-        private string _PermissionNumber_Not_Valid = "";
-        private void PermissionNumber_Validation()
+        
+        private void PermissionNumber_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PermissionNumber));
+            value.ClearErrors();
         }
         //PermissionNumber property
 
         //PermissionIssueDate property
         [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public string PermissionIssueDate
+        public IDataAccess<string> PermissionIssueDate
         {
             get
             {
-                if (GetErrors(nameof(PermissionIssueDate)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionIssueDate));
+                    return _dataAccess.Get<string>(nameof(PermissionIssueDate));
                 }
-                else
+                
                 {
-                    return _PermissionIssueDate_Not_Valid;
+                    
                 }
             }
             set
             {
-                _PermissionIssueDate_Not_Valid = value;
-                if (GetErrors(nameof(PermissionIssueDate)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(PermissionIssueDate), value);
                 }
@@ -78,32 +78,32 @@ namespace Models
             }
         }
 
-        private string _PermissionIssueDate_Not_Valid = "";
-        private void PermissionIssueDate_Validation()
+        
+        private void PermissionIssueDate_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PermissionIssueDate));
+            value.ClearErrors();
         }
         //PermissionIssueDate property
 
         //PermissionDocumentName property
         [Attributes.Form_Property("Наименование разрешительного документа")]
-        public string PermissionDocumentName
+        public IDataAccess<string> PermissionDocumentName
         {
             get
             {
-                if (GetErrors(nameof(PermissionDocumentName)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(PermissionDocumentName));
+                    return _dataAccess.Get<string>(nameof(PermissionDocumentName));
                 }
-                else
+                
                 {
-                    return _PermissionDocumentName_Not_Valid;
+                    
                 }
             }
             set
             {
-                _PermissionDocumentName_Not_Valid = value;
-                if (GetErrors(nameof(PermissionDocumentName)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(PermissionDocumentName), value);
                 }
@@ -111,32 +111,32 @@ namespace Models
             }
         }
 
-        private string _PermissionDocumentName_Not_Valid = "";
-        private void PermissionDocumentName_Validation()
+        
+        private void PermissionDocumentName_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PermissionDocumentName));
+            value.ClearErrors();
         }
         //PermissionDocumentName property
 
         //ValidBegin property
         [Attributes.Form_Property("Действует с")]
-        public DateTimeOffset ValidBegin
+        public IDataAccess<string> ValidBegin
         {
             get
             {
-                if (GetErrors(nameof(ValidBegin)) == null)
+                
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidBegin));
+                    return _dataAccess.Get<string>(nameof(ValidBegin));
                 }
-                else
+                
                 {
-                    return _ValidBegin_Not_Valid;
+                    
                 }
             }
             set
             {
-                _ValidBegin_Not_Valid = value;
-                if (GetErrors(nameof(ValidBegin)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(ValidBegin), value);
                 }
@@ -144,32 +144,32 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidBegin_Not_Valid = DateTimeOffset.Parse("01/01/1921");
-        private void ValidBegin_Validation()
+        
+        private void ValidBegin_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(ValidBegin));
+            value.ClearErrors();
         }
         //ValidBegin property
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
-        public DateTimeOffset ValidThru
+        public IDataAccess<string> ValidThru
         {
             get
             {
-                if (GetErrors(nameof(ValidThru)) == null)
+                
                 {
-                    return (DateTime)_dataAccess.Get(nameof(ValidThru));
+                    return _dataAccess.Get<string>(nameof(ValidThru));
                 }
-                else
+                
                 {
-                    return _ValidThru_Not_Valid;
+                    
                 }
             }
             set
             {
-                _ValidThru_Not_Valid = value;
-                if (GetErrors(nameof(ValidThru)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(ValidThru), value);
                 }
@@ -177,31 +177,31 @@ namespace Models
             }
         }
 
-        private DateTimeOffset _ValidThru_Not_Valid = DateTimeOffset.Parse("01/01/1921");
-        private void ValidThru_Validation()
+        
+        private void ValidThru_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(ValidThru));
+            value.ClearErrors();
         }
         //ValidThru property
 
         //RadionuclidNameNote property
-        public string RadionuclidNameNote
+        public IDataAccess<string> RadionuclidNameNote
         {
             get
             {
-                if (GetErrors(nameof(RadionuclidNameNote)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(RadionuclidNameNote));
+                    return _dataAccess.Get<string>(nameof(RadionuclidNameNote));
                 }
-                else
+                
                 {
-                    return _RadionuclidNameNote_Not_Valid;
+                    
                 }
             }
             set
             {
-                _RadionuclidNameNote_Not_Valid = value;
-                if (GetErrors(nameof(RadionuclidNameNote)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(RadionuclidNameNote), value);
                 }
@@ -209,32 +209,32 @@ namespace Models
             }
         }
 
-        private string _RadionuclidNameNote_Not_Valid = "";
-        private void RadionuclidNameNote_Validation()
+        
+        private void RadionuclidNameNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(RadionuclidNameNote));
+            value.ClearErrors();
         }
         //RadionuclidNameNote property
 
         //AllowedWasteValue property
         [Attributes.Form_Property("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]
-        public string AllowedWasteValue
+        public IDataAccess<string> AllowedWasteValue
         {
             get
             {
-                if (GetErrors(nameof(AllowedWasteValue)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedWasteValue));
+                    return _dataAccess.Get<string>(nameof(AllowedWasteValue));
                 }
-                else
+                
                 {
-                    return _AllowedWasteValue_Not_Valid;
+                    
                 }
             }
             set
             {
-                _AllowedWasteValue_Not_Valid = value;
-                if (GetErrors(nameof(AllowedWasteValue)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(AllowedWasteValue), value);
                 }
@@ -242,31 +242,31 @@ namespace Models
             }
         }
 
-        private string _AllowedWasteValue_Not_Valid = "";
-        private void AllowedWasteValue_Validation()
+        
+        private void AllowedWasteValue_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(AllowedWasteValue));
+            value.ClearErrors();
         }
         //AllowedWasteValue property
 
         //AllowedWasteValueNote property
-        public string AllowedWasteValueNote
+        public IDataAccess<string> AllowedWasteValueNote
         {
             get
             {
-                if (GetErrors(nameof(AllowedWasteValueNote)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedWasteValueNote));
+                    return _dataAccess.Get<string>(nameof(AllowedWasteValueNote));
                 }
-                else
+                
                 {
-                    return _AllowedWasteValueNote_Not_Valid;
+                    
                 }
             }
             set
             {
-                _AllowedWasteValueNote_Not_Valid = value;
-                if (GetErrors(nameof(AllowedWasteValueNote)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(AllowedWasteValueNote), value);
                 }
@@ -274,32 +274,32 @@ namespace Models
             }
         }
 
-        private string _AllowedWasteValueNote_Not_Valid = "";
-        private void AllowedWasteValueNote_Validation()
+        
+        private void AllowedWasteValueNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(AllowedWasteValueNote));
+            value.ClearErrors();
         }
         //AllowedWasteValueNote property
 
         //FactedWasteValue property
         [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]
-        public string FactedWasteValue
+        public IDataAccess<string> FactedWasteValue
         {
             get
             {
-                if (GetErrors(nameof(FactedWasteValue)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(FactedWasteValue));
+                    return _dataAccess.Get<string>(nameof(FactedWasteValue));
                 }
-                else
+                
                 {
-                    return _FactedWasteValue_Not_Valid;
+                    
                 }
             }
             set
             {
-                _FactedWasteValue_Not_Valid = value;
-                if (GetErrors(nameof(FactedWasteValue)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(FactedWasteValue), value);
                 }
@@ -307,31 +307,31 @@ namespace Models
             }
         }
 
-        private string _FactedWasteValue_Not_Valid = "";
-        private void FactedWasteValue_Validation()
+        
+        private void FactedWasteValue_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(FactedWasteValue));
+            value.ClearErrors();
         }
         //FactedWasteValue property
 
         //FactedWasteValueNote property
-        public string FactedWasteValueNote
+        public IDataAccess<string> FactedWasteValueNote
         {
             get
             {
-                if (GetErrors(nameof(FactedWasteValueNote)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(FactedWasteValueNote));
+                    return _dataAccess.Get<string>(nameof(FactedWasteValueNote));
                 }
-                else
+                
                 {
-                    return _FactedWasteValueNote_Not_Valid;
+                    
                 }
             }
             set
             {
-                _FactedWasteValueNote_Not_Valid = value;
-                if (GetErrors(nameof(FactedWasteValueNote)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(FactedWasteValueNote), value);
                 }
@@ -339,32 +339,32 @@ namespace Models
             }
         }
 
-        private string _FactedWasteValueNote_Not_Valid = "";
-        private void FactedWasteValueNote_Validation()
+        
+        private void FactedWasteValueNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(FactedWasteValueNote));
+            value.ClearErrors();
         }
         //FactedWasteValueNote property
 
         //WasteOutbreakPreviousYear property
         [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]
-        public string WasteOutbreakPreviousYear
+        public IDataAccess<string> WasteOutbreakPreviousYear
         {
             get
             {
-                if (GetErrors(nameof(WasteOutbreakPreviousYear)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(WasteOutbreakPreviousYear));
+                    return _dataAccess.Get<string>(nameof(WasteOutbreakPreviousYear));
                 }
-                else
+                
                 {
-                    return _WasteOutbreakPreviousYear_Not_Valid;
+                    
                 }
             }
             set
             {
-                _WasteOutbreakPreviousYear_Not_Valid = value;
-                if (GetErrors(nameof(WasteOutbreakPreviousYear)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(WasteOutbreakPreviousYear), value);
                 }
@@ -372,10 +372,10 @@ namespace Models
             }
         }
 
-        private string _WasteOutbreakPreviousYear_Not_Valid = "";
-        private void WasteOutbreakPreviousYear_Validation()
+        
+        private void WasteOutbreakPreviousYear_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(WasteOutbreakPreviousYear));
+            value.ClearErrors();
         }
         //WasteOutbreakPreviousYear property
     }

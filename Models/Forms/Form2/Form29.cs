@@ -10,8 +10,8 @@ namespace Models
     {
         public Form29() : base()
         {
-            FormNum = "29";
-            NumberOfFields = 8;
+            FormNum.Value = "29";
+            NumberOfFields.Value = 8;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -22,154 +22,154 @@ namespace Models
 
         //WasteSourceName property
         [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
-        public string WasteSourceName
+        public IDataAccess<string> WasteSourceName
         {
             get
             {
-                if (GetErrors(nameof(WasteSourceName)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(WasteSourceName));
+                    return _dataAccess.Get<string>(nameof(WasteSourceName));
                 }
-                else
+                
                 {
-                    return _WasteSourceName_Not_Valid;
+                    
                 }
             }
             set
             {
-                _WasteSourceName_Not_Valid = value;
-                if (GetErrors(nameof(WasteSourceName)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(WasteSourceName), _WasteSourceName_Not_Valid);
+                    _dataAccess.Set(nameof(WasteSourceName), value);
                 }
                 OnPropertyChanged(nameof(WasteSourceName));
             }
         }
 
-        private string _WasteSourceName_Not_Valid = "";
-        private void WasteSourceName_Validation()
+        
+        private void WasteSourceName_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(WasteSourceName));
+            value.ClearErrors();
         }
         //WasteSourceName property
 
         //RadionuclidName property
         [Attributes.Form_Property("Радионуклид")]
-        public string RadionuclidName
+        public IDataAccess<string> RadionuclidName
         {
             get
             {
-                if (GetErrors(nameof(RadionuclidName)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(RadionuclidName));
+                    return _dataAccess.Get<string>(nameof(RadionuclidName));
                 }
-                else
+                
                 {
-                    return _RadionuclidName_Not_Valid;
+                    
                 }
             }
             set
             {
-                _RadionuclidName_Not_Valid = value;
-                if (GetErrors(nameof(RadionuclidName)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(RadionuclidName), _RadionuclidName_Not_Valid);
+                    _dataAccess.Set(nameof(RadionuclidName), value);
                 }
                 OnPropertyChanged(nameof(RadionuclidName));
             }
         }
         //If change this change validation
-        private string _RadionuclidName_Not_Valid = "";
-        private void RadionuclidName_Validation()//TODO
+        
+        private void RadionuclidName_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(RadionuclidName));
+            value.ClearErrors();
         }
         //RadionuclidName property
 
         //AllowedActivity property
         [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
-        public string AllowedActivity
+        public IDataAccess<string> AllowedActivity
         {
             get
             {
-                if (GetErrors(nameof(AllowedActivity)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedActivity));
+                    return _dataAccess.Get<string>(nameof(AllowedActivity));
                 }
-                else
+                
                 {
-                    return _AllowedActivity_Not_Valid;
+                    
                 }
             }
             set
             {
-                _AllowedActivity_Not_Valid = value;
-                if (GetErrors(nameof(AllowedActivity)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(AllowedActivity), _AllowedActivity_Not_Valid);
+                    _dataAccess.Set(nameof(AllowedActivity), value);
                 }
                 OnPropertyChanged(nameof(AllowedActivity));
             }
         }
 
-        private string _AllowedActivity_Not_Valid = "";
-        private void AllowedActivity_Validation(string value)//Ready
+        
+        private void AllowedActivity_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(AllowedActivity));
-            if ((value == null) || (value.Equals("")))
+            value.ClearErrors();
+            if ((value.Value == null) || (value.Value.Equals("")))
             {
-                AddError(nameof(AllowedActivity), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Value.Contains('e')))
             {
-                AddError(nameof(AllowedActivity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            if (value != "прим.")
+            if (value.Value != "прим.")
             {
                 var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                    NumberStyles.AllowExponent;
                 try
                 {
-                    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                        AddError(nameof(AllowedActivity), "Число должно быть больше нуля");
+                    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                        value.AddError( "Число должно быть больше нуля");
                 }
                 catch
                 {
-                    AddError(nameof(AllowedActivity), "Недопустимое значение");
+                    value.AddError( "Недопустимое значение");
                 }
             }
         }
         //AllowedActivity property
 
         //AllowedActivityNote property
-        public string AllowedActivityNote
+        public IDataAccess<string> AllowedActivityNote
         {
             get
             {
-                if (GetErrors(nameof(AllowedActivityNote)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(AllowedActivityNote));
+                    return _dataAccess.Get<string>(nameof(AllowedActivityNote));
                 }
-                else
+                
                 {
-                    return _AllowedActivityNote_Not_Valid;
+                    
                 }
             }
             set
             {
-                _AllowedActivityNote_Not_Valid = value;
-                if (GetErrors(nameof(AllowedActivityNote)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(AllowedActivityNote), _AllowedActivityNote_Not_Valid);
+                    _dataAccess.Set(nameof(AllowedActivityNote), value);
                 }
                 OnPropertyChanged(nameof(AllowedActivityNote));
             }
         }
 
-        private string _AllowedActivityNote_Not_Valid = "";
-        private void AllowedActivityNote_Validation(string value)//Ready
+        
+        private void AllowedActivityNote_Validation(IDataAccess<string> value)//Ready
         {
 
         }
@@ -177,85 +177,85 @@ namespace Models
 
         //FactedActivity property
         [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
-        public string FactedActivity
+        public IDataAccess<string> FactedActivity
         {
             get
             {
-                if (GetErrors(nameof(FactedActivity)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(FactedActivity));
+                    return _dataAccess.Get<string>(nameof(FactedActivity));
                 }
-                else
+                
                 {
-                    return _FactedActivity_Not_Valid;
+                    
                 }
             }
             set
             {
-                _FactedActivity_Not_Valid = value;
-                if (GetErrors(nameof(FactedActivity)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(FactedActivity), _FactedActivity_Not_Valid);
+                    _dataAccess.Set(nameof(FactedActivity), value);
                 }
                 OnPropertyChanged(nameof(FactedActivity));
             }
         }
 
-        private string _FactedActivity_Not_Valid = "";
-        private void FactedActivity_Validation(string value)//Ready
+        
+        private void FactedActivity_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(FactedActivity));
-            if ((value == null) || (value.Equals("")))
+            value.ClearErrors();
+            if ((value.Value == null) || (value.Value.Equals("")))
             {
-                AddError(nameof(FactedActivity), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Value.Contains('e')))
             {
-                AddError(nameof(FactedActivity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    AddError(nameof(FactedActivity), "Число должно быть больше нуля");
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    value.AddError( "Число должно быть больше нуля");
             }
             catch
             {
-                AddError(nameof(FactedActivity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
             }
         }
         //FactedActivity property
 
         //FactedActivityNote property
-        public string FactedActivityNote
+        public IDataAccess<string> FactedActivityNote
         {
             get
             {
-                if (GetErrors(nameof(FactedActivityNote)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(FactedActivityNote));
+                    return _dataAccess.Get<string>(nameof(FactedActivityNote));
                 }
-                else
+                
                 {
-                    return _FactedActivityNote_Not_Valid;
+                    
                 }
             }
             set
             {
-                _FactedActivityNote_Not_Valid = value;
-                if (GetErrors(nameof(FactedActivityNote)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(FactedActivityNote), _FactedActivityNote_Not_Valid);
+                    _dataAccess.Set(nameof(FactedActivityNote), value);
                 }
                 OnPropertyChanged(nameof(FactedActivityNote));
             }
         }
 
-        private string _FactedActivityNote_Not_Valid = "";
-        private void FactedActivityNote_Validation(string value)//Ready
+        
+        private void FactedActivityNote_Validation(IDataAccess<string> value)//Ready
         {
 
         }

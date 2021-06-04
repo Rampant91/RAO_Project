@@ -12,8 +12,8 @@ namespace Models
     {
         public Form19() : base()
         {
-            FormNum = "19";
-            NumberOfFields = 13;
+            FormNum.Value = "19";
+            NumberOfFields.Value = 13;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -24,39 +24,34 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int? Quantity
+        public IDataAccess<int>? Quantity
         {
             get
             {
-                if (GetErrors(nameof(Quantity)) == null)
+                
                 {
-                    return (int?)_dataAccess.Get(nameof(Quantity));//OK;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK;
                 }
-                else
+                
                 {
-                    return _Quantity_Not_Valid;
+                    
                 }
             }
             set
             {
-                Quantity_Validation(value);
-
-                if (GetErrors(nameof(Quantity)) == null)
-                {
                     _dataAccess.Set(nameof(Quantity), value);
-                }
                 OnPropertyChanged(nameof(Quantity));
             }
         }
         // positive int.
-        private int? _Quantity_Not_Valid = null;
-        private void Quantity_Validation(int? value)//Ready
+
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
-            ClearErrors(nameof(Quantity));
-            if (value == null) return;
-            if (value <= 0)
+            value.ClearErrors();
+            if (value.Value == null) return;
+            if (value.Value <= 0)
             {
-                AddError(nameof(Quantity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
         }
@@ -64,23 +59,23 @@ namespace Models
 
         //CodeTypeAccObject property
         [Attributes.Form_Property("Код типа объектов учета")]
-        public short? CodeTypeAccObject
+        public IDataAccess<short?> CodeTypeAccObject
         {
             get
             {
-                if (GetErrors(nameof(CodeTypeAccObject)) == null)
+                
                 {
-                    return (short?)_dataAccess.Get(nameof(CodeTypeAccObject));
+                    return _dataAccess.Get<short?>(nameof(CodeTypeAccObject));
                 }
-                else
+                
                 {
-                    return _CodeTypeAccObject_Not_Valid;
+                    
                 }
             }
             set
             {
-                _CodeTypeAccObject_Not_Valid = value;
-                if (GetErrors(nameof(CodeTypeAccObject)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(CodeTypeAccObject), value);
                 }
@@ -88,19 +83,19 @@ namespace Models
             }
         }
 
-        private short? _CodeTypeAccObject_Not_Valid = 0;
-        private void CodeTypeAccObject_Validation(short? value)//TODO
+
+        private void CodeTypeAccObject_Validation(IDataAccess<short?> value)//TODO
         {
-            ClearErrors(nameof(CodeTypeAccObject));
-            if (value == null)
+            value.ClearErrors();
+            if (value.Value == null)
             {
-                AddError(nameof(CodeTypeAccObject), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             List<short> spr = new List<short>();
-            if (!spr.Contains((short)value))
+            if (!spr.Contains((short)value.Value))
             {
-                AddError(nameof(CodeTypeAccObject), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
         }
@@ -108,25 +103,25 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public string Radionuclids
+        public IDataAccess<string> Radionuclids
         {
             get
             {
-                if (GetErrors(nameof(Radionuclids)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
-                    return _Radionuclids_Not_Valid;
+                    
                 }
             }
             set
             {
                 Radionuclids_Validation(value);
 
-                if (GetErrors(nameof(Radionuclids)) == null)
+                
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -134,13 +129,13 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation(string value)//TODO
+
+        private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(Radionuclids));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
             {
-                AddError(nameof(Radionuclids), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
@@ -148,7 +143,7 @@ namespace Models
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -157,24 +152,24 @@ namespace Models
 
         //Activity property
         [Attributes.Form_Property("Активность, Бк")]
-        public string Activity
+        public IDataAccess<string> Activity
         {
             get
             {
-                if (GetErrors(nameof(Activity)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(Activity));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Activity));//OK
+                    
                 }
-                else
+                
                 {
-                    return _Activity_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Activity_Not_Valid = value;
-                if (GetErrors(nameof(Activity)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(Activity), value);
                 }
@@ -182,105 +177,105 @@ namespace Models
             }
         }
 
-        private string _Activity_Not_Valid = "";
-        private void Activity_Validation(string value)//Ready
+
+        private void Activity_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(Activity));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
             {
-                AddError(nameof(Activity), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')||value.Contains('E')))
+            if (!(value.Value.Contains('e')||value.Value.Contains('E')))
             {
-                AddError(nameof(Activity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    AddError(nameof(Activity), "Число должно быть больше нуля");
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    value.AddError( "Число должно быть больше нуля");
             }
             catch
             {
-                AddError(nameof(Activity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
             }
         }
         //Activity property
 
-        protected override void OperationCode_Validation(short? arg)//OK
+        protected override void OperationCode_Validation(IDataAccess<short?> value)//OK
         {
-            ClearErrors(nameof(OperationCode));
-            OperationCode = 10;
+            value.ClearErrors();
+            OperationCode.Value = 10;
         }
 
-        protected override void OperationDate_Validation(string value)
+        protected override void OperationDate_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(OperationDate));
-            if ((value == null) || value.Equals(_OperationDate_Not_Valid))
+            value.ClearErrors();
+            if ((value.Value == null))
             {
-                AddError(nameof(OperationDate), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
+            if (!a.IsMatch(value.Value))
             {
-                AddError(nameof(OperationDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            try { DateTimeOffset.Parse(value); }
+            try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                AddError(nameof(OperationDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            var date = DateTimeOffset.Parse(value);
+            var date = DateTimeOffset.Parse(value.Value);
             if (date.Date > DateTimeOffset.Now.Date)
             {
-                AddError(nameof(OperationDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
         }
 
-        protected override void DocumentDate_Validation(string value)
+        protected override void DocumentDate_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(DocumentDate));
-            if ((value == null) || value.Equals(_DocumentDate_Not_Valid))
+            value.ClearErrors();
+            if ((value.Value == null))
             {
-                AddError(nameof(DocumentDate), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value))
+            if (!a.IsMatch(value.Value))
             {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            try { DateTimeOffset.Parse(value); }
+            try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            var date = DateTimeOffset.Parse(value);
+            var date = DateTimeOffset.Parse(value.Value);
             if (date.Date > DateTimeOffset.Now.Date)
             {
-                AddError(nameof(DocumentDate), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
         }
 
-        protected override void DocumentNumber_Validation(string value)
+        protected override void DocumentNumber_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(DocumentNumber));
-            if ((value == null) || value.Equals(_DocumentNumber_Not_Valid))//ok
+            value.ClearErrors();
+            if ((value.Value == null))//ok
             {
-                AddError(nameof(DocumentNumber), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим."))
+            if (value.Value.Equals("прим."))
             {
 
             }

@@ -10,8 +10,8 @@ namespace Models
     {
         public Form20() : base()
         {
-            FormNum = "20";
-            NumberOfFields = 19;
+            FormNum.Value = "20";
+            NumberOfFields.Value = 19;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -22,612 +22,593 @@ namespace Models
 
         //RegNo property
         [Attributes.Form_Property("Рег. №")]
-        public string RegNo
+        public IDataAccess<string> RegNo
         {
             get
             {
-                if (GetErrors(nameof(RegNo)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(RegNo));
+                    return _dataAccess.Get<string>(nameof(RegNo));
                 }
-                else
+                
                 {
-                    return _RegNo_Not_Valid;
+                    
                 }
             }
             set
             {
-                _RegNo_Not_Valid = value;
-                if (GetErrors(nameof(RegNo)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(RegNo), _RegNo_Not_Valid);
+                    _dataAccess.Set(nameof(RegNo), value);
                 }
                 OnPropertyChanged(nameof(RegNo));
             }
         }
 
-        private string _RegNo_Not_Valid = "";
-        //RegNo property
+                //RegNo property
 
         //OrganUprav property
         [Attributes.Form_Property("Орган управления")]
-        public string OrganUprav
+        public IDataAccess<string> OrganUprav
         {
             get
             {
-                if (GetErrors(nameof(OrganUprav)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(OrganUprav));
+                    return _dataAccess.Get<string>(nameof(OrganUprav));
                 }
-                else
+                
                 {
-                    return _OrganUprav_Not_Valid;
+                    
                 }
             }
             set
             {
-                _OrganUprav_Not_Valid = value;
-                if (GetErrors(nameof(OrganUprav)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(OrganUprav), _OrganUprav_Not_Valid);
+                    _dataAccess.Set(nameof(OrganUprav), value);
                 }
                 OnPropertyChanged(nameof(OrganUprav));
             }
         }
 
-        private string _OrganUprav_Not_Valid = "";
-        //OrganUprav property
+                //OrganUprav property
 
         //SubjectRF property
         [Attributes.Form_Property("Субъект РФ")]
-        public string SubjectRF
+        public IDataAccess<string> SubjectRF
         {
             get
             {
-                if (GetErrors(nameof(SubjectRF)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(SubjectRF));
+                    return _dataAccess.Get<string>(nameof(SubjectRF));
                 }
-                else
+                
                 {
-                    return _SubjectRF_Not_Valid;
+                    
                 }
             }
             set
             {
-                _SubjectRF_Not_Valid = value;
-                if (GetErrors(nameof(SubjectRF)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(SubjectRF), _SubjectRF_Not_Valid);
+                    _dataAccess.Set(nameof(SubjectRF), value);
                 }
                 OnPropertyChanged(nameof(SubjectRF));
             }
         }
 
-        private string _SubjectRF_Not_Valid = "";
-        //SubjectRF property
+                //SubjectRF property
 
         //JurLico property
         [Attributes.Form_Property("Юр. лицо")]
-        public string JurLico
+        public IDataAccess<string> JurLico
         {
             get
             {
-                if (GetErrors(nameof(JurLico)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(JurLico));
+                    return _dataAccess.Get<string>(nameof(JurLico));
                 }
-                else
+                
                 {
-                    return _JurLico_Not_Valid;
+                    
                 }
             }
             set
             {
-                _JurLico_Not_Valid = value;
-                if (GetErrors(nameof(JurLico)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(JurLico), _JurLico_Not_Valid);
+                    _dataAccess.Set(nameof(JurLico), value);
                 }
                 OnPropertyChanged(nameof(JurLico));
             }
         }
 
-        private string _JurLico_Not_Valid = "";
-        //JurLico property
+                //JurLico property
 
         //ShortJurLico property
         [Attributes.Form_Property("Краткое наименование юр. лица")]
-        public string ShortJurLico
+        public IDataAccess<string> ShortJurLico
         {
             get
             {
-                if (GetErrors(nameof(ShortJurLico)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(ShortJurLico));
+                    return _dataAccess.Get<string>(nameof(ShortJurLico));
                 }
-                else
+                
                 {
-                    return _ShortJurLico_Not_Valid;
+                    
                 }
             }
             set
             {
-                _ShortJurLico_Not_Valid = value;
-                if (GetErrors(nameof(ShortJurLico)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(ShortJurLico), _ShortJurLico_Not_Valid);
+                    _dataAccess.Set(nameof(ShortJurLico), value);
                 }
                 OnPropertyChanged(nameof(ShortJurLico));
             }
         }
 
-        private string _ShortJurLico_Not_Valid = "";
-        //ShortJurLico property
+                //ShortJurLico property
 
         //JurLicoAddress property
         [Attributes.Form_Property("Адрес юр. лица")]
-        public string JurLicoAddress
+        public IDataAccess<string> JurLicoAddress
         {
             get
             {
-                if (GetErrors(nameof(JurLicoAddress)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(JurLicoAddress));
+                    return _dataAccess.Get<string>(nameof(JurLicoAddress));
                 }
-                else
+                
                 {
-                    return _JurLicoAddress_Not_Valid;
+                    
                 }
             }
             set
             {
-                _JurLicoAddress_Not_Valid = value;
-                if (GetErrors(nameof(JurLicoAddress)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(JurLicoAddress), _JurLicoAddress_Not_Valid);
+                    _dataAccess.Set(nameof(JurLicoAddress), value);
                 }
                 OnPropertyChanged(nameof(JurLicoAddress));
             }
         }
 
-        private string _JurLicoAddress_Not_Valid = "";
-        //JurLicoAddress property
+                //JurLicoAddress property
 
         //JurLicoFactAddress property
         [Attributes.Form_Property("Фактический адрес юр. лица")]
-        public string JurLicoFactAddress
+        public IDataAccess<string> JurLicoFactAddress
         {
             get
             {
-                if (GetErrors(nameof(JurLicoFactAddress)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(JurLicoFactAddress));
+                    return _dataAccess.Get<string>(nameof(JurLicoFactAddress));
                 }
-                else
+                
                 {
-                    return _JurLicoFactAddress_Not_Valid;
+                    
                 }
             }
             set
             {
-                _JurLicoFactAddress_Not_Valid = value;
-                if (GetErrors(nameof(JurLicoFactAddress)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(JurLicoFactAddress), _JurLicoFactAddress_Not_Valid);
+                    _dataAccess.Set(nameof(JurLicoFactAddress), value);
                 }
                 OnPropertyChanged(nameof(JurLicoFactAddress));
             }
         }
 
-        private string _JurLicoFactAddress_Not_Valid = "";
-        //JurLicoFactAddress property
+                //JurLicoFactAddress property
 
         //GradeFIO property
         [Attributes.Form_Property("ФИО, должность")]
-        public string GradeFIO
+        public IDataAccess<string> GradeFIO
         {
             get
             {
-                if (GetErrors(nameof(GradeFIO)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIO));
+                    return _dataAccess.Get<string>(nameof(GradeFIO));
                 }
-                else
+                
                 {
-                    return _GradeFIO_Not_Valid;
+                    
                 }
             }
             set
             {
-                _GradeFIO_Not_Valid = value;
-                if (GetErrors(nameof(GradeFIO)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(GradeFIO), _GradeFIO_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIO), value);
                 }
                 OnPropertyChanged(nameof(GradeFIO));
             }
         }
 
-        private string _GradeFIO_Not_Valid = "";
-        //GradeFIO property
+                //GradeFIO property
 
         //Telephone property
         [Attributes.Form_Property("Телефон")]
-        public string Telephone
+        public IDataAccess<string> Telephone
         {
             get
             {
-                if (GetErrors(nameof(Telephone)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Telephone));
+                    return _dataAccess.Get<string>(nameof(Telephone));
                 }
-                else
+                
                 {
-                    return _Telephone_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Telephone_Not_Valid = value;
-                if (GetErrors(nameof(Telephone)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Telephone), _Telephone_Not_Valid);
+                    _dataAccess.Set(nameof(Telephone), value);
                 }
                 OnPropertyChanged(nameof(Telephone));
             }
         }
 
-        private string _Telephone_Not_Valid = "";
-        //Telephone property
+                //Telephone property
 
         //Fax property
         [Attributes.Form_Property("Факс")]
-        public string Fax
+        public IDataAccess<string> Fax
         {
             get
             {
-                if (GetErrors(nameof(Fax)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Fax));
+                    return _dataAccess.Get<string>(nameof(Fax));
                 }
-                else
+                
                 {
-                    return _Fax_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Fax_Not_Valid = value;
-                if (GetErrors(nameof(Fax)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Fax), _Fax_Not_Valid);
+                    _dataAccess.Set(nameof(Fax), value);
                 }
                 OnPropertyChanged(nameof(Fax));
             }
         }
 
-        private string _Fax_Not_Valid = "";
-        //Fax property
+                //Fax property
 
         //Email property
         [Attributes.Form_Property("Эл. почта")]
-        public string Email
+        public IDataAccess<string> Email
         {
             get
             {
-                if (GetErrors(nameof(Email)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Email));
+                    return _dataAccess.Get<string>(nameof(Email));
                 }
-                else
+                
                 {
-                    return _Email_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Email_Not_Valid = value;
-                if (GetErrors(nameof(Email)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Email), _Email_Not_Valid);
+                    _dataAccess.Set(nameof(Email), value);
                 }
                 OnPropertyChanged(nameof(Email));
             }
         }
 
-        private string _Email_Not_Valid = "";
-        //Email property
+                //Email property
 
         //Okpo property
         [Attributes.Form_Property("ОКПО")]
-        public string Okpo
+        public IDataAccess<string> Okpo
         {
             get
             {
-                if (GetErrors(nameof(Okpo)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Okpo));
+                    return _dataAccess.Get<string>(nameof(Okpo));
                 }
-                else
+                
                 {
-                    return _Okpo_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Okpo_Not_Valid = value;
-                if (GetErrors(nameof(Okpo)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Okpo), _Okpo_Not_Valid);
+                    _dataAccess.Set(nameof(Okpo), value);
                 }
                 OnPropertyChanged(nameof(Okpo));
             }
         }
-        private string _Okpo_Not_Valid = "";
-        private void Okpo_Validation(string value)
+                private void Okpo_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Okpo));
-            if ((value.Length != 8) && (value.Length != 14))
-                AddError(nameof(Okpo), "Недопустимое значение");
-            else
+            value.ClearErrors();
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
+                value.AddError( "Недопустимое значение");
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value))
-                    AddError(nameof(Okpo), "Недопустимое значение");
+                if (!mask.IsMatch(value.Value))
+                    value.AddError( "Недопустимое значение");
             }
         }
         //Okpo property
 
         //Okved property
         [Attributes.Form_Property("ОКВЭД")]
-        public string Okved
+        public IDataAccess<string> Okved
         {
             get
             {
-                if (GetErrors(nameof(Okved)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Okved));
+                    return _dataAccess.Get<string>(nameof(Okved));
                 }
-                else
+                
                 {
-                    return _Okved_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Okved_Not_Valid = value;
-                if (GetErrors(nameof(Okved)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Okved), _Okved_Not_Valid);
+                    _dataAccess.Set(nameof(Okved), value);
                 }
                 OnPropertyChanged(nameof(Okved));
             }
         }
 
-        private string _Okved_Not_Valid = "";
-        private void Okved_Validation(string value)
+                private void Okved_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Okved));
+            value.ClearErrors();
             var ex = new Regex("[0123456789]{2}\\.[0123456789]{2}\\.[0123456789]{2}");
-            if (!ex.IsMatch(value))
-                AddError(nameof(Okved), "Недопустимое значение");
+            if (!ex.IsMatch(value.Value))
+                value.AddError( "Недопустимое значение");
         }
         //Okved property
 
         //Okogu property
         [Attributes.Form_Property("ОКОГУ")]
-        public string Okogu
+        public IDataAccess<string> Okogu
         {
             get
             {
-                if (GetErrors(nameof(Okogu)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Okogu));
+                    return _dataAccess.Get<string>(nameof(Okogu));
                 }
-                else
+                
                 {
-                    return _Okogu_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Okogu_Not_Valid = value;
-                if (GetErrors(nameof(Okved)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Okogu), _Okogu_Not_Valid);
+                    _dataAccess.Set(nameof(Okogu), value);
                 }
                 OnPropertyChanged(nameof(Okogu));
             }
         }
 
-        private string _Okogu_Not_Valid = "";
-        private void Okogu_Validation(string value)
+                private void Okogu_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Okogu));
+            value.ClearErrors();
             var ex = new Regex("[0123456789]{5}");
-            if (!ex.IsMatch(value))
-                AddError(nameof(Okogu), "Недопустимое значение");
+            if (!ex.IsMatch(value.Value))
+                value.AddError( "Недопустимое значение");
         }
         //Okogu property
 
         //Oktmo property
         [Attributes.Form_Property("ОКТМО")]
-        public string Oktmo
+        public IDataAccess<string> Oktmo
         {
             get
             {
-                if (GetErrors(nameof(Oktmo)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Oktmo));
+                    return _dataAccess.Get<string>(nameof(Oktmo));
                 }
-                else
+                
                 {
-                    return _Oktmo_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Oktmo_Not_Valid = value;
-                if (GetErrors(nameof(Oktmo)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Oktmo), _Oktmo_Not_Valid);
+                    _dataAccess.Set(nameof(Oktmo), value);
                 }
                 OnPropertyChanged(nameof(Oktmo));
             }
         }
 
-        private string _Oktmo_Not_Valid = "";
-        private void Oktmo_Validation(string value)
+                private void Oktmo_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Oktmo));
+            value.ClearErrors();
             var ex = new Regex("[0123456789]{11}");
-            if (!ex.IsMatch(value))
-                AddError(nameof(Oktmo), "Недопустимое значение");
+            if (!ex.IsMatch(value.Value))
+                value.AddError( "Недопустимое значение");
         }
         //Oktmo property
 
         //Inn property
         [Attributes.Form_Property("ИНН")]
-        public string Inn
+        public IDataAccess<string> Inn
         {
             get
             {
-                if (GetErrors(nameof(Inn)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Inn));
+                    return _dataAccess.Get<string>(nameof(Inn));
                 }
-                else
+                
                 {
-                    return _Inn_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Inn_Not_Valid = value;
-                if (GetErrors(nameof(Inn)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Inn), _Inn_Not_Valid);
+                    _dataAccess.Set(nameof(Inn), value);
                 }
                 OnPropertyChanged(nameof(Inn));
             }
         }
 
-        private string _Inn_Not_Valid = "";
-        private void Inn_Validation(string value)
+                private void Inn_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Inn));
+            value.ClearErrors();
             var ex = new Regex("[0123456789]{10}");
-            if (!ex.IsMatch(value))
-                AddError(nameof(Inn), "Недопустимое значение");
+            if (!ex.IsMatch(value.Value))
+                value.AddError( "Недопустимое значение");
         }
         //Inn property
 
         //Kpp property
         [Attributes.Form_Property("КПП")]
-        public string Kpp
+        public IDataAccess<string> Kpp
         {
             get
             {
-                if (GetErrors(nameof(Kpp)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Kpp));
+                    return _dataAccess.Get<string>(nameof(Kpp));
                 }
-                else
+                
                 {
-                    return _Kpp_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Kpp_Not_Valid = value;
-                if (GetErrors(nameof(Kpp)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Kpp), _Kpp_Not_Valid);
+                    _dataAccess.Set(nameof(Kpp), value);
                 }
                 OnPropertyChanged(nameof(Kpp));
             }
         }
 
-        private string _Kpp_Not_Valid = "";
-        private void Kpp_Validation(string value)
+                private void Kpp_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Kpp));
+            value.ClearErrors();
             var ex = new Regex("[0123456789]{10}");
-            if (!ex.IsMatch(value))
-                AddError(nameof(Kpp), "Недопустимое значение");
+            if (!ex.IsMatch(value.Value))
+                value.AddError( "Недопустимое значение");
         }
         //Kpp property
 
         //Okopf property
         [Attributes.Form_Property("ОКОПФ")]
-        public string Okopf
+        public IDataAccess<string> Okopf
         {
             get
             {
-                if (GetErrors(nameof(Okopf)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Okopf));
+                    return _dataAccess.Get<string>(nameof(Okopf));
                 }
-                else
+                
                 {
-                    return _Okopf_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Okopf_Not_Valid = value;
-                if (GetErrors(nameof(Okopf)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Okopf), _Okopf_Not_Valid);
+                    _dataAccess.Set(nameof(Okopf), value);
                 }
                 OnPropertyChanged(nameof(Okopf));
             }
         }
 
-        private string _Okopf_Not_Valid = "";
-        private void Okopf_Validation(string value)
+                private void Okopf_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Okopf));
+            value.ClearErrors();
             var ex = new Regex("[0123456789]{5}");
-            if (!ex.IsMatch(value))
-                AddError(nameof(Okopf), "Недопустимое значение");
+            if (!ex.IsMatch(value.Value))
+                value.AddError( "Недопустимое значение");
         }
         //Okopf property
 
         //Okfs property
         [Attributes.Form_Property("ОКФС")]
-        public string Okfs
+        public IDataAccess<string> Okfs
         {
             get
             {
-                if (GetErrors(nameof(Okfs)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Okfs));
+                    return _dataAccess.Get<string>(nameof(Okfs));
                 }
-                else
+                
                 {
-                    return _Okfs_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Okfs_Not_Valid = value;
-                if (GetErrors(nameof(Okfs)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Okfs), _Okfs_Not_Valid);
+                    _dataAccess.Set(nameof(Okfs), value);
                 }
                 OnPropertyChanged(nameof(Okfs));
             }
         }
 
-        private string _Okfs_Not_Valid = "";
-        private void Okfs_Validation(string value)
+                private void Okfs_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Okfs));
+            value.ClearErrors();
             var ex = new Regex("[0123456789]{2}");
-            if (!ex.IsMatch(value))
-                AddError(nameof(Okfs), "Недопустимое значение");
+            if (!ex.IsMatch(value.Value))
+                value.AddError( "Недопустимое значение");
         }
         //Okfs property
     }

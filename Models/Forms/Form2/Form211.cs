@@ -10,8 +10,8 @@ namespace Models
     {
         public Form211() : base()
         {
-            FormNum = "211";
-            NumberOfFields = 11;
+            FormNum.Value = "211";
+            NumberOfFields.Value = 11;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -22,23 +22,23 @@ namespace Models
 
         //PlotName property
         [Attributes.Form_Property("Наименование участка")]
-        public string PlotName
+        public IDataAccess<string> PlotName
         {
             get
             {
-                if (GetErrors(nameof(PlotName)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(PlotName));
+                    return _dataAccess.Get<string>(nameof(PlotName));
                 }
-                else
+                
                 {
-                    return _PlotName_Not_Valid;
+                    
                 }
             }
             set
             {
-                _PlotName_Not_Valid = value;
-                if (GetErrors(nameof(PlotName)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(PlotName), value);
                 }
@@ -46,32 +46,31 @@ namespace Models
             }
         }
 
-        private string _PlotName_Not_Valid = "";
-        private void PlotName_Validation(string value)//TODO
+                private void PlotName_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(PlotName));
+            value.ClearErrors();
         }
         //PlotName property
 
         //PlotKadastrNumber property
         [Attributes.Form_Property("Кадастровый номер участка")]
-        public string PlotKadastrNumber
+        public IDataAccess<string> PlotKadastrNumber
         {
             get
             {
-                if (GetErrors(nameof(PlotKadastrNumber)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(PlotKadastrNumber));
+                    return _dataAccess.Get<string>(nameof(PlotKadastrNumber));
                 }
-                else
+                
                 {
-                    return _PlotKadastrNumber_Not_Valid;
+                    
                 }
             }
             set
             {
-                _PlotKadastrNumber_Not_Valid = value;
-                if (GetErrors(nameof(PlotKadastrNumber)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(PlotKadastrNumber), value);
                 }
@@ -79,32 +78,31 @@ namespace Models
             }
         }
 
-        private string _PlotKadastrNumber_Not_Valid = "";
-        private void PlotKadastrNumber_Validation(string value)//TODO
+                private void PlotKadastrNumber_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(PlotKadastrNumber));
+            value.ClearErrors();
         }
         //PlotKadastrNumber property
 
         //PlotCode property
         [Attributes.Form_Property("Код участка")]
-        public string PlotCode
+        public IDataAccess<string> PlotCode
         {
             get
             {
-                if (GetErrors(nameof(PlotCode)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(PlotCode));
+                    return _dataAccess.Get<string>(nameof(PlotCode));
                 }
-                else
+                
                 {
-                    return _PlotCode_Not_Valid;
+                    
                 }
             }
             set
             {
-                _PlotCode_Not_Valid = value;
-                if (GetErrors(nameof(PlotCode)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(PlotCode), value);
                 }
@@ -112,32 +110,31 @@ namespace Models
             }
         }
         //6 symbols code
-        private string _PlotCode_Not_Valid = ""; //6 symbols code
-        private void PlotCode_Validation(string value)//TODO
+                private void PlotCode_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(PlotCode));
+            value.ClearErrors();
         }
         //PlotCode property
 
         //InfectedArea property
         [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public int InfectedArea
+        public IDataAccess<int> InfectedArea
         {
             get
             {
-                if (GetErrors(nameof(InfectedArea)) == null)
+                
                 {
-                    return (int)_dataAccess.Get(nameof(InfectedArea));
+                    return _dataAccess.Get<int>(nameof(InfectedArea));
                 }
-                else
+                
                 {
-                    return _InfectedArea_Not_Valid;
+                    
                 }
             }
             set
             {
-                _InfectedArea_Not_Valid = value;
-                if (GetErrors(nameof(InfectedArea)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(InfectedArea), value);
                 }
@@ -145,34 +142,33 @@ namespace Models
             }
         }
 
-        private int _InfectedArea_Not_Valid = -1;
-        private void InfectedArea_Validation(int value)//TODO
+                private void InfectedArea_Validation(IDataAccess<int> value)//TODO
         {
-            ClearErrors(nameof(InfectedArea));
+            value.ClearErrors();
         }
         //InfectedArea property
 
         //Radionuclids property
         [Attributes.Form_Property("Наименования радионуклидов")]
-        public string Radionuclids
+        public IDataAccess<string> Radionuclids
         {
             get
             {
-                if (GetErrors(nameof(Radionuclids)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
-                    return _Radionuclids_Not_Valid;
+                    
                 }
             }
             set
             {
                 Radionuclids_Validation(value);
 
-                if (GetErrors(nameof(Radionuclids)) == null)
+                
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -180,13 +176,12 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation(string value)//TODO
+                private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(Radionuclids));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
             {
-                AddError(nameof(Radionuclids), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
@@ -194,7 +189,7 @@ namespace Models
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -202,23 +197,23 @@ namespace Models
         //Radionuclids property
 
         //RadionuclidNameNote property
-        public string RadionuclidNameNote
+        public IDataAccess<string> RadionuclidNameNote
         {
             get
             {
-                if (GetErrors(nameof(RadionuclidNameNote)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(RadionuclidNameNote));
+                    return _dataAccess.Get<string>(nameof(RadionuclidNameNote));
                 }
-                else
+                
                 {
-                    return _RadionuclidNameNote_Not_Valid;
+                    
                 }
             }
             set
             {
-                _RadionuclidNameNote_Not_Valid = value;
-                if (GetErrors(nameof(RadionuclidNameNote)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(RadionuclidNameNote), value);
                 }
@@ -226,32 +221,31 @@ namespace Models
             }
         }
 
-        private string _RadionuclidNameNote_Not_Valid = "";
-        private void RadionuclidNameNote_Validation()
+                private void RadionuclidNameNote_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(RadionuclidNameNote));
+            value.ClearErrors();
         }
         //RadionuclidNameNote property
 
         //SpecificActivityOfPlot property
         [Attributes.Form_Property("Удельная активность, Бк/г")]
-        public string SpecificActivityOfPlot
+        public IDataAccess<string> SpecificActivityOfPlot
         {
             get
             {
-                if (GetErrors(nameof(SpecificActivityOfPlot)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(SpecificActivityOfPlot));
+                    return _dataAccess.Get<string>(nameof(SpecificActivityOfPlot));
                 }
-                else
+                
                 {
-                    return _SpecificActivityOfPlot_Not_Valid;
+                    
                 }
             }
             set
             {
-                _SpecificActivityOfPlot_Not_Valid = value;
-                if (GetErrors(nameof(SpecificActivityOfPlot)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(SpecificActivityOfPlot), value);
                 }
@@ -259,43 +253,42 @@ namespace Models
             }
         }
 
-        private string _SpecificActivityOfPlot_Not_Valid = "";
-        private void SpecificActivityOfPlot_Validation(string value)//TODO
+                private void SpecificActivityOfPlot_Validation(IDataAccess<string> value)//TODO
         {
-            //ClearErrors(nameof(SpecificActivityOfPlot));
+            //value.ClearErrors();
             //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
             //   NumberStyles.AllowExponent;
             //try
             //{
-            //    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            //        AddError(nameof(SpecificActivityOfPlot), "Число должно быть больше нуля");
+            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+            //        value.AddError( "Число должно быть больше нуля");
             //}
             //catch
             //{
-            //    AddError(nameof(SpecificActivityOfPlot), "Недопустимое значение");
+            //    value.AddError( "Недопустимое значение");
             //}
         }
         //SpecificActivityOfPlot property
 
         //SpecificActivityOfLiquidPart property
         [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]
-        public string SpecificActivityOfLiquidPart
+        public IDataAccess<string> SpecificActivityOfLiquidPart
         {
             get
             {
-                if (GetErrors(nameof(SpecificActivityOfLiquidPart)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(SpecificActivityOfLiquidPart));
+                    return _dataAccess.Get<string>(nameof(SpecificActivityOfLiquidPart));
                 }
-                else
+                
                 {
-                    return _SpecificActivityOfLiquidPart_Not_Valid;
+                    
                 }
             }
             set
             {
-                _SpecificActivityOfLiquidPart_Not_Valid = value;
-                if (GetErrors(nameof(SpecificActivityOfLiquidPart)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(SpecificActivityOfLiquidPart), value);
                 }
@@ -303,43 +296,35 @@ namespace Models
             }
         }
 
-        private string _SpecificActivityOfLiquidPart_Not_Valid = "";
-        private void SpecificActivityOfLiquidPart_Validation(string value)//TODO
+                private void SpecificActivityOfLiquidPart_Validation(IDataAccess<string> value)//TODO
         {
-            //ClearErrors(nameof(SpecificActivityOfLiquidPart));
+            //value.ClearErrors();
             //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
             //   NumberStyles.AllowExponent;
             //try
             //{
-            //    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            //        AddError(nameof(SpecificActivityOfLiquidPart), "Число должно быть больше нуля");
+            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+            //        value.AddError( "Число должно быть больше нуля");
             //}
             //catch
             //{
-            //    AddError(nameof(SpecificActivityOfLiquidPart), "Недопустимое значение");
+            //    value.AddError( "Недопустимое значение");
             //}
         }
         //SpecificActivityOfLiquidPart property
 
         //SpecificActivityOfDensePart property
         [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]
-        public string SpecificActivityOfDensePart
+        public IDataAccess<string> SpecificActivityOfDensePart
         {
             get
             {
-                if (GetErrors(nameof(SpecificActivityOfDensePart)) == null)
-                {
-                    return (string)_dataAccess.Get(nameof(SpecificActivityOfDensePart));
-                }
-                else
-                {
-                    return _SpecificActivityOfDensePart_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(SpecificActivityOfDensePart));
             }
             set
             {
-                _SpecificActivityOfDensePart_Not_Valid = value;
-                if (GetErrors(nameof(SpecificActivityOfDensePart)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(SpecificActivityOfDensePart), value);
                 }
@@ -347,20 +332,19 @@ namespace Models
             }
         }
 
-        private string _SpecificActivityOfDensePart_Not_Valid = "";
-        private void SpecificActivityOfDensePart_Validation(string value)//TODO
+                private void SpecificActivityOfDensePart_Validation(IDataAccess<string> value)//TODO
         {
-            //ClearErrors(nameof(SpecificActivityOfDensePart));
+            //value.ClearErrors();
             //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
             //   NumberStyles.AllowExponent;
             //try
             //{
-            //    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-            //        AddError(nameof(SpecificActivityOfDensePart), "Число должно быть больше нуля");
+            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+            //        value.AddError( "Число должно быть больше нуля");
             //}
             //catch
             //{
-            //    AddError(nameof(SpecificActivityOfDensePart), "Недопустимое значение");
+            //    value.AddError( "Недопустимое значение");
             //}
         }
         //SpecificActivityOfDensePart property

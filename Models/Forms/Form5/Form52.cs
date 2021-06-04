@@ -11,8 +11,8 @@ namespace Models
     {
         public Form52() : base()
         {
-            FormNum = "52";
-            NumberOfFields = 6;
+            FormNum.Value = "52";
+            NumberOfFields.Value = 6;
         }
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
@@ -22,25 +22,25 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public string Radionuclids
+        public IDataAccess<string> Radionuclids
         {
             get
             {
-                if (GetErrors(nameof(Radionuclids)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
-                    return _Radionuclids_Not_Valid;
+                    
                 }
             }
             set
             {
                 Radionuclids_Validation(value);
 
-                if (GetErrors(nameof(Radionuclids)) == null)
+                
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -48,13 +48,13 @@ namespace Models
             }
         }
         //If change this change validation
-        private string _Radionuclids_Not_Valid = "";
-        private void Radionuclids_Validation(string value)//TODO
+
+        private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
-            ClearErrors(nameof(Radionuclids));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
             {
-                AddError(nameof(Radionuclids), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
@@ -62,7 +62,7 @@ namespace Models
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -71,23 +71,23 @@ namespace Models
 
         //Kategory property
         [Attributes.Form_Property("Категория")]
-        public short Kategory
+        public IDataAccess<short> Kategory
         {
             get
             {
-                if (GetErrors(nameof(Kategory)) == null)
+                
                 {
-                    return (short)_dataAccess.Get(nameof(Kategory));
+                    return _dataAccess.Get<short>(nameof(Kategory));
                 }
-                else
+                
                 {
-                    return _Kategory_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Kategory_Not_Valid = value;
-                if (GetErrors(nameof(Kategory)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(Kategory), value);
                 }
@@ -95,33 +95,33 @@ namespace Models
             }
         }
 
-        private short _Kategory_Not_Valid = -1;
-        private void Kategory_Validation(short value)//TODO
+
+        private void Kategory_Validation(IDataAccess<short> value)//TODO
         {
-            ClearErrors(nameof(Kategory));
+            value.ClearErrors();
         }
         //Kategory property
 
         //Activity property
         [Attributes.Form_Property("Активность, Бк")]
-        public string Activity
+        public IDataAccess<string> Activity
         {
             get
             {
-                if (GetErrors(nameof(Activity)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(Activity));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Activity));//OK
+                    
                 }
-                else
+                
                 {
-                    return _Activity_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Activity_Not_Valid = value;
-                if (GetErrors(nameof(Activity)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(Activity), value);
                 }
@@ -129,56 +129,56 @@ namespace Models
             }
         }
 
-        private string _Activity_Not_Valid = "";
-        private void Activity_Validation(string value)//Ready
+
+        private void Activity_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(Activity));
-            if ((value == null) || value.Equals(""))
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
             {
-                AddError(nameof(Activity), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Value.Contains('e')))
             {
-                AddError(nameof(Activity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    AddError(nameof(Activity), "Число должно быть больше нуля");
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                    value.AddError( "Число должно быть больше нуля");
             }
             catch
             {
-                AddError(nameof(Activity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
             }
         }
         //Activity property
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity
+        public IDataAccess<int> Quantity
         {
             get
             {
-                if (GetErrors(nameof(Quantity)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get(nameof(Quantity));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    
                 }
-                else
+                
                 {
-                    return _Quantity_Not_Valid;
+                    
                 }
             }
             set
             {
                 Quantity_Validation(value);
-                //_Quantity_Not_Valid = value;
 
-                if (GetErrors(nameof(Quantity)) == null)
+
+                
                 {
                     _dataAccess.Set(nameof(Quantity), value);
                 }
@@ -186,12 +186,12 @@ namespace Models
             }
         }
         // positive int.
-        private int _Quantity_Not_Valid = -1;
-        private void Quantity_Validation(int value)//Ready
+
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
-            ClearErrors(nameof(Quantity));
-            if (value <= 0)
-                AddError(nameof(Quantity), "Недопустимое значение");
+            value.ClearErrors();
+            if (value.Value <= 0)
+                value.AddError( "Недопустимое значение");
         }
         //Quantity property
     }

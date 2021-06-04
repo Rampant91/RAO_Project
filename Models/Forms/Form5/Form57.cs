@@ -11,8 +11,8 @@ namespace Models
     {
         public Form57() : base()
         {
-            FormNum = "57";
-            NumberOfFields = 9;
+            FormNum.Value = "57";
+            NumberOfFields.Value = 9;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -23,212 +23,146 @@ namespace Models
 
         //RegNo property
         [Attributes.Form_Property("Регистрационный номер")]
-        public string RegNo
+        public IDataAccess<string> RegNo
         {
             get
             {
-                if (GetErrors(nameof(RegNo)) == null)
-                {
-                    return (string)_dataAccess.Get(nameof(RegNo));
-                }
-                else
-                {
-                    return _RegNo_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(RegNo));
             }
             set
             {
-                _RegNo_Not_Valid = value;
-                if (GetErrors(nameof(RegNo)) == null)
-                {
-                    _dataAccess.Set(nameof(RegNo), _RegNo_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(RegNo), value);
                 OnPropertyChanged(nameof(RegNo));
             }
         }
 
-        private string _RegNo_Not_Valid = "";
+
         //RegNo property
 
         //Okpo property
         [Attributes.Form_Property("ОКПО")]
-        public string Okpo
+        public IDataAccess<string> Okpo
         {
             get
             {
-                if (GetErrors(nameof(Okpo)) == null)
-                {
-                    return (string)_dataAccess.Get(nameof(Okpo));
-                }
-                else
-                {
-                    return _Okpo_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(Okpo));
             }
             set
             {
-                _Okpo_Not_Valid = value;
-                if (GetErrors(nameof(Okpo)) == null)
-                {
-                    _dataAccess.Set(nameof(Okpo), _Okpo_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(Okpo), value);
                 OnPropertyChanged(nameof(Okpo));
             }
         }
-        private string _Okpo_Not_Valid = "";
-        private void Okpo_Validation(string value)
+
+        private void Okpo_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(Okpo));
-            if ((value.Length != 8) && (value.Length != 14))
-                AddError(nameof(Okpo), "Недопустимое значение");
-            else
+            value.ClearErrors();
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
+                value.AddError( "Недопустимое значение");
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value))
-                    AddError(nameof(Okpo), "Недопустимое значение");
+                if (!mask.IsMatch(value.Value))
+                    value.AddError( "Недопустимое значение");
             }
         }
         //Okpo property
 
         //OrgName property
         [Attributes.Form_Property("Наименование организации")]
-        public string OrgName
+        public IDataAccess<string> OrgName
         {
             get
             {
-                if (GetErrors(nameof(OrgName)) == null)
-                {
-                    return (string)_dataAccess.Get(nameof(OrgName));
-                }
-                else
-                {
-                    return _OrgName_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(OrgName));
             }
             set
             {
-                _OrgName_Not_Valid = value;
-                if (GetErrors(nameof(OrgName)) == null)
-                {
-                    _dataAccess.Set(nameof(OrgName), _OrgName_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(OrgName), value);
                 OnPropertyChanged(nameof(OrgName));
             }
         }
 
-        private string _OrgName_Not_Valid = "";
+
         //OrgName property
 
         //DocumentNameNumber property
         [Attributes.Form_Property("Наименование и номер докумета о признании")]
-        public string DocumentNameNumber
+        public IDataAccess<string> DocumentNameNumber
         {
             get
             {
-                if (GetErrors(nameof(DocumentNameNumber)) == null)
-                {
-                    return (string)_dataAccess.Get(nameof(DocumentNameNumber));
-                }
-                else
-                {
-                    return _DocumentNameNumber_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(DocumentNameNumber));
             }
             set
             {
-                _DocumentNameNumber_Not_Valid = value;
-                if (GetErrors(nameof(DocumentNameNumber)) == null)
-                {
-                    _dataAccess.Set(nameof(DocumentNameNumber), _DocumentNameNumber_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(DocumentNameNumber), value);
                 OnPropertyChanged(nameof(DocumentNameNumber));
             }
         }
 
-        private string _DocumentNameNumber_Not_Valid = "";
+
         //DocumentNameNumber property
 
         //PermissionNameNumber property
         [Attributes.Form_Property("Наименование и номер разрешительного докумета")]
-        public string PermissionNameNumber
+        public IDataAccess<string> PermissionNameNumber
         {
             get
             {
-                if (GetErrors(nameof(PermissionNameNumber)) == null)
-                {
-                    return (string)_dataAccess.Get(nameof(PermissionNameNumber));
-                }
-                else
-                {
-                    return _PermissionNameNumber_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(PermissionNameNumber));
             }
             set
             {
-                _PermissionNameNumber_Not_Valid = value;
-                if (GetErrors(nameof(PermissionNameNumber)) == null)
-                {
-                    _dataAccess.Set(nameof(PermissionNameNumber), _PermissionNameNumber_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(PermissionNameNumber), value);
                 OnPropertyChanged(nameof(PermissionNameNumber));
             }
         }
 
-        private string _PermissionNameNumber_Not_Valid = "";
+
         //PermissionNameNumber property
 
         //AllowedActivity property
         [Attributes.Form_Property("Разрешенный вид деятельности")]
-        public string AllowedActivity
+        public IDataAccess<string> AllowedActivity
         {
             get
             {
-                if (GetErrors(nameof(AllowedActivity)) == null)
-                {
-                    return (string)_dataAccess.Get(nameof(AllowedActivity));
-                }
-                else
-                {
-                    return _AllowedActivity_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(AllowedActivity));
             }
             set
             {
-                _AllowedActivity_Not_Valid = value;
-                if (GetErrors(nameof(AllowedActivity)) == null)
-                {
-                    _dataAccess.Set(nameof(AllowedActivity), _AllowedActivity_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(AllowedActivity), value);
                 OnPropertyChanged(nameof(AllowedActivity));
             }
         }
 
-        private string _AllowedActivity_Not_Valid = "";
-        private void AllowedActivity_Validation(string value)//Ready
+
+        private void AllowedActivity_Validation(IDataAccess<string> value)//Ready
         {
-            ClearErrors(nameof(AllowedActivity));
-            if ((value == null) || (value.Equals("")))
+            value.ClearErrors();
+            if ((value.Value == null) || (value.Value.Equals("")))
             {
-                AddError(nameof(AllowedActivity), "Поле не заполнено");
+                value.AddError( "Поле не заполнено");
                 return;
             }
-            if (!(value.Contains('e')))
+            if (!(value.Value.Contains('e')))
             {
-                AddError(nameof(AllowedActivity), "Недопустимое значение");
+                value.AddError( "Недопустимое значение");
                 return;
             }
-            if (value != "прим.")
+            if (value.Value != "прим.")
             {
                 var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                    NumberStyles.AllowExponent;
                 try
                 {
-                    if (!(double.Parse(value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                        AddError(nameof(AllowedActivity), "Число должно быть больше нуля");
+                    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                        value.AddError( "Число должно быть больше нуля");
                 }
                 catch
                 {
-                    AddError(nameof(AllowedActivity), "Недопустимое значение");
+                    value.AddError( "Недопустимое значение");
                 }
             }
         }
@@ -236,31 +170,20 @@ namespace Models
 
         //Note property
         [Attributes.Form_Property("Примечание")]
-        public string Note
+        public IDataAccess<string> Note
         {
             get
             {
-                if (GetErrors(nameof(Note)) == null)
-                {
-                    return (string)_dataAccess.Get(nameof(Note));
-                }
-                else
-                {
-                    return _Note_Not_Valid;
-                }
+                    return _dataAccess.Get<string>(nameof(Note));
             }
             set
             {
-                _Note_Not_Valid = value;
-                if (GetErrors(nameof(Note)) == null)
-                {
-                    _dataAccess.Set(nameof(Note), _Note_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(Note), value);
                 OnPropertyChanged(nameof(Note));
             }
         }
 
-        private string _Note_Not_Valid = "";
+
         //Note property
     }
 }
