@@ -40,9 +40,7 @@ namespace Models
             }
             set
             {
-                    var tmp=value.Value.ToString();
-                    if (tmp.Length == 1) tmp = "0" + tmp;
-                    _dataAccess.Set(nameof(OperationCode), tmp);
+                    _dataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }

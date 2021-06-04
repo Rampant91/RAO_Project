@@ -9,8 +9,8 @@ namespace Models
     {
         public Form40() : base()
         {
-            FormNum = "40";
-            NumberOfFields = 18;
+            FormNum.Value = "40";
+            NumberOfFields.Value = 18;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -21,524 +21,520 @@ namespace Models
 
         //SubjectRF property
         [Attributes.Form_Property("Субъект РФ")]
-        public string SubjectRF
+        public RamAccess<string> SubjectRF
         {
             get
             {
-                if (GetErrors(nameof(SubjectRF)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(SubjectRF));
+                    return _dataAccess.Get<string>(nameof(SubjectRF));
                 }
-                else
+                
                 {
-                    return _SubjectRF_Not_Valid;
+                    
                 }
             }
             set
             {
-                _SubjectRF_Not_Valid = value;
-                if (GetErrors(nameof(SubjectRF)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(SubjectRF), _SubjectRF_Not_Valid);
+                    _dataAccess.Set(nameof(SubjectRF), value);
                 }
                 OnPropertyChanged(nameof(SubjectRF));
             }
         }
 
-        private string _SubjectRF_Not_Valid = "";
+
         //SubjectRF property
 
         //Yyear property
         [Attributes.Form_Property("Год")]
-        public int Yyear
+        public RamAccess<int> Yyear
         {
             get
             {
-                if (GetErrors(nameof(Yyear)) == null)
+                
                 {
-                    return (int)_dataAccess.Get(nameof(Yyear));
+                    return _dataAccess.Get<int>(nameof(Yyear));
                 }
-                else
+                
                 {
-                    return _Yyear_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Yyear_Not_Valid = value;
-                if (GetErrors(nameof(Yyear)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Yyear), _Yyear_Not_Valid);
+                    _dataAccess.Set(nameof(Yyear), value);
                 }
                 OnPropertyChanged(nameof(Yyear));
             }
         }
 
-        private int _Yyear_Not_Valid = -1;
+
         //Yyear property
 
         //SubjectAuthorityName property
         [Attributes.Form_Property("Наименование органа исполнительной власти")]
-        public int SubjectAuthorityName
+        public RamAccess<int> SubjectAuthorityName
         {
             get
             {
-                if (GetErrors(nameof(SubjectAuthorityName)) == null)
+                
                 {
-                    return (int)_dataAccess.Get(nameof(SubjectAuthorityName));
+                    return _dataAccess.Get<int>(nameof(SubjectAuthorityName));
                 }
-                else
+                
                 {
-                    return _SubjectAuthorityName_Not_Valid;
+                    
                 }
             }
             set
             {
-                _SubjectAuthorityName_Not_Valid = value;
-                if (GetErrors(nameof(SubjectAuthorityName)) == null)
-                {
-                    _dataAccess.Set(nameof(SubjectAuthorityName), _SubjectAuthorityName_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(SubjectAuthorityName), value);
                 OnPropertyChanged(nameof(SubjectAuthorityName));
             }
         }
 
-        private int _SubjectAuthorityName_Not_Valid = -1;
+
         //SubjectAuthorityName property
 
         //ShortSubjectAuthorityName property
         [Attributes.Form_Property("Краткое наименование органа исполнительной власти")]
-        public int ShortSubjectAuthorityName
+        public RamAccess<int> ShortSubjectAuthorityName
         {
             get
             {
-                if (GetErrors(nameof(ShortSubjectAuthorityName)) == null)
+                
                 {
-                    return (int)_dataAccess.Get(nameof(ShortSubjectAuthorityName));
+                    return _dataAccess.Get<int>(nameof(ShortSubjectAuthorityName));
                 }
-                else
+                
                 {
-                    return _ShortSubjectAuthorityName_Not_Valid;
+                    
                 }
             }
             set
             {
-                _ShortSubjectAuthorityName_Not_Valid = value;
-                if (GetErrors(nameof(ShortSubjectAuthorityName)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(ShortSubjectAuthorityName), _ShortSubjectAuthorityName_Not_Valid);
+                    _dataAccess.Set(nameof(ShortSubjectAuthorityName), value);
                 }
                 OnPropertyChanged(nameof(ShortSubjectAuthorityName));
             }
         }
 
-        private int _ShortSubjectAuthorityName_Not_Valid = -1;
+
         //ShortSubjectAuthorityName property
 
         //FactAddress property
         [Attributes.Form_Property("Фактический адрес")]
-        public string FactAddress
+        public RamAccess<string> FactAddress
         {
             get
             {
-                if (GetErrors(nameof(FactAddress)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(FactAddress));
+                    return _dataAccess.Get<string>(nameof(FactAddress));
                 }
-                else
+                
                 {
-                    return _FactAddress_Not_Valid;
+                    
                 }
             }
             set
             {
-                _FactAddress_Not_Valid = value;
-                if (GetErrors(nameof(FactAddress)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(FactAddress), _FactAddress_Not_Valid);
+                    _dataAccess.Set(nameof(FactAddress), value);
                 }
                 OnPropertyChanged(nameof(FactAddress));
             }
         }
 
-        private string _FactAddress_Not_Valid = "";
+
         //FactAddress property
 
         //GradeFIOchef property
         [Attributes.Form_Property("ФИО, должность руководителя")]
-        public string GradeFIOchef
+        public RamAccess<string> GradeFIOchef
         {
             get
             {
-                if (GetErrors(nameof(GradeFIOchef)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOchef));
+                    return _dataAccess.Get<string>(nameof(GradeFIOchef));
                 }
-                else
+                
                 {
-                    return _GradeFIOchef_Not_Valid;
+                    
                 }
             }
             set
             {
-                _GradeFIOchef_Not_Valid = value;
-                if (GetErrors(nameof(GradeFIOchef)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(GradeFIOchef), _GradeFIOchef_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIOchef), value);
                 }
                 OnPropertyChanged(nameof(GradeFIOchef));
             }
         }
 
-        private string _GradeFIOchef_Not_Valid = "";
+
         //GradeFIOchef property
 
         //GradeFIOresponsibleExecutor property
         [Attributes.Form_Property("ФИО, должность ответственного исполнителя")]
-        public string GradeFIOresponsibleExecutor
+        public RamAccess<string> GradeFIOresponsibleExecutor
         {
             get
             {
-                if (GetErrors(nameof(GradeFIOresponsibleExecutor)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor));
+                    return _dataAccess.Get<string>(nameof(GradeFIOresponsibleExecutor));
                 }
-                else
+                
                 {
-                    return _GradeFIOresponsibleExecutor_Not_Valid;
+                    
                 }
             }
             set
             {
-                _GradeFIOresponsibleExecutor_Not_Valid = value;
-                if (GetErrors(nameof(GradeFIOresponsibleExecutor)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(GradeFIOresponsibleExecutor), _GradeFIOresponsibleExecutor_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIOresponsibleExecutor), value);
                 }
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor));
             }
         }
 
-        private string _GradeFIOresponsibleExecutor_Not_Valid = "";
+
         //GradeFIOresponsibleExecutor property
 
         //Telephone property
         [Attributes.Form_Property("Телефон")]
-        public string Telephone
+        public RamAccess<string> Telephone
         {
             get
             {
-                if (GetErrors(nameof(Telephone)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Telephone));
+                    return _dataAccess.Get<string>(nameof(Telephone));
                 }
-                else
+                
                 {
-                    return _Telephone_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Telephone_Not_Valid = value;
-                if (GetErrors(nameof(Telephone)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Telephone), _Telephone_Not_Valid);
+                    _dataAccess.Set(nameof(Telephone), value);
                 }
                 OnPropertyChanged(nameof(Telephone));
             }
         }
 
-        private string _Telephone_Not_Valid = "";
+
         //Telephone property
 
         //Fax property
         [Attributes.Form_Property("Факс")]
-        public string Fax
+        public RamAccess<string> Fax
         {
             get
             {
-                if (GetErrors(nameof(Fax)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Fax));
+                    return _dataAccess.Get<string>(nameof(Fax));
                 }
-                else
+                
                 {
-                    return _Fax_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Fax_Not_Valid = value;
-                if (GetErrors(nameof(Fax)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Fax), _Fax_Not_Valid);
+                    _dataAccess.Set(nameof(Fax), value);
                 }
                 OnPropertyChanged(nameof(Fax));
             }
         }
 
-        private string _Fax_Not_Valid = "";
+
         //Fax property
 
         //Email property
         [Attributes.Form_Property("Эл. почта")]
-        public string Email
+        public RamAccess<string> Email
         {
             get
             {
-                if (GetErrors(nameof(Email)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Email));
+                    return _dataAccess.Get<string>(nameof(Email));
                 }
-                else
+                
                 {
-                    return _Email_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Email_Not_Valid = value;
-                if (GetErrors(nameof(Email)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Email), _Email_Not_Valid);
+                    _dataAccess.Set(nameof(Email), value);
                 }
                 OnPropertyChanged(nameof(Email));
             }
         }
 
-        private string _Email_Not_Valid = "";
+
         //Email property
 
         //Telephone1 property
         [Attributes.Form_Property("Телефон")]
-        public string Telephone1
+        public RamAccess<string> Telephone1
         {
             get
             {
-                if (GetErrors(nameof(Telephone1)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Telephone1));
+                    return _dataAccess.Get<string>(nameof(Telephone1));
                 }
-                else
+                
                 {
-                    return _Telephone1_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Telephone1_Not_Valid = value;
-                if (GetErrors(nameof(Telephone1)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Telephone1), _Telephone1_Not_Valid);
+                    _dataAccess.Set(nameof(Telephone1), value);
                 }
                 OnPropertyChanged(nameof(Telephone1));
             }
         }
 
-        private string _Telephone1_Not_Valid = "";
+
         //Telephone1 property
 
         //Fax1 property
         [Attributes.Form_Property("Факс")]
-        public string Fax1
+        public RamAccess<string> Fax1
         {
             get
             {
-                if (GetErrors(nameof(Fax1)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Fax1));
+                    return _dataAccess.Get<string>(nameof(Fax1));
                 }
-                else
+                
                 {
-                    return _Fax1_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Fax1_Not_Valid = value;
-                if (GetErrors(nameof(Fax1)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Fax1), _Fax1_Not_Valid);
+                    _dataAccess.Set(nameof(Fax1), value);
                 }
                 OnPropertyChanged(nameof(Fax1));
             }
         }
 
-        private string _Fax1_Not_Valid = "";
+
         //Fax1 property
 
         //Email1 property
         [Attributes.Form_Property("Эл. почта")]
-        public string Email1
+        public RamAccess<string> Email1
         {
             get
             {
-                if (GetErrors(nameof(Email1)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(Email1));
+                    return _dataAccess.Get<string>(nameof(Email1));
                 }
-                else
+                
                 {
-                    return _Email1_Not_Valid;
+                    
                 }
             }
             set
             {
-                _Email1_Not_Valid = value;
-                if (GetErrors(nameof(Email1)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(Email1), _Email1_Not_Valid);
+                    _dataAccess.Set(nameof(Email1), value);
                 }
                 OnPropertyChanged(nameof(Email1));
             }
         }
 
-        private string _Email1_Not_Valid = "";
+
         //Email1 property
 
         //OrgName property
         [Attributes.Form_Property("Название организации")]
-        public string OrgName
+        public RamAccess<string> OrgName
         {
             get
             {
-                if (GetErrors(nameof(OrgName)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(OrgName));
+                    return _dataAccess.Get<string>(nameof(OrgName));
                 }
-                else
+                
                 {
-                    return _OrgName_Not_Valid;
+                    
                 }
             }
             set
             {
-                _OrgName_Not_Valid = value;
-                if (GetErrors(nameof(OrgName)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(OrgName), _OrgName_Not_Valid);
+                    _dataAccess.Set(nameof(OrgName), value);
                 }
                 OnPropertyChanged(nameof(OrgName));
             }
         }
 
-        private string _OrgName_Not_Valid = "";
+
         //OrgName property
 
         //ShortOrgName property
         [Attributes.Form_Property("Краткое название организации")]
-        public string ShortOrgName
+        public RamAccess<string> ShortOrgName
         {
             get
             {
-                if (GetErrors(nameof(ShortOrgName)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(ShortOrgName));
+                    return _dataAccess.Get<string>(nameof(ShortOrgName));
                 }
-                else
+                
                 {
-                    return _ShortOrgName_Not_Valid;
+                    
                 }
             }
             set
             {
-                _ShortOrgName_Not_Valid = value;
-                if (GetErrors(nameof(ShortOrgName)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(ShortOrgName), _ShortOrgName_Not_Valid);
+                    _dataAccess.Set(nameof(ShortOrgName), value);
                 }
                 OnPropertyChanged(nameof(ShortOrgName));
             }
         }
 
-        private string _ShortOrgName_Not_Valid = "";
+
         //ShortOrgName property
 
         //FactAddress1 property
         [Attributes.Form_Property("Фактический адрес")]
-        public string FactAddress1
+        public RamAccess<string> FactAddress1
         {
             get
             {
-                if (GetErrors(nameof(FactAddress1)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(FactAddress1));
+                    return _dataAccess.Get<string>(nameof(FactAddress1));
                 }
-                else
+                
                 {
-                    return _FactAddress1_Not_Valid;
+                    
                 }
             }
             set
             {
-                _FactAddress1_Not_Valid = value;
-                if (GetErrors(nameof(FactAddress1)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(FactAddress1), _FactAddress1_Not_Valid);
+                    _dataAccess.Set(nameof(FactAddress1), value);
                 }
                 OnPropertyChanged(nameof(FactAddress1));
             }
         }
 
-        private string _FactAddress1_Not_Valid = "";
+
         //FactAddress1 property
 
         //GradeFIOchef1 property
         [Attributes.Form_Property("ФИО, должность руководителя")]
-        public string GradeFIOchef1
+        public RamAccess<string> GradeFIOchef1
         {
             get
             {
-                if (GetErrors(nameof(GradeFIOchef1)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOchef1));
+                    return _dataAccess.Get<string>(nameof(GradeFIOchef1));
                 }
-                else
+                
                 {
-                    return _GradeFIOchef1_Not_Valid;
+                    
                 }
             }
             set
             {
-                _GradeFIOchef1_Not_Valid = value;
-                if (GetErrors(nameof(GradeFIOchef1)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(GradeFIOchef1), _GradeFIOchef1_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIOchef1), value);
                 }
                 OnPropertyChanged(nameof(GradeFIOchef1));
             }
         }
 
-        private string _GradeFIOchef1_Not_Valid = "";
+
         //GradeFIOchef1 property
 
         //GradeFIOresponsibleExecutor1 property
         [Attributes.Form_Property("ФИО, должность ответственного исполнителя")]
-        public string GradeFIOresponsibleExecutor1
+        public RamAccess<string> GradeFIOresponsibleExecutor1
         {
             get
             {
-                if (GetErrors(nameof(GradeFIOresponsibleExecutor1)) == null)
+                
                 {
-                    return (string)_dataAccess.Get(nameof(GradeFIOresponsibleExecutor1));
+                    return _dataAccess.Get<string>(nameof(GradeFIOresponsibleExecutor1));
                 }
-                else
+                
                 {
-                    return _GradeFIOresponsibleExecutor1_Not_Valid;
+                    
                 }
             }
             set
             {
-                _GradeFIOresponsibleExecutor1_Not_Valid = value;
-                if (GetErrors(nameof(GradeFIOresponsibleExecutor1)) == null)
+
+                
                 {
-                    _dataAccess.Set(nameof(GradeFIOresponsibleExecutor1), _GradeFIOresponsibleExecutor1_Not_Valid);
+                    _dataAccess.Set(nameof(GradeFIOresponsibleExecutor1), value);
                 }
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor1));
             }
         }
 
-        private string _GradeFIOresponsibleExecutor1_Not_Valid = "";
+
         //GradeFIOresponsibleExecutor1 property
     }
 }
