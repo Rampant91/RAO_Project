@@ -132,16 +132,16 @@ namespace Client_App.ViewModels
 
         void _AddRow()
         {
-            if (FormType == "1/0") { var frm = new Form10(); Storage.Rows10.Add(frm); }
+            //if (FormType == "1/0") { var frm = new Form10(); Storage.Rows10.Add(frm); }
             if (FormType == "1/1") { var frm = new Form11(); Storage.Rows11.Add(frm); }
-            if (FormType == "1/2") { var frm = new Form12(); Storage.Rows12.Add(frm); }
-            if (FormType == "1/3") { var frm = new Form13(); Storage.Rows13.Add(frm); }
-            if (FormType == "1/4") { var frm = new Form14(); Storage.Rows14.Add(frm); }
-            if (FormType == "1/5") { var frm = new Form15(); Storage.Rows15.Add(frm); }
-            if (FormType == "1/6") { var frm = new Form16(); Storage.Rows16.Add(frm); }
-            if (FormType == "1/7") { var frm = new Form17(); Storage.Rows17.Add(frm); }
-            if (FormType == "1/8") { var frm = new Form18(); Storage.Rows18.Add(frm); }
-            if (FormType == "1/9") { var frm = new Form19(); Storage.Rows19.Add(frm); }
+            //if (FormType == "1/2") { var frm = new Form12(); Storage.Rows12.Add(frm); }
+            //if (FormType == "1/3") { var frm = new Form13(); Storage.Rows13.Add(frm); }
+            //if (FormType == "1/4") { var frm = new Form14(); Storage.Rows14.Add(frm); }
+            //if (FormType == "1/5") { var frm = new Form15(); Storage.Rows15.Add(frm); }
+            //if (FormType == "1/6") { var frm = new Form16(); Storage.Rows16.Add(frm); }
+            //if (FormType == "1/7") { var frm = new Form17(); Storage.Rows17.Add(frm); }
+            //if (FormType == "1/8") { var frm = new Form18(); Storage.Rows18.Add(frm); }
+            //if (FormType == "1/9") { var frm = new Form19(); Storage.Rows19.Add(frm); }
         }
 
         void _DeleteRow(IList param)

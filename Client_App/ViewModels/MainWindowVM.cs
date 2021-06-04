@@ -126,7 +126,7 @@ namespace Client_App.ViewModels
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var rt = new Report();
-                rt.FormNum = param;
+                rt.FormNum.Value = param;
                 //var obj= dbm.coll_reports
                 //if (dbm.coll_reports.Count() == 0)
                 //{
@@ -152,7 +152,7 @@ namespace Client_App.ViewModels
                     {
                         var obj = param[0];
                         var rep = (Report)obj;
-                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum, DBPath, rep,dbm);
+                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum.Value, DBPath, rep,dbm);
                         await frm.ShowDialog(desktop.MainWindow);
                     }
                 }

@@ -17,39 +17,36 @@ namespace Collections
         public DBObservable(IDataAccessCollection Access)
         {
             _dataAccess = Access;
-
+            Init();
         }
         public DBObservable()
         {
             _dataAccess = new DataAccessCollection();
-        }
-        [Key]
-        public IDataAccess<int> DBObservableId 
-        {
-            get
-            {
-                return _dataAccess.Get<int>(nameof(DBObservableId));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(DBObservableId), value);
-                OnPropertyChanged(nameof(DBObservableId));
-            }
+            Init();
         }
 
-        public virtual IDataAccess<ObservableCollection<Reports>> Reports_Collection
+        void Init()
+        {
+            _dataAccess.Init<ObservableCollection<Reports>>(nameof(Reports_Collection), Reports_Collection_Validation,null);
+            Reports_Collection = new ObservableCollection<Reports>();
+        }
+
+        [Key]
+        public int DBObservableId { get; set; }
+
+        public virtual ObservableCollection<Reports> Reports_Collection
         {
             get
             {
-                return _dataAccess.Get<ObservableCollection<Reports>>(nameof(Reports_Collection));
+                return _dataAccess.Get<ObservableCollection<Reports>>(nameof(Reports_Collection)).Value;
             }
             set
             {
-                _dataAccess.Set(nameof(Reports_Collection), value);
+                _dataAccess.Get<ObservableCollection<Reports>>(nameof(Reports_Collection)).Value=value;
                 OnPropertyChanged(nameof(Reports_Collection));
             }
         }
-        private bool Reports_Collection_Validation(IDataAccess<ObservableCollection<Reports>> value)
+        private bool Reports_Collection_Validation(RamAccess<ObservableCollection<Reports>> value)
         {
             return true;
         }

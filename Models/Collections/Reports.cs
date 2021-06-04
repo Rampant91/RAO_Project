@@ -28,7 +28,11 @@ namespace Collections
 
         void Init()
         {
-            Report_Collection.Value.CollectionChanged += CollectionChanged;
+            _dataAccess.Init<ObservableCollection<Report>>(nameof(Report_Collection), Report_Collection_Validation, null);
+            _dataAccess.Init<Report>(nameof(Master), Master_Validation, null);
+
+            Report_Collection = new ObservableCollection<Report>();
+            Report_Collection.CollectionChanged += CollectionChanged;
         }
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -48,20 +52,9 @@ namespace Collections
         }
 
         [Key]
-        public IDataAccess<int> ReportsId
-        {
-            get
-            {
-                return _dataAccess.Get<int>(nameof(ReportsId));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(ReportsId), value);
-                OnPropertyChanged(nameof(ReportsId));
-            }
-        }
+        public int ReportsId { get; set; }
 
-        public virtual IDataAccess<Report> Master
+        public virtual RamAccess<Report> Master
         {
             get
             {
@@ -73,24 +66,24 @@ namespace Collections
                 OnPropertyChanged(nameof(Master));
             }
         }
-        private bool Master_Validation(IDataAccess<Report> value)
+        private bool Master_Validation(RamAccess<Report> value)
         {
             return true;
         }
 
-        public virtual IDataAccess<ObservableCollection<Report>> Report_Collection
+        public virtual ObservableCollection<Report> Report_Collection
         {
             get
             {
-                return _dataAccess.Get<ObservableCollection<Report>>(nameof(Master));
+                return _dataAccess.Get<ObservableCollection<Report>>(nameof(Report_Collection)).Value;
             }
             set
             {
-                _dataAccess.Set(nameof(Master), value);
-                OnPropertyChanged(nameof(Master));
+                _dataAccess.Get<ObservableCollection<Report>>(nameof(Report_Collection)).Value=value;
+                OnPropertyChanged(nameof(Report_Collection));
             }
         }
-        private bool Report_Collection_Validation(IDataAccess<ObservableCollection<Report>> value)
+        private bool Report_Collection_Validation(RamAccess<ObservableCollection<Report>> value)
         {
             return true;
         }

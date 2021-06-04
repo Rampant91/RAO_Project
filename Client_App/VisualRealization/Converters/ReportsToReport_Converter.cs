@@ -16,7 +16,7 @@ namespace Client_App.Converters
             foreach(var item in rps_coll)
             {
                 var rps = (Models.DataAccess.IDataAccess<Reports>)item;
-                foreach(var it in rps.Value.Report_Collection.Value)
+                foreach(var it in rps.Value.Report_Collection)
                 {
                     lst.Add(it);
                 }

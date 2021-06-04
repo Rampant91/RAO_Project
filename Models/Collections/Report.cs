@@ -19,25 +19,34 @@ namespace Collections
         public Report(IDataAccessCollection Access)
         {
             _dataAccess = Access;
+            Init();
         }
 
         public Report()
         {
             _dataAccess = new DataAccessCollection();
+            Init();
+        }
+        void Init()
+        {
+            _dataAccess.Init<string>(nameof(FormNum), FormNum_Validation, "");
+            _dataAccess.Init<ObservableCollection<Models.Form11>>(nameof(Rows11), Rows11_Validation, null);
+            Rows11 = new ObservableCollection<Models.Form11>();
+            Rows11.CollectionChanged += CollectionChanged;
         }
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            OnPropertyChanged(nameof(Rows10));
+            //OnPropertyChanged(nameof(Rows10));
             OnPropertyChanged(nameof(Rows11));
-            OnPropertyChanged(nameof(Rows12));
-            OnPropertyChanged(nameof(Rows13));
-            OnPropertyChanged(nameof(Rows14));
-            OnPropertyChanged(nameof(Rows15));
-            OnPropertyChanged(nameof(Rows16));
-            OnPropertyChanged(nameof(Rows17));
-            OnPropertyChanged(nameof(Rows18));
-            OnPropertyChanged(nameof(Rows19));
+            //OnPropertyChanged(nameof(Rows12));
+            //OnPropertyChanged(nameof(Rows13));
+            //OnPropertyChanged(nameof(Rows14));
+            //OnPropertyChanged(nameof(Rows15));
+            //OnPropertyChanged(nameof(Rows16));
+            //OnPropertyChanged(nameof(Rows17));
+            //OnPropertyChanged(nameof(Rows18));
+            //OnPropertyChanged(nameof(Rows19));
 
             //OnPropertyChanged(nameof(Rows20));
             //OnPropertyChanged(nameof(Rows21));
@@ -75,192 +84,181 @@ namespace Collections
         }
 
         [Key]
-        public IDataAccess<int> ReportId
+        public int ReportId{ get; set; }
+
+        //public virtual RamAccess<ObservableCollection<Models.Form10>> Rows10
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<ObservableCollection<Models.Form10>>(nameof(Rows10));
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(Rows10), value);
+        //        OnPropertyChanged(nameof(Rows10));
+        //    }
+        //}
+        //private bool Rows10_Validation(RamAccess<ObservableCollection<Models.Form10>> value)
+        //{
+        //    return true;
+        //}
+
+
+        public virtual ObservableCollection<Models.Form11> Rows11
         {
             get
             {
-                return _dataAccess.Get<int>(nameof(ReportId));
+                return _dataAccess.Get<ObservableCollection<Models.Form11>>(nameof(Rows11)).Value;
             }
             set
             {
-                _dataAccess.Set(nameof(ReportId), value);
-                OnPropertyChanged(nameof(ReportId));
-            }
-        }
-
-        public virtual IDataAccess<ObservableCollection<Models.Form10>> Rows10
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form10>>(nameof(Rows10));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows10), value);
-                OnPropertyChanged(nameof(Rows10));
-            }
-        }
-        private bool Rows10_Validation(IDataAccess<ObservableCollection<Models.Form10>> value)
-        {
-            return true;
-        }
-
-
-        public virtual IDataAccess<ObservableCollection<Models.Form11>> Rows11
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form11>>(nameof(Rows11));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows11), value);
+                _dataAccess.Get<ObservableCollection<Models.Form11>>(nameof(Rows11)).Value=value;
                 OnPropertyChanged(nameof(Rows11));
             }
         }
-        private bool Rows11_Validation(IDataAccess<ObservableCollection<Models.Form11>> value)
+        private bool Rows11_Validation(RamAccess<ObservableCollection<Models.Form11>> value)
         {
             return true;
         }
 
 
-        public virtual IDataAccess<ObservableCollection<Models.Form12>> Rows12
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form12>>(nameof(Rows12));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows12), value);
-                OnPropertyChanged(nameof(Rows12));
-            }
-        }
-        private bool Rows12_Validation(IDataAccess<ObservableCollection<Models.Form12>> value)
-        {
-            return true;
-        }
+        //public virtual RamAccess<ObservableCollection<Models.Form12>> Rows12
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<ObservableCollection<Models.Form12>>(nameof(Rows12));
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(Rows12), value);
+        //        OnPropertyChanged(nameof(Rows12));
+        //    }
+        //}
+        //private bool Rows12_Validation(RamAccess<ObservableCollection<Models.Form12>> value)
+        //{
+        //    return true;
+        //}
 
-        public virtual IDataAccess<ObservableCollection<Models.Form13>> Rows13
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form13>>(nameof(Rows13));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows13), value);
-                OnPropertyChanged(nameof(Rows13));
-            }
-        }
-        private bool Rows13_Validation(IDataAccess<ObservableCollection<Models.Form13>> value)
-        {
-            return true;
-        }
+        //public virtual RamAccess<ObservableCollection<Models.Form13>> Rows13
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<ObservableCollection<Models.Form13>>(nameof(Rows13));
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(Rows13), value);
+        //        OnPropertyChanged(nameof(Rows13));
+        //    }
+        //}
+        //private bool Rows13_Validation(RamAccess<ObservableCollection<Models.Form13>> value)
+        //{
+        //    return true;
+        //}
 
-        public virtual IDataAccess<ObservableCollection<Models.Form14>> Rows14
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form14>>(nameof(Rows14));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows14), value);
-                OnPropertyChanged(nameof(Rows14));
-            }
-        }
-        private bool Rows14_Validation(IDataAccess<ObservableCollection<Models.Form14>> value)
-        {
-            return true;
-        }
+        //public virtual RamAccess<ObservableCollection<Models.Form14>> Rows14
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<ObservableCollection<Models.Form14>>(nameof(Rows14));
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(Rows14), value);
+        //        OnPropertyChanged(nameof(Rows14));
+        //    }
+        //}
+        //private bool Rows14_Validation(RamAccess<ObservableCollection<Models.Form14>> value)
+        //{
+        //    return true;
+        //}
 
-        public virtual IDataAccess<ObservableCollection<Models.Form15>> Rows15
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form15>>(nameof(Rows15));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows15), value);
-                OnPropertyChanged(nameof(Rows15));
-            }
-        }
-        private bool Rows15_Validation(IDataAccess<ObservableCollection<Models.Form15>> value)
-        {
-            return true;
-        }
+        //public virtual RamAccess<ObservableCollection<Models.Form15>> Rows15
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<ObservableCollection<Models.Form15>>(nameof(Rows15));
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(Rows15), value);
+        //        OnPropertyChanged(nameof(Rows15));
+        //    }
+        //}
+        //private bool Rows15_Validation(RamAccess<ObservableCollection<Models.Form15>> value)
+        //{
+        //    return true;
+        //}
 
-        public virtual IDataAccess<ObservableCollection<Models.Form16>> Rows16
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form16>>(nameof(Rows16));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows16), value);
-                OnPropertyChanged(nameof(Rows16));
-            }
-        }
-        private bool Rows16_Validation(IDataAccess<ObservableCollection<Models.Form16>> value)
-        {
-            return true;
-        }
+        //public virtual RamAccess<ObservableCollection<Models.Form16>> Rows16
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<ObservableCollection<Models.Form16>>(nameof(Rows16));
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(Rows16), value);
+        //        OnPropertyChanged(nameof(Rows16));
+        //    }
+        //}
+        //private bool Rows16_Validation(RamAccess<ObservableCollection<Models.Form16>> value)
+        //{
+        //    return true;
+        //}
 
-        public virtual IDataAccess<ObservableCollection<Models.Form17>> Rows17
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form17>>(nameof(Rows17));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows17), value);
-                OnPropertyChanged(nameof(Rows17));
-            }
-        }
-        private bool Rows17_Validation(IDataAccess<ObservableCollection<Models.Form17>> value)
-        {
-            return true;
-        }
+        //public virtual RamAccess<ObservableCollection<Models.Form17>> Rows17
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<ObservableCollection<Models.Form17>>(nameof(Rows17));
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(Rows17), value);
+        //        OnPropertyChanged(nameof(Rows17));
+        //    }
+        //}
+        //private bool Rows17_Validation(RamAccess<ObservableCollection<Models.Form17>> value)
+        //{
+        //    return true;
+        //}
 
-        public virtual IDataAccess<ObservableCollection<Models.Form18>> Rows18
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form18>>(nameof(Rows18));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows18), value);
-                OnPropertyChanged(nameof(Rows18));
-            }
-        }
-        private bool Rows18_Validation(IDataAccess<ObservableCollection<Models.Form18>> value)
-        {
-            return true;
-        }
+        //public virtual RamAccess<ObservableCollection<Models.Form18>> Rows18
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<ObservableCollection<Models.Form18>>(nameof(Rows18));
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(Rows18), value);
+        //        OnPropertyChanged(nameof(Rows18));
+        //    }
+        //}
+        //private bool Rows18_Validation(RamAccess<ObservableCollection<Models.Form18>> value)
+        //{
+        //    return true;
+        //}
 
-        public virtual IDataAccess<ObservableCollection<Models.Form19>> Rows19
-        {
-            get
-            {
-                return _dataAccess.Get<ObservableCollection<Models.Form19>>(nameof(Rows19));
-            }
-            set
-            {
-                _dataAccess.Set(nameof(Rows19), value);
-                OnPropertyChanged(nameof(Rows19));
-            }
-        }
-        private bool Rows19_Validation(IDataAccess<ObservableCollection<Models.Form19>> value)
-        {
-            return true;
-        }
+        //public virtual RamAccess<ObservableCollection<Models.Form19>> Rows19
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<ObservableCollection<Models.Form19>>(nameof(Rows19));
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(Rows19), value);
+        //        OnPropertyChanged(nameof(Rows19));
+        //    }
+        //}
+        //private bool Rows19_Validation(RamAccess<ObservableCollection<Models.Form19>> value)
+        //{
+        //    return true;
+        //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -272,12 +270,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -289,13 +287,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -307,13 +305,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -325,13 +323,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -343,13 +341,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -361,12 +359,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -378,12 +376,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -395,13 +393,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -413,13 +411,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -431,13 +429,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -449,13 +447,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -467,13 +465,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form20>> Rows20
+        //public virtual RamAccess<ObservableCollection<Models.Form20>> Rows20
         //{
         //    get
         //    {
@@ -485,13 +483,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows20));
         //    }
         //}
-        //private bool Rows20_Validation(IDataAccess<ObservableCollection<Models.Form20>> value)
+        //private bool Rows20_Validation(RamAccess<ObservableCollection<Models.Form20>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form30>> Rows30
+        //public virtual RamAccess<ObservableCollection<Models.Form30>> Rows30
         //{
         //    get
         //    {
@@ -503,13 +501,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows30));
         //    }
         //}
-        //private bool Rows30_Validation(IDataAccess<ObservableCollection<Models.Form30>> value)
+        //private bool Rows30_Validation(RamAccess<ObservableCollection<Models.Form30>> value)
         //{
         //    return true;
         //}
 
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form30>> Rows30
+        //public virtual RamAccess<ObservableCollection<Models.Form30>> Rows30
         //{
         //    get
         //    {
@@ -521,12 +519,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows30));
         //    }
         //}
-        //private bool Rows30_Validation(IDataAccess<ObservableCollection<Models.Form30>> value)
+        //private bool Rows30_Validation(RamAccess<ObservableCollection<Models.Form30>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form30>> Rows30
+        //public virtual RamAccess<ObservableCollection<Models.Form30>> Rows30
         //{
         //    get
         //    {
@@ -538,12 +536,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows30));
         //    }
         //}
-        //private bool Rows30_Validation(IDataAccess<ObservableCollection<Models.Form30>> value)
+        //private bool Rows30_Validation(RamAccess<ObservableCollection<Models.Form30>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form30>> Rows30
+        //public virtual RamAccess<ObservableCollection<Models.Form30>> Rows30
         //{
         //    get
         //    {
@@ -555,12 +553,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows30));
         //    }
         //}
-        //private bool Rows30_Validation(IDataAccess<ObservableCollection<Models.Form30>> value)
+        //private bool Rows30_Validation(RamAccess<ObservableCollection<Models.Form30>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form30>> Rows30
+        //public virtual RamAccess<ObservableCollection<Models.Form30>> Rows30
         //{
         //    get
         //    {
@@ -572,12 +570,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows30));
         //    }
         //}
-        //private bool Rows30_Validation(IDataAccess<ObservableCollection<Models.Form30>> value)
+        //private bool Rows30_Validation(RamAccess<ObservableCollection<Models.Form30>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form30>> Rows30
+        //public virtual RamAccess<ObservableCollection<Models.Form30>> Rows30
         //{
         //    get
         //    {
@@ -589,12 +587,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows30));
         //    }
         //}
-        //private bool Rows30_Validation(IDataAccess<ObservableCollection<Models.Form30>> value)
+        //private bool Rows30_Validation(RamAccess<ObservableCollection<Models.Form30>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form30>> Rows30
+        //public virtual RamAccess<ObservableCollection<Models.Form30>> Rows30
         //{
         //    get
         //    {
@@ -606,12 +604,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows30));
         //    }
         //}
-        //private bool Rows30_Validation(IDataAccess<ObservableCollection<Models.Form30>> value)
+        //private bool Rows30_Validation(RamAccess<ObservableCollection<Models.Form30>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form40>> Rows40
+        //public virtual RamAccess<ObservableCollection<Models.Form40>> Rows40
         //{
         //    get
         //    {
@@ -623,12 +621,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows40));
         //    }
         //}
-        //private bool Rows40_Validation(IDataAccess<ObservableCollection<Models.Form40>> value)
+        //private bool Rows40_Validation(RamAccess<ObservableCollection<Models.Form40>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form40>> Rows40
+        //public virtual RamAccess<ObservableCollection<Models.Form40>> Rows40
         //{
         //    get
         //    {
@@ -640,12 +638,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows40));
         //    }
         //}
-        //private bool Rows40_Validation(IDataAccess<ObservableCollection<Models.Form40>> value)
+        //private bool Rows40_Validation(RamAccess<ObservableCollection<Models.Form40>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form50>> Rows50
+        //public virtual RamAccess<ObservableCollection<Models.Form50>> Rows50
         //{
         //    get
         //    {
@@ -657,12 +655,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows50));
         //    }
         //}
-        //private bool Rows50_Validation(IDataAccess<ObservableCollection<Models.Form50>> value)
+        //private bool Rows50_Validation(RamAccess<ObservableCollection<Models.Form50>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form50>> Rows50
+        //public virtual RamAccess<ObservableCollection<Models.Form50>> Rows50
         //{
         //    get
         //    {
@@ -674,12 +672,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows50));
         //    }
         //}
-        //private bool Rows50_Validation(IDataAccess<ObservableCollection<Models.Form50>> value)
+        //private bool Rows50_Validation(RamAccess<ObservableCollection<Models.Form50>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form50>> Rows50
+        //public virtual RamAccess<ObservableCollection<Models.Form50>> Rows50
         //{
         //    get
         //    {
@@ -691,12 +689,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows50));
         //    }
         //}
-        //private bool Rows50_Validation(IDataAccess<ObservableCollection<Models.Form50>> value)
+        //private bool Rows50_Validation(RamAccess<ObservableCollection<Models.Form50>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form50>> Rows50
+        //public virtual RamAccess<ObservableCollection<Models.Form50>> Rows50
         //{
         //    get
         //    {
@@ -708,12 +706,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows50));
         //    }
         //}
-        //private bool Rows50_Validation(IDataAccess<ObservableCollection<Models.Form50>> value)
+        //private bool Rows50_Validation(RamAccess<ObservableCollection<Models.Form50>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form50>> Rows50
+        //public virtual RamAccess<ObservableCollection<Models.Form50>> Rows50
         //{
         //    get
         //    {
@@ -725,12 +723,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows50));
         //    }
         //}
-        //private bool Rows50_Validation(IDataAccess<ObservableCollection<Models.Form50>> value)
+        //private bool Rows50_Validation(RamAccess<ObservableCollection<Models.Form50>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form50>> Rows50
+        //public virtual RamAccess<ObservableCollection<Models.Form50>> Rows50
         //{
         //    get
         //    {
@@ -742,12 +740,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows50));
         //    }
         //}
-        //private bool Rows50_Validation(IDataAccess<ObservableCollection<Models.Form50>> value)
+        //private bool Rows50_Validation(RamAccess<ObservableCollection<Models.Form50>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form50>> Rows50
+        //public virtual RamAccess<ObservableCollection<Models.Form50>> Rows50
         //{
         //    get
         //    {
@@ -759,12 +757,12 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows50));
         //    }
         //}
-        //private bool Rows50_Validation(IDataAccess<ObservableCollection<Models.Form50>> value)
+        //private bool Rows50_Validation(RamAccess<ObservableCollection<Models.Form50>> value)
         //{
         //    return true;
         //}
 
-        //public virtual IDataAccess<ObservableCollection<Models.Form50>> Rows50
+        //public virtual RamAccess<ObservableCollection<Models.Form50>> Rows50
         //{
         //    get
         //    {
@@ -776,13 +774,13 @@ namespace Collections
         //        OnPropertyChanged(nameof(Rows50));
         //    }
         //}
-        //private bool Rows50_Validation(IDataAccess<ObservableCollection<Models.Form50>> value)
+        //private bool Rows50_Validation(RamAccess<ObservableCollection<Models.Form50>> value)
         //{
         //    return true;
         //}
 
         [Form_Property("Форма")]
-        public IDataAccess<string> FormNum
+        public RamAccess<string> FormNum
         {
             get
             {
@@ -794,10 +792,15 @@ namespace Collections
                 OnPropertyChanged(nameof(FormNum));
             }
         }
+        public bool FormNum_Validation(RamAccess<string> value)//Ready
+        {
+            value.ClearErrors();
+            return true;
+        }
 
         //IsCorrection 
         [Form_Property("Корректирующий отчет")]
-        public IDataAccess<bool> IsCorrection
+        public RamAccess<bool> IsCorrection
         {
             get
             {
@@ -809,7 +812,7 @@ namespace Collections
                 OnPropertyChanged(nameof(IsCorrection));
             }
         }
-        private bool IsCorrection_Validation(IDataAccess<bool> value)
+        private bool IsCorrection_Validation(RamAccess<bool> value)
         {
             return true;
         }
@@ -817,7 +820,7 @@ namespace Collections
 
         //CorrectionNumber property
         [Form_Property("Номер корректировки")]
-        public IDataAccess<byte> CorrectionNumber
+        public RamAccess<byte> CorrectionNumber
         {
             get
             {
@@ -829,7 +832,7 @@ namespace Collections
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
-        private void CorrectionNumber_Validation(IDataAccess<byte> value)
+        private void CorrectionNumber_Validation(RamAccess<byte> value)
         {
             value.ClearErrors();
         }
@@ -837,7 +840,7 @@ namespace Collections
 
         //NumberInOrder property
         [Form_Property("Номер")]
-        public IDataAccess<string> NumberInOrder
+        public RamAccess<string> NumberInOrder
         {
             get
             {
@@ -849,7 +852,7 @@ namespace Collections
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        private bool NumberInOrder_Validation(IDataAccess<string> value)
+        private bool NumberInOrder_Validation(RamAccess<string> value)
         {
             return true;
         }
@@ -857,7 +860,7 @@ namespace Collections
 
         //Comments property
         [Form_Property("Комментарий")]
-        public IDataAccess<string> Comments
+        public RamAccess<string> Comments
         {
             get
             {
@@ -869,7 +872,7 @@ namespace Collections
                 OnPropertyChanged(nameof(Comments));
             }
         }
-        private bool Comments_Validation(IDataAccess<string> value)
+        private bool Comments_Validation(RamAccess<string> value)
         {
             return true;
         }
@@ -877,7 +880,7 @@ namespace Collections
 
         //Notes property
         [Form_Property("Примечания")]
-        public virtual IDataAccess<ObservableCollection<Models.Note>> Notes
+        public virtual RamAccess<ObservableCollection<Models.Note>> Notes
         {
             get
             {
@@ -889,7 +892,7 @@ namespace Collections
                 OnPropertyChanged(nameof(Notes));
             }
         }
-        private bool Notes_Validation(IDataAccess<ObservableCollection<Models.Note>> value)
+        private bool Notes_Validation(RamAccess<ObservableCollection<Models.Note>> value)
         {
             return true;
         }
@@ -897,7 +900,7 @@ namespace Collections
 
         //StartPeriod
         [Form_Property("Начало")]
-        public IDataAccess<string> StartPeriod
+        public RamAccess<string> StartPeriod
         {
             get
             {
@@ -909,7 +912,7 @@ namespace Collections
                 OnPropertyChanged(nameof(StartPeriod));
             }
         }
-        private void StartPeriod_Validation(IDataAccess<string> value)
+        private void StartPeriod_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -917,7 +920,7 @@ namespace Collections
 
         //EndPeriod
         [Form_Property("Конец")]
-        public IDataAccess<string> EndPeriod
+        public RamAccess<string> EndPeriod
         {
             get
             {
@@ -929,7 +932,7 @@ namespace Collections
                 OnPropertyChanged(nameof(EndPeriod));
             }
         }
-        private void EndPeriod_Validation(IDataAccess<string> value)
+        private void EndPeriod_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -937,7 +940,7 @@ namespace Collections
 
         //ExportDate
         [Form_Property("Дата выгрузки")]
-        public IDataAccess<string> ExportDate
+        public RamAccess<string> ExportDate
         {
             get
             {
@@ -949,7 +952,7 @@ namespace Collections
                 OnPropertyChanged(nameof(ExportDate));
             }
         }
-        private bool ExportDate_Validation(IDataAccess<string> value)
+        private bool ExportDate_Validation(RamAccess<string> value)
         {
             return true;
         }

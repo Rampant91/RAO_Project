@@ -56,16 +56,16 @@ namespace Client_App.Long_Visual
                 Text = "Дата конца периода:",
                 [Grid.ColumnProperty] = 0,
             });
-            topPnl1.Children.Add(new TextBox
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,0,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!TextBox.TextProperty] = new Binding("Storage.EndPeriod", BindingMode.TwoWay),
-                [Grid.ColumnProperty] = 2,
+            //topPnl1.Children.Add(new TextBox
+            //{
+            //    Height = 30,
+            //    Margin = Thickness.Parse("5,0,0,0"),
+            //    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            //    [!TextBox.TextProperty] = new Binding("Storage.EndPeriod", BindingMode.TwoWay),
+            //    [Grid.ColumnProperty] = 2,
 
-            });
+            //});
             maingrid.Children.Add(topPnl1);
 
             var topPnl2 = new Grid();
@@ -101,16 +101,16 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 0,
             });
 
-            topPnl2.Children.Add(new TextBox
-            {
-                Height = 30,
-                Width = 70,
-                Margin = Thickness.Parse("5,12,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!TextBox.TextProperty] = new Binding("Storage.Value.CorrectionNumber.Value"),
-                [Grid.ColumnProperty] = 1,
-            });
+            //topPnl2.Children.Add(new TextBox
+            //{
+            //    Height = 30,
+            //    Width = 70,
+            //    Margin = Thickness.Parse("5,12,0,0"),
+            //    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            //    [!TextBox.TextProperty] = new Binding("Storage.Value.CorrectionNumbers"),
+            //    [Grid.ColumnProperty] = 1,
+            //});
 
             topPnl2.Children.Add(new Button
             {
@@ -143,7 +143,7 @@ namespace Client_App.Long_Visual
             grd.SetValue(Grid.RowProperty, 2);
 
             Binding b = new Binding();
-            b.Path = "DataContext.Storage.Value.Rows11.Value";
+            b.Path = "DataContext.Storage.Rows11";
             b.ElementName = "ChangingPanel";
             b.NameScope = new WeakReference<INameScope>(scp);
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
@@ -173,87 +173,87 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd);
 
-            DataGrid bgrd = new DataGrid();
-            bgrd.SetValue(Grid.RowProperty, 3);
-            bgrd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-            bgrd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            bgrd.Bind(DataGrid.ItemsProperty, new Binding("Storage.Value.Notes.Value"));
-            bgrd.CanUserResizeColumns = true;
-            maingrid.Children.Add(bgrd);
+            //DataGrid bgrd = new DataGrid();
+            //bgrd.SetValue(Grid.RowProperty, 3);
+            //bgrd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            //bgrd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+            //bgrd.Bind(DataGrid.ItemsProperty, new Binding("Storage.Notes"));
+            //bgrd.CanUserResizeColumns = true;
+            //maingrid.Children.Add(bgrd);
 
-            cntx = new ContextMenu();
-            itms = new List<MenuItem>();
-            itms.Add(new MenuItem
-            {
-                Header = "Добавить строку",
-                [!MenuItem.CommandProperty] = new Binding("AddRow"),
-            });
+            //cntx = new ContextMenu();
+            //itms = new List<MenuItem>();
             //itms.Add(new MenuItem
             //{
-            //    Header = "Удалить строку",
-            //    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
-            //    [!MenuItem.CommandParameterProperty] = new Binding("#parent[2].SelectedItem"),
+            //    Header = "Добавить строку",
+            //    [!MenuItem.CommandProperty] = new Binding("AddRow"),
             //});
-            cntx.Items = itms;
+            ////itms.Add(new MenuItem
+            ////{
+            ////    Header = "Удалить строку",
+            ////    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+            ////    [!MenuItem.CommandParameterProperty] = new Binding("#parent[2].SelectedItem"),
+            ////});
+            //cntx.Items = itms;
 
-            bgrd.ContextMenu = cntx;
+            //bgrd.ContextMenu = cntx;
 
-            var clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").
-                GetProperty("RowNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "RowNumber"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("RowNumber.Value"),
+            //var clm = new DataGridTemplateColumn();
+            //clm.Width = DataGridLength.SizeToHeader;
+            //clm.Header = new Button
+            //{
+            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            //    Content = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").
+            //    GetProperty("RowNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            //    [!Button.CommandProperty] = new Binding("AddSort"),
+            //    CommandParameter = "RowNumber"
+            //};
+            //clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            //        new TextBox
+            //        {
+            //            Foreground = new SolidColorBrush(Color.Parse("Black")),
+            //            [!TextBox.TextProperty] = new Binding("RowNumber.Value"),
 
-                    });
-            bgrd.Columns.Add(clm);
+            //        });
+            //bgrd.Columns.Add(clm);
 
-            clm = new DataGridTemplateColumn();
-            clm.Width = DataGridLength.SizeToHeader;
-            clm.Header = new Button
-            {
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").
-                GetProperty("GraphNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "GraphNumber"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("GraphNumber.Value"),
+            //clm = new DataGridTemplateColumn();
+            //clm.Width = DataGridLength.SizeToHeader;
+            //clm.Header = new Button
+            //{
+            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            //    Content = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").
+            //    GetProperty("GraphNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            //    [!Button.CommandProperty] = new Binding("AddSort"),
+            //    CommandParameter = "GraphNumber"
+            //};
+            //clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            //        new TextBox
+            //        {
+            //            Foreground = new SolidColorBrush(Color.Parse("Black")),
+            //            [!TextBox.TextProperty] = new Binding("GraphNumber.Value"),
 
-                    });
-            bgrd.Columns.Add(clm);
+            //        });
+            //bgrd.Columns.Add(clm);
 
-            clm = new DataGridTemplateColumn();
-            clm.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
-            clm.Header = new Button
-            {
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").
-                GetProperty("Comment").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                [!Button.CommandProperty] = new Binding("AddSort"),
-                CommandParameter = "Comment"
-            };
-            clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
-                    new TextBox
-                    {
-                        Foreground = new SolidColorBrush(Color.Parse("Black")),
-                        [!TextBox.TextProperty] = new Binding("Comment.Value"),
+            //clm = new DataGridTemplateColumn();
+            //clm.Width = new DataGridLength(1, DataGridLengthUnitType.Star);
+            //clm.Header = new Button
+            //{
+            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            //    Content = ((Form_PropertyAttribute)Type.GetType("Models.Note,Models").
+            //    GetProperty("Comment").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            //    [!Button.CommandProperty] = new Binding("AddSort"),
+            //    CommandParameter = "Comment"
+            //};
+            //clm.CellTemplate = new FuncDataTemplate<Models.Abstracts.Form>((x, e) =>
+            //        new TextBox
+            //        {
+            //            Foreground = new SolidColorBrush(Color.Parse("Black")),
+            //            [!TextBox.TextProperty] = new Binding("Comment.Value"),
 
-                    });
-            bgrd.Columns.Add(clm);
+            //        });
+            //bgrd.Columns.Add(clm);
 
             return maingrid;
         }
