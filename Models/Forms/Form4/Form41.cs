@@ -10,8 +10,8 @@ namespace Models
     {
         public Form41() : base()
         {
-            FormNum = "41";
-            NumberOfFields = 10;
+            FormNum.Value = "41";
+            NumberOfFields.Value = 10;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -22,16 +22,16 @@ namespace Models
 
         //NumberInOrder property
         [Attributes.Form_Property("№ п/п")]
-        public int NumberInOrder
+        public IDataAccess<int> NumberInOrder
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(NumberInOrder));
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(NumberInOrder));
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -48,7 +48,7 @@ namespace Models
         }
 
 
-        private void NumberInOrder_Validation()
+        private void NumberInOrder_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -64,7 +64,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(RegNo));
                 }
-                else
+                
                 {
                     
                 }
@@ -93,7 +93,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(Okpo));
                 }
-                else
+                
                 {
                     
                 }
@@ -112,9 +112,9 @@ namespace Models
         private void Okpo_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Length != 8) && (value.Length != 14))
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -133,7 +133,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(OrgName));
                 }
-                else
+                
                 {
                     
                 }
@@ -162,7 +162,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(LicenseInfo));
                 }
-                else
+                
                 {
                     
                 }
@@ -183,16 +183,16 @@ namespace Models
 
         //QuantityOfFormsInv property
         [Attributes.Form_Property("Количество отчетных форм по инвентаризации, шт.")]
-        public int QuantityOfFormsInv
+        public IDataAccess<int> QuantityOfFormsInv
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityOfFormsInv));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityOfFormsInv));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -210,10 +210,10 @@ namespace Models
         }
         // positive int.
 
-        private void QuantityOfFormsInv_Validation(int value)//Ready
+        private void QuantityOfFormsInv_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -223,16 +223,16 @@ namespace Models
 
         //QuantityOfFormsOper property
         [Attributes.Form_Property("Количество форм оперативных отчетов, шт.")]
-        public int QuantityOfFormsOper
+        public IDataAccess<int> QuantityOfFormsOper
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityOfFormsOper));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityOfFormsOper));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -250,26 +250,26 @@ namespace Models
         }
         // positive int.
 
-        private void QuantityOfFormsOper_Validation(int value)//Ready
+        private void QuantityOfFormsOper_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityOfFormsOper property
 
         //QuantityOfFormsYear property
         [Attributes.Form_Property("Количество форм годовых отчетов, шт.")]
-        public int QuantityOfFormsYear
+        public IDataAccess<int> QuantityOfFormsYear
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityOfFormsYear));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityOfFormsYear));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -287,10 +287,10 @@ namespace Models
         }
         // positive int.
 
-        private void QuantityOfFormsYear_Validation(int value)//Ready
+        private void QuantityOfFormsYear_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityOfFormsYear property
@@ -305,7 +305,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(Notes));
                 }
-                else
+                
                 {
                     
                 }

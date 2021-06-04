@@ -12,16 +12,16 @@ namespace Models.Abstracts
 
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
-        public byte CorrectionNumber
+        public IDataAccess<byte> CorrectionNumber
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(CorrectionNumber));
-                    return tmp != null ? (byte)tmp : (byte)0;
+                    return _dataAccess.Get<byte>(nameof(CorrectionNumber));
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -31,14 +31,14 @@ namespace Models.Abstracts
 
                 
                 {
-                    _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
+                    _dataAccess.Set(nameof(CorrectionNumber), value);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
 
         
-        private void CorrectionNumber_Validation()
+        private void CorrectionNumber_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -46,7 +46,7 @@ namespace Models.Abstracts
 
         //NotificationDate property
         [Attributes.Form_Property("Дата уведомления")]
-        public DateTimeOffset NotificationDate
+        public IDataAccess<string> NotificationDate
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Models.Abstracts
                 {
                     return _dataAccess.Get<string>(nameof(NotificationDate));
                 }
-                else
+                
                 {
                     
                 }
@@ -64,7 +64,7 @@ namespace Models.Abstracts
 
                 
                 {
-                    _dataAccess.Set(nameof(NotificationDate), _NotificationDate_Not_Valid);
+                    _dataAccess.Set(nameof(NotificationDate), value);
                 }
                 OnPropertyChanged(nameof(NotificationDate));
             }

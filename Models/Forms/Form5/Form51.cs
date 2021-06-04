@@ -12,8 +12,8 @@ namespace Models
     {
         public Form51() : base()
         {
-            FormNum = "51";
-            NumberOfFields = 9;
+            FormNum.Value = "51";
+            NumberOfFields.Value = 9;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -24,34 +24,25 @@ namespace Models
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public short OperationCode
+        public IDataAccess<short> OperationCode
         {
             get
             {
                 
                 {
-                    string tmp = _dataAccess.Get<string>(nameof(OperationCode));
-                    return tmp != null ? short.Parse(tmp) : (short)-1;
+                    return _dataAccess.Get<short>(nameof(OperationCode));
+                    
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                var tmp1 = value.ToString();
-                if (tmp1.Length == 1) tmp1 = "0" + tmp1;
-
-                OperationCode_Validation(tmp1);
-
-
-                
-                {
-                    var tmp = _OperationCode_Not_Valid.ToString();
+                    var tmp=value.Value.ToString();
                     if (tmp.Length == 1) tmp = "0" + tmp;
                     _dataAccess.Set(nameof(OperationCode), tmp);
-                }
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
@@ -71,10 +62,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -95,7 +86,7 @@ namespace Models
         private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -105,7 +96,7 @@ namespace Models
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -114,15 +105,15 @@ namespace Models
 
         //Kategory property
         [Attributes.Form_Property("Категория")]
-        public short Kategory
+        public IDataAccess<short> Kategory
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Kategory));
+                    return _dataAccess.Get<short>(nameof(Kategory));
                 }
-                else
+                
                 {
                     
                 }
@@ -139,7 +130,7 @@ namespace Models
         }
 
 
-        private void Kategory_Validation(short value)//TODO
+        private void Kategory_Validation(IDataAccess<short> value)//TODO
         {
             value.ClearErrors();
         }
@@ -153,10 +144,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Activity));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Activity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -176,7 +167,7 @@ namespace Models
         private void Activity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -202,16 +193,16 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity
+        public IDataAccess<int> Quantity
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Quantity));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -230,10 +221,10 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(int value)//Ready
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -249,10 +240,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -278,11 +269,11 @@ namespace Models
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
-            if (OKSM.Contains(value)) return;
-            if ((value.Length != 8) && (value.Length != 14))
+            if (value.Value.Equals("Минобороны") || value.Value.Equals("прим.")) return;
+            if (OKSM.Contains(value.Value)) return;
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -455,10 +446,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -475,7 +466,7 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPONote_Validation()
+        private void ProviderOrRecieverOKPONote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }

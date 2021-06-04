@@ -11,8 +11,8 @@ namespace Models
     {
         public Form52() : base()
         {
-            FormNum = "52";
-            NumberOfFields = 6;
+            FormNum.Value = "52";
+            NumberOfFields.Value = 6;
         }
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
@@ -28,10 +28,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -52,7 +52,7 @@ namespace Models
         private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -62,7 +62,7 @@ namespace Models
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -71,15 +71,15 @@ namespace Models
 
         //Kategory property
         [Attributes.Form_Property("Категория")]
-        public short Kategory
+        public IDataAccess<short> Kategory
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Kategory));
+                    return _dataAccess.Get<short>(nameof(Kategory));
                 }
-                else
+                
                 {
                     
                 }
@@ -96,7 +96,7 @@ namespace Models
         }
 
 
-        private void Kategory_Validation(short value)//TODO
+        private void Kategory_Validation(IDataAccess<short> value)//TODO
         {
             value.ClearErrors();
         }
@@ -110,10 +110,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Activity));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Activity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -133,7 +133,7 @@ namespace Models
         private void Activity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -159,16 +159,16 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity
+        public IDataAccess<int> Quantity
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Quantity));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -187,10 +187,10 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(int value)//Ready
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //Quantity property

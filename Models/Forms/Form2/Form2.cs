@@ -12,16 +12,16 @@ namespace Models.Abstracts
         }
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
-        public byte CorrectionNumber
+        public IDataAccess<byte> CorrectionNumber
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(CorrectionNumber));
-                    return tmp != null ? (byte)tmp : (byte)0;
+                    return _dataAccess.Get<byte>(nameof(CorrectionNumber));
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -37,7 +37,7 @@ namespace Models.Abstracts
             }
         }
 
-                private void CorrectionNumber_Validation()
+                private void CorrectionNumber_Validation(IDataAccess<byte> value)
         {
             value.ClearErrors();
         }
@@ -45,16 +45,16 @@ namespace Models.Abstracts
 
         //NumberInOrder property
         [Attributes.Form_Property("№ п/п")]
-        public int NumberInOrder
+        public IDataAccess<int> NumberInOrder
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(NumberInOrder));
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(NumberInOrder));
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -70,7 +70,7 @@ namespace Models.Abstracts
             }
         }
 
-                private void NumberInOrder_Validation()
+                private void NumberInOrder_Validation(IDataAccess<int> value)
         {
             value.ClearErrors();
         }

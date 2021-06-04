@@ -9,8 +9,8 @@ namespace Models
     {
         public Form28() : base()
         {
-            FormNum = "28";
-            NumberOfFields = 24;
+            FormNum.Value = "28";
+            NumberOfFields.Value = 24;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -29,7 +29,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PermissionNumber));
                 }
-                else
+                
                 {
                     
                 }
@@ -46,7 +46,7 @@ namespace Models
         }
 
         
-        private void PermissionNumber_Validation()
+        private void PermissionNumber_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -62,7 +62,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PermissionIssueDate));
                 }
-                else
+                
                 {
                     
                 }
@@ -79,7 +79,7 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate_Validation()
+        private void PermissionIssueDate_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -95,7 +95,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PermissionDocumentName));
                 }
-                else
+                
                 {
                     
                 }
@@ -112,7 +112,7 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName_Validation()
+        private void PermissionDocumentName_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -120,7 +120,7 @@ namespace Models
 
         //ValidBegin property
         [Attributes.Form_Property("Действует с")]
-        public DateTimeOffset ValidBegin
+        public IDataAccess<string> ValidBegin
         {
             get
             {
@@ -128,7 +128,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ValidBegin));
                 }
-                else
+                
                 {
                     
                 }
@@ -145,7 +145,7 @@ namespace Models
         }
 
         
-        private void ValidBegin_Validation()
+        private void ValidBegin_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -153,7 +153,7 @@ namespace Models
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
-        public DateTimeOffset ValidThru
+        public IDataAccess<string> ValidThru
         {
             get
             {
@@ -161,7 +161,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ValidThru));
                 }
-                else
+                
                 {
                     
                 }
@@ -178,7 +178,7 @@ namespace Models
         }
 
         
-        private void ValidThru_Validation()
+        private void ValidThru_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -190,30 +190,19 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionNumber1)) == null)
-                {
                     return _dataAccess.Get<string>(nameof(PermissionNumber1));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                if (GetErrors(nameof(PermissionNumber1)) == null)
-                {
                     _dataAccess.Set(nameof(PermissionNumber1), value);
-                }
                 OnPropertyChanged(nameof(PermissionNumber1));
             }
         }
 
         
-        private void PermissionNumber1_Validation()
+        private void PermissionNumber1_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PermissionNumber1));
+            value.ClearErrors();
         }
         //PermissionNumber1 property
 
@@ -223,30 +212,25 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionIssueDate1)) == null)
                 {
                     return _dataAccess.Get<string>(nameof(PermissionIssueDate1));
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-
-                if (GetErrors(nameof(PermissionIssueDate1)) == null)
-                {
                     _dataAccess.Set(nameof(PermissionIssueDate1), value);
-                }
                 OnPropertyChanged(nameof(PermissionIssueDate1));
             }
         }
 
         
-        private void PermissionIssueDate1_Validation()
+        private void PermissionIssueDate1_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PermissionIssueDate1));
+            value.ClearErrors();
         }
         //PermissionIssueDate1 property
 
@@ -256,96 +240,75 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionDocumentName1)) == null)
                 {
                     return _dataAccess.Get<string>(nameof(PermissionDocumentName1));
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-
-                if (GetErrors(nameof(PermissionDocumentName1)) == null)
-                {
                     _dataAccess.Set(nameof(PermissionDocumentName1), value);
-                }
                 OnPropertyChanged(nameof(PermissionDocumentName1));
             }
         }
 
         
-        private void PermissionDocumentName1_Validation()
+        private void PermissionDocumentName1_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PermissionDocumentName1));
+            value.ClearErrors();
         }
         //PermissionDocumentName1 property
 
         //ValidBegin1 property
         [Attributes.Form_Property("Действует с")]
-        public DateTimeOffset ValidBegin1
+        public IDataAccess<string> ValidBegin1
         {
             get
             {
-                if (GetErrors(nameof(ValidBegin1)) == null)
                 {
                     return _dataAccess.Get<string>(nameof(ValidBegin1));
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-
-                if (GetErrors(nameof(ValidBegin1)) == null)
-                {
                     _dataAccess.Set(nameof(ValidBegin1), value);
-                }
                 OnPropertyChanged(nameof(ValidBegin1));
             }
         }
 
         
-        private void ValidBegin1_Validation()
+        private void ValidBegin1_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(ValidBegin1));
+            value.ClearErrors();
         }
         //ValidBegin1 property
 
         //ValidThru1 property
         [Attributes.Form_Property("Действует по")]
-        public DateTimeOffset ValidThru1
+        public IDataAccess<string> ValidThru1
         {
             get
             {
-                if (GetErrors(nameof(ValidThru1)) == null)
-                {
                     return _dataAccess.Get<string>(nameof(ValidThru1));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                if (GetErrors(nameof(ValidThru1)) == null)
-                {
                     _dataAccess.Set(nameof(ValidThru1), value);
-                }
                 OnPropertyChanged(nameof(ValidThru1));
             }
         }
 
         
-        private void ValidThru1_Validation()
+        private void ValidThru1_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(ValidThru1));
+            value.ClearErrors();
         }
         //ValidThru1 property
 
@@ -355,30 +318,19 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionNumber2)) == null)
-                {
                     return _dataAccess.Get<string>(nameof(PermissionNumber2));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                if (GetErrors(nameof(PermissionNumber2)) == null)
-                {
                     _dataAccess.Set(nameof(PermissionNumber2), value);
-                }
                 OnPropertyChanged(nameof(PermissionNumber2));
             }
         }
 
         
-        private void PermissionNumber2_Validation()
+        private void PermissionNumber2_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PermissionNumber2));
+            value.ClearErrors();
         }
         //PermissionNumber2 property
 
@@ -388,30 +340,25 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionIssueDate2)) == null)
                 {
                     return _dataAccess.Get<string>(nameof(PermissionIssueDate2));
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-
-                if (GetErrors(nameof(PermissionIssueDate2)) == null)
-                {
                     _dataAccess.Set(nameof(PermissionIssueDate2), value);
-                }
                 OnPropertyChanged(nameof(PermissionIssueDate2));
             }
         }
 
         
-        private void PermissionIssueDate2_Validation()
+        private void PermissionIssueDate2_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PermissionIssueDate2));
+            value.ClearErrors();
         }
         //PermissionIssueDate property
 
@@ -421,11 +368,10 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PermissionDocumentName2)) == null)
                 {
                     return _dataAccess.Get<string>(nameof(PermissionDocumentName2));
                 }
-                else
+                
                 {
                     
                 }
@@ -442,75 +388,59 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName2_Validation()
+        private void PermissionDocumentName2_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(PermissionDocumentName2));
+            value.ClearErrors();
         }
         //PermissionDocumentName2 property
 
         //ValidBegin2 property
         [Attributes.Form_Property("Действует с")]
-        public DateTimeOffset ValidBegin2
+        public IDataAccess<string> ValidBegin2
         {
             get
             {
-                if (GetErrors(nameof(ValidBegin2)) == null)
-                {
                     return _dataAccess.Get<string>(nameof(ValidBegin2));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                if (GetErrors(nameof(ValidBegin2)) == null)
-                {
                     _dataAccess.Set(nameof(ValidBegin2), value);
-                }
                 OnPropertyChanged(nameof(ValidBegin2));
             }
         }
 
         
-        private void ValidBegin2_Validation()
+        private void ValidBegin2_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(ValidBegin2));
+            value.ClearErrors();
         }
         //ValidBegin2 property
 
         //ValidThru2 property
         [Attributes.Form_Property("Действует по")]
-        public DateTimeOffset ValidThru2
+        public IDataAccess<string> ValidThru2
         {
             get
             {
-                if (GetErrors(nameof(ValidThru2)) == null)
                 {
                     return _dataAccess.Get<string>(nameof(ValidThru2));
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-
-                if (GetErrors(nameof(ValidThru2)) == null)
-                {
                     _dataAccess.Set(nameof(ValidThru2), value);
-                }
                 OnPropertyChanged(nameof(ValidThru2));
             }
         }
 
         
-        private void ValidThru2_Validation()
+        private void ValidThru2_Validation(IDataAccess<string> value)
         {
-            ClearErrors(nameof(ValidThru2));
+            value.ClearErrors();
         }
         //ValidThru2 property
 
@@ -524,7 +454,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(WasteSourceName));
                 }
-                else
+                
                 {
                     
                 }
@@ -541,7 +471,7 @@ namespace Models
         }
 
         
-        private void WasteSourceName_Validation()
+        private void WasteSourceName_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -557,7 +487,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(WasteRecieverName));
                 }
-                else
+                
                 {
                     
                 }
@@ -574,7 +504,7 @@ namespace Models
         }
 
         
-        private void WasteRecieverName_Validation()
+        private void WasteRecieverName_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -590,7 +520,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(RecieverTypeCode));
                 }
-                else
+                
                 {
                     
                 }
@@ -607,7 +537,7 @@ namespace Models
         }
 
         
-        private void RecieverTypeCode_Validation()
+        private void RecieverTypeCode_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -623,7 +553,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PoolDistrictName));
                 }
-                else
+                
                 {
                     
                 }
@@ -640,7 +570,7 @@ namespace Models
         }
 
         
-        private void PoolDistrictName_Validation()
+        private void PoolDistrictName_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -648,15 +578,15 @@ namespace Models
 
         //AllowedWasteRemovalVolume property
         [Attributes.Form_Property("Допустимый объем водоотведения за год, тыс. куб. м")]
-        public double AllowedWasteRemovalVolume
+        public IDataAccess<double> AllowedWasteRemovalVolume
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(AllowedWasteRemovalVolume));
+                    return _dataAccess.Get<double>(nameof(AllowedWasteRemovalVolume));
                 }
-                else
+                
                 {
                     
                 }
@@ -673,7 +603,7 @@ namespace Models
         }
 
         
-        private void AllowedWasteRemovalVolume_Validation()
+        private void AllowedWasteRemovalVolume_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -681,15 +611,15 @@ namespace Models
 
         //RemovedWasteVolume property
         [Attributes.Form_Property("Отведено за отчетный период, тыс. куб. м")]
-        public double RemovedWasteVolume
+        public IDataAccess<double> RemovedWasteVolume
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(RemovedWasteVolume));
+                    return _dataAccess.Get<double>(nameof(RemovedWasteVolume));
                 }
-                else
+                
                 {
                     
                 }
@@ -706,22 +636,22 @@ namespace Models
         }
 
         
-        private void RemovedWasteVolume_Validation()
+        private void RemovedWasteVolume_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
         //RemovedWasteVolume property
 
         //RemovedWasteVolumeNote property
-        public double RemovedWasteVolumeNote
+        public IDataAccess<double> RemovedWasteVolumeNote
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(RemovedWasteVolumeNote));
+                    return _dataAccess.Get<double>(nameof(RemovedWasteVolumeNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -738,7 +668,7 @@ namespace Models
         }
 
         
-        private void RemovedWasteVolumeNote_Validation()
+        private void RemovedWasteVolumeNote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }

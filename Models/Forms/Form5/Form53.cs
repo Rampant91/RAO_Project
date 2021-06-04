@@ -12,8 +12,8 @@ namespace Models
     {
         public Form53() : base()
         {
-            FormNum = "53";
-            NumberOfFields = 13;
+            FormNum.Value = "53";
+            NumberOfFields.Value = 13;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -24,34 +24,25 @@ namespace Models
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public short OperationCode
+        public IDataAccess<short> OperationCode
         {
             get
             {
                 
                 {
-                    string tmp = _dataAccess.Get<string>(nameof(OperationCode));
-                    return tmp != null ? short.Parse(tmp) : (short)-1;
+                    return _dataAccess.Get<short>(nameof(OperationCode));
+                    
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                var tmp1 = value.ToString();
-                if (tmp1.Length == 1) tmp1 = "0" + tmp1;
-
-                OperationCode_Validation(tmp1);
-
-
-                
-                {
-                    var tmp = _OperationCode_Not_Valid.ToString();
-                    if (tmp.Length == 1) tmp = "0" + tmp;
-                    _dataAccess.Set(nameof(OperationCode), tmp);
-                }
+                var tmp = value.Value.ToString();
+                if (tmp.Length == 1) tmp = "0" + tmp;
+                _dataAccess.Set(nameof(OperationCode), tmp);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
@@ -65,15 +56,15 @@ namespace Models
 
         //TypeOfAccountedParts property
         [Attributes.Form_Property("Тип учетных единиц")]
-        public int TypeOfAccountedParts
+        public IDataAccess<int> TypeOfAccountedParts
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(TypeOfAccountedParts));
+                    return _dataAccess.Get<int>(nameof(TypeOfAccountedParts));
                 }
-                else
+                
                 {
                     
                 }
@@ -90,25 +81,25 @@ namespace Models
         }
         //1 or 2
  //1 or 2
-        private void TypeOfAccountedParts_Validation(int value)//Ready
+        private void TypeOfAccountedParts_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if ((value != 1) && (value != 2))
+            if ((value.Value != 1) && (value.Value != 2))
                 value.AddError( "Недопустимое значение");
         }
         //TypeOfAccountedParts property
 
         //KindOri property
         [Attributes.Form_Property("Вид ОРИ")]
-        public int KindOri
+        public IDataAccess<int> KindOri
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(KindOri));
+                    return _dataAccess.Get<int>(nameof(KindOri));
                 }
-                else
+                
                 {
                     
                 }
@@ -125,22 +116,22 @@ namespace Models
         }
 
 
-        private void KindOri_Validation(int value)//TODO
+        private void KindOri_Validation(IDataAccess<int> value)//TODO
         {
         }
         //KindOri property
 
         //AggregateState property
         [Attributes.Form_Property("Агрегатное состояние")]
-        public byte AggregateState//1 2 3
+        public IDataAccess<byte> AggregateState//1 2 3
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(AggregateState));
+                    return _dataAccess.Get<byte>(nameof(AggregateState));
                 }
-                else
+                
                 {
                     
                 }
@@ -157,10 +148,10 @@ namespace Models
         }
 
 
-        private void AggregateState_Validation(byte value)//Ready
+        private void AggregateState_Validation(IDataAccess<byte> value)//Ready
         {
             value.ClearErrors();
-            if ((value != 1) && (value != 2) && (value != 3))
+            if ((value.Value != 1) && (value.Value != 2) && (value.Value != 3))
                 value.AddError( "Недопустимое значение");
         }
         //AggregateState property
@@ -173,10 +164,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -202,11 +193,11 @@ namespace Models
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
-            if (OKSM.Contains(value)) return;
-            if ((value.Length != 8) && (value.Length != 14))
+            if (value.Value.Equals("Минобороны") || value.Value.Equals("прим.")) return;
+            if (OKSM.Contains(value.Value)) return;
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -379,10 +370,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -399,7 +390,7 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPONote_Validation()
+        private void ProviderOrRecieverOKPONote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -413,10 +404,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -437,7 +428,7 @@ namespace Models
         private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -447,7 +438,7 @@ namespace Models
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -462,10 +453,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Activity));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Activity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -485,7 +476,7 @@ namespace Models
         private void Activity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -511,16 +502,16 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity
+        public IDataAccess<int> Quantity
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Quantity));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -539,10 +530,10 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(int value)//Ready
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -552,15 +543,15 @@ namespace Models
 
         //Volume property
         [Attributes.Form_Property("Объем, куб. м")]
-        public double Volume
+        public IDataAccess<double> Volume
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Volume));
+                    return _dataAccess.Get<double>(nameof(Volume));
                 }
-                else
+                
                 {
                     
                 }
@@ -577,10 +568,10 @@ namespace Models
         }
 
 
-        private void Volume_Validation(double value)//TODO
+        private void Volume_Validation(IDataAccess<double?> value)//TODO
         {
             value.ClearErrors();
-            if (Volume <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -590,15 +581,15 @@ namespace Models
 
         //Mass Property
         [Attributes.Form_Property("Масса, кг")]
-        public double Mass
+        public IDataAccess<double> Mass
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Mass));
+                    return _dataAccess.Get<double>(nameof(Mass));
                 }
-                else
+                
                 {
                     
                 }
@@ -615,10 +606,10 @@ namespace Models
         }
 
 
-        private void Mass_Validation()//TODO
+        private void Mass_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
-            if (Mass <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;

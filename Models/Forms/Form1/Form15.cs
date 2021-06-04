@@ -12,8 +12,8 @@ namespace Models
     {
         public Form15() : base()
         {
-            FormNum = "15";
-            NumberOfFields = 39;
+            FormNum.Value = "15";
+            NumberOfFields.Value = 39;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -28,12 +28,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PassportNumber)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PassportNumber));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PassportNumber));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -42,7 +42,7 @@ namespace Models
             {
                 PassportNumber_Validation(value);
 
-                if (GetErrors(nameof(PassportNumber)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PassportNumber), value);
                 }
@@ -54,14 +54,14 @@ namespace Models
         private void PassportNumber_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим."))
+            if (value.Value.Equals("прим."))
             {
-                if ((PassportNumberNote == null) || (PassportNumberNote == ""))
+                if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
                     value.AddError( "Заполните примечание");
             }
         }
@@ -72,12 +72,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PassportNumberNote)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -85,7 +85,7 @@ namespace Models
             set
             {
                 PassportNumberNote_Validation(value);
-                if (GetErrors(nameof(PassportNumberNote)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PassportNumberNote), value);
                 }
@@ -106,12 +106,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PassportNumberRecoded)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PassportNumberRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PassportNumberRecoded));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -119,7 +119,7 @@ namespace Models
             set
             {
                 PassportNumberRecoded_Validation(value);
-                if (GetErrors(nameof(PassportNumberRecoded)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PassportNumberRecoded), value);
                 }
@@ -140,12 +140,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Type)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Type));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Type));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -153,7 +153,7 @@ namespace Models
             set
             {
                 Type_Validation(value);
-                if (GetErrors(nameof(Type)) == null)
+                
                 {
                     _dataAccess.Set(nameof(Type), value);
                 }
@@ -173,12 +173,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TypeRecoded)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(TypeRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(TypeRecoded));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -186,7 +186,7 @@ namespace Models
             set
             {
                 TypeRecoded_Validation(value);
-                if (GetErrors(nameof(TypeRecoded)) == null)
+                
                 {
                     _dataAccess.Set(nameof(TypeRecoded), value);
                 }
@@ -207,12 +207,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Radionuclids)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -221,7 +221,7 @@ namespace Models
             {
                 Radionuclids_Validation(value);
 
-                if (GetErrors(nameof(Radionuclids)) == null)
+                
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -233,7 +233,7 @@ namespace Models
         private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -243,7 +243,7 @@ namespace Models
             {
                 if (item.Item1.Equals(Type))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value = item.Item2;
                     return;
                 }
             }
@@ -256,12 +256,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(FactoryNumber)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(FactoryNumber));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(FactoryNumber));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -269,7 +269,7 @@ namespace Models
             set
             {
                 FactoryNumber_Validation(value);
-                if (GetErrors(nameof(FactoryNumber)) == null)
+                
                 {
                     _dataAccess.Set(nameof(FactoryNumber), value);
                 }
@@ -281,7 +281,7 @@ namespace Models
         private void FactoryNumber_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -294,12 +294,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(FactoryNumberRecoded)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -307,7 +307,7 @@ namespace Models
             set
             {
                 FactoryNumberRecoded_Validation(value);
-                if (GetErrors(nameof(FactoryNumberRecoded)) == null)
+                
                 {
                     _dataAccess.Set(nameof(FactoryNumberRecoded), value);
                 }
@@ -323,16 +323,16 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity
+        public IDataAccess<int> Quantity
         {
             get
             {
-                if (GetErrors(nameof(Quantity)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Quantity));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -342,7 +342,7 @@ namespace Models
                 Quantity_Validation(value);
                 //_Quantity_Validation(value);
 
-                if (GetErrors(nameof(Quantity)) == null)
+                
                 {
                     _dataAccess.Set(nameof(Quantity), value);
                 }
@@ -351,10 +351,10 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(int value)//Ready
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -368,12 +368,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Activity)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Activity));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Activity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -381,7 +381,7 @@ namespace Models
             set
             {
                 Activity_Validation(value);
-                if (GetErrors(nameof(Activity)) == null)
+                
                 {
                     _dataAccess.Set(nameof(Activity), value);
                 }
@@ -393,7 +393,7 @@ namespace Models
         private void Activity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -403,7 +403,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp=value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -430,12 +430,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(CreationDate)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(CreationDate));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(CreationDate));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -444,7 +444,7 @@ namespace Models
             {
                 CreationDate_Validation(value);
                 //_CreationDate_Validation(value);
-                if (GetErrors(nameof(CreationDate)) == null)
+                
                 {
                     _dataAccess.Set(nameof(CreationDate), value);
                 }
@@ -456,7 +456,7 @@ namespace Models
         private void CreationDate_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -482,11 +482,11 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(StatusRAO)) == null)
+                
                 {
                     return _dataAccess.Get<string>(nameof(StatusRAO));
                 }
-                else
+                
                 {
                     
                 }
@@ -494,7 +494,7 @@ namespace Models
             set
             {
                 StatusRAO_Validation(value);
-                if (GetErrors(nameof(StatusRAO)) == null)
+                
                 {
                     _dataAccess.Set(nameof(StatusRAO), value);
                 }
@@ -506,7 +506,7 @@ namespace Models
         private void StatusRAO_Validation(IDataAccess<string> value)//rdy
         {
             value.ClearErrors();
-            if (value.Length == 1)
+            if (value.Value.Length == 1)
             {
                 int tmp;
                 try
@@ -523,9 +523,9 @@ namespace Models
                 }
                 return;
             }
-            if ((value.Length != 8) && (value.Length != 14))
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -540,12 +540,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -554,7 +554,7 @@ namespace Models
             {
                 ProviderOrRecieverOKPO_Validation(value);
 
-                if (GetErrors(nameof(ProviderOrRecieverOKPO)) == null)
+                
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
@@ -571,8 +571,8 @@ namespace Models
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим.")) { }
-            short tmp = (short)OperationCode;
+            if (value.Value.Equals("прим.")) { }
+            short tmp = (short)OperationCode.Value;
             bool a = (tmp >= 10) && (tmp <= 14);
             bool b = (tmp >= 41) && (tmp <= 45);
             bool c = (tmp >= 71) && (tmp <= 73);
@@ -582,14 +582,14 @@ namespace Models
                 (tmp == 68) || (tmp == 75) || (tmp == 76);
             if (a || b || c || d || e)
             {
-                ProviderOrRecieverOKPO = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+                ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
                 return;
             }
-            if (value.Equals("Минобороны")) return;
-            if (OKSM.Contains(value)) return;
-            if ((value.Length != 8) && (value.Length != 14))
+            if (value.Value.Equals("Минобороны")) return;
+            if (OKSM.Contains(value.Value)) return;
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -603,12 +603,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -616,7 +616,7 @@ namespace Models
             set
             {
                 ProviderOrRecieverOKPONote_Validation(value);
-                if (GetErrors(nameof(ProviderOrRecieverOKPONote)) == null)
+                
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
@@ -637,12 +637,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TransporterOKPO)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(TransporterOKPO));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(TransporterOKPO));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -651,7 +651,7 @@ namespace Models
             {
                 TransporterOKPO_Validation(value);
 
-                if (GetErrors(nameof(TransporterOKPO)) == null)
+                
                 {
                     _dataAccess.Set(nameof(TransporterOKPO), value);
                 }
@@ -668,16 +668,16 @@ namespace Models
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("-")) return;
-            if (value.Equals("прим."))
+            if (value.Value.Equals("-")) return;
+            if (value.Value.Equals("прим."))
             {
                 if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
                     value.AddError( "Заполните примечание");
                 return;
             }
-            if ((value.Length != 8) && (value.Length != 14))
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -691,12 +691,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(TransporterOKPONote)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -704,7 +704,7 @@ namespace Models
             set
             {
                 TransporterOKPONote_Validation(value);
-                if (GetErrors(nameof(TransporterOKPONote)) == null)
+                
                 {
                     _dataAccess.Set(nameof(TransporterOKPONote), value);
                 }
@@ -725,12 +725,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackName)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackName));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackName));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -739,7 +739,7 @@ namespace Models
             {
                 PackName_Validation(value);
 
-                if (GetErrors(nameof(PackName)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackName), value);
                 }
@@ -764,12 +764,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackNameNote)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackNameNote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackNameNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -777,7 +777,7 @@ namespace Models
             set
             {
                 PackNameNote_Validation(value);
-                if (GetErrors(nameof(PackNameNote)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackNameNote), value);
                 }
@@ -798,12 +798,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackType)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackType));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackType));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -812,7 +812,7 @@ namespace Models
             {
                 PackType_Validation(value);
 
-                if (GetErrors(nameof(PackType)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackType), value);
                 }
@@ -829,7 +829,7 @@ namespace Models
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим."))
+            if (value.Value.Equals("прим."))
             {
                 if ((PackTypeNote == null) || PackTypeNote.Equals(""))
                     value.AddError( "Заполните примечание");
@@ -843,12 +843,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackTypeRecoded)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -856,7 +856,7 @@ namespace Models
             set
             {
                 PackTypeRecoded_Validation(value);
-                if (GetErrors(nameof(PackTypeRecoded)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), value);
                 }
@@ -876,12 +876,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackTypeNote)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackTypeNote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -889,7 +889,7 @@ namespace Models
             set
             {
                 PackTypeNote_Validation(value);
-                if (GetErrors(nameof(PackTypeNote)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackTypeNote), value);
                 }
@@ -910,12 +910,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackNumber)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackNumber));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackNumber));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -924,7 +924,7 @@ namespace Models
             {
                 PackNumber_Validation(value);
 
-                if (GetErrors(nameof(PackNumber)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackNumber), value);
                 }
@@ -949,12 +949,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackNumberNote)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackNumberNote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackNumberNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -963,7 +963,7 @@ namespace Models
             {
                 PackNumberNote_Validation(value);
 
-                if (GetErrors(nameof(PackNumberNote)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackNumberNote), value);
                 }
@@ -975,7 +975,7 @@ namespace Models
         private void PackNumberNote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -989,12 +989,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackNumberRecoded)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackNumberRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackNumberRecoded));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -1002,7 +1002,7 @@ namespace Models
             set
             {
                 PackNumberRecoded_Validation(value);
-                if (GetErrors(nameof(PackNumberRecoded)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackNumberRecoded), value);
                 }
@@ -1023,11 +1023,11 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(StoragePlaceName)) == null)
+                
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceName));
                 }
-                else
+                
                 {
                     
                 }
@@ -1035,7 +1035,7 @@ namespace Models
             set
             {
                 StoragePlaceName_Validation(value);
-                if (GetErrors(nameof(StoragePlaceName)) == null)
+                
                 {
                     _dataAccess.Set(nameof(StoragePlaceName), value);
                 }
@@ -1061,11 +1061,11 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(StoragePlaceNameNote)) == null)
+                
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceNameNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -1073,7 +1073,7 @@ namespace Models
             set
             {
                 StoragePlaceNameNote_Validation(value);
-                if (GetErrors(nameof(StoragePlaceNameNote)) == null)
+                
                 {
                     _dataAccess.Set(nameof(StoragePlaceNameNote), value);
                 }
@@ -1094,11 +1094,11 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(StoragePlaceCode)) == null)
+                
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
-                else
+                
                 {
                     
                 }
@@ -1106,7 +1106,7 @@ namespace Models
             set
             {
                 StoragePlaceCode_Validation(value);
-                if (GetErrors(nameof(StoragePlaceCode)) == null)
+                
                 {
                     _dataAccess.Set(nameof(StoragePlaceCode), value);
                 }
@@ -1125,9 +1125,9 @@ namespace Models
             }
             value.AddError( "Такого значения нет в справочнике");
             //if (!(value.Value == "-"))
-            //    if (value.Length != 8)
+            //    if (value.Value.Length != 8)
             //        value.AddError( "Недопустимое значение");
-            //    else
+            //    
             //        for (int i = 0; i < 8; i++)
             //        {
             //            if (!((value[i] >= '0') && (value[i] <= '9')))
@@ -1145,11 +1145,11 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(RefineOrSortRAOCode)) == null)
+                
                 {
                     return _dataAccess.Get<string>(nameof(RefineOrSortRAOCode));
                 }
-                else
+                
                 {
                     
                 }
@@ -1157,7 +1157,7 @@ namespace Models
             set
             {
                 RefineOrSortRAOCode_Validation(value);
-                if (GetErrors(nameof(RefineOrSortRAOCode)) == null)
+                
                 {
                     _dataAccess.Set(nameof(RefineOrSortRAOCode), value);
                 }
@@ -1169,7 +1169,7 @@ namespace Models
         private void RefineOrSortRAOCode_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if((value.Value == null) || value.Equals(""))
+            if((value.Value == null) || value.Value.Equals(""))
             {
                 return;  
             }
@@ -1187,11 +1187,11 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Subsidy)) == null)
+                
                 {
                     return _dataAccess.Get<string>(nameof(Subsidy));
                 }
-                else
+                
                 {
                     
                 }
@@ -1199,7 +1199,7 @@ namespace Models
             set
             {
                 Subsidy_Validation(value);
-                if (GetErrors(nameof(Subsidy)) == null)
+                
                 {
                     _dataAccess.Set(nameof(Subsidy), value);
                 }
@@ -1211,7 +1211,7 @@ namespace Models
         private void Subsidy_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals("")) return;
+            if ((value.Value == null) || value.Value.Equals("")) return;
             try
             {
                 int tmp = Int32.Parse(value.Value);
@@ -1231,11 +1231,11 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(FcpNumber)) == null)
+                
                 {
                     return _dataAccess.Get<string>(nameof(FcpNumber));
                 }
-                else
+                
                 {
                     
                 }
@@ -1243,7 +1243,7 @@ namespace Models
             set
             {
                 FcpNumber_Validation(value);
-                if (GetErrors(nameof(FcpNumber)) == null)
+                
                 {
                     _dataAccess.Set(nameof(FcpNumber), value);
                 }
@@ -1271,7 +1271,7 @@ namespace Models
         protected override void OperationCode_Validation(IDataAccess<short?> value)//OK
         {
             value.ClearErrors();
-            if (value.Value == _OperationCode_Not_Valid)
+            if (value.Value == null)
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -1280,31 +1280,31 @@ namespace Models
             bool flag = false;
             foreach (var item in spr)
             {
-                if (item == value) flag = true;
+                if (item == value.Value) flag = true;
             }
             if (!flag)
             {
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            bool a0 = value==15;
-            bool a1 = value==17;
-            bool a2 = value==46;
-            bool a3 = value==47;
-            bool a4 = value==53;
-            bool a5 = value==54;
-            bool a6 = value==58;
-            bool a7 = value==61;
-            bool a8 = value==62;
-            bool a9 = value==65;
-            bool a10 = value==66;
-            bool a11 = value==67;
-            bool a12 = value==81;
-            bool a13 = value==82;
-            bool a14 = value==83;
-            bool a15 = value==85;
-            bool a16 = value==86;
-            bool a17 = value==87;
+            bool a0 = value.Value==15;
+            bool a1 = value.Value==17;
+            bool a2 = value.Value==46;
+            bool a3 = value.Value==47;
+            bool a4 = value.Value==53;
+            bool a5 = value.Value==54;
+            bool a6 = value.Value==58;
+            bool a7 = value.Value==61;
+            bool a8 = value.Value==62;
+            bool a9 = value.Value==65;
+            bool a10 = value.Value==66;
+            bool a11 = value.Value==67;
+            bool a12 = value.Value==81;
+            bool a13 = value.Value==82;
+            bool a14 = value.Value==83;
+            bool a15 = value.Value==85;
+            bool a16 = value.Value==86;
+            bool a17 = value.Value==87;
             if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15 || a16 || a17)
                 value.AddError( "Код операции не может быть использован для РАО");
             return;

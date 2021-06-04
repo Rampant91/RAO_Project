@@ -9,8 +9,8 @@ namespace Models
     {
         public Form27() : base()
         {
-            FormNum = "27";
-            NumberOfFields = 13;
+            FormNum.Value = "27";
+            NumberOfFields.Value = 13;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -29,7 +29,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PermissionNumber));
                 }
-                else
+                
                 {
                     
                 }
@@ -46,7 +46,7 @@ namespace Models
         }
 
         
-        private void PermissionNumber_Validation()
+        private void PermissionNumber_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -62,7 +62,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PermissionIssueDate));
                 }
-                else
+                
                 {
                     
                 }
@@ -79,7 +79,7 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate_Validation()
+        private void PermissionIssueDate_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -95,7 +95,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PermissionDocumentName));
                 }
-                else
+                
                 {
                     
                 }
@@ -112,7 +112,7 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName_Validation()
+        private void PermissionDocumentName_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -120,7 +120,7 @@ namespace Models
 
         //ValidBegin property
         [Attributes.Form_Property("Действует с")]
-        public DateTimeOffset ValidBegin
+        public IDataAccess<string> ValidBegin
         {
             get
             {
@@ -128,7 +128,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ValidBegin));
                 }
-                else
+                
                 {
                     
                 }
@@ -145,7 +145,7 @@ namespace Models
         }
 
         
-        private void ValidBegin_Validation()
+        private void ValidBegin_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -153,7 +153,7 @@ namespace Models
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
-        public DateTimeOffset ValidThru
+        public IDataAccess<string> ValidThru
         {
             get
             {
@@ -161,7 +161,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ValidThru));
                 }
-                else
+                
                 {
                     
                 }
@@ -178,7 +178,7 @@ namespace Models
         }
 
         
-        private void ValidThru_Validation()
+        private void ValidThru_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -193,7 +193,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(RadionuclidNameNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -210,7 +210,7 @@ namespace Models
         }
 
         
-        private void RadionuclidNameNote_Validation()
+        private void RadionuclidNameNote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -226,7 +226,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(AllowedWasteValue));
                 }
-                else
+                
                 {
                     
                 }
@@ -243,7 +243,7 @@ namespace Models
         }
 
         
-        private void AllowedWasteValue_Validation()
+        private void AllowedWasteValue_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -258,7 +258,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(AllowedWasteValueNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -275,7 +275,7 @@ namespace Models
         }
 
         
-        private void AllowedWasteValueNote_Validation()
+        private void AllowedWasteValueNote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -291,7 +291,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(FactedWasteValue));
                 }
-                else
+                
                 {
                     
                 }
@@ -308,7 +308,7 @@ namespace Models
         }
 
         
-        private void FactedWasteValue_Validation()
+        private void FactedWasteValue_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -323,7 +323,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(FactedWasteValueNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -340,7 +340,7 @@ namespace Models
         }
 
         
-        private void FactedWasteValueNote_Validation()
+        private void FactedWasteValueNote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -356,7 +356,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(WasteOutbreakPreviousYear));
                 }
-                else
+                
                 {
                     
                 }
@@ -373,7 +373,7 @@ namespace Models
         }
 
         
-        private void WasteOutbreakPreviousYear_Validation()
+        private void WasteOutbreakPreviousYear_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }

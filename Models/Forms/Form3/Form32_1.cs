@@ -12,8 +12,8 @@ namespace Models
     {
         public Form32_1() : base()
         {
-            FormNum = "32_1";
-            NumberOfFields = 15;
+            FormNum.Value = "32_1";
+            NumberOfFields.Value = 15;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -30,10 +30,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PassportNumber));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PassportNumber));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -53,14 +53,14 @@ namespace Models
                 private void PassportNumber_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим."))
+            if (value.Value.Equals("прим."))
             {
-                if ((PassportNumberNote == null) || (PassportNumberNote == ""))
+                if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
                     value.AddError( "Поле не может быть пустым");
             }
         }
@@ -73,10 +73,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -92,7 +92,7 @@ namespace Models
             }
         }
 
-                private void PassportNumberNote_Validation()
+                private void PassportNumberNote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -106,10 +106,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -129,16 +129,16 @@ namespace Models
                 private void CreatorOKPO_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || (value.Equals("")))
+            if ((value.Value == null) || (value.Value.Equals("")))
             {
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим.")) return;
-            if (OKSM.Contains(value)) return;
-            if ((value.Length != 8) && (value.Length != 14))
+            if (value.Value.Equals("прим.")) return;
+            if (OKSM.Contains(value.Value)) return;
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -312,10 +312,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Type));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Type));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -331,7 +331,7 @@ namespace Models
             }
         }
 
-                private void Type_Validation()
+                private void Type_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -344,10 +344,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(TypeRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(TypeRecoded));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -363,7 +363,7 @@ namespace Models
             }
         }
 
-                private void TypeRecoded_Validation()
+                private void TypeRecoded_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -377,10 +377,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -400,7 +400,7 @@ namespace Models
                 private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -410,7 +410,7 @@ namespace Models
             {
                 if (item.Item1.Equals(Type))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -425,10 +425,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(FactoryNumber));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(FactoryNumber));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -447,7 +447,7 @@ namespace Models
                 private void FactoryNumber_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -462,10 +462,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -495,10 +495,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(ActivityOnCreation));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(ActivityOnCreation));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -533,7 +533,7 @@ namespace Models
 
         //CreationDate property
         [Attributes.Form_Property("Дата изготовления")]
-        public DateTimeOffset CreationDate
+        public IDataAccess<string> CreationDate
         {
             get
             {
@@ -541,7 +541,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(CreationDate));
                 }
-                else
+                
                 {
                     
                 }
@@ -557,7 +557,7 @@ namespace Models
             }
         }
         //If change this change validation
-                private void CreationDate_Validation(DateTimeOffset value)//Ready
+                private void CreationDate_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -570,10 +570,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -599,31 +599,20 @@ namespace Models
 
         //Kategory property
         [Attributes.Form_Property("Категория")]
-        public short Kategory
+        public IDataAccess<short> Kategory
         {
             get
             {
-                
-                {
-                    return _dataAccess.Get<string>(nameof(Kategory));
-                }
-                else
-                {
-                    
-                }
+                    return _dataAccess.Get<short>(nameof(Kategory));
             }
             set
             {
-
-                
-                {
                     _dataAccess.Set(nameof(Kategory), value);
-                }
                 OnPropertyChanged(nameof(Kategory));
             }
         }
 
-                private void Kategory_Validation(short value)//TODO
+                private void Kategory_Validation(IDataAccess<short> value)//TODO
         {
             value.ClearErrors();
         }
@@ -631,15 +620,15 @@ namespace Models
 
         //NuclearMaterialPresence property
         [Attributes.Form_Property("Содержание ядерных материалов")]
-        public double NuclearMaterialPresence
+        public IDataAccess<double> NuclearMaterialPresence
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(NuclearMaterialPresence));
+                    return _dataAccess.Get<double>(nameof(NuclearMaterialPresence));
                 }
-                else
+                
                 {
                     
                 }
@@ -667,7 +656,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(CertificateId));
                 }
-                else
+                
                 {
                     
                 }
@@ -687,7 +676,7 @@ namespace Models
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
-        public DateTimeOffset ValidThru
+        public IDataAccess<string> ValidThru
         {
             get
             {
@@ -695,7 +684,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ValidThru));
                 }
-                else
+                
                 {
                     
                 }

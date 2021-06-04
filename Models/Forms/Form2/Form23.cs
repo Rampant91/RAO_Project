@@ -12,8 +12,8 @@ namespace Models
     {
         public Form23() : base()
         {
-            FormNum = "23";
-            NumberOfFields = 17;
+            FormNum.Value = "23";
+            NumberOfFields.Value = 17;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -32,7 +32,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceName));
                 }
-                else
+                
                 {
                     
                 }
@@ -52,13 +52,13 @@ namespace Models
         private void StoragePlaceName_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
                 return;
             }
             var spr = new List<string>();
-            if (!spr.Contains(value))
+            if (!spr.Contains(value.Value))
             {
                 value.AddError( "Недопустиое значение");
                 return;
@@ -75,7 +75,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceNameNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -108,7 +108,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
-                else
+                
                 {
                     
                 }
@@ -128,14 +128,14 @@ namespace Models
         private void StoragePlaceCode_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("-")) return;
+            if (value.Value.Equals("-")) return;
             var spr = new List<string>();
-            if (!spr.Contains(value))
+            if (!spr.Contains(value.Value))
             {
                 value.AddError( "Недопустиое значение");
                 return;
@@ -153,7 +153,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ProjectVolume));
                 }
-                else
+                
                 {
                     
                 }
@@ -173,7 +173,7 @@ namespace Models
         private void ProjectVolume_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Equals("прим."))
+            if (value.Value.Equals("прим."))
             {
 
             }
@@ -197,32 +197,28 @@ namespace Models
         //ProjectVolume property
 
         //ProjectVolumeNote property
-        public double ProjectVolumeNote
+        public IDataAccess<double> ProjectVolumeNote
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(ProjectVolumeNote));
+                    return _dataAccess.Get<double>(nameof(ProjectVolumeNote));
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                ProjectVolumeNote_Validation(value);
-                
-                {
                     _dataAccess.Set(nameof(ProjectVolumeNote), value);
-                }
                 OnPropertyChanged(nameof(ProjectVolumeNote));
             }
         }
 
         
-        private void ProjectVolumeNote_Validation(double value)//TODO
+        private void ProjectVolumeNote_Validation(IDataAccess<double?> value)//TODO
         {
             value.ClearErrors();
         }
@@ -238,7 +234,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(CodeRAO));
                 }
-                else
+                
                 {
                     
                 }
@@ -258,7 +254,7 @@ namespace Models
         private void CodeRAO_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 return;
             }
@@ -281,7 +277,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(Volume));
                 }
-                else
+                
                 {
                     
                 }
@@ -301,7 +297,7 @@ namespace Models
         private void Volume_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value)) return;
+            if (string.IsNullOrEmpty(value.Value)) return;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
                 value.AddError( "Недопустимое значение");
@@ -331,7 +327,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(Mass));
                 }
-                else
+                
                 {
                     
                 }
@@ -351,7 +347,7 @@ namespace Models
         private void Mass_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value)) return;
+            if (string.IsNullOrEmpty(value.Value)) return;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
                 value.AddError( "Недопустимое значение");
@@ -373,15 +369,15 @@ namespace Models
 
         //QuantityOZIII property
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public int? QuantityOZIII
+        public IDataAccess<int?> QuantityOZIII
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityOZIII));//OK
+                    return _dataAccess.Get<int?>(nameof(QuantityOZIII));//OK
                 }
-                else
+                
                 {
                     
                 }
@@ -399,11 +395,11 @@ namespace Models
         }
         // positive int.
         
-        private void QuantityOZIII_Validation(int? value)//Ready
+        private void QuantityOZIII_Validation(IDataAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null) return;
-            if ((int)value <= 0)
+            if ((int)value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityOZIII property
@@ -418,7 +414,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(SummaryActivity));
                 }
-                else
+                
                 {
                     
                 }
@@ -438,7 +434,7 @@ namespace Models
         private void SummaryActivity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value)) return;
+            if (string.IsNullOrEmpty(value.Value)) return;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
                 value.AddError( "Недопустимое значение");
@@ -466,10 +462,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(DocumentNumber));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(DocumentNumber));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -504,10 +500,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(DocumentNumberRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(DocumentNumberRecoded));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -538,24 +534,16 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(DocumentDate));//OK
-                    if (tmp == null)
-                        
-                    return ((DateTimeOffset)tmp).Date.ToString("dd.MM.yyyy");// дает дату в формате дд.мм.гггг
+                    return _dataAccess.Get<string>(nameof(DocumentDate));//OK
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                DocumentDate_Validation(value);
-
-                
-                {
-                    _dataAccess.Set(nameof(DocumentDate), DateTimeOffset.Parse(value.Value));
-                }
+                    _dataAccess.Set(nameof(DocumentDate), value);
                 OnPropertyChanged(nameof(DocumentDate));
             }
         }
@@ -564,7 +552,7 @@ namespace Models
         private void DocumentDate_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -594,7 +582,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ExpirationDate));
                 }
-                else
+                
                 {
                     
                 }
@@ -614,7 +602,7 @@ namespace Models
         private void ExpirationDate_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -644,7 +632,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(DocumentName));
                 }
-                else
+                
                 {
                     
                 }
@@ -664,7 +652,7 @@ namespace Models
         private void DocumentName_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
                 return;

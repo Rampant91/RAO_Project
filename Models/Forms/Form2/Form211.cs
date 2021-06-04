@@ -10,8 +10,8 @@ namespace Models
     {
         public Form211() : base()
         {
-            FormNum = "211";
-            NumberOfFields = 11;
+            FormNum.Value = "211";
+            NumberOfFields.Value = 11;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -30,7 +30,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PlotName));
                 }
-                else
+                
                 {
                     
                 }
@@ -62,7 +62,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PlotKadastrNumber));
                 }
-                else
+                
                 {
                     
                 }
@@ -94,7 +94,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(PlotCode));
                 }
-                else
+                
                 {
                     
                 }
@@ -118,15 +118,15 @@ namespace Models
 
         //InfectedArea property
         [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public int InfectedArea
+        public IDataAccess<int> InfectedArea
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(InfectedArea));
+                    return _dataAccess.Get<int>(nameof(InfectedArea));
                 }
-                else
+                
                 {
                     
                 }
@@ -142,7 +142,7 @@ namespace Models
             }
         }
 
-                private void InfectedArea_Validation(int value)//TODO
+                private void InfectedArea_Validation(IDataAccess<int> value)//TODO
         {
             value.ClearErrors();
         }
@@ -156,10 +156,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -179,7 +179,7 @@ namespace Models
                 private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -189,7 +189,7 @@ namespace Models
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -205,7 +205,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(RadionuclidNameNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -221,7 +221,7 @@ namespace Models
             }
         }
 
-                private void RadionuclidNameNote_Validation()
+                private void RadionuclidNameNote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -237,7 +237,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(SpecificActivityOfPlot));
                 }
-                else
+                
                 {
                     
                 }
@@ -280,7 +280,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(SpecificActivityOfLiquidPart));
                 }
-                else
+                
                 {
                     
                 }

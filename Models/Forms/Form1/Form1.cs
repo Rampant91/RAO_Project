@@ -38,7 +38,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        //private void NumberInOrder_Validation()
+        //private void NumberInOrder_Validation(IDataAccess<string> value)
         //{
         //    value.ClearErrors();
         //}
@@ -59,7 +59,7 @@ namespace Models.Abstracts
             }
         }
 
-        //private void CorrectionNumber_Validation()
+        //private void CorrectionNumber_Validation(IDataAccess<string> value)
         //{
         //    value.ClearErrors();
         //}
@@ -166,7 +166,7 @@ namespace Models.Abstracts
             };   //HERE BINDS SPRAVOCHNICK
             foreach (var item in spr)
             {
-                if (item.Item1 == value.Value) return;
+                if (item.Item1 == value.Value.Value) return;
             }
             value.AddError( "Недопустимое значение");
         }
@@ -255,7 +255,7 @@ namespace Models.Abstracts
         protected virtual void DocumentDate_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -277,7 +277,7 @@ namespace Models.Abstracts
             bool c = (OperationCode.Value >= 51) && (OperationCode.Value <= 59);
             bool d = (OperationCode.Value == 65) || (OperationCode.Value == 68);
             if (ab || b || c || d)
-                if (!value.Equals(OperationDate))
+                if (!value.Value.Equals(OperationDate))
                     value.AddError( "Заполните примечание");
         }
         //DocumentDate property

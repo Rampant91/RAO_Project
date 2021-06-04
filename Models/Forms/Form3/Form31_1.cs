@@ -11,8 +11,8 @@ namespace Models
     {
         public Form31_1() : base()
         {
-            FormNum = "31_1";
-            NumberOfFields = 3;
+            FormNum.Value = "31_1";
+            NumberOfFields.Value = 3;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -30,10 +30,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -54,7 +54,7 @@ namespace Models
         private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -64,7 +64,7 @@ namespace Models
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -73,16 +73,16 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity
+        public IDataAccess<int> Quantity
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Quantity));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -100,10 +100,10 @@ namespace Models
         }
         // positive int.
         
-        private void Quantity_Validation(int value)//Ready
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //Quantity property
@@ -118,7 +118,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(SummaryActivity));
                 }
-                else
+                
                 {
                     
                 }
@@ -138,7 +138,7 @@ namespace Models
         private void SummaryActivity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || (value.Equals("")))
+            if ((value.Value == null) || (value.Value.Equals("")))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -148,7 +148,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            string tmp = value;
+            string tmp=value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {

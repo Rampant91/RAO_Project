@@ -9,8 +9,8 @@ namespace Models
     {
         public Form24() : base()
         {
-            FormNum = "24";
-            NumberOfFields = 26;
+            FormNum.Value = "24";
+            NumberOfFields.Value = 26;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -29,7 +29,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(CodeOYAT));
                 }
-                else
+                
                 {
                     
                 }
@@ -61,7 +61,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(CodeOYATnote));
                 }
-                else
+                
                 {
                     
                 }
@@ -93,7 +93,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(FcpNumber));
                 }
-                else
+                
                 {
                     
                 }
@@ -117,15 +117,15 @@ namespace Models
 
         //MassCreated Property
         [Attributes.Form_Property("Масса образованного, т")]
-        public double MassCreated
+        public IDataAccess<double> MassCreated
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassCreated));
+                    return _dataAccess.Get<double>(nameof(MassCreated));
                 }
-                else
+                
                 {
                     
                 }
@@ -141,7 +141,7 @@ namespace Models
             }
         }
 
-                private void MassCreated_Validation(double value)//TODO
+                private void MassCreated_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -149,16 +149,16 @@ namespace Models
 
         //QuantityCreated property
         [Attributes.Form_Property("Количество образованного, шт.")]
-        public int QuantityCreated
+        public IDataAccess<int> QuantityCreated
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityCreated));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityCreated));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -176,25 +176,25 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityCreated_Validation(int value)//Ready
+                private void QuantityCreated_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityCreated property
 
         //QuantityCreatedNote property
-        public int QuantityCreatedNote
+        public IDataAccess<int> QuantityCreatedNote
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityCreatedNote));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityCreatedNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -210,41 +210,37 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityCreatedNote_Validation(int value)//Ready
+                private void QuantityCreatedNote_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityCreatedNote property
 
         //MassFromAnothers Property
         [Attributes.Form_Property("Масса поступившего от сторонних, т")]
-        public double MassFromAnothers
+        public IDataAccess<double> MassFromAnothers
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassFromAnothers));
+                    return _dataAccess.Get<double>(nameof(MassFromAnothers));
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                MassFromAnothers_Validation(value);
-                
-                {
                     _dataAccess.Set(nameof(MassFromAnothers), value);
-                }
                 OnPropertyChanged(nameof(MassFromAnothers));
             }
         }
 
-                private void MassFromAnothers_Validation(double value)//TODO
+                private void MassFromAnothers_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -252,86 +248,76 @@ namespace Models
 
         //QuantityFromAnothers property
         [Attributes.Form_Property("Количество поступившего от сторонних, шт.")]
-        public int QuantityFromAnothers
+        public IDataAccess<int> QuantityFromAnothers
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityFromAnothers));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityFromAnothers));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                QuantityFromAnothers_Validation(value);
-                //_QuantityFromAnothers_Validation(value);
-                
-                
-                {
                     _dataAccess.Set(nameof(QuantityFromAnothers), value);
-                }
                 OnPropertyChanged(nameof(QuantityFromAnothers));
             }
         }
         // positive int.
-                private void QuantityFromAnothers_Validation(int value)//Ready
+                private void QuantityFromAnothers_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityFromAnothers property
 
         //QuantityFromAnothersNote property
-        public int QuantityFromAnothersNote
+        public IDataAccess<int> QuantityFromAnothersNote
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityFromAnothersNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                QuantityFromAnothersNote_Validation(value);
-                
-                {
                     _dataAccess.Set(nameof(QuantityFromAnothersNote), value);
-                }
                 OnPropertyChanged(nameof(QuantityFromAnothersNote));
             }
         }
         // positive int.
-                private void QuantityFromAnothersNote_Validation(int value)//Ready
+                private void QuantityFromAnothersNote_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityFromAnothersNote property
 
         //MassFromAnothersImported Property
         [Attributes.Form_Property("Масса импортированного от сторонних, т")]
-        public double MassFromAnothersImported
+        public IDataAccess<double> MassFromAnothersImported
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassFromAnothersImported));
+                    return _dataAccess.Get<double>(nameof(MassFromAnothersImported));
                 }
-                else
+                
                 {
                     
                 }
@@ -347,7 +333,7 @@ namespace Models
             }
         }
 
-                private void MassFromAnothersImported_Validation(double value)//TODO
+                private void MassFromAnothersImported_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -355,16 +341,16 @@ namespace Models
 
         //QuantityFromAnothersImported property
         [Attributes.Form_Property("Количество импортированного от сторонних, шт.")]
-        public int QuantityFromAnothersImported
+        public IDataAccess<int> QuantityFromAnothersImported
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityFromAnothersImported));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityFromAnothersImported));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -382,25 +368,25 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromAnothersImported_Validation(int value)//Ready
+                private void QuantityFromAnothersImported_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityFromAnothersImported property
 
         //QuantityFromImportedNote property
-        public int QuantityFromImportedNote
+        public IDataAccess<int> QuantityFromImportedNote
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityFromImportedNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -416,25 +402,25 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromImportedNote_Validation(int value)//Ready
+                private void QuantityFromImportedNote_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityFromImportedNote property
 
         //MassAnotherReasons Property
         [Attributes.Form_Property("Масса поставленного на учет по другим причинам, т")]
-        public double MassAnotherReasons
+        public IDataAccess<double> MassAnotherReasons
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassAnotherReasons));
+                    return _dataAccess.Get<double>(nameof(MassAnotherReasons));
                 }
-                else
+                
                 {
                     
                 }
@@ -450,7 +436,7 @@ namespace Models
             }
         }
 
-                private void MassAnotherReasons_Validation(double value)//TODO
+                private void MassAnotherReasons_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -458,16 +444,16 @@ namespace Models
 
         //QuantityAnotherReasons property
         [Attributes.Form_Property("Количество поступившего на учет по другим причинам, шт.")]
-        public int QuantityAnotherReasons
+        public IDataAccess<int> QuantityAnotherReasons
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityAnotherReasons));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityAnotherReasons));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -484,25 +470,25 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityAnotherReasons_Validation(int value)//Ready
+                private void QuantityAnotherReasons_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityAnotherReasons property
 
         //QuantityAnotherReasonsNote property
-        public int QuantityAnotherReasonsNote
+        public IDataAccess<int> QuantityAnotherReasonsNote
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityAnotherReasonsNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -518,41 +504,37 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityAnotherReasonsNote_Validation(int value)//Ready
+                private void QuantityAnotherReasonsNote_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityAnotherReasonsNote property
 
         //MassTransferredToAnother Property
         [Attributes.Form_Property("Масса переданного сторонним, т")]
-        public double MassTransferredToAnother
+        public IDataAccess<double> MassTransferredToAnother
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassTransferredToAnother));
+                    return _dataAccess.Get<double>(nameof(MassTransferredToAnother));
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                MassTransferredToAnother_Validation(value);
-                
-                {
                     _dataAccess.Set(nameof(MassTransferredToAnother), value);
-                }
                 OnPropertyChanged(nameof(MassTransferredToAnother));
             }
         }
 
-                private void MassTransferredToAnother_Validation(double value)//TODO
+                private void MassTransferredToAnother_Validation(IDataAccess<double?> value)//TODO
         {
             value.ClearErrors();
         }
@@ -560,16 +542,16 @@ namespace Models
 
         //QuantityTransferredToAnother property
         [Attributes.Form_Property("Количество переданного сторонним, шт.")]
-        public int QuantityTransferredToAnother
+        public IDataAccess<int> QuantityTransferredToAnother
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityTransferredToAnother));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityTransferredToAnother));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -586,25 +568,25 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityTransferredToAnother_Validation(int value)//Ready
+                private void QuantityTransferredToAnother_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityTransferredToAnother property
 
         //QuantityTransferredToNote property
-        public int QuantityTransferredToNote
+        public IDataAccess<int> QuantityTransferredToNote
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityTransferredToNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -620,41 +602,37 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityTransferredToNote_Validation(int value)//Ready
+                private void QuantityTransferredToNote_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityTransferredToNote property
 
         //MassRefined Property
         [Attributes.Form_Property("Масса переработанного, т")]
-        public double MassRefined
+        public IDataAccess<double> MassRefined
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassRefined));
+                    return _dataAccess.Get<double>(nameof(MassRefined));
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                MassRefined_Validation(value);
-                
-                {
                     _dataAccess.Set(nameof(MassRefined), value);
-                }
                 OnPropertyChanged(nameof(MassRefined));
             }
         }
 
-                private void MassRefined_Validation(double value)//TODO
+                private void MassRefined_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -662,16 +640,16 @@ namespace Models
 
         //QuantityRefined property
         [Attributes.Form_Property("Количество переработанного, шт.")]
-        public int QuantityRefined
+        public IDataAccess<int> QuantityRefined
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityRefined));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityRefined));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -688,25 +666,25 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRefined_Validation(int value)//Ready
+                private void QuantityRefined_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityRefined property
 
         //QuantityRefinedNote property
-        public int QuantityRefinedNote
+        public IDataAccess<int> QuantityRefinedNote
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityRefinedNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -722,25 +700,25 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRefinedNote_Validation(int value)//Ready
+                private void QuantityRefinedNote_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityRefinedNote property
 
         //MassRemovedFromAccount Property
         [Attributes.Form_Property("Масса снятого с учета, т")]
-        public double MassRemovedFromAccount
+        public IDataAccess<double> MassRemovedFromAccount
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassRemovedFromAccount));
+                    return _dataAccess.Get<double>(nameof(MassRemovedFromAccount));
                 }
-                else
+                
                 {
                     
                 }
@@ -756,7 +734,7 @@ namespace Models
             }
         }
 
-                private void MassRemovedFromAccount_Validation(double value)//TODO
+                private void MassRemovedFromAccount_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -764,16 +742,16 @@ namespace Models
 
         //QuantityRemovedFromAccount property
         [Attributes.Form_Property("Количество снятого с учета, шт.")]
-        public int QuantityRemovedFromAccount
+        public IDataAccess<int> QuantityRemovedFromAccount
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityRemovedFromAccount));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityRemovedFromAccount));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -790,26 +768,26 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRemovedFromAccount_Validation(int value)//Ready
+                private void QuantityRemovedFromAccount_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityRemovedFromAccount property
 
         //QuantityRemovedFromNote property
         [Attributes.Form_Property("Количество снятого с учета, шт.")]
-        public int QuantityRemovedFromNote
+        public IDataAccess<int> QuantityRemovedFromNote
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(QuantityRemovedFromNote));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(QuantityRemovedFromNote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -825,10 +803,10 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRemovedFromNote_Validation(int value)//Ready
+                private void QuantityRemovedFromNote_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //QuantityRemovedFromNote property

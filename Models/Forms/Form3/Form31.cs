@@ -10,8 +10,8 @@ namespace Models
     {
         public Form31() : base()
         {
-            FormNum = "31";
-            NumberOfFields = 19;
+            FormNum.Value = "31";
+            NumberOfFields.Value = 19;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -31,7 +31,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(RecieverName));
                 }
-                else
+                
                 {
                     
                 }
@@ -62,7 +62,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(RecieverAddress));
                 }
-                else
+                
                 {
                     
                 }
@@ -93,7 +93,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(RecieverFactAddress));
                 }
-                else
+                
                 {
                     
                 }
@@ -123,7 +123,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(LicenseId));
                 }
-                else
+                
                 {
                     
                 }
@@ -145,7 +145,7 @@ namespace Models
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
-        public DateTimeOffset ValidThru
+        public IDataAccess<string> ValidThru
         {
             get
             {
@@ -153,7 +153,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ValidThru));
                 }
-                else
+                
                 {
                     
                 }
@@ -168,14 +168,14 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThru));
             }
         }
-        private void ValidThru_Validation(DateTimeOffset value)
+        private void ValidThru_Validation(IDataAccess<string> value)
         { }
         
         //ValidThru property
 
         //SuggestedSolutionDate property
         [Attributes.Form_Property("")]
-        public DateTimeOffset SuggestedSolutionDate
+        public IDataAccess<string> SuggestedSolutionDate
         {
             get
             {
@@ -183,7 +183,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(SuggestedSolutionDate));
                 }
-                else
+                
                 {
                     
                 }
@@ -198,7 +198,7 @@ namespace Models
                 OnPropertyChanged(nameof(SuggestedSolutionDate));
             }
         }
-        private void SuggestedSolutionDate_Validation(DateTimeOffset value)
+        private void SuggestedSolutionDate_Validation(IDataAccess<string> value)
         { }
         
         //SuggestedSolutionDate property
@@ -213,7 +213,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(UserName));
                 }
-                else
+                
                 {
                     
                 }
@@ -243,7 +243,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(UserAddress));
                 }
-                else
+                
                 {
                     
                 }
@@ -273,7 +273,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(UserFactAddress));
                 }
-                else
+                
                 {
                     
                 }
@@ -303,7 +303,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(UserTelephone));
                 }
-                else
+                
                 {
                     
                 }
@@ -334,7 +334,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(UserFax));
                 }
-                else
+                
                 {
                     
                 }
@@ -364,7 +364,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(Email));
                 }
-                else
+                
                 {
                     
                 }
@@ -394,7 +394,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ZriUsageScope));
                 }
-                else
+                
                 {
                     
                 }
@@ -424,7 +424,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ContractId));
                 }
-                else
+                
                 {
                     
                 }
@@ -446,7 +446,7 @@ namespace Models
 
         //ContractDate property
         [Attributes.Form_Property("Дата контракта")]
-        public DateTimeOffset ContractDate
+        public IDataAccess<string> ContractDate
         {
             get
             {
@@ -454,7 +454,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(ContractDate));
                 }
-                else
+                
                 {
                     
                 }
@@ -469,7 +469,7 @@ namespace Models
                 OnPropertyChanged(nameof(ContractDate));
             }
         }
-        private void ContractDate_Validation(DateTimeOffset value)
+        private void ContractDate_Validation(IDataAccess<string> value)
         { }
         
         //ContractDate property
@@ -484,7 +484,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(CountryCreator));
                 }
-                else
+                
                 {
                     
                 }

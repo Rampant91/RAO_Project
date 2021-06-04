@@ -9,8 +9,8 @@ namespace Models
     {
         public Form56() : base()
         {
-            FormNum = "56";
-            NumberOfFields = 5;
+            FormNum.Value = "56";
+            NumberOfFields.Value = 5;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -27,10 +27,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(NameIOU));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(NameIOU));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -55,16 +55,16 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity
+        public IDataAccess<int> Quantity
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Quantity));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -83,25 +83,25 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(int value)//Ready
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
                 value.AddError( "Недопустимое значение");
         }
         //Quantity property
 
         //Mass Property
         [Attributes.Form_Property("Масса, кг")]
-        public double Mass
+        public IDataAccess<double> Mass
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Mass));
+                    return _dataAccess.Get<double>(nameof(Mass));
                 }
-                else
+                
                 {
                     
                 }
@@ -118,10 +118,10 @@ namespace Models
         }
 
 
-        private void Mass_Validation()//TODO
+        private void Mass_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
-            if (Mass <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;

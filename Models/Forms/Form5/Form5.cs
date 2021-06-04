@@ -12,33 +12,21 @@ namespace Models.Abstracts
 
         //NumberInOrder property
         [Attributes.Form_Property("№ п/п")]
-        public int NumberInOrder
+        public IDataAccess<int> NumberInOrder
         {
             get
             {
-                if (GetErrors(nameof(NumberInOrder)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(NumberInOrder));
-                    return tmp != null ? (int)tmp : -1;
-                }
-                else
-                {
-                    return _NumberInOrder_Not_Valid;
-                }
+                    return _dataAccess.Get<int>(nameof(NumberInOrder));
             }
             set
             {
-                _NumberInOrder_Not_Valid = value;
-                if (GetErrors(nameof(NumberInOrder)) == null)
-                {
-                    _dataAccess.Set(nameof(NumberInOrder), _NumberInOrder_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(NumberInOrder), value);
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
 
         private int _NumberInOrder_Not_Valid = -1;
-        private void NumberInOrder_Validation()
+        private void NumberInOrder_Validation(IDataAccess<int> value)
         {
             value.ClearErrors();
         }
@@ -46,33 +34,21 @@ namespace Models.Abstracts
 
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
-        public byte CorrectionNumber
+        public IDataAccess<byte> CorrectionNumber
         {
             get
             {
-                if (GetErrors(nameof(CorrectionNumber)) == null)
-                {
-                    var tmp = _dataAccess.Get(nameof(CorrectionNumber));
-                    return tmp != null ? (byte)tmp : (byte)0;
-                }
-                else
-                {
-                    return _CorrectionNumber_Not_Valid;
-                }
+                    return _dataAccess.Get<byte>(nameof(CorrectionNumber));
             }
             set
             {
-                _CorrectionNumber_Not_Valid = value;
-                if (GetErrors(nameof(CorrectionNumber)) == null)
-                {
-                    _dataAccess.Set(nameof(CorrectionNumber), _CorrectionNumber_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(CorrectionNumber), value);
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
 
         private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation()
+        private void CorrectionNumber_Validation(IDataAccess<byte> value)
         {
             value.ClearErrors();
         }

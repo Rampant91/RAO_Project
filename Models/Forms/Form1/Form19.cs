@@ -12,8 +12,8 @@ namespace Models
     {
         public Form19() : base()
         {
-            FormNum = "19";
-            NumberOfFields = 13;
+            FormNum.Value = "19";
+            NumberOfFields.Value = 13;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -24,37 +24,32 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int? Quantity
+        public IDataAccess<int>? Quantity
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Quantity));//OK;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK;
                 }
-                else
+                
                 {
                     
                 }
             }
             set
             {
-                Quantity_Validation(value);
-
-                
-                {
                     _dataAccess.Set(nameof(Quantity), value);
-                }
                 OnPropertyChanged(nameof(Quantity));
             }
         }
         // positive int.
 
-        private void Quantity_Validation(int? value)//Ready
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null) return;
-            if (value <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -64,15 +59,15 @@ namespace Models
 
         //CodeTypeAccObject property
         [Attributes.Form_Property("Код типа объектов учета")]
-        public short? CodeTypeAccObject
+        public IDataAccess<short?> CodeTypeAccObject
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(CodeTypeAccObject));
+                    return _dataAccess.Get<short?>(nameof(CodeTypeAccObject));
                 }
-                else
+                
                 {
                     
                 }
@@ -98,7 +93,7 @@ namespace Models
                 return;
             }
             List<short> spr = new List<short>();
-            if (!spr.Contains((short)value))
+            if (!spr.Contains((short)value.Value))
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -114,10 +109,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -138,7 +133,7 @@ namespace Models
         private void Radionuclids_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -148,7 +143,7 @@ namespace Models
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids = item.Item2;
+                    Radionuclids.Value =item.Item2;
                     return;
                 }
             }
@@ -163,10 +158,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Activity));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Activity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -186,7 +181,7 @@ namespace Models
         private void Activity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -280,7 +275,7 @@ namespace Models
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("прим."))
+            if (value.Value.Equals("прим."))
             {
 
             }

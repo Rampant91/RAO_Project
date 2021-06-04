@@ -11,8 +11,8 @@ namespace Models
     {
         public Form55() : base()
         {
-            FormNum = "55";
-            NumberOfFields = 8;
+            FormNum.Value = "55";
+            NumberOfFields.Value = 8;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -29,10 +29,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Name));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(Name));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -57,40 +57,23 @@ namespace Models
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public short OperationCode
+        public IDataAccess<short> OperationCode
         {
             get
             {
-                
-                {
-                    string tmp = _dataAccess.Get<string>(nameof(OperationCode));
-                    return tmp != null ? short.Parse(tmp) : (short)-1;
-                }
-                else
-                {
-                    
-                }
+                    return _dataAccess.Get<short>(nameof(OperationCode));
             }
             set
             {
-                var tmp1 = value.ToString();
-                if (tmp1.Length == 1) tmp1 = "0" + tmp1;
-
-                OperationCode_Validation(tmp1);
-
-
-                
-                {
-                    var tmp = _OperationCode_Not_Valid.ToString();
-                    if (tmp.Length == 1) tmp = "0" + tmp;
-                    _dataAccess.Set(nameof(OperationCode), tmp);
-                }
+                var tmp = value.Value.ToString();
+                if (tmp.Length == 1) tmp = "0" + tmp;
+                _dataAccess.Set(nameof(OperationCode), tmp);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
 
 
-        private void OperationCode_Validation(IDataAccess<string> value)
+        private void OperationCode_Validation(IDataAccess<short> value)
         {
             value.ClearErrors();
         }
@@ -98,16 +81,16 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public int Quantity
+        public IDataAccess<int> Quantity
         {
             get
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(Quantity));//OK
-                    return tmp != null ? (int)tmp : -1;
+                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -126,10 +109,10 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(int value)//Ready
+        private void Quantity_Validation(IDataAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;
@@ -145,10 +128,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -174,11 +157,11 @@ namespace Models
                 value.AddError( "Поле не заполнено");
                 return;
             }
-            if (value.Equals("Минобороны") || value.Equals("прим.")) return;
-            if (OKSM.Contains(value)) return;
-            if ((value.Length != 8) && (value.Length != 14))
+            if (value.Value.Equals("Минобороны") || value.Value.Equals("прим.")) return;
+            if (OKSM.Contains(value.Value)) return;
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -349,10 +332,10 @@ namespace Models
             {
                 
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -369,7 +352,7 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPONote_Validation()
+        private void ProviderOrRecieverOKPONote_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -377,15 +360,15 @@ namespace Models
 
         //Mass Property
         [Attributes.Form_Property("Масса, кг")]
-        public double Mass
+        public IDataAccess<double> Mass
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Mass));
+                    return _dataAccess.Get<double>(nameof(Mass));
                 }
-                else
+                
                 {
                     
                 }
@@ -402,10 +385,10 @@ namespace Models
         }
 
 
-        private void Mass_Validation()//TODO
+        private void Mass_Validation(IDataAccess<double> value)//TODO
         {
             value.ClearErrors();
-            if (Mass <= 0)
+            if (value.Value <= 0)
             {
                 value.AddError( "Недопустимое значение");
                 return;

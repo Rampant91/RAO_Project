@@ -11,8 +11,8 @@ namespace Models
     {
         public Form57() : base()
         {
-            FormNum = "57";
-            NumberOfFields = 9;
+            FormNum.Value = "57";
+            NumberOfFields.Value = 9;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -27,22 +27,11 @@ namespace Models
         {
             get
             {
-                
-                {
                     return _dataAccess.Get<string>(nameof(RegNo));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
-                    _dataAccess.Set(nameof(RegNo), _RegNo_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(RegNo), value);
                 OnPropertyChanged(nameof(RegNo));
             }
         }
@@ -56,22 +45,11 @@ namespace Models
         {
             get
             {
-                
-                {
                     return _dataAccess.Get<string>(nameof(Okpo));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
-                    _dataAccess.Set(nameof(Okpo), _Okpo_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(Okpo), value);
                 OnPropertyChanged(nameof(Okpo));
             }
         }
@@ -79,9 +57,9 @@ namespace Models
         private void Okpo_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Length != 8) && (value.Length != 14))
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
-            else
+            
             {
                 var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
@@ -96,22 +74,11 @@ namespace Models
         {
             get
             {
-                
-                {
                     return _dataAccess.Get<string>(nameof(OrgName));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
-                    _dataAccess.Set(nameof(OrgName), _OrgName_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(OrgName), value);
                 OnPropertyChanged(nameof(OrgName));
             }
         }
@@ -125,22 +92,11 @@ namespace Models
         {
             get
             {
-                
-                {
                     return _dataAccess.Get<string>(nameof(DocumentNameNumber));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
-                    _dataAccess.Set(nameof(DocumentNameNumber), _DocumentNameNumber_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(DocumentNameNumber), value);
                 OnPropertyChanged(nameof(DocumentNameNumber));
             }
         }
@@ -154,22 +110,11 @@ namespace Models
         {
             get
             {
-                
-                {
                     return _dataAccess.Get<string>(nameof(PermissionNameNumber));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
-                    _dataAccess.Set(nameof(PermissionNameNumber), _PermissionNameNumber_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(PermissionNameNumber), value);
                 OnPropertyChanged(nameof(PermissionNameNumber));
             }
         }
@@ -183,22 +128,11 @@ namespace Models
         {
             get
             {
-                
-                {
                     return _dataAccess.Get<string>(nameof(AllowedActivity));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
-                    _dataAccess.Set(nameof(AllowedActivity), _AllowedActivity_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(AllowedActivity), value);
                 OnPropertyChanged(nameof(AllowedActivity));
             }
         }
@@ -207,7 +141,7 @@ namespace Models
         private void AllowedActivity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || (value.Equals("")))
+            if ((value.Value == null) || (value.Value.Equals("")))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -217,7 +151,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            if (value != "прим.")
+            if (value.Value != "прим.")
             {
                 var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                    NumberStyles.AllowExponent;
@@ -240,22 +174,11 @@ namespace Models
         {
             get
             {
-                
-                {
                     return _dataAccess.Get<string>(nameof(Note));
-                }
-                else
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
-                    _dataAccess.Set(nameof(Note), _Note_Not_Valid);
-                }
+                    _dataAccess.Set(nameof(Note), value);
                 OnPropertyChanged(nameof(Note));
             }
         }

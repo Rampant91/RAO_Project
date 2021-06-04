@@ -9,8 +9,8 @@ namespace Models
     {
         public Form32_2() : base()
         {
-            FormNum = "32_2";
-            NumberOfFields = 6;
+            FormNum.Value = "32_2";
+            NumberOfFields.Value = 6;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -25,12 +25,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackName)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackName));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackName));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -39,7 +39,7 @@ namespace Models
             {
                 PackName_Validation(value);
 
-                if (GetErrors(nameof(PackName)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackName), value);
                 }
@@ -65,12 +65,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackType)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackType));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackType));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -79,7 +79,7 @@ namespace Models
             {
                 PackType_Validation(value);
 
-                if (GetErrors(nameof(PackType)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackType), value);
                 }
@@ -104,12 +104,12 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(PackTypeRecoded)) == null)
+                
                 {
-                    var tmp = _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-                    return tmp != null ? (string)tmp : null;
+                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+                    
                 }
-                else
+                
                 {
                     
                 }
@@ -117,7 +117,7 @@ namespace Models
             set
             {
 
-                if (GetErrors(nameof(PackTypeRecoded)) == null)
+                
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), value);
                 }
@@ -126,7 +126,7 @@ namespace Models
         }
 
 
-        private void PackTypeRecoded_Validation()
+        private void PackTypeRecoded_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -138,11 +138,11 @@ namespace Models
         {
             get
             {
-                if (GetErrors(nameof(Id)) == null)
+                
                 {
                     return _dataAccess.Get<string>(nameof(Id));
                 }
-                else
+                
                 {
                     
                 }
@@ -150,7 +150,7 @@ namespace Models
             set
             {
 
-                if (GetErrors(nameof(Id)) == null)
+                
                 {
                     _dataAccess.Set(nameof(Id), value);
                 }
@@ -163,15 +163,15 @@ namespace Models
 
         //CreationYear property
         [Attributes.Form_Property("Год изготовления")]
-        public int CreationYear
+        public IDataAccess<int> CreationYear
         {
             get
             {
-                if (GetErrors(nameof(CreationYear)) == null)
+                
                 {
-                    return _dataAccess.Get<string>(nameof(CreationYear));
+                    return _dataAccess.Get<int>(nameof(CreationYear));
                 }
-                else
+                
                 {
                     
                 }
@@ -179,7 +179,7 @@ namespace Models
             set
             {
 
-                if (GetErrors(nameof(CreationYear)) == null)
+                
                 {
                     _dataAccess.Set(nameof(CreationYear), value);
                 }
@@ -192,15 +192,15 @@ namespace Models
 
         //DepletedUraniumMass property
         [Attributes.Form_Property("Масса обедненного урана")]
-        public double DepletedUraniumMass
+        public IDataAccess<double> DepletedUraniumMass
         {
             get
             {
-                if (GetErrors(nameof(DepletedUraniumMass)) == null)
+                
                 {
-                    return _dataAccess.Get<string>(nameof(DepletedUraniumMass));
+                    return _dataAccess.Get<double>(nameof(DepletedUraniumMass));
                 }
-                else
+                
                 {
                     
                 }
@@ -208,7 +208,7 @@ namespace Models
             set
             {
 
-                if (GetErrors(nameof(DepletedUraniumMass)) == null)
+                
                 {
                     _dataAccess.Set(nameof(DepletedUraniumMass), value);
                 }

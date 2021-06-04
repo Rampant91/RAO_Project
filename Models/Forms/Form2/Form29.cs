@@ -10,8 +10,8 @@ namespace Models
     {
         public Form29() : base()
         {
-            FormNum = "29";
-            NumberOfFields = 8;
+            FormNum.Value = "29";
+            NumberOfFields.Value = 8;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -30,7 +30,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(WasteSourceName));
                 }
-                else
+                
                 {
                     
                 }
@@ -40,14 +40,14 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(WasteSourceName), _WasteSourceName_Not_Valid);
+                    _dataAccess.Set(nameof(WasteSourceName), value);
                 }
                 OnPropertyChanged(nameof(WasteSourceName));
             }
         }
 
         
-        private void WasteSourceName_Validation()
+        private void WasteSourceName_Validation(IDataAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -63,7 +63,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(RadionuclidName));
                 }
-                else
+                
                 {
                     
                 }
@@ -73,14 +73,14 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(RadionuclidName), _RadionuclidName_Not_Valid);
+                    _dataAccess.Set(nameof(RadionuclidName), value);
                 }
                 OnPropertyChanged(nameof(RadionuclidName));
             }
         }
         //If change this change validation
         
-        private void RadionuclidName_Validation()//TODO
+        private void RadionuclidName_Validation(IDataAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -96,7 +96,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(AllowedActivity));
                 }
-                else
+                
                 {
                     
                 }
@@ -106,7 +106,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(AllowedActivity), _AllowedActivity_Not_Valid);
+                    _dataAccess.Set(nameof(AllowedActivity), value);
                 }
                 OnPropertyChanged(nameof(AllowedActivity));
             }
@@ -116,7 +116,7 @@ namespace Models
         private void AllowedActivity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || (value.Equals("")))
+            if ((value.Value == null) || (value.Value.Equals("")))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -126,7 +126,7 @@ namespace Models
                 value.AddError( "Недопустимое значение");
                 return;
             }
-            if (value != "прим.")
+            if (value.Value != "прим.")
             {
                 var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                    NumberStyles.AllowExponent;
@@ -152,7 +152,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(AllowedActivityNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -162,7 +162,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(AllowedActivityNote), _AllowedActivityNote_Not_Valid);
+                    _dataAccess.Set(nameof(AllowedActivityNote), value);
                 }
                 OnPropertyChanged(nameof(AllowedActivityNote));
             }
@@ -185,7 +185,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(FactedActivity));
                 }
-                else
+                
                 {
                     
                 }
@@ -195,7 +195,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(FactedActivity), _FactedActivity_Not_Valid);
+                    _dataAccess.Set(nameof(FactedActivity), value);
                 }
                 OnPropertyChanged(nameof(FactedActivity));
             }
@@ -205,7 +205,7 @@ namespace Models
         private void FactedActivity_Validation(IDataAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || (value.Equals("")))
+            if ((value.Value == null) || (value.Value.Equals("")))
             {
                 value.AddError( "Поле не заполнено");
                 return;
@@ -238,7 +238,7 @@ namespace Models
                 {
                     return _dataAccess.Get<string>(nameof(FactedActivityNote));
                 }
-                else
+                
                 {
                     
                 }
@@ -248,7 +248,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(FactedActivityNote), _FactedActivityNote_Not_Valid);
+                    _dataAccess.Set(nameof(FactedActivityNote), value);
                 }
                 OnPropertyChanged(nameof(FactedActivityNote));
             }
