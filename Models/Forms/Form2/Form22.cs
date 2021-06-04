@@ -24,7 +24,7 @@ namespace Models
 
         //StoragePlaceName property
         [Attributes.Form_Property("Наименование ПХ")]
-        public IDataAccess<string> StoragePlaceName
+        public RamAccess<string> StoragePlaceName
         {
             get
             {
@@ -67,7 +67,7 @@ namespace Models
         //StoragePlaceName property
 
         //StoragePlaceNameNote property
-        public IDataAccess<string> StoragePlaceNameNote
+        public RamAccess<string> StoragePlaceNameNote
         {
             get
             {
@@ -100,7 +100,7 @@ namespace Models
 
         //StoragePlaceCode property
         [Attributes.Form_Property("Код ПХ")]
-        public IDataAccess<string> StoragePlaceCode //8 cyfer code or - .
+        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
@@ -145,7 +145,7 @@ namespace Models
 
         //PackName property
         [Attributes.Form_Property("Наименование упаковки")]
-        public IDataAccess<string> PackName
+        public RamAccess<string> PackName
         {
             get
             {
@@ -193,7 +193,7 @@ namespace Models
         //PackName property
 
         //PackNameNote property
-        public IDataAccess<string> PackNameNote
+        public RamAccess<string> PackNameNote
         {
             get
             {
@@ -226,7 +226,7 @@ namespace Models
 
         //PackType property
         [Attributes.Form_Property("Тип упаковки")]
-        public IDataAccess<string> PackType
+        public RamAccess<string> PackType
         {
             get
             {
@@ -277,7 +277,7 @@ namespace Models
         //PackType property
 
         //PackTypeRecoded property
-        public IDataAccess<string> PackTypeRecoded
+        public RamAccess<string> PackTypeRecoded
         {
             get
             {
@@ -309,7 +309,7 @@ namespace Models
         //PackTypeRecoded property
 
         //PackTypeNote property
-        public IDataAccess<string> PackTypeNote
+        public RamAccess<string> PackTypeNote
         {
             get
             {
@@ -342,7 +342,7 @@ namespace Models
 
         //PackQuantity property
         [Attributes.Form_Property("Количество упаковок, шт.")]
-        public IDataAccess<int?> PackQuantity
+        public RamAccess<int?> PackQuantity
         {
             get
             {
@@ -381,7 +381,7 @@ namespace Models
 
         //CodeRAO property
         [Attributes.Form_Property("Код РАО")]
-        public IDataAccess<string> CodeRAO
+        public RamAccess<string> CodeRAO
         {
             get
             {
@@ -421,7 +421,7 @@ namespace Models
 
         //StatusRAO property
         [Attributes.Form_Property("Статус РАО")]
-        public IDataAccess<string> StatusRAO  //1 cyfer or OKPO.
+        public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
             {
@@ -480,7 +480,7 @@ namespace Models
 
         //VolumeInPack property
         [Attributes.Form_Property("Объем с упаковкой, куб. м")]
-        public IDataAccess<string> VolumeInPack
+        public RamAccess<string> VolumeInPack
         {
             get
             {
@@ -540,7 +540,7 @@ namespace Models
 
         //MassInPack Property
         [Attributes.Form_Property("Масса с упаковкой, т")]
-        public IDataAccess<string> MassInPack
+        public RamAccess<string> MassInPack
         {
             get
             {
@@ -600,7 +600,7 @@ namespace Models
 
         //VolumeOutOfPack property
         [Attributes.Form_Property("Объем без упаковки, куб. м")]
-        public IDataAccess<string> VolumeOutOfPack//SUMMARIZABLE
+        public RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
         {
             get
             {
@@ -661,7 +661,7 @@ namespace Models
 
         //MassOutOfPack Property
         [Attributes.Form_Property("Масса без упаковки, т")]
-        public IDataAccess<string> MassOutOfPack//SUMMARIZABLE
+        public RamAccess<string> MassOutOfPack//SUMMARIZABLE
         {
             get
             {
@@ -722,7 +722,7 @@ namespace Models
 
         //QuantityOZIII property
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public IDataAccess<int?> QuantityOZIII//SUMMARIZABLE
+        public RamAccess<int?> QuantityOZIII//SUMMARIZABLE
         {
             get
             {
@@ -759,7 +759,7 @@ namespace Models
 
         //TritiumActivity property
         [Attributes.Form_Property("Активность трития, Бк")]
-        public IDataAccess<string> TritiumActivity//SUMMARIZABLE
+        public RamAccess<string> TritiumActivity//SUMMARIZABLE
         {
             get
             {
@@ -821,7 +821,7 @@ namespace Models
 
         //BetaGammaActivity property
         [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public IDataAccess<string> BetaGammaActivity//SUMMARIZABLE
+        public RamAccess<string> BetaGammaActivity//SUMMARIZABLE
         {
             get
             {
@@ -883,7 +883,7 @@ namespace Models
 
         //AlphaActivity property
         [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public IDataAccess<string> AlphaActivity//SUMMARIZABLE
+        public RamAccess<string> AlphaActivity//SUMMARIZABLE
         {
             get
             {
@@ -945,7 +945,7 @@ namespace Models
 
         //TransuraniumActivity property
         [Attributes.Form_Property("Активность трансурановых, Бк")]
-        public IDataAccess<string> TransuraniumActivity//SUMMARIZABLE
+        public RamAccess<string> TransuraniumActivity//SUMMARIZABLE
         {
             get
             {
@@ -1007,7 +1007,7 @@ namespace Models
 
         //MainRadionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public IDataAccess<string> MainRadionuclids
+        public RamAccess<string> MainRadionuclids
         {
             get
             {
@@ -1047,7 +1047,7 @@ namespace Models
 
         //Subsidy property
         [Attributes.Form_Property("Субсидия, %")]
-        public IDataAccess<string> Subsidy // 0<number<=100 or empty.
+        public RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
             {
@@ -1091,7 +1091,7 @@ namespace Models
 
         //FcpNumber property
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public IDataAccess<string> FcpNumber
+        public RamAccess<string> FcpNumber
         {
             get
             {

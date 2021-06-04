@@ -23,7 +23,7 @@ namespace Models
 
         //UniqueAgreementId property
         [Attributes.Form_Property("Уникльный номер соглашения")]
-        public IDataAccess<string> UniqueAgreementId
+        public RamAccess<string> UniqueAgreementId
         {
             get
             {
@@ -51,7 +51,7 @@ namespace Models
 
         //SupplyDate property
         [Attributes.Form_Property("Дата поступления")]
-        public IDataAccess<string> SupplyDate
+        public RamAccess<string> SupplyDate
         {
             get
             {
@@ -79,7 +79,7 @@ namespace Models
 
         //RecieverName property
         [Attributes.Form_Property("Наименование получателя")]
-        public IDataAccess<string> RecieverName
+        public RamAccess<string> RecieverName
         {
             get
             {
@@ -107,7 +107,7 @@ namespace Models
 
         //FieldsOfWorking property
         [Attributes.Form_Property("Вид деятельности")]
-        public IDataAccess<byte> FieldsOfWorking
+        public RamAccess<byte> FieldsOfWorking
         {
             get
             {
@@ -135,7 +135,7 @@ namespace Models
 
         //LicenseIdRv property
         [Attributes.Form_Property("Номер лицензии на обращение с РВ")]
-        public IDataAccess<string> LicenseIdRv
+        public RamAccess<string> LicenseIdRv
         {
             get
             {
@@ -163,7 +163,7 @@ namespace Models
 
         //ValidThruRv property
         [Attributes.Form_Property("Лицензия истекает(РВ)")]
-        public IDataAccess<string> ValidThruRv
+        public RamAccess<string> ValidThruRv
         {
             get
             {
@@ -191,7 +191,7 @@ namespace Models
 
         //LicenseIdRao property
         [Attributes.Form_Property("Номер лицензии на обращение с РАО")]
-        public IDataAccess<string> LicenseIdRao
+        public RamAccess<string> LicenseIdRao
         {
             get
             {
@@ -219,7 +219,7 @@ namespace Models
 
         //ValidThruRao property
         [Attributes.Form_Property("Лицензия истекает(РАО)")]
-        public IDataAccess<string> ValidThruRao
+        public RamAccess<string> ValidThruRao
         {
             get
             {
@@ -247,7 +247,7 @@ namespace Models
 
         //SupplyAddress property
         [Attributes.Form_Property("Адрес поставки")]
-        public IDataAccess<string> SupplyAddress
+        public RamAccess<string> SupplyAddress
         {
             get
             {
@@ -275,7 +275,7 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public IDataAccess<string> Radionuclids
+        public RamAccess<string> Radionuclids
         {
             get
             {
@@ -323,7 +323,7 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public IDataAccess<int> Quantity
+        public RamAccess<int> Quantity
         {
             get
             {
@@ -359,7 +359,7 @@ namespace Models
 
         //SummaryActivity property
         [Attributes.Form_Property("Суммарная активность, Бк")]
-        public IDataAccess<string> SummaryActivity
+        public RamAccess<string> SummaryActivity
         {
             get
             {

@@ -23,7 +23,7 @@ namespace Models
 
         //RefineMachineName property
         [Attributes.Form_Property("Наименование установки переработки")]
-        public IDataAccess<string> RefineMachineName
+        public RamAccess<string> RefineMachineName
         {
             get
             {
@@ -44,7 +44,7 @@ namespace Models
 
         //MachineCode property
         [Attributes.Form_Property("Код установки переработки")]
-        public IDataAccess<byte?> MachineCode
+        public RamAccess<byte?> MachineCode
         {
             get
             {
@@ -76,7 +76,7 @@ namespace Models
 
         //MachinePower property
         [Attributes.Form_Property("Мощность, куб. м/год")]
-        public IDataAccess<string> MachinePower
+        public RamAccess<string> MachinePower
         {
             get
             {
@@ -122,7 +122,7 @@ namespace Models
 
         //NumberOfHoursPerYear property
         [Attributes.Form_Property("Количество часов работы за год")]
-        public IDataAccess<string> NumberOfHoursPerYear
+        public RamAccess<string> NumberOfHoursPerYear
         {
             get
             {
@@ -168,7 +168,7 @@ namespace Models
 
         //CodeRAOIn property
         [Attributes.Form_Property("Код РАО")]
-        public IDataAccess<string> CodeRAOIn
+        public RamAccess<string> CodeRAOIn
         {
             get
             {
@@ -199,7 +199,7 @@ namespace Models
 
         //StatusRAOIn property
         [Attributes.Form_Property("Статус РАО")]
-        public IDataAccess<string> StatusRAOIn  //1 cyfer or OKPO.
+        public RamAccess<string> StatusRAOIn  //1 cyfer or OKPO.
         {
             get
             {
@@ -246,7 +246,7 @@ namespace Models
 
         //VolumeIn property
         [Attributes.Form_Property("Объем, куб. м")]
-        public IDataAccess<string> VolumeIn//SUMMARIZABLE
+        public RamAccess<string> VolumeIn//SUMMARIZABLE
         {
             get
             {
@@ -295,7 +295,7 @@ namespace Models
 
         //MassIn Property
         [Attributes.Form_Property("Масса, т")]
-        public IDataAccess<string> MassIn//SUMMARIZABLE
+        public RamAccess<string> MassIn//SUMMARIZABLE
         {
             get
             {
@@ -344,7 +344,7 @@ namespace Models
 
         //QuantityIn property
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public IDataAccess<string> QuantityIn//SUMMARIZABLE
+        public RamAccess<string> QuantityIn//SUMMARIZABLE
         {
             get
             {
@@ -401,7 +401,7 @@ namespace Models
 
         //TritiumActivityIn property
         [Attributes.Form_Property("Активность трития, Бк")]
-        public IDataAccess<string> TritiumActivityIn//SUMMARIZABLE
+        public RamAccess<string> TritiumActivityIn//SUMMARIZABLE
         {
             get
             {
@@ -462,7 +462,7 @@ namespace Models
 
         //BetaGammaActivityIn property
         [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public IDataAccess<string> BetaGammaActivityIn//SUMMARIZABLE
+        public RamAccess<string> BetaGammaActivityIn//SUMMARIZABLE
         {
             get
             {
@@ -523,7 +523,7 @@ namespace Models
 
         //AlphaActivityIn property
         [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public IDataAccess<string> AlphaActivityIn//SUMMARIZABLE
+        public RamAccess<string> AlphaActivityIn//SUMMARIZABLE
         {
             get
             {
@@ -584,7 +584,7 @@ namespace Models
 
         //TransuraniumActivityIn property
         [Attributes.Form_Property("Активность трансурановых, Бк")]
-        public IDataAccess<string> TransuraniumActivityIn//SUMMARIZABLE
+        public RamAccess<string> TransuraniumActivityIn//SUMMARIZABLE
         {
             get
             {
@@ -645,7 +645,7 @@ namespace Models
 
         //CodeRAOout property
         [Attributes.Form_Property("Код РАО")]
-        public IDataAccess<string> CodeRAOout
+        public RamAccess<string> CodeRAOout
         {
             get
             {
@@ -687,7 +687,7 @@ namespace Models
 
         //StatusRAOout property
         [Attributes.Form_Property("Статус РАО")]
-        public IDataAccess<string> StatusRAOout  //1 cyfer or OKPO.
+        public RamAccess<string> StatusRAOout  //1 cyfer or OKPO.
         {
             get
             {
@@ -745,7 +745,7 @@ namespace Models
 
         //VolumeOut property
         [Attributes.Form_Property("Объем, куб. м")]
-        public IDataAccess<string> VolumeOut//SUMMARIZABLE
+        public RamAccess<string> VolumeOut//SUMMARIZABLE
         {
             get
             {
@@ -805,7 +805,7 @@ namespace Models
 
         //MassOut Property
         [Attributes.Form_Property("Масса, т")]
-        public IDataAccess<string> MassOut//SUMMARIZABLE
+        public RamAccess<string> MassOut//SUMMARIZABLE
         {
             get
             {
@@ -865,7 +865,7 @@ namespace Models
 
         //QuantityOZIIIout property
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public IDataAccess<string> QuantityOZIIIout//SUMMARIZABLE
+        public RamAccess<string> QuantityOZIIIout//SUMMARIZABLE
         {
             get
             {
@@ -923,7 +923,7 @@ namespace Models
 
         //TritiumActivityOut property
         [Attributes.Form_Property("Активность трития, Бк")]
-        public IDataAccess<string> TritiumActivityOut//SUMMARIZABLE
+        public RamAccess<string> TritiumActivityOut//SUMMARIZABLE
         {
             get
             {
@@ -984,7 +984,7 @@ namespace Models
 
         //BetaGammaActivityOut property
         [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public IDataAccess<string> BetaGammaActivityOut//SUMMARIZABLE
+        public RamAccess<string> BetaGammaActivityOut//SUMMARIZABLE
         {
             get
             {
@@ -1045,7 +1045,7 @@ namespace Models
 
         //AlphaActivityOut property
         [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public IDataAccess<string> AlphaActivityOut//SUMMARIZABLE
+        public RamAccess<string> AlphaActivityOut//SUMMARIZABLE
         {
             get
             {
@@ -1104,7 +1104,7 @@ namespace Models
 
         //TransuraniumActivityOut property
         [Attributes.Form_Property("Активность трансурановых, Бк")]
-        public IDataAccess<string> TransuraniumActivityOut//SUMMARIZABLE
+        public RamAccess<string> TransuraniumActivityOut//SUMMARIZABLE
         {
             get
             {

@@ -23,7 +23,7 @@ namespace Models
 
         //TypeOfAccountedParts property
         [Attributes.Form_Property("Тип учетных единиц")]
-        public IDataAccess<int> TypeOfAccountedParts
+        public RamAccess<int> TypeOfAccountedParts
         {
             get
             {
@@ -58,7 +58,7 @@ namespace Models
 
         //KindOri property
         [Attributes.Form_Property("Вид ОРИ")]
-        public IDataAccess<int> KindOri
+        public RamAccess<int> KindOri
         {
             get
             {
@@ -90,7 +90,7 @@ namespace Models
 
         //AggregateState property
         [Attributes.Form_Property("Агрегатное состояние")]
-        public IDataAccess<byte> AggregateState//1 2 3
+        public RamAccess<byte> AggregateState//1 2 3
         {
             get
             {
@@ -125,7 +125,7 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public IDataAccess<string> Radionuclids
+        public RamAccess<string> Radionuclids
         {
             get
             {
@@ -174,7 +174,7 @@ namespace Models
 
         //Activity property
         [Attributes.Form_Property("Активность, Бк")]
-        public IDataAccess<string> Activity
+        public RamAccess<string> Activity
         {
             get
             {
@@ -229,7 +229,7 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public IDataAccess<int> Quantity
+        public RamAccess<int> Quantity
         {
             get
             {
@@ -267,7 +267,7 @@ namespace Models
 
         //Volume property
         [Attributes.Form_Property("Объем, куб. м")]
-        public IDataAccess<double> Volume
+        public RamAccess<double> Volume
         {
             get
             {
@@ -305,7 +305,7 @@ namespace Models
 
         //Mass Property
         [Attributes.Form_Property("Масса, кг")]
-        public IDataAccess<double> Mass
+        public RamAccess<double> Mass
         {
             get
             {

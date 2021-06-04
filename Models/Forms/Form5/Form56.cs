@@ -21,7 +21,7 @@ namespace Models
 
         //NameIOU property
         [Attributes.Form_Property("Наименование ИОУ")]
-        public IDataAccess<string> NameIOU
+        public RamAccess<string> NameIOU
         {
             get
             {
@@ -55,7 +55,7 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public IDataAccess<int> Quantity
+        public RamAccess<int> Quantity
         {
             get
             {
@@ -93,7 +93,7 @@ namespace Models
 
         //Mass Property
         [Attributes.Form_Property("Масса, кг")]
-        public IDataAccess<double> Mass
+        public RamAccess<double> Mass
         {
             get
             {

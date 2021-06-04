@@ -24,7 +24,7 @@ namespace Models
 
         //IndividualNumberZHRO property
         [Attributes.Form_Property("Индивидуальный номер ЖРО")]
-        public IDataAccess<string> IndividualNumberZHRO
+        public RamAccess<string> IndividualNumberZHRO
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Models
         //IndividualNumberZHRO property
 
         //IndividualNumberZHROrecoded property
-        public IDataAccess<string> IndividualNumberZHROrecoded
+        public RamAccess<string> IndividualNumberZHROrecoded
         {
             get
             {
@@ -89,7 +89,7 @@ namespace Models
 
         //PassportNumber property
         [Attributes.Form_Property("Номер паспорта")]
-        public IDataAccess<string> PassportNumber
+        public RamAccess<string> PassportNumber
         {
             get
             {
@@ -133,7 +133,7 @@ namespace Models
         //PassportNumber property
 
         //PassportNumberNote property
-        public IDataAccess<string> PassportNumberNote
+        public RamAccess<string> PassportNumberNote
         {
             get
             {
@@ -167,7 +167,7 @@ namespace Models
 
         //PassportNumberRecoded property
         [Attributes.Form_Property("Номер упаковки")]
-        public IDataAccess<string> PassportNumberRecoded
+        public RamAccess<string> PassportNumberRecoded
         {
             get
             {
@@ -201,7 +201,7 @@ namespace Models
 
         //Volume6 property
         [Attributes.Form_Property("Объем, куб. м")]
-        public IDataAccess<string> Volume6
+        public RamAccess<string> Volume6
         {
             get
             {
@@ -247,7 +247,7 @@ namespace Models
 
         //Mass7 Property
         [Attributes.Form_Property("Масса, т")]
-        public IDataAccess<string> Mass7
+        public RamAccess<string> Mass7
         {
             get
             {
@@ -293,7 +293,7 @@ namespace Models
 
         //SaltConcentration property
         [Attributes.Form_Property("Солесодержание, г/л")]
-        public IDataAccess<double?> SaltConcentration
+        public RamAccess<double?> SaltConcentration
         {
             get
             {
@@ -332,7 +332,7 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Наименования радионуклидов")]
-        public IDataAccess<string> Radionuclids
+        public RamAccess<string> Radionuclids
         {
             get
             {
@@ -368,7 +368,7 @@ namespace Models
 
         //SpecificActivity property
         [Attributes.Form_Property("Удельная активность, Бк/г")]
-        public IDataAccess<string> SpecificActivity
+        public RamAccess<string> SpecificActivity
         {
             get
             {
@@ -415,7 +415,7 @@ namespace Models
 
         //ProviderOrRecieverOKPO property
         [Attributes.Form_Property("ОКПО поставщика/получателя")]
-        public IDataAccess<string> ProviderOrRecieverOKPO
+        public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
@@ -462,7 +462,7 @@ namespace Models
         //ProviderOrRecieverOKPO property
 
         //ProviderOrRecieverOKPONote property
-        public IDataAccess<string> ProviderOrRecieverOKPONote
+        public RamAccess<string> ProviderOrRecieverOKPONote
         {
             get
             {
@@ -496,7 +496,7 @@ namespace Models
 
         //TransporterOKPO property
         [Attributes.Form_Property("ОКПО перевозчика")]
-        public IDataAccess<string> TransporterOKPO
+        public RamAccess<string> TransporterOKPO
         {
             get
             {
@@ -550,7 +550,7 @@ namespace Models
         //TransporterOKPO property
 
         //TransporterOKPONote property
-        public IDataAccess<string> TransporterOKPONote
+        public RamAccess<string> TransporterOKPONote
         {
             get
             {
@@ -584,7 +584,7 @@ namespace Models
 
         //StoragePlaceName property
         [Attributes.Form_Property("Наименование ПХ")]
-        public IDataAccess<string> StoragePlaceName
+        public RamAccess<string> StoragePlaceName
         {
             get
             {
@@ -623,7 +623,7 @@ namespace Models
         //StoragePlaceName property
 
         //StoragePlaceNameNote property
-        public IDataAccess<string> StoragePlaceNameNote
+        public RamAccess<string> StoragePlaceNameNote
         {
             get
             {
@@ -656,7 +656,7 @@ namespace Models
 
         //StoragePlaceCode property
         [Attributes.Form_Property("Код ПХ")]
-        public IDataAccess<string> StoragePlaceCode //8 cyfer code or - .
+        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
@@ -693,7 +693,7 @@ namespace Models
 
         //CodeRAO property
         [Attributes.Form_Property("Код РАО")]
-        public IDataAccess<string> CodeRAO
+        public RamAccess<string> CodeRAO
         {
             get
             {
@@ -737,7 +737,7 @@ namespace Models
 
         //StatusRAO property
         [Attributes.Form_Property("Статус РАО")]
-        public IDataAccess<string> StatusRAO  //1 cyfer or OKPO.
+        public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
             {
@@ -795,7 +795,7 @@ namespace Models
 
         //Volume20 property
         [Attributes.Form_Property("Объем, куб. м")]
-        public IDataAccess<string> Volume20
+        public RamAccess<string> Volume20
         {
             get
             {
@@ -844,7 +844,7 @@ namespace Models
 
         //Mass21 Property
         [Attributes.Form_Property("Масса, т")]
-        public IDataAccess<string> Mass21
+        public RamAccess<string> Mass21
         {
             get
             {
@@ -893,7 +893,7 @@ namespace Models
 
         //TritiumActivity property
         [Attributes.Form_Property("Активность трития, Бк")]
-        public IDataAccess<string> TritiumActivity
+        public RamAccess<string> TritiumActivity
         {
             get
             {
@@ -947,7 +947,7 @@ namespace Models
 
         //BetaGammaActivity property
         [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public IDataAccess<string> BetaGammaActivity
+        public RamAccess<string> BetaGammaActivity
         {
             get
             {
@@ -1001,7 +1001,7 @@ namespace Models
 
         //AlphaActivity property
         [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public IDataAccess<string> AlphaActivity
+        public RamAccess<string> AlphaActivity
         {
             get
             {
@@ -1055,7 +1055,7 @@ namespace Models
 
         //TransuraniumActivity property
         [Attributes.Form_Property("Активность трансурановых, Бк")]
-        public IDataAccess<string> TransuraniumActivity
+        public RamAccess<string> TransuraniumActivity
         {
             get
             {
@@ -1109,7 +1109,7 @@ namespace Models
 
         //RefineOrSortRAOCode property
         [Attributes.Form_Property("Код переработки/сортировки РАО")]
-        public IDataAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
+        public RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
         {
             get
             {
@@ -1164,7 +1164,7 @@ namespace Models
 
         //Subsidy property
         [Attributes.Form_Property("Субсидия, %")]
-        public IDataAccess<string> Subsidy // 0<number<=100 or empty.
+        public RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
             {
@@ -1208,7 +1208,7 @@ namespace Models
 
         //FcpNumber property
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public IDataAccess<string> FcpNumber
+        public RamAccess<string> FcpNumber
         {
             get
             {

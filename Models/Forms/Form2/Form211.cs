@@ -22,7 +22,7 @@ namespace Models
 
         //PlotName property
         [Attributes.Form_Property("Наименование участка")]
-        public IDataAccess<string> PlotName
+        public RamAccess<string> PlotName
         {
             get
             {
@@ -54,7 +54,7 @@ namespace Models
 
         //PlotKadastrNumber property
         [Attributes.Form_Property("Кадастровый номер участка")]
-        public IDataAccess<string> PlotKadastrNumber
+        public RamAccess<string> PlotKadastrNumber
         {
             get
             {
@@ -86,7 +86,7 @@ namespace Models
 
         //PlotCode property
         [Attributes.Form_Property("Код участка")]
-        public IDataAccess<string> PlotCode
+        public RamAccess<string> PlotCode
         {
             get
             {
@@ -118,7 +118,7 @@ namespace Models
 
         //InfectedArea property
         [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public IDataAccess<int> InfectedArea
+        public RamAccess<int> InfectedArea
         {
             get
             {
@@ -150,7 +150,7 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Наименования радионуклидов")]
-        public IDataAccess<string> Radionuclids
+        public RamAccess<string> Radionuclids
         {
             get
             {
@@ -197,7 +197,7 @@ namespace Models
         //Radionuclids property
 
         //RadionuclidNameNote property
-        public IDataAccess<string> RadionuclidNameNote
+        public RamAccess<string> RadionuclidNameNote
         {
             get
             {
@@ -229,7 +229,7 @@ namespace Models
 
         //SpecificActivityOfPlot property
         [Attributes.Form_Property("Удельная активность, Бк/г")]
-        public IDataAccess<string> SpecificActivityOfPlot
+        public RamAccess<string> SpecificActivityOfPlot
         {
             get
             {
@@ -272,7 +272,7 @@ namespace Models
 
         //SpecificActivityOfLiquidPart property
         [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]
-        public IDataAccess<string> SpecificActivityOfLiquidPart
+        public RamAccess<string> SpecificActivityOfLiquidPart
         {
             get
             {
@@ -315,7 +315,7 @@ namespace Models
 
         //SpecificActivityOfDensePart property
         [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]
-        public IDataAccess<string> SpecificActivityOfDensePart
+        public RamAccess<string> SpecificActivityOfDensePart
         {
             get
             {

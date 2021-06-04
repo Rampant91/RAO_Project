@@ -24,7 +24,7 @@ namespace Models
 
         //PassportNumber property
         [Attributes.Form_Property("Номер паспорта")]
-        public IDataAccess<string> PassportNumber
+        public RamAccess<string> PassportNumber
         {
             get
             {
@@ -67,7 +67,7 @@ namespace Models
         //PassportNumber property
 
         //PassportNumberNote property
-        public IDataAccess<string> PassportNumberNote
+        public RamAccess<string> PassportNumberNote
         {
             get
             {
@@ -100,7 +100,7 @@ namespace Models
 
         //CreatorOKPO property
         [Attributes.Form_Property("ОКПО изготовителя")]
-        public IDataAccess<string> CreatorOKPO
+        public RamAccess<string> CreatorOKPO
         {
             get
             {
@@ -306,7 +306,7 @@ namespace Models
 
         //Type property
         [Attributes.Form_Property("Тип")]
-        public IDataAccess<string> Type
+        public RamAccess<string> Type
         {
             get
             {
@@ -338,7 +338,7 @@ namespace Models
         //Type property
 
         //TypeRecoded property
-        public IDataAccess<string> TypeRecoded
+        public RamAccess<string> TypeRecoded
         {
             get
             {
@@ -371,7 +371,7 @@ namespace Models
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
-        public IDataAccess<string> Radionuclids
+        public RamAccess<string> Radionuclids
         {
             get
             {
@@ -419,7 +419,7 @@ namespace Models
 
         //FactoryNumber property
         [Attributes.Form_Property("Заводской номер")]
-        public IDataAccess<string> FactoryNumber
+        public RamAccess<string> FactoryNumber
         {
             get
             {
@@ -456,7 +456,7 @@ namespace Models
         //FactoryNumber property
 
         //FactoryNumberRecoded property
-        public IDataAccess<string> FactoryNumberRecoded
+        public RamAccess<string> FactoryNumberRecoded
         {
             get
             {
@@ -489,7 +489,7 @@ namespace Models
 
         //ActivityOnCreation property
         [Attributes.Form_Property("Активность на дату создания, Бк")]
-        public IDataAccess<string> ActivityOnCreation
+        public RamAccess<string> ActivityOnCreation
         {
             get
             {
@@ -533,7 +533,7 @@ namespace Models
 
         //CreationDate property
         [Attributes.Form_Property("Дата изготовления")]
-        public IDataAccess<string> CreationDate
+        public RamAccess<string> CreationDate
         {
             get
             {
@@ -564,7 +564,7 @@ namespace Models
         //CreationDate property
 
         //CreatorOKPONote property
-        public IDataAccess<string> CreatorOKPONote
+        public RamAccess<string> CreatorOKPONote
         {
             get
             {
@@ -599,7 +599,7 @@ namespace Models
 
         //Kategory property
         [Attributes.Form_Property("Категория")]
-        public IDataAccess<short> Kategory
+        public RamAccess<short> Kategory
         {
             get
             {
@@ -620,7 +620,7 @@ namespace Models
 
         //NuclearMaterialPresence property
         [Attributes.Form_Property("Содержание ядерных материалов")]
-        public IDataAccess<double> NuclearMaterialPresence
+        public RamAccess<double> NuclearMaterialPresence
         {
             get
             {
@@ -648,7 +648,7 @@ namespace Models
 
         //CertificateId property
         [Attributes.Form_Property("Номер сертификата")]
-        public IDataAccess<string> CertificateId
+        public RamAccess<string> CertificateId
         {
             get
             {
@@ -676,7 +676,7 @@ namespace Models
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
-        public IDataAccess<string> ValidThru
+        public RamAccess<string> ValidThru
         {
             get
             {

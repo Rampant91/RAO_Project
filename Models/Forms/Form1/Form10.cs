@@ -22,7 +22,7 @@ namespace Models
 
         //RegNo property
         [Attributes.Form_Property("Рег. №")]
-        public IDataAccess<string> RegNo
+        public RamAccess<string> RegNo
         {
             get
             {
@@ -39,7 +39,7 @@ namespace Models
 
         //OrganUprav property
         [Attributes.Form_Property("Орган управления")]
-        public IDataAccess<string> OrganUprav
+        public RamAccess<string> OrganUprav
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Models
 
         //SubjectRF property
         [Attributes.Form_Property("Субъект РФ")]
-        public IDataAccess<string> SubjectRF
+        public RamAccess<string> SubjectRF
         {
             get
             {
@@ -73,7 +73,7 @@ namespace Models
 
         //JurLico property
         [Attributes.Form_Property("Юр. лицо")]
-        public IDataAccess<string> JurLico
+        public RamAccess<string> JurLico
         {
             get
             {
@@ -90,7 +90,7 @@ namespace Models
 
         //ShortJurLico property
         [Attributes.Form_Property("Краткое наименование юр. лица")]
-        public IDataAccess<string> ShortJurLico
+        public RamAccess<string> ShortJurLico
         {
             get
             {
@@ -107,7 +107,7 @@ namespace Models
 
         //JurLicoAddress property
         [Attributes.Form_Property("Адрес юр. лица")]
-        public IDataAccess<string> JurLicoAddress
+        public RamAccess<string> JurLicoAddress
         {
             get
             {
@@ -135,7 +135,7 @@ namespace Models
 
         //JurLicoFactAddress property
         [Attributes.Form_Property("Фактический адрес юр. лица")]
-        public IDataAccess<string> JurLicoFactAddress
+        public RamAccess<string> JurLicoFactAddress
         {
             get
             {
@@ -163,7 +163,7 @@ namespace Models
 
         //GradeFIO property
         [Attributes.Form_Property("ФИО, должность")]
-        public IDataAccess<string> GradeFIO
+        public RamAccess<string> GradeFIO
         {
             get
             {
@@ -191,7 +191,7 @@ namespace Models
 
         //Telephone property
         [Attributes.Form_Property("Телефон")]
-        public IDataAccess<string> Telephone
+        public RamAccess<string> Telephone
         {
             get
             {
@@ -219,7 +219,7 @@ namespace Models
 
         //Fax property
         [Attributes.Form_Property("Факс")]
-        public IDataAccess<string> Fax
+        public RamAccess<string> Fax
         {
             get
             {
@@ -247,7 +247,7 @@ namespace Models
 
         //Email property
         [Attributes.Form_Property("Эл. почта")]
-        public IDataAccess<string> Email
+        public RamAccess<string> Email
         {
             get
             {
@@ -275,7 +275,7 @@ namespace Models
 
         //Okpo property
         [Attributes.Form_Property("ОКПО")]
-        public IDataAccess<string> Okpo
+        public RamAccess<string> Okpo
         {
             get
             {
@@ -315,7 +315,7 @@ namespace Models
 
         //Okved property
         [Attributes.Form_Property("ОКВЭД")]
-        public IDataAccess<string> Okved
+        public RamAccess<string> Okved
         {
             get
             {
@@ -350,7 +350,7 @@ namespace Models
 
         //Okogu property
         [Attributes.Form_Property("ОКОГУ")]
-        public IDataAccess<string> Okogu
+        public RamAccess<string> Okogu
         {
             get
             {
@@ -385,7 +385,7 @@ namespace Models
 
         //Oktmo property
         [Attributes.Form_Property("ОКТМО")]
-        public IDataAccess<string> Oktmo
+        public RamAccess<string> Oktmo
         {
             get
             {
@@ -420,7 +420,7 @@ namespace Models
 
         //Inn property
         [Attributes.Form_Property("ИНН")]
-        public IDataAccess<string> Inn
+        public RamAccess<string> Inn
         {
             get
             {
@@ -455,7 +455,7 @@ namespace Models
 
         //Kpp property
         [Attributes.Form_Property("КПП")]
-        public IDataAccess<string> Kpp
+        public RamAccess<string> Kpp
         {
             get
             {
@@ -490,7 +490,7 @@ namespace Models
 
         //Okopf property
         [Attributes.Form_Property("ОКОПФ")]
-        public IDataAccess<string> Okopf
+        public RamAccess<string> Okopf
         {
             get
             {
@@ -525,7 +525,7 @@ namespace Models
 
         //Okfs property
         [Attributes.Form_Property("ОКФС")]
-        public IDataAccess<string> Okfs
+        public RamAccess<string> Okfs
         {
             get
             {

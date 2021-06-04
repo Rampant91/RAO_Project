@@ -26,7 +26,7 @@ namespace Models.Abstracts
 
         //NumberInOrder property
         [Attributes.Form_Property("№ п/п")]
-        public IDataAccess<int> NumberInOrder
+        public RamAccess<int> NumberInOrder
         {
             get
             {
@@ -46,7 +46,7 @@ namespace Models.Abstracts
 
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
-        public IDataAccess<byte> CorrectionNumber
+        public RamAccess<byte> CorrectionNumber
         {
             get
             {
@@ -67,7 +67,7 @@ namespace Models.Abstracts
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
-        public IDataAccess<short?> OperationCode
+        public RamAccess<short?> OperationCode
         {
             get
             {
@@ -85,7 +85,7 @@ namespace Models.Abstracts
         
         //OperationDate property
         [Attributes.Form_Property("Дата операции")]
-        public IDataAccess<string> OperationDate
+        public RamAccess<string> OperationDate
         {
             get
             {
@@ -123,7 +123,7 @@ namespace Models.Abstracts
 
         //DocumentVid property
         [Attributes.Form_Property("Вид документа")]
-        public IDataAccess<byte?> DocumentVid
+        public RamAccess<byte?> DocumentVid
         {
             get
             {
@@ -174,7 +174,7 @@ namespace Models.Abstracts
 
         //DocumentNumber property
         [Attributes.Form_Property("Номер документа")]
-        public IDataAccess<string> DocumentNumber
+        public RamAccess<string> DocumentNumber
         {
             get
             {
@@ -192,7 +192,7 @@ namespace Models.Abstracts
         //DocumentNumber property
 
         //DocumentNumberRecoded property
-        public IDataAccess<string> DocumentNumberRecoded
+        public RamAccess<string> DocumentNumberRecoded
         {
             get
             {
@@ -213,7 +213,7 @@ namespace Models.Abstracts
 
         //DocumentDate property
         [Attributes.Form_Property("Дата документа")]
-        public IDataAccess<string> DocumentDate
+        public RamAccess<string> DocumentDate
         {
             get
             {
@@ -284,7 +284,7 @@ namespace Models.Abstracts
 
         //DocumentDateNote property
         [Attributes.Form_Property("Дата документа")]
-        public IDataAccess<string> DocumentDateNote
+        public RamAccess<string> DocumentDateNote
         {
             get
             {

@@ -22,11 +22,11 @@ namespace Models.Abstracts
 
 
         [Key]
-        public IDataAccess<int?> RowId { get; set; }
+        public RamAccess<int?> RowId { get; set; }
 
         //FormNum property
         [Attributes.Form_Property("Форма")]
-        public IDataAccess<string> FormNum
+        public RamAccess<string> FormNum
         {
             get
             {
@@ -45,7 +45,7 @@ namespace Models.Abstracts
         //FormNum property
 
         //NumberOfFields property
-        public IDataAccess<int> NumberOfFields
+        public RamAccess<int> NumberOfFields
         {
             get
             {

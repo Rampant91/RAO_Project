@@ -22,7 +22,7 @@ namespace Models
 
         //WasteSourceName property
         [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
-        public IDataAccess<string> WasteSourceName
+        public RamAccess<string> WasteSourceName
         {
             get
             {
@@ -55,7 +55,7 @@ namespace Models
 
         //RadionuclidName property
         [Attributes.Form_Property("Радионуклид")]
-        public IDataAccess<string> RadionuclidName
+        public RamAccess<string> RadionuclidName
         {
             get
             {
@@ -88,7 +88,7 @@ namespace Models
 
         //AllowedActivity property
         [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
-        public IDataAccess<string> AllowedActivity
+        public RamAccess<string> AllowedActivity
         {
             get
             {
@@ -144,7 +144,7 @@ namespace Models
         //AllowedActivity property
 
         //AllowedActivityNote property
-        public IDataAccess<string> AllowedActivityNote
+        public RamAccess<string> AllowedActivityNote
         {
             get
             {
@@ -177,7 +177,7 @@ namespace Models
 
         //FactedActivity property
         [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
-        public IDataAccess<string> FactedActivity
+        public RamAccess<string> FactedActivity
         {
             get
             {
@@ -230,7 +230,7 @@ namespace Models
         //FactedActivity property
 
         //FactedActivityNote property
-        public IDataAccess<string> FactedActivityNote
+        public RamAccess<string> FactedActivityNote
         {
             get
             {
