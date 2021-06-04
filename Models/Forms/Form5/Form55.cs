@@ -49,7 +49,7 @@ namespace Models
         }
 
 
-        private void Name_Validation(IDataAccess<string> value)//TODO
+        private void Name_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -73,7 +73,7 @@ namespace Models
         }
 
 
-        private void OperationCode_Validation(IDataAccess<short> value)
+        private void OperationCode_Validation(RamAccess<short> value)
         {
             value.ClearErrors();
         }
@@ -109,7 +109,7 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(IDataAccess<int> value)//Ready
+        private void Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -149,7 +149,7 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPO_Validation(IDataAccess<string> value)//TODO
+        private void ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -352,7 +352,7 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPONote_Validation(IDataAccess<string> value)
+        private void ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -385,7 +385,7 @@ namespace Models
         }
 
 
-        private void Mass_Validation(IDataAccess<double> value)//TODO
+        private void Mass_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)

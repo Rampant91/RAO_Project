@@ -45,7 +45,7 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(IDataAccess<int> value)//Ready
+        private void Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null) return;
@@ -84,7 +84,7 @@ namespace Models
         }
 
 
-        private void CodeTypeAccObject_Validation(IDataAccess<short?> value)//TODO
+        private void CodeTypeAccObject_Validation(RamAccess<short?> value)//TODO
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -130,7 +130,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void Radionuclids_Validation(IDataAccess<string> value)//TODO
+        private void Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -178,7 +178,7 @@ namespace Models
         }
 
 
-        private void Activity_Validation(IDataAccess<string> value)//Ready
+        private void Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -205,13 +205,13 @@ namespace Models
         }
         //Activity property
 
-        protected override void OperationCode_Validation(IDataAccess<short?> value)//OK
+        protected override void OperationCode_Validation(RamAccess<short?> value)//OK
         {
             value.ClearErrors();
             OperationCode.Value = 10;
         }
 
-        protected override void OperationDate_Validation(IDataAccess<string> value)
+        protected override void OperationDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -239,7 +239,7 @@ namespace Models
             }
         }
 
-        protected override void DocumentDate_Validation(IDataAccess<string> value)
+        protected override void DocumentDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -267,7 +267,7 @@ namespace Models
             }
         }
 
-        protected override void DocumentNumber_Validation(IDataAccess<string> value)
+        protected override void DocumentNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null))//ok

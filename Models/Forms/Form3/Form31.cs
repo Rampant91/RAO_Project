@@ -48,7 +48,7 @@ namespace Models
         }
 
         
-        private void RecieverName_Validation(IDataAccess<string> value)
+        private void RecieverName_Validation(RamAccess<string> value)
         { }
         //RecieverName property
 
@@ -77,7 +77,7 @@ namespace Models
                 OnPropertyChanged(nameof(RecieverAddress));
             }
         }
-        private void RecieverAddress_Validation(IDataAccess<string> value)
+        private void RecieverAddress_Validation(RamAccess<string> value)
         { }
 
         
@@ -108,7 +108,7 @@ namespace Models
                 OnPropertyChanged(nameof(RecieverFactAddress));
             }
         }
-        private void RecieverFactAddress_Validation(IDataAccess<string> value)
+        private void RecieverFactAddress_Validation(RamAccess<string> value)
         { }
         
         //RecieverFactAddress property
@@ -138,7 +138,7 @@ namespace Models
                 OnPropertyChanged(nameof(LicenseId));
             }
         }
-        private void LicenseId_Validation(IDataAccess<string> value)
+        private void LicenseId_Validation(RamAccess<string> value)
         { }
         
         //LicenseId property
@@ -168,7 +168,7 @@ namespace Models
                 OnPropertyChanged(nameof(ValidThru));
             }
         }
-        private void ValidThru_Validation(IDataAccess<string> value)
+        private void ValidThru_Validation(RamAccess<string> value)
         { }
         
         //ValidThru property
@@ -198,7 +198,7 @@ namespace Models
                 OnPropertyChanged(nameof(SuggestedSolutionDate));
             }
         }
-        private void SuggestedSolutionDate_Validation(IDataAccess<string> value)
+        private void SuggestedSolutionDate_Validation(RamAccess<string> value)
         { }
         
         //SuggestedSolutionDate property
@@ -228,7 +228,7 @@ namespace Models
                 OnPropertyChanged(nameof(UserName));
             }
         }
-        private void UserName_Validation(IDataAccess<string> value)
+        private void UserName_Validation(RamAccess<string> value)
         { }
         
         //UserName property
@@ -258,7 +258,7 @@ namespace Models
                 OnPropertyChanged(nameof(UserAddress));
             }
         }
-        private void UserAddress_Validation(IDataAccess<string> value)
+        private void UserAddress_Validation(RamAccess<string> value)
         { }
         
         //UserAddress property
@@ -288,7 +288,7 @@ namespace Models
                 OnPropertyChanged(nameof(UserFactAddress));
             }
         }
-        private void UserFactAddress_Validation(IDataAccess<string> value)
+        private void UserFactAddress_Validation(RamAccess<string> value)
         { }
         
         //UserFactAddress property
@@ -319,7 +319,7 @@ namespace Models
             }
         }
 
-        private void UserTelephone_Validation(IDataAccess<string> value)
+        private void UserTelephone_Validation(RamAccess<string> value)
         { }
         
         //UserTelephone property
@@ -349,7 +349,7 @@ namespace Models
                 OnPropertyChanged(nameof(UserFax));
             }
         }
-        private void UserFax_Validation(IDataAccess<string> value)
+        private void UserFax_Validation(RamAccess<string> value)
         { }
         
         //UserFax property
@@ -379,7 +379,7 @@ namespace Models
                 OnPropertyChanged(nameof(Email));
             }
         }
-        private void Email_Validation(IDataAccess<string> value)
+        private void Email_Validation(RamAccess<string> value)
         { }
         
         //Email property
@@ -409,7 +409,7 @@ namespace Models
                 OnPropertyChanged(nameof(ZriUsageScope));
             }
         }
-        private void ZriUsageScope_Validation(IDataAccess<string> value)
+        private void ZriUsageScope_Validation(RamAccess<string> value)
         { }
         
         //ZriUsageScope property
@@ -439,7 +439,7 @@ namespace Models
                 OnPropertyChanged(nameof(ContractId));
             }
         }
-        private void ContractId_Validation(IDataAccess<string> value)
+        private void ContractId_Validation(RamAccess<string> value)
         { }
         
         //ContractId property
@@ -469,7 +469,7 @@ namespace Models
                 OnPropertyChanged(nameof(ContractDate));
             }
         }
-        private void ContractDate_Validation(IDataAccess<string> value)
+        private void ContractDate_Validation(RamAccess<string> value)
         { }
         
         //ContractDate property
@@ -499,7 +499,7 @@ namespace Models
                 OnPropertyChanged(nameof(CountryCreator));
             }
         }
-        private void CountryCreator_Validation(IDataAccess<string> value)
+        private void CountryCreator_Validation(RamAccess<string> value)
         { }
         
         //CountryCreator property

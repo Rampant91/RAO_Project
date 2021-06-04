@@ -47,7 +47,7 @@ namespace Models
         }
 
         
-        private void WasteSourceName_Validation(IDataAccess<string> value)
+        private void WasteSourceName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -80,7 +80,7 @@ namespace Models
         }
         //If change this change validation
         
-        private void RadionuclidName_Validation(IDataAccess<string> value)//TODO
+        private void RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -113,7 +113,7 @@ namespace Models
         }
 
         
-        private void AllowedActivity_Validation(IDataAccess<string> value)//Ready
+        private void AllowedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
@@ -169,7 +169,7 @@ namespace Models
         }
 
         
-        private void AllowedActivityNote_Validation(IDataAccess<string> value)//Ready
+        private void AllowedActivityNote_Validation(RamAccess<string> value)//Ready
         {
 
         }
@@ -202,7 +202,7 @@ namespace Models
         }
 
         
-        private void FactedActivity_Validation(IDataAccess<string> value)//Ready
+        private void FactedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
@@ -255,7 +255,7 @@ namespace Models
         }
 
         
-        private void FactedActivityNote_Validation(IDataAccess<string> value)//Ready
+        private void FactedActivityNote_Validation(RamAccess<string> value)//Ready
         {
 
         }

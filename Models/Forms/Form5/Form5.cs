@@ -26,7 +26,7 @@ namespace Models.Abstracts
         }
 
         private int _NumberInOrder_Not_Valid = -1;
-        private void NumberInOrder_Validation(IDataAccess<int> value)
+        private void NumberInOrder_Validation(RamAccess<int> value)
         {
             value.ClearErrors();
         }
@@ -48,7 +48,7 @@ namespace Models.Abstracts
         }
 
         private byte _CorrectionNumber_Not_Valid = 255;
-        private void CorrectionNumber_Validation(IDataAccess<byte> value)
+        private void CorrectionNumber_Validation(RamAccess<byte> value)
         {
             value.ClearErrors();
         }

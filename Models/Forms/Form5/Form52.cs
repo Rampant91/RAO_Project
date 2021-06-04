@@ -49,7 +49,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void Radionuclids_Validation(IDataAccess<string> value)//TODO
+        private void Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -96,7 +96,7 @@ namespace Models
         }
 
 
-        private void Kategory_Validation(IDataAccess<short> value)//TODO
+        private void Kategory_Validation(RamAccess<short> value)//TODO
         {
             value.ClearErrors();
         }
@@ -130,7 +130,7 @@ namespace Models
         }
 
 
-        private void Activity_Validation(IDataAccess<string> value)//Ready
+        private void Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -187,7 +187,7 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(IDataAccess<int> value)//Ready
+        private void Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)

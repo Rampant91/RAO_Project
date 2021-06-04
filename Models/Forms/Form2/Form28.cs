@@ -46,7 +46,7 @@ namespace Models
         }
 
         
-        private void PermissionNumber_Validation(IDataAccess<string> value)
+        private void PermissionNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -79,7 +79,7 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate_Validation(IDataAccess<string> value)
+        private void PermissionIssueDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -112,7 +112,7 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName_Validation(IDataAccess<string> value)
+        private void PermissionDocumentName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -145,7 +145,7 @@ namespace Models
         }
 
         
-        private void ValidBegin_Validation(IDataAccess<string> value)
+        private void ValidBegin_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -178,7 +178,7 @@ namespace Models
         }
 
         
-        private void ValidThru_Validation(IDataAccess<string> value)
+        private void ValidThru_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -200,7 +200,7 @@ namespace Models
         }
 
         
-        private void PermissionNumber1_Validation(IDataAccess<string> value)
+        private void PermissionNumber1_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -228,7 +228,7 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate1_Validation(IDataAccess<string> value)
+        private void PermissionIssueDate1_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -256,7 +256,7 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName1_Validation(IDataAccess<string> value)
+        private void PermissionDocumentName1_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -284,7 +284,7 @@ namespace Models
         }
 
         
-        private void ValidBegin1_Validation(IDataAccess<string> value)
+        private void ValidBegin1_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -306,7 +306,7 @@ namespace Models
         }
 
         
-        private void ValidThru1_Validation(IDataAccess<string> value)
+        private void ValidThru1_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -328,7 +328,7 @@ namespace Models
         }
 
         
-        private void PermissionNumber2_Validation(IDataAccess<string> value)
+        private void PermissionNumber2_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -356,7 +356,7 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate2_Validation(IDataAccess<string> value)
+        private void PermissionIssueDate2_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -388,7 +388,7 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName2_Validation(IDataAccess<string> value)
+        private void PermissionDocumentName2_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -410,7 +410,7 @@ namespace Models
         }
 
         
-        private void ValidBegin2_Validation(IDataAccess<string> value)
+        private void ValidBegin2_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -438,7 +438,7 @@ namespace Models
         }
 
         
-        private void ValidThru2_Validation(IDataAccess<string> value)
+        private void ValidThru2_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -471,7 +471,7 @@ namespace Models
         }
 
         
-        private void WasteSourceName_Validation(IDataAccess<string> value)
+        private void WasteSourceName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -504,7 +504,7 @@ namespace Models
         }
 
         
-        private void WasteRecieverName_Validation(IDataAccess<string> value)
+        private void WasteRecieverName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -537,7 +537,7 @@ namespace Models
         }
 
         
-        private void RecieverTypeCode_Validation(IDataAccess<string> value)
+        private void RecieverTypeCode_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -570,7 +570,7 @@ namespace Models
         }
 
         
-        private void PoolDistrictName_Validation(IDataAccess<string> value)
+        private void PoolDistrictName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -603,7 +603,7 @@ namespace Models
         }
 
         
-        private void AllowedWasteRemovalVolume_Validation(IDataAccess<string> value)
+        private void AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -636,7 +636,7 @@ namespace Models
         }
 
         
-        private void RemovedWasteVolume_Validation(IDataAccess<string> value)
+        private void RemovedWasteVolume_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -668,7 +668,7 @@ namespace Models
         }
 
         
-        private void RemovedWasteVolumeNote_Validation(IDataAccess<string> value)
+        private void RemovedWasteVolumeNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }

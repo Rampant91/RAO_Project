@@ -54,7 +54,7 @@ namespace Models
             }
         }
 
-        private void Okpo_Validation(IDataAccess<string> value)
+        private void Okpo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -138,7 +138,7 @@ namespace Models
         }
 
 
-        private void AllowedActivity_Validation(IDataAccess<string> value)//Ready
+        private void AllowedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))

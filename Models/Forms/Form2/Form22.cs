@@ -49,7 +49,7 @@ namespace Models
         }
         //If change this change validation
         
-        private void StoragePlaceName_Validation(IDataAccess<string> value)//Ready
+        private void StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -92,7 +92,7 @@ namespace Models
         }
         //If change this change validation
         
-        private void StoragePlaceNameNote_Validation(IDataAccess<string> value)//Ready
+        private void StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -125,7 +125,7 @@ namespace Models
         }
         //if change this change validation
         
-        private void StoragePlaceCode_Validation(IDataAccess<string> value)//TODO
+        private void StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -171,7 +171,7 @@ namespace Models
         }
 
         
-        private void PackName_Validation(IDataAccess<string> value)
+        private void PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -218,7 +218,7 @@ namespace Models
         }
 
         
-        private void PackNameNote_Validation(IDataAccess<string> value)
+        private void PackNameNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -252,7 +252,7 @@ namespace Models
         }
         //If change this change validation
         
-        private void PackType_Validation(IDataAccess<string> value)//Ready
+        private void PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -302,7 +302,7 @@ namespace Models
         }
 
         
-        private void PackTypeRecoded_Validation(IDataAccess<string> value)
+        private void PackTypeRecoded_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -334,7 +334,7 @@ namespace Models
         }
 
         
-        private void PackTypeNote_Validation(IDataAccess<string> value)
+        private void PackTypeNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -367,7 +367,7 @@ namespace Models
         }
         // positive int.
         
-        private void PackQuantity_Validation(IDataAccess<int?> value)//Ready
+        private void PackQuantity_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -406,7 +406,7 @@ namespace Models
         }
 
         
-        private void CodeRAO_Validation(IDataAccess<string> value)//TODO
+        private void CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -446,7 +446,7 @@ namespace Models
         }
 
         
-        private void StatusRAO_Validation(IDataAccess<string> value)//TODO
+        private void StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -505,7 +505,7 @@ namespace Models
         }
 
         
-        private void VolumeInPack_Validation(IDataAccess<string> value)//TODO
+        private void VolumeInPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
@@ -565,7 +565,7 @@ namespace Models
         }
 
         
-        private void MassInPack_Validation(IDataAccess<string> value)//TODO
+        private void MassInPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
@@ -625,7 +625,7 @@ namespace Models
         }
 
         
-        private void VolumeOutOfPack_Validation(IDataAccess<string> value)//TODO
+        private void VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
@@ -686,7 +686,7 @@ namespace Models
         }
 
         
-        private void MassOutOfPack_Validation(IDataAccess<string> value)//TODO
+        private void MassOutOfPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
@@ -748,7 +748,7 @@ namespace Models
         }
         // positive int.
         
-        private void QuantityOZIII_Validation(IDataAccess<int?> value)//Ready
+        private void QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null) return;
@@ -784,7 +784,7 @@ namespace Models
         }
 
         
-        private void TritiumActivity_Validation(IDataAccess<string> value)//TODO
+        private void TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
@@ -846,7 +846,7 @@ namespace Models
         }
 
         
-        private void BetaGammaActivity_Validation(IDataAccess<string> value)//TODO
+        private void BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
@@ -908,7 +908,7 @@ namespace Models
         }
 
         
-        private void AlphaActivity_Validation(IDataAccess<string> value)//TODO
+        private void AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
@@ -970,7 +970,7 @@ namespace Models
         }
 
         
-        private void TransuraniumActivity_Validation(IDataAccess<string> value)//TODO
+        private void TransuraniumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
@@ -1032,7 +1032,7 @@ namespace Models
         }
         //If change this change validation
         
-        private void MainRadionuclids_Validation(IDataAccess<string> value)//TODO
+        private void MainRadionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -1072,7 +1072,7 @@ namespace Models
         }
 
         
-        private void Subsidy_Validation(IDataAccess<string> value)//Ready
+        private void Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -1116,7 +1116,7 @@ namespace Models
         }
 
         
-        private void FcpNumber_Validation(IDataAccess<string> value)//TODO
+        private void FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }

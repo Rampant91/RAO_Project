@@ -48,7 +48,7 @@ namespace Models
         }
         //1 or 2
  //1 or 2
-        private void TypeOfAccountedParts_Validation(IDataAccess<int> value)//Ready
+        private void TypeOfAccountedParts_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value != 1) && (value.Value != 2))
@@ -83,7 +83,7 @@ namespace Models
         }
 
 
-        private void KindOri_Validation(IDataAccess<int> value)//TODO
+        private void KindOri_Validation(RamAccess<int> value)//TODO
         {
         }
         //KindOri property
@@ -115,7 +115,7 @@ namespace Models
         }
 
 
-        private void AggregateState_Validation(IDataAccess<byte> value)//Ready
+        private void AggregateState_Validation(RamAccess<byte> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value != 1) && (value.Value != 2) && (value.Value != 3))
@@ -152,7 +152,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void Radionuclids_Validation(IDataAccess<string> value)//TODO
+        private void Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -200,7 +200,7 @@ namespace Models
         }
 
 
-        private void Activity_Validation(IDataAccess<string> value)//Ready
+        private void Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -257,7 +257,7 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(IDataAccess<int> value)//Ready
+        private void Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -292,7 +292,7 @@ namespace Models
         }
 
 
-        private void Volume_Validation(IDataAccess<double> value)//TODO
+        private void Volume_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -330,7 +330,7 @@ namespace Models
         }
 
 
-        private void Mass_Validation(IDataAccess<double> value)//TODO
+        private void Mass_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)

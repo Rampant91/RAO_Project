@@ -50,7 +50,7 @@ namespace Models
             }
         }
 
-                private void PassportNumber_Validation(IDataAccess<string> value)
+                private void PassportNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -92,7 +92,7 @@ namespace Models
             }
         }
 
-                private void PassportNumberNote_Validation(IDataAccess<string> value)
+                private void PassportNumberNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -126,7 +126,7 @@ namespace Models
             }
         }
         //If change this change validation
-                private void CreatorOKPO_Validation(IDataAccess<string> value)//TODO
+                private void CreatorOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
@@ -331,7 +331,7 @@ namespace Models
             }
         }
 
-                private void Type_Validation(IDataAccess<string> value)
+                private void Type_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -363,7 +363,7 @@ namespace Models
             }
         }
 
-                private void TypeRecoded_Validation(IDataAccess<string> value)
+                private void TypeRecoded_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -397,7 +397,7 @@ namespace Models
             }
         }
         //If change this change validation
-                private void Radionuclids_Validation(IDataAccess<string> value)//TODO
+                private void Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -444,7 +444,7 @@ namespace Models
             }
         }
 
-                private void FactoryNumber_Validation(IDataAccess<string> value)
+                private void FactoryNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -481,7 +481,7 @@ namespace Models
             }
         }
         //If change this change validation
-                private void FactoryNumberRecoded_Validation(IDataAccess<string> value)//Ready
+                private void FactoryNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -514,7 +514,7 @@ namespace Models
             }
         }
 
-                private void ActivityOnCreation_Validation(IDataAccess<string> value)//Ready
+                private void ActivityOnCreation_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -557,7 +557,7 @@ namespace Models
             }
         }
         //If change this change validation
-                private void CreationDate_Validation(IDataAccess<string> value)//Ready
+                private void CreationDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -591,7 +591,7 @@ namespace Models
             }
         }
 
-                private void CreatorOKPONote_Validation(IDataAccess<string> value)
+                private void CreatorOKPONote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -612,7 +612,7 @@ namespace Models
             }
         }
 
-                private void Kategory_Validation(IDataAccess<short> value)//TODO
+                private void Kategory_Validation(RamAccess<short> value)//TODO
         {
             value.ClearErrors();
         }

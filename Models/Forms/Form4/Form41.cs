@@ -48,7 +48,7 @@ namespace Models
         }
 
 
-        private void NumberInOrder_Validation(IDataAccess<string> value)
+        private void NumberInOrder_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -109,7 +109,7 @@ namespace Models
             }
         }
 
-        private void Okpo_Validation(IDataAccess<string> value)
+        private void Okpo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -210,7 +210,7 @@ namespace Models
         }
         // positive int.
 
-        private void QuantityOfFormsInv_Validation(IDataAccess<int> value)//Ready
+        private void QuantityOfFormsInv_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -250,7 +250,7 @@ namespace Models
         }
         // positive int.
 
-        private void QuantityOfFormsOper_Validation(IDataAccess<int> value)//Ready
+        private void QuantityOfFormsOper_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -287,7 +287,7 @@ namespace Models
         }
         // positive int.
 
-        private void QuantityOfFormsYear_Validation(IDataAccess<int> value)//Ready
+        private void QuantityOfFormsYear_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)

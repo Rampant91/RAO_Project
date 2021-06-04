@@ -48,7 +48,7 @@ namespace Models
         }
 
 
-        private void PackName_Validation(IDataAccess<string> value)
+        private void PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -88,7 +88,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void PackType_Validation(IDataAccess<string> value)//Ready
+        private void PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -126,7 +126,7 @@ namespace Models
         }
 
 
-        private void PackTypeRecoded_Validation(IDataAccess<string> value)
+        private void PackTypeRecoded_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }

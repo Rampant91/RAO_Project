@@ -47,7 +47,7 @@ namespace Models
         }
 
 
-        private void NameIOU_Validation(IDataAccess<string> value)//TODO
+        private void NameIOU_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -83,7 +83,7 @@ namespace Models
         }
         // positive int.
 
-        private void Quantity_Validation(IDataAccess<int> value)//Ready
+        private void Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -118,7 +118,7 @@ namespace Models
         }
 
 
-        private void Mass_Validation(IDataAccess<double> value)//TODO
+        private void Mass_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)

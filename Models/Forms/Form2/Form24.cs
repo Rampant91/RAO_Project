@@ -45,7 +45,7 @@ namespace Models
             }
         }
 
-                private void CodeOYAT_Validation(IDataAccess<string> value)
+                private void CodeOYAT_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
 
@@ -77,7 +77,7 @@ namespace Models
             }
         }
 
-                private void CodeOYATnote_Validation(IDataAccess<string> value)
+                private void CodeOYATnote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -109,7 +109,7 @@ namespace Models
             }
         }
 
-                private void FcpNumber_Validation(IDataAccess<string> value)//TODO
+                private void FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -141,7 +141,7 @@ namespace Models
             }
         }
 
-                private void MassCreated_Validation(IDataAccess<double> value)//TODO
+                private void MassCreated_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -176,7 +176,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityCreated_Validation(IDataAccess<int> value)//Ready
+                private void QuantityCreated_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -210,7 +210,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityCreatedNote_Validation(IDataAccess<int> value)//Ready
+                private void QuantityCreatedNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -240,7 +240,7 @@ namespace Models
             }
         }
 
-                private void MassFromAnothers_Validation(IDataAccess<double> value)//TODO
+                private void MassFromAnothers_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -269,7 +269,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromAnothers_Validation(IDataAccess<int> value)//Ready
+                private void QuantityFromAnothers_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -299,7 +299,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromAnothersNote_Validation(IDataAccess<int> value)//Ready
+                private void QuantityFromAnothersNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -333,7 +333,7 @@ namespace Models
             }
         }
 
-                private void MassFromAnothersImported_Validation(IDataAccess<double> value)//TODO
+                private void MassFromAnothersImported_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -368,7 +368,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromAnothersImported_Validation(IDataAccess<int> value)//Ready
+                private void QuantityFromAnothersImported_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -402,7 +402,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityFromImportedNote_Validation(IDataAccess<int> value)//Ready
+                private void QuantityFromImportedNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -436,7 +436,7 @@ namespace Models
             }
         }
 
-                private void MassAnotherReasons_Validation(IDataAccess<double> value)//TODO
+                private void MassAnotherReasons_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -470,7 +470,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityAnotherReasons_Validation(IDataAccess<int> value)//Ready
+                private void QuantityAnotherReasons_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -504,7 +504,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityAnotherReasonsNote_Validation(IDataAccess<int> value)//Ready
+                private void QuantityAnotherReasonsNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -534,7 +534,7 @@ namespace Models
             }
         }
 
-                private void MassTransferredToAnother_Validation(IDataAccess<double?> value)//TODO
+                private void MassTransferredToAnother_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
         }
@@ -568,7 +568,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityTransferredToAnother_Validation(IDataAccess<int> value)//Ready
+                private void QuantityTransferredToAnother_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -602,7 +602,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityTransferredToNote_Validation(IDataAccess<int> value)//Ready
+                private void QuantityTransferredToNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -632,7 +632,7 @@ namespace Models
             }
         }
 
-                private void MassRefined_Validation(IDataAccess<double> value)//TODO
+                private void MassRefined_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -666,7 +666,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRefined_Validation(IDataAccess<int> value)//Ready
+                private void QuantityRefined_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -700,7 +700,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRefinedNote_Validation(IDataAccess<int> value)//Ready
+                private void QuantityRefinedNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -734,7 +734,7 @@ namespace Models
             }
         }
 
-                private void MassRemovedFromAccount_Validation(IDataAccess<double> value)//TODO
+                private void MassRemovedFromAccount_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -768,7 +768,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRemovedFromAccount_Validation(IDataAccess<int> value)//Ready
+                private void QuantityRemovedFromAccount_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -803,7 +803,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityRemovedFromNote_Validation(IDataAccess<int> value)//Ready
+                private void QuantityRemovedFromNote_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)

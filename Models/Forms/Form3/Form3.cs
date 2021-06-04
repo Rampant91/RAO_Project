@@ -38,7 +38,7 @@ namespace Models.Abstracts
         }
 
         
-        private void CorrectionNumber_Validation(IDataAccess<string> value)
+        private void CorrectionNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }

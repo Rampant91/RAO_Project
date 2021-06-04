@@ -353,7 +353,7 @@ namespace Models
                 OnPropertyChanged(nameof(Okpo));
             }
         }
-                private void Okpo_Validation(IDataAccess<string> value)
+                private void Okpo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -393,7 +393,7 @@ namespace Models
             }
         }
 
-                private void Okved_Validation(IDataAccess<string> value)
+                private void Okved_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("[0123456789]{2}\\.[0123456789]{2}\\.[0123456789]{2}");
@@ -428,7 +428,7 @@ namespace Models
             }
         }
 
-                private void Okogu_Validation(IDataAccess<string> value)
+                private void Okogu_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("[0123456789]{5}");
@@ -463,7 +463,7 @@ namespace Models
             }
         }
 
-                private void Oktmo_Validation(IDataAccess<string> value)
+                private void Oktmo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("[0123456789]{11}");
@@ -498,7 +498,7 @@ namespace Models
             }
         }
 
-                private void Inn_Validation(IDataAccess<string> value)
+                private void Inn_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("[0123456789]{10}");
@@ -533,7 +533,7 @@ namespace Models
             }
         }
 
-                private void Kpp_Validation(IDataAccess<string> value)
+                private void Kpp_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("[0123456789]{10}");
@@ -568,7 +568,7 @@ namespace Models
             }
         }
 
-                private void Okopf_Validation(IDataAccess<string> value)
+                private void Okopf_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("[0123456789]{5}");
@@ -603,7 +603,7 @@ namespace Models
             }
         }
 
-                private void Okfs_Validation(IDataAccess<string> value)
+                private void Okfs_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("[0123456789]{2}");

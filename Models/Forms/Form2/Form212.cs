@@ -39,7 +39,7 @@ namespace Models
         }
 
         
-        private void OperationCode_Validation(IDataAccess<string> value)
+        private void OperationCode_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -72,7 +72,7 @@ namespace Models
         }
         //2 digit code
         
-        private void ObjectTypeCode_Validation(IDataAccess<string> value)//TODO
+        private void ObjectTypeCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -107,7 +107,7 @@ namespace Models
         }
         //If change this change validation
         
-        private void Radionuclids_Validation(IDataAccess<string> value)//TODO
+        private void Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -154,7 +154,7 @@ namespace Models
         }
 
         
-        private void Activity_Validation(IDataAccess<double?> value)//Ready
+        private void Activity_Validation(RamAccess<double?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == -1)
@@ -196,7 +196,7 @@ namespace Models
         }
 
         
-        private void ProviderOrRecieverOKPO_Validation(IDataAccess<string> value)//TODO
+        private void ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -401,7 +401,7 @@ namespace Models
         }
 
         
-        private void ProviderOrRecieverOKPONote_Validation(IDataAccess<string> value)
+        private void ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }

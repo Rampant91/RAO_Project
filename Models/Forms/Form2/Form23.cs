@@ -49,7 +49,7 @@ namespace Models
         }
         //If change this change validation
         
-        private void StoragePlaceName_Validation(IDataAccess<string> value)//Ready
+        private void StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -92,7 +92,7 @@ namespace Models
         }
         //If change this change validation
         
-        private void StoragePlaceNameNote_Validation(IDataAccess<string> value)//Ready
+        private void StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -125,7 +125,7 @@ namespace Models
         }
         //if change this change validation
         
-        private void StoragePlaceCode_Validation(IDataAccess<string> value)//TODO
+        private void StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -170,7 +170,7 @@ namespace Models
         }
 
         
-        private void ProjectVolume_Validation(IDataAccess<string> value)//TODO
+        private void ProjectVolume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (value.Value.Equals("прим."))
@@ -218,7 +218,7 @@ namespace Models
         }
 
         
-        private void ProjectVolumeNote_Validation(IDataAccess<double?> value)//TODO
+        private void ProjectVolumeNote_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
         }
@@ -251,7 +251,7 @@ namespace Models
         }
 
         
-        private void CodeRAO_Validation(IDataAccess<string> value)//TODO
+        private void CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -294,7 +294,7 @@ namespace Models
         }
 
         
-        private void Volume_Validation(IDataAccess<string> value)//TODO
+        private void Volume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -344,7 +344,7 @@ namespace Models
         }
 
         
-        private void Mass_Validation(IDataAccess<string> value)//TODO
+        private void Mass_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -395,7 +395,7 @@ namespace Models
         }
         // positive int.
         
-        private void QuantityOZIII_Validation(IDataAccess<int?> value)//Ready
+        private void QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null) return;
@@ -431,7 +431,7 @@ namespace Models
         }
 
         
-        private void SummaryActivity_Validation(IDataAccess<string> value)//Ready
+        private void SummaryActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -482,7 +482,7 @@ namespace Models
         }
 
         
-        private void DocumentNumber_Validation(IDataAccess<string> value)//Ready
+        private void DocumentNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null))//ok
@@ -520,7 +520,7 @@ namespace Models
         }
 
         
-        private void DocumentNumberRecoded_Validation(IDataAccess<string> value)//Ready
+        private void DocumentNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -549,7 +549,7 @@ namespace Models
         }
         //if change this change validation
 
-        private void DocumentDate_Validation(IDataAccess<string> value)//Ready
+        private void DocumentDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -599,7 +599,7 @@ namespace Models
         }
 
         
-        private void ExpirationDate_Validation(IDataAccess<string> value)//TODO
+        private void ExpirationDate_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -649,7 +649,7 @@ namespace Models
         }
 
         
-        private void DocumentName_Validation(IDataAccess<string> value)//Ready
+        private void DocumentName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))

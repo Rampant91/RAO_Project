@@ -36,7 +36,7 @@ namespace Models
             }
         }
 
-                private void RefineMachineName_Validation(IDataAccess<string> value)
+                private void RefineMachineName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -57,7 +57,7 @@ namespace Models
             }
         }
 
-                private void MachineCode_Validation(IDataAccess<byte?> value)//TODO
+                private void MachineCode_Validation(RamAccess<byte?> value)//TODO
         {
             value.ClearErrors();
             if (value.Value == null) return;
@@ -89,7 +89,7 @@ namespace Models
             }
         }
 
-                private void MachinePower_Validation(IDataAccess<string> value)//TODO
+                private void MachinePower_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -135,7 +135,7 @@ namespace Models
             }
         }
 
-                private void NumberOfHoursPerYear_Validation(IDataAccess<string> value)//TODO
+                private void NumberOfHoursPerYear_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -181,7 +181,7 @@ namespace Models
             }
         }
 
-                private void CodeRAOIn_Validation(IDataAccess<string> value)//TODO
+                private void CodeRAOIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -212,7 +212,7 @@ namespace Models
             }
         }
 
-                private void StatusRAOIn_Validation(IDataAccess<string> value)//TODO
+                private void StatusRAOIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -259,7 +259,7 @@ namespace Models
             }
         }
 
-                private void VolumeIn_Validation(IDataAccess<string> value)//TODO
+                private void VolumeIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -308,7 +308,7 @@ namespace Models
             }
         }
 
-                private void MassIn_Validation(IDataAccess<string> value)//TODO
+                private void MassIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -369,7 +369,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityIn_Validation(IDataAccess<string> value1)//Ready
+                private void QuantityIn_Validation(RamAccess<string> value1)//Ready
         {
             value1.ClearErrors();
             if (string.IsNullOrEmpty(value1.Value)) return;
@@ -425,7 +425,7 @@ namespace Models
             }
         }
 
-                private void TritiumActivityIn_Validation(IDataAccess<string> value)//TODO
+                private void TritiumActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -486,7 +486,7 @@ namespace Models
             }
         }
 
-                private void BetaGammaActivityIn_Validation(IDataAccess<string> value)//TODO
+                private void BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -547,7 +547,7 @@ namespace Models
             }
         }
 
-                private void AlphaActivityIn_Validation(IDataAccess<string> value)//TODO
+                private void AlphaActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -608,7 +608,7 @@ namespace Models
             }
         }
 
-                private void TransuraniumActivityIn_Validation(IDataAccess<string> value)//TODO
+                private void TransuraniumActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -669,7 +669,7 @@ namespace Models
             }
         }
 
-                private void CodeRAOout_Validation(IDataAccess<string> value)//TODO
+                private void CodeRAOout_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -711,7 +711,7 @@ namespace Models
             }
         }
 
-                private void StatusRAOout_Validation(IDataAccess<string> value)//TODO
+                private void StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -769,7 +769,7 @@ namespace Models
             }
         }
 
-                private void VolumeOut_Validation(IDataAccess<string> value)//TODO
+                private void VolumeOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -829,7 +829,7 @@ namespace Models
             }
         }
 
-                private void MassOut_Validation(IDataAccess<string> value)//TODO
+                private void MassOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -891,7 +891,7 @@ namespace Models
             }
         }
         // positive int.
-                private void QuantityOZIIIout_Validation(IDataAccess<string> value1)//Ready
+                private void QuantityOZIIIout_Validation(RamAccess<string> value1)//Ready
         {
             value1.ClearErrors();
             if (string.IsNullOrEmpty(value1.Value)) return;
@@ -947,7 +947,7 @@ namespace Models
             }
         }
 
-                private void TritiumActivityOut_Validation(IDataAccess<string> value)//TODO
+                private void TritiumActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -1008,7 +1008,7 @@ namespace Models
             }
         }
 
-                private void BetaGammaActivityOut_Validation(IDataAccess<string> value)//TODO
+                private void BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -1067,7 +1067,7 @@ namespace Models
             }
         }
 
-                private void AlphaActivityOut_Validation(IDataAccess<string> value)//TODO
+                private void AlphaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -1128,7 +1128,7 @@ namespace Models
             }
         }
 
-                private void TransuraniumActivityOut_Validation(IDataAccess<string> value)//TODO
+                private void TransuraniumActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))

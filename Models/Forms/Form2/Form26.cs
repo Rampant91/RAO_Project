@@ -41,7 +41,7 @@ namespace Models
             }
         }
         // positive int.
-                private void SourcesQuantity_Validation(IDataAccess<int?> value)//Ready
+                private void SourcesQuantity_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -64,7 +64,7 @@ namespace Models
             }
         }
         //If change this change validation
-                private void ObservedSourceNumber_Validation(IDataAccess<string> value)//Ready
+                private void ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -85,7 +85,7 @@ namespace Models
             }
         }
         //If change this change validation
-                private void ControlledAreaName_Validation(IDataAccess<string> value)//Ready
+                private void ControlledAreaName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -106,7 +106,7 @@ namespace Models
             }
         }
 
-                private void SupposedWasteSource_Validation(IDataAccess<string> value)//Ready
+                private void SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -131,7 +131,7 @@ namespace Models
             }
         }
 
-                private void DistanceToWasteSource_Validation(IDataAccess<int?> value)//Ready
+                private void DistanceToWasteSource_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
         }
@@ -163,7 +163,7 @@ namespace Models
             }
         }
 
-                private void TestDepth_Validation(IDataAccess<int?> value)//Ready
+                private void TestDepth_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
         }
@@ -194,7 +194,7 @@ namespace Models
             }
         }
 
-                private void TestDepthNote_Validation(IDataAccess<int?> value)//Ready
+                private void TestDepthNote_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
         }
@@ -222,7 +222,7 @@ namespace Models
             }
         }
         //If change this change validation
-                private void RadionuclidName_Validation(IDataAccess<string> value)//TODO
+                private void RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -254,7 +254,7 @@ namespace Models
             }
         }
 
-                private void AverageYearConcentration_Validation(IDataAccess<double> value)//TODO
+                private void AverageYearConcentration_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }

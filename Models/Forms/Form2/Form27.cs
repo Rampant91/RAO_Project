@@ -46,7 +46,7 @@ namespace Models
         }
 
         
-        private void PermissionNumber_Validation(IDataAccess<string> value)
+        private void PermissionNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -79,7 +79,7 @@ namespace Models
         }
 
         
-        private void PermissionIssueDate_Validation(IDataAccess<string> value)
+        private void PermissionIssueDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -112,7 +112,7 @@ namespace Models
         }
 
         
-        private void PermissionDocumentName_Validation(IDataAccess<string> value)
+        private void PermissionDocumentName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -145,7 +145,7 @@ namespace Models
         }
 
         
-        private void ValidBegin_Validation(IDataAccess<string> value)
+        private void ValidBegin_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -178,7 +178,7 @@ namespace Models
         }
 
         
-        private void ValidThru_Validation(IDataAccess<string> value)
+        private void ValidThru_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -210,7 +210,7 @@ namespace Models
         }
 
         
-        private void RadionuclidNameNote_Validation(IDataAccess<string> value)
+        private void RadionuclidNameNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -243,7 +243,7 @@ namespace Models
         }
 
         
-        private void AllowedWasteValue_Validation(IDataAccess<string> value)
+        private void AllowedWasteValue_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -275,7 +275,7 @@ namespace Models
         }
 
         
-        private void AllowedWasteValueNote_Validation(IDataAccess<string> value)
+        private void AllowedWasteValueNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -308,7 +308,7 @@ namespace Models
         }
 
         
-        private void FactedWasteValue_Validation(IDataAccess<string> value)
+        private void FactedWasteValue_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -340,7 +340,7 @@ namespace Models
         }
 
         
-        private void FactedWasteValueNote_Validation(IDataAccess<string> value)
+        private void FactedWasteValueNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -373,7 +373,7 @@ namespace Models
         }
 
         
-        private void WasteOutbreakPreviousYear_Validation(IDataAccess<string> value)
+        private void WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }

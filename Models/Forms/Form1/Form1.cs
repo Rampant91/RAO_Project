@@ -38,7 +38,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        //private void NumberInOrder_Validation(IDataAccess<string> value)
+        //private void NumberInOrder_Validation(RamAccess<string> value)
         //{
         //    value.ClearErrors();
         //}
@@ -59,7 +59,7 @@ namespace Models.Abstracts
             }
         }
 
-        //private void CorrectionNumber_Validation(IDataAccess<string> value)
+        //private void CorrectionNumber_Validation(RamAccess<string> value)
         //{
         //    value.ClearErrors();
         //}
@@ -79,7 +79,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        protected virtual void OperationCode_Validation(IDataAccess<short?> arg) { }
+        protected virtual void OperationCode_Validation(RamAccess<short?> arg) { }
 
         //OprationCode property
         
@@ -98,7 +98,7 @@ namespace Models.Abstracts
             }
         }
 
-        protected virtual void OperationDate_Validation(IDataAccess<string> value)
+        protected virtual void OperationDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -136,7 +136,7 @@ namespace Models.Abstracts
             }
         }
 
-        protected virtual void DocumentVid_Validation(IDataAccess<byte?> value)// TO DO
+        protected virtual void DocumentVid_Validation(RamAccess<byte?> value)// TO DO
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -187,7 +187,7 @@ namespace Models.Abstracts
             }
         }
 
-        protected virtual void DocumentNumber_Validation(IDataAccess<string> value)//Ready
+        protected virtual void DocumentNumber_Validation(RamAccess<string> value)//Ready
         { }
         //DocumentNumber property
 
@@ -205,7 +205,7 @@ namespace Models.Abstracts
             }
         }
 
-        private void DocumentNumberRecoded_Validation(IDataAccess<string> value)//Ready
+        private void DocumentNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -252,7 +252,7 @@ namespace Models.Abstracts
                 "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН","ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН","ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ"
             };
 
-        protected virtual void DocumentDate_Validation(IDataAccess<string> value)
+        protected virtual void DocumentDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -298,7 +298,7 @@ namespace Models.Abstracts
         }
         //if change this change validation
 
-        private void DocumentDateNote_Validation(IDataAccess<string> value)
+        private void DocumentDateNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }

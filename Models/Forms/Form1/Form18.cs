@@ -49,7 +49,7 @@ namespace Models
         }
 
 
-        private void IndividualNumberZHRO_Validation(IDataAccess<string> value)
+        private void IndividualNumberZHRO_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -81,7 +81,7 @@ namespace Models
         }
 
 
-        private void IndividualNumberZHROrecoded_Validation(IDataAccess<string> value)
+        private void IndividualNumberZHROrecoded_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -116,7 +116,7 @@ namespace Models
         }
 
 
-        private void PassportNumber_Validation(IDataAccess<string> value)
+        private void PassportNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -159,7 +159,7 @@ namespace Models
         }
 
 
-        private void PassportNumberNote_Validation(IDataAccess<string> value)
+        private void PassportNumberNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -193,7 +193,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void PassportNumberRecoded_Validation(IDataAccess<string> value)//Ready
+        private void PassportNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -221,7 +221,7 @@ namespace Models
         }
 
 
-        private void Volume6_Validation(IDataAccess<string> value)//TODO
+        private void Volume6_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -267,7 +267,7 @@ namespace Models
         }
 
 
-        private void Mass7_Validation(IDataAccess<string> value)//TODO
+        private void Mass7_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -318,7 +318,7 @@ namespace Models
         }
 
 
-        private void SaltConcentration_Validation(IDataAccess<double?> value)
+        private void SaltConcentration_Validation(RamAccess<double?> value)
         {
             value.ClearErrors();
             if (value.Value == null) return;
@@ -346,7 +346,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void Radionuclids_Validation(IDataAccess<string> value)//TODO
+        private void Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -386,7 +386,7 @@ namespace Models
         }
 
 
-        private void SpecificActivity_Validation(IDataAccess<string> value)//TODO
+        private void SpecificActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -442,7 +442,7 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPO_Validation(IDataAccess<string> value)//TODO
+        private void ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -488,7 +488,7 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPONote_Validation(IDataAccess<string> value)
+        private void ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -523,7 +523,7 @@ namespace Models
         }
 
 
-        private void TransporterOKPO_Validation(IDataAccess<string> value)//Done
+        private void TransporterOKPO_Validation(RamAccess<string> value)//Done
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -576,7 +576,7 @@ namespace Models
         }
 
 
-        private void TransporterOKPONote_Validation(IDataAccess<string> value)
+        private void TransporterOKPONote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -609,7 +609,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void StoragePlaceName_Validation(IDataAccess<string> value)//Ready
+        private void StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value)) return;
@@ -648,7 +648,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void StoragePlaceNameNote_Validation(IDataAccess<string> value)//Ready
+        private void StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -681,7 +681,7 @@ namespace Models
         }
         //if change this change validation
 
-        private void StoragePlaceCode_Validation(IDataAccess<string> value)//TODO
+        private void StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-")) return;
@@ -718,7 +718,7 @@ namespace Models
         }
 
 
-        private void CodeRAO_Validation(IDataAccess<string> value)//TODO
+        private void CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -762,7 +762,7 @@ namespace Models
         }
 
 
-        private void StatusRAO_Validation(IDataAccess<string> value)//TODO
+        private void StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (value.Value.Length == 1)
@@ -815,7 +815,7 @@ namespace Models
         }
 
 
-        private void Volume20_Validation(IDataAccess<string> value)//TODO
+        private void Volume20_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -864,7 +864,7 @@ namespace Models
         }
 
 
-        private void Mass21_Validation(IDataAccess<string> value)//TODO
+        private void Mass21_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -918,7 +918,7 @@ namespace Models
         }
 
 
-        private void TritiumActivity_Validation(IDataAccess<string> value)//TODO
+        private void TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -972,7 +972,7 @@ namespace Models
         }
 
 
-        private void BetaGammaActivity_Validation(IDataAccess<string> value)//TODO
+        private void BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -1026,7 +1026,7 @@ namespace Models
         }
 
 
-        private void AlphaActivity_Validation(IDataAccess<string> value)//TODO
+        private void AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -1080,7 +1080,7 @@ namespace Models
         }
 
 
-        private void TransuraniumActivity_Validation(IDataAccess<string> value)//TODO
+        private void TransuraniumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -1134,7 +1134,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void RefineOrSortRAOCode_Validation(IDataAccess<string> value)//TODO
+        private void RefineOrSortRAOCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (OperationCode.Value == 55)
@@ -1189,7 +1189,7 @@ namespace Models
         }
 
 
-        private void Subsidy_Validation(IDataAccess<string> value)//Ready
+        private void Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals("")) return;
@@ -1233,13 +1233,13 @@ namespace Models
         }
 
 
-        private void FcpNumber_Validation(IDataAccess<string> value)//TODO
+        private void FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
         //FcpNumber property
 
-        protected override void OperationCode_Validation(IDataAccess<short?> value)//OK
+        protected override void OperationCode_Validation(RamAccess<short?> value)//OK
         {
             value.ClearErrors();
             if (value.Value == null) return;
@@ -1265,7 +1265,7 @@ namespace Models
             return;
         }
 
-        protected override void OperationDate_Validation(IDataAccess<string> value)
+        protected override void OperationDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -1286,12 +1286,12 @@ namespace Models
             }
         }
 
-        protected override void DocumentNumber_Validation(IDataAccess<string> value)
+        protected override void DocumentNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
 
-        protected override void DocumentVid_Validation(IDataAccess<byte?> value)
+        protected override void DocumentVid_Validation(RamAccess<byte?> value)
         {
             value.ClearErrors();
             List<Tuple<byte?, string>> spr = new List<Tuple<byte?, string>>
@@ -1322,7 +1322,7 @@ namespace Models
             value.AddError( "Недопустимое значение");
         }
 
-        protected override void DocumentDate_Validation(IDataAccess<string> value)
+        protected override void DocumentDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))

@@ -46,7 +46,7 @@ namespace Models
             }
         }
 
-                private void PlotName_Validation(IDataAccess<string> value)//TODO
+                private void PlotName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -78,7 +78,7 @@ namespace Models
             }
         }
 
-                private void PlotKadastrNumber_Validation(IDataAccess<string> value)//TODO
+                private void PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -110,7 +110,7 @@ namespace Models
             }
         }
         //6 symbols code
-                private void PlotCode_Validation(IDataAccess<string> value)//TODO
+                private void PlotCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -142,7 +142,7 @@ namespace Models
             }
         }
 
-                private void InfectedArea_Validation(IDataAccess<int> value)//TODO
+                private void InfectedArea_Validation(RamAccess<int> value)//TODO
         {
             value.ClearErrors();
         }
@@ -176,7 +176,7 @@ namespace Models
             }
         }
         //If change this change validation
-                private void Radionuclids_Validation(IDataAccess<string> value)//TODO
+                private void Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -221,7 +221,7 @@ namespace Models
             }
         }
 
-                private void RadionuclidNameNote_Validation(IDataAccess<string> value)
+                private void RadionuclidNameNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -253,7 +253,7 @@ namespace Models
             }
         }
 
-                private void SpecificActivityOfPlot_Validation(IDataAccess<string> value)//TODO
+                private void SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
         {
             //value.ClearErrors();
             //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -296,7 +296,7 @@ namespace Models
             }
         }
 
-                private void SpecificActivityOfLiquidPart_Validation(IDataAccess<string> value)//TODO
+                private void SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
         {
             //value.ClearErrors();
             //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -332,7 +332,7 @@ namespace Models
             }
         }
 
-                private void SpecificActivityOfDensePart_Validation(IDataAccess<string> value)//TODO
+                private void SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
         {
             //value.ClearErrors();
             //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |

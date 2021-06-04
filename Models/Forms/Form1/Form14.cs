@@ -51,7 +51,7 @@ namespace Models
         }
 
 
-        public void PassportNumber_Validation(IDataAccess<string> value)
+        public void PassportNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -67,7 +67,7 @@ namespace Models
         }
         //PassportNumber property
 
-        protected override void OperationCode_Validation(IDataAccess<short?> value)//OK
+        protected override void OperationCode_Validation(RamAccess<short?> value)//OK
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -125,7 +125,7 @@ namespace Models
         }
 
 
-        private void PassportNumberNote_Validation(IDataAccess<string> value)
+        private void PassportNumberNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -164,7 +164,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void PassportNumberRecoded_Validation(IDataAccess<string> value)//Ready
+        private void PassportNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -198,7 +198,7 @@ namespace Models
         }
 
 
-        private void Name_Validation(IDataAccess<string> value)//TODO
+        private void Name_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -237,7 +237,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void Sort_Validation(IDataAccess<byte> value)//TODO
+        private void Sort_Validation(RamAccess<byte> value)//TODO
         {
             value.ClearErrors();
             if (!((value.Value >= 4) && (value.Value <= 12)))
@@ -274,7 +274,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void Radionuclids_Validation(IDataAccess<string> value)//TODO
+        private void Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -322,7 +322,7 @@ namespace Models
         }
 
 
-        private void Activity_Validation(IDataAccess<string> value)//Ready
+        private void Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -372,7 +372,7 @@ namespace Models
         }
         //if change this change validation
 
-        private void ActivityMeasurementDate_Validation(IDataAccess<string> value)//Ready
+        private void ActivityMeasurementDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
@@ -401,7 +401,7 @@ namespace Models
         }
 
 
-        private void Volume_Validation(IDataAccess<double> value)//TODO
+        private void Volume_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -439,7 +439,7 @@ namespace Models
         }
 
 
-        private void Mass_Validation(IDataAccess<double> value)//TODO
+        private void Mass_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -477,7 +477,7 @@ namespace Models
         }
 
 
-        private void AggregateState_Validation(IDataAccess<byte> value)//Ready
+        private void AggregateState_Validation(RamAccess<byte> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value != 1) && (value.Value != 2) && (value.Value != 3))
@@ -506,7 +506,7 @@ namespace Models
         }
 
 
-        private void PropertyCode_Validation(IDataAccess<byte> value)//Ready
+        private void PropertyCode_Validation(RamAccess<byte> value)//Ready
         {
             value.ClearErrors();
             //if (value.Value == 255)//ok
@@ -547,7 +547,7 @@ namespace Models
         }
         //if change this change validation
 
-        private void OwnerNote_Validation(IDataAccess<string> value)
+        private void OwnerNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -587,7 +587,7 @@ namespace Models
         }
         //if change this change validation
 
-        private void Owner_Validation(IDataAccess<string> value)//Ready
+        private void Owner_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -643,7 +643,7 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPO_Validation(IDataAccess<string> value)//TODO
+        private void ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -710,7 +710,7 @@ namespace Models
         }
 
 
-        private void ProviderOrRecieverOKPONote_Validation(IDataAccess<string> value)
+        private void ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -750,7 +750,7 @@ namespace Models
         }
 
 
-        private void TransporterOKPO_Validation(IDataAccess<string> value)//Done
+        private void TransporterOKPO_Validation(RamAccess<string> value)//Done
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -803,7 +803,7 @@ namespace Models
         }
 
 
-        private void TransporterOKPONote_Validation(IDataAccess<string> value)
+        private void TransporterOKPONote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -838,7 +838,7 @@ namespace Models
         }
 
 
-        private void PackName_Validation(IDataAccess<string> value)
+        private void PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -882,7 +882,7 @@ namespace Models
         }
 
 
-        private void PackNameNote_Validation(IDataAccess<string> value)
+        private void PackNameNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -917,7 +917,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void PackType_Validation(IDataAccess<string> value)//Ready
+        private void PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null))
@@ -961,7 +961,7 @@ namespace Models
         }
 
 
-        private void PackTypeRecoded_Validation(IDataAccess<string> value)
+        private void PackTypeRecoded_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -994,7 +994,7 @@ namespace Models
         }
 
 
-        private void PackTypeNote_Validation(IDataAccess<string> value)
+        private void PackTypeNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
         }
@@ -1028,7 +1028,7 @@ namespace Models
         }
         //If change this change validation
 
-        private void PackNumber_Validation(IDataAccess<string> value)//Ready
+        private void PackNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null))//ok
@@ -1073,7 +1073,7 @@ namespace Models
         }
 
 
-        private void PackNumberNote_Validation(IDataAccess<string> value)
+        private void PackNumberNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -1111,13 +1111,13 @@ namespace Models
         }
         //If change this change validation
 
-        private void PackNumberRecoded_Validation(IDataAccess<string> value)//Ready
+        private void PackNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
         }
         //PackNumberRecoded property
 
-        protected override void DocumentNumber_Validation(IDataAccess<string> value)
+        protected override void DocumentNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (value.Value == "прим.")
@@ -1161,7 +1161,7 @@ namespace Models
         }
 
 
-        private void DocumentNumberNote_Validation(IDataAccess<string> value)
+        private void DocumentNumberNote_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))

@@ -37,7 +37,7 @@ namespace Models.Abstracts
             }
         }
 
-                private void CorrectionNumber_Validation(IDataAccess<byte> value)
+                private void CorrectionNumber_Validation(RamAccess<byte> value)
         {
             value.ClearErrors();
         }
@@ -70,7 +70,7 @@ namespace Models.Abstracts
             }
         }
 
-                private void NumberInOrder_Validation(IDataAccess<int> value)
+                private void NumberInOrder_Validation(RamAccess<int> value)
         {
             value.ClearErrors();
         }

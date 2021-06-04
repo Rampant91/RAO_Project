@@ -34,7 +34,7 @@ namespace Models
             }
         }
 
-                private void IndicatorName_Validation(IDataAccess<string> value)//TODO
+                private void IndicatorName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -66,7 +66,7 @@ namespace Models
             }
         }
 
-                private void PlotName_Validation(IDataAccess<string> value)//TODO
+                private void PlotName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -98,7 +98,7 @@ namespace Models
             }
         }
 
-                private void PlotKadastrNumber_Validation(IDataAccess<string> value)//TODO
+                private void PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -130,7 +130,7 @@ namespace Models
             }
         }
         //6 symbols code
-                private void PlotCode_Validation(IDataAccess<string> value)//TODO
+                private void PlotCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
@@ -162,7 +162,7 @@ namespace Models
             }
         }
 
-                private void InfectedArea_Validation(IDataAccess<int?> value)//TODO
+                private void InfectedArea_Validation(RamAccess<int?> value)//TODO
         {
             value.ClearErrors();
         }
@@ -194,7 +194,7 @@ namespace Models
             }
         }
 
-                private void AvgGammaRaysDosePower_Validation(IDataAccess<double> value)//TODO
+                private void AvgGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -226,7 +226,7 @@ namespace Models
             }
         }
 
-                private void MaxGammaRaysDosePower_Validation(IDataAccess<double> value)//TODO
+                private void MaxGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -258,7 +258,7 @@ namespace Models
             }
         }
 
-                private void WasteDensityAlpha_Validation(IDataAccess<double> value)//TODO
+                private void WasteDensityAlpha_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -290,7 +290,7 @@ namespace Models
             }
         }
 
-                private void WasteDensityBeta_Validation(IDataAccess<double> value)//TODO
+                private void WasteDensityBeta_Validation(RamAccess<double> value)//TODO
         {
             value.ClearErrors();
         }
@@ -322,7 +322,7 @@ namespace Models
             }
         }
 
-                private void FcpNumber_Validation(IDataAccess<string> value)//TODO
+                private void FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
         }
