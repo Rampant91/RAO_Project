@@ -149,7 +149,7 @@ namespace Models
             }
             set
             {
-                Radionuclids_Validation(value);
+
 
                 
                 {
@@ -254,7 +254,7 @@ namespace Models
             }
             set
             {
-                Quantity_Validation(value);
+
 
 
                 

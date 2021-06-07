@@ -36,7 +36,7 @@ namespace Models
             }
             set
             {
-                CodeOYAT_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(CodeOYAT), value);
@@ -68,7 +68,7 @@ namespace Models
             }
             set
             {
-                CodeOYATnote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(CodeOYATnote), value);
@@ -99,7 +99,7 @@ namespace Models
             }
             set
             {
-                FcpNumber_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(FcpNumber), value);
@@ -130,7 +130,7 @@ namespace Models
             }
             set
             {
-                MassCreated_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(MassCreated), value);
@@ -162,8 +162,8 @@ namespace Models
             }
             set
             {
-                QuantityCreated_Validation(value);
-                //_QuantityCreated_Validation(value);
+
+
 
                 
                 {
@@ -201,7 +201,7 @@ namespace Models
             }
             set
             {
-                QuantityCreatedNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(QuantityCreatedNote), value);
@@ -332,7 +332,7 @@ namespace Models
             }
             set
             {
-                MassFromAnothersImported_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(MassFromAnothersImported), value);
@@ -364,8 +364,8 @@ namespace Models
             }
             set
             {
-                QuantityFromAnothersImported_Validation(value);
-                //_QuantityFromAnothersImported_Validation(value);
+
+
 
                 
                 {
@@ -403,7 +403,7 @@ namespace Models
             }
             set
             {
-                QuantityFromImportedNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(QuantityFromImportedNote), value);
@@ -440,7 +440,7 @@ namespace Models
             }
             set
             {
-                MassAnotherReasons_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(MassAnotherReasons), value);
@@ -472,7 +472,7 @@ namespace Models
             }
             set
             {
-                QuantityAnotherReasons_Validation(value);
+
 
                 
                 {
@@ -510,7 +510,7 @@ namespace Models
             }
             set
             {
-                QuantityAnotherReasonsNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
@@ -575,7 +575,7 @@ namespace Models
             }
             set
             {
-                QuantityTransferredToAnother_Validation(value);
+
 
                 
                 {
@@ -613,7 +613,7 @@ namespace Models
             }
             set
             {
-                QuantityTransferredToNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(QuantityTransferredToNote), value);
@@ -679,7 +679,7 @@ namespace Models
             }
             set
             {
-                QuantityRefined_Validation(value);
+
 
                 
                 {
@@ -717,7 +717,7 @@ namespace Models
             }
             set
             {
-                QuantityRefinedNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(QuantityRefinedNote), value);
@@ -754,7 +754,7 @@ namespace Models
             }
             set
             {
-                MassRemovedFromAccount_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(MassRemovedFromAccount), value);
@@ -786,7 +786,7 @@ namespace Models
             }
             set
             {
-                QuantityRemovedFromAccount_Validation(value);
+
 
                 
                 {
@@ -825,7 +825,7 @@ namespace Models
             }
             set
             {
-                QuantityRemovedFromNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(QuantityRemovedFromNote), value);

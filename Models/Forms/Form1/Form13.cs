@@ -22,6 +22,43 @@ namespace Models
             return false;
         }
 
+        private void Init()
+        {
+            _dataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
+            _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
+            _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
+            _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
+            _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
+        }
+
+        private void Validate_all()
+        {
+            CreationDate_Validation(CreationDate);
+            CreatorOKPO_Validation(CreatorOKPO);
+            FactoryNumberRecoded_Validation(FactoryNumberRecoded);
+            Owner_Validation(Owner);
+            PackName_Validation(PackName);
+            PackNumberRecoded_Validation(PackNumberRecoded);
+            PackNumber_Validation(PackNumber);
+            PackTypeRecoded_Validation(PackTypeRecoded);
+            PackType_Validation(PackType);
+            PassportNumberRecoded_Validation(PassportNumberRecoded);
+            PassportNumber_Validation(PassportNumber);
+            PropertyCode_Validation(PropertyCode);
+            ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
+            TransporterOKPO_Validation(TransporterOKPO);
+            FactoryNumber_Validation(FactoryNumber);
+        }
+
         protected override bool OperationCode_Validation(RamAccess<short?> value)//OK
         {
             value.ClearErrors();
@@ -67,7 +104,7 @@ namespace Models
             }
             set
             {
-                OwnerNote_Validation(value);
+
 
                 
                 {
@@ -101,7 +138,7 @@ namespace Models
             }
             set
             {
-                PassportNumber_Validation(value);
+
 
                 
                 {
@@ -121,8 +158,8 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PassportNumberNote.Value == null)||(PassportNumberNote.Value == ""))
-                    value.AddError( "Заполните примечание");//to do note handling
+                //if ((PassportNumberNote.Value == null)||(PassportNumberNote.Value == ""))
+                //    value.AddError( "Заполните примечание");//to do note handling
                 return true;
             }
             return true;
@@ -146,7 +183,7 @@ namespace Models
             }
             set
             {
-                PassportNumberNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PassportNumberNote), value);
@@ -185,7 +222,7 @@ namespace Models
             }
             set
             {
-                PassportNumberRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PassportNumberRecoded), value);
@@ -218,7 +255,7 @@ namespace Models
             }
             set
             {
-                Type_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Type), value);
@@ -250,7 +287,7 @@ namespace Models
             }
             set
             {
-                TypeRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TypeRecoded), value);
@@ -283,7 +320,7 @@ namespace Models
             }
             set
             {
-                Radionuclids_Validation(value);
+
 
                 
                 {
@@ -331,7 +368,7 @@ namespace Models
             }
             set
             {
-                FactoryNumber_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(FactoryNumber), value);
@@ -369,7 +406,7 @@ namespace Models
             }
             set
             {
-                FactoryNumberRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(FactoryNumberRecoded), value);
@@ -402,7 +439,7 @@ namespace Models
             }
             set
             {
-                Activity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Activity), value);
@@ -422,8 +459,8 @@ namespace Models
 
             if (value.Value.Equals("прим."))
             {
-                if ((ActivityNote == null) || ActivityNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((ActivityNote == null) || ActivityNote.Equals(""))
+                //    value.AddError( "Заполните примечание");return true;
             }
             if (!((value.Value.Contains('e'))|| (value.Value.Contains('E'))))
             {
@@ -461,8 +498,8 @@ namespace Models
             }
             set
             {
-                ActivityNote_Validation(value);
-                //_ActivityNote_Validation(value);
+
+
 
                 
                 {
@@ -496,8 +533,8 @@ namespace Models
             }
             set
             {
-                CreationDate_Validation(value);
-                //_CreationDate_Validation(value);
+
+
                 
                 
                 {
@@ -517,8 +554,8 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((CreationDateNote == null) || CreationDateNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((CreationDateNote == null) || CreationDateNote.Equals(""))
+                //    value.AddError( "Заполните примечание");return true;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
@@ -551,8 +588,8 @@ namespace Models
             }
             set
             {
-                CreationDateNote_Validation(value);
-                //_CreationDateNote_Validation(value);
+
+
                 
                 {
                     _dataAccess.Set(nameof(CreationDateNote), value);
@@ -586,7 +623,7 @@ namespace Models
             }
             set
             {
-                CreatorOKPO_Validation(value);
+
 
                 
                 {
@@ -606,8 +643,8 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((CreatorOKPONote.Value == null) || CreatorOKPONote.Value.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((CreatorOKPONote.Value == null) || CreatorOKPONote.Value.Equals(""))
+                //    value.AddError( "Заполните примечание");return true;
             }return false;
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
@@ -636,8 +673,8 @@ namespace Models
             }
             set
             {
-                CreatorOKPONote_Validation(value);
-                //_CreatorOKPONote_Validation(value);
+
+
 
                 
                 {
@@ -670,7 +707,7 @@ namespace Models
             }
             set
             {
-                AggregateState_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(AggregateState), value);
@@ -710,7 +747,7 @@ namespace Models
             }
             set
             {
-                PropertyCode_Validation(value);
+
 
                 
                 {
@@ -751,7 +788,7 @@ namespace Models
             }
             set
             {
-                Owner_Validation(value);
+
 
                 
                 {
@@ -771,8 +808,8 @@ namespace Models
             }return false;
             if (value.Value.Equals("прим."))
             {
-                if ((OwnerNote.Value == null) || OwnerNote.Value.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((OwnerNote.Value == null) || OwnerNote.Value.Equals(""))
+                //    value.AddError( "Заполните примечание");return true;
             }return false;
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
@@ -803,7 +840,7 @@ namespace Models
             }
             set
             {
-                ProviderOrRecieverOKPO_Validation(value);
+
 
                 
                 {
@@ -823,8 +860,8 @@ namespace Models
             }return false;
             if (value.Value.Equals("прим."))
             {
-                if ((ProviderOrRecieverOKPONote.Value == null) || ProviderOrRecieverOKPONote.Value.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((ProviderOrRecieverOKPONote.Value == null) || ProviderOrRecieverOKPONote.Value.Equals(""))
+                //    value.AddError( "Заполните примечание");return true;
             }
             bool a = (OperationCode.Value >= 10) && (OperationCode.Value <= 12);
             bool b = (OperationCode.Value >= 41) && (OperationCode.Value <= 43);
@@ -865,7 +902,7 @@ namespace Models
             }
             set
             {
-                ProviderOrRecieverOKPONote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
@@ -904,7 +941,7 @@ namespace Models
             }
             set
             {
-                TransporterOKPO_Validation(value);
+
 
                 
                 {
@@ -924,8 +961,8 @@ namespace Models
             }return false;
             if (value.Value.Equals("прим."))
             {
-                if ((TransporterOKPONote.Value == null) || TransporterOKPONote.Value.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((TransporterOKPONote.Value == null) || TransporterOKPONote.Value.Equals(""))
+                //    value.AddError( "Заполните примечание");return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
                 value.AddError( "Недопустимое значение");
@@ -955,7 +992,7 @@ namespace Models
             }
             set
             {
-                TransporterOKPONote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TransporterOKPONote), value);
@@ -988,7 +1025,7 @@ namespace Models
             }
             set
             {
-                PackName_Validation(value);
+
 
                 
                 {
@@ -1008,8 +1045,8 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackNameNote == null) || PackNameNote.Equals(""))
-                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
+                //if ((PackNameNote == null) || PackNameNote.Equals(""))
+                //    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
             return true;
         }
@@ -1032,7 +1069,7 @@ namespace Models
             }
             set
             {
-                PackNameNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackNameNote), value);
@@ -1071,7 +1108,7 @@ namespace Models
             }
             set
             {
-                PackType_Validation(value);
+
 
                 
                 {
@@ -1091,8 +1128,8 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
+                //if ((PackTypeNote == null) || PackTypeNote.Equals(""))
+                //    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
             return true;
         }
@@ -1115,7 +1152,7 @@ namespace Models
             }
             set
             {
-                PackTypeRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), value);
@@ -1147,7 +1184,7 @@ namespace Models
             }
             set
             {
-                PackTypeNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackTypeNote), value);
@@ -1180,7 +1217,7 @@ namespace Models
             }
             set
             {
-                PackNumber_Validation(value);
+
 
                 
                 {
@@ -1200,8 +1237,8 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackNumberNote == null) || PackNumberNote.Equals(""))
-                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
+                //if ((PackNumberNote == null) || PackNumberNote.Equals(""))
+                //    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
             return true;
         }
@@ -1224,7 +1261,7 @@ namespace Models
             }
             set
             {
-                PackNumberNote_Validation(value);
+
 
                 
                 {
@@ -1263,7 +1300,7 @@ namespace Models
             }
             set
             {
-                DocumentNumberNote_Validation(value);
+
 
                 
                 {
@@ -1303,7 +1340,7 @@ namespace Models
             }
             set
             {
-                PackNumberRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackNumberRecoded), value);
@@ -1323,12 +1360,14 @@ namespace Models
             value.ClearErrors();
             if (value.Value == "прим.")
             {
-                if ((DocumentNumberNote == null) || DocumentNumberNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((DocumentNumberNote == null) || DocumentNumberNote.Equals(""))
+                //    value.AddError( "Заполните примечание");
+                return true;
             }
             if ((value.Value == null))//ok
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }

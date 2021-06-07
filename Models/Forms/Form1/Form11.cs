@@ -374,9 +374,9 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((Activity.Value == null) || (ActivityNote.Value == ""))
-                    value.AddError("Заполните примечание");
-return false;
+                //if ((Activity.Value == null) || (ActivityNote.Value == ""))
+                //    value.AddError("Заполните примечание");
+return true;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -437,9 +437,9 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((CreationDateNote.Value == null) || (CreationDateNote.Value == ""))
-                    value.AddError("Заполните примечание");
-return false;
+                //if ((CreationDateNote.Value == null) || (CreationDateNote.Value == ""))
+                //    value.AddError("Заполните примечание");
+return true;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
@@ -502,9 +502,9 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
-                    value.AddError("Заполните примечание");
-return false;
+                //if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
+                //    value.AddError("Заполните примечание");
+return true;
             }
 return false;
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -674,9 +674,9 @@ return false;
 return false;
             if (value.Value.Equals("прим."))
             {
-                if ((OwnerNote == null) || OwnerNote.Equals(""))
-                    value.AddError("Заполните примечание");
-return false;
+                //if ((OwnerNote == null) || OwnerNote.Equals(""))
+                //    value.AddError("Заполните примечание");
+return true;
             }
 return false;
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -711,24 +711,27 @@ return false;
             if (value.Value == null)
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
-return false;
             if (value.Value.Equals("прим."))
             {
-                if ((ProviderOrRecieverOKPONote == null) || ProviderOrRecieverOKPONote.Equals(""))
-                    value.AddError("Заполните примечание");
-return false;
+                //if ((ProviderOrRecieverOKPONote == null) || ProviderOrRecieverOKPONote.Equals(""))
+                //    value.AddError("Заполните примечание");
+                return true;
             }
-return false;
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError("Недопустимое значение");
-
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError("Недопустимое значение");
+                value.AddError("Недопустимое значение");
+                return false;
+
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //ProviderOrRecieverOKPO property
 
@@ -772,23 +775,24 @@ return false;
             if (value.Value == null)
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
-return false;
             if (value.Value.Equals("прим."))
             {
-                if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
-                    value.AddError("Заполните примечание");
-return false;
+                //if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
+                //    value.AddError("Заполните примечание");
+                return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError("Недопустимое значение");
-
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError("Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //TransporterOKPO property
 
@@ -836,8 +840,8 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackNameNote == null) || PackNameNote.Equals(""))
-                    value.AddError("Заполните примечание");//to do note handling
+                //if ((PackNameNote == null) || PackNameNote.Equals(""))
+                //    value.AddError("Заполните примечание");//to do note handling
 return true;
             }
             return true;
@@ -888,9 +892,9 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                    value.AddError("Заполните примечание");//to do note handling
-return false;
+                //if ((PackTypeNote == null) || PackTypeNote.Equals(""))
+                //    value.AddError("Заполните примечание");//to do note handling
+return true;
             }
             return true;
         }
@@ -978,8 +982,8 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackNumberNote == null) || PackNumberNote.Equals(""))
-                    value.AddError("Заполните примечание");//to do note handling
+                //if ((PackNumberNote == null) || PackNumberNote.Equals(""))
+                //    value.AddError("Заполните примечание");//to do note handling
 return true;
             }
             return true;
@@ -1032,9 +1036,9 @@ return true;
             value.ClearErrors();
             if (value.Value == "прим.")
             {
-                if ((DocumentNumberNote.Value == null) || DocumentNumberNote.Value.Equals(""))
-                    value.AddError("Заполните примечание");
-return false;
+                //if ((DocumentNumberNote.Value == null) || DocumentNumberNote.Value.Equals(""))
+                //    value.AddError("Заполните примечание");
+return true;
             }
             if (value.Value == null)//ok
             {

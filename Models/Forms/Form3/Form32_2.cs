@@ -37,7 +37,7 @@ namespace Models
             }
             set
             {
-                PackName_Validation(value);
+
 
                 
                 {
@@ -77,7 +77,7 @@ namespace Models
             }
             set
             {
-                PackType_Validation(value);
+
 
                 
                 {

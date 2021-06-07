@@ -40,7 +40,7 @@ namespace Models
             }
             set
             {
-                PackName_Validation(value);
+
 
                 
                 {
@@ -79,7 +79,7 @@ namespace Models
             }
             set
             {
-                PackNameNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackNameNote), value);
@@ -112,7 +112,7 @@ namespace Models
             }
             set
             {
-                PackType_Validation(value);
+
 
                 
                 {
@@ -145,7 +145,7 @@ namespace Models
             }
             set
             {
-                PackTypeRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), value);
@@ -177,7 +177,7 @@ namespace Models
             }
             set
             {
-                PackTypeNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackTypeNote), value);
@@ -210,7 +210,7 @@ namespace Models
             }
             set
             {
-                PackNumber_Validation(value);
+
 
                 
                 {
@@ -243,7 +243,7 @@ namespace Models
             }
             set
             {
-                PackNumberNote_Validation(value);
+
 
                 
                 {
@@ -283,7 +283,7 @@ namespace Models
             }
             set
             {
-                PackNumberRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackNumberRecoded), value);
@@ -315,7 +315,7 @@ namespace Models
             }
             set
             {
-                PackFactoryNumber_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackFactoryNumber), value);
@@ -347,7 +347,7 @@ namespace Models
             }
             set
             {
-                FormingDate_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(FormingDate), value);
@@ -390,7 +390,7 @@ namespace Models
             }
             set
             {
-                Volume_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Volume), value);
@@ -438,7 +438,7 @@ namespace Models
             }
             set
             {
-                Mass_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Mass), value);
@@ -486,7 +486,7 @@ namespace Models
             }
             set
             {
-                PassportNumber_Validation(value);
+
 
                 
                 {
@@ -520,7 +520,7 @@ namespace Models
             }
             set
             {
-                Radionuclids_Validation(value);
+
 
                 
                 {
@@ -568,7 +568,7 @@ namespace Models
             }
             set
             {
-                SpecificActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(SpecificActivity), value);
@@ -621,7 +621,7 @@ namespace Models
             }
             set
             {
-                ProviderOrRecieverOKPO_Validation(value);
+
 
                 
                 {
@@ -670,7 +670,7 @@ namespace Models
             }
             set
             {
-                ProviderOrRecieverOKPONote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
@@ -703,7 +703,7 @@ namespace Models
             }
             set
             {
-                TransporterOKPO_Validation(value);
+
 
                 
                 {
@@ -718,21 +718,28 @@ namespace Models
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
-            {return false;
-            }return false;return false;
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value.Equals("прим."))
             {
-                if ((TransporterOKPONote.Value == null) || TransporterOKPONote.Value.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((TransporterOKPONote.Value == null) || TransporterOKPONote.Value.Equals(""))
+                //    value.AddError( "Заполните примечание");
+                return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //TransporterOKPO property
 
@@ -753,7 +760,7 @@ namespace Models
             }
             set
             {
-                TransporterOKPONote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TransporterOKPONote), value);
@@ -785,7 +792,7 @@ namespace Models
             }
             set
             {
-                StoragePlaceName_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StoragePlaceName), value);
@@ -822,7 +829,7 @@ namespace Models
             }
             set
             {
-                StoragePlaceNameNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StoragePlaceNameNote), value);
@@ -854,7 +861,7 @@ namespace Models
             }
             set
             {
-                StoragePlaceCode_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StoragePlaceCode), value);
@@ -890,7 +897,7 @@ namespace Models
             }
             set
             {
-                Subsidy_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Subsidy), value);
@@ -933,7 +940,7 @@ namespace Models
             }
             set
             {
-                FcpNumber_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(FcpNumber), value);
@@ -965,7 +972,7 @@ namespace Models
             }
             set
             {
-                CodeRAO_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(CodeRAO), value);
@@ -1008,7 +1015,7 @@ namespace Models
             }
             set
             {
-                StatusRAO_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StatusRAO), value);
@@ -1068,7 +1075,7 @@ namespace Models
             }
             set
             {
-                VolumeOutOfPack_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(VolumeOutOfPack), value);
@@ -1120,7 +1127,7 @@ namespace Models
             }
             set
             {
-                MassOutOfPack_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(MassOutOfPack), value);
@@ -1173,7 +1180,7 @@ namespace Models
             }
             set
             {
-                Quantity_Validation(value);
+
 
                 
                 {
@@ -1211,7 +1218,7 @@ namespace Models
             }
             set
             {
-                TritiumActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TritiumActivity), value);
@@ -1262,7 +1269,7 @@ namespace Models
             }
             set
             {
-                BetaGammaActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(BetaGammaActivity), value);
@@ -1313,7 +1320,7 @@ namespace Models
             }
             set
             {
-                AlphaActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(AlphaActivity), value);
@@ -1364,7 +1371,7 @@ namespace Models
             }
             set
             {
-                TransuraniumActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TransuraniumActivity), value);
@@ -1415,7 +1422,7 @@ namespace Models
             }
             set
             {
-                RefineOrSortRAOCode_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(RefineOrSortRAOCode), value);

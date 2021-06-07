@@ -39,7 +39,7 @@ namespace Models
             }
             set
             {
-                CodeRAO_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(CodeRAO), value);
@@ -82,7 +82,7 @@ namespace Models
             }
             set
             {
-                StatusRAO_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StatusRAO), value);
@@ -144,7 +144,7 @@ namespace Models
             }
             set
             {
-                Volume_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Volume), value);
@@ -200,7 +200,7 @@ namespace Models
             }
             set
             {
-                Mass_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Mass), value);
@@ -292,7 +292,7 @@ namespace Models
             }
             set
             {
-                TritiumActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TritiumActivity), value);
@@ -352,7 +352,7 @@ namespace Models
             }
             set
             {
-                BetaGammaActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(BetaGammaActivity), value);
@@ -412,7 +412,7 @@ namespace Models
             }
             set
             {
-                AlphaActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(AlphaActivity), value);
@@ -472,7 +472,7 @@ namespace Models
             }
             set
             {
-                TransuraniumActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TransuraniumActivity), value);
@@ -570,7 +570,7 @@ namespace Models
             }
             set
             {
-                QuantityOZIII_Validation(value);
+
 
                 
                 {
@@ -619,7 +619,7 @@ namespace Models
             }
             set
             {
-                ProviderOrRecieverOKPO_Validation(value);
+
 
                 
                 {
@@ -676,7 +676,7 @@ namespace Models
             }
             set
             {
-                ProviderOrRecieverOKPONote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
@@ -709,7 +709,7 @@ namespace Models
             }
             set
             {
-                TransporterOKPO_Validation(value);
+
 
                 
                 {
@@ -725,21 +725,25 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");return false;
-            }return false;
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value.Equals("прим."))
             {
-                if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
+                //    value.AddError( "Заполните примечание");
+                return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //TransporterOKPO property
 
@@ -760,7 +764,7 @@ namespace Models
             }
             set
             {
-                TransporterOKPONote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TransporterOKPONote), value);
@@ -793,7 +797,7 @@ namespace Models
             }
             set
             {
-                PackName_Validation(value);
+
 
                 
                 {
@@ -813,8 +817,8 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackNameNote == null) || PackNameNote.Equals(""))
-                    value.AddError( "Заполните примечание");return true;
+                //if ((PackNameNote == null) || PackNameNote.Equals(""))
+                //    value.AddError( "Заполните примечание");return true;
             }
             return true;
         }
@@ -837,7 +841,7 @@ namespace Models
             }
             set
             {
-                PackNameNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackNameNote), value);
@@ -870,7 +874,7 @@ namespace Models
             }
             set
             {
-                PackType_Validation(value);
+
 
                 
                 {
@@ -890,8 +894,8 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
+                //if ((PackTypeNote == null) || PackTypeNote.Equals(""))
+                //    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
             return true;
         }
@@ -914,7 +918,7 @@ namespace Models
             }
             set
             {
-                PackTypeRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), value);
@@ -946,7 +950,7 @@ namespace Models
             }
             set
             {
-                PackTypeNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackTypeNote), value);
@@ -978,7 +982,7 @@ namespace Models
             }
             set
             {
-                PackNumber_Validation(value);
+
 
                 
                 {
@@ -998,8 +1002,8 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackNumberNote == null) || PackNumberNote.Equals(""))
-                    value.AddError( "Заполните примечание");return true;
+                //if ((PackNumberNote == null) || PackNumberNote.Equals(""))
+                //    value.AddError( "Заполните примечание");return true;
             }
             return true;
         }
@@ -1022,7 +1026,7 @@ namespace Models
             }
             set
             {
-                PackNumberNote_Validation(value);
+
 
                 
                 {
@@ -1061,7 +1065,7 @@ namespace Models
             }
             set
             {
-                PackNumberRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PackNumberRecoded), value);
@@ -1093,7 +1097,7 @@ namespace Models
             }
             set
             {
-                Subsidy_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Subsidy), value);
@@ -1136,7 +1140,7 @@ namespace Models
             }
             set
             {
-                FcpNumber_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(FcpNumber), value);
@@ -1168,7 +1172,7 @@ namespace Models
             }
             set
             {
-                RefineOrSortRAOCode_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(RefineOrSortRAOCode), value);

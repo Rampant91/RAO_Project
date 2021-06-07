@@ -39,7 +39,7 @@ namespace Models
             }
             set
             {
-                IndividualNumberZHRO_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(IndividualNumberZHRO), value);
@@ -70,7 +70,7 @@ namespace Models
             }
             set
             {
-                IndividualNumberZHROrecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(IndividualNumberZHROrecoded), value);
@@ -103,7 +103,7 @@ namespace Models
             }
             set
             {
-                PassportNumber_Validation(value);
+
 
                 
                 {
@@ -123,10 +123,11 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
-                {
-                    value.AddError("Поле не может быть пустым");//to do note handling
-                }
+                //if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
+                //{
+                //    value.AddError("Поле не может быть пустым");//to do note handling
+                //}
+                return true;
             }
             return true;
         }
@@ -149,7 +150,7 @@ namespace Models
             }
             set
             {
-                PassportNumberNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PassportNumberNote), value);
@@ -182,7 +183,7 @@ namespace Models
             }
             set
             {
-                PassportNumberRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(PassportNumberRecoded), value);
@@ -298,7 +299,7 @@ namespace Models
             }
             set
             {
-                SaltConcentration_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(SaltConcentration), value);
@@ -363,7 +364,7 @@ namespace Models
             }
             set
             {
-                SpecificActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(SpecificActivity), value);
@@ -417,7 +418,7 @@ namespace Models
             }
             set
             {
-                ProviderOrRecieverOKPO_Validation(value);
+
 
                 
                 {
@@ -462,7 +463,7 @@ namespace Models
             }
             set
             {
-                ProviderOrRecieverOKPONote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
@@ -495,7 +496,7 @@ namespace Models
             }
             set
             {
-                TransporterOKPO_Validation(value);
+
 
                 
                 {
@@ -510,21 +511,25 @@ namespace Models
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
-            {return false;
-            }return false;return false;
+            {
+                return false;
+            }
             if (value.Value.Equals("прим."))
             {
-                if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                //if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
+                //    value.AddError( "Заполните примечание");
+                return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //TransporterOKPO property
 
@@ -545,7 +550,7 @@ namespace Models
             }
             set
             {
-                TransporterOKPONote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TransporterOKPONote), value);
@@ -577,7 +582,7 @@ namespace Models
             }
             set
             {
-                StoragePlaceName_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StoragePlaceName), value);
@@ -614,7 +619,7 @@ namespace Models
             }
             set
             {
-                StoragePlaceNameNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StoragePlaceNameNote), value);
@@ -646,7 +651,7 @@ namespace Models
             }
             set
             {
-                StoragePlaceCode_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StoragePlaceCode), value);
@@ -682,7 +687,7 @@ namespace Models
             }
             set
             {
-                CodeRAO_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(CodeRAO), value);
@@ -725,7 +730,7 @@ namespace Models
             }
             set
             {
-                StatusRAO_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StatusRAO), value);
@@ -880,7 +885,7 @@ namespace Models
             }
             set
             {
-                TritiumActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TritiumActivity), value);
@@ -932,7 +937,7 @@ namespace Models
             }
             set
             {
-                BetaGammaActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(BetaGammaActivity), value);
@@ -984,7 +989,7 @@ namespace Models
             }
             set
             {
-                AlphaActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(AlphaActivity), value);
@@ -1036,7 +1041,7 @@ namespace Models
             }
             set
             {
-                TransuraniumActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(TransuraniumActivity), value);
@@ -1088,7 +1093,7 @@ namespace Models
             }
             set
             {
-                RefineOrSortRAOCode_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(RefineOrSortRAOCode), value);
@@ -1141,7 +1146,7 @@ namespace Models
             }
             set
             {
-                Subsidy_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Subsidy), value);
@@ -1184,7 +1189,7 @@ namespace Models
             }
             set
             {
-                FcpNumber_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(FcpNumber), value);

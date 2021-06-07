@@ -40,7 +40,7 @@ namespace Models
             }
             set
             {
-                PassportNumber_Validation(value);
+
 
                 
                 {
@@ -59,10 +59,11 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
-                {
-                    value.AddError("Поле не может быть пустым"); return false;
-                }
+                //if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
+                //{
+                //    value.AddError("Поле не может быть пустым"); return false;
+                //}
+                return true;
             }
             return true;
         }
@@ -117,7 +118,7 @@ namespace Models
             }
             set
             {
-                CreatorOKPO_Validation(value);
+
 
                 
                 {
@@ -383,7 +384,7 @@ namespace Models
             }
             set
             {
-                Radionuclids_Validation(value);
+
 
                 
                 {
@@ -577,7 +578,7 @@ namespace Models
             }
             set
             {
-                CreatorOKPONote_Validation(value);
+
 
 
                 
