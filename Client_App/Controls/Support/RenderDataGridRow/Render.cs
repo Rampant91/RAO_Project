@@ -21,7 +21,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 switch (formT1)
                 {
                     case "0":
-                        ctrl = Support.RenderDataGridRow.Main.GetControl(formT2,Name);
+                        ctrl = Support.RenderDataGridRow.Main.GetControl(formT2,Name,Context);
                         break;
                     case "1":
                         ctrl = Support.RenderDataGridRow.Form1.GetControl(formT2,Name,Context);

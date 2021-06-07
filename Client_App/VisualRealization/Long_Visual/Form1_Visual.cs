@@ -56,16 +56,16 @@ namespace Client_App.Long_Visual
                 Text = "Дата конца периода:",
                 [Grid.ColumnProperty] = 0,
             });
-            //topPnl1.Children.Add(new TextBox
-            //{
-            //    Height = 30,
-            //    Margin = Thickness.Parse("5,0,0,0"),
-            //    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    [!TextBox.TextProperty] = new Binding("Storage.EndPeriod", BindingMode.TwoWay),
-            //    [Grid.ColumnProperty] = 2,
+            topPnl1.Children.Add(new TextBox
+            {
+                Height = 30,
+                Margin = Thickness.Parse("5,0,0,0"),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                [!TextBox.TextProperty] = new Binding("Storage.EndPeriod.Value", BindingMode.TwoWay),
+                [Grid.ColumnProperty] = 2,
 
-            //});
+            });
             maingrid.Children.Add(topPnl1);
 
             var topPnl2 = new Grid();
@@ -101,16 +101,16 @@ namespace Client_App.Long_Visual
                 [Grid.ColumnProperty] = 0,
             });
 
-            //topPnl2.Children.Add(new TextBox
-            //{
-            //    Height = 30,
-            //    Width = 70,
-            //    Margin = Thickness.Parse("5,12,0,0"),
-            //    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    [!TextBox.TextProperty] = new Binding("Storage.Value.CorrectionNumbers"),
-            //    [Grid.ColumnProperty] = 1,
-            //});
+            topPnl2.Children.Add(new TextBox
+            {
+                Height = 30,
+                Width = 70,
+                Margin = Thickness.Parse("5,12,0,0"),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                [!TextBox.TextProperty] = new Binding("Storage.CorrectionNumber.Value"),
+                [Grid.ColumnProperty] = 1,
+            });
 
             topPnl2.Children.Add(new Button
             {

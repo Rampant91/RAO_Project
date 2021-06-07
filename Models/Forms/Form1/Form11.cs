@@ -21,74 +21,73 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(PackNumberNote), PackNumberNote_Validation, null);
-            _dataAccess.Init<string>(nameof(OwnerNote), OwnerNote_Validation, null);
-            _dataAccess.Init<string>(nameof(PackTypeNote), PackTypeNote_Validation, null);
-            _dataAccess.Init<string>(nameof(ActivityNote), ActivityNote_Validation, null);
+            //_dataAccess.Init<string>(nameof(PackNumberNote), PackNumberNote_Validation, null);
+            //_dataAccess.Init<string>(nameof(OwnerNote), OwnerNote_Validation, null);
+            //_dataAccess.Init<string>(nameof(ActivityNote), ActivityNote_Validation, null);
             _dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
             _dataAccess.Init<short?>(nameof(Category), Category_Validation, null);
             _dataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
-            _dataAccess.Init<string>(nameof(CreatorOKPONote), CreatorOKPONote_Validation, null);
+            //_dataAccess.Init<string>(nameof(CreatorOKPONote), CreatorOKPONote_Validation, null);
             _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
             _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
             _dataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
             _dataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
-            _dataAccess.Init<string>(nameof(PackNameNote), PackNameNote_Validation, null);
+            //_dataAccess.Init<string>(nameof(PackNameNote), PackNameNote_Validation, null);
             _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
             _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
             _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
-            _dataAccess.Init<string>(nameof(PackTypeNote), PackTypeNote_Validation, null);
+            //_dataAccess.Init<string>(nameof(PackTypeNote), PackTypeNote_Validation, null);
             _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
             _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
             _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
             _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
             _dataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
-            _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPONote), ProviderOrRecieverOKPONote_Validation, null);
+           // _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPONote), ProviderOrRecieverOKPONote_Validation, null);
             _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
             _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
             _dataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
-            _dataAccess.Init<string>(nameof(TransporterOKPONote), TransporterOKPONote_Validation, null);
+            //_dataAccess.Init<string>(nameof(TransporterOKPONote), TransporterOKPONote_Validation, null);
             _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
             _dataAccess.Init<string>(nameof(TypeRecoded), TypeRecoded_Validation, null);
             _dataAccess.Init<string>(nameof(Type), Type_Validation, null);
-            _dataAccess.Init<string>(nameof(CreationDateNote), CreationDateNote_Validation, null);
+            //_dataAccess.Init<string>(nameof(CreationDateNote), CreationDateNote_Validation, null);
         }
 
         private void Validate_all()
         {
-            PackNumberNote_Validation(PackNumberNote);
-            OwnerNote_Validation(OwnerNote);
-            PackTypeNote_Validation(PackTypeNote);
-            ActivityNote_Validation(ActivityNote);
+            //PackNumberNote_Validation(PackNumberNote);
+            //OwnerNote_Validation(OwnerNote);
+            //PackTypeNote_Validation(PackTypeNote);
+            //ActivityNote_Validation(ActivityNote);
             Activity_Validation(Activity);
             Category_Validation(Category);
             CreationDate_Validation(CreationDate);
-            CreatorOKPONote_Validation(CreatorOKPONote);
+            //CreatorOKPONote_Validation(CreatorOKPONote);
             CreatorOKPO_Validation(CreatorOKPO);
             FactoryNumberRecoded_Validation(FactoryNumberRecoded);
             FactoryNumber_Validation(FactoryNumber);
             Owner_Validation(Owner);
-            PackNameNote_Validation(PackNameNote);
+            //PackNameNote_Validation(PackNameNote);
             PackName_Validation(PackName);
             PackNumberRecoded_Validation(PackNumberRecoded);
             PackNumber_Validation(PackNumber);
-            PackTypeNote_Validation(PackTypeNote);
+            //PackTypeNote_Validation(PackTypeNote);
             PackTypeRecoded_Validation(PackTypeRecoded);
             PackType_Validation(PackType);
             PassportNumberRecoded_Validation(PassportNumberRecoded);
             PassportNumber_Validation(PassportNumber);
             PropertyCode_Validation(PropertyCode);
-            ProviderOrRecieverOKPONote_Validation(ProviderOrRecieverOKPONote);
+            //ProviderOrRecieverOKPONote_Validation(ProviderOrRecieverOKPONote);
             ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
             Quantity_Validation(Quantity);
             Radionuclids_Validation(Radionuclids);
             SignedServicePeriod_Validation(SignedServicePeriod);
-            TransporterOKPONote_Validation(TransporterOKPONote);
+            //TransporterOKPONote_Validation(TransporterOKPONote);
             TransporterOKPO_Validation(TransporterOKPO);
             TypeRecoded_Validation(TypeRecoded);
             Type_Validation(Type);
-            CreationDateNote_Validation(CreationDateNote);
+            //CreationDateNote_Validation(CreationDateNote);
         }
 
         public override bool Object_Validation()
@@ -129,31 +128,31 @@ return false;
 
         //PassportNumber property
 
-        //PassportNumberNote property
-        public RamAccess<string> PassportNumberNote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(PassportNumberNote), value);
-                OnPropertyChanged(nameof(PassportNumberNote));
-            }
-        }
+//        //PassportNumberNote property
+//        public RamAccess<string> PassportNumberNote
+//        {
+//            get
+//            {
+//                return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
+//            }
+//            set
+//            {
+//                _dataAccess.Set(nameof(PassportNumberNote), value);
+//                OnPropertyChanged(nameof(PassportNumberNote));
+//            }
+//        }
 
-        private bool PassportNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
-            {
-                value.AddError("Поле не заполнено");
-return false;
-            }
-            return true;
-        }
-        //PassportNumberNote property
+//        private bool PassportNumberNote_Validation(RamAccess<string> value)
+//        {
+//            value.ClearErrors();
+//            if ((value.Value == null) || value.Value.Equals(""))
+//            {
+//                value.AddError("Поле не заполнено");
+//return false;
+//            }
+//            return true;
+//        }
+//        //PassportNumberNote property
 
         //PassportNumberRecoded property
         [Attributes.Form_Property("Номер упаковки")]
@@ -374,9 +373,9 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((Activity.Value == null) || (ActivityNote.Value == ""))
-                    value.AddError("Заполните примечание");
-return false;
+                //if ((Activity.Value == null) || (ActivityNote.Value == ""))
+                //    value.AddError("Заполните примечание");
+                return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -393,24 +392,24 @@ return false;
         }
         //Activity property
 
-        //ActivityNote property
-        public RamAccess<string> ActivityNote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(ActivityNote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(ActivityNote), value);
-                OnPropertyChanged(nameof(ActivityNote));
-            }
-        }
-        //If change this change validation
-        private bool ActivityNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors(); return true;}
-        //ActivityNote property
+        ////ActivityNote property
+        //public RamAccess<string> ActivityNote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(ActivityNote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(ActivityNote), value);
+        //        OnPropertyChanged(nameof(ActivityNote));
+        //    }
+        //}
+        ////If change this change validation
+        //private bool ActivityNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors(); return true;}
+        ////ActivityNote property
 
         //CreationDate property
         [Attributes.Form_Property("Дата изготовления")]
@@ -437,8 +436,8 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((CreationDateNote.Value == null) || (CreationDateNote.Value == ""))
-                    value.AddError("Заполните примечание");
+                //if ((CreationDateNote.Value == null) || (CreationDateNote.Value == ""))
+                //    value.AddError("Заполните примечание");
 return false;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
@@ -457,25 +456,25 @@ return false;
         }
         //CreationDate property
 
-        //CreationDateNote property
-        public RamAccess<string> CreationDateNote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(CreationDateNote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(CreationDateNote), value);
-                OnPropertyChanged(nameof(CreationDateNote));
-            }
-        }
-        //If change this change validation
+        ////CreationDateNote property
+        //public RamAccess<string> CreationDateNote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(CreationDateNote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(CreationDateNote), value);
+        //        OnPropertyChanged(nameof(CreationDateNote));
+        //    }
+        //}
+        ////If change this change validation
 
-        private bool CreationDateNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //CreationDateNote property
+        //private bool CreationDateNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////CreationDateNote property
 
         //CreatorOKPO property
         [Attributes.Form_Property("ОКПО изготовителя")]
@@ -502,8 +501,8 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
-                    value.AddError("Заполните примечание");
+                //if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
+                //    value.AddError("Заполните примечание");
 return false;
             }
 return false;
@@ -518,24 +517,24 @@ return false;
         }
         //CreatorOKPO property
 
-        //CreatorOKPONote property
-        public RamAccess<string> CreatorOKPONote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(CreatorOKPONote), value);
-                OnPropertyChanged(nameof(CreatorOKPONote));
-            }
-        }
+        ////CreatorOKPONote property
+        //public RamAccess<string> CreatorOKPONote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(CreatorOKPONote), value);
+        //        OnPropertyChanged(nameof(CreatorOKPONote));
+        //    }
+        //}
 
-        private bool CreatorOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //CreatorOKPONote property
+        //private bool CreatorOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////CreatorOKPONote property
 
         //Category property
         [Attributes.Form_Property("Категория")]
@@ -629,24 +628,24 @@ return false;
         }
         //PropertyCode property
 
-        //OwnerNote property
-        public RamAccess<string> OwnerNote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(OwnerNote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(OwnerNote), value);
-                OnPropertyChanged(nameof(OwnerNote));
-            }
-        }
-        //if change this change validation
-        private bool OwnerNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //OwnerNote property
+        ////OwnerNote property
+        //public RamAccess<string> OwnerNote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(OwnerNote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(OwnerNote), value);
+        //        OnPropertyChanged(nameof(OwnerNote));
+        //    }
+        //}
+        ////if change this change validation
+        //private bool OwnerNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////OwnerNote property
 
         //Owner property
         [Attributes.Form_Property("Владелец")]
@@ -674,8 +673,8 @@ return false;
 return false;
             if (value.Value.Equals("прим."))
             {
-                if ((OwnerNote == null) || OwnerNote.Equals(""))
-                    value.AddError("Заполните примечание");
+                //if ((OwnerNote == null) || OwnerNote.Equals(""))
+                //    value.AddError("Заполните примечание");
 return false;
             }
 return false;
@@ -716,8 +715,8 @@ return false;
 return false;
             if (value.Value.Equals("прим."))
             {
-                if ((ProviderOrRecieverOKPONote == null) || ProviderOrRecieverOKPONote.Equals(""))
-                    value.AddError("Заполните примечание");
+                //if ((ProviderOrRecieverOKPONote == null) || ProviderOrRecieverOKPONote.Equals(""))
+                //    value.AddError("Заполните примечание");
 return false;
             }
 return false;
@@ -732,24 +731,24 @@ return false;
         }
         //ProviderOrRecieverOKPO property
 
-        //ProviderOrRecieverOKPONote property
-        public RamAccess<string> ProviderOrRecieverOKPONote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
-                OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-            }
-        }
+        ////ProviderOrRecieverOKPONote property
+        //public RamAccess<string> ProviderOrRecieverOKPONote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
+        //    }
+        //}
 
-        private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //ProviderOrRecieverOKPONote property
+        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
         [Attributes.Form_Property("ОКПО перевозчика")]
@@ -777,8 +776,8 @@ return false;
 return false;
             if (value.Value.Equals("прим."))
             {
-                if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
-                    value.AddError("Заполните примечание");
+                //if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
+                //    value.AddError("Заполните примечание");
 return false;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -792,24 +791,24 @@ return false;
         }
         //TransporterOKPO property
 
-        //TransporterOKPONote property
-        public RamAccess<string> TransporterOKPONote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(TransporterOKPONote), value);
-                OnPropertyChanged(nameof(TransporterOKPONote));
-            }
-        }
+        ////TransporterOKPONote property
+        //public RamAccess<string> TransporterOKPONote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(TransporterOKPONote), value);
+        //        OnPropertyChanged(nameof(TransporterOKPONote));
+        //    }
+        //}
 
-        private bool TransporterOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //TransporterOKPONote property
+        //private bool TransporterOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////TransporterOKPONote property
 
         //PackName property
         [Attributes.Form_Property("Наименование упаковки")]
@@ -836,32 +835,32 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackNameNote == null) || PackNameNote.Equals(""))
-                    value.AddError("Заполните примечание");//to do note handling
+                //if ((PackNameNote == null) || PackNameNote.Equals(""))
+                //    value.AddError("Заполните примечание");//to do note handling
 return true;
             }
             return true;
         }
         //PackName property
 
-        //PackNameNote property
-        public RamAccess<string> PackNameNote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PackNameNote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(PackNameNote), value);
-                OnPropertyChanged(nameof(PackNameNote));
-            }
-        }
+        ////PackNameNote property
+        //public RamAccess<string> PackNameNote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(PackNameNote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(PackNameNote), value);
+        //        OnPropertyChanged(nameof(PackNameNote));
+        //    }
+        //}
 
-        private bool PackNameNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //PackNameNote property
+        //private bool PackNameNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////PackNameNote property
 
         //PackType property
         [Attributes.Form_Property("Тип упаковки")]
@@ -888,8 +887,8 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                    value.AddError("Заполните примечание");//to do note handling
+                //if ((PackTypeNote == null) || PackTypeNote.Equals(""))
+                //    value.AddError("Заполните примечание");//to do note handling
 return false;
             }
             return true;
@@ -915,43 +914,43 @@ return false;
             value.ClearErrors(); return true;}
         //PackTypeRecoded property
 
-        //DocumentNumberNote property
-        public RamAccess<string> DocumentNumberNote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(DocumentNumberNote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(DocumentNumberNote), value);
-                OnPropertyChanged(nameof(DocumentNumberNote));
-            }
-        }
+        ////DocumentNumberNote property
+        //public RamAccess<string> DocumentNumberNote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(DocumentNumberNote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(DocumentNumberNote), value);
+        //        OnPropertyChanged(nameof(DocumentNumberNote));
+        //    }
+        //}
 
-        private bool DocumentNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //DocumentNumberNote property
+        //private bool DocumentNumberNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////DocumentNumberNote property
 
-        //PackTypeNote property
-        public RamAccess<string> PackTypeNote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(PackTypeNote), value);
-                OnPropertyChanged(nameof(PackTypeNote));
-            }
-        }
+        ////PackTypeNote property
+        //public RamAccess<string> PackTypeNote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(PackTypeNote), value);
+        //        OnPropertyChanged(nameof(PackTypeNote));
+        //    }
+        //}
 
-        private bool PackTypeNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //PackTypeNote property
+        //private bool PackTypeNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////PackTypeNote property
 
         //PackNumber property
         [Attributes.Form_Property("Номер упаковки")]
@@ -978,8 +977,8 @@ return false;
             }
             if (value.Value.Equals("прим."))
             {
-                if ((PackNumberNote == null) || PackNumberNote.Equals(""))
-                    value.AddError("Заполните примечание");//to do note handling
+                //if ((PackNumberNote == null) || PackNumberNote.Equals(""))
+                //    value.AddError("Заполните примечание");//to do note handling
 return true;
             }
             return true;
@@ -1006,34 +1005,34 @@ return true;
             value.ClearErrors(); return true;}
         //PackNumberRecoded property
 
-        //PackNumberNote property
-        public RamAccess<string> PackNumberNote
-        {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PackNumberNote));//OK
-            }
-            set
-            {
-                _dataAccess.Set(nameof(PackNumberNote), value);
-                OnPropertyChanged(nameof(PackNumberNote));
-            }
-        }
+        ////PackNumberNote property
+        //public RamAccess<string> PackNumberNote
+        //{
+        //    get
+        //    {
+        //        return _dataAccess.Get<string>(nameof(PackNumberNote));//OK
+        //    }
+        //    set
+        //    {
+        //        _dataAccess.Set(nameof(PackNumberNote), value);
+        //        OnPropertyChanged(nameof(PackNumberNote));
+        //    }
+        //}
 
-        private bool PackNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            return true;
-        }
-        //PackNumberNote property
+        //private bool PackNumberNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors();
+        //    return true;
+        //}
+        ////PackNumberNote property
 
         protected override bool DocumentNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (value.Value == "прим.")
             {
-                if ((DocumentNumberNote.Value == null) || DocumentNumberNote.Value.Equals(""))
-                    value.AddError("Заполните примечание");
+                //if ((DocumentNumberNote.Value == null) || DocumentNumberNote.Value.Equals(""))
+                //    value.AddError("Заполните примечание");
 return false;
             }
             if (value.Value == null)//ok

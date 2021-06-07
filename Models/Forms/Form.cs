@@ -17,9 +17,14 @@ namespace Models.Abstracts
         public Form()
         {
             _dataAccess = new DataAccessCollection();
+            Init();
         }
 
-
+        void Init()
+        {
+            _dataAccess.Init<string>(nameof(FormNum), FormNum_Validation, "");
+            _dataAccess.Init<int>(nameof(NumberOfFields), NumberOfFields_Validation, 0);
+        }
 
         [Key]
         public int RowId { get; set; }
@@ -38,9 +43,10 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(FormNum));
             }
         }
-        private void FormNum_Validation(IDataAccess<string> value)//Ready
+        private bool FormNum_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
+            return true;
         }
         //FormNum property
 
@@ -57,9 +63,11 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(NumberOfFields));
             }
         }
-        private void NumberOfFields_Validation(IDataAccess<int> value)
+        private bool NumberOfFields_Validation(RamAccess<int> value)
         {
             value.ClearErrors();
+            return true;
+
         }
         //NumberOfFields property
 

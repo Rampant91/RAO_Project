@@ -57,19 +57,19 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
             stck.Spacing = -1;
 
-            //stck.Children.Add(Get0Header(1,
-            //        ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
-            //        GetProperty("RegNo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            //    ));
+            stck.Children.Add(Get0Header(1,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
+                    GetProperty("RegNo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
 
-            //stck.Children.Add(Get0Header(2,
-            //        ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
-            //        GetProperty("ShortJurLico").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            //    ));
-            //stck.Children.Add(Get0Header(1,
-            //        ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
-            //        GetProperty("Okpo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            //    ));
+            stck.Children.Add(Get0Header(2,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
+                    GetProperty("ShortJurLico").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
+            stck.Children.Add(Get0Header(1,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
+                    GetProperty("Okpo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
 
             return stck;
         }

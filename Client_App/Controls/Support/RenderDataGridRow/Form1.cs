@@ -54,7 +54,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             pnl.Width = starWidth * Wdth1;
             pnl.Height = RowHeight1;
 
-            var txt = new Controls.DataGrid.Cell(Context, Binding);
+            var txt = new Controls.DataGrid.Cell(Context, Binding,false);
             txt.Background = new SolidColorBrush(new Color(0, 0, 0, 0));
             txt.Width = starWidth * Wdth1;
 
@@ -69,29 +69,29 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
             stck.Spacing = -1;
 
-            //stck.Children.Add(Get1Row(1, Name + "_" + 1, "NumberInOrder", Context));
-            //stck.Children.Add(Get1Row(2, Name + "_" + 2, "OperationCode", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 3, "OperationDate", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 4, "PassportNumber", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 5, "Type", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 6, "Radionuclids", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 7, "FactoryNumber", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 8, "Quantity", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 9, "Activity", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 10, "CreatorOKPO", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 11, "CreationDate", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 12, "Category", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 13, "SignedServicePeriod", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 14, "PropertyCode", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 15, "Owner", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 16, "DocumentVid", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 17, "DocumentNumber", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 18, "DocumentDate", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 1, "NumberInOrder", Context));
+            stck.Children.Add(Get1Row(2, Name + "_" + 2, "OperationCode", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 3, "OperationDate", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 4, "PassportNumber", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 5, "Type", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 6, "Radionuclids", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 7, "FactoryNumber", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 8, "Quantity", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 9, "Activity", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 10, "CreatorOKPO", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 11, "CreationDate", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 12, "Category", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 13, "SignedServicePeriod", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 14, "PropertyCode", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 15, "Owner", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 16, "DocumentVid", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 17, "DocumentNumber", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 18, "DocumentDate", Context));
             stck.Children.Add(Get1Row(1, Name + "_" + 19, "ProviderOrRecieverOKPO", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 20, "TransporterOKPO", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 21, "PackName", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 22, "PackType", Context));
-            //stck.Children.Add(Get1Row(1, Name + "_" + 23, "PackNumber", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 20, "TransporterOKPO", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 21, "PackName", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 22, "PackType", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 23, "PackNumber", Context));
 
             //var bd = "StartPeriod";
             //bd.StringFormat = "{0:d}";

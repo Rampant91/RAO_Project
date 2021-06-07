@@ -46,7 +46,7 @@ namespace Client_App.Short_Visual
             grd.Name = "Form10AllDataGrid_";
 
             Binding b = new Binding();
-            b.Path = "DataContext.Local_Reports.Value.Reports_Collection";
+            b.Path = "DataContext.Local_Reports.Reports_Collection";
             b.ElementName = "MainWindow";
             b.NameScope = new WeakReference<INameScope>(scp);
 

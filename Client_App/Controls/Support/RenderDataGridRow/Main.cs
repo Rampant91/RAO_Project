@@ -16,12 +16,12 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Main
     {
-        public static Control GetControl(string type,string Name)
+        public static Control GetControl(string type,string Name, object Context)
         {
             switch (type)
             {
-                case "0": return Get0(Name);
-                case "1": return Get1(Name);
+                case "0": return Get0(Name, Context);
+                case "1": return Get1(Name, Context);
                 case "2": return Get2();
                 case "3": return Get3();
                 case "4": return Get4();
@@ -31,10 +31,10 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         }
 
         static int Wdth0 = 100;
-        static int RowHeight0 = 25;
+        static int RowHeight0 = 30;
         static Color border_color0 = Color.FromArgb(255, 0, 0, 0);
 
-        static Control Get0Row(int starWidth, string Name, Binding Text)
+        static Control Get0Row(int starWidth, string Name, string Binding, object Context)
         {
             Border brd = new Border()
             {
@@ -47,10 +47,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             pnl.Width = starWidth * Wdth0;
             pnl.Height = RowHeight0;
 
-            TextBlock txt = new TextBlock();
-            txt.Bind(TextBlock.TextProperty, Text);
-            txt.TextAlignment = Avalonia.Media.TextAlignment.Center;
-            txt.Padding = Thickness.Parse("0,5,0,5");
+            var txt = new Controls.DataGrid.Cell(Context, Binding,true);
+            txt.Background = new SolidColorBrush(new Color(0, 0, 0, 0));
+            txt.IsReadOnly = true;
             txt.Width = starWidth * Wdth0;
 
             brd.Child = pnl;
@@ -58,24 +57,24 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return brd;
         }
-        static Control Get0(string Name)
+        static Control Get0(string Name, object Context)
         {
             StackPanel stck = new StackPanel();
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
             stck.Spacing = -1;
 
-            stck.Children.Add(Get1Row(1, Name + "_" + 1, new Binding("Master.RegNo")));
-            stck.Children.Add(Get1Row(2, Name + "_" + 2, new Binding("Master.ShortJurLico")));
+            stck.Children.Add(Get0Row(1, Name + "_" + 1, "Master.RegNo",Context));
+            stck.Children.Add(Get0Row(2, Name + "_" + 2, "Master.ShortJurLico", Context));
 
-            stck.Children.Add(Get1Row(1, Name + "_" + 6, new Binding("Master.Okpo")));
+            stck.Children.Add(Get0Row(1, Name + "_" + 6, "Master.Okpo", Context));
 
             return stck;
         }
 
         static int Wdth1 = 100;
-        static int RowHeight1 = 25;
+        static int RowHeight1 = 30;
         static Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-        static Control Get1Row(int starWidth, string Name, Binding Text)
+        static Control Get1Row(int starWidth, string Name, string Binding, object Context)
         {
             Border brd = new Border()
             {
@@ -88,10 +87,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             pnl.Width = starWidth * Wdth1;
             pnl.Height = RowHeight1;
 
-            TextBlock txt = new TextBlock();
-            txt.Bind(TextBlock.TextProperty, Text);
-            txt.TextAlignment = Avalonia.Media.TextAlignment.Center;
-            txt.Padding = Thickness.Parse("0,5,0,5");
+            var txt = new Controls.DataGrid.Cell(Context, Binding,true);
+            txt.Background = new SolidColorBrush(new Color(0, 0, 0, 0));
             txt.Width = starWidth * Wdth1;
 
             brd.Child = pnl;
@@ -99,27 +96,22 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return brd;
         }
-        static Control Get1(string Name)
+        static Control Get1(string Name, object Context)
         {
             StackPanel stck = new StackPanel();
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
             stck.Spacing = -1;
 
-            stck.Children.Add(Get1Row(1, Name + "_" + 1, new Binding("NumberInOrder")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 2, new Binding("FormNum")));
+            stck.Children.Add(Get1Row(1, Name + "_" + 1, "NumberInOrder",Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 2, "FormNum",Context));
 
-            var bd = new Binding("StartPeriod");
-            bd.StringFormat = "{0:d}";
-            stck.Children.Add(Get1Row(1, Name + "_" + 3, bd));
-            bd = new Binding("EndPeriod");
-            bd.StringFormat = "{0:d}";
-            stck.Children.Add(Get1Row(1, Name + "_" + 4, bd));
-            bd = new Binding("ExportDate");
-            bd.StringFormat = "{0:d}";
-            stck.Children.Add(Get1Row(1, Name + "_" + 5, bd));
+            var str = "{0:d}";
+            stck.Children.Add(Get1Row(1, Name + "_" + 3, "StartPeriod", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 4, "EndPeriod", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 5, "ExportDate", Context));
 
-            stck.Children.Add(Get1Row(2, Name + "_" + 6, new Binding("IsCorrection")));
-            stck.Children.Add(Get1Row(1, Name + "_" + 7, new Binding("Comments")));
+            stck.Children.Add(Get1Row(2, Name + "_" + 6, "IsCorrection", Context));
+            stck.Children.Add(Get1Row(1, Name + "_" + 7, "Comments", Context));
 
             return stck;
         }

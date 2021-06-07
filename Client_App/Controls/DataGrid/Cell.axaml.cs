@@ -23,10 +23,18 @@ namespace Client_App.Controls.DataGrid
             get { return _BindingPath; }
             set { _BindingPath = value; }
         }
-        public Cell(object DataContext, string BindingPath)
+
+        bool _IsReadOnly = false;
+        public bool IsReadOnly
+        {
+            get { return _IsReadOnly; }
+            set { _IsReadOnly = value; }
+        }
+        public Cell(object DataContext, string BindingPath, bool IsReadOnly)
         {
             this.DataContext = DataContext;
             this.BindingPath = BindingPath;
+            this.IsEnabled = !IsReadOnly;
             InitializeComponent();
         }
         public Cell()
@@ -38,6 +46,7 @@ namespace Client_App.Controls.DataGrid
         {
             AvaloniaXamlLoader.Load(this);
             var t = (TextBox)this.Content;
+            t.IsReadOnly = IsReadOnly;
             t.Bind(TextBox.DataContextProperty, new Binding(BindingPath));
         }
     }
