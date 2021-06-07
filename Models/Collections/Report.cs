@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Specialized;
 using Models.Collections;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Collections
 {
@@ -30,7 +31,6 @@ namespace Collections
         }
         void Init()
         {
-            _dataAccess.Init<string>(nameof(FormNum), FormNum_Validation, "");
 
             _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form10>>(nameof(Rows10), Rows10_Validation, null);
             Rows10 = new ObservableCollectionWithItemPropertyChanged<Models.Form10>();
@@ -918,18 +918,56 @@ namespace Collections
         {
             get
             {
-                return _dataAccess.Get<string>(nameof(FormNum));
+                if (Rows10.Count() > 0) { return new RamAccess<string>(null,"1/0"); }
+                if (Rows11.Count() > 0) { return new RamAccess<string>(null,"1/1"); }
+                if (Rows12.Count() > 0) { return new RamAccess<string>(null,"1/2"); }
+                if (Rows13.Count() > 0) { return new RamAccess<string>(null,"1/3"); }
+                if (Rows14.Count() > 0) { return new RamAccess<string>(null,"1/4"); }
+                if (Rows15.Count() > 0) { return new RamAccess<string>(null,"1/5"); }
+                if (Rows16.Count() > 0) { return new RamAccess<string>(null,"1/6"); }
+                if (Rows17.Count() > 0) { return new RamAccess<string>(null,"1/7"); }
+                if (Rows18.Count() > 0) { return new RamAccess<string>(null,"1/8"); }
+                if (Rows19.Count() > 0) { return new RamAccess<string>(null,"1/9"); }
+
+                if (Rows20.Count() > 0) { return new RamAccess<string>(null,"2/0"); }
+                if (Rows21.Count() > 0) { return new RamAccess<string>(null,"2/1"); }
+                if (Rows22.Count() > 0) { return new RamAccess<string>(null,"2/2"); }
+                if (Rows23.Count() > 0) { return new RamAccess<string>(null,"2/3"); }
+                if (Rows24.Count() > 0) { return new RamAccess<string>(null,"2/4"); }
+                if (Rows25.Count() > 0) { return new RamAccess<string>(null,"2/5"); }
+                if (Rows26.Count() > 0) { return new RamAccess<string>(null,"2/6"); }
+                if (Rows27.Count() > 0) { return new RamAccess<string>(null,"2/7"); }
+                if (Rows28.Count() > 0) { return new RamAccess<string>(null,"2/8"); }
+                if (Rows29.Count() > 0) { return new RamAccess<string>(null,"2/9"); }
+                if (Rows210.Count() > 0) { return new RamAccess<string>(null,"2/10"); }
+                if (Rows211.Count() > 0) { return new RamAccess<string>(null,"2/11"); }
+                if (Rows212.Count() > 0) { return new RamAccess<string>(null,"2/12"); }
+
+                if (Rows30.Count() > 0) { return new RamAccess<string>(null,"3/0"); }
+                if (Rows31.Count() > 0) { return new RamAccess<string>(null,"3/1"); }
+                if (Rows31_1.Count() > 0) { return new RamAccess<string>(null,"3/1_1"); }
+                if (Rows32.Count() > 0) { return new RamAccess<string>(null,"3/2"); }
+                if (Rows32_1.Count() > 0) { return new RamAccess<string>(null,"3/2_1"); }
+                if (Rows32_2.Count() > 0) { return new RamAccess<string>(null,"3/2_2"); }
+                if (Rows32_3.Count() > 0) { return new RamAccess<string>(null,"3/2_3"); }
+
+                if (Rows40.Count() > 0) { return new RamAccess<string>(null,"4/0"); }
+                if (Rows41.Count() > 0) { return new RamAccess<string>(null,"4/1"); }
+
+                if (Rows50.Count() > 0) { return new RamAccess<string>(null,"5/0"); }
+                if (Rows51.Count() > 0) { return new RamAccess<string>(null,"5/1"); }
+                if (Rows52.Count() > 0) { return new RamAccess<string>(null,"5/2"); }
+                if (Rows53.Count() > 0) { return new RamAccess<string>(null,"5/3"); }
+                if (Rows54.Count() > 0) { return new RamAccess<string>(null,"5/4"); }
+                if (Rows55.Count() > 0) { return new RamAccess<string>(null,"5/5"); }
+                if (Rows56.Count() > 0) { return new RamAccess<string>(null,"5/6"); }
+                if (Rows57.Count() > 0) { return new RamAccess<string>(null,"5/7"); }
+                return new RamAccess<string>(null,"0");
             }
             set
             {
-                _dataAccess.Set(nameof(FormNum), value);
-                OnPropertyChanged(nameof(FormNum));
+
             }
-        }
-        public bool FormNum_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors(); return true;
-            return true;
         }
 
         //IsCorrection 

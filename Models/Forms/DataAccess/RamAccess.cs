@@ -21,6 +21,7 @@ namespace Models.DataAccess
         public int RamAccessID { get; set; }
 
         T _value;
+        [NotMapped]
         public T Value 
         {
             get
@@ -36,6 +37,17 @@ namespace Models.DataAccess
                 }
             }
         }
+        //public T Val
+        //{
+        //    get
+        //    {
+        //        return _value;
+        //    }
+        //    set
+        //    {
+        //        _value = value;
+        //    }
+        //}
         public RamAccess(Func<RamAccess<T>, bool> Handler,T Value)
         {
             this.Handler = Handler;

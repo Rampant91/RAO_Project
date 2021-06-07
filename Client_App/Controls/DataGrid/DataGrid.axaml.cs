@@ -122,7 +122,7 @@ namespace Client_App.Controls.DataGrid
         {
             InitializeComponent();
 
-            //ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
+            ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
             this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
             this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
             this.AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
@@ -130,39 +130,50 @@ namespace Client_App.Controls.DataGrid
 
         public void Update()
         {
-            ItemsChanged("ALL", null);
+            ItemsChanged(null, null);
             MakeHeader();
         }
 
         void ItemsChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (Items != null)
+            if (sender != null)
             {
-                if (sender != null)
+                var I = (IEnumerable)(sender);
+                Items = I;
+                SelectedItems = new ObservableCollection<object>();
+                Rows.Children.Clear();
+                int count = 0;
+                foreach (var item in I)
                 {
-                    if (sender is string)
+                    var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count, item);
+                    if (tmp != null)
                     {
-                        if ((string)sender == "ALL")
-                        {
-                            Rows.Children.Clear();
-                            int count = 0;
-                            foreach (var item in Items)
-                            {
-                                var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count,item);
-                                if (tmp != null)
-                                {
-                                    Panel pnl = new Panel() { Name = this.Name + count };
-                                    count++;
-                                    pnl.Children.Add(tmp);
-                                    pnl.DataContext = item;
-                                    Rows.Children.Add(pnl);
-                                }
-                            }
-                        }
+                        Panel pnl = new Panel() { Name = this.Name + count };
+                        count++;
+                        pnl.Children.Add(tmp);
+                        pnl.DataContext = item;
+                        Rows.Children.Add(pnl);
                     }
-                    else
+                }
+            }
+            else
+            {
+                if (Items != null)
+                {
+                    SelectedItems = new ObservableCollection<object>();
+                    Rows.Children.Clear();
+                    int count = 0;
+                    foreach (var item in Items)
                     {
-
+                        var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count, item);
+                        if (tmp != null)
+                        {
+                            Panel pnl = new Panel() { Name = this.Name + count };
+                            count++;
+                            pnl.Children.Add(tmp);
+                            pnl.DataContext = item;
+                            Rows.Children.Add(pnl);
+                        }
                     }
                 }
             }

@@ -124,6 +124,8 @@ namespace DBRealization
 
             modelBuilder.Entity<Models.DataAccess.RamAccess<byte>>()
                 .ToTable("access_byte");
+            modelBuilder.Entity<Models.DataAccess.RamAccess<string>>()
+                .ToTable("access_string");
         }
 
         public void LoadAllTables()
@@ -132,6 +134,8 @@ namespace DBRealization
             this.reports.Include(x => x.Report_Collection).Load();
             this.reports.Include(x => x.Master).Load();
             this.report.Include(x => x.Rows11).Load();
+            this.access_byte.Load();
+            this.access_string.Load();
         }
 
         public void UndoChanges()
@@ -155,6 +159,7 @@ namespace DBRealization
 
 
         public DbSet<Models.DataAccess.RamAccess<byte>> access_byte { get; set; }
+        public DbSet<Models.DataAccess.RamAccess<string>> access_string { get; set; }
         public DbSet<Collections.DBObservable> coll_reports { get; set; }
         public DbSet<Collections.Reports> reports { get; set; }
         public DbSet<Collections.Report> report { get; set; }

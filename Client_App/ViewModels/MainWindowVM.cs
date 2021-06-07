@@ -126,7 +126,6 @@ namespace Client_App.ViewModels
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var rt = new Report();
-                rt.FormNum.Value = param;
                 //var obj= dbm.coll_reports
                 //if (dbm.coll_reports.Count() == 0)
                 //{
