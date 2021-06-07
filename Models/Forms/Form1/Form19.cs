@@ -94,6 +94,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //CodeTypeAccObject property
 
@@ -192,8 +193,9 @@ namespace Models
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //Activity property
 
@@ -201,6 +203,7 @@ namespace Models
         {
             value.ClearErrors();
             OperationCode.Value = 10;
+            return true;
         }
 
         protected override bool OperationDate_Validation(RamAccess<string> value)
@@ -225,6 +228,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
 
         protected override bool DocumentDate_Validation(RamAccess<string> value)
@@ -249,6 +253,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
 
         protected override bool DocumentNumber_Validation(RamAccess<string> value)
@@ -260,8 +265,9 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-
+                return true;
             }
+            return true;
         }
     }
 }

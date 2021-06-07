@@ -16,7 +16,7 @@ namespace Models
             Validate_all();
         }
 
-        private bool Validate_all()
+        private void Validate_all()
         {
             CreationDateNote_Validation(CreationDate);
             CreationDate_Validation(CreationDate);
@@ -125,8 +125,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PassportNumber property
 
@@ -292,7 +293,9 @@ namespace Models
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
+                return false;
             }
+            return true;
         }
         //NameIOU property
 
@@ -314,11 +317,7 @@ namespace Models
             }
             set
             {
-                FactoryNumber_Validation(value);
-                
-                {
                     _dataAccess.Set(nameof(FactoryNumber), value);
-                }
                 OnPropertyChanged(nameof(FactoryNumber));
             }
         }
@@ -331,6 +330,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //FactoryNumber property
 
@@ -415,7 +415,9 @@ namespace Models
             catch (Exception)
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Mass Property
 
@@ -425,7 +427,6 @@ namespace Models
         {
             get
             {
-                
                 {
                     return _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
                     
@@ -556,6 +557,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //CreationDate property
 
@@ -618,7 +620,11 @@ namespace Models
         {
             value.ClearErrors();
             if (value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //SignedServicePeriod property
 
@@ -920,8 +926,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackNameNote == null) || PackNameNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PackName property
 
@@ -996,8 +1003,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PackType property
 
@@ -1104,8 +1112,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackNumberNote == null) || PackNumberNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PackNumber property
 
@@ -1144,6 +1153,7 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");return false;
             }
+            return true;
         }
         //PackNumberNote property
 
@@ -1186,12 +1196,13 @@ namespace Models
             if (value.Value == "прим.")
             {
                 if ((DocumentNumberNote == null) || DocumentNumberNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
             if ((value.Value == null))//ok
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
     }
 }

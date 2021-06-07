@@ -61,6 +61,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //CodeRAO property
 
@@ -102,22 +103,27 @@ namespace Models
                     tmp = int.Parse(value.Value);
                     if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
                     {
-                        value.AddError( "Недопустимое значение");
+                        value.AddError("Недопустимое значение");
                     }
                 }
                 catch (Exception)
                 {
-                    value.AddError( "Недопустимое значение");
-                }return false;
+                    value.AddError("Недопустимое значение");
+                }
+                return false;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //StatusRAO property
 
@@ -173,6 +179,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //Volume property
 
@@ -224,7 +231,9 @@ namespace Models
             catch (Exception)
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Mass Property
 
@@ -262,6 +271,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //MainRadionuclids property
 
@@ -319,7 +329,9 @@ namespace Models
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //TritiumActivity property
 
@@ -377,7 +389,9 @@ namespace Models
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //BetaGammaActivity property
 
@@ -435,7 +449,9 @@ namespace Models
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //AlphaActivity property
 
@@ -488,12 +504,14 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля"); return false;}
             }
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //TransuraniumActivity property
 
@@ -530,6 +548,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //ActivityMeasurementDate property
 
@@ -568,11 +587,16 @@ namespace Models
             try
             {
                 if (int.Parse(value.Value) <= 0)
-                    value.AddError( "Недопустимое значение");
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+                return true;
             }
             catch (Exception)
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
         }
         //QuantityOZIIIout property
@@ -790,8 +814,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackNameNote == null) || PackNameNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");return true;
             }
+            return true;
         }
         //PackName property
 
@@ -866,8 +891,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PackType property
 
@@ -973,8 +999,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackNumberNote == null) || PackNumberNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");return true;
             }
+            return true;
         }
         //PackNumber property
 
@@ -1013,6 +1040,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //PackNumberNote property
 
@@ -1161,7 +1189,9 @@ namespace Models
             if (!a.IsMatch(value.Value))
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //RefineOrSortRAOCode property
 
@@ -1172,6 +1202,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
 
         protected override bool OperationCode_Validation(RamAccess<short?> value)//OK

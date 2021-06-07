@@ -46,7 +46,7 @@ namespace Models
             //_dataAccess.Init<string>(nameof(), _Validation, null);
         }
 
-        private bool Validate_all()
+        private void Validate_all()
         {
             PackNumberNote_Validation(PackNumberNote);
             OwnerNote_Validation(OwnerNote);
@@ -111,8 +111,10 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 //if ((PassportNumberNote.Value==null)||(PassportNumberNote.Value == ""))
-                //    value.AddError("Заполните примечание");
+                //    value.AddError("Заполните примечание"); //to do note handling
+                return true;
             }
+            return true;
         }
 
         //PassportNumber property
@@ -138,6 +140,7 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");return false;
             }
+            return true;
         }
         //PassportNumberNote property
 
@@ -190,7 +193,11 @@ namespace Models
                 "ГИИД-5"
             };    //HERE BINDS SPRAVOCHNIK
             if (!spr.Contains(value.Value))
+            {
                 value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //Type property
 
@@ -240,9 +247,10 @@ namespace Models
             {
                 if (item.Item1.Equals(Type))
                 {
-                    Radionuclids.Value = item.Item2;return false;
+                    Radionuclids.Value = item.Item2;return true;
                 }
             }
+            return true;
         }
         //Radionuclids property
 
@@ -268,6 +276,7 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");return false;
             }
+            return true;
         }
         //FactoryNumber property
 
@@ -310,11 +319,13 @@ namespace Models
             if (value.Value == null)
             {
                 value.AddError("Поле не заполнено");
+                return false;
             }
             if (value.Value <= 0)
             {
                 value.AddError("Недопустимое значение");return false;
             }
+            return true;
         }
         //Quantity property
 
@@ -358,7 +369,9 @@ namespace Models
             catch
             {
                 value.AddError("Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Activity property
 
@@ -418,6 +431,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение");return false;
             }
+            return true;
         }
         //CreationDate property
 
@@ -517,7 +531,11 @@ namespace Models
         {
             value.ClearErrors();
             if ((value.Value < 1) || (value.Value > 5))
+            {
                 value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //Category property
 
@@ -540,7 +558,11 @@ namespace Models
         {
             value.ClearErrors();
             if (value.Value <= 0)
+            {
                 value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //SignedServicePeriod property
 
@@ -767,8 +789,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackNameNote == null) || PackNameNote.Equals(""))
-                    value.AddError("Заполните примечание");return false;
+                    value.AddError("Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PackName property
 
@@ -816,8 +839,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                    value.AddError("Заполните примечание");return false;
+                    value.AddError("Заполните примечание");//to do note handlingreturn false;
             }
+            return true;
         }
         //PackType property
 
@@ -903,8 +927,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackNumberNote == null) || PackNumberNote.Equals(""))
-                    value.AddError("Заполните примечание");return false;
+                    value.AddError("Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PackNumber property
 
@@ -961,6 +986,7 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");return false;
             }
+            return true;
         }
 
         protected override bool OperationCode_Validation(RamAccess<short?> value)//OK

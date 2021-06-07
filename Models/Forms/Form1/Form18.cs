@@ -124,8 +124,11 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
-                    value.AddError( "Поле не может быть пустым");
+                {
+                    value.AddError("Поле не может быть пустым");//to do note handling
+                }
             }
+            return true;
         }
         //PassportNumber property
 
@@ -346,6 +349,7 @@ namespace Models
                     Radionuclids.Value = item.Item2;return false;
                 }
             }
+            return true;
         }
         //Radionuclids property
 
@@ -384,12 +388,14 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля"); return false;}
             }
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //SpecificActivity property
 
@@ -698,6 +704,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //CodeRAO property
 
@@ -739,22 +746,25 @@ namespace Models
                     tmp = int.Parse(value.Value);
                     if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
                     {
-                        value.AddError( "Недопустимое значение");
+                        value.AddError("Недопустимое значение"); return false;
                     }
+                    return true;
                 }
                 catch (Exception)
                 {
-                    value.AddError( "Недопустимое значение");
-                }return false;
+                    value.AddError("Недопустимое значение"); return false;
+                }
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //StatusRAO property
 
@@ -795,12 +805,13 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля"); return false;}
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //Volume20 property
 
@@ -846,7 +857,9 @@ namespace Models
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Mass21 Property
 
@@ -896,8 +909,9 @@ namespace Models
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //TritiumActivity property
 
@@ -947,8 +961,9 @@ namespace Models
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //BetaGammaActivity property
 
@@ -994,12 +1009,13 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля"); return false;}
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //AlphaActivity property
 
@@ -1049,8 +1065,9 @@ namespace Models
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //TransuraniumActivity property
 
@@ -1103,6 +1120,7 @@ namespace Models
                     value.AddError( "Недопустимое значение");return false;
                 }
             }
+            return true;
         }
         //RefineOrSortRAOCode property
 
@@ -1220,6 +1238,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
 
         protected override bool DocumentNumber_Validation(RamAccess<string> value)
@@ -1251,9 +1270,11 @@ namespace Models
                 new Tuple<byte?, string>(null,"")
             };   //HERE BINDS SPRAVOCHNICK
             foreach (var item in spr)
-            {return false;
+            {                if (value.Value == item.Item1)
+                    return true;
             }
             value.AddError( "Недопустимое значение");
+            return false;
         }
 
         protected override bool DocumentDate_Validation(RamAccess<string> value)
@@ -1277,7 +1298,11 @@ namespace Models
             bool d = (OperationCode.Value == 18) || (OperationCode.Value == 51);
             if (b || c || d)
                 if (!value.Value.Equals(OperationDate))
-                    value.AddError( "Заполните примечание");
+                {
+                    value.AddError("Заполните примечание");//to do note handling
+                    return false;
+                }
+            return true;
         }
     }
 }

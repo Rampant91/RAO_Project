@@ -95,7 +95,7 @@ namespace Models
             }
             if (value.Value.Equals("прим."))
             {
-                
+                return true;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -111,8 +111,9 @@ namespace Models
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //MachinePower property
 
@@ -187,6 +188,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //CodeRAOIn property
 
@@ -323,8 +325,9 @@ namespace Models
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //MassIn Property
 
@@ -648,6 +651,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //CodeRAOout property
 
@@ -818,7 +822,9 @@ namespace Models
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //MassOut Property
 

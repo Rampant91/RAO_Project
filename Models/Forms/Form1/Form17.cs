@@ -261,6 +261,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //PackNumberNote property
 
@@ -542,10 +543,11 @@ namespace Models
             {
                 if (item.Item2.Equals(value.Value))
                 {
-                    Radionuclids.Value = item.Item2;return false;
+                    Radionuclids.Value = item.Item2;return true;
                 }
             }
             value.AddError( "Недопустимое значение");
+            return false;
         }
         //Radionuclids property
 
@@ -595,8 +597,9 @@ namespace Models
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //SpecificActivity property
 
@@ -984,6 +987,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //CodeRAO property
 
@@ -1025,22 +1029,25 @@ namespace Models
                     tmp = int.Parse(value.Value);
                     if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
                     {
-                        value.AddError( "Недопустимое значение");
+                        value.AddError( "Недопустимое значение"); return false;
                     }
                 }
                 catch (Exception)
                 {
-                    value.AddError( "Недопустимое значение");
-                }return false;
+                    value.AddError( "Недопустимое значение"); return false;
+                }
+                return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //StatusRAO property
 
@@ -1086,12 +1093,13 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля"); return false;}
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError( "Недопустимое значение"); return false;
             }
+            return true;
         }
         //VolumeOutOfPack property
 
@@ -1137,12 +1145,14 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false; }
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //MassOutOfPack Property
 
@@ -1426,6 +1436,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //RefineOrSortRAOCode property
 
@@ -1458,6 +1469,7 @@ namespace Models
                 value.AddError("Код операции не может быть использован в форме 1.7");
                 return false;
             }
+            return true;
         }
         protected override bool DocumentNumber_Validation(RamAccess<string> value)
         {
@@ -1490,30 +1502,36 @@ namespace Models
             {return false;
             }
             value.AddError( "Недопустимое значение");
+            return true;
         }
 
         protected override bool DocumentDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
-            {return false;
+            {                value.AddError("Поле не заполнено");
+                return false;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");                return false;
             }
             bool ab = (OperationCode.Value == 51) || (OperationCode.Value == 52);
             bool c = (OperationCode.Value == 68);
             bool d = (OperationCode.Value == 18) || (OperationCode.Value == 55);
             if (ab || c || d)
                 if (!value.Value.Equals(OperationDate))
-                    value.AddError( "Заполните примечание");
+                {
+                    value.AddError("Заполните примечание");// to do note handling
+                    return true;
+                }
+            return true;
         }
     }
 }

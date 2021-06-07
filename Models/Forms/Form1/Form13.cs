@@ -122,8 +122,10 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PassportNumberNote.Value == null)||(PassportNumberNote.Value == ""))
-                    value.AddError( "Заполните примечание");
+                    value.AddError( "Заполните примечание");//to do note handling
+                return true;
             }
+            return true;
         }
         //PassportNumber property
 
@@ -161,6 +163,7 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");return false;
             }
+            return true;
         }
         //PassportNumberNote property
 
@@ -303,9 +306,10 @@ namespace Models
             {
                 if (item.Item1.Equals(Type))
                 {
-                    Radionuclids.Value = item.Item2;return false;
+                    Radionuclids.Value = item.Item2;return true;
                 }
             }
+            return true;
         }
         //Radionuclids property
 
@@ -344,6 +348,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //FactoryNumber property
 
@@ -433,7 +438,9 @@ namespace Models
             catch
             {
                 value.AddError( "Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Activity property
 
@@ -523,6 +530,7 @@ namespace Models
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //CreationDate property RDY
 
@@ -676,7 +684,11 @@ namespace Models
         {
             value.ClearErrors();
             if ((value.Value != 1) && (value.Value != 2) && (value.Value != 3))
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+                return true;
         }
         //AggregateState property
 
@@ -870,6 +882,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //ProviderOrRecieverOKPONote property
 
@@ -996,8 +1009,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackNameNote == null) || PackNameNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PackName property
 
@@ -1035,6 +1049,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //PackNameNote property
 
@@ -1077,8 +1092,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackTypeNote == null) || PackTypeNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PackType property
 
@@ -1185,8 +1201,9 @@ namespace Models
             if (value.Value.Equals("прим."))
             {
                 if ((PackNumberNote == null) || PackNumberNote.Equals(""))
-                    value.AddError( "Заполните примечание");return false;
+                    value.AddError( "Заполните примечание");//to do note handlingreturn true;
             }
+            return true;
         }
         //PackNumber property
 
@@ -1225,6 +1242,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //PackNumberNote property
 
@@ -1263,6 +1281,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
         //DocumentNumberNote property
 
@@ -1311,6 +1330,7 @@ namespace Models
             {
                 value.AddError( "Поле не заполнено");return false;
             }
+            return true;
         }
     }
 }

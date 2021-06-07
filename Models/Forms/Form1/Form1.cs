@@ -113,6 +113,7 @@ namespace Models.Abstracts
             {
                 value.AddError( "Недопустимое значение");return false;
             }
+            return true;
         }
         //OperationDate property
 
@@ -136,7 +137,8 @@ namespace Models.Abstracts
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>
             {
@@ -159,9 +161,11 @@ namespace Models.Abstracts
                 new Tuple<byte, string>(19,"")
             };   //HERE BINDS SPRAVOCHNICK
             foreach (var item in spr)
-            {return false;
+            {                if (value.Value == item.Item1)
+                    return true;
             }
-            value.AddError( "Недопустимое значение");
+            value.AddError("Недопустимое значение");
+            return false;
         }
         //DocumentVid property
 
@@ -266,8 +270,11 @@ namespace Models.Abstracts
             bool c = (OperationCode.Value >= 51) && (OperationCode.Value <= 59);
             bool d = (OperationCode.Value == 65) || (OperationCode.Value == 68);
             if (ab || b || c || d)
+            {
                 if (!value.Value.Equals(OperationDate))
-                    value.AddError( "Заполните примечание");
+                    value.AddError("Заполните примечание");//to do note handling
+            }
+            return true;
         }
         //DocumentDate property
 

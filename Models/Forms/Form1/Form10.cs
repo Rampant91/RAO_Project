@@ -298,18 +298,22 @@ namespace Models
                 OnPropertyChanged(nameof(Okpo));
             }
         }
-        
+
         private bool Okpo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //Okpo property
 
@@ -341,7 +345,9 @@ namespace Models
 
                 private bool Okved_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); if (!ex.IsMatch(value.Value)){
+            value.ClearErrors();
+            var ex = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (!ex.IsMatch(value.Value)){
                 value.AddError( "Недопустимое значение"); return false;
             }
             return true;
@@ -376,7 +382,10 @@ namespace Models
 
                 private bool Okogu_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); if (!ex.IsMatch(value.Value)){
+            value.ClearErrors();
+            var ex = new Regex("^[0-9]{5}$");
+            if (!ex.IsMatch(value.Value))
+            {
                 value.AddError( "Недопустимое значение"); return false;
             }
             return true;
@@ -411,11 +420,14 @@ namespace Models
 
                 private bool Oktmo_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); if (!ex.IsMatch(value.Value)){
+            value.ClearErrors();
+            var ex = new Regex("^[0-9]{11}$");
+            if (!ex.IsMatch(value.Value))
+            {
                 value.AddError( "Недопустимое значение"); return false;
-                }
-                return true;
             }
+                return true;
+        }
         //Oktmo property
 
         //Inn property
@@ -446,7 +458,9 @@ namespace Models
 
                 private bool Inn_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); if (!ex.IsMatch(value.Value)){
+            value.ClearErrors();
+            var ex = new Regex("[0-9]{10}");
+            if (!ex.IsMatch(value.Value)){
                 value.AddError( "Недопустимое значение"); return false;
             }
             return true;
@@ -481,7 +495,9 @@ namespace Models
 
                 private bool Kpp_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); if (!ex.IsMatch(value.Value)){
+            value.ClearErrors();
+            var ex = new Regex("[0-9]{9}");
+            if (!ex.IsMatch(value.Value)){
                 value.AddError( "Недопустимое значение"); return false;
                 }
                 return true;
@@ -516,7 +532,9 @@ namespace Models
 
                 private bool Okopf_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); if (!ex.IsMatch(value.Value))
+            value.ClearErrors();
+            var ex = new Regex("^[0-9]{5}^");
+            if (!ex.IsMatch(value.Value))
                                 {
                                     value.AddError("Недопустимое значение"); return false;
                                 }
@@ -552,7 +570,9 @@ namespace Models
 
                 private bool Okfs_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); if (!ex.IsMatch(value.Value)){
+            value.ClearErrors();
+            var ex = new Regex("^[0-9]{2}$");
+            if (!ex.IsMatch(value.Value)){
                 value.AddError( "Недопустимое значение"); return false;
             }
             return true;

@@ -147,11 +147,13 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             if (value.Value != "прим.")
             {
