@@ -19,7 +19,7 @@ namespace Models
             Validate_all();
         }
 
-        void Init()
+        private void Init()
         {
             _dataAccess.Init<string>(nameof(PackNumberNote), PackNumberNote_Validation, null);
             _dataAccess.Init<string>(nameof(OwnerNote), OwnerNote_Validation, null);
@@ -27,23 +27,32 @@ namespace Models
             _dataAccess.Init<string>(nameof(ActivityNote), ActivityNote_Validation, null);
             _dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
             _dataAccess.Init<short?>(nameof(Category), Category_Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
+            _dataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
+            _dataAccess.Init<string>(nameof(CreatorOKPONote), CreatorOKPONote_Validation, null);
+            _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
+            _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
+            _dataAccess.Init<string>(nameof(PackNameNote), PackNameNote_Validation, null);
+            _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(PackTypeNote), PackTypeNote_Validation, null);
+            _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
+            _dataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
+            _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPONote), ProviderOrRecieverOKPONote_Validation, null);
+            _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
+            _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            _dataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
+            _dataAccess.Init<string>(nameof(TransporterOKPONote), TransporterOKPONote_Validation, null);
+            _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
+            _dataAccess.Init<string>(nameof(TypeRecoded), TypeRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(Type), Type_Validation, null);
+            _dataAccess.Init<string>(nameof(CreationDateNote), CreationDateNote_Validation, null);
         }
 
         private void Validate_all()
@@ -546,6 +555,11 @@ return false;
         private bool Category_Validation(RamAccess<short?> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if ((value.Value < 1) || (value.Value > 5))
             {
                 value.AddError("Недопустимое значение");
@@ -584,11 +598,11 @@ return false;
 
         //PropertyCode property
         [Attributes.Form_Property("Код собственности")]
-        public RamAccess<byte> PropertyCode
+        public RamAccess<byte?> PropertyCode
         {
             get
             {
-                return _dataAccess.Get<byte>(nameof(PropertyCode));//OK
+                return _dataAccess.Get<byte?>(nameof(PropertyCode));//OK
             }
             set
             {
@@ -597,9 +611,14 @@ return false;
             }
         }
 
-        private bool PropertyCode_Validation(RamAccess<byte> value)//Ready
+        private bool PropertyCode_Validation(RamAccess<byte?> value)//Ready
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             //if (value.Value== 255)//ok
             //{
             //    value.AddError( "Поле не заполнено");

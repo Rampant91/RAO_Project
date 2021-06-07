@@ -10,9 +10,21 @@ namespace Models.Abstracts
         [Attributes.Form_Property("Форма")]
         public Form1() : base()
         {
+            Init_base();
             Validate_base();
         }
 
+        private void Init_base()
+        {
+            _dataAccess.Init<short?>(nameof(OperationCode), OperationCode_Validation, null);
+            _dataAccess.Init<string>(nameof(OperationDate), OperationDate_Validation, null);
+            _dataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
+            _dataAccess.Init<byte?>(nameof(DocumentVid), DocumentVid_Validation, null);
+            _dataAccess.Init<string>(nameof(DocumentNumberRecoded), DocumentNumberRecoded_Validation, null);
+            _dataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
+            _dataAccess.Init<string>(nameof(DocumentDateNote), DocumentDateNote_Validation, null);
+            //_dataAccess.Init<string>(nameof(), _Validation, null);
+        }
         protected void Validate_base()
         {
             OperationCode_Validation(OperationCode);
