@@ -66,7 +66,7 @@ namespace Collections
 
         }
 
-        protected bool CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        protected void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             OnPropertyChanged(nameof(Rows10));
             OnPropertyChanged(nameof(Rows11));
@@ -990,7 +990,7 @@ namespace Collections
         //ExportDate
 
         //Property Changed
-        protected bool OnPropertyChanged([CallerMemberName] string prop = "")
+        protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
