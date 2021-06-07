@@ -9,6 +9,7 @@ using Avalonia.Collections;
 using System.ComponentModel;
 using Avalonia.Input;
 using Avalonia.Media;
+using System;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -28,7 +29,7 @@ namespace Client_App.Controls.DataGrid
             AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable>(
                 nameof(Items),
                 o => o.Items,
-                (o, v) => o.Items = v);
+                (o, v) => o.Items = v,defaultBindingMode:Avalonia.Data.BindingMode.TwoWay);
 
         private IEnumerable _items;
 
@@ -60,7 +61,7 @@ namespace Client_App.Controls.DataGrid
             }
             set
             {
-                ObservableCollection<object> lst = new ObservableCollection<object>();
+                ObservableCollection<Object> lst = new ObservableCollection<Object>();
                 foreach (var item in FindSelectedItems())
                 {
                     if (!lst.Contains(item))
@@ -139,11 +140,10 @@ namespace Client_App.Controls.DataGrid
             if (sender != null)
             {
                 var I = (IEnumerable)(sender);
-                Items = I;
-                SelectedItems = new ObservableCollection<object>();
+                SelectedItems = new ObservableCollection<Object>();
                 Rows.Children.Clear();
                 int count = 0;
-                foreach (var item in I)
+                foreach (Object item in I)
                 {
                     var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count, item);
                     if (tmp != null)
@@ -160,10 +160,10 @@ namespace Client_App.Controls.DataGrid
             {
                 if (Items != null)
                 {
-                    SelectedItems = new ObservableCollection<object>();
+                    SelectedItems = new ObservableCollection<Object>();
                     Rows.Children.Clear();
                     int count = 0;
-                    foreach (var item in Items)
+                    foreach (Object item in Items)
                     {
                         var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count, item);
                         if (tmp != null)

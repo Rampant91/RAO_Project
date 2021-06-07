@@ -10,7 +10,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Render
     {
-        public static Control GetControl(string Type,string Name,object Context)
+        public static Control GetControl(string Type,string Name,Object Context)
         {
             Control ctrl = null;
             if (Type != "")

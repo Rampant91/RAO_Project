@@ -16,7 +16,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Form1
     {
-        public static Control GetControl(string type, string Name, object Context)
+        public static Control GetControl(string type, string Name, Object Context)
         {
             switch (type)
             {
@@ -41,7 +41,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         static int Wdth1 = 100;
         static int RowHeight1 = 30;
         static Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-        static Control Get1Row(int starWidth, string Name, string Binding, object Context)
+        static Control Get1Row(int starWidth, string Name, string Binding, Object Context)
         {
             Border brd = new Border()
             {
@@ -63,7 +63,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return brd;
         }
-        static Control Get1(string Name, object Context)
+        static Control Get1(string Name, Object Context)
         {
             StackPanel stck = new StackPanel();
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
