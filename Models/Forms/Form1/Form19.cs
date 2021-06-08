@@ -14,6 +14,24 @@ namespace Models
         {
             FormNum.Value = "19";
             NumberOfFields.Value = 13;
+            Init();
+            Validate_all();
+        }
+
+        private void Init()
+        {
+            _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            _dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
+            _dataAccess.Init<short?>(nameof(CodeTypeAccObject), CodeTypeAccObject_Validation, null);
+            _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+        }
+
+        private void Validate_all()
+        {
+            Quantity_Validation(Quantity);
+            CodeTypeAccObject_Validation(CodeTypeAccObject);
+            Activity_Validation(Activity);
+            Radionuclids_Validation(Radionuclids);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -24,13 +42,13 @@ namespace Models
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public RamAccess<int>? Quantity
+        public RamAccess<int?> Quantity
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK;
+                    return _dataAccess.Get<int?>(nameof(Quantity));//OK;
                 }
                 
                 {
@@ -45,13 +63,20 @@ namespace Models
         }
         // positive int.
 
-        private bool Quantity_Validation(RamAccess<int> value)//Ready
+        private bool Quantity_Validation(RamAccess<int?> value)//Ready
         {
-            value.ClearErrors();return false;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Quantity property
 
@@ -87,12 +112,14 @@ namespace Models
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             List<short> spr = new List<short>();
             if (!spr.Contains((short)value.Value))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
@@ -132,14 +159,16 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;return true;
+                    Radionuclids.Value =item.Item2;
+return true;
                 }
             }
             return false;
@@ -179,11 +208,13 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             if (!(value.Value.Contains('e')||value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -211,22 +242,26 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             var date = DateTimeOffset.Parse(value.Value);
             if (date.Date > DateTimeOffset.Now.Date)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
@@ -236,22 +271,26 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             var date = DateTimeOffset.Parse(value.Value);
             if (date.Date > DateTimeOffset.Now.Date)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
@@ -261,7 +300,8 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null))//ok
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             if (value.Value.Equals("прим."))
             {
