@@ -12,7 +12,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.DataAccess
 {
-    public class RamAccess<T> : INotifyDataErrorInfo
+    public class RamAccess<T> : INotifyDataErrorInfo, INotifyPropertyChanged
     {
         [NotMapped]
         public Func<RamAccess<T>, bool> Handler { get; set; }
@@ -31,23 +31,13 @@ namespace Models.DataAccess
             set
             {
                 _value = value;
+                OnPropertyChanged(nameof(Value));
                 if (Handler != null)
                 {
                     Handler(this);
                 }
             }
         }
-        //public T Val
-        //{
-        //    get
-        //    {
-        //        return _value;
-        //    }
-        //    set
-        //    {
-        //        _value = value;
-        //    }
-        //}
         public RamAccess(Func<RamAccess<T>, bool> Handler,T Value)
         {
             this.Handler = Handler;
@@ -111,5 +101,14 @@ namespace Models.DataAccess
             }
         }
         //Data Validation
+
+        //Property Changed
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        //Property Changed
     }
 }

@@ -10,6 +10,7 @@ using System.ComponentModel;
 using Avalonia.Input;
 using Avalonia.Media;
 using System;
+using Models.Collections;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -25,35 +26,37 @@ namespace Client_App.Controls.DataGrid
     }
     public class DataGrid : UserControl
     {
-        public static readonly DirectProperty<DataGrid, IEnumerable> ItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<object>> ItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<object>>(
                 nameof(Items),
                 o => o.Items,
                 (o, v) => o.Items = v,defaultBindingMode:Avalonia.Data.BindingMode.TwoWay);
 
-        private IEnumerable _items;
+        private IEnumerable<object> _items = new AvaloniaList<object>();
 
-        public IEnumerable Items
+        public IEnumerable<object> Items
         {
             get { return _items; }
             set
             {
                 if (value != null)
                 {
-                    SetAndRaise(ItemsProperty, ref _items, value);
-                    Update();
+                    if (!InterTwoCollections(_items, value))
+                    {
+                        SetAndRaise(ItemsProperty, ref _items, value);
+                    }
                 }
             }
         }
 
-        public static readonly DirectProperty<DataGrid, IEnumerable> SelectedItemsProperty =
-                AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<object>> SelectedItemsProperty =
+                AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<object>>(
                     nameof(SelectedItems),
                     o => o.SelectedItems,
                     (o, v) => o.SelectedItems = v);
 
-        private IEnumerable _selecteditems =new ObservableCollection<object>();
-        public IEnumerable SelectedItems
+        private IEnumerable<object> _selecteditems = new AvaloniaList<object>();
+        public IEnumerable<object> SelectedItems
         {
             get
             {
@@ -61,16 +64,47 @@ namespace Client_App.Controls.DataGrid
             }
             set
             {
-                ObservableCollection<Object> lst = new ObservableCollection<Object>();
-                foreach (var item in FindSelectedItems())
+                if (value != null)
                 {
-                    if (!lst.Contains(item))
+                    if (!InterTwoCollections(_selecteditems,value))
                     {
-                        lst.Add(item);
+                        SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
                     }
                 }
-                SetAndRaise(SelectedItemsProperty, ref _selecteditems, lst);
             }
+        }
+        int IEnumCount(IEnumerable obj)
+        {
+            int count = 0;
+            foreach(var item in obj)
+            {
+                count++;
+            }
+            return count;
+        }
+
+        bool InterTwoCollections(IEnumerable one, IEnumerable two)
+        {
+            var cnt1 = IEnumCount(one);
+            var cnt2 = IEnumCount(two);
+            if (cnt1 == cnt2)
+            {
+                foreach (var item in two)
+                {
+                    foreach (var t in one)
+                    {
+                        if (item != t)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+            return true;
         }
 
         public static readonly DirectProperty<DataGrid, string> TypeProperty =
@@ -123,6 +157,7 @@ namespace Client_App.Controls.DataGrid
         {
             InitializeComponent();
 
+            //SelectedItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
             ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
             this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
             this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
@@ -135,12 +170,25 @@ namespace Client_App.Controls.DataGrid
             MakeHeader();
         }
 
+        void SetSelectedItems()
+        {
+            var lst = new AvaloniaList<object>();
+            foreach (var item in FindSelectedItems())
+            {
+                if (!lst.Contains(item))
+                {
+                    lst.Add(item);
+                }
+            }
+            SelectedItems = lst;
+        }
+
         void ItemsChanged(object sender, PropertyChangedEventArgs args)
         {
             if (sender != null)
             {
                 var I = (IEnumerable)(sender);
-                SelectedItems = new ObservableCollection<Object>();
+                
                 Rows.Children.Clear();
                 int count = 0;
                 foreach (Object item in I)
@@ -149,6 +197,24 @@ namespace Client_App.Controls.DataGrid
                     if (tmp != null)
                     {
                         Panel pnl = new Panel() { Name = this.Name + count };
+                        foreach (var t in ((StackPanel)tmp).Children)
+                        {
+                            var p = (Panel)((Border)t).Child;
+                            if (FirstControl != null)
+                            {
+                                if (FirstControl.Name == p.Name)
+                                {
+                                    FirstControl = p;
+                                }
+                            }
+                            if (LastControl != null)
+                            {
+                                if (LastControl.Name == p.Name)
+                                {
+                                    LastControl = p;
+                                }
+                            }
+                        }
                         count++;
                         pnl.Children.Add(tmp);
                         pnl.DataContext = item;
@@ -160,7 +226,6 @@ namespace Client_App.Controls.DataGrid
             {
                 if (Items != null)
                 {
-                    SelectedItems = new ObservableCollection<Object>();
                     Rows.Children.Clear();
                     int count = 0;
                     foreach (Object item in Items)
@@ -169,6 +234,24 @@ namespace Client_App.Controls.DataGrid
                         if (tmp != null)
                         {
                             Panel pnl = new Panel() { Name = this.Name + count };
+                            foreach (var t in ((StackPanel)tmp).Children)
+                            {
+                                var p = (Panel)((Border)t).Child;
+                                if (FirstControl != null)
+                                {
+                                    if (FirstControl.Name == p.Name)
+                                    {
+                                        FirstControl = p;
+                                    }
+                                }
+                                if (LastControl != null)
+                                {
+                                    if (LastControl.Name == p.Name)
+                                    {
+                                        LastControl = p;
+                                    }
+                                }
+                            }
                             count++;
                             pnl.Children.Add(tmp);
                             pnl.DataContext = item;
@@ -177,6 +260,8 @@ namespace Client_App.Controls.DataGrid
                     }
                 }
             }
+            SetSelectedItems();
+            RenderSelectedControls();
         }
 
         Control _firstControl = null;
@@ -495,7 +580,7 @@ namespace Client_App.Controls.DataGrid
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 IsMouseDown = false;
-                SelectedItems = new ObservableCollection<object>();
+                SetSelectedItems();
             }
         }
 

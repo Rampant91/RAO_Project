@@ -58,8 +58,8 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> ChooseForm { get; }
 
         public ReactiveCommand<string, Unit> AddForm { get; }
-        public ReactiveCommand<ObservableCollection<object>, Unit> ChangeForm { get; }
-        public ReactiveCommand<ObservableCollection<object>, Unit> DeleteForm { get; }
+        public ReactiveCommand<Avalonia.Collections.AvaloniaList<object>, Unit> ChangeForm { get; }
+        public ReactiveCommand<Avalonia.Collections.AvaloniaList<object>, Unit> DeleteForm { get; }
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -93,8 +93,8 @@ namespace Client_App.ViewModels
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
-            ChangeForm = ReactiveCommand.CreateFromTask<ObservableCollection<object>>(_ChangeForm);
-            DeleteForm = ReactiveCommand.CreateFromTask<ObservableCollection<object>>(_DeleteForm);
+            ChangeForm = ReactiveCommand.CreateFromTask<Avalonia.Collections.AvaloniaList<object>>(_ChangeForm);
+            DeleteForm = ReactiveCommand.CreateFromTask<Avalonia.Collections.AvaloniaList<object>>(_DeleteForm);
 
             Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
 
@@ -141,7 +141,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        async Task _ChangeForm(ObservableCollection<object> param)
+        async Task _ChangeForm(Avalonia.Collections.AvaloniaList<object> param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -157,7 +157,7 @@ namespace Client_App.ViewModels
                 }
             }
         }
-        async Task _DeleteForm(ObservableCollection<object> param)
+        async Task _DeleteForm(Avalonia.Collections.AvaloniaList<object> param)
         {
             if (param != null)
             {

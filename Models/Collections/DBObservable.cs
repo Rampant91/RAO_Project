@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Specialized;
 using Models.Collections;
 
 namespace Collections
@@ -30,6 +31,12 @@ namespace Collections
         {
             _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Reports>>(nameof(Reports_Collection), Reports_Collection_Validation,null);
             Reports_Collection = new ObservableCollectionWithItemPropertyChanged<Reports>();
+            Reports_Collection.CollectionChanged += CollectionChanged;
+        }
+
+        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Reports_Collection));
         }
 
         [Key]

@@ -140,7 +140,8 @@ namespace DBRealization
 
         public void UndoChanges()
         {
-            foreach (var entry in this.ChangeTracker.Entries())
+            var coll = this.ChangeTracker.Entries();
+            foreach (var entry in coll)
             {
                 switch (entry.State)
                 {

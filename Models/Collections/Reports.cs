@@ -39,17 +39,6 @@ namespace Collections
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             OnPropertyChanged(nameof(Report_Collection));
-
-            if (args.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach(var item in args.NewItems)
-                {
-                    ((Report)item).PropertyChanged += (x, e) =>
-                    {
-                        OnPropertyChanged(nameof(Report_Collection));
-                    };
-                }
-            }
         }
 
         [Key]

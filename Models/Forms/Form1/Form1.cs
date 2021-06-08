@@ -1,7 +1,13 @@
 ﻿using Models.DataAccess;
 using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations;
+using System.Collections;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Models.Abstracts
 {
@@ -13,16 +19,27 @@ namespace Models.Abstracts
             Init_base();
             Validate_base();
         }
+        void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            OnPropertyChanged(args.PropertyName);
+        }
 
         private void Init_base()
         {
             _dataAccess.Init<short?>(nameof(OperationCode), OperationCode_Validation, null);
+            OperationCode.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(OperationDate), OperationDate_Validation, null);
+            OperationDate.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
+            DocumentNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<byte?>(nameof(DocumentVid), DocumentVid_Validation, null);
+            DocumentNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(DocumentNumberRecoded), DocumentNumberRecoded_Validation, null);
+            DocumentNumberRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
+            DocumentDate.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, 0);
+            NumberInOrder.PropertyChanged += InPropertyChanged;
             //_dataAccess.Init<string>(nameof(), _Validation, null);
         }
         protected void Validate_base()

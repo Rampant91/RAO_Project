@@ -82,6 +82,9 @@ namespace Models.Collections
 
         private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            var arg = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+            this.OnCollectionChanged(arg);
+
             var handler = ItemPropertyChanged;
             if (handler != null) { handler(sender, e); }
         }
