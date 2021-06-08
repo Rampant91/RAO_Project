@@ -93,7 +93,7 @@ namespace Models
             }
             set
             {
-                Quantity_Validation(value);
+
 
 
                 
@@ -134,7 +134,7 @@ namespace Models
             }
             set
             {
-                ProviderOrRecieverOKPO_Validation(value);
+
 
                 
                 {

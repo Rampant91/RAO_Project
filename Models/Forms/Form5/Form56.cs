@@ -70,7 +70,7 @@ namespace Models
             }
             set
             {
-                Quantity_Validation(value);
+
 
 
                 

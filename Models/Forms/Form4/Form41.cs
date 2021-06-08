@@ -201,7 +201,7 @@ namespace Models
             }
             set
             {
-                QuantityOfFormsInv_Validation(value);
+
 
                 
                 {
@@ -241,7 +241,7 @@ namespace Models
             }
             set
             {
-                QuantityOfFormsOper_Validation(value);
+
 
                 
                 {
@@ -281,7 +281,7 @@ namespace Models
             }
             set
             {
-                QuantityOfFormsYear_Validation(value);
+
 
                 
                 {

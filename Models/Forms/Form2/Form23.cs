@@ -39,7 +39,7 @@ namespace Models
             }
             set
             {
-                StoragePlaceName_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StoragePlaceName), value);
@@ -81,7 +81,7 @@ namespace Models
             }
             set
             {
-                StoragePlaceNameNote_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StoragePlaceNameNote), value);
@@ -113,7 +113,7 @@ namespace Models
             }
             set
             {
-                StoragePlaceCode_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(StoragePlaceCode), value);
@@ -155,7 +155,7 @@ namespace Models
             }
             set
             {
-                ProjectVolume_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(ProjectVolume), value);
@@ -234,7 +234,7 @@ namespace Models
             }
             set
             {
-                CodeRAO_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(CodeRAO), value);
@@ -276,7 +276,7 @@ namespace Models
             }
             set
             {
-                Volume_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Volume), value);
@@ -323,7 +323,7 @@ namespace Models
             }
             set
             {
-                Mass_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(Mass), value);
@@ -370,7 +370,7 @@ namespace Models
             }
             set
             {
-                QuantityOZIII_Validation(value);
+
 
                 
                 {
@@ -406,7 +406,7 @@ namespace Models
             }
             set
             {
-                SummaryActivity_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(SummaryActivity), value);
@@ -454,7 +454,7 @@ namespace Models
             }
             set
             {
-                DocumentNumber_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(DocumentNumber), value);
@@ -492,7 +492,7 @@ namespace Models
             }
             set
             {
-                DocumentNumberRecoded_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(DocumentNumberRecoded), value);
@@ -568,7 +568,7 @@ namespace Models
             }
             set
             {
-                ExpirationDate_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(ExpirationDate), value);
@@ -616,7 +616,7 @@ namespace Models
             }
             set
             {
-                DocumentName_Validation(value);
+
                 
                 {
                     _dataAccess.Set(nameof(DocumentName), value);
