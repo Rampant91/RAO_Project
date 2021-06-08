@@ -22,38 +22,31 @@ namespace Models
             Init();
             Validate_all();
         }
-        void InPropertyChanged(object sender,PropertyChangedEventArgs args)
+        void InPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             OnPropertyChanged(args.PropertyName);
         }
 
         private void Init()
         {
-<<<<<<< HEAD
             //_dataAccess.Init<string>(nameof(PackNumberNote), PackNumberNote_Validation, null);
             //_dataAccess.Init<string>(nameof(OwnerNote), OwnerNote_Validation, null);
             //_dataAccess.Init<string>(nameof(ActivityNote), ActivityNote_Validation, null);
-=======
->>>>>>> Kostet
             _dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
             Activity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<short?>(nameof(Category), Category_Validation, null);
             Category.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
-<<<<<<< HEAD
             CreationDate.PropertyChanged += InPropertyChanged;
             //_dataAccess.Init<string>(nameof(CreatorOKPONote), CreatorOKPONote_Validation, null);
             _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
             CreatorOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
             FactoryNumberRecoded.PropertyChanged += InPropertyChanged;
-=======
             _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
->>>>>>> Kostet
             _dataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
             FactoryNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
-<<<<<<< HEAD
             Owner.PropertyChanged += InPropertyChanged;
             //_dataAccess.Init<string>(nameof(PackNameNote), PackNameNote_Validation, null);
             _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
@@ -69,19 +62,14 @@ namespace Models
             PackType.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
             PassportNumberRecoded.PropertyChanged += InPropertyChanged;
-=======
             _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
             _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
             _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
->>>>>>> Kostet
             _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
             PassportNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
-<<<<<<< HEAD
             PropertyCode.PropertyChanged += InPropertyChanged;
             // _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPONote), ProviderOrRecieverOKPONote_Validation, null);
-=======
->>>>>>> Kostet
             _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
@@ -89,30 +77,23 @@ namespace Models
             _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
             Radionuclids.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
-<<<<<<< HEAD
             SignedServicePeriod.PropertyChanged += InPropertyChanged;
             //_dataAccess.Init<string>(nameof(TransporterOKPONote), TransporterOKPONote_Validation, null);
-=======
->>>>>>> Kostet
             _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
             TransporterOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TypeRecoded), TypeRecoded_Validation, null);
             TypeRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Type), Type_Validation, null);
-<<<<<<< HEAD
             Type.PropertyChanged += InPropertyChanged;
             //_dataAccess.Init<string>(nameof(CreationDateNote), CreationDateNote_Validation, null);
-=======
             _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
             _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
             _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
             _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
->>>>>>> Kostet
         }
 
         private void Validate_all()
         {
-<<<<<<< HEAD
             //PackNumberNote_Validation(PackNumberNote);
             //OwnerNote_Validation(OwnerNote);
             //PackTypeNote_Validation(PackTypeNote);
@@ -121,50 +102,33 @@ namespace Models
             Category_Validation(Category);
             CreationDate_Validation(CreationDate);
             //CreatorOKPONote_Validation(CreatorOKPONote);
-=======
             Activity_Validation(Activity);
             Category_Validation(Category);
             CreationDate_Validation(CreationDate);
->>>>>>> Kostet
             CreatorOKPO_Validation(CreatorOKPO);
             FactoryNumber_Validation(FactoryNumber);
             Owner_Validation(Owner);
-<<<<<<< HEAD
             //PackNameNote_Validation(PackNameNote);
-=======
->>>>>>> Kostet
             PackName_Validation(PackName);
             PackNumber_Validation(PackNumber);
-<<<<<<< HEAD
             //PackTypeNote_Validation(PackTypeNote);
-=======
->>>>>>> Kostet
             PackTypeRecoded_Validation(PackTypeRecoded);
             PackType_Validation(PackType);
             PassportNumber_Validation(PassportNumber);
             PropertyCode_Validation(PropertyCode);
-<<<<<<< HEAD
             //ProviderOrRecieverOKPONote_Validation(ProviderOrRecieverOKPONote);
-=======
->>>>>>> Kostet
             ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
             Quantity_Validation(Quantity);
             Radionuclids_Validation(Radionuclids);
             SignedServicePeriod_Validation(SignedServicePeriod);
-<<<<<<< HEAD
             //TransporterOKPONote_Validation(TransporterOKPONote);
-=======
->>>>>>> Kostet
             TransporterOKPO_Validation(TransporterOKPO);
             Type_Validation(Type);
-<<<<<<< HEAD
             //CreationDateNote_Validation(CreationDateNote);
-=======
             FactoryNumberRecoded_Validation(FactoryNumberRecoded);
             PassportNumberRecoded_Validation(PassportNumberRecoded);
             PackNumberRecoded_Validation(PackNumberRecoded);
             TypeRecoded_Validation(TypeRecoded);
->>>>>>> Kostet
         }
 
         public override bool Object_Validation()
@@ -192,7 +156,7 @@ namespace Models
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
@@ -205,31 +169,31 @@ return false;
 
         //PassportNumber property
 
-//        //PassportNumberNote property
-//        public RamAccess<string> PassportNumberNote
-//        {
-//            get
-//            {
-//                return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
-//            }
-//            set
-//            {
-//                _dataAccess.Set(nameof(PassportNumberNote), value);
-//                OnPropertyChanged(nameof(PassportNumberNote));
-//            }
-//        }
+        //        //PassportNumberNote property
+        //        public RamAccess<string> PassportNumberNote
+        //        {
+        //            get
+        //            {
+        //                return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
+        //            }
+        //            set
+        //            {
+        //                _dataAccess.Set(nameof(PassportNumberNote), value);
+        //                OnPropertyChanged(nameof(PassportNumberNote));
+        //            }
+        //        }
 
-//        private bool PassportNumberNote_Validation(RamAccess<string> value)
-//        {
-//            value.ClearErrors();
-//            if ((value.Value == null) || value.Value.Equals(""))
-//            {
-//                value.AddError("Поле не заполнено");
-//return false;
-//            }
-//            return true;
-//        }
-//        //PassportNumberNote property
+        //        private bool PassportNumberNote_Validation(RamAccess<string> value)
+        //        {
+        //            value.ClearErrors();
+        //            if ((value.Value == null) || value.Value.Equals(""))
+        //            {
+        //                value.AddError("Поле не заполнено");
+        //return false;
+        //            }
+        //            return true;
+        //        }
+        //        //PassportNumberNote property
 
         //PassportNumberRecoded property
         [Attributes.Form_Property("Номер упаковки")]
@@ -248,7 +212,7 @@ return false;
         //If change this change validation
         private bool PassportNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true; }
         //PassportNumberRecoded property
 
         //Type property
@@ -304,7 +268,7 @@ return false;
 
         private bool TypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true; }
         //TypeRecoded property
 
         //Radionuclids property
@@ -328,7 +292,7 @@ return false;
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
@@ -336,7 +300,7 @@ return false;
                 if (item.Item1.Equals(Type))
                 {
                     Radionuclids.Value = item.Item2;
-return true;
+                    return true;
                 }
             }
             return true;
@@ -364,7 +328,7 @@ return true;
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             return true;
         }
@@ -386,7 +350,7 @@ return false;
         //If change this change validation
         private bool FactoryNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true; }
         //FactoryNumberRecoded property
 
         //Quantity property
@@ -414,7 +378,7 @@ return false;
             if (value.Value <= 0)
             {
                 value.AddError("Недопустимое значение");
-return false;
+                return false;
             }
             return true;
         }
@@ -441,28 +405,24 @@ return false;
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             if (!((value.Value.Contains('e') || value.Value.Contains('E'))))
             {
                 value.AddError("Недопустимое значение");
-return false;
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
                 //if ((Activity.Value == null) || (ActivityNote.Value == ""))
                 //    value.AddError("Заполните примечание");
-<<<<<<< HEAD
                 return false;
-=======
-return true;
->>>>>>> Kostet
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
@@ -513,29 +473,25 @@ return true;
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
                 //if ((CreationDateNote.Value == null) || (CreationDateNote.Value == ""))
                 //    value.AddError("Заполните примечание");
-<<<<<<< HEAD
-return false;
-=======
-return true;
->>>>>>> Kostet
+                return false;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
-return false;
+                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
-return false;
+                return false;
             }
             return true;
         }
@@ -588,11 +544,7 @@ return false;
             {
                 //if ((PassportNumberNote.Value == null) || (PassportNumberNote.Value == ""))
                 //    value.AddError("Заполните примечание");
-<<<<<<< HEAD
-return false;
-=======
-                return true;
->>>>>>> Kostet
+                return false;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
@@ -762,11 +714,7 @@ return false;
             {
                 //if ((OwnerNote == null) || OwnerNote.Equals(""))
                 //    value.AddError("Заполните примечание");
-<<<<<<< HEAD
-return false;
-=======
                 return true;
->>>>>>> Kostet
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
@@ -809,11 +757,7 @@ return false;
             {
                 //if ((ProviderOrRecieverOKPONote == null) || ProviderOrRecieverOKPONote.Equals(""))
                 //    value.AddError("Заполните примечание");
-<<<<<<< HEAD
-return false;
-=======
                 return true;
->>>>>>> Kostet
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
@@ -877,11 +821,7 @@ return false;
             {
                 //if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
                 //    value.AddError("Заполните примечание");
-<<<<<<< HEAD
-return false;
-=======
                 return true;
->>>>>>> Kostet
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
@@ -994,11 +934,7 @@ return false;
             {
                 //if ((PackTypeNote == null) || PackTypeNote.Equals(""))
                 //    value.AddError("Заполните примечание");//to do note handling
-<<<<<<< HEAD
-return false;
-=======
-return true;
->>>>>>> Kostet
+                return true;
             }
             return true;
         }
@@ -1142,11 +1078,7 @@ return true;
             {
                 //if ((DocumentNumberNote.Value == null) || DocumentNumberNote.Value.Equals(""))
                 //    value.AddError("Заполните примечание");
-<<<<<<< HEAD
-return false;
-=======
-return true;
->>>>>>> Kostet
+                return true;
             }
             if (value.Value == null)//ok
             {
