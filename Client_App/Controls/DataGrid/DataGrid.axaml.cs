@@ -26,37 +26,38 @@ namespace Client_App.Controls.DataGrid
     }
     public class DataGrid : UserControl
     {
-        public static readonly DirectProperty<DataGrid, IEnumerable<object>> ItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<object>>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<IChanged>> ItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IChanged>>(
                 nameof(Items),
                 o => o.Items,
                 (o, v) => o.Items = v,defaultBindingMode:Avalonia.Data.BindingMode.TwoWay);
 
-        private IEnumerable<object> _items = new AvaloniaList<object>();
+        private IEnumerable<IChanged> _items = new AvaloniaList<IChanged>();
 
-        public IEnumerable<object> Items
+        public IEnumerable<IChanged> Items
         {
             get { return _items; }
             set
             {
                 if (value != null)
                 {
-                    if (!InterTwoCollections(_items, value))
+                    if (!InterTwoCollections(value))
                     {
                         SetAndRaise(ItemsProperty, ref _items, value);
+                        Update();
                     }
                 }
             }
         }
 
-        public static readonly DirectProperty<DataGrid, IEnumerable<object>> SelectedItemsProperty =
-                AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<object>>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<IChanged>> SelectedItemsProperty =
+                AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IChanged>>(
                     nameof(SelectedItems),
                     o => o.SelectedItems,
                     (o, v) => o.SelectedItems = v);
 
-        private IEnumerable<object> _selecteditems = new AvaloniaList<object>();
-        public IEnumerable<object> SelectedItems
+        private IEnumerable<IChanged> _selecteditems = new AvaloniaList<IChanged>();
+        public IEnumerable<IChanged> SelectedItems
         {
             get
             {
@@ -66,45 +67,35 @@ namespace Client_App.Controls.DataGrid
             {
                 if (value != null)
                 {
-                    if (!InterTwoCollections(_selecteditems,value))
+                    if (!InterTwoCollections(value))
                     {
                         SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
                     }
                 }
             }
         }
-        int IEnumCount(IEnumerable obj)
-        {
-            int count = 0;
-            foreach(var item in obj)
-            {
-                count++;
-            }
-            return count;
-        }
 
-        bool InterTwoCollections(IEnumerable one, IEnumerable two)
+        bool InterTwoCollections(IEnumerable<IChanged> one)
         {
-            var cnt1 = IEnumCount(one);
-            var cnt2 = IEnumCount(two);
-            if (cnt1 == cnt2)
+            if (one != null)
             {
-                foreach (var item in two)
+                foreach (var item in one)
                 {
-                    foreach (var t in one)
+                    if (item.IsChanged)
                     {
-                        if (item != t)
+                        foreach (var it in one)
                         {
-                            return false;
+                            it.IsChanged = false;
                         }
+                        return false;
                     }
                 }
+                return true;
             }
             else
             {
-                return false;
+                return true;
             }
-            return true;
         }
 
         public static readonly DirectProperty<DataGrid, string> TypeProperty =
@@ -172,11 +163,25 @@ namespace Client_App.Controls.DataGrid
 
         void SetSelectedItems()
         {
-            var lst = new AvaloniaList<object>();
+            var lst = new AvaloniaList<IChanged>();
             foreach (var item in FindSelectedItems())
             {
                 if (!lst.Contains(item))
                 {
+                    item.IsChanged = true;
+                    lst.Add(item);
+                }
+            }
+            _selecteditems = lst;
+        }
+        void SetSelectedItemsWithHandler()
+        {
+            var lst = new AvaloniaList<IChanged>();
+            foreach (var item in FindSelectedItems())
+            {
+                if (!lst.Contains(item))
+                {
+                    item.IsChanged = true;
                     lst.Add(item);
                 }
             }
@@ -441,11 +446,11 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
-        IEnumerable FindSelectedItems()
+        IEnumerable<IChanged> FindSelectedItems()
         {
             foreach (Panel item in FindSelectedControls())
             {
-                yield return item.DataContext;
+                yield return (IChanged)item.DataContext;
             }
         }
 
@@ -580,7 +585,7 @@ namespace Client_App.Controls.DataGrid
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 IsMouseDown = false;
-                SetSelectedItems();
+                SetSelectedItemsWithHandler();
             }
         }
 

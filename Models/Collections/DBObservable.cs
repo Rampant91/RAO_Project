@@ -59,6 +59,45 @@ namespace Collections
             return true;
         }
 
+        public bool Equals(object obj)
+        {
+            if (obj is DBObservable)
+            {
+                var obj1 = this;
+                var obj2 = obj as DBObservable;
+
+                return obj1._dataAccess == obj2._dataAccess;
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool operator ==(DBObservable obj1, DBObservable obj2)
+        {
+            if (obj1 as object != null)
+            {
+                return obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object == null ? true : false;
+            }
+        }
+        public static bool operator !=(DBObservable obj1, DBObservable obj2)
+        {
+            if (obj1 as object != null)
+            {
+                return !obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object != null ? true : false;
+            }
+        }
+
 
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")

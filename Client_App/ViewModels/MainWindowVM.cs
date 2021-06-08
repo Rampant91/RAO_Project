@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections;
 using Microsoft.EntityFrameworkCore;
+using Models.Collections;
 
 namespace Client_App.ViewModels
 {
@@ -58,8 +59,8 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> ChooseForm { get; }
 
         public ReactiveCommand<string, Unit> AddForm { get; }
-        public ReactiveCommand<Avalonia.Collections.AvaloniaList<object>, Unit> ChangeForm { get; }
-        public ReactiveCommand<Avalonia.Collections.AvaloniaList<object>, Unit> DeleteForm { get; }
+        public ReactiveCommand<Avalonia.Collections.AvaloniaList<IChanged>, Unit> ChangeForm { get; }
+        public ReactiveCommand<Avalonia.Collections.AvaloniaList<IChanged>, Unit> DeleteForm { get; }
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -93,8 +94,8 @@ namespace Client_App.ViewModels
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
-            ChangeForm = ReactiveCommand.CreateFromTask<Avalonia.Collections.AvaloniaList<object>>(_ChangeForm);
-            DeleteForm = ReactiveCommand.CreateFromTask<Avalonia.Collections.AvaloniaList<object>>(_DeleteForm);
+            ChangeForm = ReactiveCommand.CreateFromTask<Avalonia.Collections.AvaloniaList<IChanged>>(_ChangeForm);
+            DeleteForm = ReactiveCommand.CreateFromTask<Avalonia.Collections.AvaloniaList<IChanged>>(_DeleteForm);
 
             Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
 
@@ -141,7 +142,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        async Task _ChangeForm(Avalonia.Collections.AvaloniaList<object> param)
+        async Task _ChangeForm(Avalonia.Collections.AvaloniaList<IChanged> param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -157,7 +158,7 @@ namespace Client_App.ViewModels
                 }
             }
         }
-        async Task _DeleteForm(Avalonia.Collections.AvaloniaList<object> param)
+        async Task _DeleteForm(Avalonia.Collections.AvaloniaList<IChanged> param)
         {
             if (param != null)
             {

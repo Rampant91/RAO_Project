@@ -9,10 +9,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Specialized;
 using Models.Collections;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Collections
 {
-    public class Reports : INotifyPropertyChanged
+    public class Reports : IChanged
     {
         IDataAccessCollection _dataAccess { get; set; }
 
@@ -40,6 +41,45 @@ namespace Collections
         {
             OnPropertyChanged(nameof(Report_Collection));
         }
+
+        public bool Equals(object obj)
+        {
+            if (obj is Reports)
+            {
+                var obj1 = this;
+                var obj2 = obj as Reports;
+
+                return obj1._dataAccess == obj2._dataAccess;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool operator ==(Reports obj1, Reports obj2)
+        {
+            if(obj1 as object != null)
+            {
+                return obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object == null ? true : false;
+            }
+        }
+        public static bool operator !=(Reports obj1, Reports obj2)
+        {
+            if (obj1 as object != null)
+            {
+                return !obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object != null ? true : false;
+            }
+        }
+
 
         [Key]
         public int ReportsId { get; set; }
@@ -78,12 +118,33 @@ namespace Collections
             return true;
         }
 
+        [NotMapped]
+        bool _isChanged = true;
+        public bool IsChanged
+        {
+            get
+            {
+                return _isChanged;
+            }
+            set
+            {
+                if (_isChanged != value)
+                {
+                    _isChanged = value;
+                    OnPropertyChanged(nameof(IsChanged));
+                }
+            }
+        }
 
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            if (prop != nameof(IsChanged))
+            {
+                IsChanged = true;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
         //Property Changed

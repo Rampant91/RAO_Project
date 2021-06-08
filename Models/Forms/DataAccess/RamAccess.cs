@@ -57,6 +57,43 @@ namespace Models.DataAccess
             AddError("Value",error);
         }
 
+        public override bool Equals(object obj)
+        {
+            if(obj is RamAccess<T>)
+            {
+                dynamic val1 = this.Value;
+                dynamic val2 = (obj as RamAccess<T>).Value;
+                return val1 == val2;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool operator ==(RamAccess<T> obj1, RamAccess<T> obj2)
+        {
+            if (obj1 as object != null)
+            {
+                return obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object == null ? true : false;
+            }
+        }
+        public static bool operator !=(RamAccess<T> obj1, RamAccess<T> obj2)
+        {
+            if (obj1 as object != null)
+            {
+                return !obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object != null ? true : false;
+            }
+        }
+
 
         //Data Validation
         protected readonly List<string> _errorsByPropertyName = new List<string>();

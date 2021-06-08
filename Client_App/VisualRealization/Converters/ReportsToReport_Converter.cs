@@ -5,6 +5,7 @@ using Collections;
 using System.Collections;
 using System.Collections.Generic;
 using Avalonia.Collections;
+using Models.Collections;
 
 namespace Client_App.Converters
 {
@@ -16,13 +17,14 @@ namespace Client_App.Converters
             if (Value != null)
             {
                 var rps_coll = (IEnumerable)Value;
-                var lst = new AvaloniaList<object>();
+                var lst = new AvaloniaList<IChanged>();
                 foreach (var item in rps_coll)
                 {
                     var rps = (Reports)item;
                     last_item = rps;
                     foreach (var it in rps.Report_Collection)
                     {
+                        it.IsChanged = true;
                         lst.Add(it);
                     }
                 }

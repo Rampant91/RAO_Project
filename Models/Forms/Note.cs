@@ -6,10 +6,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
+using Models.Collections;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
-    public class Note : INotifyPropertyChanged
+    public class Note : IChanged
     {
         protected IDataAccessCollection _dataAccess { get; set; }
         public Note(IDataAccessCollection Access)
@@ -93,11 +95,33 @@ namespace Models
         }
         //Для валидации
 
-        //Property Changed
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        [NotMapped]
+        bool _isChanged = true;
+        public bool IsChanged
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            get
+            {
+                return _isChanged;
+            }
+            set
+            {
+                if (_isChanged != value)
+                {
+                    _isChanged = value;
+                    OnPropertyChanged(nameof(IsChanged));
+                }
+            }
+        }
+
+        //Property Changed
+        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (prop != nameof(IsChanged))
+            {
+                IsChanged = true;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
         //Property Changed

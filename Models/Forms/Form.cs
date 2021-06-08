@@ -7,10 +7,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
 using Avalonia.Data;
+using System.ComponentModel.DataAnnotations.Schema;
+using Models.Collections;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : INotifyPropertyChanged
+    public abstract class Form : IChanged
     {
         protected IDataAccessCollection _dataAccess { get; set; }
 
@@ -24,6 +26,44 @@ namespace Models.Abstracts
         {
             _dataAccess.Init<string>(nameof(FormNum), FormNum_Validation, "");
             _dataAccess.Init<int>(nameof(NumberOfFields), NumberOfFields_Validation, 0);
+        }
+
+        public bool Equals(object obj)
+        {
+            if(obj is Form)
+            {
+                var obj1 = this;
+                var obj2 = obj as Form;
+
+                return obj1._dataAccess == obj2._dataAccess;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool operator ==(Form obj1, Form obj2)
+        {
+            if (obj1 as object != null)
+            {
+                return obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object == null ? true : false;
+            }
+        }
+        public static bool operator !=(Form obj1, Form obj2)
+        {
+            if (obj1 as object != null)
+            {
+                return !obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object != null ? true : false;
+            }
         }
 
         [Key]
@@ -75,11 +115,33 @@ namespace Models.Abstracts
         public abstract bool Object_Validation();
         //Для валидации
 
-        //Property Changed
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        [NotMapped]
+        bool _isChanged = true;
+        public bool IsChanged
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            get
+            {
+                return _isChanged;
+            }
+            set
+            {
+                if (_isChanged != value)
+                {
+                    _isChanged = value;
+                    OnPropertyChanged(nameof(IsChanged));
+                }
+            }
+        }
+
+        //Property Changed
+        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (prop != nameof(IsChanged))
+            {
+                IsChanged = true;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
         //Property Changed

@@ -30,6 +30,8 @@ namespace Client_App.Controls.DataGrid
             get { return _IsReadOnly; }
             set { _IsReadOnly = value; }
         }
+
+
         public Cell(object DataContext, string BindingPath, bool IsReadOnly)
         {
             this.DataContext = DataContext;

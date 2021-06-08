@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Collections
 {
-    public class Report : INotifyPropertyChanged
+    public class Report : IChanged
     {
         IDataAccessCollection _dataAccess { get; set; }
 
@@ -168,6 +168,46 @@ namespace Collections
             _dataAccess.Init<string>(nameof(EndPeriod), EndPeriod_Validation, "");
             _dataAccess.Init<string>(nameof(ExportDate), ExportDate_Validation, "");
         }
+
+        public bool Equals(object obj)
+        {
+            if (obj is Report)
+            {
+                var obj1 = this;
+                var obj2 = obj as Report;
+
+                return obj1._dataAccess == obj2._dataAccess;
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static bool operator ==(Report obj1, Report obj2)
+        {
+            if (obj1 as object != null)
+            {
+                return obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object == null ? true : false;
+            }
+        }
+        public static bool operator !=(Report obj1, Report obj2)
+        {
+            if (obj1 as object != null)
+            {
+                return !obj1.Equals(obj2);
+            }
+            else
+            {
+                return obj2 as object != null ? true : false;
+            }
+        }
+
 
         protected void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
@@ -1130,11 +1170,33 @@ namespace Collections
         }
         //ExportDate
 
+        [NotMapped]
+        bool _isChanged = true;
+        public bool IsChanged
+        {
+            get
+            {
+                return _isChanged;
+            }
+            set
+            {
+                if (_isChanged != value)
+                {
+                    _isChanged = value;
+                    OnPropertyChanged(nameof(IsChanged));
+                }
+            }
+        }
+
         //Property Changed
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            if (prop != nameof(IsChanged))
+            {
+                IsChanged = true;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
         //Property Changed
