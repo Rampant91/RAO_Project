@@ -4,5 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Client_App.Controls.DataGrid.Cell">
-  <TextBox Text="{Binding Path=Value}" Background="Transparent" TextAlignment="Center"></TextBox>
+  <Border>
+    <Panel>
+      <TextBox Text="{Binding Path=Value}"
+               Background="Transparent"
+               TextAlignment="Center"/>
+    </Panel>
+  </Border>
 </UserControl>

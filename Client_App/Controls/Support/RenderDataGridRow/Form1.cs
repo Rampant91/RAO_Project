@@ -43,25 +43,13 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         static Color border_color1 = Color.FromArgb(255, 0, 0, 0);
         static Control Get1Row(int starWidth, string Name, string Binding, Object Context)
         {
-            Border brd = new Border()
-            {
-                BorderThickness = Thickness.Parse("1"),
-                BorderBrush = new SolidColorBrush(border_color1)
-            };
+            var cell = new Controls.DataGrid.Cell(Context, Binding,false);
+            cell.Background = new SolidColorBrush(new Color(0, 0, 0, 0));
+            cell.Width = starWidth * Wdth1;
+            cell.Height= RowHeight1;
+            cell.Name = Name;
 
-            Panel pnl = new Panel();
-            pnl.Name = Name;
-            pnl.Width = starWidth * Wdth1;
-            pnl.Height = RowHeight1;
-
-            var txt = new Controls.DataGrid.Cell(Context, Binding,false);
-            txt.Background = new SolidColorBrush(new Color(0, 0, 0, 0));
-            txt.Width = starWidth * Wdth1;
-
-            brd.Child = pnl;
-            pnl.Children.Add(txt);
-
-            return brd;
+            return cell;
         }
         static Control Get1(string Name, Object Context)
         {

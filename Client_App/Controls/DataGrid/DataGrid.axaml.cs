@@ -157,8 +157,8 @@ namespace Client_App.Controls.DataGrid
 
         public void Update()
         {
-            ItemsChanged(null, null);
             MakeHeader();
+            ItemsChanged(null, null);
         }
 
         void SetSelectedItems()
@@ -188,6 +188,7 @@ namespace Client_App.Controls.DataGrid
             SelectedItems = lst;
         }
 
+        CellCollection<Cell> Cells { get; set; } = new CellCollection<Cell>();
         void ItemsChanged(object sender, PropertyChangedEventArgs args)
         {
             if (sender != null)
