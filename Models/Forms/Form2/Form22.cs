@@ -455,17 +455,17 @@ return false;
             }
         }
 
-        
+
         private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-return false;
             var a = new Regex("^[0-9]{11}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //CodeRAO property
 
@@ -495,11 +495,10 @@ return false;
             }
         }
 
-        
+
         private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-return false;
             if (value.Value.Length == 1)
             {
                 int tmp;
@@ -508,23 +507,27 @@ return false;
                     tmp = int.Parse(value.Value);
                     if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
                     {
-                        value.AddError( "Недопустимое значение");
+                        value.AddError("Недопустимое значение");
+                        return false;
                     }
                 }
                 catch (Exception)
                 {
-                    value.AddError( "Недопустимое значение");
+                    value.AddError("Недопустимое значение");
+                    return false;
                 }
-return false;
+                return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //StatusRAO property
 
@@ -804,13 +807,15 @@ return false;
             }
         }
         // positive int.
-        
+
         private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
-return false;
             if ((int)value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityOZIII property
 
@@ -840,20 +845,19 @@ return false;
             }
         }
 
-        
+
         private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-return false;
-            if (!(value.Value.Contains('e')||value.Value.Contains('E')))
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -866,12 +870,13 @@ return false;
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            return true;
         }
         //TritiumActivity property
 
@@ -901,20 +906,19 @@ return false;
             }
         }
 
-        
+
         private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -927,12 +931,13 @@ return false;
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            return true;
         }
         //BetaGammaActivity property
 
@@ -1023,20 +1028,19 @@ return false;
             }
         }
 
-        
+
         private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -1049,12 +1053,13 @@ return false;
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            return true;
         }
         //TransuraniumActivity property
 
@@ -1084,17 +1089,17 @@ return false;
             }
         }
         //If change this change validation
-        
+
         private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-return false;
             var spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //MainRadionuclids property
 
@@ -1124,21 +1129,23 @@ return false;
             }
         }
 
-        
+
         private bool Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-return false;
             try
             {
                 int tmp = Int32.Parse(value.Value);
                 if (!((tmp > 0) && (tmp <= 100)))
-                    value.AddError( "Недопустимое значение");
+                {
+                    value.AddError("Недопустимое значение"); return false;
+                }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            return true;
         }
         //Subsidy property
 

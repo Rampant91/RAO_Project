@@ -24,8 +24,6 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-
-        private int _NumberInOrder_Not_Valid = -1;
         private bool NumberInOrder_Validation(RamAccess<int> value)
         {
             value.ClearErrors(); return true;}
@@ -46,7 +44,6 @@ namespace Models.Abstracts
             }
         }
 
-        private byte _CorrectionNumber_Not_Valid = 255;
         private bool CorrectionNumber_Validation(RamAccess<byte> value)
         {
             value.ClearErrors(); return true;}

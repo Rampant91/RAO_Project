@@ -1010,21 +1010,20 @@ return false;
             }
         }
 
-                private bool TritiumActivityOut_Validation(RamAccess<string> value)//TODO
+        private bool TritiumActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            string tmp=value.Value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -1035,12 +1034,13 @@ return false;
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            return true;
         }
         //TritiumActivityOut property
 
@@ -1070,21 +1070,20 @@ return false;
             }
         }
 
-                private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
+        private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            string tmp=value.Value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -1095,12 +1094,13 @@ return false;
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            return true;
         }
         //BetaGammaActivityOut property
 
@@ -1128,21 +1128,20 @@ return false;
             }
         }
 
-                private bool AlphaActivityOut_Validation(RamAccess<string> value)//TODO
+        private bool AlphaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-return false;
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            string tmp=value.Value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -1153,12 +1152,13 @@ return false;
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение"); return false;
             }
+            return true;
         }
         //AlphaActivityOut property
 
