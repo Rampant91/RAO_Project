@@ -13,6 +13,34 @@ namespace Models
         {
             FormNum.Value = "25";
             NumberOfFields.Value = 12;
+            Init();
+            Validate_all();
+        }
+
+        private void Init()
+        {
+            _dataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
+            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            _dataAccess.Init<string>(nameof(FuelMass), FuelMass_Validation, null);
+            _dataAccess.Init<string>(nameof(CellMass), CellMass_Validation, null);
+            _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            _dataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
+            _dataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
+        }
+
+        private void Validate_all()
+        {
+            CodeOYAT_Validation(CodeOYAT);
+            FcpNumber_Validation(FcpNumber);
+            StoragePlaceCode_Validation(StoragePlaceCode);
+            StoragePlaceName_Validation(StoragePlaceName);
+            FuelMass_Validation(FuelMass);
+            CellMass_Validation(CellMass);
+            Quantity_Validation(Quantity);
+            BetaGammaActivity_Validation(BetaGammaActivity);
+            AlphaActivity_Validation(AlphaActivity);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -189,13 +217,13 @@ namespace Models
 
         //FuelMass property
         [Attributes.Form_Property("Масса топлива, т")]
-        public RamAccess<double> FuelMass
+        public RamAccess<string> FuelMass
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(FuelMass));
+                    return _dataAccess.Get<string>(nameof(FuelMass));
                 }
                 
                 {
@@ -213,20 +241,48 @@ namespace Models
             }
         }
 
-                private bool FuelMass_Validation(RamAccess<double?> value)//TODO
+        private bool FuelMass_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //FuelMass property
 
         //CellMass property
         [Attributes.Form_Property("Масса ОТВС(ТВЭЛ, выемной части реактора), т")]
-        public RamAccess<double> CellMass
+        public RamAccess<string> CellMass
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(CellMass));
+                    return _dataAccess.Get<string>(nameof(CellMass));
                 }
                 
                 {
@@ -244,20 +300,48 @@ namespace Models
             }
         }
 
-                private bool CellMass_Validation(RamAccess<double?> value)//TODO
+        private bool CellMass_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //CellMass property
 
         //Quantity property
         [Attributes.Form_Property("Количество, шт.")]
-        public RamAccess<int> Quantity
+        public RamAccess<int?> Quantity
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    return _dataAccess.Get<int?>(nameof(Quantity));//OK
                     
                 }
                 
@@ -277,9 +361,13 @@ namespace Models
             }
         }
         // positive int.
-        private bool Quantity_Validation(RamAccess<int> value)//Ready
+        private bool Quantity_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                return true;
+            }
             if (value.Value <= 0)
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -376,18 +464,20 @@ namespace Models
             }
         }
 
-                private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
+        private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            string tmp=value.Value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -402,10 +492,10 @@ namespace Models
                 {
                     value.AddError("Число должно быть больше нуля"); return false;
                 }
-                }
+            }
             catch
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
