@@ -135,9 +135,11 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid();
+            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid()
+            {
+                Type = "1/1"
+            };
             grd.Name = "Form11Data_";
-            grd.Type = "1/1";
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
             grd.SetValue(Grid.RowProperty, 2);

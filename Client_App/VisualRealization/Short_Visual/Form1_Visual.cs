@@ -39,10 +39,11 @@ namespace Client_App.Short_Visual
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
-                ChooseMode=Controls.DataGrid.ChooseMode.Line
-            };
+                ChooseMode = Controls.DataGrid.ChooseMode.Line,
+                ChooseColor = new SolidColorBrush(new Color(255,255,0,0)),
+                Type = "0/0"
+        };
 
-            grd.Type = "0/0";
             grd.Name = "Form10AllDataGrid_";
 
             Binding b = new Binding();

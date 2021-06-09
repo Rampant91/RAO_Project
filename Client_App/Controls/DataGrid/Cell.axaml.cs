@@ -12,10 +12,17 @@ using Models.Attributes;
 using Avalonia.Input;
 using Avalonia.Input.GestureRecognizers;
 using Avalonia.Interactivity;
+using Models.Collections;
+using Models.DataAccess;
+using System.Collections;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Client_App.Controls.DataGrid
 {
-    public partial class Cell : UserControl
+    public partial class Cell : UserControl,IChanged
     {
         string _BindingPath = "";
         public string BindingPath
@@ -31,30 +38,95 @@ namespace Client_App.Controls.DataGrid
             set { _IsReadOnly = value; }
         }
 
-        int _cellID = -1;
-        public int CellID
+        int _cellRow = -1;
+        public int CellRow
         {
-            get { return _cellID; }
-            set { _cellID = value; }
+            get { return _cellRow; }
+            set { _cellRow = value; }
+        }
+
+        int _cellColumn = -1;
+        public int CellColumn
+        {
+            get { return _cellColumn; }
+            set { _cellColumn = value; }
         }
         public Cell(object DataContext, string BindingPath, bool IsReadOnly)
         {
             this.DataContext = DataContext;
             this.BindingPath = BindingPath;
-            this.IsEnabled = !IsReadOnly;
-            InitializeComponent();
+            InitializeComponent(true);
+
+            this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
+            this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
+            this.AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
         }
         public Cell()
         {
-            InitializeComponent();
+            InitializeComponent(false);
         }
 
-        private void InitializeComponent()
+        private void InitializeComponent(bool IsReadOnly)
         {
             AvaloniaXamlLoader.Load(this);
-            var t = (TextBox)this.Content;
-            t.IsReadOnly = IsReadOnly;
-            t.Bind(TextBox.DataContextProperty, new Binding(BindingPath));
+            if (BindingPath != "")
+            {
+                var t = (TextBox)((Panel)((Border)this.Content).Child).Children[0];
+                t.IsEnabled = IsReadOnly;
+                t.Bind(TextBox.DataContextProperty, new Binding("$parent[2].DataContext."+BindingPath));
+            }
         }
+
+        public void PanelPointerDown(object sender, PointerPressedEventArgs args)
+        {
+            var mouse = args.GetCurrentPoint((Cell)sender);
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+            {
+                OnPropertyChanged("Down");
+            }
+        }
+        public void PanelPointerMoved(object sender, PointerEventArgs args)
+        {
+            var mouse = args.GetCurrentPoint((Cell)sender);
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            {
+                OnPropertyChanged("DownMove");
+            }
+        }
+        public void PanelPointerUp(object sender, PointerReleasedEventArgs args)
+        {
+            var mouse = args.GetCurrentPoint((Cell)sender);
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            {
+                OnPropertyChanged("Up");
+            }
+        }
+
+        bool _isChanged = false;
+        public bool IsChanged 
+        {
+            get
+            {
+                return _isChanged;
+            }
+            set
+            {
+                _isChanged = value;
+                OnPropertyChanged(nameof(IsChanged));
+            }
+        }
+        //Property Changed
+        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (prop != nameof(IsChanged))
+            {
+                IsChanged = true;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        //Property Changed
+
     }
 }

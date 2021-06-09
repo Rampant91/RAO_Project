@@ -68,28 +68,29 @@ namespace Client_App.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        DBRealization.DBModel dbm { get; set; }
         public MainWindowVM()
         {
-            //dbm = new DBRealization.DBModel(_DBPath);
-            //var t = dbm.Database.EnsureCreated();
+            dbm = new DBRealization.DBModel(_DBPath);
+            var t = dbm.Database.EnsureCreated();
 
-            //dbm.LoadAllTables();
+            dbm.LoadAllTables();
 
-            //if (dbm.coll_reports.Count() != 0)
-            //{
-            //    Local_Reports = dbm.coll_reports.First();
-            //}
-            //else
-            //{
-            //    Local_Reports = new DBObservable();
-            //    Local_Reports.Reports_Collection.Add(new Reports());
-            //    dbm.coll_reports.Add(Local_Reports);
-            //}
-            //dbm.SaveChanges();
-            Local_Reports = new DBObservable();
-            var rpt = new Reports();
-            rpt.Report_Collection.Add(new Report());
-            Local_Reports.Reports_Collection.Add(rpt);
+            if (dbm.coll_reports.Count() != 0)
+            {
+                Local_Reports = dbm.coll_reports.First();
+            }
+            else
+            {
+                Local_Reports = new DBObservable();
+                Local_Reports.Reports_Collection.Add(new Reports());
+                dbm.coll_reports.Add(Local_Reports);
+            }
+            dbm.SaveChanges();
+            //Local_Reports = new DBObservable();
+            //var rpt = new Reports();
+            //rpt.Report_Collection.Add(new Report());
+            //Local_Reports.Reports_Collection.Add(rpt);
 
 
             Local_Reports.PropertyChanged += Local_ReportsChanged;

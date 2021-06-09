@@ -30,9 +30,9 @@ namespace Client_App.Controls.DataGrid
             AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IChanged>>(
                 nameof(Items),
                 o => o.Items,
-                (o, v) => o.Items = v,defaultBindingMode:Avalonia.Data.BindingMode.TwoWay);
+                (o, v) => o.Items = v, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
 
-        private IEnumerable<IChanged> _items = new AvaloniaList<IChanged>();
+        private IEnumerable<IChanged> _items = new ObservableCollectionWithItemPropertyChanged<IChanged>();
 
         public IEnumerable<IChanged> Items
         {
@@ -44,7 +44,6 @@ namespace Client_App.Controls.DataGrid
                     if (!InterTwoCollections(value))
                     {
                         SetAndRaise(ItemsProperty, ref _items, value);
-                        Update();
                     }
                 }
             }
@@ -56,7 +55,7 @@ namespace Client_App.Controls.DataGrid
                     o => o.SelectedItems,
                     (o, v) => o.SelectedItems = v);
 
-        private IEnumerable<IChanged> _selecteditems = new AvaloniaList<IChanged>();
+        private IEnumerable<IChanged> _selecteditems = new ObservableCollectionWithItemPropertyChanged<IChanged>();
         public IEnumerable<IChanged> SelectedItems
         {
             get
@@ -110,7 +109,7 @@ namespace Client_App.Controls.DataGrid
             set
             {
                 SetAndRaise(TypeProperty, ref _type, value);
-                Update();
+                MakeHeader();
             }
         }
 
@@ -141,453 +140,245 @@ namespace Client_App.Controls.DataGrid
             set { SetValue(ChooseColorProperty, value); }
         }
 
+
         public Panel Columns { get; set; }
-        public StackPanel Rows { get; set; }
+        RowCollection Rows { get; set; }
 
         public DataGrid()
         {
             InitializeComponent();
 
-            //SelectedItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
             ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
-            this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
-            this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
-            this.AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
         }
-
-        public void Update()
+        List<Control> SelectedCells = new List<Control>();
+        void SetSelectedControls()
         {
-            MakeHeader();
-            ItemsChanged(null, null);
+            if(ChooseMode==ChooseMode.Cell)
+            {
+                if(MultilineMode==MultilineMode.Multi)
+                {
+                    SetSelectedControls_CellMulti();
+                }
+                if (MultilineMode == MultilineMode.Single)
+                {
+                    SetSelectedControls_CellSingle();
+                }
+            }
+            if (ChooseMode == ChooseMode.Line)
+            {
+                if (MultilineMode == MultilineMode.Multi)
+                {
+                    SetSelectedControls_LineMulti();
+                }
+                if (MultilineMode == MultilineMode.Single)
+                {
+                    SetSelectedControls_LineSingle();
+                }
+            }
         }
-
+        void SetSelectedControls_LineSingle()
+        {
+            var Row = FirstPressedItem[0];
+            var sel = SelectedCells.ToArray();
+            foreach (Row item in sel)
+            {
+                if (item.SRow != Row)
+                {
+                    item.Background = this.Background ;
+                    SelectedCells.Remove(item);
+                }
+            }
+            if (!SelectedCells.Contains(Rows[Row].SCells))
+            {
+                Rows[Row].SCells.Background = ChooseColor;
+                SelectedCells.Add(Rows[Row].SCells);
+            }
+        }
+        void SetSelectedControls_CellSingle()
+        {
+            var Row = FirstPressedItem[0];
+            var Column = FirstPressedItem[1];
+            var sel = SelectedCells.ToArray();
+            foreach (Cell item in sel)
+            {
+                if (item.CellRow != Row && item.CellColumn != Column)
+                {
+                    item.Background = this.Background;
+                    SelectedCells.Remove(item);
+                }
+            }
+            if (!SelectedCells.Contains(Rows[Row, Column]))
+            {
+                Rows[Row, Column].Background = ChooseColor;
+                SelectedCells.Add(Rows[Row, Column]);
+            }
+        }
+        void SetSelectedControls_LineMulti()
+        {
+            var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
+            var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
+            var sel = SelectedCells.ToArray();
+            foreach (Row item in sel)
+            {
+                if (!(item.SRow >= minRow && item.SRow <= maxRow))
+                {
+                    item.Background = this.Background ;
+                    SelectedCells.Remove(item);
+                }
+            }
+            for (int i = minRow; i <= maxRow; i++)
+            {
+                if (!SelectedCells.Contains(Rows[i].SCells))
+                {
+                    Rows[i].SCells.Background = ChooseColor;
+                    SelectedCells.Add(Rows[i].SCells);
+                }
+            }
+        }
+        void SetSelectedControls_CellMulti()
+        {
+            var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
+            var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
+            var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+            var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+            var sel = SelectedCells.ToArray();
+            foreach(Cell item in sel)
+            {
+                if(!(item.CellRow>=minRow&&item.CellRow<=maxRow))
+                {
+                    item.Background = this.Background;
+                    SelectedCells.Remove(item);
+                }
+                if (!(item.CellColumn >= minColumn && item.CellColumn <= maxColumn))
+                {
+                    item.Background = this.Background;
+                    SelectedCells.Remove(item);
+                }
+            }
+            for (int i = minRow; i <= maxRow; i++)
+            {
+                for (int j = minColumn; j <= maxColumn; j++)
+                {
+                    if (!SelectedCells.Contains(Rows[i, j]))
+                    {
+                        Rows[i, j].Background = ChooseColor;
+                        SelectedCells.Add(Rows[i, j]);
+                    }
+                }
+            }
+        }
         void SetSelectedItems()
         {
-            var lst = new AvaloniaList<IChanged>();
-            foreach (var item in FindSelectedItems())
+            var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+            if (FirstPressedItem[0] != 0 && FirstPressedItem[1] != 0)
             {
-                if (!lst.Contains(item))
+                if (LastPressedItem[0] != 0 && LastPressedItem[1] != 0)
                 {
-                    item.IsChanged = true;
-                    lst.Add(item);
+                    foreach (var item in SelectedCells)
+                    {
+                        if (item is Cell)
+                        {
+                            var ch = (Border)((Cell)item).Content;
+                            var ch2 = (Panel)ch.Child;
+                            var text = (TextBox)ch2.Children[0];
+                            lst.Add((IChanged)text.DataContext);
+                        }
+                        if (item is StackPanel)
+                        {
+                            var ch = (Cell)((StackPanel)item).Children[0];
+                            lst.Add((IChanged)ch.DataContext);
+                        }
+                    }
                 }
             }
             _selecteditems = lst;
         }
         void SetSelectedItemsWithHandler()
         {
-            var lst = new AvaloniaList<IChanged>();
-            foreach (var item in FindSelectedItems())
+            var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+            if(FirstPressedItem[0]!=0&&FirstPressedItem[1]!=0)
             {
-                if (!lst.Contains(item))
+                if (LastPressedItem[0] != 0 && LastPressedItem[1] != 0)
                 {
-                    item.IsChanged = true;
-                    lst.Add(item);
+                    foreach(var item in SelectedCells)
+                    {
+                        if (item is Cell)
+                        {
+                            var ch = (Border)((Cell)item).Content;
+                            var ch2 = (Panel)ch.Child;
+                            var text = (TextBox)ch2.Children[0];
+                            lst.Add((IChanged)text.DataContext);
+                        }
+                        if(item is StackPanel)
+                        {
+                            var ch = (Cell)((StackPanel)item).Children[0];
+                            lst.Add((IChanged)ch.DataContext);
+                        }
+                    }
                 }
             }
             SelectedItems = lst;
         }
 
-        CellCollection<Cell> Cells { get; set; } = new CellCollection<Cell>();
+        int[] FirstPressedItem { get; set; } = new int[2];
+        int[] LastPressedItem { get; set; } = new int[2];
+
+        void CellPropChangeEventHandler(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Down")
+            {
+                FirstPressedItem[0] = ((Cell)sender).CellRow;
+                FirstPressedItem[1] = ((Cell)sender).CellColumn;
+                LastPressedItem[0] = ((Cell)sender).CellRow;
+                LastPressedItem[1] = ((Cell)sender).CellColumn;
+            }
+            if (args.PropertyName == "DownMove")
+            {
+                LastPressedItem[0] = ((Cell)sender).CellRow;
+                LastPressedItem[1] = ((Cell)sender).CellColumn;
+            }
+            if (args.PropertyName == "Up")
+            {
+                LastPressedItem[0] = ((Cell)sender).CellRow;
+                LastPressedItem[1] = ((Cell)sender).CellColumn;
+            }
+            if (args.PropertyName == "Down"||
+                args.PropertyName == "DownMove"||
+                args.PropertyName == "Up")
+            {
+                SetSelectedControls();
+                SetSelectedItemsWithHandler();
+            }
+        }
+
+        void UpdateAllCells()
+        {
+            Rows.Clear();
+            int count = 1;
+            foreach (var item in _items)
+            {
+                var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, item);
+                Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
+                count++;
+            }
+        }
+
+
+        void UpdateCells()
+        {
+
+        }
         void ItemsChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (sender != null)
+            if(Rows.Count>0)
             {
-                var I = (IEnumerable)(sender);
-                
-                Rows.Children.Clear();
-                int count = 0;
-                foreach (Object item in I)
-                {
-                    var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count, item);
-                    if (tmp != null)
-                    {
-                        Panel pnl = new Panel() { Name = this.Name + count };
-                        foreach (var t in ((StackPanel)tmp).Children)
-                        {
-                            var p = (Panel)((Border)t).Child;
-                            if (FirstControl != null)
-                            {
-                                if (FirstControl.Name == p.Name)
-                                {
-                                    FirstControl = p;
-                                }
-                            }
-                            if (LastControl != null)
-                            {
-                                if (LastControl.Name == p.Name)
-                                {
-                                    LastControl = p;
-                                }
-                            }
-                        }
-                        count++;
-                        pnl.Children.Add(tmp);
-                        pnl.DataContext = item;
-                        Rows.Children.Add(pnl);
-                    }
-                }
+                UpdateCells();
             }
             else
             {
-                if (Items != null)
-                {
-                    Rows.Children.Clear();
-                    int count = 0;
-                    foreach (Object item in Items)
-                    {
-                        var tmp = Support.RenderDataGridRow.Render.GetControl(Type, Name + count, item);
-                        if (tmp != null)
-                        {
-                            Panel pnl = new Panel() { Name = this.Name + count };
-                            foreach (var t in ((StackPanel)tmp).Children)
-                            {
-                                var p = (Panel)((Border)t).Child;
-                                if (FirstControl != null)
-                                {
-                                    if (FirstControl.Name == p.Name)
-                                    {
-                                        FirstControl = p;
-                                    }
-                                }
-                                if (LastControl != null)
-                                {
-                                    if (LastControl.Name == p.Name)
-                                    {
-                                        LastControl = p;
-                                    }
-                                }
-                            }
-                            count++;
-                            pnl.Children.Add(tmp);
-                            pnl.DataContext = item;
-                            Rows.Children.Add(pnl);
-                        }
-                    }
-                }
+                UpdateAllCells();
             }
             SetSelectedItems();
-            RenderSelectedControls();
-        }
-
-        Control _firstControl = null;
-        Control FirstControl
-        {
-            get
-            {
-                return _firstControl;
-            }
-            set
-            {
-                _firstControl = value;
-                RenderSelectedControls();
-            }
-        }
-        Control _lastControl = null;
-        Control LastControl
-        {
-            get
-            {
-                return _lastControl;
-            }
-            set
-            {
-                _lastControl = value;
-                RenderSelectedControls();
-            }
-        }
-        bool IsMouseDown = false;
-        bool IsXYinBounds(Point XY, Rect ctrl)
-        {
-            if (XY.X > ctrl.X && XY.X < ctrl.X + ctrl.Width)
-            {
-                if (XY.Y > ctrl.Y && XY.Y < ctrl.Y + ctrl.Height)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        IEnumerable<Control> FindSelectedControls()
-        {
-            if (ChooseMode == Controls.DataGrid.ChooseMode.Line)
-            {
-                if (MultilineMode == Controls.DataGrid.MultilineMode.Single)
-                {
-                    foreach (var item in FindSelectedControls_Line_Single())
-                    {
-                        yield return item;
-                    }
-                }
-                if (MultilineMode == Controls.DataGrid.MultilineMode.Multi)
-                {
-                    foreach (var item in FindSelectedControls_Line_Multi())
-                    {
-                        yield return item;
-                    }
-                }
-            }
-            if (ChooseMode == Controls.DataGrid.ChooseMode.Cell)
-            {
-                if (MultilineMode == Controls.DataGrid.MultilineMode.Single)
-                {
-                    foreach (var item in FindSelectedControls_Cell_Single())
-                    {
-                        yield return item;
-                    }
-                }
-                if (MultilineMode == Controls.DataGrid.MultilineMode.Multi)
-                {
-                    foreach (var item in FindSelectedControls_Cell_Multi())
-                    {
-                        yield return item;
-                    }
-                }
-            }
-        }
-        IEnumerable<Control> FindSelectedControls_Cell_Single()
-        {
-            if (FirstControl != null && LastControl != null)
-            {
-                var tp11 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[0]);
-                var tp12 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[1]);
-                var tp21 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[0]);
-                var tp22 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[1]);
-
-                var stack = (StackPanel)LastControl.Parent.Parent;
-                foreach (Border it in stack.Children)
-                {
-                    var child = (Panel)it.Child;
-                    var tpl1 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[0]);
-                    var tpl2 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[1]);
-                    if (tpl1 <= System.Math.Max(tp11, tp21) && tpl1 >= System.Math.Min(tp11, tp21))
-                    {
-                        if (tpl2 <= System.Math.Max(tp12, tp22) && tpl2 >= System.Math.Min(tp12, tp22))
-                        {
-                            yield return child;
-                        }
-                    }
-                }
-            }
-        }
-        IEnumerable<Control> FindSelectedControls_Line_Single()
-        {
-            if (FirstControl != null && LastControl != null)
-            {
-                var tp11 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[0]);
-                var tp12 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[1]);
-                var tp21 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[0]);
-                var tp22 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[1]);
-
-                var stack = (StackPanel)LastControl.Parent.Parent;
-                foreach (Border it in stack.Children)
-                {
-                    var child = (Panel)it.Child;
-                    var tpl1 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[0]);
-                    var tpl2 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[1]);
-                    if (tpl1 <= System.Math.Max(tp11, tp21) && tpl1 >= System.Math.Min(tp11, tp21))
-                    {
-                        yield return child;
-                    }
-                }
-            }
-        }
-        IEnumerable<Control> FindSelectedControls_Cell_Multi()
-        {
-            if (FirstControl != null && LastControl != null)
-            {
-                var tp11 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[0]);
-                var tp12 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[1]);
-                var tp21 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[0]);
-                var tp22 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[1]);
-
-                var list = Rows.Children;
-                foreach (Panel item in list)
-                {
-                    var stack = (StackPanel)item.Children[0];
-                    foreach (Border it in stack.Children)
-                    {
-                        var child = (Panel)it.Child;
-                        var tpl1 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[0]);
-                        var tpl2 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[1]);
-                        if (tpl1 <= System.Math.Max(tp11, tp21) && tpl1 >= System.Math.Min(tp11, tp21))
-                        {
-                            if (tpl2 <= System.Math.Max(tp12, tp22) && tpl2 >= System.Math.Min(tp12, tp22))
-                            {
-                                yield return child;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        IEnumerable<Control> FindSelectedControls_Line_Multi()
-        {
-            if (FirstControl != null && LastControl != null)
-            {
-                var tp11 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[0]);
-                var tp12 = System.Convert.ToInt32(FirstControl.Name.Replace(Name, "").Split('_')[1]);
-                var tp21 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[0]);
-                var tp22 = System.Convert.ToInt32(LastControl.Name.Replace(Name, "").Split('_')[1]);
-
-                var list = Rows.Children;
-                foreach (Panel item in list)
-                {
-                    var stack = (StackPanel)item.Children[0];
-                    foreach (Border it in stack.Children)
-                    {
-                        var child = (Panel)it.Child;
-                        var tpl1 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[0]);
-                        var tpl2 = System.Convert.ToInt32(child.Name.Replace(Name, "").Split('_')[1]);
-                        if (tpl1 <= System.Math.Max(tp11, tp21) && tpl1 >= System.Math.Min(tp11, tp21))
-                        {
-                            yield return child;
-                        }
-                    }
-                }
-            }
-        }
-        IEnumerable<IChanged> FindSelectedItems()
-        {
-            foreach (Panel item in FindSelectedControls())
-            {
-                yield return (IChanged)item.DataContext;
-            }
-        }
-
-        void RenderSelectedControls()
-        {
-            ClearElseControls();
-            if (ChooseMode == Controls.DataGrid.ChooseMode.Line)
-            {
-                RenderSelectedControls_Line();
-            }
-            if (ChooseMode == Controls.DataGrid.ChooseMode.Cell)
-            {
-                RenderSelectedControls_Cell();
-            }
-        }
-        void RenderSelectedControls_Cell()
-        {
-            ClearElseControls();
-            foreach (Panel item in FindSelectedControls())
-            {
-                if (ChooseColor != null)
-                {
-                    item.Background = ChooseColor;
-                }
-                else
-                {
-                    item.Background = new SolidColorBrush(Color.FromArgb(60, 120, 216, 250));
-                }
-            }
-        }
-        void RenderSelectedControls_Line()
-        {
-            ClearElseControls();
-            foreach (Panel item in FindSelectedControls())
-            {
-                if (ChooseColor != null)
-                {
-                    item.Background = ChooseColor;
-                }
-                else
-                {
-                    item.Background = new SolidColorBrush(Color.FromArgb(60, 120, 216, 250));
-                }
-            }
-        }
-
-        void ClearElseControls()
-        {
-            var list = Rows.Children;
-            foreach (Panel item in list)
-            {
-                var stack = (StackPanel)item.Children[0];
-                foreach (Border it in stack.Children)
-                {
-                    var child = (Panel)it.Child;
-                    foreach (Panel i in FindSelectedControls())
-                    {
-                        if (i.Name != child.Name)
-                        {
-                            child.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-                        }
-                    }
-                }
-            }
-        }
-        void ClearAllControls()
-        {
-            var list = Rows.Children;
-            foreach (Panel item in list)
-            {
-                var stack = (StackPanel)item.Children[0];
-                foreach (Border it in stack.Children)
-                {
-                    var child = (Panel)it.Child;
-                    child.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-                }
-            }
-        }
-
-        Control FindPressedControl(PointerPoint mouse)
-        {
-            var list = Rows.Children;
-            foreach (Panel item in list)
-            {
-                var stack = (StackPanel)item.Children[0];
-                foreach (Border it in stack.Children)
-                {
-                    var child = (Panel)it.Child;
-                    if (child.TransformedBounds != null)
-                    {
-                        var pnt = child.TransformedBounds.Value.Bounds.TransformToAABB(child.TransformedBounds.Value.Transform);
-                        var mpnt = mouse.Position.Transform(this.TransformedBounds.Value.Transform);
-                        if (IsXYinBounds(mpnt, pnt))
-                        {
-                            return child;
-                        }
-                    }
-                }
-            }
-            return null;
-        }
-        public void PanelPointerDown(object sender, PointerPressedEventArgs args)
-        {
-            var mouse = args.GetCurrentPoint((DataGrid)sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
-            {
-                IsMouseDown = true;
-                ClearAllControls();
-
-                LastControl = FindPressedControl(mouse);
-                FirstControl = FindPressedControl(mouse);
-            }
-        }
-        public void PanelPointerMoved(object sender, PointerEventArgs args)
-        {
-            var mouse = args.GetCurrentPoint((DataGrid)sender);
-            if (IsMouseDown)
-            {
-                if (LastControl != null)
-                {
-                    if (IsXYinBounds(mouse.Position, LastControl.Bounds))
-                    {
-                        return;
-                    }
-                }
-                LastControl = FindPressedControl(mouse);
-            }
-        }
-        public void PanelPointerUp(object sender, PointerReleasedEventArgs args)
-        {
-            var mouse = args.GetCurrentPoint((DataGrid)sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
-            {
-                IsMouseDown = false;
-                SetSelectedItemsWithHandler();
-            }
         }
 
         public void MakeHeader()
@@ -648,7 +439,7 @@ namespace Client_App.Controls.DataGrid
             stck.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             stck.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
             vw.Content = stck;
-            Rows = stck;
+            Rows = new RowCollection(stck, CellPropChangeEventHandler);
 
             this.Content = brd;
         }

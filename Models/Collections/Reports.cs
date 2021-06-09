@@ -42,45 +42,6 @@ namespace Collections
             OnPropertyChanged(nameof(Report_Collection));
         }
 
-        public bool Equals(object obj)
-        {
-            if (obj is Reports)
-            {
-                var obj1 = this;
-                var obj2 = obj as Reports;
-
-                return obj1._dataAccess == obj2._dataAccess;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static bool operator ==(Reports obj1, Reports obj2)
-        {
-            if(obj1 as object != null)
-            {
-                return obj1.Equals(obj2);
-            }
-            else
-            {
-                return obj2 as object == null ? true : false;
-            }
-        }
-        public static bool operator !=(Reports obj1, Reports obj2)
-        {
-            if (obj1 as object != null)
-            {
-                return !obj1.Equals(obj2);
-            }
-            else
-            {
-                return obj2 as object != null ? true : false;
-            }
-        }
-
-
         [Key]
         public int ReportsId { get; set; }
 

@@ -16,12 +16,12 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Main
     {
-        public static Control GetControl(string type,string Name, Object Context)
+        public static Control GetControl(string type,int Row, Object Context)
         {
             switch (type)
             {
-                case "0": return Get0(Name, Context);
-                case "1": return Get1(Name, Context);
+                case "0": return Get0(Row, Context);
+                case "1": return Get1(Row, Context);
                 case "2": return Get2();
                 case "3": return Get3();
                 case "4": return Get4();
@@ -34,39 +34,29 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         static int RowHeight0 = 30;
         static Color border_color0 = Color.FromArgb(255, 0, 0, 0);
 
-        static Control Get0Row(int starWidth, string Name, string Binding, Object Context)
+        static Control Get0Row(int starWidth, int Row,int Column, string Binding, Object Context)
         {
-            Border brd = new Border()
-            {
-                BorderThickness = Thickness.Parse("1"),
-                BorderBrush = new SolidColorBrush(border_color0)
-            };
+            var cell = new Controls.DataGrid.Cell(Context, Binding, true);
+            cell.Width = starWidth * Wdth0;
+            cell.Height = RowHeight0;
+            cell.BorderBrush = new SolidColorBrush(border_color0);
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
 
-            Panel pnl = new Panel();
-            pnl.Name = Name;
-            pnl.Width = starWidth * Wdth0;
-            pnl.Height = RowHeight0;
 
-            var txt = new Controls.DataGrid.Cell(Context, Binding,true);
-            txt.Background = new SolidColorBrush(new Color(0, 0, 0, 0));
-            txt.IsReadOnly = true;
-            txt.Width = starWidth * Wdth0;
-
-            brd.Child = pnl;
-            pnl.Children.Add(txt);
-
-            return brd;
+            return cell;
         }
-        static Control Get0(string Name, Object Context)
+        static Control Get0(int Row, Object Context)
         {
-            StackPanel stck = new StackPanel();
+            DataGrid.Row stck = new DataGrid.Row();
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
+            stck.Width = 4 * Wdth0;
+            stck.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             stck.Spacing = -1;
 
-            stck.Children.Add(Get0Row(1, Name + "_" + 1, "Master.RegNo",Context));
-            stck.Children.Add(Get0Row(2, Name + "_" + 2, "Master.ShortJurLico", Context));
-
-            stck.Children.Add(Get0Row(1, Name + "_" + 6, "Master.Okpo", Context));
+            stck.Children.Add(Get0Row(1, Row, 1, "Master.RegNo", Context));
+            stck.Children.Add(Get0Row(2, Row, 2, "Master.ShortJurLico", Context));
+            stck.Children.Add(Get0Row(1, Row, 3, "Master.Okpo", Context));
 
             return stck;
         }
@@ -74,44 +64,34 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         static int Wdth1 = 100;
         static int RowHeight1 = 30;
         static Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-        static Control Get1Row(int starWidth, string Name, string Binding, Object Context)
+        static Control Get1Row(int starWidth, int Row, int Column, string Binding, Object Context)
         {
-            Border brd = new Border()
-            {
-                BorderThickness = Thickness.Parse("1"),
-                BorderBrush = new SolidColorBrush(border_color1)
-            }; 
+            var cell = new Controls.DataGrid.Cell(Context, Binding, true);
+            cell.Width = starWidth * Wdth1;
+            cell.Height = RowHeight1;
+            cell.BorderBrush = new SolidColorBrush(border_color1);
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
 
-            Panel pnl = new Panel();
-            pnl.Name = Name;
-            pnl.Width = starWidth * Wdth1;
-            pnl.Height = RowHeight1;
-
-            var txt = new Controls.DataGrid.Cell(Context, Binding,true);
-            txt.Background = new SolidColorBrush(new Color(0, 0, 0, 0));
-            txt.Width = starWidth * Wdth1;
-
-            brd.Child = pnl;
-            pnl.Children.Add(txt);
-
-            return brd;
+            return cell;
         }
-        static Control Get1(string Name, object Context)
+        static Control Get1(int Row, object Context)
         {
-            StackPanel stck = new StackPanel();
+            DataGrid.Row stck = new DataGrid.Row();
+            stck.Width = 8 * Wdth1;
+            stck.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
             stck.Spacing = -1;
 
-            stck.Children.Add(Get1Row(1, Name + "_" + 1, "NumberInOrder",Context));
-            stck.Children.Add(Get1Row(1, Name + "_" + 2, "FormNum",Context));
+            stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder",Context));
+            stck.Children.Add(Get1Row(1, Row, 2, "FormNum",Context));
 
             var str = "{0:d}";
-            stck.Children.Add(Get1Row(1, Name + "_" + 3, "StartPeriod", Context));
-            stck.Children.Add(Get1Row(1, Name + "_" + 4, "EndPeriod", Context));
-            stck.Children.Add(Get1Row(1, Name + "_" + 5, "ExportDate", Context));
-
-            stck.Children.Add(Get1Row(2, Name + "_" + 6, "IsCorrection", Context));
-            stck.Children.Add(Get1Row(1, Name + "_" + 7, "Comments", Context));
+            stck.Children.Add(Get1Row(1, Row, 3, "StartPeriod", Context));
+            stck.Children.Add(Get1Row(1, Row, 4, "EndPeriod", Context));
+            stck.Children.Add(Get1Row(1, Row, 5, "ExportDate", Context));
+            stck.Children.Add(Get1Row(2, Row, 6, "IsCorrection", Context));
+            stck.Children.Add(Get1Row(1, Row, 7, "Comments", Context));
 
             return stck;
         }

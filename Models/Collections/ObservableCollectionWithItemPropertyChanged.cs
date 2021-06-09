@@ -47,53 +47,56 @@ namespace Models.Collections
             }
         }
 
-        public bool Equals(object obj)
-        {
-            if (obj is ObservableCollectionWithItemPropertyChanged<T>)
-            {
-                var obj1 = this;
-                var obj2 = obj as ObservableCollectionWithItemPropertyChanged<T>;
+        //public bool Equals(object obj)
+        //{
+        //    if (obj is ObservableCollectionWithItemPropertyChanged<T>)
+        //    {
+        //        var obj1 = this;
+        //        var obj2 = obj as ObservableCollectionWithItemPropertyChanged<T>;
 
-                if (obj1.Count == obj2.Count)
-                {
-                    int count = 0;
-                    foreach (var item1 in obj1)
-                    {
-                        dynamic tmp1 = item1;
-                        dynamic tmp2 = obj2[count];
-                        if (tmp1!=tmp2)
-                        {
-                            return false;
-                        }
-                        count++;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-            return true;
-        }
+        //        if (obj1.Count == obj2.Count)
+        //        {
+        //            int count = 0;
+        //            foreach (var item1 in obj1)
+        //            {
+        //                dynamic tmp1 = item1;
+        //                dynamic tmp2 = obj2[count];
+        //                if (tmp1!=tmp2)
+        //                {
+        //                    return false;
+        //                }
+        //                count++;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //    return true;
+        //}
 
-        public static bool operator ==(ObservableCollectionWithItemPropertyChanged<T> obj1, ObservableCollectionWithItemPropertyChanged<T> obj2)
-        {
-            return obj1.Equals(obj2);
-        }
-        public static bool operator !=(ObservableCollectionWithItemPropertyChanged<T> obj1, ObservableCollectionWithItemPropertyChanged<T> obj2)
-        {
-            return !obj1.Equals(obj2);
-        }
+        //public static bool operator ==(ObservableCollectionWithItemPropertyChanged<T> obj1, ObservableCollectionWithItemPropertyChanged<T> obj2)
+        //{
+        //    return obj1.Equals(obj2);
+        //}
+        //public static bool operator !=(ObservableCollectionWithItemPropertyChanged<T> obj1, ObservableCollectionWithItemPropertyChanged<T> obj2)
+        //{
+        //    return !obj1.Equals(obj2);
+        //}
 
 
         protected override void InsertItem(int index, T item)
         {
-            base.InsertItem(index, item);
-            item.PropertyChanged += Item_PropertyChanged;
+            if (item != null)
+            {
+                base.InsertItem(index, item);
+                item.PropertyChanged += Item_PropertyChanged;
+            }
         }
 
         protected override void RemoveItem(int index)

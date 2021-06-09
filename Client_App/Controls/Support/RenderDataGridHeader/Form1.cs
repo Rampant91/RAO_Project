@@ -40,27 +40,21 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
         }
 
         static int Wdth1 = 100;
+        static int RowHeight0 = 30;
         static Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-        static Control Get1Header(int starWidth, string Text)
+        static Control Get1Header(int starWidth, int Column, string Text)
         {
-            Border brd = new Border()
-            {
-                BorderThickness = Thickness.Parse("1"),
-                BorderBrush = new SolidColorBrush(border_color1)
-            };
-            Panel pnl = new Panel();
-            pnl.Width = starWidth * Wdth1;
-            pnl.Background = new SolidColorBrush(Color.Parse("LightGray"));
-            TextBlock txt = new TextBlock();
-            txt.FontWeight = FontWeight.Bold;
-            txt.Text = Text;
-            txt.TextAlignment = Avalonia.Media.TextAlignment.Center;
-            txt.Padding = Thickness.Parse("0,5,0,5");
+            var ram = new Models.DataAccess.RamAccess<string>(null, Text);
+            var cell = new Controls.DataGrid.Cell(ram, "", true);
+            cell.Background = new SolidColorBrush(Color.Parse("LightGray"));
+            cell.Width = starWidth * Wdth0;
+            cell.Height = RowHeight0;
+            cell.BorderBrush = new SolidColorBrush(border_color0);
+            cell.CellRow = 0;
+            cell.CellColumn = Column;
 
-            brd.Child = pnl;
-            pnl.Children.Add(txt);
 
-            return brd;
+            return cell;
         }
         static Control Get1()
         {
@@ -68,96 +62,96 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
             stck.Spacing = -1;
 
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
 
-            stck.Children.Add(Get1Header(2,
+            stck.Children.Add(Get1Header(2, 2,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,3,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,4,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,5,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,6,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,7,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("FactoryNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,8,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("Quantity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,9,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("Activity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,10,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("CreatorOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,11,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("CreationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,12,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("Category").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,13,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("SignedServicePeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,14,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,15,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,16,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("DocumentVid").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,17,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("DocumentNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,18,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("DocumentDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,19,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,20,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,21,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,22,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1,
+            stck.Children.Add(Get1Header(1,23,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").
                     GetProperty("PackNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
