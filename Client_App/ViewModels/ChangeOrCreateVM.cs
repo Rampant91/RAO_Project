@@ -118,7 +118,6 @@ namespace Client_App.ViewModels
                 {
                     if (item is Views.FormChangeOrCreate)
                     {
-                        ((Views.FormChangeOrCreate)item).dbm.SaveChanges();
                         item.Close();
                     }
                 }
@@ -153,7 +152,7 @@ namespace Client_App.ViewModels
             }
             foreach (var item in lst)
             {
-                //Storage.Rows.Remove(item);
+                //Storage.Rows11.Remove(item);
             }
         }
 

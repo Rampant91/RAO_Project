@@ -16,11 +16,9 @@ namespace Client_App.Views
     public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     {
         string _param = "";
-        public DBRealization.DBModel dbm;
-        public FormChangeOrCreate(string param, string DBPath, Report rep, DBRealization.DBModel dbm)
+        public FormChangeOrCreate(string param, string DBPath, Report rep)
         {
             var tmp = new ViewModels.ChangeOrCreateVM();
-            this.dbm = dbm;
             if (DBPath != null)
             {
                 tmp.DBPath = DBPath;
@@ -51,14 +49,6 @@ namespace Client_App.Views
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
-
-            dbm.UndoChanges();
-            dbm.SaveChanges();
-
-            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                ((ViewModels.MainWindowVM)desktop.MainWindow.DataContext).UpdateAll();
-            }
         }
 
         void Form1Init(in Panel panel)

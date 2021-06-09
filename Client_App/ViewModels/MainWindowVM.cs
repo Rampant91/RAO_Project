@@ -68,26 +68,29 @@ namespace Client_App.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public DBRealization.DBModel dbm { get; set; }
         public MainWindowVM()
         {
-            dbm = new DBRealization.DBModel(_DBPath);
-            var t = dbm.Database.EnsureCreated();
+            //dbm = new DBRealization.DBModel(_DBPath);
+            //var t = dbm.Database.EnsureCreated();
 
-            dbm.LoadAllTables();
+            //dbm.LoadAllTables();
 
-            if (dbm.coll_reports.Count() != 0)
-            {
-                Local_Reports = dbm.coll_reports.First();
-            }
-            else
-            {
-                Local_Reports = new DBObservable();
-                Local_Reports.Reports_Collection.Add(new Reports());
-                dbm.coll_reports.Add(Local_Reports);
-            }
-            dbm.SaveChanges();
+            //if (dbm.coll_reports.Count() != 0)
+            //{
+            //    Local_Reports = dbm.coll_reports.First();
+            //}
+            //else
+            //{
+            //    Local_Reports = new DBObservable();
+            //    Local_Reports.Reports_Collection.Add(new Reports());
+            //    dbm.coll_reports.Add(Local_Reports);
+            //}
+            //dbm.SaveChanges();
+            Local_Reports = new DBObservable();
+            var rpt = new Reports();
+            rpt.Report_Collection.Add(new Report());
+            Local_Reports.Reports_Collection.Add(rpt);
+
 
             Local_Reports.PropertyChanged += Local_ReportsChanged;
 
@@ -99,19 +102,6 @@ namespace Client_App.ViewModels
 
             Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
 
-        }
-
-        public void UpdateAll()
-        {
-            dbm = new DBRealization.DBModel(_DBPath);
-            var t = dbm.Database.EnsureCreated();
-
-            dbm.LoadAllTables();
-
-            Local_Reports = dbm.coll_reports.First();
-            dbm.SaveChanges();
-
-            Local_Reports.PropertyChanged += Local_ReportsChanged;
         }
 
         void _AddSort(string param)
@@ -135,9 +125,8 @@ namespace Client_App.ViewModels
                 //    tmp.Reps.Add(new Reports());
                 //    dbm.SaveChanges();
                 //}
-                var obj = dbm.coll_reports.Find(1).Reports_Collection[0];
-                obj.Report_Collection.Add(rt);
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param, DBPath, rt,dbm);
+                Local_Reports.Reports_Collection[0].Report_Collection.Add(rt);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param, DBPath, rt);
                 await frm.ShowDialog<Models.Abstracts.Form>(desktop.MainWindow);
             }
         }
@@ -152,7 +141,7 @@ namespace Client_App.ViewModels
                     {
                         var obj = param[0];
                         var rep = (Report)obj;
-                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum.Value, DBPath, rep,dbm);
+                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum.Value, DBPath, rep);
                         await frm.ShowDialog(desktop.MainWindow);
                     }
                 }
@@ -166,9 +155,8 @@ namespace Client_App.ViewModels
                 {
                     foreach (var item in param)
                     {
-                        dbm.coll_reports.Find(1).Reports_Collection[0].Report_Collection.Remove((Report)item);
+                        Local_Reports.Reports_Collection[0].Report_Collection.Remove((Report)item);
                     }
-                    dbm.SaveChanges();
                 }
             }
         }
