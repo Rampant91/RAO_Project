@@ -8,8 +8,20 @@ namespace Models.Abstracts
 
         public Form2() : base()
         {
-
+            Init_base();
+            Validate_base();
         }
+
+        private void Init_base()
+        {
+            _dataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, -1);
+            //_dataAccess.Init<string>(nameof(), _Validation, null);
+        }
+        protected void Validate_base()
+        {
+            NumberInOrder_Validation(NumberInOrder);
+        }
+
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
         public RamAccess<byte> CorrectionNumber
@@ -37,9 +49,10 @@ namespace Models.Abstracts
             }
         }
 
-                private bool CorrectionNumber_Validation(RamAccess<byte> value)
+        private bool CorrectionNumber_Validation(RamAccess<byte> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //CorrectionNumber property
 
         //NumberInOrder property

@@ -1,4 +1,5 @@
 ﻿using Models.DataAccess;
+using System.Globalization;
 using System;
 
 namespace Models
@@ -11,6 +12,48 @@ namespace Models
         {
             FormNum.Value = "24";
             NumberOfFields.Value = 26;
+            Init();
+            Validate_all();
+        }
+
+        private void Init()
+        {
+            _dataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
+            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(QuantityFromAnothers), QuantityFromAnothers_Validation, null);
+            _dataAccess.Init<string>(nameof(QuantityFromAnothersImported), QuantityFromAnothersImported_Validation, null);
+            _dataAccess.Init<string>(nameof(QuantityCreated), QuantityCreated_Validation, null);
+            _dataAccess.Init<string>(nameof(QuantityRemovedFromAccount), QuantityRemovedFromAccount_Validation, null);
+            _dataAccess.Init<string>(nameof(MassCreated), MassCreated_Validation, null);
+            _dataAccess.Init<string>(nameof(MassFromAnothers), MassFromAnothers_Validation, null);
+            _dataAccess.Init<string>(nameof(MassFromAnothersImported), MassFromAnothersImported_Validation, null);
+            _dataAccess.Init<string>(nameof(MassRemovedFromAccount), MassRemovedFromAccount_Validation, null);
+            _dataAccess.Init<string>(nameof(QuantityTransferredToAnother), QuantityTransferredToAnother_Validation, null);
+            _dataAccess.Init<string>(nameof(MassAnotherReasons), MassAnotherReasons_Validation, null);
+            _dataAccess.Init<string>(nameof(MassTransferredToAnother), MassTransferredToAnother_Validation, null);
+            _dataAccess.Init<string>(nameof(QuantityAnotherReasons), QuantityAnotherReasons_Validation, null);
+            _dataAccess.Init<string>(nameof(QuantityRefined), QuantityRefined_Validation, null);
+            _dataAccess.Init<string>(nameof(MassRefined), MassRefined_Validation, null);
+        }
+
+        private void Validate_all()
+        {
+            CodeOYAT_Validation(CodeOYAT);
+            FcpNumber_Validation(FcpNumber);
+            QuantityFromAnothers_Validation(QuantityFromAnothers);
+            QuantityFromAnothersImported_Validation(QuantityFromAnothersImported);
+            QuantityCreated_Validation(QuantityCreated);
+            QuantityRemovedFromAccount_Validation(QuantityRemovedFromAccount);
+            MassCreated_Validation(MassCreated);
+            MassFromAnothers_Validation(MassFromAnothers);
+            MassFromAnothersImported_Validation(MassFromAnothersImported);
+            MassRemovedFromAccount_Validation(MassRemovedFromAccount);
+            QuantityTransferredToAnother_Validation(QuantityTransferredToAnother);
+            MassAnotherReasons_Validation(MassAnotherReasons);
+            MassTransferredToAnother_Validation(MassTransferredToAnother);
+            QuantityAnotherReasons_Validation(QuantityAnotherReasons);
+            QuantityRefined_Validation(QuantityRefined);
+            MassRefined_Validation(MassRefined);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -45,7 +88,7 @@ namespace Models
             }
         }
 
-                private bool CodeOYAT_Validation(RamAccess<string> value)
+        private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             return true;
@@ -110,18 +153,20 @@ namespace Models
 
                 private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            return true;
+        }
         //FcpNumber property
 
         //MassCreated Property
         [Attributes.Form_Property("Масса образованного, т")]
-        public RamAccess<double> MassCreated
+        public RamAccess<string> MassCreated
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(MassCreated));
+                    return _dataAccess.Get<string>(nameof(MassCreated));
                 }
                 
                 {
@@ -139,20 +184,49 @@ namespace Models
             }
         }
 
-                private bool MassCreated_Validation(RamAccess<double> value)//TODO
+                private bool MassCreated_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //MassCreated Property
 
         //QuantityCreated property
         [Attributes.Form_Property("Количество образованного, шт.")]
-        public RamAccess<int> QuantityCreated
+        public RamAccess<string> QuantityCreated
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityCreated));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityCreated));//OK
                     
                 }
                 
@@ -173,25 +247,39 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityCreated_Validation(RamAccess<int> value)//Ready
+                private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
         //QuantityCreated property
 
         //QuantityCreatedNote property
-        public RamAccess<int> QuantityCreatedNote
+        public RamAccess<string> QuantityCreatedNote
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityCreatedNote));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityCreatedNote));//OK
                     
                 }
                 
@@ -210,12 +298,26 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityCreatedNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityCreatedNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -223,13 +325,13 @@ namespace Models
 
         //MassFromAnothers Property
         [Attributes.Form_Property("Масса поступившего от сторонних, т")]
-        public RamAccess<double> MassFromAnothers
+        public RamAccess<string> MassFromAnothers
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(MassFromAnothers));
+                    return _dataAccess.Get<string>(nameof(MassFromAnothers));
                 }
                 
                 {
@@ -243,20 +345,49 @@ namespace Models
             }
         }
 
-                private bool MassFromAnothers_Validation(RamAccess<double> value)//TODO
+                private bool MassFromAnothers_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //MassFromAnothers Property
 
         //QuantityFromAnothers property
         [Attributes.Form_Property("Количество поступившего от сторонних, шт.")]
-        public RamAccess<int> QuantityFromAnothers
+        public RamAccess<string> QuantityFromAnothers
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityFromAnothers));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityFromAnothers));//OK
                     
                 }
                 
@@ -271,25 +402,39 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityFromAnothers_Validation(RamAccess<int> value)//Ready
+                private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
         //QuantityFromAnothers property
 
         //QuantityFromAnothersNote property
-        public RamAccess<int> QuantityFromAnothersNote
+        public RamAccess<string> QuantityFromAnothersNote
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityFromAnothersNote));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
                     
                 }
                 
@@ -304,12 +449,26 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityFromAnothersNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityFromAnothersNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -317,13 +476,13 @@ namespace Models
 
         //MassFromAnothersImported Property
         [Attributes.Form_Property("Масса импортированного от сторонних, т")]
-        public RamAccess<double> MassFromAnothersImported
+        public RamAccess<string> MassFromAnothersImported
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(MassFromAnothersImported));
+                    return _dataAccess.Get<string>(nameof(MassFromAnothersImported));
                 }
                 
                 {
@@ -341,20 +500,49 @@ namespace Models
             }
         }
 
-                private bool MassFromAnothersImported_Validation(RamAccess<double> value)//TODO
+                private bool MassFromAnothersImported_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //MassFromAnothersImported Property
 
         //QuantityFromAnothersImported property
         [Attributes.Form_Property("Количество импортированного от сторонних, шт.")]
-        public RamAccess<int> QuantityFromAnothersImported
+        public RamAccess<string> QuantityFromAnothersImported
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityFromAnothersImported));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityFromAnothersImported));//OK
                     
                 }
                 
@@ -375,25 +563,39 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityFromAnothersImported_Validation(RamAccess<int> value)//Ready
+                private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
         //QuantityFromAnothersImported property
 
         //QuantityFromImportedNote property
-        public RamAccess<int> QuantityFromImportedNote
+        public RamAccess<string> QuantityFromImportedNote
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityFromImportedNote));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
                     
                 }
                 
@@ -412,12 +614,26 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityFromImportedNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityFromImportedNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -425,13 +641,13 @@ namespace Models
 
         //MassAnotherReasons Property
         [Attributes.Form_Property("Масса поставленного на учет по другим причинам, т")]
-        public RamAccess<double> MassAnotherReasons
+        public RamAccess<string> MassAnotherReasons
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(MassAnotherReasons));
+                    return _dataAccess.Get<string>(nameof(MassAnotherReasons));
                 }
                 
                 {
@@ -449,20 +665,49 @@ namespace Models
             }
         }
 
-                private bool MassAnotherReasons_Validation(RamAccess<double> value)//TODO
+                private bool MassAnotherReasons_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //MassAnotherReasons Property
 
         //QuantityAnotherReasons property
         [Attributes.Form_Property("Количество поступившего на учет по другим причинам, шт.")]
-        public RamAccess<int> QuantityAnotherReasons
+        public RamAccess<string> QuantityAnotherReasons
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityAnotherReasons));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityAnotherReasons));//OK
                     
                 }
                 
@@ -482,25 +727,39 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityAnotherReasons_Validation(RamAccess<int> value)//Ready
+                private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
         //QuantityAnotherReasons property
 
         //QuantityAnotherReasonsNote property
-        public RamAccess<int> QuantityAnotherReasonsNote
+        public RamAccess<string> QuantityAnotherReasonsNote
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityAnotherReasonsNote));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
                     
                 }
                 
@@ -519,12 +778,26 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityAnotherReasonsNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityAnotherReasonsNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -532,13 +805,13 @@ namespace Models
 
         //MassTransferredToAnother Property
         [Attributes.Form_Property("Масса переданного сторонним, т")]
-        public RamAccess<double> MassTransferredToAnother
+        public RamAccess<string> MassTransferredToAnother
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(MassTransferredToAnother));
+                    return _dataAccess.Get<string>(nameof(MassTransferredToAnother));
                 }
                 
                 {
@@ -552,20 +825,49 @@ namespace Models
             }
         }
 
-                private bool MassTransferredToAnother_Validation(RamAccess<double?> value)//TODO
+                private bool MassTransferredToAnother_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //MassTransferredToAnother Property
 
         //QuantityTransferredToAnother property
         [Attributes.Form_Property("Количество переданного сторонним, шт.")]
-        public RamAccess<int> QuantityTransferredToAnother
+        public RamAccess<string> QuantityTransferredToAnother
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityTransferredToAnother));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityTransferredToAnother));//OK
                     
                 }
                 
@@ -585,25 +887,39 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityTransferredToAnother_Validation(RamAccess<int> value)//Ready
+                private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
         //QuantityTransferredToAnother property
 
         //QuantityTransferredToNote property
-        public RamAccess<int> QuantityTransferredToNote
+        public RamAccess<string> QuantityTransferredToNote
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityTransferredToNote));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
                     
                 }
                 
@@ -622,10 +938,23 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityTransferredToNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityTransferredToNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+            {
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -636,13 +965,13 @@ namespace Models
 
         //MassRefined Property
         [Attributes.Form_Property("Масса переработанного, т")]
-        public RamAccess<double> MassRefined
+        public RamAccess<string> MassRefined
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(MassRefined));
+                    return _dataAccess.Get<string>(nameof(MassRefined));
                 }
                 
                 {
@@ -656,20 +985,49 @@ namespace Models
             }
         }
 
-                private bool MassRefined_Validation(RamAccess<double> value)//TODO
+                private bool MassRefined_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //MassRefined Property
 
         //QuantityRefined property
         [Attributes.Form_Property("Количество переработанного, шт.")]
-        public RamAccess<int> QuantityRefined
+        public RamAccess<string> QuantityRefined
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityRefined));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityRefined));//OK
                     
                 }
                 
@@ -689,25 +1047,39 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityRefined_Validation(RamAccess<int> value)//Ready
+                private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false; return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
         //QuantityRefined property
 
         //QuantityRefinedNote property
-        public RamAccess<int> QuantityRefinedNote
+        public RamAccess<string> QuantityRefinedNote
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityRefinedNote));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
                     
                 }
                 
@@ -726,12 +1098,26 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityRefinedNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityRefinedNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -739,13 +1125,13 @@ namespace Models
 
         //MassRemovedFromAccount Property
         [Attributes.Form_Property("Масса снятого с учета, т")]
-        public RamAccess<double> MassRemovedFromAccount
+        public RamAccess<string> MassRemovedFromAccount
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(MassRemovedFromAccount));
+                    return _dataAccess.Get<string>(nameof(MassRemovedFromAccount));
                 }
                 
                 {
@@ -763,20 +1149,49 @@ namespace Models
             }
         }
 
-                private bool MassRemovedFromAccount_Validation(RamAccess<double> value)//TODO
+                private bool MassRemovedFromAccount_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //MassRemovedFromAccount Property
 
         //QuantityRemovedFromAccount property
         [Attributes.Form_Property("Количество снятого с учета, шт.")]
-        public RamAccess<int> QuantityRemovedFromAccount
+        public RamAccess<string> QuantityRemovedFromAccount
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityRemovedFromAccount));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityRemovedFromAccount));//OK
                     
                 }
                 
@@ -796,12 +1211,26 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityRemovedFromAccount_Validation(RamAccess<int> value)//Ready
+                private bool QuantityRemovedFromAccount_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -809,13 +1238,13 @@ namespace Models
 
         //QuantityRemovedFromNote property
         [Attributes.Form_Property("Количество снятого с учета, шт.")]
-        public RamAccess<int> QuantityRemovedFromNote
+        public RamAccess<string> QuantityRemovedFromNote
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityRemovedFromNote));//OK
+                    return _dataAccess.Get<string>(nameof(QuantityRemovedFromNote));//OK
                     
                 }
                 
@@ -834,12 +1263,26 @@ namespace Models
             }
         }
         // positive int.
-                private bool QuantityRemovedFromNote_Validation(RamAccess<int> value)//Ready
+                private bool QuantityRemovedFromNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
-                value.AddError("Недопустимое значение"); return false;
+                return true;
+            }
+            try
+            {
+                int k = int.Parse(value.Value);
+                if (k <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }

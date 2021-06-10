@@ -14,6 +14,40 @@ namespace Models
         {
             FormNum.Value = "23";
             NumberOfFields.Value = 17;
+            Init();
+            Validate_all();
+        }
+
+        private void Init()
+        {
+            _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            _dataAccess.Init<string>(nameof(ProjectVolume), ProjectVolume_Validation, null);
+            _dataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
+            _dataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
+            _dataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
+            _dataAccess.Init<string>(nameof(SummaryActivity), SummaryActivity_Validation, null);
+            _dataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
+            _dataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(ExpirationDate), ExpirationDate_Validation, null);
+            _dataAccess.Init<string>(nameof(DocumentName), DocumentName_Validation, null);
+            _dataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
+        }
+
+        private void Validate_all()
+        {
+            StoragePlaceName_Validation(StoragePlaceName);
+            StoragePlaceCode_Validation(StoragePlaceCode);
+            ProjectVolume_Validation(ProjectVolume);
+            CodeRAO_Validation(CodeRAO);
+            Volume_Validation(Volume);
+            Mass_Validation(Mass);
+            SummaryActivity_Validation(SummaryActivity);
+            QuantityOZIII_Validation(QuantityOZIII);
+            DocumentNumber_Validation(DocumentNumber);
+            ExpirationDate_Validation(ExpirationDate);
+            DocumentName_Validation(DocumentName);
+            DocumentDate_Validation(DocumentDate);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -48,18 +82,20 @@ namespace Models
             }
         }
         //If change this change validation
-        
+
         private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             var spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
-                value.AddError( "Недопустиое значение");return false;
+                value.AddError("Недопустиое значение");
+                return false;
             }
             return true;
         }
@@ -128,13 +164,20 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");return false;
-            }return false;
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
             var spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
-                value.AddError( "Недопустиое значение");return false;
+                value.AddError( "Недопустиое значение");
+                return false;
             }
+            return true;
         }
         //StoragePlaceCode property
 
@@ -164,27 +207,33 @@ namespace Models
             }
         }
 
-        
+
         private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value.Equals("прим."))
             {
-
+                return true;
             }
             if (!((value.Value.Contains('e') || value.Value.Contains('E'))))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение"); return true;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -214,7 +263,9 @@ namespace Models
         
         private bool ProjectVolumeNote_Validation(RamAccess<double?> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            return true;
+        }
         //ProjectVolumeNote property
 
         //CodeRAO property
@@ -223,7 +274,6 @@ namespace Models
         {
             get
             {
-                
                 {
                     return _dataAccess.Get<string>(nameof(CodeRAO));
                 }
@@ -234,8 +284,6 @@ namespace Models
             }
             set
             {
-
-                
                 {
                     _dataAccess.Set(nameof(CodeRAO), value);
                 }
@@ -248,12 +296,15 @@ namespace Models
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
-            {return false;
+            {
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            var a = new Regex("^[0-9]{11}$");
+            var a = new Regex("^[0-9X]{11}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -285,24 +336,31 @@ namespace Models
             }
         }
 
-        
+
         private bool Volume_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();return false;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Volume property
 
@@ -332,24 +390,31 @@ namespace Models
             }
         }
 
-        
+
         private bool Mass_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();return false;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //Mass Property
 
@@ -380,12 +445,19 @@ namespace Models
             }
         }
         // positive int.
-        
+
         private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
-            value.ClearErrors();return false;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                return true;
+            }
             if ((int)value.Value <= 0)
-                value.AddError( "Недопустимое значение");
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //QuantityOZIII property
 
@@ -415,24 +487,31 @@ namespace Models
             }
         }
 
-        
+
         private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors();return false;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
+                return false;
             }
+            return true;
         }
         //SummaryActivity property
 
@@ -463,13 +542,14 @@ namespace Models
             }
         }
 
-        
+
         private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -535,17 +615,20 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -577,23 +660,26 @@ namespace Models
             }
         }
 
-        
+
         private bool ExpirationDate_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -625,13 +711,14 @@ namespace Models
             }
         }
 
-        
+
         private bool DocumentName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
