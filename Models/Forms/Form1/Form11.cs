@@ -3,11 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using System.Runtime.CompilerServices;
-using System.ComponentModel.DataAnnotations;
-using System.Collections;
-using System.ComponentModel;
-using System.Linq;
 
 namespace Models
 {
@@ -22,54 +17,39 @@ namespace Models
             Init();
             Validate_all();
         }
-        void InPropertyChanged(object sender, PropertyChangedEventArgs args)
-        {
-            OnPropertyChanged(args.PropertyName);
-        }
 
         private void Init()
         {
-            //_dataAccess.Init<string>(nameof(PackNumberNote), PackNumberNote_Validation, null);
-            //_dataAccess.Init<string>(nameof(OwnerNote), OwnerNote_Validation, null);
-            //_dataAccess.Init<string>(nameof(ActivityNote), ActivityNote_Validation, null);
             _dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
             Activity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<short?>(nameof(Category), Category_Validation, null);
             Category.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
             CreationDate.PropertyChanged += InPropertyChanged;
-            //_dataAccess.Init<string>(nameof(CreatorOKPONote), CreatorOKPONote_Validation, null);
             _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
             CreatorOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
             FactoryNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
             _dataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
             FactoryNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
             Owner.PropertyChanged += InPropertyChanged;
-            //_dataAccess.Init<string>(nameof(PackNameNote), PackNameNote_Validation, null);
             _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
             PackName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
             PackNumberRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
             PackNumber.PropertyChanged += InPropertyChanged;
-            //_dataAccess.Init<string>(nameof(PackTypeNote), PackTypeNote_Validation, null);
             _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
             PackTypeRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
             PackType.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
             PassportNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
-            _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
-            _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
             _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
             PassportNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
             PropertyCode.PropertyChanged += InPropertyChanged;
-            // _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPONote), ProviderOrRecieverOKPONote_Validation, null);
             _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
@@ -78,53 +58,34 @@ namespace Models
             Radionuclids.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
             SignedServicePeriod.PropertyChanged += InPropertyChanged;
-            //_dataAccess.Init<string>(nameof(TransporterOKPONote), TransporterOKPONote_Validation, null);
             _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
             TransporterOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TypeRecoded), TypeRecoded_Validation, null);
             TypeRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Type), Type_Validation, null);
             Type.PropertyChanged += InPropertyChanged;
-            //_dataAccess.Init<string>(nameof(CreationDateNote), CreationDateNote_Validation, null);
-            _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
-            _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
-            _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
-            _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
         }
 
         private void Validate_all()
         {
-            //PackNumberNote_Validation(PackNumberNote);
-            //OwnerNote_Validation(OwnerNote);
-            //PackTypeNote_Validation(PackTypeNote);
-            //ActivityNote_Validation(ActivityNote);
-            Activity_Validation(Activity);
-            Category_Validation(Category);
-            CreationDate_Validation(CreationDate);
-            //CreatorOKPONote_Validation(CreatorOKPONote);
             Activity_Validation(Activity);
             Category_Validation(Category);
             CreationDate_Validation(CreationDate);
             CreatorOKPO_Validation(CreatorOKPO);
             FactoryNumber_Validation(FactoryNumber);
             Owner_Validation(Owner);
-            //PackNameNote_Validation(PackNameNote);
             PackName_Validation(PackName);
             PackNumber_Validation(PackNumber);
-            //PackTypeNote_Validation(PackTypeNote);
             PackTypeRecoded_Validation(PackTypeRecoded);
             PackType_Validation(PackType);
             PassportNumber_Validation(PassportNumber);
             PropertyCode_Validation(PropertyCode);
-            //ProviderOrRecieverOKPONote_Validation(ProviderOrRecieverOKPONote);
             ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
             Quantity_Validation(Quantity);
             Radionuclids_Validation(Radionuclids);
             SignedServicePeriod_Validation(SignedServicePeriod);
-            //TransporterOKPONote_Validation(TransporterOKPONote);
             TransporterOKPO_Validation(TransporterOKPO);
             Type_Validation(Type);
-            //CreationDateNote_Validation(CreationDateNote);
             FactoryNumberRecoded_Validation(FactoryNumberRecoded);
             PassportNumberRecoded_Validation(PassportNumberRecoded);
             PackNumberRecoded_Validation(PackNumberRecoded);

@@ -134,6 +134,7 @@ namespace DBRealization
             this.reports.Include(x => x.Report_Collection).Load();
             this.reports.Include(x => x.Master).Load();
             this.report.Include(x => x.Rows11).Load();
+            //this.report.Include(x => x.Rows12).Load();
             this.access_byte.Load();
             this.access_string.Load();
         }

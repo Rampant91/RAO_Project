@@ -19,7 +19,7 @@ namespace Models.Abstracts
             Init_base();
             Validate_base();
         }
-        void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+        protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             OnPropertyChanged(args.PropertyName);
         }
@@ -40,13 +40,6 @@ namespace Models.Abstracts
             DocumentDate.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, 0);
             NumberInOrder.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(OperationDate), OperationDate_Validation, null);
-            _dataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
-            _dataAccess.Init<byte?>(nameof(DocumentVid), DocumentVid_Validation, null);
-            _dataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
-            _dataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, -1);
-            _dataAccess.Init<string>(nameof(DocumentNumberRecoded), DocumentNumberRecoded_Validation, null);
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
         }
         protected void Validate_base()
         {
@@ -56,9 +49,7 @@ namespace Models.Abstracts
             DocumentVid_Validation(DocumentVid);
             DocumentNumberRecoded_Validation(DocumentNumberRecoded);
             DocumentDate_Validation(DocumentDate);
-            DocumentDate_Validation(DocumentDate);
             NumberInOrder_Validation(NumberInOrder);
-            DocumentNumberRecoded_Validation(DocumentNumberRecoded);
         }
 
         //NumberInOrder property

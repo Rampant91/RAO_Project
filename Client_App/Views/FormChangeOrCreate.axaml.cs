@@ -75,6 +75,12 @@ namespace Client_App.Views
                 panel.Children.Add(Long_Visual.Form1_Visual.Form19_Visual(this.FindNameScope()));
         }
 
+        void Form2Init(in Panel panel)
+        {
+            if (_param == "2/0")
+                panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual(this.FindNameScope()));
+        }
+
         void Init()
         {
             var panel = this.FindControl<Panel>("ChangingPanel");

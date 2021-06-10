@@ -33,6 +33,33 @@ namespace Client_App.Long_Visual
             };
         }
 
+        public static TextBox CreateTextBox(string thickness, int columnProp, int height, string textProp, double width)
+        {
+            return new TextBox()
+            {
+                Height = height,
+                Width = width,
+                Margin = Thickness.Parse(thickness),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                [!TextBox.TextProperty] = new Binding(textProp, BindingMode.TwoWay),
+                [Grid.ColumnProperty] = columnProp
+            };
+        }
+
+        public static TextBlock CreateTextBlock(string thickness, int columnProp, int height, string text)
+        {
+            return new TextBlock
+            {
+                Height = height,
+                Margin = Thickness.Parse(thickness),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                Text = text,
+                [Grid.ColumnProperty] = columnProp
+            };
+        }
+
         public static Grid Form11_Visual(INameScope scp)
         {
             Grid maingrid = new Grid();
@@ -62,25 +89,8 @@ namespace Client_App.Long_Visual
             topPnl1.SetValue(Grid.RowProperty, 0);
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl1.Children.Add(new TextBlock
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,13,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Text = "Дата конца периода:",
-                [Grid.ColumnProperty] = 0,
-            });
-            topPnl1.Children.Add(new TextBox
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,0,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!TextBox.TextProperty] = new Binding("Storage.EndPeriod.Value", BindingMode.TwoWay),
-                [Grid.ColumnProperty] = 2,
-
-            });
+            topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата конца периода:"));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", double.NaN));
             maingrid.Children.Add(topPnl1);
 
             var topPnl2 = new Grid();
@@ -106,38 +116,10 @@ namespace Client_App.Long_Visual
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
-            topPnl2.Children.Add(new TextBlock
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,15,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Text = "Номер корректировки:",
-                [Grid.ColumnProperty] = 0,
-            });
-
-            topPnl2.Children.Add(new TextBox
-            {
-                Height = 30,
-                Width = 70,
-                Margin = Thickness.Parse("5,12,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!TextBox.TextProperty] = new Binding("Storage.CorrectionNumber.Value"),
-                [Grid.ColumnProperty] = 1,
-            });
-
-            topPnl2.Children.Add(new Button
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,12,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = "Проверить",
-                [!Button.CommandProperty] = new Binding("CheckReport"),
-                [Grid.ColumnProperty] = 2,
-            });
-            topPnl2.Children.Add(CreateButton("Сохранить","5,12,0,0",3,30,"SaveReport"));
+            topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber.Value", 70));
+            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
+            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
 
@@ -294,25 +276,8 @@ namespace Client_App.Long_Visual
             topPnl1.SetValue(Grid.RowProperty, 0);
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl1.Children.Add(new TextBlock
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,13,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Text = "Дата конца периода:",
-                [Grid.ColumnProperty] = 0,
-            });
-            //topPnl1.Children.Add(new TextBox
-            //{
-            //    Height = 30,
-            //    Margin = Thickness.Parse("5,0,0,0"),
-            //    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    [!TextBox.TextProperty] = new Binding("Storage.EndPeriod", BindingMode.TwoWay),
-            //    [Grid.ColumnProperty] = 2,
-
-            //});
+            topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата конца периода:"));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", double.NaN));
             maingrid.Children.Add(topPnl1);
 
             var topPnl2 = new Grid();
@@ -338,59 +303,22 @@ namespace Client_App.Long_Visual
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
-            topPnl2.Children.Add(new TextBlock
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,15,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Text = "Номер корректировки:",
-                [Grid.ColumnProperty] = 0,
-            });
-
-            //topPnl2.Children.Add(new TextBox
-            //{
-            //    Height = 30,
-            //    Width = 70,
-            //    Margin = Thickness.Parse("5,12,0,0"),
-            //    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            //    [!TextBox.TextProperty] = new Binding("Storage.Value.CorrectionNumbers"),
-            //    [Grid.ColumnProperty] = 1,
-            //});
-
-            topPnl2.Children.Add(new Button
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,12,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = "Проверить",
-                [!Button.CommandProperty] = new Binding("CheckReport"),
-                [Grid.ColumnProperty] = 2,
-            });
-            topPnl2.Children.Add(new Button
-            {
-                Height = 30,
-                Margin = Thickness.Parse("5,12,0,0"),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                Content = "Сохранить",
-                [!Button.CommandProperty] = new Binding("SaveReport"),
-                [Grid.ColumnProperty] = 3,
-            });
+            topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber.Value", 70));
+            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
+            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
 
             Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid();
             grd.Name = "Form12Data_";
-            grd.Type = "1/1";
+            grd.Type = "1/2";
             grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
             grd.SetValue(Grid.RowProperty, 2);
 
             Binding b = new Binding();
-            b.Path = "DataContext.Storage.Rows11";
+            b.Path = "DataContext.Storage.Rows12";
             b.ElementName = "ChangingPanel";
             b.NameScope = new WeakReference<INameScope>(scp);
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);

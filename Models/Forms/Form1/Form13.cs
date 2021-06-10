@@ -23,29 +23,48 @@ namespace Models
         {
             return false;
         }
-
         private void Init()
         {
             _dataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
+            CreationDate.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
+            CreatorOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
+            FactoryNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
+            Owner.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            PackName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
+            PackNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            PackType.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
+            PassportNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
+            ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
+            TransporterOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
+            PropertyCode.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Type), Type_Validation, null);
+            Type.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TypeRecoded), TypeRecoded_Validation, null);
+            TypeRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            Radionuclids.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
+            Activity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<byte?>(nameof(AggregateState), AggregateState_Validation, null);
+            AggregateState.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
+            PassportNumberRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
+            FactoryNumberRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
+            PackNumberRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
+            PackTypeRecoded.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -94,7 +113,10 @@ namespace Models
             (value.Value == 52) || (value.Value == 55) ||
             (value.Value == 56) || (value.Value == 57) ||
             (value.Value == 59) || (value.Value == 76))
+            {
                 value.AddError("Код операции не может быть использован для РВ");
+                return false;
+            }
             return true;
         }
 
