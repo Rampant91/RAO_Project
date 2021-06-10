@@ -1,5 +1,7 @@
 ﻿using Models.DataAccess;
+using System.Collections.Generic;
 using System;
+using System.Globalization;
 
 namespace Models
 {
@@ -11,6 +13,26 @@ namespace Models
         {
             FormNum.Value = "27";
             NumberOfFields.Value = 13;
+            Init();
+            Validate_all();
+        }
+
+        private void Init()
+        {
+            _dataAccess.Init<string>(nameof(ObservedSourceNumber), ObservedSourceNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
+            _dataAccess.Init<string>(nameof(AllowedWasteValue), AllowedWasteValue_Validation, null);
+            _dataAccess.Init<string>(nameof(FactedWasteValue), FactedWasteValue_Validation, null);
+            _dataAccess.Init<string>(nameof(WasteOutbreakPreviousYear), WasteOutbreakPreviousYear_Validation, null);
+        }
+
+        private void Validate_all()
+        {
+            ObservedSourceNumber_Validation(ObservedSourceNumber);
+            RadionuclidName_Validation(RadionuclidName);
+            AllowedWasteValue_Validation(AllowedWasteValue);
+            FactedWasteValue_Validation(FactedWasteValue);
+            WasteOutbreakPreviousYear_Validation(WasteOutbreakPreviousYear);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -18,6 +40,33 @@ namespace Models
         {
             return false;
         }
+
+        //ObservedSourceNumber property
+        [Attributes.Form_Property("Номер наблюдательной скважины")]
+        public RamAccess<string> ObservedSourceNumber
+        {
+            get
+            {
+                return _dataAccess.Get<string>(nameof(ObservedSourceNumber));
+            }
+            set
+            {
+                _dataAccess.Set(nameof(ObservedSourceNumber), value);
+                OnPropertyChanged(nameof(ObservedSourceNumber));
+            }
+        }
+        //If change this change validation
+        private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
+        {
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
+        }
+        //ObservedSourceNumber property
 
         //PermissionNumber property
         [Attributes.Form_Property("Номер разрешительного документа")]
@@ -48,7 +97,9 @@ namespace Models
         
         private bool PermissionNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            return true;
+        }
         //PermissionNumber property
 
         //PermissionIssueDate property
@@ -179,6 +230,51 @@ namespace Models
             value.ClearErrors(); return true;}
         //ValidThru property
 
+        //RadionuclidName property
+        public RamAccess<string> RadionuclidName
+        {
+            get
+            {
+
+                {
+                    return _dataAccess.Get<string>(nameof(RadionuclidName));
+                }
+
+                {
+
+                }
+            }
+            set
+            {
+
+
+                {
+                    _dataAccess.Set(nameof(RadionuclidName), value);
+                }
+                OnPropertyChanged(nameof(RadionuclidName));
+            }
+        }
+
+
+        private bool RadionuclidName_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            var spr = new List<Tuple<string, string>>();
+            foreach (var item in spr)
+            {
+                if (item.Item1.Equals(value.Value))
+                    return true;
+            }
+            value.AddError("Недопустимое значение");
+            return false;
+        }
+        //RadionuclidName property
+
         //RadionuclidNameNote property
         public RamAccess<string> RadionuclidNameNote
         {
@@ -239,7 +335,34 @@ namespace Models
         
         private bool AllowedWasteValue_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value.Equals("прим."))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //AllowedWasteValue property
 
         //AllowedWasteValueNote property
@@ -302,7 +425,41 @@ namespace Models
         
         private bool FactedWasteValue_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //FactedWasteValue property
 
         //FactedWasteValueNote property
@@ -365,7 +522,41 @@ namespace Models
         
         private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            string tmp = value.Value;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //WasteOutbreakPreviousYear property
     }
 }

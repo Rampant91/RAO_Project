@@ -64,25 +64,25 @@ namespace Client_App.Views
         void Form1Init(in Panel panel)
         {
             if (_param == "1/0")
-                panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual());
+                panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual(this.FindNameScope()));
             if (_param == "1/1")
                 panel.Children.Add(Long_Visual.Form1_Visual.Form11_Visual(this.FindNameScope()));
             if (_param == "1/2")
-                panel.Children.Add(Long_Visual.Form1_Visual.Form12_Visual());
+                panel.Children.Add(Long_Visual.Form1_Visual.Form12_Visual(this.FindNameScope()));
             if (_param == "1/3")
-                panel.Children.Add(Long_Visual.Form1_Visual.Form13_Visual());
+                panel.Children.Add(Long_Visual.Form1_Visual.Form13_Visual(this.FindNameScope()));
             if (_param == "1/4")
-                panel.Children.Add(Long_Visual.Form1_Visual.Form14_Visual());
+                panel.Children.Add(Long_Visual.Form1_Visual.Form14_Visual(this.FindNameScope()));
             if (_param == "1/5")
-                panel.Children.Add(Long_Visual.Form1_Visual.Form15_Visual());
+                panel.Children.Add(Long_Visual.Form1_Visual.Form15_Visual(this.FindNameScope()));
             if (_param == "1/6")
-                panel.Children.Add(Long_Visual.Form1_Visual.Form16_Visual());
+                panel.Children.Add(Long_Visual.Form1_Visual.Form16_Visual(this.FindNameScope()));
             if (_param == "1/7")
-                panel.Children.Add(Long_Visual.Form1_Visual.Form17_Visual());
+                panel.Children.Add(Long_Visual.Form1_Visual.Form17_Visual(this.FindNameScope()));
             if (_param == "1/8")
-                panel.Children.Add(Long_Visual.Form1_Visual.Form18_Visual());
+                panel.Children.Add(Long_Visual.Form1_Visual.Form18_Visual(this.FindNameScope()));
             if (_param == "1/9")
-                panel.Children.Add(Long_Visual.Form1_Visual.Form19_Visual());
+                panel.Children.Add(Long_Visual.Form1_Visual.Form19_Visual(this.FindNameScope()));
         }
 
         void Init()

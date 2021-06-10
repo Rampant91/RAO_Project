@@ -825,7 +825,7 @@ namespace Collections
         }
         public bool FormNum_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
             return true;
         }
 

@@ -194,16 +194,19 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");return false;
-            }return false;return false;
-            if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
-            {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Поле не заполнено");
+                return false;
             }
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //ProviderOrRecieverOKPO property
 
@@ -430,14 +433,16 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;return true;
+                    Radionuclids.Value =item.Item2;
+return true;
                 }
             }
             return false;
@@ -477,11 +482,13 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -537,7 +544,8 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
@@ -575,7 +583,8 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
@@ -613,7 +622,8 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
