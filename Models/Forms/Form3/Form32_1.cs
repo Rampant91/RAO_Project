@@ -128,21 +128,24 @@ namespace Models
             }
         }
         //If change this change validation
-                private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
+        private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");return false;
-            }return false;return false;
-            if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
-            {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Поле не заполнено");                return false;
             }
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
         }
         //CreatorOKPO property
 

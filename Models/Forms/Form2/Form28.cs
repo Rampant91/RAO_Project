@@ -1,5 +1,7 @@
 ﻿using Models.DataAccess;
+using System.Collections.Generic;
 using System;
+using System.Globalization;
 
 namespace Models
 {
@@ -11,6 +13,28 @@ namespace Models
         {
             FormNum.Value = "28";
             NumberOfFields.Value = 24;
+            Init();
+            Validate_all();
+        }
+
+        private void Init()
+        {
+            _dataAccess.Init<string>(nameof(WasteSourceName), WasteSourceName_Validation, null);
+            _dataAccess.Init<string>(nameof(WasteRecieverName), WasteRecieverName_Validation, null);
+            _dataAccess.Init<string>(nameof(RecieverTypeCode), RecieverTypeCode_Validation, null);
+            _dataAccess.Init<string>(nameof(AllowedWasteRemovalVolume), AllowedWasteRemovalVolume_Validation, null);
+            _dataAccess.Init<string>(nameof(RemovedWasteVolume), RemovedWasteVolume_Validation, null);
+            _dataAccess.Init<string>(nameof(PoolDistrictName), PoolDistrictName_Validation, null);
+        }
+
+        private void Validate_all()
+        {
+            WasteSourceName_Validation(WasteSourceName);
+            WasteRecieverName_Validation(WasteRecieverName);
+            RecieverTypeCode_Validation(RecieverTypeCode);
+            AllowedWasteRemovalVolume_Validation(AllowedWasteRemovalVolume);
+            RemovedWasteVolume_Validation(RemovedWasteVolume);
+            PoolDistrictName_Validation(PoolDistrictName);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -48,7 +72,9 @@ namespace Models
         
         private bool PermissionNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            return true;
+        }
         //PermissionNumber property
 
         //PermissionIssueDate property
@@ -458,7 +484,14 @@ namespace Models
         
         private bool WasteSourceName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
+        }
         //WasteSourceName property
 
         //WasteRecieverName property
@@ -490,7 +523,14 @@ namespace Models
         
         private bool WasteRecieverName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
+        }
         //WasteRecieverName property
 
         //RecieverTypeCode property
@@ -522,7 +562,20 @@ namespace Models
         
         private bool RecieverTypeCode_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            var spr = new List<string>();
+            if (spr.Contains(value.Value))
+            {
+                return true;
+            }
+            value.AddError("Недопустимое значение");
+            return false;
+        }
         //RecieverTypeCode property
 
         //PoolDistrictName property
@@ -554,18 +607,31 @@ namespace Models
         
         private bool PoolDistrictName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            var spr = new List<string>();
+            if (spr.Contains(value.Value))
+            {
+                return true;
+            }
+            value.AddError("Недопустимое значение");
+            return false;
+        }
         //PoolDistrictName property
 
         //AllowedWasteRemovalVolume property
         [Attributes.Form_Property("Допустимый объем водоотведения за год, тыс. куб. м")]
-        public RamAccess<double> AllowedWasteRemovalVolume
+        public RamAccess<string> AllowedWasteRemovalVolume
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(AllowedWasteRemovalVolume));
+                    return _dataAccess.Get<string>(nameof(AllowedWasteRemovalVolume));
                 }
                 
                 {
@@ -586,18 +652,45 @@ namespace Models
         
         private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value.Equals("прим."))
+            {
+                return true;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //AllowedWasteRemovalVolume property
 
         //RemovedWasteVolume property
         [Attributes.Form_Property("Отведено за отчетный период, тыс. куб. м")]
-        public RamAccess<double> RemovedWasteVolume
+        public RamAccess<string> RemovedWasteVolume
         {
             get
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(RemovedWasteVolume));
+                    return _dataAccess.Get<string>(nameof(RemovedWasteVolume));
                 }
                 
                 {
@@ -618,7 +711,30 @@ namespace Models
         
         private bool RemovedWasteVolume_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
         //RemovedWasteVolume property
 
         //RemovedWasteVolumeNote property
