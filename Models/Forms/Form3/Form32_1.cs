@@ -28,21 +28,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PassportNumber));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(PassportNumber), value);
                 }
@@ -50,12 +50,13 @@ namespace Models
             }
         }
 
-                private bool PassportNumber_Validation(RamAccess<string> value)
+        private bool PassportNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
@@ -74,20 +75,20 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PassportNumberNote), value);
                 }
@@ -95,9 +96,10 @@ namespace Models
             }
         }
 
-                private bool PassportNumberNote_Validation(RamAccess<string> value)
+        private bool PassportNumberNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PassportNumberNote property
 
         //CreatorOKPO property
@@ -106,21 +108,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(CreatorOKPO), value);
                 }
@@ -133,7 +135,8 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError("Поле не заполнено");                return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
@@ -312,20 +315,20 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Type));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Type), value);
                 }
@@ -333,9 +336,10 @@ namespace Models
             }
         }
 
-                private bool Type_Validation(RamAccess<string> value)
+        private bool Type_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //Type property
 
         //TypeRecoded property
@@ -343,20 +347,20 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(TypeRecoded));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(TypeRecoded), value);
                 }
@@ -364,9 +368,10 @@ namespace Models
             }
         }
 
-                private bool TypeRecoded_Validation(RamAccess<string> value)
+        private bool TypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //TypeRecoded property
 
         //Radionuclids property
@@ -375,21 +380,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -397,19 +402,21 @@ namespace Models
             }
         }
         //If change this change validation
-                private bool Radionuclids_Validation(RamAccess<string> value)//TODO
+        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item1.Equals(Type))
                 {
-                    Radionuclids.Value =item.Item2;return true;
+                    Radionuclids.Value = item.Item2;
+                    return true;
                 }
             }
             return false;
@@ -422,20 +429,20 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FactoryNumber));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FactoryNumber), value);
                 }
@@ -443,12 +450,13 @@ namespace Models
             }
         }
 
-                private bool FactoryNumber_Validation(RamAccess<string> value)
+        private bool FactoryNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -459,20 +467,20 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FactoryNumberRecoded), value);
                 }
@@ -480,9 +488,10 @@ namespace Models
             }
         }
         //If change this change validation
-                private bool FactoryNumberRecoded_Validation(RamAccess<string> value)//Ready
+        private bool FactoryNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //FactoryNumberRecoded property
 
         //ActivityOnCreation property
@@ -491,20 +500,20 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ActivityOnCreation));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ActivityOnCreation), value);
                 }
@@ -512,7 +521,7 @@ namespace Models
             }
         }
 
-                private bool ActivityOnCreation_Validation(RamAccess<string> value)//Ready
+        private bool ActivityOnCreation_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -523,10 +532,10 @@ namespace Models
                 {
                     value.AddError("Число должно быть больше нуля"); return false;
                 }
-                }
+            }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -539,19 +548,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(CreationDate));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(CreationDate), value);
                 }
@@ -559,9 +568,10 @@ namespace Models
             }
         }
         //If change this change validation
-                private bool CreationDate_Validation(RamAccess<string> value)//Ready
+        private bool CreationDate_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //CreationDate property
 
         //CreatorOKPONote property
@@ -569,14 +579,14 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
@@ -584,7 +594,7 @@ namespace Models
 
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(CreatorOKPONote), value);
                 }
@@ -592,9 +602,10 @@ namespace Models
             }
         }
 
-                private bool CreatorOKPONote_Validation(RamAccess<string> value)
+        private bool CreatorOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //CreatorOKPONote property
 
         //Kategory property
@@ -603,18 +614,19 @@ namespace Models
         {
             get
             {
-                    return _dataAccess.Get<short>(nameof(Kategory));
+                return _dataAccess.Get<short>(nameof(Kategory));
             }
             set
             {
-                    _dataAccess.Set(nameof(Kategory), value);
+                _dataAccess.Set(nameof(Kategory), value);
                 OnPropertyChanged(nameof(Kategory));
             }
         }
 
-                private bool Kategory_Validation(RamAccess<short> value)//TODO
+        private bool Kategory_Validation(RamAccess<short> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //Kategory property
 
         //NuclearMaterialPresence property
@@ -623,19 +635,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<double>(nameof(NuclearMaterialPresence));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(NuclearMaterialPresence), value);
                 }
@@ -643,7 +655,7 @@ namespace Models
             }
         }
 
-                //NuclearMaterialPresence property
+        //NuclearMaterialPresence property
 
         //CertificateId property
         [Attributes.Form_Property("Номер сертификата")]
@@ -651,19 +663,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(CertificateId));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(CertificateId), value);
                 }
@@ -671,7 +683,7 @@ namespace Models
             }
         }
 
-                //CertificateId property
+        //CertificateId property
 
         //ValidThru property
         [Attributes.Form_Property("Действует по")]
@@ -679,19 +691,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ValidThru));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ValidThru), value);
                 }
@@ -699,6 +711,6 @@ namespace Models
             }
         }
 
-                //ValidThru property
+        //ValidThru property
     }
 }

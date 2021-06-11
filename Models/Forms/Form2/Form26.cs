@@ -20,12 +20,19 @@ namespace Models
         private void Init()
         {
             _dataAccess.Init<string>(nameof(ObservedSourceNumber), ObservedSourceNumber_Validation, null);
+            ObservedSourceNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(ControlledAreaName), ControlledAreaName_Validation, null);
+            ControlledAreaName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(SupposedWasteSource), SupposedWasteSource_Validation, null);
+            SupposedWasteSource.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(DistanceToWasteSource), DistanceToWasteSource_Validation, null);
+            DistanceToWasteSource.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TestDepth), TestDepth_Validation, null);
+            TestDepth.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
+            RadionuclidName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(AverageYearConcentration), AverageYearConcentration_Validation, null);
+            AverageYearConcentration.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()

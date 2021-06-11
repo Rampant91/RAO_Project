@@ -1,5 +1,6 @@
 ﻿using Models.DataAccess;
 using System;
+using System.ComponentModel;
 using System.Text.RegularExpressions;
 
 namespace Models
@@ -12,6 +13,73 @@ namespace Models
         {
             NumberOfFields.Value = 19;
             FormNum.Value = "10";
+            Init_base();
+            Validate_base();
+        }
+        protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            OnPropertyChanged(args.PropertyName);
+        }
+
+        private void Init_base()
+        {
+            _dataAccess.Init<string>(nameof(Okpo), Okpo_Validation, null);
+            Okpo.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(Okved), Okved_Validation, null);
+            Okved.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(Oktmo), Oktmo_Validation, null);
+            Oktmo.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(Okogu), Okogu_Validation, null);
+            Oktmo.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(Okopf), Okopf_Validation, null);
+            Okopf.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(Inn), Inn_Validation, null);
+            Inn.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(Kpp), Kpp_Validation, null);
+            Kpp.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(RegNo), RegNo_Validation, null);
+            RegNo.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(OrganUprav), OrganUprav_Validation, null);
+            OrganUprav.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(SubjectRF), SubjectRF_Validation, null);
+            SubjectRF.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(JurLico), JurLico_Validation, null);
+            OrganUprav.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(ShortJurLico), ShortJurLico_Validation, null);
+            ShortJurLico.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(JurLicoAddress), JurLicoAddress_Validation, null);
+            JurLicoAddress.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(JurLicoFactAddress), JurLicoFactAddress_Validation, null);
+            JurLicoFactAddress.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(GradeFIO), GradeFIO_Validation, null);
+            GradeFIO.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(Telephone), Telephone_Validation, null);
+            Telephone.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(Fax), Fax_Validation, null);
+            Fax.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(Email), Email_Validation, null);
+            Email.PropertyChanged += InPropertyChanged;
+        }
+        protected void Validate_base()
+        {
+            Okpo_Validation(Okpo);
+            Okved_Validation(Okved);
+            Oktmo_Validation(Oktmo);
+            Okogu_Validation(Okogu);
+            Okopf_Validation(Okopf);
+            Inn_Validation(Inn);
+            Kpp_Validation(Kpp);
+            Kpp_Validation(RegNo);
+            Kpp_Validation(OrganUprav);
+            Kpp_Validation(SubjectRF);
+            Kpp_Validation(JurLico);
+            Kpp_Validation(ShortJurLico);
+            Kpp_Validation(JurLicoAddress);
+            Kpp_Validation(JurLicoFactAddress);
+            Kpp_Validation(GradeFIO);
+            Kpp_Validation(Telephone);
+            Kpp_Validation(Fax);
+            Kpp_Validation(Email);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -35,7 +103,11 @@ namespace Models
             }
         }
 
-                //RegNo property
+        private bool RegNo_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        //RegNo property
 
         //OrganUprav property
         [Attributes.Form_Property("Орган управления")]
@@ -52,7 +124,12 @@ namespace Models
             }
         }
 
-                //OrganUprav property
+        private bool OrganUprav_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //OrganUprav property
 
         //SubjectRF property
         [Attributes.Form_Property("Субъект РФ")]
@@ -69,7 +146,12 @@ namespace Models
             }
         }
 
-                //SubjectRF property
+        private bool SubjectRF_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //SubjectRF property
 
         //JurLico property
         [Attributes.Form_Property("Юр. лицо")]
@@ -86,7 +168,11 @@ namespace Models
             }
         }
 
-                //JurLico property
+        private bool JurLico_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        //JurLico property
 
         //ShortJurLico property
         [Attributes.Form_Property("Краткое наименование юр. лица")]
@@ -103,7 +189,11 @@ namespace Models
             }
         }
 
-                //ShortJurLico property
+        private bool ShortJurLico_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        //ShortJurLico property
 
         //JurLicoAddress property
         [Attributes.Form_Property("Адрес юр. лица")]
@@ -130,8 +220,11 @@ namespace Models
                 OnPropertyChanged(nameof(JurLicoAddress));
             }
         }
-
-                //JurLicoAddress property
+        private bool JurLicoAddress_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        //JurLicoAddress property
 
         //JurLicoFactAddress property
         [Attributes.Form_Property("Фактический адрес юр. лица")]
@@ -158,8 +251,11 @@ namespace Models
                 OnPropertyChanged(nameof(JurLicoFactAddress));
             }
         }
-
-                //JurLicoFactAddress property
+        private bool JurLicoFactAddress_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        //JurLicoFactAddress property
 
         //GradeFIO property
         [Attributes.Form_Property("ФИО, должность")]
@@ -186,8 +282,11 @@ namespace Models
                 OnPropertyChanged(nameof(GradeFIO));
             }
         }
-
-                //GradeFIO property
+        private bool GradeFIO_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        //GradeFIO property
 
         //Telephone property
         [Attributes.Form_Property("Телефон")]
@@ -215,7 +314,11 @@ namespace Models
             }
         }
 
-                //Telephone property
+        private bool Telephone_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        //Telephone property
 
         //Fax property
         [Attributes.Form_Property("Факс")]
@@ -243,7 +346,11 @@ namespace Models
             }
         }
 
-                //Fax property
+        private bool Fax_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        //Fax property
 
         //Email property
         [Attributes.Form_Property("Эл. почта")]
@@ -270,8 +377,11 @@ namespace Models
                 OnPropertyChanged(nameof(Email));
             }
         }
-
-                //Email property
+        private bool Email_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        //Email property
 
         //Okpo property
         [Attributes.Form_Property("ОКПО")]

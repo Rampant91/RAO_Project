@@ -27,19 +27,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(UniqueAgreementId));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(UniqueAgreementId), value);
                 }
@@ -47,7 +47,7 @@ namespace Models
             }
         }
 
-                //UniqueAgreementId property
+        //UniqueAgreementId property
 
         //SupplyDate property
         [Attributes.Form_Property("Дата поступления")]
@@ -55,19 +55,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(SupplyDate));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(SupplyDate), value);
                 }
@@ -75,7 +75,7 @@ namespace Models
             }
         }
 
-                //SupplyDate property
+        //SupplyDate property
 
         //RecieverName property
         [Attributes.Form_Property("Наименование получателя")]
@@ -83,19 +83,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(RecieverName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(RecieverName), value);
                 }
@@ -103,7 +103,7 @@ namespace Models
             }
         }
 
-                //RecieverName property
+        //RecieverName property
 
         //FieldsOfWorking property
         [Attributes.Form_Property("Вид деятельности")]
@@ -111,19 +111,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<byte>(nameof(FieldsOfWorking));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FieldsOfWorking), value);
                 }
@@ -131,7 +131,7 @@ namespace Models
             }
         }
 
-                //FieldsOfWorking property
+        //FieldsOfWorking property
 
         //LicenseIdRv property
         [Attributes.Form_Property("Номер лицензии на обращение с РВ")]
@@ -139,19 +139,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(LicenseIdRv));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(LicenseIdRv), value);
                 }
@@ -159,7 +159,7 @@ namespace Models
             }
         }
 
-                //LicenseIdRv property
+        //LicenseIdRv property
 
         //ValidThruRv property
         [Attributes.Form_Property("Лицензия истекает(РВ)")]
@@ -167,19 +167,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ValidThruRv));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ValidThruRv), value);
                 }
@@ -187,7 +187,7 @@ namespace Models
             }
         }
 
-                //ValidThruRv property
+        //ValidThruRv property
 
         //LicenseIdRao property
         [Attributes.Form_Property("Номер лицензии на обращение с РАО")]
@@ -195,19 +195,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(LicenseIdRao));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(LicenseIdRao), value);
                 }
@@ -215,7 +215,7 @@ namespace Models
             }
         }
 
-                //LicenseIdRao property
+        //LicenseIdRao property
 
         //ValidThruRao property
         [Attributes.Form_Property("Лицензия истекает(РАО)")]
@@ -223,19 +223,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ValidThruRao));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ValidThruRao), value);
                 }
@@ -243,7 +243,7 @@ namespace Models
             }
         }
 
-                //ValidThruRao property
+        //ValidThruRao property
 
         //SupplyAddress property
         [Attributes.Form_Property("Адрес поставки")]
@@ -251,19 +251,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(SupplyAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(SupplyAddress), value);
                 }
@@ -271,7 +271,7 @@ namespace Models
             }
         }
 
-                //SupplyAddress property
+        //SupplyAddress property
 
         //Radionuclids property
         [Attributes.Form_Property("Радионуклиды")]
@@ -279,21 +279,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -301,19 +301,21 @@ namespace Models
             }
         }
         //If change this change validation
-                private bool Radionuclids_Validation(RamAccess<string> value)//TODO
+        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;return true;
+                    Radionuclids.Value = item.Item2;
+                    return true;
                 }
             }
             return false;
@@ -326,21 +328,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<int>(nameof(Quantity));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(Quantity), value);
                 }
@@ -348,7 +350,7 @@ namespace Models
             }
         }
         // positive int.
-                private bool Quantity_Validation(RamAccess<int> value)//Ready
+        private bool Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -365,19 +367,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(SummaryActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(SummaryActivity), value);
                 }
@@ -385,18 +387,20 @@ namespace Models
             }
         }
 
-                private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
+        private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            string tmp=value.Value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {

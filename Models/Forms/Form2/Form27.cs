@@ -20,10 +20,15 @@ namespace Models
         private void Init()
         {
             _dataAccess.Init<string>(nameof(ObservedSourceNumber), ObservedSourceNumber_Validation, null);
+            ObservedSourceNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
+            RadionuclidName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(AllowedWasteValue), AllowedWasteValue_Validation, null);
+            AllowedWasteValue.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FactedWasteValue), FactedWasteValue_Validation, null);
+            FactedWasteValue.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(WasteOutbreakPreviousYear), WasteOutbreakPreviousYear_Validation, null);
+            WasteOutbreakPreviousYear.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -74,19 +79,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PermissionNumber));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PermissionNumber), value);
                 }
@@ -94,7 +99,7 @@ namespace Models
             }
         }
 
-        
+
         private bool PermissionNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -108,19 +113,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PermissionIssueDate));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PermissionIssueDate), value);
                 }
@@ -128,10 +133,11 @@ namespace Models
             }
         }
 
-        
+
         private bool PermissionIssueDate_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PermissionIssueDate property
 
         //PermissionDocumentName property
@@ -140,19 +146,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PermissionDocumentName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PermissionDocumentName), value);
                 }
@@ -160,10 +166,11 @@ namespace Models
             }
         }
 
-        
+
         private bool PermissionDocumentName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PermissionDocumentName property
 
         //ValidBegin property
@@ -172,19 +179,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ValidBegin));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ValidBegin), value);
                 }
@@ -192,10 +199,11 @@ namespace Models
             }
         }
 
-        
+
         private bool ValidBegin_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //ValidBegin property
 
         //ValidThru property
@@ -204,19 +212,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ValidThru));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ValidThru), value);
                 }
@@ -224,10 +232,11 @@ namespace Models
             }
         }
 
-        
+
         private bool ValidThru_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //ValidThru property
 
         //RadionuclidName property
@@ -280,19 +289,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(RadionuclidNameNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(RadionuclidNameNote), value);
                 }
@@ -300,10 +309,11 @@ namespace Models
             }
         }
 
-        
+
         private bool RadionuclidNameNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //RadionuclidNameNote property
 
         //AllowedWasteValue property
@@ -312,19 +322,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(AllowedWasteValue));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(AllowedWasteValue), value);
                 }
@@ -332,7 +342,7 @@ namespace Models
             }
         }
 
-        
+
         private bool AllowedWasteValue_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -370,19 +380,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(AllowedWasteValueNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(AllowedWasteValueNote), value);
                 }
@@ -390,10 +400,11 @@ namespace Models
             }
         }
 
-        
+
         private bool AllowedWasteValueNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //AllowedWasteValueNote property
 
         //FactedWasteValue property
@@ -402,19 +413,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FactedWasteValue));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FactedWasteValue), value);
                 }
@@ -422,7 +433,7 @@ namespace Models
             }
         }
 
-        
+
         private bool FactedWasteValue_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -467,19 +478,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FactedWasteValueNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FactedWasteValueNote), value);
                 }
@@ -487,10 +498,11 @@ namespace Models
             }
         }
 
-        
+
         private bool FactedWasteValueNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //FactedWasteValueNote property
 
         //WasteOutbreakPreviousYear property
@@ -499,19 +511,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(WasteOutbreakPreviousYear));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(WasteOutbreakPreviousYear), value);
                 }
@@ -519,7 +531,7 @@ namespace Models
             }
         }
 
-        
+
         private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
         {
             value.ClearErrors();

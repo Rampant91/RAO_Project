@@ -21,9 +21,13 @@ namespace Models
         private void Init()
         {
             _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            Quantity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
+            Activity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<short?>(nameof(CodeTypeAccObject), CodeTypeAccObject_Validation, null);
+            CodeTypeAccObject.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            Radionuclids.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()

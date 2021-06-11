@@ -25,19 +25,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(IdName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(IdName), value);
                 }
@@ -54,19 +54,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Val));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Val), value);
                 }

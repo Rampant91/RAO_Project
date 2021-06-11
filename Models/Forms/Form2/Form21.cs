@@ -20,27 +20,49 @@ namespace Models
         private void Init()
         {
             _dataAccess.Init<string>(nameof(MachinePower), MachinePower_Validation, null);
+            MachinePower.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<byte?>(nameof(MachineCode), MachineCode_Validation, null);
+            MachineCode.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(RefineMachineName), RefineMachineName_Validation, null);
+            RefineMachineName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(NumberOfHoursPerYear), NumberOfHoursPerYear_Validation, null);
+            NumberOfHoursPerYear.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(CodeRAOIn), CodeRAOIn_Validation, null);
+            CodeRAOIn.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StatusRAOIn), StatusRAOIn_Validation, null);
+            StatusRAOIn.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(VolumeIn), VolumeIn_Validation, null);
+            VolumeIn.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassIn), MassIn_Validation, null);
+            MassIn.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(QuantityIn), QuantityIn_Validation, null);
+            QuantityIn.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TritiumActivityIn), TritiumActivityIn_Validation, null);
+            TritiumActivityIn.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TritiumActivityOut), TritiumActivityOut_Validation, null);
+            TritiumActivityOut.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(BetaGammaActivityIn), BetaGammaActivityIn_Validation, null);
+            BetaGammaActivityIn.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(BetaGammaActivityOut), BetaGammaActivityOut_Validation, null);
+            BetaGammaActivityOut.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TransuraniumActivityIn), TransuraniumActivityIn_Validation, null);
+            TransuraniumActivityIn.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TransuraniumActivityOut), TransuraniumActivityOut_Validation, null);
+            TransuraniumActivityOut.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(AlphaActivityIn), AlphaActivityIn_Validation, null);
+            AlphaActivityIn.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(AlphaActivityOut), AlphaActivityOut_Validation, null);
+            AlphaActivityOut.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(VolumeOut), VolumeOut_Validation, null);
+            VolumeOut.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassOut), MassOut_Validation, null);
+            MassOut.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(QuantityOZIIIout), QuantityOZIIIout_Validation, null);
+            QuantityOZIIIout.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(CodeRAOout), CodeRAOout_Validation, null);
+            CodeRAOout.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StatusRAOout), StatusRAOout_Validation, null);
+            StatusRAOout.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()

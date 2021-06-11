@@ -21,17 +21,29 @@ namespace Models
         private void Init()
         {
             _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            StoragePlaceName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            StoragePlaceCode.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(ProjectVolume), ProjectVolume_Validation, null);
+            ProjectVolume.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
+            CodeRAO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
+            Volume.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
+            Mass.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(SummaryActivity), SummaryActivity_Validation, null);
+            SummaryActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
+            QuantityOZIII.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
+            DocumentNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(ExpirationDate), ExpirationDate_Validation, null);
+            ExpirationDate.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(DocumentName), DocumentName_Validation, null);
+            DocumentName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
+            DocumentDate.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()

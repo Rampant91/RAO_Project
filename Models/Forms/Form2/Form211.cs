@@ -26,19 +26,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PlotName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PlotName), value);
                 }
@@ -46,9 +46,10 @@ namespace Models
             }
         }
 
-                private bool PlotName_Validation(RamAccess<string> value)//TODO
+        private bool PlotName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PlotName property
 
         //PlotKadastrNumber property
@@ -57,19 +58,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PlotKadastrNumber));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PlotKadastrNumber), value);
                 }
@@ -77,9 +78,10 @@ namespace Models
             }
         }
 
-                private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
+        private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PlotKadastrNumber property
 
         //PlotCode property
@@ -88,19 +90,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PlotCode));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PlotCode), value);
                 }
@@ -108,9 +110,10 @@ namespace Models
             }
         }
         //6 symbols code
-                private bool PlotCode_Validation(RamAccess<string> value)//TODO
+        private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PlotCode property
 
         //InfectedArea property
@@ -119,19 +122,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<int>(nameof(InfectedArea));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(InfectedArea), value);
                 }
@@ -139,9 +142,10 @@ namespace Models
             }
         }
 
-                private bool InfectedArea_Validation(RamAccess<int> value)//TODO
+        private bool InfectedArea_Validation(RamAccess<int> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //InfectedArea property
 
         //Radionuclids property
@@ -150,21 +154,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -172,19 +176,21 @@ namespace Models
             }
         }
         //If change this change validation
-                private bool Radionuclids_Validation(RamAccess<string> value)//TODO
+        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;return true;
+                    Radionuclids.Value = item.Item2;
+                    return true;
                 }
             }
             return false;
@@ -196,19 +202,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(RadionuclidNameNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(RadionuclidNameNote), value);
                 }
@@ -216,9 +222,10 @@ namespace Models
             }
         }
 
-                private bool RadionuclidNameNote_Validation(RamAccess<string> value)
+        private bool RadionuclidNameNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //RadionuclidNameNote property
 
         //SpecificActivityOfPlot property
@@ -227,19 +234,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(SpecificActivityOfPlot));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(SpecificActivityOfPlot), value);
                 }
@@ -247,7 +254,7 @@ namespace Models
             }
         }
 
-                private bool SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
+        private bool SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
         {
             return true;
             //value.ClearErrors();
@@ -270,19 +277,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(SpecificActivityOfLiquidPart));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(SpecificActivityOfLiquidPart), value);
                 }
@@ -290,7 +297,7 @@ namespace Models
             }
         }
 
-                private bool SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
+        private bool SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
         {
             return true;
             //value.ClearErrors();
@@ -313,12 +320,12 @@ namespace Models
         {
             get
             {
-                    return _dataAccess.Get<string>(nameof(SpecificActivityOfDensePart));
+                return _dataAccess.Get<string>(nameof(SpecificActivityOfDensePart));
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(SpecificActivityOfDensePart), value);
                 }
@@ -326,7 +333,7 @@ namespace Models
             }
         }
 
-                private bool SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
+        private bool SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
         {
             return true;
             //value.ClearErrors();

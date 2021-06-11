@@ -19,21 +19,37 @@ namespace Models
         private void Init()
         {
             _dataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
+            CodeOYAT.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            FcpNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(QuantityFromAnothers), QuantityFromAnothers_Validation, null);
+            QuantityFromAnothers.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(QuantityFromAnothersImported), QuantityFromAnothersImported_Validation, null);
+            QuantityFromAnothersImported.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(QuantityCreated), QuantityCreated_Validation, null);
+            QuantityCreated.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(QuantityRemovedFromAccount), QuantityRemovedFromAccount_Validation, null);
+            QuantityRemovedFromAccount.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassCreated), MassCreated_Validation, null);
+            MassCreated.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassFromAnothers), MassFromAnothers_Validation, null);
+            MassFromAnothers.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassFromAnothersImported), MassFromAnothersImported_Validation, null);
+            MassFromAnothersImported.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassRemovedFromAccount), MassRemovedFromAccount_Validation, null);
+            MassRemovedFromAccount.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(QuantityTransferredToAnother), QuantityTransferredToAnother_Validation, null);
+            QuantityTransferredToAnother.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassAnotherReasons), MassAnotherReasons_Validation, null);
+            MassAnotherReasons.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassTransferredToAnother), MassTransferredToAnother_Validation, null);
+            MassTransferredToAnother.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(QuantityAnotherReasons), QuantityAnotherReasons_Validation, null);
+            QuantityAnotherReasons.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(QuantityRefined), QuantityRefined_Validation, null);
+            QuantityRefined.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassRefined), MassRefined_Validation, null);
+            MassRefined.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()

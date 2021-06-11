@@ -25,18 +25,19 @@ namespace Models
         {
             get
             {
-                    return _dataAccess.Get<string>(nameof(IndicatorName));
+                return _dataAccess.Get<string>(nameof(IndicatorName));
             }
             set
             {
-                    _dataAccess.Set(nameof(IndicatorName), value);
+                _dataAccess.Set(nameof(IndicatorName), value);
                 OnPropertyChanged(nameof(IndicatorName));
             }
         }
 
-                private bool IndicatorName_Validation(RamAccess<string> value)//TODO
+        private bool IndicatorName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //IndicatorName property
 
         //PlotName property
@@ -45,19 +46,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PlotName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PlotName), value);
                 }
@@ -65,9 +66,10 @@ namespace Models
             }
         }
 
-                private bool PlotName_Validation(RamAccess<string> value)//TODO
+        private bool PlotName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PlotName property
 
         //PlotKadastrNumber property
@@ -76,19 +78,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PlotKadastrNumber));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PlotKadastrNumber), value);
                 }
@@ -96,9 +98,10 @@ namespace Models
             }
         }
 
-                private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
+        private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PlotKadastrNumber property
 
         //PlotCode property
@@ -107,19 +110,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PlotCode));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PlotCode), value);
                 }
@@ -127,9 +130,10 @@ namespace Models
             }
         }
         //6 symbols code
-                private bool PlotCode_Validation(RamAccess<string> value)//TODO
+        private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PlotCode property
 
         //InfectedArea property
@@ -138,19 +142,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<int?>(nameof(InfectedArea));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(InfectedArea), value);
                 }
@@ -158,9 +162,10 @@ namespace Models
             }
         }
 
-                private bool InfectedArea_Validation(RamAccess<int?> value)//TODO
+        private bool InfectedArea_Validation(RamAccess<int?> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //InfectedArea property
 
         //AvgGammaRaysDosePower property
@@ -169,19 +174,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<double>(nameof(AvgGammaRaysDosePower));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(AvgGammaRaysDosePower), value);
                 }
@@ -189,9 +194,10 @@ namespace Models
             }
         }
 
-                private bool AvgGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
+        private bool AvgGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //AvgGammaRaysDosePower property
 
         //MaxGammaRaysDosePower property
@@ -200,19 +206,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<double>(nameof(MaxGammaRaysDosePower));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(MaxGammaRaysDosePower), value);
                 }
@@ -220,9 +226,10 @@ namespace Models
             }
         }
 
-                private bool MaxGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
+        private bool MaxGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //MaxGammaRaysDosePower property
 
         //WasteDensityAlpha property
@@ -231,19 +238,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<double>(nameof(WasteDensityAlpha));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(WasteDensityAlpha), value);
                 }
@@ -251,9 +258,10 @@ namespace Models
             }
         }
 
-                private bool WasteDensityAlpha_Validation(RamAccess<double> value)//TODO
+        private bool WasteDensityAlpha_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //WasteDensityAlpha property
 
         //WasteDensityBeta property
@@ -262,19 +270,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<double>(nameof(WasteDensityBeta));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(WasteDensityBeta), value);
                 }
@@ -282,9 +290,10 @@ namespace Models
             }
         }
 
-                private bool WasteDensityBeta_Validation(RamAccess<double> value)//TODO
+        private bool WasteDensityBeta_Validation(RamAccess<double> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //WasteDensityBeta property
 
         //FcpNumber property
@@ -293,19 +302,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FcpNumber));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FcpNumber), value);
                 }
@@ -313,9 +322,10 @@ namespace Models
             }
         }
 
-                private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+        private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //FcpNumber property
     }
 }

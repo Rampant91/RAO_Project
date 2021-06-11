@@ -1,4 +1,5 @@
 ﻿using Models.DataAccess;
+using System.ComponentModel;
 
 namespace Models.Abstracts
 {
@@ -12,9 +13,15 @@ namespace Models.Abstracts
             Validate_base();
         }
 
+        protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            OnPropertyChanged(args.PropertyName);
+        }
+
         private void Init_base()
         {
             _dataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, -1);
+            NumberInOrder.PropertyChanged += InPropertyChanged;
             //_dataAccess.Init<string>(nameof(), _Validation, null);
         }
         protected void Validate_base()

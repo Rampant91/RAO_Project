@@ -21,24 +21,43 @@ namespace Models
         private void Init()
         {
             _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            StoragePlaceName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            StoragePlaceCode.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            PackName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            PackType.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
+            CodeRAO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
+            StatusRAO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(VolumeOutOfPack), VolumeOutOfPack_Validation, null);
+            VolumeOutOfPack.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassInPack), MassInPack_Validation, null);
+            MassInPack.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
+            QuantityOZIII.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
+            TritiumActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
+            BetaGammaActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
+            TransuraniumActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
+            AlphaActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(VolumeInPack), VolumeInPack_Validation, null);
+            VolumeInPack.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassOutOfPack), MassOutOfPack_Validation, null);
+            MassOutOfPack.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MainRadionuclids), MainRadionuclids_Validation, null);
+            MainRadionuclids.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
+            Subsidy.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            FcpNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int?>(nameof(PackQuantity), PackQuantity_Validation, null);
+            PackQuantity.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -1155,7 +1174,6 @@ return false;
         {
             get
             {
-                
                 {
                     return _dataAccess.Get<string>(nameof(FcpNumber));
                 }
@@ -1166,8 +1184,6 @@ return false;
             }
             set
             {
-
-                
                 {
                     _dataAccess.Set(nameof(FcpNumber), value);
                 }

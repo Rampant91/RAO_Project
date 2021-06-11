@@ -27,19 +27,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(RecieverName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(RecieverName), value);
                 }
@@ -47,7 +47,7 @@ namespace Models
             }
         }
 
-        
+
         private bool RecieverName_Validation(RamAccess<string> value)
         { return true; }
         //RecieverName property
@@ -58,19 +58,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(RecieverAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(RecieverAddress), value);
                 }
@@ -80,7 +80,7 @@ namespace Models
         private bool RecieverAddress_Validation(RamAccess<string> value)
         { return true; }
 
-        
+
         //RecieverAddress property
 
         //RecieverFactAddress property
@@ -89,19 +89,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(RecieverFactAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(RecieverFactAddress), value);
                 }
@@ -110,7 +110,7 @@ namespace Models
         }
         private bool RecieverFactAddress_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //RecieverFactAddress property
 
         //LicenseId property
@@ -119,19 +119,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(LicenseId));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(LicenseId), value);
                 }
@@ -140,7 +140,7 @@ namespace Models
         }
         private bool LicenseId_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //LicenseId property
 
         //ValidThru property
@@ -149,19 +149,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ValidThru));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ValidThru), value);
                 }
@@ -170,7 +170,7 @@ namespace Models
         }
         private bool ValidThru_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //ValidThru property
 
         //SuggestedSolutionDate property
@@ -179,19 +179,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(SuggestedSolutionDate));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(SuggestedSolutionDate), value);
                 }
@@ -200,7 +200,7 @@ namespace Models
         }
         private bool SuggestedSolutionDate_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //SuggestedSolutionDate property
 
         //UserName property
@@ -209,19 +209,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(UserName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(UserName), value);
                 }
@@ -230,7 +230,7 @@ namespace Models
         }
         private bool UserName_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //UserName property
 
         //UserAddress property
@@ -239,19 +239,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(UserAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(UserAddress), value);
                 }
@@ -260,7 +260,7 @@ namespace Models
         }
         private bool UserAddress_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //UserAddress property
 
         //UserFactAddress property
@@ -269,19 +269,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(UserFactAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(UserFactAddress), value);
                 }
@@ -290,7 +290,7 @@ namespace Models
         }
         private bool UserFactAddress_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //UserFactAddress property
 
         //UserTelephone property
@@ -299,19 +299,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(UserTelephone));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(UserTelephone), value);
                 }
@@ -321,7 +321,7 @@ namespace Models
 
         private bool UserTelephone_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //UserTelephone property
 
         //UserFax property
@@ -330,19 +330,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(UserFax));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(UserFax), value);
                 }
@@ -351,7 +351,7 @@ namespace Models
         }
         private bool UserFax_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //UserFax property
 
         //Email property
@@ -360,19 +360,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Email));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Email), value);
                 }
@@ -381,7 +381,7 @@ namespace Models
         }
         private bool Email_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //Email property
 
         //ZriUsageScope property
@@ -390,19 +390,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ZriUsageScope));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ZriUsageScope), value);
                 }
@@ -411,7 +411,7 @@ namespace Models
         }
         private bool ZriUsageScope_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //ZriUsageScope property
 
         //ContractId property
@@ -420,19 +420,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ContractId));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ContractId), value);
                 }
@@ -441,7 +441,7 @@ namespace Models
         }
         private bool ContractId_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //ContractId property
 
         //ContractDate property
@@ -450,19 +450,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ContractDate));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ContractDate), value);
                 }
@@ -471,7 +471,7 @@ namespace Models
         }
         private bool ContractDate_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //ContractDate property
 
         //CountryCreator property
@@ -480,19 +480,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(CountryCreator));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(CountryCreator), value);
                 }
@@ -501,7 +501,7 @@ namespace Models
         }
         private bool CountryCreator_Validation(RamAccess<string> value)
         { return true; }
-        
+
         //CountryCreator property
 
         private List<Form31_1> _zriList = new List<Form31_1>();

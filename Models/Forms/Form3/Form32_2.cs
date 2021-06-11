@@ -25,21 +25,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackName));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackName), value);
                 }
@@ -53,7 +53,8 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -65,21 +66,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackType));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackType), value);
                 }
@@ -93,7 +94,8 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -104,20 +106,20 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), value);
                 }
@@ -128,7 +130,8 @@ namespace Models
 
         private bool PackTypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackTypeRecoded property
 
         //Id property
@@ -137,19 +140,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Id));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Id), value);
                 }
@@ -166,19 +169,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<int>(nameof(CreationYear));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(CreationYear), value);
                 }
@@ -195,19 +198,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<double>(nameof(DepletedUraniumMass));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(DepletedUraniumMass), value);
                 }

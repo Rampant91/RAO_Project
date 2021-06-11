@@ -28,21 +28,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -50,20 +50,22 @@ namespace Models
             }
         }
         //If change this change validation
-        
+
         private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;return true;
+                    Radionuclids.Value = item.Item2;
+                    return true;
                 }
             }
             return false;
@@ -76,21 +78,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<int>(nameof(Quantity));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(Quantity), value);
                 }
@@ -98,7 +100,7 @@ namespace Models
             }
         }
         // positive int.
-        
+
         private bool Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
@@ -116,19 +118,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(SummaryActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(SummaryActivity), value);
                 }
@@ -136,19 +138,21 @@ namespace Models
             }
         }
 
-        
+
         private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            string tmp=value.Value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -163,10 +167,10 @@ namespace Models
                 {
                     value.AddError("Число должно быть больше нуля"); return false;
                 }
-                }
+            }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;

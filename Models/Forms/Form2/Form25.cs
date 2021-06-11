@@ -20,14 +20,23 @@ namespace Models
         private void Init()
         {
             _dataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
+            CodeOYAT.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            FcpNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            StoragePlaceCode.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            StoragePlaceName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FuelMass), FuelMass_Validation, null);
+            FuelMass.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(CellMass), CellMass_Validation, null);
+            CellMass.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            Quantity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
+            BetaGammaActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
+            AlphaActivity.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()

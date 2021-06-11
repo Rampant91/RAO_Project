@@ -12,6 +12,28 @@ namespace Models
         {
             FormNum.Value = "29";
             NumberOfFields.Value = 8;
+            Init();
+            Validate_all();
+        }
+
+        private void Init()
+        {
+            _dataAccess.Init<string>(nameof(WasteSourceName), WasteSourceName_Validation, null);
+            WasteSourceName.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
+            RadionuclidName.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(AllowedActivity), AllowedActivity_Validation, null);
+            AllowedActivity.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(FactedActivity), FactedActivity_Validation, null);
+            FactedActivity.PropertyChanged += InPropertyChanged;
+        }
+
+        private void Validate_all()
+        {
+            WasteSourceName_Validation(WasteSourceName);
+            RadionuclidName_Validation(RadionuclidName);
+            AllowedActivity_Validation(AllowedActivity);
+            FactedActivity_Validation(FactedActivity);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -26,19 +48,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(WasteSourceName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(WasteSourceName), value);
                 }
@@ -46,10 +68,11 @@ namespace Models
             }
         }
 
-        
+
         private bool WasteSourceName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //WasteSourceName property
 
         //RadionuclidName property
@@ -58,19 +81,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(RadionuclidName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(RadionuclidName), value);
                 }
@@ -78,10 +101,11 @@ namespace Models
             }
         }
         //If change this change validation
-        
+
         private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //RadionuclidName property
 
         //AllowedActivity property
@@ -90,19 +114,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(AllowedActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(AllowedActivity), value);
                 }
@@ -110,19 +134,19 @@ namespace Models
             }
         }
 
-        
+
         private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             if (value.Value != "прим.")
             {
@@ -134,10 +158,10 @@ return false;
                     {
                         value.AddError("Число должно быть больше нуля"); return false;
                     }
-                    }
+                }
                 catch
                 {
-                    value.AddError( "Недопустимое значение");
+                    value.AddError("Недопустимое значение");
                     return false;
                 }
             }
@@ -150,19 +174,19 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(AllowedActivityNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(AllowedActivityNote), value);
                 }
@@ -170,7 +194,7 @@ return false;
             }
         }
 
-        
+
         private bool AllowedActivityNote_Validation(RamAccess<string> value)//Ready
         {
             return true;
@@ -183,19 +207,19 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FactedActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FactedActivity), value);
                 }
@@ -240,19 +264,19 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FactedActivityNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FactedActivityNote), value);
                 }
@@ -260,7 +284,7 @@ return false;
             }
         }
 
-        
+
         private bool FactedActivityNote_Validation(RamAccess<string> value)//Ready
         {
             return true;

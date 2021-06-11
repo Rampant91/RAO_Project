@@ -21,33 +21,61 @@ namespace Models
         private void Init()
         {
             _dataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
+            CodeRAO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            PackName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
+            PackNumberRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
+            PackNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackFactoryNumber), PackFactoryNumber_Validation, null);
+            PackFactoryNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
+            PackTypeRecoded.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            PackType.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
+            Volume.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
+            Mass.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
+            ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
+            TransporterOKPO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
+            TritiumActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
+            BetaGammaActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
+            AlphaActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
+            TransuraniumActivity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FormingDate), FormingDate_Validation, null);
+            FormingDate.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            Radionuclids.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
+            PassportNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(RefineOrSortRAOCode), RefineOrSortRAOCode_Validation, null);
+            RefineOrSortRAOCode.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
+            StatusRAO.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
+            Subsidy.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            Quantity.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            FcpNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(VolumeOutOfPack), VolumeOutOfPack_Validation, null);
+            .PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassOutOfPack), MassOutOfPack_Validation, null);
+            MassOutOfPack.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            StoragePlaceName.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            StoragePlaceCode.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(SpecificActivity), SpecificActivity_Validation, null);
+            SpecificActivity.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()

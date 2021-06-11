@@ -27,7 +27,7 @@ namespace Models
         {
             get
             {
-                    return _dataAccess.Get<short>(nameof(OperationCode));
+                return _dataAccess.Get<short>(nameof(OperationCode));
             }
             set
             {
@@ -36,10 +36,11 @@ namespace Models
             }
         }
 
-        
+
         private bool OperationCode_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //OperationCode property
 
         //ObjectTypeCode property
@@ -48,19 +49,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ObjectTypeCode));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ObjectTypeCode), value);
                 }
@@ -68,10 +69,11 @@ namespace Models
             }
         }
         //2 digit code
-        
+
         private bool ObjectTypeCode_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //ObjectTypeCode property
 
         //Radionuclids property
@@ -80,21 +82,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -102,13 +104,13 @@ namespace Models
             }
         }
         //If change this change validation
-        
+
         private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
+                value.AddError("Поле не заполнено");
                 return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
@@ -130,19 +132,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<double>(nameof(Activity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Activity), value);
                 }
@@ -150,14 +152,14 @@ namespace Models
             }
         }
 
-        
+
         private bool Activity_Validation(RamAccess<double?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value > 0))
             {
@@ -173,21 +175,21 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
@@ -379,20 +381,20 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
@@ -400,10 +402,11 @@ return false;
             }
         }
 
-        
+
         private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //ProviderOrRecieverOKPONote property
     }
 }

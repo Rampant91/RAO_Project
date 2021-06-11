@@ -26,19 +26,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(RegNo));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(RegNo), value);
                 }
@@ -46,7 +46,7 @@ namespace Models
             }
         }
 
-                //RegNo property
+        //RegNo property
 
         //OrganUprav property
         [Attributes.Form_Property("Орган управления")]
@@ -54,19 +54,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(OrganUprav));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(OrganUprav), value);
                 }
@@ -74,7 +74,7 @@ namespace Models
             }
         }
 
-                //OrganUprav property
+        //OrganUprav property
 
         //SubjectRF property
         [Attributes.Form_Property("Субъект РФ")]
@@ -82,19 +82,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(SubjectRF));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(SubjectRF), value);
                 }
@@ -102,7 +102,7 @@ namespace Models
             }
         }
 
-                //SubjectRF property
+        //SubjectRF property
 
         //JurLico property
         [Attributes.Form_Property("Юр. лицо")]
@@ -110,19 +110,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(JurLico));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(JurLico), value);
                 }
@@ -130,7 +130,7 @@ namespace Models
             }
         }
 
-                //JurLico property
+        //JurLico property
 
         //ShortJurLico property
         [Attributes.Form_Property("Краткое наименование юр. лица")]
@@ -138,19 +138,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ShortJurLico));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ShortJurLico), value);
                 }
@@ -158,7 +158,7 @@ namespace Models
             }
         }
 
-                //ShortJurLico property
+        //ShortJurLico property
 
         //JurLicoAddress property
         [Attributes.Form_Property("Адрес юр. лица")]
@@ -166,19 +166,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(JurLicoAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(JurLicoAddress), value);
                 }
@@ -186,7 +186,7 @@ namespace Models
             }
         }
 
-                //JurLicoAddress property
+        //JurLicoAddress property
 
         //JurLicoFactAddress property
         [Attributes.Form_Property("Фактический адрес юр. лица")]
@@ -194,19 +194,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(JurLicoFactAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(JurLicoFactAddress), value);
                 }
@@ -214,7 +214,7 @@ namespace Models
             }
         }
 
-                //JurLicoFactAddress property
+        //JurLicoFactAddress property
 
         //GradeFIO property
         [Attributes.Form_Property("ФИО, должность")]
@@ -222,19 +222,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(GradeFIO));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(GradeFIO), value);
                 }
@@ -242,7 +242,7 @@ namespace Models
             }
         }
 
-                //GradeFIO property
+        //GradeFIO property
 
         //Telephone property
         [Attributes.Form_Property("Телефон")]
@@ -250,19 +250,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Telephone));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Telephone), value);
                 }
@@ -270,7 +270,7 @@ namespace Models
             }
         }
 
-                //Telephone property
+        //Telephone property
 
         //Fax property
         [Attributes.Form_Property("Факс")]
@@ -278,19 +278,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Fax));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Fax), value);
                 }
@@ -298,7 +298,7 @@ namespace Models
             }
         }
 
-                //Fax property
+        //Fax property
 
         //Email property
         [Attributes.Form_Property("Эл. почта")]
@@ -306,19 +306,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Email));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Email), value);
                 }
@@ -326,7 +326,7 @@ namespace Models
             }
         }
 
-                //Email property
+        //Email property
 
         //Okpo property
         [Attributes.Form_Property("ОКПО")]
@@ -334,19 +334,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Okpo));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Okpo), value);
                 }
@@ -375,19 +375,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Okved));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Okved), value);
                 }
@@ -395,7 +395,7 @@ namespace Models
             }
         }
 
-                private bool Okved_Validation(RamAccess<string> value)
+        private bool Okved_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
@@ -414,26 +414,26 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Okogu));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Okogu), value);
                 }
                 OnPropertyChanged(nameof(Okogu));
             }
         }
-                private bool Okogu_Validation(RamAccess<string> value)
+        private bool Okogu_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("^[0-9]{5}$");
@@ -451,19 +451,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Oktmo));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Oktmo), value);
                 }
@@ -471,7 +471,7 @@ namespace Models
             }
         }
 
-                private bool Oktmo_Validation(RamAccess<string> value)
+        private bool Oktmo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("^[0-9]{11}$");
@@ -489,19 +489,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Inn));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Inn), value);
                 }
@@ -509,7 +509,7 @@ namespace Models
             }
         }
 
-                private bool Inn_Validation(RamAccess<string> value)
+        private bool Inn_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("[0-9]{10}");
@@ -527,19 +527,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Kpp));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Kpp), value);
                 }
@@ -547,12 +547,13 @@ namespace Models
             }
         }
 
-                private bool Kpp_Validation(RamAccess<string> value)
+        private bool Kpp_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("[0-9]{9}");
-            if (!ex.IsMatch(value.Value)){
-                value.AddError( "Недопустимое значение"); return false;
+            if (!ex.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -564,19 +565,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Okopf));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Okopf), value);
                 }
@@ -584,7 +585,7 @@ namespace Models
             }
         }
 
-                private bool Okopf_Validation(RamAccess<string> value)
+        private bool Okopf_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("^[0-9]{5}^");
@@ -602,19 +603,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Okfs));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Okfs), value);
                 }
@@ -622,12 +623,13 @@ namespace Models
             }
         }
 
-                private bool Okfs_Validation(RamAccess<string> value)
+        private bool Okfs_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             var ex = new Regex("^[0-9]{2}$");
-            if (!ex.IsMatch(value.Value)){
-                value.AddError( "Недопустимое значение"); return false;
+            if (!ex.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
