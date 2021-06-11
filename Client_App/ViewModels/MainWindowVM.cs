@@ -59,8 +59,8 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> ChooseForm { get; }
 
         public ReactiveCommand<string, Unit> AddForm { get; }
-        public ReactiveCommand<Avalonia.Collections.AvaloniaList<IChanged>, Unit> ChangeForm { get; }
-        public ReactiveCommand<Avalonia.Collections.AvaloniaList<IChanged>, Unit> DeleteForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IChanged>, Unit> ChangeForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IChanged>, Unit> DeleteForm { get; }
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -71,21 +71,17 @@ namespace Client_App.ViewModels
         DBRealization.DBModel dbm { get; set; }
         public MainWindowVM()
         {
+            Local_Reports = new DBObservable();
             dbm = new DBRealization.DBModel(_DBPath);
             var t = dbm.Database.EnsureCreated();
 
             dbm.LoadAllTables();
-
-            if (dbm.coll_reports.Count() != 0)
+            Local_Reports.Reports_Collection = dbm.coll_reports;
+            if (dbm.coll_reports.Count() == 0)
             {
-                Local_Reports = dbm.coll_reports.First();
-            }
-            else
-            {
-                Local_Reports = new DBObservable();
                 Local_Reports.Reports_Collection.Add(new Reports());
-                dbm.coll_reports.Add(Local_Reports);
             }
+
             dbm.SaveChanges();
             //Local_Reports = new DBObservable();
             //var rpt = new Reports();
@@ -98,8 +94,8 @@ namespace Client_App.ViewModels
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
-            ChangeForm = ReactiveCommand.CreateFromTask<Avalonia.Collections.AvaloniaList<IChanged>>(_ChangeForm);
-            DeleteForm = ReactiveCommand.CreateFromTask<Avalonia.Collections.AvaloniaList<IChanged>>(_DeleteForm);
+            ChangeForm = ReactiveCommand.CreateFromTask< ObservableCollectionWithItemPropertyChanged <IChanged >>(_ChangeForm);
+            DeleteForm = ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IChanged>>(_DeleteForm);
 
             Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
 
@@ -126,38 +122,35 @@ namespace Client_App.ViewModels
                 //    tmp.Reps.Add(new Reports());
                 //    dbm.SaveChanges();
                 //}
-                Local_Reports.Reports_Collection[0].Report_Collection.Add(rt);
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param, DBPath, rt);
+                Local_Reports.Reports_Collection.First().Report_Collection.Add(rt);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param, DBPath, rt,dbm);
                 await frm.ShowDialog<Models.Abstracts.Form>(desktop.MainWindow);
             }
         }
 
-        async Task _ChangeForm(Avalonia.Collections.AvaloniaList<IChanged> param)
+        async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<IChanged> param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 if (param != null)
                 {
-                    if (param.Count != 0)
+                    var obj = param.First();
+                    if (obj!=null)
                     {
-                        var obj = param[0];
                         var rep = (Report)obj;
-                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum.Value, DBPath, rep);
+                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum.Value, DBPath, rep,dbm);
                         await frm.ShowDialog(desktop.MainWindow);
                     }
                 }
             }
         }
-        async Task _DeleteForm(Avalonia.Collections.AvaloniaList<IChanged> param)
+        async Task _DeleteForm(ObservableCollectionWithItemPropertyChanged<IChanged> param)
         {
             if (param != null)
             {
-                if (param.Count != 0)
+                foreach (var item in param)
                 {
-                    foreach (var item in param)
-                    {
-                        Local_Reports.Reports_Collection[0].Report_Collection.Remove((Report)item);
-                    }
+                    Local_Reports.Reports_Collection.First().Report_Collection.Remove((Report)item);
                 }
             }
         }

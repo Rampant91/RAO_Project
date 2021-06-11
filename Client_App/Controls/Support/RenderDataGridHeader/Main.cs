@@ -76,9 +76,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             var ram = new Models.DataAccess.RamAccess<string>(null, Text);
             var cell = new Controls.DataGrid.Cell(ram, "", true);
             cell.Background = new SolidColorBrush(Color.Parse("LightGray"));
-            cell.Width = starWidth * Wdth0;
-            cell.Height = RowHeight0;
-            cell.BorderBrush = new SolidColorBrush(border_color0);
+            cell.Width = starWidth * Wdth1;
+            cell.Height = RowHeight1;
+            cell.BorderBrush = new SolidColorBrush(border_color1);
             cell.CellRow = 0;
             cell.CellColumn = Column;
 

@@ -41,10 +41,8 @@ namespace Client_App.Controls.DataGrid
             {
                 if (value != null)
                 {
-                    if (!InterTwoCollections(value))
-                    {
-                        SetAndRaise(ItemsProperty, ref _items, value);
-                    }
+                    SetAndRaise(ItemsProperty, ref _items, value);
+                    UpdateCells();
                 }
             }
         }
@@ -66,34 +64,8 @@ namespace Client_App.Controls.DataGrid
             {
                 if (value != null)
                 {
-                    if (!InterTwoCollections(value))
-                    {
-                        SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
-                    }
+                    SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
                 }
-            }
-        }
-
-        bool InterTwoCollections(IEnumerable<IChanged> one)
-        {
-            if (one != null)
-            {
-                foreach (var item in one)
-                {
-                    if (item.IsChanged)
-                    {
-                        foreach (var it in one)
-                        {
-                            it.IsChanged = false;
-                        }
-                        return false;
-                    }
-                }
-                return true;
-            }
-            else
-            {
-                return true;
             }
         }
 
@@ -188,10 +160,13 @@ namespace Client_App.Controls.DataGrid
                     SelectedCells.Remove(item);
                 }
             }
-            if (!SelectedCells.Contains(Rows[Row].SCells))
+            if (!SelectedCells.Contains(Rows[Row] == null ? null:Rows[Row].SCells))
             {
-                Rows[Row].SCells.Background = ChooseColor;
-                SelectedCells.Add(Rows[Row].SCells);
+                if (Rows[Row] != null)
+                {
+                    Rows[Row].SCells.Background = ChooseColor;
+                    SelectedCells.Add(Rows[Row].SCells);
+                }
             }
         }
         void SetSelectedControls_CellSingle()
@@ -209,8 +184,11 @@ namespace Client_App.Controls.DataGrid
             }
             if (!SelectedCells.Contains(Rows[Row, Column]))
             {
-                Rows[Row, Column].Background = ChooseColor;
-                SelectedCells.Add(Rows[Row, Column]);
+                if (Rows[Row, Column]!=null)
+                {
+                    Rows[Row, Column].Background = ChooseColor;
+                    SelectedCells.Add(Rows[Row, Column]);
+                }
             }
         }
         void SetSelectedControls_LineMulti()
@@ -230,8 +208,11 @@ namespace Client_App.Controls.DataGrid
             {
                 if (!SelectedCells.Contains(Rows[i].SCells))
                 {
-                    Rows[i].SCells.Background = ChooseColor;
-                    SelectedCells.Add(Rows[i].SCells);
+                    if (Rows[i]!=null)
+                    {
+                        Rows[i].SCells.Background = ChooseColor;
+                        SelectedCells.Add(Rows[i].SCells);
+                    }
                 }
             }
         }
@@ -261,8 +242,11 @@ namespace Client_App.Controls.DataGrid
                 {
                     if (!SelectedCells.Contains(Rows[i, j]))
                     {
-                        Rows[i, j].Background = ChooseColor;
-                        SelectedCells.Add(Rows[i, j]);
+                        if (Rows[i, j]!=null)
+                        {
+                            Rows[i, j].Background = ChooseColor;
+                            SelectedCells.Add(Rows[i, j]);
+                        }
                     }
                 }
             }
@@ -311,8 +295,8 @@ namespace Client_App.Controls.DataGrid
                         }
                         if(item is StackPanel)
                         {
-                            var ch = (Cell)((StackPanel)item).Children[0];
-                            lst.Add((IChanged)ch.DataContext);
+                            var ch = (IChanged)item.DataContext;
+                            lst.Add(ch);
                         }
                     }
                 }
@@ -353,20 +337,57 @@ namespace Client_App.Controls.DataGrid
 
         void UpdateAllCells()
         {
+            NameScope scp = new NameScope();
+            scp.Register(this.Name,this);
             Rows.Clear();
             int count = 1;
             foreach (var item in _items)
             {
-                var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, item);
+                var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp,this.Name);
                 Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
                 count++;
             }
+            SetSelectedControls();
+            SetSelectedItemsWithHandler();
         }
-
 
         void UpdateCells()
         {
-
+            NameScope scp = new NameScope();
+            scp.Register(this.Name, this);
+            int count = 1;
+            foreach (var item in _items)
+            {
+                if (Rows.Count >= count)
+                {
+                    if (Rows[count, 1] != null)
+                    {
+                        if (((IKey)(Rows[count].SCells).DataContext) != null)
+                        {
+                            if (((IKey)(Rows[count].SCells).DataContext).ID != ((IKey)item).ID)
+                            {
+                                var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp,this.Name);
+                                Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, this.Name);
+                        Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
+                        count++;
+                    }
+                }
+                else
+                {
+                    var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp,this.Name);
+                    Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
+                    count++;
+                }
+                count++;
+            }
+            SetSelectedControls();
+            SetSelectedItemsWithHandler();
         }
         void ItemsChanged(object sender, PropertyChangedEventArgs args)
         {
@@ -378,7 +399,6 @@ namespace Client_App.Controls.DataGrid
             {
                 UpdateAllCells();
             }
-            SetSelectedItems();
         }
 
         public void MakeHeader()

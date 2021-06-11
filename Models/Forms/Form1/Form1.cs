@@ -19,7 +19,7 @@ namespace Models.Abstracts
             Init_base();
             Validate_base();
         }
-        protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+        void InPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             OnPropertyChanged(args.PropertyName);
         }
@@ -40,6 +40,7 @@ namespace Models.Abstracts
             DocumentDate.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, 0);
             NumberInOrder.PropertyChanged += InPropertyChanged;
+            //_dataAccess.Init<string>(nameof(), _Validation, null);
         }
         protected void Validate_base()
         {
@@ -50,6 +51,7 @@ namespace Models.Abstracts
             DocumentNumberRecoded_Validation(DocumentNumberRecoded);
             DocumentDate_Validation(DocumentDate);
             NumberInOrder_Validation(NumberInOrder);
+            DocumentNumberRecoded_Validation(DocumentNumberRecoded);
         }
 
         //NumberInOrder property
@@ -73,20 +75,20 @@ namespace Models.Abstracts
         }
         //NumberInOrder property
 
-        //CorrectionNumber property
-        [Attributes.Form_Property("Номер корректировки")]
-        public RamAccess<byte> CorrectionNumber
-        {
-            get
-            {
-                    return _dataAccess.Get<byte>(nameof(CorrectionNumber));
-            }
-            set
-            {
-                    _dataAccess.Set(nameof(CorrectionNumber), value);
-                OnPropertyChanged(nameof(CorrectionNumber));
-            }
-        }
+        ////CorrectionNumber property
+        //[Attributes.Form_Property("Номер корректировки")]
+        //public RamAccess<byte> CorrectionNumber
+        //{
+        //    get
+        //    {
+        //            return _dataAccess.Get<byte>(nameof(CorrectionNumber));
+        //    }
+        //    set
+        //    {
+        //            _dataAccess.Set(nameof(CorrectionNumber), value);
+        //        OnPropertyChanged(nameof(CorrectionNumber));
+        //    }
+        //}
 
         //private bool CorrectionNumber_Validation(RamAccess<string> value)
         //{
@@ -335,26 +337,5 @@ return false;
         //{
         //    value.ClearErrors(); return true;}
         ////DocumentDateNote property
-        //DocumentDateNote property
-        [Attributes.Form_Property("Дата документа")]
-        public RamAccess<string> DocumentDateNote
-        {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(DocumentDateNote));
-            }
-            set
-            {
-                    _dataAccess.Set(nameof(DocumentDateNote), value);
-                OnPropertyChanged(nameof(DocumentDateNote));
-            }
         }
-        //if change this change validation
-
-        private bool DocumentDateNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //DocumentDateNote property
-    }
 }

@@ -9,19 +9,19 @@ using System.ComponentModel.DataAnnotations;
 using Avalonia.Data;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations.Schema;
+using Models.Collections;
 
 namespace Models.DataAccess
 {
-    public class RamAccess<T> : INotifyDataErrorInfo, INotifyPropertyChanged
+    public class RamAccess<T> : INotifyDataErrorInfo,IChanged,IKey
     {
         [NotMapped]
         public Func<RamAccess<T>, bool> Handler { get; set; }
 
         [Key]
-        public int RamAccessID { get; set; }
+        public int ID { get; set; }
 
         T _value;
-        [NotMapped]
         public T Value 
         {
             get
@@ -139,13 +139,34 @@ namespace Models.DataAccess
         }
         //Data Validation
 
+        [NotMapped]
+        bool _isChanged = true;
+        public bool IsChanged
+        {
+            get
+            {
+                return _isChanged;
+            }
+            set
+            {
+                if (_isChanged != value)
+                {
+                    _isChanged = value;
+                    OnPropertyChanged(nameof(IsChanged));
+                }
+            }
+        }
+
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            if (prop != nameof(IsChanged))
+            {
+                IsChanged = true;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
-        //Property Changed
     }
 }
