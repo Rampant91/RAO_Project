@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Collections
 {
-    public class Reports : IChanged
+    public class Reports : IChanged,IKey
     {
         IDataAccessCollection _dataAccess { get; set; }
 
@@ -43,7 +43,7 @@ namespace Collections
         }
 
         [Key]
-        public int ReportsId { get; set; }
+        public int ID { get; set; }
 
         public virtual RamAccess<Report> Master
         {

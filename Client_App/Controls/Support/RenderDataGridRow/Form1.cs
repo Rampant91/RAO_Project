@@ -16,12 +16,12 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Form1
     {
-        public static Control GetControl(string type, int Row, Object Context)
+        public static Control GetControl(string type, int Row, INameScope scp, string TopName)
         {
             switch (type)
             {
                 case "0": return Get0();
-                case "1": return Get1(Row, Context);
+                case "1": return Get1(Row, scp,TopName);
                 case "2": return Get2();
                 case "3": return Get3();
                 case "4": return Get4();
@@ -41,18 +41,26 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         static int Wdth1 = 100;
         static int RowHeight1 = 30;
         static Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-        static Control Get1Row(int starWidth, int Row,int Column, string Binding, Object Context)
+        static Control Get1Row(int starWidth, int Row,int Column, string Binding, INameScope scp, string TopName)
         {
-            var cell = new Controls.DataGrid.Cell(Context, Binding,false);
+            var cell = new Controls.DataGrid.Cell(Binding,false);
             cell.Width = starWidth * Wdth1;
             cell.Height= RowHeight1;
             cell.BorderBrush = new SolidColorBrush(border_color1);
+
+            Binding b = new Binding();
+            b.Path = "Items[" + (Row - 1).ToString() + "]." + Binding;
+            b.ElementName = TopName;
+            b.NameScope = new WeakReference<INameScope>(scp);
+
+            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+
             cell.CellRow = Row;
             cell.CellColumn = Column;
 
             return cell;
         }
-        static Control Get1(int Row, Object Context)
+        static Control Get1(int Row, INameScope scp,string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row();
             stck.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -60,29 +68,36 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Width = 24 * Wdth1;
             stck.Spacing = -1;
 
-            stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", Context));
-            stck.Children.Add(Get1Row(2, Row, 2, "OperationCode", Context));
-            stck.Children.Add(Get1Row(1, Row, 3, "OperationDate", Context));
-            stck.Children.Add(Get1Row(1, Row, 4, "PassportNumber", Context));
-            stck.Children.Add(Get1Row(1, Row, 5, "Type", Context));
-            stck.Children.Add(Get1Row(1, Row, 6, "Radionuclids", Context));
-            stck.Children.Add(Get1Row(1, Row, 7, "FactoryNumber", Context));
-            stck.Children.Add(Get1Row(1, Row, 8, "Quantity", Context));
-            stck.Children.Add(Get1Row(1, Row, 9, "Activity", Context));
-            stck.Children.Add(Get1Row(1, Row, 10, "CreatorOKPO", Context));
-            stck.Children.Add(Get1Row(1, Row, 11, "CreationDate", Context));
-            stck.Children.Add(Get1Row(1, Row, 12, "Category", Context));
-            stck.Children.Add(Get1Row(1, Row, 13, "SignedServicePeriod", Context));
-            stck.Children.Add(Get1Row(1, Row, 14, "PropertyCode", Context));
-            stck.Children.Add(Get1Row(1, Row, 15, "Owner", Context));
-            stck.Children.Add(Get1Row(1, Row, 16, "DocumentVid", Context));
-            stck.Children.Add(Get1Row(1, Row, 17, "DocumentNumber", Context));
-            stck.Children.Add(Get1Row(1, Row, 18, "DocumentDate", Context));
-            stck.Children.Add(Get1Row(1, Row, 19, "ProviderOrRecieverOKPO", Context));
-            stck.Children.Add(Get1Row(1, Row, 20, "TransporterOKPO", Context));
-            stck.Children.Add(Get1Row(1, Row, 21, "PackName", Context));
-            stck.Children.Add(Get1Row(1, Row, 22, "PackType", Context));
-            stck.Children.Add(Get1Row(1, Row, 23, "PackNumber", Context));
+            Binding b = new Binding();
+            b.Path = "Items[" + (Row - 1).ToString() + "]";
+            b.ElementName = TopName;
+            b.NameScope = new WeakReference<INameScope>(scp);
+
+            stck.Bind(StackPanel.DataContextProperty, b);
+
+            stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp,TopName));
+            stck.Children.Add(Get1Row(2, Row, 2, "OperationCode", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 3, "OperationDate", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 4, "PassportNumber", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 5, "Type", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 6, "Radionuclids", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 7, "FactoryNumber", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 8, "Quantity", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 9, "Activity", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 10, "CreatorOKPO", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 11, "CreationDate", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 12, "Category", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 13, "SignedServicePeriod", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 14, "PropertyCode", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 15, "Owner", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 16, "DocumentVid", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 17, "DocumentNumber", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 18, "DocumentDate", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 19, "ProviderOrRecieverOKPO", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 20, "TransporterOKPO", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 21, "PackName", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 22, "PackType", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 23, "PackNumber", scp, TopName));
 
             //var bd = "StartPeriod";
             //bd.StringFormat = "{0:d}";

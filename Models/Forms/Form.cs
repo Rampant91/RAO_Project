@@ -12,7 +12,7 @@ using Models.Collections;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : IChanged
+    public abstract class Form : IChanged,IKey
     {
         protected IDataAccessCollection _dataAccess { get; set; }
 
@@ -67,7 +67,7 @@ namespace Models.Abstracts
         }
 
         [Key]
-        public int RowId { get; set; }
+        public int ID { get; set; }
 
         //FormNum property
         [Attributes.Form_Property("Форма")]

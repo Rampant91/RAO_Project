@@ -16,9 +16,11 @@ namespace Client_App.Views
     public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     {
         string _param = "";
-        public FormChangeOrCreate(string param, string DBPath, Report rep)
+        DBRealization.DBModel dbm { get; set; }
+        public FormChangeOrCreate(string param, string DBPath, Report rep,DBRealization.DBModel dbm)
         {
-            var tmp = new ViewModels.ChangeOrCreateVM();
+            var tmp = new ViewModels.ChangeOrCreateVM(dbm);
+            this.dbm = dbm;
             if (DBPath != null)
             {
                 tmp.DBPath = DBPath;
@@ -48,6 +50,8 @@ namespace Client_App.Views
         }
         protected override void OnClosing(CancelEventArgs e)
         {
+            dbm.UndoChanges();
+            dbm.SaveChanges();
             base.OnClosing(e);
         }
 

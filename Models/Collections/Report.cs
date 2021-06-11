@@ -14,7 +14,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Collections
 {
-    public class Report : IChanged
+    public class Report : IChanged,IKey
     {
         IDataAccessCollection _dataAccess { get; set; }
 
@@ -258,7 +258,7 @@ namespace Collections
         }
 
         [Key]
-        public int ReportId { get; set; }
+        public int ID { get; set; }
 
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form10> Rows10
         {

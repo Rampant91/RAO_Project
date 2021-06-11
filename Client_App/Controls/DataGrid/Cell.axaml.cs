@@ -55,7 +55,18 @@ namespace Client_App.Controls.DataGrid
         {
             this.DataContext = DataContext;
             this.BindingPath = BindingPath;
-            InitializeComponent(true);
+            this.IsReadOnly = IsReadOnly;
+            InitializeComponent();
+
+            this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
+            this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
+            this.AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
+        }
+        public Cell(string BindingPath, bool IsReadOnly)
+        {
+            this.BindingPath = BindingPath;
+            this.IsReadOnly = IsReadOnly;
+            InitializeComponent();
 
             this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
             this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
@@ -63,18 +74,19 @@ namespace Client_App.Controls.DataGrid
         }
         public Cell()
         {
-            InitializeComponent(false);
+            InitializeComponent();
         }
 
-        private void InitializeComponent(bool IsReadOnly)
+        private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
-            if (BindingPath != "")
-            {
-                var t = (TextBox)((Panel)((Border)this.Content).Child).Children[0];
-                t.IsEnabled = IsReadOnly;
-                t.Bind(TextBox.DataContextProperty, new Binding("$parent[2].DataContext."+BindingPath));
-            }
+
+            var t = (TextBox)((Panel)((Border)this.Content).Child).Children[0];
+            t.IsEnabled = !IsReadOnly;
+            //if (BindingPath != "")
+            //{
+            //    t.Bind(TextBox.DataContextProperty, new Binding("$parent[2].DataContext."+BindingPath));
+            //}
         }
 
         public void PanelPointerDown(object sender, PointerPressedEventArgs args)
