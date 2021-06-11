@@ -80,8 +80,10 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<Unit, Unit> PasteRows { get; }
 
-        public ChangeOrCreateVM()
+        DBRealization.DBModel dbm { get; set; }
+        public ChangeOrCreateVM(DBRealization.DBModel dbm)
         {
+            this.dbm = dbm;
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow = ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);
@@ -118,6 +120,7 @@ namespace Client_App.ViewModels
                 {
                     if (item is Views.FormChangeOrCreate)
                     {
+                        dbm.SaveChanges();
                         item.Close();
                     }
                 }

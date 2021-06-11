@@ -6,7 +6,8 @@
              x:Class="Client_App.Controls.DataGrid.Cell">
   <Border BorderThickness="1" BorderBrush="{Binding $parent.BorderBrush}">
     <Panel Background="Transparent">
-      <TextBox Text="{Binding Path=Value}"
+      <TextBox DataContext="{Binding}"
+               Text="{Binding Value}"
                Background="Transparent"
                TextAlignment="Center"/>
     </Panel>
