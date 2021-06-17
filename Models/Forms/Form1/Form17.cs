@@ -67,7 +67,7 @@ namespace Models
             _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(VolumeOutOfPack), VolumeOutOfPack_Validation, null);
-            .PropertyChanged += InPropertyChanged;
+            VolumeOutOfPack.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(MassOutOfPack), MassOutOfPack_Validation, null);
             MassOutOfPack.PropertyChanged += InPropertyChanged;
             _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);

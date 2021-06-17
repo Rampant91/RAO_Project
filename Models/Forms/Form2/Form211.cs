@@ -12,6 +12,40 @@ namespace Models
         {
             FormNum.Value = "211";
             NumberOfFields.Value = 11;
+            Init();
+            Validate_all();
+        }
+
+        private void Init()
+        {
+            _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            Radionuclids.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(PlotName), PlotName_Validation, null);
+            PlotName.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(PlotKadastrNumber), PlotKadastrNumber_Validation, null);
+            PlotKadastrNumber.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(PlotCode), PlotCode_Validation, null);
+            PlotCode.PropertyChanged += InPropertyChanged;
+            //2301_dataAccess.Init<int>(nameof(InfectedArea), InfectedArea_Validation, null);
+            InfectedArea.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(SpecificActivityOfPlot), SpecificActivityOfPlot_Validation, null);
+            SpecificActivityOfPlot.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(SpecificActivityOfLiquidPart), SpecificActivityOfLiquidPart_Validation, null);
+            SpecificActivityOfLiquidPart.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(SpecificActivityOfDensePart), SpecificActivityOfDensePart_Validation, null);
+            SpecificActivityOfDensePart.PropertyChanged += InPropertyChanged;
+        }
+
+        private void Validate_all()
+        {
+            Radionuclids_Validation(Radionuclids);
+            PlotName_Validation(PlotName);
+            PlotKadastrNumber_Validation(PlotKadastrNumber);
+            PlotCode_Validation(PlotCode);
+            InfectedArea_Validation(InfectedArea);
+            SpecificActivityOfPlot_Validation(SpecificActivityOfPlot);
+            SpecificActivityOfLiquidPart_Validation(SpecificActivityOfLiquidPart);
+            SpecificActivityOfDensePart_Validation(SpecificActivityOfDensePart);
         }
 
         [Attributes.Form_Property("Форма")]

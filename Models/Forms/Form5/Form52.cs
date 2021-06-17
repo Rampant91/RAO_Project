@@ -54,14 +54,16 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;return true;
+                    Radionuclids.Value =item.Item2;
+return true;
                 }
             }
             return false;
@@ -133,11 +135,13 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;

@@ -19,7 +19,7 @@ namespace Models.Abstracts
             Init_base();
             Validate_base();
         }
-        void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+        protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             OnPropertyChanged(args.PropertyName);
         }

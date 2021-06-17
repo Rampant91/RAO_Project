@@ -165,7 +165,8 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
@@ -213,11 +214,13 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -310,7 +313,8 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
@@ -348,7 +352,8 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }

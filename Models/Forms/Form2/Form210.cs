@@ -11,6 +11,46 @@ namespace Models
         {
             FormNum.Value = "210";
             NumberOfFields.Value = 12;
+            Init();
+            Validate_all();
+        }
+
+        private void Init()
+        {
+            _dataAccess.Init<string>(nameof(IndicatorName), IndicatorName_Validation, null);
+            IndicatorName.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(PlotName), PlotName_Validation, null);
+            PlotName.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(PlotKadastrNumber), PlotKadastrNumber_Validation, null);
+            PlotKadastrNumber.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(PlotCode), PlotCode_Validation, null);
+            PlotCode.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<int?>(nameof(InfectedArea), InfectedArea_Validation, null);
+            InfectedArea.PropertyChanged += InPropertyChanged;
+            //2301_dataAccess.Init<double>(nameof(AvgGammaRaysDosePower), AvgGammaRaysDosePower_Validation, null);
+            AvgGammaRaysDosePower.PropertyChanged += InPropertyChanged;
+            //2301_dataAccess.Init<double>(nameof(MaxGammaRaysDosePower), MaxGammaRaysDosePower_Validation, null);
+            MaxGammaRaysDosePower.PropertyChanged += InPropertyChanged;
+            //2301_dataAccess.Init<double>(nameof(WasteDensityAlpha), WasteDensityAlpha_Validation, null);
+            WasteDensityAlpha.PropertyChanged += InPropertyChanged;
+            //2301_dataAccess.Init<double>(nameof(WasteDensityBeta), WasteDensityBeta_Validation, null);
+            WasteDensityBeta.PropertyChanged += InPropertyChanged;
+            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            FcpNumber.PropertyChanged += InPropertyChanged;
+        }
+
+        private void Validate_all()
+        {
+            IndicatorName_Validation(IndicatorName);
+            PlotName_Validation(PlotName);
+            PlotKadastrNumber_Validation(PlotKadastrNumber);
+            PlotCode_Validation(PlotCode);
+            InfectedArea_Validation(InfectedArea);
+            AvgGammaRaysDosePower_Validation(AvgGammaRaysDosePower);
+            MaxGammaRaysDosePower_Validation(MaxGammaRaysDosePower);
+            WasteDensityAlpha_Validation(WasteDensityAlpha);
+            WasteDensityBeta_Validation(WasteDensityBeta);
+            FcpNumber_Validation(FcpNumber);
         }
 
         [Attributes.Form_Property("Форма")]
