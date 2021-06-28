@@ -11,8 +11,8 @@ namespace Models
     {
         public Form27() : base()
         {
-            FormNum.Value = "27";
-            NumberOfFields.Value = 13;
+            //FormNum.Value = "27";
+            //NumberOfFields.Value = 13;
             Init();
             Validate_all();
         }
@@ -47,8 +47,8 @@ namespace Models
         }
 
         //ObservedSourceNumber property
-        [Attributes.Form_Property("Номер наблюдательной скважины")]
-        public RamAccess<string> ObservedSourceNumber
+        [Attributes.Form_Property("Номер наблюдательной скважины")]public int? ObservedSourceNumberId { get; set; }
+        public virtual RamAccess<string> ObservedSourceNumber
         {
             get
             {
@@ -74,8 +74,8 @@ namespace Models
         //ObservedSourceNumber property
 
         //PermissionNumber property
-        [Attributes.Form_Property("Номер разрешительного документа")]
-        public RamAccess<string> PermissionNumber
+        [Attributes.Form_Property("Номер разрешительного документа")]public int? PermissionNumberId { get; set; }
+        public virtual RamAccess<string> PermissionNumber
         {
             get
             {
@@ -108,8 +108,8 @@ namespace Models
         //PermissionNumber property
 
         //PermissionIssueDate property
-        [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public RamAccess<string> PermissionIssueDate
+        [Attributes.Form_Property("Дата выпуска разрешительного документа")]public int? PermissionIssueDateId { get; set; }
+        public virtual RamAccess<string> PermissionIssueDate
         {
             get
             {
@@ -141,8 +141,8 @@ namespace Models
         //PermissionIssueDate property
 
         //PermissionDocumentName property
-        [Attributes.Form_Property("Наименование разрешительного документа")]
-        public RamAccess<string> PermissionDocumentName
+        [Attributes.Form_Property("Наименование разрешительного документа")]public int? PermissionDocumentNameId { get; set; }
+        public virtual RamAccess<string> PermissionDocumentName
         {
             get
             {
@@ -174,8 +174,8 @@ namespace Models
         //PermissionDocumentName property
 
         //ValidBegin property
-        [Attributes.Form_Property("Действует с")]
-        public RamAccess<string> ValidBegin
+        [Attributes.Form_Property("Действует с")]public int? ValidBeginId { get; set; }
+        public virtual RamAccess<string> ValidBegin
         {
             get
             {
@@ -207,8 +207,8 @@ namespace Models
         //ValidBegin property
 
         //ValidThru property
-        [Attributes.Form_Property("Действует по")]
-        public RamAccess<string> ValidThru
+        [Attributes.Form_Property("Действует по")]public int? ValidThruId { get; set; }
+        public virtual RamAccess<string> ValidThru
         {
             get
             {
@@ -240,7 +240,7 @@ namespace Models
         //ValidThru property
 
         //RadionuclidName property
-        public RamAccess<string> RadionuclidName
+        public virtual RamAccess<string> RadionuclidName
         {
             get
             {
@@ -285,7 +285,7 @@ namespace Models
         //RadionuclidName property
 
         //RadionuclidNameNote property
-        public RamAccess<string> RadionuclidNameNote
+        public virtual RamAccess<string> RadionuclidNameNote
         {
             get
             {
@@ -317,8 +317,8 @@ namespace Models
         //RadionuclidNameNote property
 
         //AllowedWasteValue property
-        [Attributes.Form_Property("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]
-        public RamAccess<string> AllowedWasteValue
+        [Attributes.Form_Property("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]public int? AllowedWasteValueId { get; set; }
+        public virtual RamAccess<string> AllowedWasteValue
         {
             get
             {
@@ -376,7 +376,7 @@ namespace Models
         //AllowedWasteValue property
 
         //AllowedWasteValueNote property
-        public RamAccess<string> AllowedWasteValueNote
+        public virtual RamAccess<string> AllowedWasteValueNote
         {
             get
             {
@@ -408,8 +408,8 @@ namespace Models
         //AllowedWasteValueNote property
 
         //FactedWasteValue property
-        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]
-        public RamAccess<string> FactedWasteValue
+        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]public int? FactedWasteValueId { get; set; }
+        public virtual RamAccess<string> FactedWasteValue
         {
             get
             {
@@ -474,7 +474,7 @@ namespace Models
         //FactedWasteValue property
 
         //FactedWasteValueNote property
-        public RamAccess<string> FactedWasteValueNote
+        public virtual RamAccess<string> FactedWasteValueNote
         {
             get
             {
@@ -506,8 +506,8 @@ namespace Models
         //FactedWasteValueNote property
 
         //WasteOutbreakPreviousYear property
-        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]
-        public RamAccess<string> WasteOutbreakPreviousYear
+        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]public int? WasteOutbreakPreviousYearId { get; set; }
+        public virtual RamAccess<string> WasteOutbreakPreviousYear
         {
             get
             {

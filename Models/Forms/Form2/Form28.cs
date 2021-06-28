@@ -11,8 +11,8 @@ namespace Models
     {
         public Form28() : base()
         {
-            FormNum.Value = "28";
-            NumberOfFields.Value = 24;
+            //FormNum.Value = "28";
+            //NumberOfFields.Value = 24;
             Init();
             Validate_all();
         }
@@ -50,8 +50,8 @@ namespace Models
         }
 
         //PermissionNumber property
-        [Attributes.Form_Property("Номер разрешительного документа")]
-        public RamAccess<string> PermissionNumber
+        [Attributes.Form_Property("Номер разрешительного документа")]public int? PermissionNumberId { get; set; }
+        public virtual RamAccess<string> PermissionNumber
         {
             get
             {
@@ -84,8 +84,8 @@ namespace Models
         //PermissionNumber property
 
         //PermissionIssueDate property
-        [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public RamAccess<string> PermissionIssueDate
+        [Attributes.Form_Property("Дата выпуска разрешительного документа")]public int? PermissionIssueDateId { get; set; }
+        public virtual RamAccess<string> PermissionIssueDate
         {
             get
             {
@@ -117,8 +117,8 @@ namespace Models
         //PermissionIssueDate property
 
         //PermissionDocumentName property
-        [Attributes.Form_Property("Наименование разрешительного документа")]
-        public RamAccess<string> PermissionDocumentName
+        [Attributes.Form_Property("Наименование разрешительного документа")]public int? PermissionDocumentNameId { get; set; }
+        public virtual RamAccess<string> PermissionDocumentName
         {
             get
             {
@@ -150,8 +150,8 @@ namespace Models
         //PermissionDocumentName property
 
         //ValidBegin property
-        [Attributes.Form_Property("Действует с")]
-        public RamAccess<string> ValidBegin
+        [Attributes.Form_Property("Действует с")]public int? ValidBeginId { get; set; }
+        public virtual RamAccess<string> ValidBegin
         {
             get
             {
@@ -183,8 +183,8 @@ namespace Models
         //ValidBegin property
 
         //ValidThru property
-        [Attributes.Form_Property("Действует по")]
-        public RamAccess<string> ValidThru
+        [Attributes.Form_Property("Действует по")]public int? ValidThruId { get; set; }
+        public virtual RamAccess<string> ValidThru
         {
             get
             {
@@ -216,8 +216,8 @@ namespace Models
         //ValidThru property
 
         //PermissionNumber1 property
-        [Attributes.Form_Property("Номер разрешительного документа")]
-        public RamAccess<string> PermissionNumber1
+        [Attributes.Form_Property("Номер разрешительного документа")]public int? PermissionNumber1Id { get; set; }
+        public virtual RamAccess<string> PermissionNumber1
         {
             get
             {
@@ -238,8 +238,8 @@ namespace Models
         //PermissionNumber1 property
 
         //PermissionIssueDate1 property
-        [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public RamAccess<string> PermissionIssueDate1
+        [Attributes.Form_Property("Дата выпуска разрешительного документа")]public int? PermissionIssueDate1Id { get; set; }
+        public virtual RamAccess<string> PermissionIssueDate1
         {
             get
             {
@@ -266,8 +266,8 @@ namespace Models
         //PermissionIssueDate1 property
 
         //PermissionDocumentName1 property
-        [Attributes.Form_Property("Наименование разрешительного документа")]
-        public RamAccess<string> PermissionDocumentName1
+        [Attributes.Form_Property("Наименование разрешительного документа")]public int? PermissionDocumentName1Id { get; set; }
+        public virtual RamAccess<string> PermissionDocumentName1
         {
             get
             {
@@ -294,8 +294,8 @@ namespace Models
         //PermissionDocumentName1 property
 
         //ValidBegin1 property
-        [Attributes.Form_Property("Действует с")]
-        public RamAccess<string> ValidBegin1
+        [Attributes.Form_Property("Действует с")]public int? ValidBegin1Id { get; set; }
+        public virtual RamAccess<string> ValidBegin1
         {
             get
             {
@@ -322,8 +322,8 @@ namespace Models
         //ValidBegin1 property
 
         //ValidThru1 property
-        [Attributes.Form_Property("Действует по")]
-        public RamAccess<string> ValidThru1
+        [Attributes.Form_Property("Действует по")]public int? ValidThru1Id { get; set; }
+        public virtual RamAccess<string> ValidThru1
         {
             get
             {
@@ -344,8 +344,8 @@ namespace Models
         //ValidThru1 property
 
         //PermissionNumber2 property
-        [Attributes.Form_Property("Номер разрешительного документа")]
-        public RamAccess<string> PermissionNumber2
+        [Attributes.Form_Property("Номер разрешительного документа")]public int? PermissionNumber2Id { get; set; }
+        public virtual RamAccess<string> PermissionNumber2
         {
             get
             {
@@ -366,8 +366,8 @@ namespace Models
         //PermissionNumber2 property
 
         //PermissionIssueDate2 property
-        [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public RamAccess<string> PermissionIssueDate2
+        [Attributes.Form_Property("Дата выпуска разрешительного документа")]public int? PermissionIssueDate2Id { get; set; }
+        public virtual RamAccess<string> PermissionIssueDate2
         {
             get
             {
@@ -394,8 +394,8 @@ namespace Models
         //PermissionIssueDate property
 
         //PermissionDocumentName2 property
-        [Attributes.Form_Property("Наименование разрешительного документа")]
-        public RamAccess<string> PermissionDocumentName2
+        [Attributes.Form_Property("Наименование разрешительного документа")]public int? PermissionDocumentName2Id { get; set; }
+        public virtual RamAccess<string> PermissionDocumentName2
         {
             get
             {
@@ -426,8 +426,8 @@ namespace Models
         //PermissionDocumentName2 property
 
         //ValidBegin2 property
-        [Attributes.Form_Property("Действует с")]
-        public RamAccess<string> ValidBegin2
+        [Attributes.Form_Property("Действует с")]public int? ValidBegin2Id { get; set; }
+        public virtual RamAccess<string> ValidBegin2
         {
             get
             {
@@ -448,8 +448,8 @@ namespace Models
         //ValidBegin2 property
 
         //ValidThru2 property
-        [Attributes.Form_Property("Действует по")]
-        public RamAccess<string> ValidThru2
+        [Attributes.Form_Property("Действует по")]public int? ValidThru2Id { get; set; }
+        public virtual RamAccess<string> ValidThru2
         {
             get
             {
@@ -476,8 +476,8 @@ namespace Models
         //ValidThru2 property
 
         //WasteSourceName property
-        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
-        public RamAccess<string> WasteSourceName
+        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]public int? WasteSourceNameId { get; set; }
+        public virtual RamAccess<string> WasteSourceName
         {
             get
             {
@@ -515,8 +515,8 @@ namespace Models
         //WasteSourceName property
 
         //WasteRecieverName property
-        [Attributes.Form_Property("Наименование приемника отведенных вод")]
-        public RamAccess<string> WasteRecieverName
+        [Attributes.Form_Property("Наименование приемника отведенных вод")]public int? WasteRecieverNameId { get; set; }
+        public virtual RamAccess<string> WasteRecieverName
         {
             get
             {
@@ -554,8 +554,8 @@ namespace Models
         //WasteRecieverName property
 
         //RecieverTypeCode property
-        [Attributes.Form_Property("Код типа приемника отведенных вод")]
-        public RamAccess<string> RecieverTypeCode
+        [Attributes.Form_Property("Код типа приемника отведенных вод")]public int? RecieverTypeCodeId { get; set; }
+        public virtual RamAccess<string> RecieverTypeCode
         {
             get
             {
@@ -599,8 +599,8 @@ namespace Models
         //RecieverTypeCode property
 
         //PoolDistrictName property
-        [Attributes.Form_Property("Наименование бассейнового округа приемника отведенных вод")]
-        public RamAccess<string> PoolDistrictName
+        [Attributes.Form_Property("Наименование бассейнового округа приемника отведенных вод")]public int? PoolDistrictNameId { get; set; }
+        public virtual RamAccess<string> PoolDistrictName
         {
             get
             {
@@ -644,8 +644,8 @@ namespace Models
         //PoolDistrictName property
 
         //AllowedWasteRemovalVolume property
-        [Attributes.Form_Property("Допустимый объем водоотведения за год, тыс. куб. м")]
-        public RamAccess<string> AllowedWasteRemovalVolume
+        [Attributes.Form_Property("Допустимый объем водоотведения за год, тыс. куб. м")]public int? AllowedWasteRemovalVolumeId { get; set; }
+        public virtual RamAccess<string> AllowedWasteRemovalVolume
         {
             get
             {
@@ -703,8 +703,8 @@ namespace Models
         //AllowedWasteRemovalVolume property
 
         //RemovedWasteVolume property
-        [Attributes.Form_Property("Отведено за отчетный период, тыс. куб. м")]
-        public RamAccess<string> RemovedWasteVolume
+        [Attributes.Form_Property("Отведено за отчетный период, тыс. куб. м")]public int? RemovedWasteVolumeId { get; set; }
+        public virtual RamAccess<string> RemovedWasteVolume
         {
             get
             {
@@ -758,7 +758,7 @@ namespace Models
         //RemovedWasteVolume property
 
         //RemovedWasteVolumeNote property
-        public RamAccess<double> RemovedWasteVolumeNote
+        public virtual RamAccess<double> RemovedWasteVolumeNote
         {
             get
             {

@@ -11,8 +11,8 @@ namespace Models
     {
         public Form54() : base()
         {
-            FormNum.Value = "54";
-            NumberOfFields.Value = 10;
+            //FormNum.Value = "54";
+            //NumberOfFields.Value = 10;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -22,8 +22,8 @@ namespace Models
         }
 
         //TypeOfAccountedParts property
-        [Attributes.Form_Property("Тип учетных единиц")]
-        public RamAccess<int> TypeOfAccountedParts
+        [Attributes.Form_Property("Тип учетных единиц")]public int? TypeOfAccountedPartsId { get; set; }
+        public virtual RamAccess<int> TypeOfAccountedParts
         {
             get
             {
@@ -60,8 +60,8 @@ namespace Models
         //TypeOfAccountedParts property
 
         //KindOri property
-        [Attributes.Form_Property("Вид ОРИ")]
-        public RamAccess<int> KindOri
+        [Attributes.Form_Property("Вид ОРИ")]public int? KindOriId { get; set; }
+        public virtual RamAccess<int> KindOri
         {
             get
             {
@@ -93,8 +93,9 @@ namespace Models
         //KindOri property
 
         //AggregateState property
+public int? AggregateStateId { get; set; }
         [Attributes.Form_Property("Агрегатное состояние")]
-        public RamAccess<byte> AggregateState//1 2 3
+        public virtual RamAccess<byte> AggregateState//1 2 3
         {
             get
             {
@@ -132,8 +133,8 @@ namespace Models
         //AggregateState property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> Radionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public virtual RamAccess<string> Radionuclids
         {
             get
             {
@@ -182,8 +183,8 @@ return false;
         //Radionuclids property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]
-        public RamAccess<string> Activity
+        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public virtual RamAccess<string> Activity
         {
             get
             {
@@ -240,8 +241,8 @@ return false;
         //Activity property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]
-        public RamAccess<int> Quantity
+        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public virtual RamAccess<int> Quantity
         {
             get
             {
@@ -282,8 +283,8 @@ return false;
         //Quantity property
 
         //Volume property
-        [Attributes.Form_Property("Объем, куб. м")]
-        public RamAccess<double> Volume
+        [Attributes.Form_Property("Объем, куб. м")]public int? VolumeId { get; set; }
+        public virtual RamAccess<double> Volume
         {
             get
             {
@@ -321,8 +322,8 @@ return false;
         //Volume property
 
         //Mass Property
-        [Attributes.Form_Property("Масса, кг")]
-        public RamAccess<double> Mass
+        [Attributes.Form_Property("Масса, кг")]public int? MassId { get; set; }
+        public virtual RamAccess<double> Mass
         {
             get
             {

@@ -11,8 +11,8 @@ namespace Models
     {
         public Form212() : base()
         {
-            FormNum.Value = "212";
-            NumberOfFields.Value = 8;
+            //FormNum.Value = "212";
+            //NumberOfFields.Value = 8;
             Init();
             Validate_all();
         }
@@ -47,8 +47,8 @@ namespace Models
         }
 
         //OperationCode property
-        [Attributes.Form_Property("Код")]
-        public RamAccess<short> OperationCode
+        [Attributes.Form_Property("Код")]public int? OperationCodeId { get; set; }
+        public virtual RamAccess<short> OperationCode
         {
             get
             {
@@ -69,8 +69,8 @@ namespace Models
         //OperationCode property
 
         //ObjectTypeCode property
-        [Attributes.Form_Property("Код типа объектов учета")]
-        public RamAccess<string> ObjectTypeCode
+        [Attributes.Form_Property("Код типа объектов учета")]public int? ObjectTypeCodeId { get; set; }
+        public virtual RamAccess<string> ObjectTypeCode
         {
             get
             {
@@ -102,8 +102,8 @@ namespace Models
         //ObjectTypeCode property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> Radionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public virtual RamAccess<string> Radionuclids
         {
             get
             {
@@ -152,8 +152,8 @@ namespace Models
         //Radionuclids property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]
-        public RamAccess<double> Activity
+        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public virtual RamAccess<double> Activity
         {
             get
             {
@@ -195,8 +195,8 @@ namespace Models
         //Activity property
 
         //ProviderOrRecieverOKPO property
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]
-        public RamAccess<string> ProviderOrRecieverOKPO
+        [Attributes.Form_Property("ОКПО поставщика/получателя")]public int? ProviderOrRecieverOKPOId { get; set; }
+        public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
@@ -270,7 +270,7 @@ namespace Models
             };
 
         //ProviderOrRecieverOKPONote property
-        public RamAccess<string> ProviderOrRecieverOKPONote
+        public virtual RamAccess<string> ProviderOrRecieverOKPONote
         {
             get
             {

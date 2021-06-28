@@ -12,8 +12,8 @@ namespace Models
     {
         public Form22() : base()
         {
-            FormNum.Value = "22";
-            NumberOfFields.Value = 25;
+            //FormNum.Value = "22";
+            //NumberOfFields.Value = 25;
             Init();
             Validate_all();
         }
@@ -90,8 +90,8 @@ namespace Models
         }
 
         //StoragePlaceName property
-        [Attributes.Form_Property("Наименование ПХ")]
-        public RamAccess<string> StoragePlaceName
+        [Attributes.Form_Property("Наименование ПХ")]public int? StoragePlaceNameId { get; set; }
+        public virtual RamAccess<string> StoragePlaceName
         {
             get
             {
@@ -135,7 +135,7 @@ return false;
         //StoragePlaceName property
 
         //StoragePlaceNameNote property
-        public RamAccess<string> StoragePlaceNameNote
+        public virtual RamAccess<string> StoragePlaceNameNote
         {
             get
             {
@@ -166,8 +166,8 @@ return false;
         //StoragePlaceNameNote property
 
         //StoragePlaceCode property
-        [Attributes.Form_Property("Код ПХ")]
-        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
+        [Attributes.Form_Property("Код ПХ")]public int? StoragePlaceCodeId { get; set; }
+        public virtual RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
@@ -211,8 +211,8 @@ return false;
         //StoragePlaceCode property
 
         //PackName property
-        [Attributes.Form_Property("Наименование упаковки")]
-        public RamAccess<string> PackName
+        [Attributes.Form_Property("Наименование упаковки")]public int? PackNameId { get; set; }
+        public virtual RamAccess<string> PackName
         {
             get
             {
@@ -261,7 +261,7 @@ return false;
         //PackName property
 
         //PackNameNote property
-        public RamAccess<string> PackNameNote
+        public virtual RamAccess<string> PackNameNote
         {
             get
             {
@@ -292,8 +292,8 @@ return false;
         //PackNameNote property
 
         //PackType property
-        [Attributes.Form_Property("Тип упаковки")]
-        public RamAccess<string> PackType
+        [Attributes.Form_Property("Тип упаковки")]public int? PackTypeId { get; set; }
+        public virtual RamAccess<string> PackType
         {
             get
             {
@@ -344,7 +344,7 @@ return false;
         //PackType property
 
         //PackTypeRecoded property
-        public RamAccess<string> PackTypeRecoded
+        public virtual RamAccess<string> PackTypeRecoded
         {
             get
             {
@@ -375,7 +375,7 @@ return false;
         //PackTypeRecoded property
 
         //PackTypeNote property
-        public RamAccess<string> PackTypeNote
+        public virtual RamAccess<string> PackTypeNote
         {
             get
             {
@@ -406,8 +406,8 @@ return false;
         //PackTypeNote property
 
         //PackQuantity property
-        [Attributes.Form_Property("Количество упаковок, шт.")]
-        public RamAccess<int?> PackQuantity
+        [Attributes.Form_Property("Количество упаковок, шт.")]public int? PackQuantityId { get; set; }
+        public virtual RamAccess<int?> PackQuantity
         {
             get
             {
@@ -449,8 +449,8 @@ return false;
             //PackQuantity property
 
             //CodeRAO property
-            [Attributes.Form_Property("Код РАО")]
-        public RamAccess<string> CodeRAO
+            [Attributes.Form_Property("Код РАО")]public int? CodeRAOId { get; set; }
+        public virtual RamAccess<string> CodeRAO
         {
             get
             {
@@ -489,8 +489,8 @@ return false;
         //CodeRAO property
 
         //StatusRAO property
-        [Attributes.Form_Property("Статус РАО")]
-        public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
+        [Attributes.Form_Property("Статус РАО")]public int? StatusRAOId { get; set; }
+        public virtual RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
             {
@@ -551,8 +551,8 @@ return false;
         //StatusRAO property
 
         //VolumeInPack property
-        [Attributes.Form_Property("Объем с упаковкой, куб. м")]
-        public RamAccess<string> VolumeInPack
+        [Attributes.Form_Property("Объем с упаковкой, куб. м")]public int? VolumeInPackId { get; set; }
+        public virtual RamAccess<string> VolumeInPack
         {
             get
             {
@@ -611,8 +611,8 @@ return false;
         //VolumeInPack property
 
         //MassInPack Property
-        [Attributes.Form_Property("Масса с упаковкой, т")]
-        public RamAccess<string> MassInPack
+        [Attributes.Form_Property("Масса с упаковкой, т")]public int? MassInPackId { get; set; }
+        public virtual RamAccess<string> MassInPack
         {
             get
             {
@@ -674,8 +674,8 @@ return false;
         //MassInPack Property
 
         //VolumeOutOfPack property
-        [Attributes.Form_Property("Объем без упаковки, куб. м")]
-        public RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
+        [Attributes.Form_Property("Объем без упаковки, куб. м")]public int? VolumeOutOfPackId { get; set; }
+        public virtual RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
         {
             get
             {
@@ -735,8 +735,8 @@ return false;
         //VolumeOutOfPack property
 
         //MassOutOfPack Property
-        [Attributes.Form_Property("Масса без упаковки, т")]
-        public RamAccess<string> MassOutOfPack//SUMMARIZABLE
+        [Attributes.Form_Property("Масса без упаковки, т")]public int? MassOutOfPackId { get; set; }
+        public virtual RamAccess<string> MassOutOfPack//SUMMARIZABLE
         {
             get
             {
@@ -800,8 +800,8 @@ return false;
         //MassOutOfPack Property
 
         //QuantityOZIII property
-        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public RamAccess<int?> QuantityOZIII//SUMMARIZABLE
+        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]public int? QuantityOZIIIId { get; set; }
+        public virtual RamAccess<int?> QuantityOZIII//SUMMARIZABLE
         {
             get
             {
@@ -839,8 +839,8 @@ return false;
         //QuantityOZIII property
 
         //TritiumActivity property
-        [Attributes.Form_Property("Активность трития, Бк")]
-        public RamAccess<string> TritiumActivity//SUMMARIZABLE
+        [Attributes.Form_Property("Активность трития, Бк")]public int? TritiumActivityId { get; set; }
+        public virtual RamAccess<string> TritiumActivity//SUMMARIZABLE
         {
             get
             {
@@ -900,8 +900,8 @@ return false;
         //TritiumActivity property
 
         //BetaGammaActivity property
-        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public RamAccess<string> BetaGammaActivity//SUMMARIZABLE
+        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]public int? BetaGammaActivityId { get; set; }
+        public virtual RamAccess<string> BetaGammaActivity//SUMMARIZABLE
         {
             get
             {
@@ -961,8 +961,8 @@ return false;
         //BetaGammaActivity property
 
         //AlphaActivity property
-        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public RamAccess<string> AlphaActivity//SUMMARIZABLE
+        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]public int? AlphaActivityId { get; set; }
+        public virtual RamAccess<string> AlphaActivity//SUMMARIZABLE
         {
             get
             {
@@ -1022,8 +1022,8 @@ return false;
         //AlphaActivity property
 
         //TransuraniumActivity property
-        [Attributes.Form_Property("Активность трансурановых, Бк")]
-        public RamAccess<string> TransuraniumActivity//SUMMARIZABLE
+        [Attributes.Form_Property("Активность трансурановых, Бк")]public int? TransuraniumActivityId { get; set; }
+        public virtual RamAccess<string> TransuraniumActivity//SUMMARIZABLE
         {
             get
             {
@@ -1083,8 +1083,8 @@ return false;
         //TransuraniumActivity property
 
         //MainRadionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> MainRadionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? MainRadionuclidsId { get; set; }
+        public virtual RamAccess<string> MainRadionuclids
         {
             get
             {
@@ -1123,8 +1123,8 @@ return false;
         //MainRadionuclids property
 
         //Subsidy property
-        [Attributes.Form_Property("Субсидия, %")]
-        public RamAccess<string> Subsidy // 0<number<=100 or empty.
+        [Attributes.Form_Property("Субсидия, %")]public int? SubsidyId { get; set; }
+        public virtual RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
             {
@@ -1169,8 +1169,8 @@ return false;
         //Subsidy property
 
         //FcpNumber property
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public RamAccess<string> FcpNumber
+        [Attributes.Form_Property("Номер мероприятия ФЦП")]public int? FcpNumberId { get; set; }
+        public virtual RamAccess<string> FcpNumber
         {
             get
             {

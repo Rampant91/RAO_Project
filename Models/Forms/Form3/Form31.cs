@@ -10,8 +10,8 @@ namespace Models
     {
         public Form31() : base()
         {
-            FormNum.Value = "31";
-            NumberOfFields.Value = 19;
+            //FormNum.Value = "31";
+            //NumberOfFields.Value = 19;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -22,8 +22,8 @@ namespace Models
         }
 
         //RecieverName property
-        [Attributes.Form_Property("Получатель")]
-        public RamAccess<string> RecieverName
+        [Attributes.Form_Property("Получатель")]public int? RecieverNameId { get; set; }
+        public virtual RamAccess<string> RecieverName
         {
             get
             {
@@ -53,8 +53,8 @@ namespace Models
         //RecieverName property
 
         //RecieverAddress property
-        [Attributes.Form_Property("Адрес получателя")]
-        public RamAccess<string> RecieverAddress
+        [Attributes.Form_Property("Адрес получателя")]public int? RecieverAddressId { get; set; }
+        public virtual RamAccess<string> RecieverAddress
         {
             get
             {
@@ -84,8 +84,8 @@ namespace Models
         //RecieverAddress property
 
         //RecieverFactAddress property
-        [Attributes.Form_Property("Фактический адрес получателя")]
-        public RamAccess<string> RecieverFactAddress
+        [Attributes.Form_Property("Фактический адрес получателя")]public int? RecieverFactAddressId { get; set; }
+        public virtual RamAccess<string> RecieverFactAddress
         {
             get
             {
@@ -113,15 +113,15 @@ namespace Models
 
         //RecieverFactAddress property
 
-        //LicenseId property
-        [Attributes.Form_Property("Номер лицензии")]
-        public RamAccess<string> LicenseId
+        //Licenseid property
+        [Attributes.Form_Property("Номер лицензии")]public int? LicenseidId { get; set; }
+        public virtual RamAccess<string> Licenseid
         {
             get
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(LicenseId));
+                    return _dataAccess.Get<string>(nameof(Licenseid));
                 }
 
                 {
@@ -133,19 +133,19 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(LicenseId), value);
+                    _dataAccess.Set(nameof(Licenseid), value);
                 }
-                OnPropertyChanged(nameof(LicenseId));
+                OnPropertyChanged(nameof(Licenseid));
             }
         }
-        private bool LicenseId_Validation(RamAccess<string> value)
+        private bool Licenseid_Validation(RamAccess<string> value)
         { return true; }
 
-        //LicenseId property
+        //Licenseid property
 
         //ValidThru property
-        [Attributes.Form_Property("Действует по")]
-        public RamAccess<string> ValidThru
+        [Attributes.Form_Property("Действует по")]public int? ValidThruId { get; set; }
+        public virtual RamAccess<string> ValidThru
         {
             get
             {
@@ -174,8 +174,8 @@ namespace Models
         //ValidThru property
 
         //SuggestedSolutionDate property
-        [Attributes.Form_Property("")]
-        public RamAccess<string> SuggestedSolutionDate
+        [Attributes.Form_Property("")]public int? SuggestedSolutionDateId { get; set; }
+        public virtual RamAccess<string> SuggestedSolutionDate
         {
             get
             {
@@ -204,8 +204,8 @@ namespace Models
         //SuggestedSolutionDate property
 
         //UserName property
-        [Attributes.Form_Property("Наименование пользователя")]
-        public RamAccess<string> UserName
+        [Attributes.Form_Property("Наименование пользователя")]public int? UserNameId { get; set; }
+        public virtual RamAccess<string> UserName
         {
             get
             {
@@ -234,8 +234,8 @@ namespace Models
         //UserName property
 
         //UserAddress property
-        [Attributes.Form_Property("Адрес")]
-        public RamAccess<string> UserAddress
+        [Attributes.Form_Property("Адрес")]public int? UserAddressId { get; set; }
+        public virtual RamAccess<string> UserAddress
         {
             get
             {
@@ -264,8 +264,8 @@ namespace Models
         //UserAddress property
 
         //UserFactAddress property
-        [Attributes.Form_Property("Фактический адрес")]
-        public RamAccess<string> UserFactAddress
+        [Attributes.Form_Property("Фактический адрес")]public int? UserFactAddressId { get; set; }
+        public virtual RamAccess<string> UserFactAddress
         {
             get
             {
@@ -294,8 +294,8 @@ namespace Models
         //UserFactAddress property
 
         //UserTelephone property
-        [Attributes.Form_Property("Телефон")]
-        public RamAccess<string> UserTelephone
+        [Attributes.Form_Property("Телефон")]public int? UserTelephoneId { get; set; }
+        public virtual RamAccess<string> UserTelephone
         {
             get
             {
@@ -325,8 +325,8 @@ namespace Models
         //UserTelephone property
 
         //UserFax property
-        [Attributes.Form_Property("Факс")]
-        public RamAccess<string> UserFax
+        [Attributes.Form_Property("Факс")]public int? UserFaxId { get; set; }
+        public virtual RamAccess<string> UserFax
         {
             get
             {
@@ -355,8 +355,8 @@ namespace Models
         //UserFax property
 
         //Email property
-        [Attributes.Form_Property("Электронная почта")]
-        public RamAccess<string> Email
+        [Attributes.Form_Property("Электронная почта")]public int? EmailId { get; set; }
+        public virtual RamAccess<string> Email
         {
             get
             {
@@ -385,8 +385,8 @@ namespace Models
         //Email property
 
         //ZriUsageScope property
-        [Attributes.Form_Property("Область применения ЗРИ")]
-        public RamAccess<string> ZriUsageScope
+        [Attributes.Form_Property("Область применения ЗРИ")]public int? ZriUsageScopeId { get; set; }
+        public virtual RamAccess<string> ZriUsageScope
         {
             get
             {
@@ -414,15 +414,15 @@ namespace Models
 
         //ZriUsageScope property
 
-        //ContractId property
-        [Attributes.Form_Property("Номер контракта")]
-        public RamAccess<string> ContractId
+        //Contractid property
+        [Attributes.Form_Property("Номер контракта")]public int? ContractidId { get; set; }
+        public virtual RamAccess<string> Contractid
         {
             get
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ContractId));
+                    return _dataAccess.Get<string>(nameof(Contractid));
                 }
 
                 {
@@ -434,19 +434,19 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ContractId), value);
+                    _dataAccess.Set(nameof(Contractid), value);
                 }
-                OnPropertyChanged(nameof(ContractId));
+                OnPropertyChanged(nameof(Contractid));
             }
         }
-        private bool ContractId_Validation(RamAccess<string> value)
+        private bool Contractid_Validation(RamAccess<string> value)
         { return true; }
 
-        //ContractId property
+        //Contractid property
 
         //ContractDate property
-        [Attributes.Form_Property("Дата контракта")]
-        public RamAccess<string> ContractDate
+        [Attributes.Form_Property("Дата контракта")]public int? ContractDateId { get; set; }
+        public virtual RamAccess<string> ContractDate
         {
             get
             {
@@ -475,8 +475,8 @@ namespace Models
         //ContractDate property
 
         //CountryCreator property
-        [Attributes.Form_Property("Страна-изготовитель")]
-        public RamAccess<string> CountryCreator
+        [Attributes.Form_Property("Страна-изготовитель")]public int? CountryCreatorId { get; set; }
+        public virtual RamAccess<string> CountryCreator
         {
             get
             {
@@ -505,6 +505,7 @@ namespace Models
         //CountryCreator property
 
         private List<Form31_1> _zriList = new List<Form31_1>();
+        public int? ZriListId { get; set; }
         public List<Form31_1> ZriList
         {
             get { return _zriList; }

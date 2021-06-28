@@ -11,8 +11,8 @@ namespace Models
     {
         public Form25() : base()
         {
-            FormNum.Value = "25";
-            NumberOfFields.Value = 12;
+            //FormNum.Value = "25";
+            //NumberOfFields.Value = 12;
             Init();
             Validate_all();
         }
@@ -59,8 +59,8 @@ namespace Models
         }
 
         //StoragePlaceName property
-        [Attributes.Form_Property("Наименование ПХ")]
-        public RamAccess<string> StoragePlaceName
+        [Attributes.Form_Property("Наименование ПХ")]public int? StoragePlaceNameId { get; set; }
+        public virtual RamAccess<string> StoragePlaceName
         {
             get
             {
@@ -90,8 +90,8 @@ namespace Models
         //StoragePlaceName property
 
         //CodeOYAT property
-        [Attributes.Form_Property("Код ОЯТ")]
-        public RamAccess<string> CodeOYAT
+        [Attributes.Form_Property("Код ОЯТ")]public int? CodeOYATId { get; set; }
+        public virtual RamAccess<string> CodeOYAT
         {
             get
             {
@@ -121,7 +121,7 @@ namespace Models
         //CodeOYAT property
 
         //CodeOYATnote property
-        public RamAccess<string> CodeOYATnote
+        public virtual RamAccess<string> CodeOYATnote
         {
             get
             {
@@ -150,8 +150,8 @@ namespace Models
         //CodeOYATnote property
 
         //StoragePlaceCode property
-        [Attributes.Form_Property("Код ПХ")]
-        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
+        [Attributes.Form_Property("Код ПХ")]public int? StoragePlaceCodeId { get; set; }
+        public virtual RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
@@ -194,8 +194,8 @@ namespace Models
         //StoragePlaceCode property
 
         //FcpNumber property
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public RamAccess<string> FcpNumber
+        [Attributes.Form_Property("Номер мероприятия ФЦП")]public int? FcpNumberId { get; set; }
+        public virtual RamAccess<string> FcpNumber
         {
             get
             {
@@ -225,8 +225,8 @@ namespace Models
         //FcpNumber property
 
         //FuelMass property
-        [Attributes.Form_Property("Масса топлива, т")]
-        public RamAccess<string> FuelMass
+        [Attributes.Form_Property("Масса топлива, т")]public int? FuelMassId { get; set; }
+        public virtual RamAccess<string> FuelMass
         {
             get
             {
@@ -284,8 +284,8 @@ namespace Models
         //FuelMass property
 
         //CellMass property
-        [Attributes.Form_Property("Масса ОТВС(ТВЭЛ, выемной части реактора), т")]
-        public RamAccess<string> CellMass
+        [Attributes.Form_Property("Масса ОТВС(ТВЭЛ, выемной части реактора), т")]public int? CellMassId { get; set; }
+        public virtual RamAccess<string> CellMass
         {
             get
             {
@@ -343,8 +343,8 @@ namespace Models
         //CellMass property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]
-        public RamAccess<int?> Quantity
+        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public virtual RamAccess<int?> Quantity
         {
             get
             {
@@ -386,8 +386,8 @@ namespace Models
         //Quantity property
 
         //BetaGammaActivity property
-        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public RamAccess<string> BetaGammaActivity
+        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]public int? BetaGammaActivityId { get; set; }
+        public virtual RamAccess<string> BetaGammaActivity
         {
             get
             {
@@ -448,8 +448,8 @@ namespace Models
         //BetaGammaActivity property
 
         //AlphaActivity property
-        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public RamAccess<string> AlphaActivity
+        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]public int? AlphaActivityId { get; set; }
+        public virtual RamAccess<string> AlphaActivity
         {
             get
             {

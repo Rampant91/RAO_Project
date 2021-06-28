@@ -10,8 +10,8 @@ namespace Models
     {
         public Form41() : base()
         {
-            FormNum.Value = "41";
-            NumberOfFields.Value = 10;
+            //FormNum.Value = "41";
+            //NumberOfFields.Value = 10;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -21,8 +21,8 @@ namespace Models
         }
 
         //NumberInOrder property
-        [Attributes.Form_Property("№ п/п")]
-        public RamAccess<int> NumberInOrder
+        [Attributes.Form_Property("№ п/п")]public int? NumberInOrderId { get; set; }
+        public virtual RamAccess<int> NumberInOrder
         {
             get
             {
@@ -54,8 +54,8 @@ namespace Models
         //NumberInOrder property
 
         //RegNo property
-        [Attributes.Form_Property("Регистрационный номер")]
-        public RamAccess<string> RegNo
+        [Attributes.Form_Property("Регистрационный номер")]public int? RegNoId { get; set; }
+        public virtual RamAccess<string> RegNo
         {
             get
             {
@@ -83,8 +83,8 @@ namespace Models
         //RegNo property
 
         //Okpo property
-        [Attributes.Form_Property("ОКПО")]
-        public RamAccess<string> Okpo
+        [Attributes.Form_Property("ОКПО")]public int? OkpoId { get; set; }
+        public virtual RamAccess<string> Okpo
         {
             get
             {
@@ -126,8 +126,8 @@ namespace Models
         //Okpo property
 
         //OrgName property
-        [Attributes.Form_Property("Наименование организации")]
-        public RamAccess<string> OrgName
+        [Attributes.Form_Property("Наименование организации")]public int? OrgNameId { get; set; }
+        public virtual RamAccess<string> OrgName
         {
             get
             {
@@ -155,8 +155,8 @@ namespace Models
         //OrgName property
 
         //LicenseInfo property
-        [Attributes.Form_Property("Сведения о лицензии")]
-        public RamAccess<string> LicenseInfo
+        [Attributes.Form_Property("Сведения о лицензии")]public int? LicenseInfoId { get; set; }
+        public virtual RamAccess<string> LicenseInfo
         {
             get
             {
@@ -184,8 +184,8 @@ namespace Models
         //LicenseInfo property
 
         //QuantityOfFormsInv property
-        [Attributes.Form_Property("Количество отчетных форм по инвентаризации, шт.")]
-        public RamAccess<int> QuantityOfFormsInv
+        [Attributes.Form_Property("Количество отчетных форм по инвентаризации, шт.")]public int? QuantityOfFormsInvId { get; set; }
+        public virtual RamAccess<int> QuantityOfFormsInv
         {
             get
             {
@@ -217,15 +217,16 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
         //QuantityOfFormsInv property
 
         //QuantityOfFormsOper property
-        [Attributes.Form_Property("Количество форм оперативных отчетов, шт.")]
-        public RamAccess<int> QuantityOfFormsOper
+        [Attributes.Form_Property("Количество форм оперативных отчетов, шт.")]public int? QuantityOfFormsOperId { get; set; }
+        public virtual RamAccess<int> QuantityOfFormsOper
         {
             get
             {
@@ -264,8 +265,8 @@ namespace Models
         //QuantityOfFormsOper property
 
         //QuantityOfFormsYear property
-        [Attributes.Form_Property("Количество форм годовых отчетов, шт.")]
-        public RamAccess<int> QuantityOfFormsYear
+        [Attributes.Form_Property("Количество форм годовых отчетов, шт.")]public int? QuantityOfFormsYearId { get; set; }
+        public virtual RamAccess<int> QuantityOfFormsYear
         {
             get
             {
@@ -304,8 +305,8 @@ namespace Models
         //QuantityOfFormsYear property
 
         //Notes property
-        [Attributes.Form_Property("Примечания")]
-        public RamAccess<string> Notes
+        [Attributes.Form_Property("Примечания")]public int? NotesId { get; set; }
+        public virtual RamAccess<string> Notes
         {
             get
             {

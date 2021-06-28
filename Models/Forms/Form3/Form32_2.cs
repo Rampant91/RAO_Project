@@ -9,8 +9,8 @@ namespace Models
     {
         public Form32_2() : base()
         {
-            FormNum.Value = "32_2";
-            NumberOfFields.Value = 6;
+            //FormNum.Value = "32_2";
+            //NumberOfFields.Value = 6;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -20,8 +20,8 @@ namespace Models
         }
 
         //PackName property
-        [Attributes.Form_Property("Наименование упаковки")]
-        public RamAccess<string> PackName
+        [Attributes.Form_Property("Наименование упаковки")]public int? PackNameid { get; set; }
+        public virtual RamAccess<string> PackName
         {
             get
             {
@@ -61,8 +61,8 @@ namespace Models
         //PackName property
 
         //PackType property
-        [Attributes.Form_Property("Тип упаковки")]
-        public RamAccess<string> PackType
+        [Attributes.Form_Property("Тип упаковки")]public int? PackTypeid { get; set; }
+        public virtual RamAccess<string> PackType
         {
             get
             {
@@ -102,7 +102,7 @@ namespace Models
         //PackType property
 
         //PackTypeRecoded property
-        public RamAccess<string> PackTypeRecoded
+        public virtual RamAccess<string> PackTypeRecoded
         {
             get
             {
@@ -134,15 +134,15 @@ namespace Models
         }
         //PackTypeRecoded property
 
-        //Id property
-        [Attributes.Form_Property("Идентификационный номер")]
-        public RamAccess<string> Id
+        //id property
+        [Attributes.Form_Property("Идентификационный номер")]public int? idId { get; set; }
+        public virtual RamAccess<string> id
         {
             get
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Id));
+                    return _dataAccess.Get<string>(nameof(id));
                 }
 
                 {
@@ -154,18 +154,18 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Id), value);
+                    _dataAccess.Set(nameof(id), value);
                 }
-                OnPropertyChanged(nameof(Id));
+                OnPropertyChanged(nameof(id));
             }
         }
 
 
-        //Id property
+        //id property
 
         //CreationYear property
-        [Attributes.Form_Property("Год изготовления")]
-        public RamAccess<int> CreationYear
+        [Attributes.Form_Property("Год изготовления")]public int? CreationYearId { get; set; }
+        public virtual RamAccess<int> CreationYear
         {
             get
             {
@@ -193,8 +193,8 @@ namespace Models
         //CreationYear property
 
         //DepletedUraniumMass property
-        [Attributes.Form_Property("Масса обедненного урана")]
-        public RamAccess<double> DepletedUraniumMass
+        [Attributes.Form_Property("Масса обедненного урана")]public int? DepletedUraniumMassId { get; set; }
+        public virtual RamAccess<double> DepletedUraniumMass
         {
             get
             {

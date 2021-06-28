@@ -11,8 +11,8 @@ namespace Models
     {
         public Form52() : base()
         {
-            FormNum.Value = "52";
-            NumberOfFields.Value = 6;
+            //FormNum.Value = "52";
+            //NumberOfFields.Value = 6;
         }
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
@@ -21,8 +21,8 @@ namespace Models
         }
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> Radionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public virtual RamAccess<string> Radionuclids
         {
             get
             {
@@ -71,8 +71,8 @@ return true;
         //Radionuclids property
 
         //Kategory property
-        [Attributes.Form_Property("Категория")]
-        public RamAccess<short> Kategory
+        [Attributes.Form_Property("Категория")]public int? KategoryId { get; set; }
+        public virtual RamAccess<short> Kategory
         {
             get
             {
@@ -103,8 +103,8 @@ return true;
         //Kategory property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]
-        public RamAccess<string> Activity
+        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public virtual RamAccess<string> Activity
         {
             get
             {
@@ -162,8 +162,8 @@ return false;
         //Activity property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]
-        public RamAccess<int> Quantity
+        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public virtual RamAccess<int> Quantity
         {
             get
             {

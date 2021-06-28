@@ -11,8 +11,8 @@ namespace Models
     {
         public Form31_1() : base()
         {
-            FormNum.Value = "31_1";
-            NumberOfFields.Value = 3;
+            //FormNum.Value = "31_1";
+            //NumberOfFields.Value = 3;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -23,8 +23,8 @@ namespace Models
         }
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> Radionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public virtual RamAccess<string> Radionuclids
         {
             get
             {
@@ -73,8 +73,8 @@ namespace Models
         //Radionuclids property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]
-        public RamAccess<int> Quantity
+        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public virtual RamAccess<int> Quantity
         {
             get
             {
@@ -113,8 +113,8 @@ namespace Models
         //Quantity property
 
         //SummaryActivity property
-        [Attributes.Form_Property("Суммарная активность, Бк")]
-        public RamAccess<string> SummaryActivity
+        [Attributes.Form_Property("Суммарная активность, Бк")]public int? SummaryActivityId { get; set; }
+        public virtual RamAccess<string> SummaryActivity
         {
             get
             {

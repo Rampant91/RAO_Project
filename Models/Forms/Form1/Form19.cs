@@ -12,8 +12,8 @@ namespace Models
     {
         public Form19() : base()
         {
-            FormNum.Value = "19";
-            NumberOfFields.Value = 13;
+            //FormNum.Value = "19";
+            //NumberOfFields.Value = 13;
             Init();
             Validate_all();
         }
@@ -45,8 +45,8 @@ namespace Models
         }
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]
-        public RamAccess<int?> Quantity
+        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public virtual RamAccess<int?> Quantity
         {
             get
             {
@@ -85,8 +85,8 @@ namespace Models
         //Quantity property
 
         //CodeTypeAccObject property
-        [Attributes.Form_Property("Код типа объектов учета")]
-        public RamAccess<short?> CodeTypeAccObject
+        [Attributes.Form_Property("Код типа объектов учета")]public int? CodeTypeAccObjectId { get; set; }
+        public virtual RamAccess<short?> CodeTypeAccObject
         {
             get
             {
@@ -130,8 +130,8 @@ return false;
         //CodeTypeAccObject property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> Radionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public virtual RamAccess<string> Radionuclids
         {
             get
             {
@@ -180,8 +180,8 @@ return true;
         //Radionuclids property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]
-        public RamAccess<string> Activity
+        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public virtual RamAccess<string> Activity
         {
             get
             {
