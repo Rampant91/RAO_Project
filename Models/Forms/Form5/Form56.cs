@@ -9,8 +9,8 @@ namespace Models
     {
         public Form56() : base()
         {
-            FormNum.Value = "56";
-            NumberOfFields.Value = 5;
+            //FormNum.Value = "56";
+            //NumberOfFields.Value = 5;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -20,8 +20,8 @@ namespace Models
         }
 
         //NameIOU property
-        [Attributes.Form_Property("Наименование ИОУ")]
-        public RamAccess<string> NameIOU
+        [Attributes.Form_Property("Наименование ИОУ")]public int? NameIOUId { get; set; }
+        public virtual RamAccess<string> NameIOU
         {
             get
             {
@@ -54,8 +54,8 @@ namespace Models
         //NameIOU property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]
-        public RamAccess<int> Quantity
+        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public virtual RamAccess<int> Quantity
         {
             get
             {
@@ -96,8 +96,8 @@ namespace Models
         //Quantity property
 
         //Mass Property
-        [Attributes.Form_Property("Масса, кг")]
-        public RamAccess<double> Mass
+        [Attributes.Form_Property("Масса, кг")]public int? MassId { get; set; }
+        public virtual RamAccess<double> Mass
         {
             get
             {

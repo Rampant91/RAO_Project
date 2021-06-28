@@ -10,8 +10,8 @@ namespace Models
     {
         public Form41() : base()
         {
-            FormNum.Value = "41";
-            NumberOfFields.Value = 10;
+            //FormNum.Value = "41";
+            //NumberOfFields.Value = 10;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -21,27 +21,27 @@ namespace Models
         }
 
         //NumberInOrder property
-        [Attributes.Form_Property("№ п/п")]
-        public RamAccess<int> NumberInOrder
+        [Attributes.Form_Property("№ п/п")]public int? NumberInOrderId { get; set; }
+        public virtual RamAccess<int> NumberInOrder
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<int>(nameof(NumberInOrder));
-
+                    return _dataAccess.Get<int>(nameof(NumberInOrder));
+                    
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(NumberInOrder), value);
+                    _dataAccess.Set(nameof(NumberInOrder), value);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
@@ -50,31 +50,30 @@ namespace Models
 
         private bool NumberInOrder_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
-        }
+            value.ClearErrors(); return true;}
         //NumberInOrder property
 
         //RegNo property
-        [Attributes.Form_Property("Регистрационный номер")]
-        public RamAccess<string> RegNo
+        [Attributes.Form_Property("Регистрационный номер")]public int? RegNoId { get; set; }
+        public virtual RamAccess<string> RegNo
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(RegNo));
+                    return _dataAccess.Get<string>(nameof(RegNo));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(RegNo), value);
+                    _dataAccess.Set(nameof(RegNo), value);
                 }
                 OnPropertyChanged(nameof(RegNo));
             }
@@ -84,26 +83,26 @@ namespace Models
         //RegNo property
 
         //Okpo property
-        [Attributes.Form_Property("ОКПО")]
-        public RamAccess<string> Okpo
+        [Attributes.Form_Property("ОКПО")]public int? OkpoId { get; set; }
+        public virtual RamAccess<string> Okpo
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(Okpo));
+                    return _dataAccess.Get<string>(nameof(Okpo));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(Okpo), value);
+                    _dataAccess.Set(nameof(Okpo), value);
                 }
                 OnPropertyChanged(nameof(Okpo));
             }
@@ -116,7 +115,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -127,26 +126,26 @@ namespace Models
         //Okpo property
 
         //OrgName property
-        [Attributes.Form_Property("Наименование организации")]
-        public RamAccess<string> OrgName
+        [Attributes.Form_Property("Наименование организации")]public int? OrgNameId { get; set; }
+        public virtual RamAccess<string> OrgName
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(OrgName));
+                    return _dataAccess.Get<string>(nameof(OrgName));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(OrgName), value);
+                    _dataAccess.Set(nameof(OrgName), value);
                 }
                 OnPropertyChanged(nameof(OrgName));
             }
@@ -156,26 +155,26 @@ namespace Models
         //OrgName property
 
         //LicenseInfo property
-        [Attributes.Form_Property("Сведения о лицензии")]
-        public RamAccess<string> LicenseInfo
+        [Attributes.Form_Property("Сведения о лицензии")]public int? LicenseInfoId { get; set; }
+        public virtual RamAccess<string> LicenseInfo
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(LicenseInfo));
+                    return _dataAccess.Get<string>(nameof(LicenseInfo));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(LicenseInfo), value);
+                    _dataAccess.Set(nameof(LicenseInfo), value);
                 }
                 OnPropertyChanged(nameof(LicenseInfo));
             }
@@ -185,28 +184,28 @@ namespace Models
         //LicenseInfo property
 
         //QuantityOfFormsInv property
-        [Attributes.Form_Property("Количество отчетных форм по инвентаризации, шт.")]
-        public RamAccess<int> QuantityOfFormsInv
+        [Attributes.Form_Property("Количество отчетных форм по инвентаризации, шт.")]public int? QuantityOfFormsInvId { get; set; }
+        public virtual RamAccess<int> QuantityOfFormsInv
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<int>(nameof(QuantityOfFormsInv));//OK
-
+                    return _dataAccess.Get<int>(nameof(QuantityOfFormsInv));//OK
+                    
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
 
-
+                
                 {
-                    DataAccess.Set(nameof(QuantityOfFormsInv), value);
+                    _dataAccess.Set(nameof(QuantityOfFormsInv), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsInv));
             }
@@ -218,36 +217,36 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
         //QuantityOfFormsInv property
 
         //QuantityOfFormsOper property
-        [Attributes.Form_Property("Количество форм оперативных отчетов, шт.")]
-        public RamAccess<int> QuantityOfFormsOper
+        [Attributes.Form_Property("Количество форм оперативных отчетов, шт.")]public int? QuantityOfFormsOperId { get; set; }
+        public virtual RamAccess<int> QuantityOfFormsOper
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<int>(nameof(QuantityOfFormsOper));//OK
-
+                    return _dataAccess.Get<int>(nameof(QuantityOfFormsOper));//OK
+                    
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
 
-
+                
                 {
-                    DataAccess.Set(nameof(QuantityOfFormsOper), value);
+                    _dataAccess.Set(nameof(QuantityOfFormsOper), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsOper));
             }
@@ -266,28 +265,28 @@ namespace Models
         //QuantityOfFormsOper property
 
         //QuantityOfFormsYear property
-        [Attributes.Form_Property("Количество форм годовых отчетов, шт.")]
-        public RamAccess<int> QuantityOfFormsYear
+        [Attributes.Form_Property("Количество форм годовых отчетов, шт.")]public int? QuantityOfFormsYearId { get; set; }
+        public virtual RamAccess<int> QuantityOfFormsYear
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<int>(nameof(QuantityOfFormsYear));//OK
-
+                    return _dataAccess.Get<int>(nameof(QuantityOfFormsYear));//OK
+                    
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
 
-
+                
                 {
-                    DataAccess.Set(nameof(QuantityOfFormsYear), value);
+                    _dataAccess.Set(nameof(QuantityOfFormsYear), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsYear));
             }
@@ -306,26 +305,26 @@ namespace Models
         //QuantityOfFormsYear property
 
         //Notes property
-        [Attributes.Form_Property("Примечания")]
-        public RamAccess<string> Notes
+        [Attributes.Form_Property("Примечания")]public int? NotesId { get; set; }
+        public virtual RamAccess<string> Notes
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(Notes));
+                    return _dataAccess.Get<string>(nameof(Notes));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(Notes), value);
+                    _dataAccess.Set(nameof(Notes), value);
                 }
                 OnPropertyChanged(nameof(Notes));
             }

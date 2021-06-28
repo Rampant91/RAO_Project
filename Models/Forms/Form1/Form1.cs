@@ -50,8 +50,8 @@ namespace Models.Abstracts
         }
 
         //NumberInOrder property
-        [Attributes.Form_Property("№ п/п")]
-        public RamAccess<int> NumberInOrder
+        [Attributes.Form_Property("№ п/п")]public int? NumberInOrderId { get; set; }
+        public virtual RamAccess<int> NumberInOrder
         {
             get => DataAccess.Get<int>(nameof(NumberInOrder));
             set
@@ -68,8 +68,8 @@ namespace Models.Abstracts
         //NumberInOrder property
 
         ////CorrectionNumber property
-        //[Attributes.Form_Property("Номер корректировки")]
-        //public RamAccess<byte> CorrectionNumber
+        //[Attributes.Form_Property("Номер корректировки")]public int?  { get; set; }
+        //public virtual RamAccess<byte> CorrectionNumber
         //{
         //    get
         //    {
@@ -88,8 +88,8 @@ namespace Models.Abstracts
         //CorrectionNumber property
 
         //OperationCode property
-        [Attributes.Form_Property("Код")]
-        public RamAccess<short?> OperationCode
+        [Attributes.Form_Property("Код")]public int? OperationCodeId { get; set; }
+        public virtual RamAccess<short?> OperationCode
         {
             get => DataAccess.Get<short?>(nameof(OperationCode));
             set
@@ -103,8 +103,8 @@ namespace Models.Abstracts
         //OprationCode property
 
         //OperationDate property
-        [Attributes.Form_Property("Дата операции")]
-        public RamAccess<string> OperationDate
+        [Attributes.Form_Property("Дата операции")]public int? OperationDateId { get; set; }
+        public virtual RamAccess<string> OperationDate
         {
             get => DataAccess.Get<string>(nameof(OperationDate));
             set
@@ -139,8 +139,8 @@ namespace Models.Abstracts
         //OperationDate property
 
         //DocumentVid property
-        [Attributes.Form_Property("Вид документа")]
-        public RamAccess<byte?> DocumentVid
+        [Attributes.Form_Property("Вид документа")]public int? DocumentVidId { get; set; }
+        public virtual RamAccess<byte?> DocumentVid
         {
             get => DataAccess.Get<byte?>(nameof(DocumentVid));//Ok
             set
@@ -191,8 +191,8 @@ namespace Models.Abstracts
         //DocumentVid property
 
         //DocumentNumber property
-        [Attributes.Form_Property("Номер документа")]
-        public RamAccess<string> DocumentNumber
+        [Attributes.Form_Property("Номер документа")]public int? DocumentNumberId { get; set; }
+        public virtual RamAccess<string> DocumentNumber
         {
             get => DataAccess.Get<string>(nameof(DocumentNumber));//Ok
             set
@@ -207,7 +207,7 @@ namespace Models.Abstracts
         //DocumentNumber property
 
         //DocumentNumberRecoded property
-        public RamAccess<string> DocumentNumberRecoded
+        public virtual RamAccess<string> DocumentNumberRecoded
         {
             get => DataAccess.Get<string>(nameof(DocumentNumberRecoded));//ok
             set
@@ -224,8 +224,8 @@ namespace Models.Abstracts
         //DocumentNumberRecoded property
 
         //DocumentDate property
-        [Attributes.Form_Property("Дата документа")]
-        public RamAccess<string> DocumentDate
+        [Attributes.Form_Property("Дата документа")]public int? DocumentDateId { get; set; }
+        public virtual RamAccess<string> DocumentDate
         {
             get => DataAccess.Get<string>(nameof(DocumentDate));//OK
             set
@@ -297,8 +297,8 @@ namespace Models.Abstracts
         //DocumentDate property
 
         ////DocumentDateNote property
-        //[Attributes.Form_Property("Дата документа")]
-        //public RamAccess<string> DocumentDateNote
+        //[Attributes.Form_Property("Дата документа")]public int?  { get; set; }
+        //public virtual RamAccess<string> DocumentDateNote
         //{
         //    get
         //    {

@@ -12,8 +12,8 @@ namespace Models
     {
         public Form32_1() : base()
         {
-            FormNum.Value = "32_1";
-            NumberOfFields.Value = 15;
+            //FormNum.Value = "32_1";
+            //NumberOfFields.Value = 15;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -23,14 +23,14 @@ namespace Models
         }
 
         //PassportNumber property
-        [Attributes.Form_Property("Номер паспорта")]
-        public RamAccess<string> PassportNumber
+        [Attributes.Form_Property("Номер паспорта")]public int? PassportNumberId { get; set; }
+        public virtual RamAccess<string> PassportNumber
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PassportNumber));//OK
+                    return _dataAccess.Get<string>(nameof(PassportNumber));//OK
 
                 }
 
@@ -44,7 +44,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PassportNumber), value);
+                    _dataAccess.Set(nameof(PassportNumber), value);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
@@ -71,13 +71,13 @@ namespace Models
         //PassportNumber property
 
         //PassportNumberNote property
-        public RamAccess<string> PassportNumberNote
+        public virtual RamAccess<string> PassportNumberNote
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
+                    return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
 
                 }
 
@@ -90,7 +90,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PassportNumberNote), value);
+                    _dataAccess.Set(nameof(PassportNumberNote), value);
                 }
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
@@ -103,14 +103,14 @@ namespace Models
         //PassportNumberNote property
 
         //CreatorOKPO property
-        [Attributes.Form_Property("ОКПО изготовителя")]
-        public RamAccess<string> CreatorOKPO
+        [Attributes.Form_Property("ОКПО изготовителя")]public int? CreatorOKPOId { get; set; }
+        public virtual RamAccess<string> CreatorOKPO
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(CreatorOKPO));//OK
+                    return _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
 
                 }
 
@@ -124,7 +124,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(CreatorOKPO), value);
+                    _dataAccess.Set(nameof(CreatorOKPO), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPO));
             }
@@ -143,181 +143,49 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
-        //CreatorOKPO property
+//CreatorOKPO property
 
-        private readonly List<string> OKSM = new List<string>
+protected List<string> OKSM = new List<string>
             {
-                "АФГАНИСТАН",
-                "АЛБАНИЯ",
-                "АНТАРКТИДА",
-                "АЛЖИР",
-                "АМЕРИКАНСКОЕ САМОА",
-                "АНДОРРА",
-                "АНГОЛА",
-                "АНТИГУА И БАРБУДА",
-                "АЗЕРБАЙДЖАН",
-                "АРГЕНТИНА",
-                "АВСТРАЛИЯ",
-                "АВСТРИЯ",
-                "БАГАМЫ",
-                "БАХРЕЙН",
-                "БАНГЛАДЕШ",
-                "АРМЕНИЯ",
-                "БАРБАДОС",
-                "БЕЛЬГИЯ",
-                "БЕРМУДЫ",
-                "БУТАН",
-                "БОЛИВИЯ, МНОГОНАЦИОНАЛЬНОЕ ГОСУДАРСТВО",
-                "БОСНИЯ И ГЕРЦЕГОВИНА",
-                "БОТСВАНА",
-                "ОСТРОВ БУВЕ",
-                "БРАЗИЛИЯ",
-                "БЕЛИЗ",
-                "БРИТАНСКАЯ ТЕРРИТОРИЯ В ИНДИЙСКОМ ОКЕАНЕ",
-                "СОЛОМОНОВЫ ОСТРОВА",
-                "ВИРГИНСКИЕ ОСТРОВА (БРИТАНСКИЕ)",
-                "БРУНЕЙ-ДАРУССАЛАМ",
-                "БОЛГАРИЯ",
-                "МЬЯНМА",
-                "БУРУНДИ",
-                "БЕЛАРУСЬ",
-                "КАМБОДЖА",
-                "КАМЕРУН",
-                "КАНАДА",
-                "КАБО-ВЕРДЕ",
-                "ОСТРОВА КАЙМАН",
-                "ЦЕНТРАЛЬНО-АФРИКАНСКАЯ РЕСПУБЛИКА",
-                "ШРИ-ЛАНКА",
-                "ЧАД",
-                "ЧИЛИ",
-                "КИТАЙ",
-                "ТАЙВАНЬ (КИТАЙ)",
-                "ОСТРОВ РОЖДЕСТВА",
-                "КОКОСОВЫЕ (КИЛИНГ) ОСТРОВА",
-                "КОЛУМБИЯ",
-                "КОМОРЫ",
-                "МАЙОТТА",
-                "КОНГО",
-                "КОНГО, ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА",
-                "ОСТРОВА КУКА",
-                "КОСТА-РИКА",
-                "ХОРВАТИЯ",
-                "КУБА",
-                "КИПР",
-                "ЧЕХИЯ",
-                "БЕНИН",
-                "ДАНИЯ",
-                "ДОМИНИКА",
-                "ДОМИНИКАНСКАЯ РЕСПУБЛИКА",
-                "ЭКВАДОР",
-                "ЭЛЬ-САЛЬВАДОР",
-                "ЭКВАТОРИАЛЬНАЯ ГВИНЕЯ",
-                "ЭФИОПИЯ",
-                "ЭРИТРЕЯ",
-                "ЭСТОНИЯ",
-                "ФАРЕРСКИЕ ОСТРОВА",
-                "ФОЛКЛЕНДСКИЕ ОСТРОВА (МАЛЬВИНСКИЕ)",
-                "ЮЖНАЯ ДЖОРДЖИЯ И ЮЖНЫЕ САНДВИЧЕВЫ ОСТРОВА",
-                "ФИДЖИ",
-                "ФИНЛЯНДИЯ",
-                "ЭЛАНДСКИЕ ОСТРОВА",
-                "ФРАНЦИЯ",
-                "ФРАНЦУЗСКАЯ ГВИАНА",
-                "ФРАНЦУЗСКАЯ ПОЛИНЕЗИЯ",
-                "ФРАНЦУЗСКИЕ ЮЖНЫЕ ТЕРРИТОРИИ",
-                "ДЖИБУТИ",
-                "ГАБОН",
-                "ГРУЗИЯ",
-                "ГАМБИЯ",
-                "ПАЛЕСТИНА, ГОСУДАРСТВО",
-                "ГЕРМАНИЯ",
-                "ГАНА",
-                "ГИБРАЛТАР",
-                "КИРИБАТИ",
-                "ГРЕЦИЯ",
-                "ГРЕНЛАНДИЯ",
-                "ГРЕНАДА",
-                "ГВАДЕЛУПА",
-                "ГУАМ",
-                "ГВАТЕМАЛА",
-                "ГВИНЕЯ",
-                "ГАЙАНА",
-                "ГАИТИ",
-                "ОСТРОВ ХЕРД И ОСТРОВА МАКДОНАЛЬД",
-                "ПАПСКИЙ ПРЕСТОЛ (ГОСУДАРСТВО - ГОРОД ВАТИКАН)",
-                "ГОНДУРАС",
-                "ГОНКОНГ",
-                "ВЕНГРИЯ",
-                "ИСЛАНДИЯ",
-                "ИНДИЯ",
-                "ИНДОНЕЗИЯ",
-                "ИРАН (ИСЛАМСКАЯ РЕСПУБЛИКА)",
-                "ИРАК","ИРЛАНДИЯ",
-                "ИЗРАИЛЬ","ИТАЛИЯ","КОТ Д'ИВУАР","ЯМАЙКА","ЯПОНИЯ",
-                "КАЗАХСТАН","ИОРДАНИЯ","КЕНИЯ","КОРЕЯ, НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","КОРЕЯ, РЕСПУБЛИКА","КУВЕЙТ","КИРГИЗИЯ",
-                "ЛАОССКАЯ НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","ЛИВАН","ЛЕСОТО","ЛАТВИЯ","ЛИБЕРИЯ","ЛИВИЯ","ЛИХТЕНШТЕЙН",
-                "ЛИТВА",
-                "ЛЮКСЕМБУРГ",
-                "МАКАО",
-                "МАДАГАСКАР","МАЛАВИ",
-                "МАЛАЙЗИЯ",
-                "МАЛЬДИВЫ",
-                "МАЛИ",
-                "МАЛЬТА",
-                "МАРТИНИКА",
-                "МАВРИТАНИЯ",
-                "МАВРИКИЙ",
-                "МЕКСИКА",
-                "МОНАКО",
-                "МОНГОЛИЯ",
-                "МОЛДОВА, РЕСПУБЛИКА",
-                "ЧЕРНОГОРИЯ",
-                "МОНТСЕРРАТ",
-                "МАРОККО",
-                "МОЗАМБИК",
-                "ОМАН",
-                "НАМИБИЯ",
-                "НАУРУ",
-                "НЕПАЛ",
-                "НИДЕРЛАНДЫ",
-                "КЮРАСАО",
-                "АРУБА",
-                "СЕН-МАРТЕН (нидерландская часть)",
-                "БОНЭЙР, СИНТ-ЭСТАТИУС И САБА","НОВАЯ КАЛЕДОНИЯ","ВАНУАТУ","НОВАЯ ЗЕЛАНДИЯ","НИКАРАГУА","НИГЕР",
-                "НИГЕРИЯ","НИУЭ","ОСТРОВ НОРФОЛК","НОРВЕГИЯ","СЕВЕРНЫЕ МАРИАНСКИЕ ОСТРОВА",
-                "МАЛЫЕ ТИХООКЕАНСКИЕ ОТДАЛЕННЫЕ ОСТРОВА СОЕДИНЕННЫХ ШТАТОВ","МИКРОНЕЗИЯ, ФЕДЕРАТИВНЫЕ ШТАТЫ","МАРШАЛЛОВЫ ОСТРОВА",
-                "ПАЛАУ","ПАКИСТАН","ПАНАМА","ПАПУА-НОВАЯ ГВИНЕЯ","ПАРАГВАЙ","ПЕРУ",
-                "ФИЛИППИНЫ","ПИТКЕРН","ПОЛЬША","ПОРТУГАЛИЯ","ГВИНЕЯ-БИСАУ","ТИМОР-ЛЕСТЕ",
-                "ПУЭРТО-РИКО","КАТАР","РЕЮНЬОН","РУМЫНИЯ","РОССИЯ","РУАНДА","СЕН-БАРТЕЛЕМИ",
-                "СВЯТАЯ ЕЛЕНА, ОСТРОВ ВОЗНЕСЕНИЯ, ТРИСТАН-ДА-КУНЬЯ","СЕНТ-КИТС И НЕВИС","АНГИЛЬЯ","СЕНТ-ЛЮСИЯ",
-                "СЕН-МАРТЕН (французская часть)","СЕН-ПЬЕР И МИКЕЛОН","СЕНТ-ВИНСЕНТ И ГРЕНАДИНЫ",
-                "САН-МАРИНО","САН-ТОМЕ И ПРИНСИПИ","САУДОВСКАЯ АРАВИЯ","СЕНЕГАЛ","СЕРБИЯ","СЕЙШЕЛЫ",
-                "СЬЕРРА-ЛЕОНЕ","СИНГАПУР","СЛОВАКИЯ","ВЬЕТНАМ","СЛОВЕНИЯ","СОМАЛИ","ЮЖНАЯ АФРИКА","ЗИМБАБВЕ","ИСПАНИЯ",
-                "ЗАПАДНАЯ САХАРА","СУДАН","СУРИНАМ","ШПИЦБЕРГЕН И ЯН МАЙЕН","ЭСВАТИНИ","ШВЕЦИЯ","ШВЕЙЦАРИЯ",
-                "СИРИЙСКАЯ АРАБСКАЯ РЕСПУБЛИКА","ТАДЖИКИСТАН","ТАИЛАНД","ТОГО","ТОКЕЛАУ","ТОНГА","ТРИНИДАД И ТОБАГО",
-                "ОБЪЕДИНЕННЫЕ АРАБСКИЕ ЭМИРАТЫ","ТУНИС","ТУРЦИЯ","ТУРКМЕНИСТАН","ОСТРОВА ТЕРКС И КАЙКОС",
-                "ТУВАЛУ","УГАНДА","УКРАИНА","СЕВЕРНАЯ МАКЕДОНИЯ","ЕГИПЕТ",
-                "СОЕДИНЕННОЕ КОРОЛЕВСТВО","ГЕРНСИ","ДЖЕРСИ","ОСТРОВ МЭН","ТАНЗАНИЯ, ОБЪЕДИНЕННАЯ РЕСПУБЛИКА","СОЕДИНЕННЫЕ ШТАТЫ",
-                "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН",
-                "ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН",
-                "ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ","ЮЖНЫЙ СУДАН"};
+                "АФГАНИСТАН","АЛБАНИЯ","АНТАРКТИДА","АЛЖИР","АМЕРИКАНСКОЕ САМОА","АНДОРРА","АНГОЛА","АНТИГУА И БАРБУДА","АЗЕРБАЙДЖАН","АРГЕНТИНА","АВСТРАЛИЯ","АВСТРИЯ","БАГАМЫ","БАХРЕЙН",
+                "БАНГЛАДЕШ","АРМЕНИЯ","БАРБАДОС","БЕЛЬГИЯ","БЕРМУДЫ","БУТАН","БОЛИВИЯ, МНОГОНАЦИОНАЛЬНОЕ ГОСУДАРСТВО","БОСНИЯ И ГЕРЦЕГОВИНА","БОТСВАНА","ОСТРОВ БУВЕ","БРАЗИЛИЯ","БЕЛИЗ",
+                "БРИТАНСКАЯ ТЕРРИТОРИЯ В ИНДИЙСКОМ ОКЕАНЕ","СОЛОМОНОВЫ ОСТРОВА","ВИРГИНСКИЕ ОСТРОВА (БРИТАНСКИЕ)","БРУНЕЙ-ДАРУССАЛАМ","БОЛГАРИЯ","МЬЯНМА","БУРУНДИ","БЕЛАРУСЬ","КАМБОДЖА",
+                "КАМЕРУН","КАНАДА","КАБО-ВЕРДЕ","ОСТРОВА КАЙМАН","ЦЕНТРАЛЬНО-АФРИКАНСКАЯ РЕСПУБЛИКА","ШРИ-ЛАНКА","ЧАД","ЧИЛИ","КИТАЙ","ТАЙВАНЬ (КИТАЙ)","ОСТРОВ РОЖДЕСТВА","КОКОСОВЫЕ (КИЛИНГ) ОСТРОВА",
+                "КОЛУМБИЯ","КОМОРЫ","МАЙОТТА","КОНГО","КОНГО, ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","ОСТРОВА КУКА","КОСТА-РИКА","ХОРВАТИЯ","КУБА","КИПР","ЧЕХИЯ","БЕНИН","ДАНИЯ","ДОМИНИКА","ДОМИНИКАНСКАЯ РЕСПУБЛИКА",
+                "ЭКВАДОР","ЭЛЬ-САЛЬВАДОР","ЭКВАТОРИАЛЬНАЯ ГВИНЕЯ","ЭФИОПИЯ","ЭРИТРЕЯ","ЭСТОНИЯ","ФАРЕРСКИЕ ОСТРОВА","ФОЛКЛЕНДСКИЕ ОСТРОВА (МАЛЬВИНСКИЕ)","ЮЖНАЯ ДЖОРДЖИЯ И ЮЖНЫЕ САНДВИЧЕВЫ ОСТРОВА",
+                "ФИНЛЯНДИЯ","ЭЛАНДСКИЕ ОСТРОВА","ФРАНЦИЯ","ФРАНЦУЗСКАЯ ГВИАНА","БОНЭЙР, СИНТ-ЭСТАТИУС И САБА","НОВАЯ КАЛЕДОНИЯ","ВАНУАТУ","НОВАЯ ЗЕЛАНДИЯ","НИКАРАГУА","НИГЕР","ФИДЖИ",
+                "ФРАНЦУЗСКАЯ ПОЛИНЕЗИЯ","ФРАНЦУЗСКИЕ ЮЖНЫЕ ТЕРРИТОРИИ","ДЖИБУТИ","ГАБОН","ГРУЗИЯ","ГАМБИЯ","ПАЛЕСТИНА, ГОСУДАРСТВО","ГЕРМАНИЯ","ГАНА","ГИБРАЛТАР","КИРИБАТИ","МАЛИ","МАЛЬТА",
+                "ГРЕЦИЯ","ГРЕНЛАНДИЯ","ГРЕНАДА","ГВАДЕЛУПА","ГУАМ","ГВАТЕМАЛА","ГВИНЕЯ","ГАЙАНА","ГАИТИ","ОСТРОВ ХЕРД И ОСТРОВА МАКДОНАЛЬД","ПАПСКИЙ ПРЕСТОЛ (ГОСУДАРСТВО - ГОРОД ВАТИКАН)",
+                "ГОНДУРАС","ГОНКОНГ","ВЕНГРИЯ","ИСЛАНДИЯ","ИНДИЯ","ИНДОНЕЗИЯ","ИРАН (ИСЛАМСКАЯ РЕСПУБЛИКА)","ИРАК","ИРЛАНДИЯ","ИЗРАИЛЬ","ИТАЛИЯ","КОТ Д'ИВУАР","ЯМАЙКА","ЯПОНИЯ","МАЛЬДИВЫ",
+                "КАЗАХСТАН","ИОРДАНИЯ","КЕНИЯ","КОРЕЯ, НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","КОРЕЯ, РЕСПУБЛИКА","КУВЕЙТ","КИРГИЗИЯ","НИГЕРИЯ","НИУЭ","ОСТРОВ НОРФОЛК","НОРВЕГИЯ","СЕВЕРНЫЕ МАРИАНСКИЕ ОСТРОВА",
+                "ЛАОССКАЯ НАРОДНО-ДЕМОКРАТИЧЕСКАЯ РЕСПУБЛИКА","ЛИВАН","ЛЕСОТО","ЛАТВИЯ","ЛИБЕРИЯ","ЛИВИЯ","ЛИХТЕНШТЕЙН","ЛИТВА","ЛЮКСЕМБУРГ","МАКАО","МАДАГАСКАР","МАЛАВИ","МАЛАЙЗИЯ",
+                "МАРТИНИКА","МАВРИТАНИЯ","МАВРИКИЙ","МЕКСИКА","МОНАКО","МОНГОЛИЯ","МОЛДОВА, РЕСПУБЛИКА","ЧЕРНОГОРИЯ","МОНТСЕРРАТ","МАРОККО","МОЗАМБИК","ОМАН","НАМИБИЯ","НАУРУ","НЕПАЛ",
+                "АРУБА","СЕН-МАРТЕН (нидерландская часть)","МАЛЫЕ ТИХООКЕАНСКИЕ ОТДАЛЕННЫЕ ОСТРОВА СОЕДИНЕННЫХ ШТАТОВ","МИКРОНЕЗИЯ, ФЕДЕРАТИВНЫЕ ШТАТЫ","МАРШАЛЛОВЫ ОСТРОВА","КЮРАСАО",
+                "ПАЛАУ","ПАКИСТАН","ПАНАМА","ПАПУА-НОВАЯ ГВИНЕЯ","ПАРАГВАЙ","ПЕРУ","ФИЛИППИНЫ","ПИТКЕРН","ПОЛЬША","ПОРТУГАЛИЯ","ГВИНЕЯ-БИСАУ","ТИМОР-ЛЕСТЕ","ШВЕЦИЯ","ШВЕЙЦАРИЯ","НИДЕРЛАНДЫ",
+                "ПУЭРТО-РИКО","КАТАР","РЕЮНЬОН","РУМЫНИЯ","РОССИЯ","РУАНДА","СЕН-БАРТЕЛЕМИ","СВЯТАЯ ЕЛЕНА, ОСТРОВ ВОЗНЕСЕНИЯ, ТРИСТАН-ДА-КУНЬЯ","СЕНТ-КИТС И НЕВИС","АНГИЛЬЯ","СЕНТ-ЛЮСИЯ",
+                "СЕН-МАРТЕН (французская часть)","СЕН-ПЬЕР И МИКЕЛОН","СЕНТ-ВИНСЕНТ И ГРЕНАДИНЫ","САН-МАРИНО","САН-ТОМЕ И ПРИНСИПИ","САУДОВСКАЯ АРАВИЯ","СЕНЕГАЛ","СЕРБИЯ","СЕЙШЕЛЫ","ЮЖНЫЙ СУДАН",
+                "СЬЕРРА-ЛЕОНЕ","СИНГАПУР","СЛОВАКИЯ","ВЬЕТНАМ","СЛОВЕНИЯ","СОМАЛИ","ЮЖНАЯ АФРИКА","ЗИМБАБВЕ","ИСПАНИЯ","ЗАПАДНАЯ САХАРА","СУДАН","СУРИНАМ","ШПИЦБЕРГЕН И ЯН МАЙЕН","ЭСВАТИНИ",
+                "СИРИЙСКАЯ АРАБСКАЯ РЕСПУБЛИКА","ТАДЖИКИСТАН","ТАИЛАНД","ТОГО","ТОКЕЛАУ","ТОНГА","ТРИНИДАД И ТОБАГО","ОБЪЕДИНЕННЫЕ АРАБСКИЕ ЭМИРАТЫ","ТУНИС","ТУРЦИЯ","ТУРКМЕНИСТАН","ОСТРОВА ТЕРКС И КАЙКОС",
+                "ТУВАЛУ","УГАНДА","УКРАИНА","СЕВЕРНАЯ МАКЕДОНИЯ","ЕГИПЕТ","СОЕДИНЕННОЕ КОРОЛЕВСТВО","ГЕРНСИ","ДЖЕРСИ","ОСТРОВ МЭН","ТАНЗАНИЯ, ОБЪЕДИНЕННАЯ РЕСПУБЛИКА","СОЕДИНЕННЫЕ ШТАТЫ",
+                "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН","ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН","ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ"
+            };
 
-        //Type property
-        [Attributes.Form_Property("Тип")]
-        public RamAccess<string> Type
+//Type property
+[Attributes.Form_Property("Тип")]public int? TypeId { get; set; }
+        public virtual RamAccess<string> Type
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Type));//OK
+                    return _dataAccess.Get<string>(nameof(Type));//OK
 
                 }
 
@@ -330,7 +198,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Type), value);
+                    _dataAccess.Set(nameof(Type), value);
                 }
                 OnPropertyChanged(nameof(Type));
             }
@@ -343,13 +211,13 @@ namespace Models
         //Type property
 
         //TypeRecoded property
-        public RamAccess<string> TypeRecoded
+        public virtual RamAccess<string> TypeRecoded
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(TypeRecoded));//OK
+                    return _dataAccess.Get<string>(nameof(TypeRecoded));//OK
 
                 }
 
@@ -362,7 +230,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(TypeRecoded), value);
+                    _dataAccess.Set(nameof(TypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(TypeRecoded));
             }
@@ -375,14 +243,14 @@ namespace Models
         //TypeRecoded property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> Radionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public virtual RamAccess<string> Radionuclids
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
+                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
 
                 }
 
@@ -396,7 +264,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Radionuclids), value);
+                    _dataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -411,7 +279,7 @@ namespace Models
                 return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (Tuple<string, string> item in spr)
+            foreach (var item in spr)
             {
                 if (item.Item1.Equals(Type))
                 {
@@ -424,14 +292,14 @@ namespace Models
         //Radionuclids property
 
         //FactoryNumber property
-        [Attributes.Form_Property("Заводской номер")]
-        public RamAccess<string> FactoryNumber
+        [Attributes.Form_Property("Заводской номер")]public int? FactoryNumberId { get; set; }
+        public virtual RamAccess<string> FactoryNumber
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(FactoryNumber));//OK
+                    return _dataAccess.Get<string>(nameof(FactoryNumber));//OK
 
                 }
 
@@ -444,7 +312,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(FactoryNumber), value);
+                    _dataAccess.Set(nameof(FactoryNumber), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumber));
             }
@@ -463,13 +331,13 @@ namespace Models
         //FactoryNumber property
 
         //FactoryNumberRecoded property
-        public RamAccess<string> FactoryNumberRecoded
+        public virtual RamAccess<string> FactoryNumberRecoded
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
+                    return _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
 
                 }
 
@@ -482,7 +350,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(FactoryNumberRecoded), value);
+                    _dataAccess.Set(nameof(FactoryNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
@@ -495,14 +363,14 @@ namespace Models
         //FactoryNumberRecoded property
 
         //ActivityOnCreation property
-        [Attributes.Form_Property("Активность на дату создания, Бк")]
-        public RamAccess<string> ActivityOnCreation
+        [Attributes.Form_Property("Активность на дату создания, Бк")]public int? ActivityOnCreationId { get; set; }
+        public virtual RamAccess<string> ActivityOnCreation
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(ActivityOnCreation));//OK
+                    return _dataAccess.Get<string>(nameof(ActivityOnCreation));//OK
 
                 }
 
@@ -515,7 +383,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(ActivityOnCreation), value);
+                    _dataAccess.Set(nameof(ActivityOnCreation), value);
                 }
                 OnPropertyChanged(nameof(ActivityOnCreation));
             }
@@ -524,7 +392,7 @@ namespace Models
         private bool ActivityOnCreation_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -543,14 +411,14 @@ namespace Models
         //ActivityOnCreation property
 
         //CreationDate property
-        [Attributes.Form_Property("Дата изготовления")]
-        public RamAccess<string> CreationDate
+        [Attributes.Form_Property("Дата изготовления")]public int? CreationDateId { get; set; }
+        public virtual RamAccess<string> CreationDate
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(CreationDate));
+                    return _dataAccess.Get<string>(nameof(CreationDate));
                 }
 
                 {
@@ -562,7 +430,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(CreationDate), value);
+                    _dataAccess.Set(nameof(CreationDate), value);
                 }
                 OnPropertyChanged(nameof(CreationDate));
             }
@@ -575,13 +443,13 @@ namespace Models
         //CreationDate property
 
         //CreatorOKPONote property
-        public RamAccess<string> CreatorOKPONote
+        public virtual RamAccess<string> CreatorOKPONote
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(CreatorOKPONote));//OK
+                    return _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
 
                 }
 
@@ -596,7 +464,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(CreatorOKPONote), value);
+                    _dataAccess.Set(nameof(CreatorOKPONote), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPONote));
             }
@@ -609,13 +477,16 @@ namespace Models
         //CreatorOKPONote property
 
         //Kategory property
-        [Attributes.Form_Property("Категория")]
-        public RamAccess<short> Kategory
+        [Attributes.Form_Property("Категория")]public int? KategoryId { get; set; }
+        public virtual RamAccess<short> Kategory
         {
-            get => DataAccess.Get<short>(nameof(Kategory));
+            get
+            {
+                return _dataAccess.Get<short>(nameof(Kategory));
+            }
             set
             {
-                DataAccess.Set(nameof(Kategory), value);
+                _dataAccess.Set(nameof(Kategory), value);
                 OnPropertyChanged(nameof(Kategory));
             }
         }
@@ -627,14 +498,14 @@ namespace Models
         //Kategory property
 
         //NuclearMaterialPresence property
-        [Attributes.Form_Property("Содержание ядерных материалов")]
-        public RamAccess<double> NuclearMaterialPresence
+        [Attributes.Form_Property("Содержание ядерных материалов")]public int? NuclearMaterialPresenceId { get; set; }
+        public virtual RamAccess<double> NuclearMaterialPresence
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double>(nameof(NuclearMaterialPresence));
+                    return _dataAccess.Get<double>(nameof(NuclearMaterialPresence));
                 }
 
                 {
@@ -646,7 +517,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(NuclearMaterialPresence), value);
+                    _dataAccess.Set(nameof(NuclearMaterialPresence), value);
                 }
                 OnPropertyChanged(nameof(NuclearMaterialPresence));
             }
@@ -654,15 +525,15 @@ namespace Models
 
         //NuclearMaterialPresence property
 
-        //CertificateId property
-        [Attributes.Form_Property("Номер сертификата")]
-        public RamAccess<string> CertificateId
+        //Certificateid property
+        [Attributes.Form_Property("Номер сертификата")]public int? CertificateidId { get; set; }
+        public virtual RamAccess<string> Certificateid
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(CertificateId));
+                    return _dataAccess.Get<string>(nameof(Certificateid));
                 }
 
                 {
@@ -674,23 +545,23 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(CertificateId), value);
+                    _dataAccess.Set(nameof(Certificateid), value);
                 }
-                OnPropertyChanged(nameof(CertificateId));
+                OnPropertyChanged(nameof(Certificateid));
             }
         }
 
-        //CertificateId property
+        //Certificateid property
 
         //ValidThru property
-        [Attributes.Form_Property("Действует по")]
-        public RamAccess<string> ValidThru
+        [Attributes.Form_Property("Действует по")]public int? ValidThruId { get; set; }
+        public virtual RamAccess<string> ValidThru
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(ValidThru));
+                    return _dataAccess.Get<string>(nameof(ValidThru));
                 }
 
                 {
@@ -702,7 +573,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(ValidThru), value);
+                    _dataAccess.Set(nameof(ValidThru), value);
                 }
                 OnPropertyChanged(nameof(ValidThru));
             }

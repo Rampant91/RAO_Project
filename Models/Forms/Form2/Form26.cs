@@ -11,8 +11,8 @@ namespace Models
     {
         public Form26() : base()
         {
-            FormNum.Value = "26";
-            NumberOfFields.Value = 11;
+            //FormNum.Value = "26";
+            //NumberOfFields.Value = 11;
             Init();
             Validate_all();
         }
@@ -53,8 +53,8 @@ namespace Models
         }
 
         //SourcesQuantity property
-        [Attributes.Form_Property("Количество источников, шт.")]
-        public RamAccess<int> SourcesQuantity
+        [Attributes.Form_Property("Количество источников, шт.")]public int? SourcesQuantityId { get; set; }
+        public virtual RamAccess<int> SourcesQuantity
         {
             get
             {
@@ -86,8 +86,8 @@ namespace Models
         //SourcesQuantity property
 
         //ObservedSourceNumber property
-        [Attributes.Form_Property("Номер наблюдательной скважины")]
-        public RamAccess<string> ObservedSourceNumber
+        [Attributes.Form_Property("Номер наблюдательной скважины")]public int? ObservedSourceNumberId { get; set; }
+        public virtual RamAccess<string> ObservedSourceNumber
         {
             get => DataAccess.Get<string>(nameof(ObservedSourceNumber));
             set
@@ -104,8 +104,8 @@ namespace Models
         //ObservedSourceNumber property
 
         //ControlledAreaName property
-        [Attributes.Form_Property("Наименование зоны контроля")]
-        public RamAccess<string> ControlledAreaName
+        [Attributes.Form_Property("Наименование зоны контроля")]public int? ControlledAreaNameId { get; set; }
+        public virtual RamAccess<string> ControlledAreaName
         {
             get => DataAccess.Get<string>(nameof(ControlledAreaName));
             set
@@ -139,8 +139,8 @@ namespace Models
         //ControlledAreaName property
 
         //SupposedWasteSource property
-        [Attributes.Form_Property("Предполагаемый источник поступления радиоактивных веществ")]
-        public RamAccess<string> SupposedWasteSource
+        [Attributes.Form_Property("Предполагаемый источник поступления радиоактивных веществ")]public int? SupposedWasteSourceId { get; set; }
+        public virtual RamAccess<string> SupposedWasteSource
         {
             get => DataAccess.Get<string>(nameof(SupposedWasteSource));
             set
@@ -158,8 +158,8 @@ namespace Models
         //SupposedWasteSource property
 
         //DistanceToWasteSource property
-        [Attributes.Form_Property("Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м")]
-        public RamAccess<string> DistanceToWasteSource
+        [Attributes.Form_Property("Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м")]public int? DistanceToWasteSourceId { get; set; }
+        public virtual RamAccess<string> DistanceToWasteSource
         {
             get => DataAccess.Get<string>(nameof(DistanceToWasteSource));
             set
@@ -203,8 +203,8 @@ namespace Models
         //DistanceToWasteSource property
 
         //TestDepth property
-        [Attributes.Form_Property("Глубина отбора проб, м")]
-        public RamAccess<string> TestDepth
+        [Attributes.Form_Property("Глубина отбора проб, м")]public int? TestDepthId { get; set; }
+        public virtual RamAccess<string> TestDepth
         {
             get
             {
@@ -258,7 +258,7 @@ namespace Models
         //TestDepth property
 
         //TestDepthNote property
-        public RamAccess<string> TestDepthNote
+        public virtual RamAccess<string> TestDepthNote
         {
             get
             {
@@ -290,8 +290,8 @@ namespace Models
         //TestDepthNote property
 
         //RadionuclidName property
-        [Attributes.Form_Property("Радионуклид")]
-        public RamAccess<string> RadionuclidName
+        [Attributes.Form_Property("Радионуклид")]public int? RadionuclidNameId { get; set; }
+        public virtual RamAccess<string> RadionuclidName
         {
             get
             {
@@ -330,8 +330,8 @@ namespace Models
         //RadionuclidName property
 
         //AverageYearConcentration property
-        [Attributes.Form_Property("Среднегодовое содержание радионуклида, Бк/кг")]
-        public RamAccess<string> AverageYearConcentration
+        [Attributes.Form_Property("Среднегодовое содержание радионуклида, Бк/кг")]public int? AverageYearConcentrationId { get; set; }
+        public virtual RamAccess<string> AverageYearConcentration
         {
             get
             {

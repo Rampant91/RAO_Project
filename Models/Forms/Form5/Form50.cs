@@ -9,8 +9,8 @@ namespace Models
     {
         public Form50() : base()
         {
-            FormNum.Value = "50";
-            NumberOfFields.Value = 11;
+            //FormNum.Value = "50";
+            //NumberOfFields.Value = 11;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -27,8 +27,8 @@ namespace Models
         }
 
         //Authority1 property
-        [Attributes.Form_Property("ВИАЦ")]
-        public RamAccess<Authority> Authority1
+        [Attributes.Form_Property("ВИАЦ")]public int? Authority1Id { get; set; }
+        public virtual RamAccess<Authority> Authority1
         {
             get
             {
@@ -56,8 +56,8 @@ namespace Models
         //Authority1 property
 
         //Yyear property
-        [Attributes.Form_Property("Год")]
-        public RamAccess<int> Yyear
+        [Attributes.Form_Property("Год")]public int? YyearId { get; set; }
+        public virtual RamAccess<int> Yyear
         {
             get
             {
@@ -85,8 +85,8 @@ namespace Models
         //Yyear property
 
         //JurLico property
-        [Attributes.Form_Property("Юр. лицо")]
-        public RamAccess<string> JurLico
+        [Attributes.Form_Property("Юр. лицо")]public int? JurLicoId { get; set; }
+        public virtual RamAccess<string> JurLico
         {
             get
             {
@@ -114,8 +114,8 @@ namespace Models
         //JurLico property
 
         //ShortJurLico property
-        [Attributes.Form_Property("Краткое наименование юр. лица")]
-        public RamAccess<string> ShortJurLico
+        [Attributes.Form_Property("Краткое наименование юр. лица")]public int? ShortJurLicoId { get; set; }
+        public virtual RamAccess<string> ShortJurLico
         {
             get
             {
@@ -143,8 +143,8 @@ namespace Models
         //ShortJurLico property
 
         //JurLicoAddress property
-        [Attributes.Form_Property("Адрес юр. лица")]
-        public RamAccess<string> JurLicoAddress
+        [Attributes.Form_Property("Адрес юр. лица")]public int? JurLicoAddressId { get; set; }
+        public virtual RamAccess<string> JurLicoAddress
         {
             get
             {
@@ -172,8 +172,8 @@ namespace Models
         //JurLicoAddress property
 
         //JurLicoFactAddress property
-        [Attributes.Form_Property("Фактический адрес юр. лица")]
-        public RamAccess<string> JurLicoFactAddress
+        [Attributes.Form_Property("Фактический адрес юр. лица")]public int? JurLicoFactAddressId { get; set; }
+        public virtual RamAccess<string> JurLicoFactAddress
         {
             get
             {
@@ -201,8 +201,8 @@ namespace Models
         //JurLicoFactAddress property
 
         //GradeFIO property
-        [Attributes.Form_Property("ФИО, должность")]
-        public RamAccess<string> GradeFIO
+        [Attributes.Form_Property("ФИО, должность")]public int? GradeFIOId { get; set; }
+        public virtual RamAccess<string> GradeFIO
         {
             get
             {
@@ -230,8 +230,8 @@ namespace Models
         //GradeFIO property
 
         //GradeFIOresponsibleExecutor property
-        [Attributes.Form_Property("ФИО, должность ответственного исполнителя")]
-        public RamAccess<string> GradeFIOresponsibleExecutor
+        [Attributes.Form_Property("ФИО, должность ответственного исполнителя")]public int? GradeFIOresponsibleExecutorId { get; set; }
+        public virtual RamAccess<string> GradeFIOresponsibleExecutor
         {
             get
             {
@@ -259,8 +259,8 @@ namespace Models
         //GradeFIOresponsibleExecutor property
 
         //Telephone property
-        [Attributes.Form_Property("Телефон")]
-        public RamAccess<string> Telephone
+        [Attributes.Form_Property("Телефон")]public int? TelephoneId { get; set; }
+        public virtual RamAccess<string> Telephone
         {
             get
             {
@@ -288,8 +288,8 @@ namespace Models
         //Telephone property
 
         //Fax property
-        [Attributes.Form_Property("Факс")]
-        public RamAccess<string> Fax
+        [Attributes.Form_Property("Факс")]public int? FaxId { get; set; }
+        public virtual RamAccess<string> Fax
         {
             get
             {
@@ -317,8 +317,8 @@ namespace Models
         //Fax property
 
         //Email property
-        [Attributes.Form_Property("Эл. почта")]
-        public RamAccess<string> Email
+        [Attributes.Form_Property("Эл. почта")]public int? EmailId { get; set; }
+        public virtual RamAccess<string> Email
         {
             get
             {

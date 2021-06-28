@@ -12,8 +12,8 @@ namespace Models
     {
         public Form13() : base()
         {
-            FormNum.Value = "13";
-            NumberOfFields.Value = 37;
+            //FormNum.Value = "13";
+            //NumberOfFields.Value = 37;
             Init();
             Validate_all();
         }
@@ -121,7 +121,7 @@ namespace Models
         }
 
         //OwnerNote property
-        public RamAccess<string> OwnerNote
+        public virtual RamAccess<string> OwnerNote
         {
             get
             {
@@ -155,8 +155,8 @@ namespace Models
         //OwnerNote property
 
         //PassportNumber property
-        [Attributes.Form_Property("Номер паспорта")]
-        public RamAccess<string> PassportNumber
+        [Attributes.Form_Property("Номер паспорта")]public int? PassportNumberId { get; set; }
+        public virtual RamAccess<string> PassportNumber
         {
             get
             {
@@ -202,7 +202,7 @@ namespace Models
         //PassportNumber property
 
         //PassportNumberNote property
-        public RamAccess<string> PassportNumberNote
+        public virtual RamAccess<string> PassportNumberNote
         {
             get
             {
@@ -241,8 +241,8 @@ namespace Models
         //PassportNumberNote property
 
         //PassportNumberRecoded property
-        [Attributes.Form_Property("Номер упаковки")]
-        public RamAccess<string> PassportNumberRecoded
+        public int? PassportNumberRecodedId { get; set; }
+        public virtual RamAccess<string> PassportNumberRecoded
         {
             get
             {
@@ -275,8 +275,8 @@ namespace Models
         //PassportNumberRecoded property
 
         //Type property
-        [Attributes.Form_Property("Тип")]
-        public RamAccess<string> Type
+        [Attributes.Form_Property("Тип")]public int? TypeId { get; set; }
+        public virtual RamAccess<string> Type
         {
             get
             {
@@ -309,7 +309,7 @@ namespace Models
         //Type property
 
         //TypeRecoded property
-        public RamAccess<string> TypeRecoded
+        public virtual RamAccess<string> TypeRecoded
         {
             get
             {
@@ -342,8 +342,8 @@ namespace Models
         //TypeRecoded property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> Radionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public virtual RamAccess<string> Radionuclids
         {
             get
             {
@@ -392,8 +392,8 @@ namespace Models
         //Radionuclids property
 
         //FactoryNumber property
-        [Attributes.Form_Property("Заводской номер")]
-        public RamAccess<string> FactoryNumber
+        [Attributes.Form_Property("Заводской номер")]public int? FactoryNumberId { get; set; }
+        public virtual RamAccess<string> FactoryNumber
         {
             get
             {
@@ -432,7 +432,7 @@ namespace Models
         //FactoryNumber property
 
         //FactoryNumberRecoded property
-        public RamAccess<string> FactoryNumberRecoded
+        public virtual RamAccess<string> FactoryNumberRecoded
         {
             get
             {
@@ -465,8 +465,8 @@ namespace Models
         //FactoryNumberRecoded property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]
-        public RamAccess<string> Activity
+        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public virtual RamAccess<string> Activity
         {
             get
             {
@@ -528,7 +528,7 @@ namespace Models
         //Activity property
 
         //ActivityNote property
-        public RamAccess<string> ActivityNote
+        public virtual RamAccess<string> ActivityNote
         {
             get
             {
@@ -563,8 +563,8 @@ namespace Models
         //ActivityNote property
 
         //CreationDate property
-        [Attributes.Form_Property("Дата изготовления")]
-        public RamAccess<string> CreationDate
+        [Attributes.Form_Property("Дата изготовления")]public int? CreationDateId { get; set; }
+        public virtual RamAccess<string> CreationDate
         {
             get
             {
@@ -623,7 +623,7 @@ namespace Models
         //CreationDate property RDY
 
         //CreationDateNote property
-        public RamAccess<string> CreationDateNote
+        public virtual RamAccess<string> CreationDateNote
         {
             get
             {
@@ -658,8 +658,8 @@ namespace Models
         //CreationDateNote property
 
         //CreatorOKPO property
-        [Attributes.Form_Property("ОКПО изготовителя")]
-        public RamAccess<string> CreatorOKPO
+        [Attributes.Form_Property("ОКПО изготовителя")]public int? CreatorOKPOId { get; set; }
+        public virtual RamAccess<string> CreatorOKPO
         {
             get
             {
@@ -715,7 +715,7 @@ namespace Models
         //CreatorOKPO property
 
         //CreatorOKPONote property
-        public RamAccess<string> CreatorOKPONote
+        public virtual RamAccess<string> CreatorOKPONote
         {
             get
             {
@@ -749,8 +749,9 @@ namespace Models
         //CreatorOKPONote property
 
         //AggregateState property
+        public int? AggregateStateId { get; set; }
         [Attributes.Form_Property("Агрегатное состояние")]
-        public RamAccess<byte?> AggregateState//1 2 3
+        public virtual RamAccess<byte?> AggregateState//1 2 3
         {
             get
             {
@@ -793,8 +794,8 @@ namespace Models
         //AggregateState property
 
         //PropertyCode property
-        [Attributes.Form_Property("Код собственности")]
-        public RamAccess<byte?> PropertyCode
+        [Attributes.Form_Property("Код собственности")]public int? PropertyCodeId { get; set; }
+        public virtual RamAccess<byte?> PropertyCode
         {
             get
             {
@@ -839,8 +840,8 @@ namespace Models
         //PropertyCode property
 
         //Owner property
-        [Attributes.Form_Property("Владелец")]
-        public RamAccess<string> Owner
+        [Attributes.Form_Property("Владелец")]public int? OwnerId { get; set; }
+        public virtual RamAccess<string> Owner
         {
             get
             {
@@ -896,8 +897,8 @@ namespace Models
         //Owner property
 
         //ProviderOrRecieverOKPO property
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]
-        public RamAccess<string> ProviderOrRecieverOKPO
+        [Attributes.Form_Property("ОКПО поставщика/получателя")]public int? ProviderOrRecieverOKPOId { get; set; }
+        public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
@@ -965,7 +966,7 @@ namespace Models
         //ProviderOrRecieverOKPO property
 
         //ProviderOrRecieverOKPONote property
-        public RamAccess<string> ProviderOrRecieverOKPONote
+        public virtual RamAccess<string> ProviderOrRecieverOKPONote
         {
             get
             {
@@ -1004,8 +1005,9 @@ namespace Models
         //ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
+        public int? TransporterOKPOId { get; set; }
         [Attributes.Form_Property("ОКПО перевозчика")]
-        public RamAccess<string> TransporterOKPO
+        public virtual RamAccess<string> TransporterOKPO
         {
             get
             {
@@ -1061,7 +1063,7 @@ namespace Models
         //TransporterOKPO property
 
         //TransporterOKPONote property
-        public RamAccess<string> TransporterOKPONote
+        public virtual RamAccess<string> TransporterOKPONote
         {
             get
             {
@@ -1094,8 +1096,9 @@ namespace Models
         //TransporterOKPONote property
 
         //PackName property
+        public int? PackNameId { get; set; }
         [Attributes.Form_Property("Наименование упаковки")]
-        public RamAccess<string> PackName
+        public virtual RamAccess<string> PackName
         {
             get
             {
@@ -1141,7 +1144,7 @@ namespace Models
         //PackName property
 
         //PackNameNote property
-        public RamAccess<string> PackNameNote
+        public virtual RamAccess<string> PackNameNote
         {
             get
             {
@@ -1180,8 +1183,9 @@ namespace Models
         //PackNameNote property
 
         //PackType property
+        public int? PackTypeId { get; set; }
         [Attributes.Form_Property("Тип упаковки")]
-        public RamAccess<string> PackType
+        public virtual RamAccess<string> PackType
         {
             get
             {
@@ -1227,7 +1231,7 @@ namespace Models
         //PackType property
 
         //PackTypeRecoded property
-        public RamAccess<string> PackTypeRecoded
+        public virtual RamAccess<string> PackTypeRecoded
         {
             get
             {
@@ -1260,7 +1264,7 @@ namespace Models
         //PackTypeRecoded property
 
         //PackTypeNote property
-        public RamAccess<string> PackTypeNote
+        public virtual RamAccess<string> PackTypeNote
         {
             get
             {
@@ -1293,8 +1297,8 @@ namespace Models
         //PackTypeNote property
 
         //PackNumber property
-        [Attributes.Form_Property("Номер упаковки")]
-        public RamAccess<string> PackNumber
+        [Attributes.Form_Property("Номер упаковки")]public int? PackNumberId { get; set; }
+        public virtual RamAccess<string> PackNumber
         {
             get
             {
@@ -1340,7 +1344,7 @@ namespace Models
         //PackNumber property
 
         //PackNumberNote property
-        public RamAccess<string> PackNumberNote
+        public virtual RamAccess<string> PackNumberNote
         {
             get
             {
@@ -1380,7 +1384,7 @@ namespace Models
         //PackNumberNote property
 
         //DocumentNumberNote property
-        public RamAccess<string> DocumentNumberNote
+        public virtual RamAccess<string> DocumentNumberNote
         {
             get
             {
@@ -1420,8 +1424,8 @@ namespace Models
         //DocumentNumberNote property
 
         //PackNumberRecoded property
-        [Attributes.Form_Property("Номер упаковки")]
-        public RamAccess<string> PackNumberRecoded
+        public int? PackNumberRecodedId { get; set; }
+        public virtual RamAccess<string> PackNumberRecoded
         {
             get
             {

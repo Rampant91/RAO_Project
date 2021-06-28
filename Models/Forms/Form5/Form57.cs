@@ -11,8 +11,8 @@ namespace Models
     {
         public Form57() : base()
         {
-            FormNum.Value = "57";
-            NumberOfFields.Value = 9;
+            //FormNum.Value = "57";
+            //NumberOfFields.Value = 9;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -22,8 +22,8 @@ namespace Models
         }
 
         //RegNo property
-        [Attributes.Form_Property("Регистрационный номер")]
-        public RamAccess<string> RegNo
+        [Attributes.Form_Property("Регистрационный номер")]public int? RegNoId { get; set; }
+        public virtual RamAccess<string> RegNo
         {
             get => DataAccess.Get<string>(nameof(RegNo));
             set
@@ -37,8 +37,8 @@ namespace Models
         //RegNo property
 
         //Okpo property
-        [Attributes.Form_Property("ОКПО")]
-        public RamAccess<string> Okpo
+        [Attributes.Form_Property("ОКПО")]public int? OkpoId { get; set; }
+        public virtual RamAccess<string> Okpo
         {
             get => DataAccess.Get<string>(nameof(Okpo));
             set
@@ -67,8 +67,8 @@ namespace Models
         //Okpo property
 
         //OrgName property
-        [Attributes.Form_Property("Наименование организации")]
-        public RamAccess<string> OrgName
+        [Attributes.Form_Property("Наименование организации")]public int? OrgNameId { get; set; }
+        public virtual RamAccess<string> OrgName
         {
             get => DataAccess.Get<string>(nameof(OrgName));
             set
@@ -82,8 +82,8 @@ namespace Models
         //OrgName property
 
         //DocumentNameNumber property
-        [Attributes.Form_Property("Наименование и номер докумета о признании")]
-        public RamAccess<string> DocumentNameNumber
+        [Attributes.Form_Property("Наименование и номер докумета о признании")]public int? DocumentNameNumberId { get; set; }
+        public virtual RamAccess<string> DocumentNameNumber
         {
             get => DataAccess.Get<string>(nameof(DocumentNameNumber));
             set
@@ -97,8 +97,8 @@ namespace Models
         //DocumentNameNumber property
 
         //PermissionNameNumber property
-        [Attributes.Form_Property("Наименование и номер разрешительного докумета")]
-        public RamAccess<string> PermissionNameNumber
+        [Attributes.Form_Property("Наименование и номер разрешительного докумета")]public int? PermissionNameNumberId { get; set; }
+        public virtual RamAccess<string> PermissionNameNumber
         {
             get => DataAccess.Get<string>(nameof(PermissionNameNumber));
             set
@@ -112,8 +112,8 @@ namespace Models
         //PermissionNameNumber property
 
         //AllowedActivity property
-        [Attributes.Form_Property("Разрешенный вид деятельности")]
-        public RamAccess<string> AllowedActivity
+        [Attributes.Form_Property("Разрешенный вид деятельности")]public int? AllowedActivityId { get; set; }
+        public virtual RamAccess<string> AllowedActivity
         {
             get => DataAccess.Get<string>(nameof(AllowedActivity));
             set
@@ -160,8 +160,8 @@ namespace Models
         //AllowedActivity property
 
         //Note property
-        [Attributes.Form_Property("Примечание")]
-        public RamAccess<string> Note
+        [Attributes.Form_Property("Примечание")]public int? NoteId { get; set; }
+        public virtual RamAccess<string> Note
         {
             get => DataAccess.Get<string>(nameof(Note));
             set

@@ -9,8 +9,8 @@ namespace Models
     {
         public Form32_2() : base()
         {
-            FormNum.Value = "32_2";
-            NumberOfFields.Value = 6;
+            //FormNum.Value = "32_2";
+            //NumberOfFields.Value = 6;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -20,14 +20,14 @@ namespace Models
         }
 
         //PackName property
-        [Attributes.Form_Property("Наименование упаковки")]
-        public RamAccess<string> PackName
+        [Attributes.Form_Property("Наименование упаковки")]public int? PackNameid { get; set; }
+        public virtual RamAccess<string> PackName
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PackName));//OK
+                    return _dataAccess.Get<string>(nameof(PackName));//OK
 
                 }
 
@@ -41,11 +41,13 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PackName), value);
+                    _dataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
         }
+
+
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -59,14 +61,14 @@ namespace Models
         //PackName property
 
         //PackType property
-        [Attributes.Form_Property("Тип упаковки")]
-        public RamAccess<string> PackType
+        [Attributes.Form_Property("Тип упаковки")]public int? PackTypeid { get; set; }
+        public virtual RamAccess<string> PackType
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PackType));//OK
+                    return _dataAccess.Get<string>(nameof(PackType));//OK
 
                 }
 
@@ -80,7 +82,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PackType), value);
+                    _dataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -100,13 +102,13 @@ namespace Models
         //PackType property
 
         //PackTypeRecoded property
-        public RamAccess<string> PackTypeRecoded
+        public virtual RamAccess<string> PackTypeRecoded
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
 
                 }
 
@@ -119,26 +121,28 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PackTypeRecoded), value);
+                    _dataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
+
+
         private bool PackTypeRecoded_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //PackTypeRecoded property
 
-        //Id property
-        [Attributes.Form_Property("Идентификационный номер")]
-        public RamAccess<string> IdentificationId
+        //id property
+        [Attributes.Form_Property("Идентификационный номер")]public int? idId { get; set; }
+        public virtual RamAccess<string> id
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Id));
+                    return _dataAccess.Get<string>(nameof(id));
                 }
 
                 {
@@ -150,22 +154,24 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Id), value);
+                    _dataAccess.Set(nameof(id), value);
                 }
-                OnPropertyChanged(nameof(Id));
+                OnPropertyChanged(nameof(id));
             }
         }
-        //Id property
+
+
+        //id property
 
         //CreationYear property
-        [Attributes.Form_Property("Год изготовления")]
-        public RamAccess<int> CreationYear
+        [Attributes.Form_Property("Год изготовления")]public int? CreationYearId { get; set; }
+        public virtual RamAccess<int> CreationYear
         {
             get
             {
 
                 {
-                    return DataAccess.Get<int>(nameof(CreationYear));
+                    return _dataAccess.Get<int>(nameof(CreationYear));
                 }
 
                 {
@@ -177,22 +183,24 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(CreationYear), value);
+                    _dataAccess.Set(nameof(CreationYear), value);
                 }
                 OnPropertyChanged(nameof(CreationYear));
             }
         }
+
+
         //CreationYear property
 
         //DepletedUraniumMass property
-        [Attributes.Form_Property("Масса обедненного урана")]
-        public RamAccess<double> DepletedUraniumMass
+        [Attributes.Form_Property("Масса обедненного урана")]public int? DepletedUraniumMassId { get; set; }
+        public virtual RamAccess<double> DepletedUraniumMass
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double>(nameof(DepletedUraniumMass));
+                    return _dataAccess.Get<double>(nameof(DepletedUraniumMass));
                 }
 
                 {
@@ -204,11 +212,13 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(DepletedUraniumMass), value);
+                    _dataAccess.Set(nameof(DepletedUraniumMass), value);
                 }
                 OnPropertyChanged(nameof(DepletedUraniumMass));
             }
         }
+
+
         //DepletedUraniumMass property
     }
 }

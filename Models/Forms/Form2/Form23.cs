@@ -12,8 +12,8 @@ namespace Models
     {
         public Form23() : base()
         {
-            FormNum.Value = "23";
-            NumberOfFields.Value = 17;
+            //FormNum.Value = "23";
+            //NumberOfFields.Value = 17;
             Init();
             Validate_all();
         }
@@ -69,8 +69,8 @@ namespace Models
         }
 
         //StoragePlaceName property
-        [Attributes.Form_Property("Наименование ПХ")]
-        public RamAccess<string> StoragePlaceName
+        [Attributes.Form_Property("Наименование ПХ")]public int? StoragePlaceNameId { get; set; }
+        public virtual RamAccess<string> StoragePlaceName
         {
             get
             {
@@ -114,7 +114,7 @@ namespace Models
         //StoragePlaceName property
 
         //StoragePlaceNameNote property
-        public RamAccess<string> StoragePlaceNameNote
+        public virtual RamAccess<string> StoragePlaceNameNote
         {
             get
             {
@@ -146,8 +146,8 @@ namespace Models
         //StoragePlaceNameNote property
 
         //StoragePlaceCode property
-        [Attributes.Form_Property("Код ПХ")]
-        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
+        [Attributes.Form_Property("Код ПХ")]public int? StoragePlaceCodeId { get; set; }
+        public virtual RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
@@ -195,8 +195,8 @@ namespace Models
         //StoragePlaceCode property
 
         //ProjectVolume property
-        [Attributes.Form_Property("Проектный объем, куб. м")]
-        public RamAccess<string> ProjectVolume
+        [Attributes.Form_Property("Проектный объем, куб. м")]public int? ProjectVolumeId { get; set; }
+        public virtual RamAccess<string> ProjectVolume
         {
             get
             {
@@ -253,7 +253,7 @@ namespace Models
         //ProjectVolume property
 
         //ProjectVolumeNote property
-        public RamAccess<double> ProjectVolumeNote
+        public virtual RamAccess<double> ProjectVolumeNote
         {
             get
             {
@@ -282,8 +282,8 @@ namespace Models
         //ProjectVolumeNote property
 
         //CodeRAO property
-        [Attributes.Form_Property("Код РАО")]
-        public RamAccess<string> CodeRAO
+        [Attributes.Form_Property("Код РАО")]public int? CodeRAOId { get; set; }
+        public virtual RamAccess<string> CodeRAO
         {
             get
             {
@@ -324,8 +324,8 @@ namespace Models
         //CodeRAO property
 
         //Volume property
-        [Attributes.Form_Property("Разрешенный объем, куб. м")]
-        public RamAccess<string> Volume
+        [Attributes.Form_Property("Разрешенный объем, куб. м")]public int? VolumeId { get; set; }
+        public virtual RamAccess<string> Volume
         {
             get
             {
@@ -378,8 +378,8 @@ namespace Models
         //Volume property
 
         //Mass Property
-        [Attributes.Form_Property("Разрешенная масса, т")]
-        public RamAccess<string> Mass
+        [Attributes.Form_Property("Разрешенная масса, т")]public int? MassId { get; set; }
+        public virtual RamAccess<string> Mass
         {
             get
             {
@@ -432,8 +432,8 @@ namespace Models
         //Mass Property
 
         //QuantityOZIII property
-        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public RamAccess<int?> QuantityOZIII
+        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]public int? QuantityOZIIIId { get; set; }
+        public virtual RamAccess<int?> QuantityOZIII
         {
             get
             {
@@ -475,8 +475,8 @@ namespace Models
         //QuantityOZIII property
 
         //SummaryActivity property
-        [Attributes.Form_Property("Суммарная активность, Бк")]
-        public RamAccess<string> SummaryActivity
+        [Attributes.Form_Property("Суммарная активность, Бк")]public int? SummaryActivityId { get; set; }
+        public virtual RamAccess<string> SummaryActivity
         {
             get
             {
@@ -529,8 +529,8 @@ namespace Models
         //SummaryActivity property
 
         //DocumentNumber property
-        [Attributes.Form_Property("Номер документа")]
-        public RamAccess<string> DocumentNumber
+        [Attributes.Form_Property("Номер документа")]public int? DocumentNumberId { get; set; }
+        public virtual RamAccess<string> DocumentNumber
         {
             get
             {
@@ -569,7 +569,7 @@ namespace Models
         //DocumentNumber property
 
         //DocumentNumberRecoded property
-        public RamAccess<string> DocumentNumberRecoded
+        public virtual RamAccess<string> DocumentNumberRecoded
         {
             get
             {
@@ -602,8 +602,8 @@ namespace Models
         //DocumentNumberRecoded property
 
         //DocumentDate property
-        [Attributes.Form_Property("Дата документа")]
-        public RamAccess<string> DocumentDate
+        [Attributes.Form_Property("Дата документа")]public int? DocumentDateId { get; set; }
+        public virtual RamAccess<string> DocumentDate
         {
             get
             {
@@ -649,8 +649,8 @@ namespace Models
         //DocumentDate property
 
         //ExpirationDate property
-        [Attributes.Form_Property("Срок действия документа")]
-        public RamAccess<string> ExpirationDate
+        [Attributes.Form_Property("Срок действия документа")]public int? ExpirationDateId { get; set; }
+        public virtual RamAccess<string> ExpirationDate
         {
             get
             {
@@ -700,8 +700,8 @@ namespace Models
         //ExpirationDate property
 
         //DocumentName property
-        [Attributes.Form_Property("Наименование документа")]
-        public RamAccess<string> DocumentName
+        [Attributes.Form_Property("Наименование документа")]public int? DocumentNameId { get; set; }
+        public virtual RamAccess<string> DocumentName
         {
             get
             {

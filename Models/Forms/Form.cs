@@ -64,8 +64,8 @@ namespace Models.Abstracts
         public int Id { get; set; }
 
         //FormNum property
-        [Attributes.Form_Property("Форма")]
-        public RamAccess<string> FormNum
+        [Attributes.Form_Property("Форма")]public int? FormNumId { get; set; }
+        public virtual RamAccess<string> FormNum
         {
             get
             {
@@ -84,8 +84,9 @@ namespace Models.Abstracts
         }
         //FormNum property
 
+        public int? NumberOfFieldsId { get; set; }
         //NumberOfFields property
-        public RamAccess<int> NumberOfFields
+        public virtual RamAccess<int> NumberOfFields
         {
             get => DataAccess.Get<int>(nameof(NumberOfFields));
             set

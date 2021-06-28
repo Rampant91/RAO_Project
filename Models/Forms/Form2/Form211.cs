@@ -10,8 +10,8 @@ namespace Models
     {
         public Form211() : base()
         {
-            FormNum.Value = "211";
-            NumberOfFields.Value = 11;
+            //FormNum.Value = "211";
+            //NumberOfFields.Value = 11;
             Init();
             Validate_all();
         }
@@ -55,8 +55,8 @@ namespace Models
         }
 
         //PlotName property
-        [Attributes.Form_Property("Наименование участка")]
-        public RamAccess<string> PlotName
+        [Attributes.Form_Property("Наименование участка")]public int? PlotNameId { get; set; }
+        public virtual RamAccess<string> PlotName
         {
             get
             {
@@ -87,8 +87,8 @@ namespace Models
         //PlotName property
 
         //PlotKadastrNumber property
-        [Attributes.Form_Property("Кадастровый номер участка")]
-        public RamAccess<string> PlotKadastrNumber
+        [Attributes.Form_Property("Кадастровый номер участка")]public int? PlotKadastrNumberId { get; set; }
+        public virtual RamAccess<string> PlotKadastrNumber
         {
             get
             {
@@ -119,8 +119,8 @@ namespace Models
         //PlotKadastrNumber property
 
         //PlotCode property
-        [Attributes.Form_Property("Код участка")]
-        public RamAccess<string> PlotCode
+        [Attributes.Form_Property("Код участка")]public int? PlotCodeId { get; set; }
+        public virtual RamAccess<string> PlotCode
         {
             get
             {
@@ -151,8 +151,8 @@ namespace Models
         //PlotCode property
 
         //InfectedArea property
-        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public RamAccess<int> InfectedArea
+        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]public int? InfectedAreaId { get; set; }
+        public virtual RamAccess<int> InfectedArea
         {
             get
             {
@@ -183,8 +183,8 @@ namespace Models
         //InfectedArea property
 
         //Radionuclids property
-        [Attributes.Form_Property("Наименования радионуклидов")]
-        public RamAccess<string> Radionuclids
+        [Attributes.Form_Property("Наименования радионуклидов")]public int? RadionuclidsId { get; set; }
+        public virtual RamAccess<string> Radionuclids
         {
             get
             {
@@ -232,7 +232,7 @@ namespace Models
         //Radionuclids property
 
         //RadionuclidNameNote property
-        public RamAccess<string> RadionuclidNameNote
+        public virtual RamAccess<string> RadionuclidNameNote
         {
             get
             {
@@ -263,8 +263,8 @@ namespace Models
         //RadionuclidNameNote property
 
         //SpecificActivityOfPlot property
-        [Attributes.Form_Property("Удельная активность, Бк/г")]
-        public RamAccess<string> SpecificActivityOfPlot
+        [Attributes.Form_Property("Удельная активность, Бк/г")]public int? SpecificActivityOfPlotId { get; set; }
+        public virtual RamAccess<string> SpecificActivityOfPlot
         {
             get
             {
@@ -306,8 +306,8 @@ namespace Models
         //SpecificActivityOfPlot property
 
         //SpecificActivityOfLiquidPart property
-        [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]
-        public RamAccess<string> SpecificActivityOfLiquidPart
+        [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]public int? SpecificActivityOfLiquidPartId { get; set; }
+        public virtual RamAccess<string> SpecificActivityOfLiquidPart
         {
             get
             {
@@ -349,8 +349,8 @@ namespace Models
         //SpecificActivityOfLiquidPart property
 
         //SpecificActivityOfDensePart property
-        [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]
-        public RamAccess<string> SpecificActivityOfDensePart
+        [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]public int? SpecificActivityOfDensePartId { get; set; }
+        public virtual RamAccess<string> SpecificActivityOfDensePart
         {
             get => DataAccess.Get<string>(nameof(SpecificActivityOfDensePart));
             set

@@ -1,8 +1,8 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -12,51 +12,51 @@ namespace Models
     {
         public Form22() : base()
         {
-            FormNum.Value = "22";
-            NumberOfFields.Value = 25;
+            //FormNum.Value = "22";
+            //NumberOfFields.Value = 25;
             Init();
             Validate_all();
         }
 
         private void Init()
         {
-            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
             StoragePlaceName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
             StoragePlaceCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
             PackName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
             PackType.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
+            _dataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
             CodeRAO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
+            _dataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
             StatusRAO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(VolumeOutOfPack), VolumeOutOfPack_Validation, null);
+            _dataAccess.Init<string>(nameof(VolumeOutOfPack), VolumeOutOfPack_Validation, null);
             VolumeOutOfPack.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MassInPack), MassInPack_Validation, null);
+            _dataAccess.Init<string>(nameof(MassInPack), MassInPack_Validation, null);
             MassInPack.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
+            _dataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
             QuantityOZIII.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
+            _dataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
             TritiumActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
+            _dataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
             BetaGammaActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
+            _dataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
             TransuraniumActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
+            _dataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
             AlphaActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(VolumeInPack), VolumeInPack_Validation, null);
+            _dataAccess.Init<string>(nameof(VolumeInPack), VolumeInPack_Validation, null);
             VolumeInPack.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MassOutOfPack), MassOutOfPack_Validation, null);
+            _dataAccess.Init<string>(nameof(MassOutOfPack), MassOutOfPack_Validation, null);
             MassOutOfPack.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MainRadionuclids), MainRadionuclids_Validation, null);
+            _dataAccess.Init<string>(nameof(MainRadionuclids), MainRadionuclids_Validation, null);
             MainRadionuclids.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
+            _dataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
             Subsidy.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(PackQuantity), PackQuantity_Validation, null);
+            _dataAccess.Init<int?>(nameof(PackQuantity), PackQuantity_Validation, null);
             PackQuantity.PropertyChanged += InPropertyChanged;
         }
 
@@ -90,103 +90,102 @@ namespace Models
         }
 
         //StoragePlaceName property
-        [Attributes.Form_Property("Наименование ПХ")]
-        public RamAccess<string> StoragePlaceName
+        [Attributes.Form_Property("Наименование ПХ")]public int? StoragePlaceNameId { get; set; }
+        public virtual RamAccess<string> StoragePlaceName
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(StoragePlaceName));
+                    return _dataAccess.Get<string>(nameof(StoragePlaceName));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(StoragePlaceName), value);
+                    _dataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
         }
         //If change this change validation
-
+        
         private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
-            List<string> spr = new List<string>();
+            var spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
         //StoragePlaceName property
 
         //StoragePlaceNameNote property
-        public RamAccess<string> StoragePlaceNameNote
+        public virtual RamAccess<string> StoragePlaceNameNote
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
+                    return _dataAccess.Get<string>(nameof(StoragePlaceNameNote));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(StoragePlaceNameNote), value);
+                    _dataAccess.Set(nameof(StoragePlaceNameNote), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
         }
         //If change this change validation
-
+        
         private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;
-        }
+            value.ClearErrors(); return true;}
         //StoragePlaceNameNote property
 
         //StoragePlaceCode property
-        [Attributes.Form_Property("Код ПХ")]
-        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
+        [Attributes.Form_Property("Код ПХ")]public int? StoragePlaceCodeId { get; set; }
+        public virtual RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(StoragePlaceCode));
+                    return _dataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(StoragePlaceCode), value);
+                    _dataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
@@ -201,7 +200,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<string> spr = new List<string>();
+            var spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -212,109 +211,108 @@ namespace Models
         //StoragePlaceCode property
 
         //PackName property
-        [Attributes.Form_Property("Наименование упаковки")]
-        public RamAccess<string> PackName
+        [Attributes.Form_Property("Наименование упаковки")]public int? PackNameId { get; set; }
+        public virtual RamAccess<string> PackName
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(PackName));//OK
+                    return _dataAccess.Get<string>(nameof(PackName));//OK
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
 
-
+                
                 {
-                    DataAccess.Set(nameof(PackName), value);
+                    _dataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
         }
 
-
+        
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             if (value.Equals("без упаковки"))
             {
-                return false;
+return false;
             }
-            List<string> spr = new List<string>();
+            var spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             return true;
         }
         //PackName property
 
         //PackNameNote property
-        public RamAccess<string> PackNameNote
+        public virtual RamAccess<string> PackNameNote
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(PackNameNote));//OK
+                    return _dataAccess.Get<string>(nameof(PackNameNote));//OK
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(PackNameNote), value);
+                    _dataAccess.Set(nameof(PackNameNote), value);
                 }
                 OnPropertyChanged(nameof(PackNameNote));
             }
         }
 
-
+        
         private bool PackNameNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
-        }
+            value.ClearErrors(); return true;}
         //PackNameNote property
 
         //PackType property
-        [Attributes.Form_Property("Тип упаковки")]
-        public RamAccess<string> PackType
+        [Attributes.Form_Property("Тип упаковки")]public int? PackTypeId { get; set; }
+        public virtual RamAccess<string> PackType
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(PackType));//OK
+                    return _dataAccess.Get<string>(nameof(PackType));//OK
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
 
-
+                
                 {
-                    DataAccess.Set(nameof(PackType), value);
+                    _dataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -335,7 +333,7 @@ namespace Models
                 //    value.AddError( "Заполните примечание");
                 return true;
             }
-            List<string> spr = new List<string>();
+            var spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -346,90 +344,88 @@ namespace Models
         //PackType property
 
         //PackTypeRecoded property
-        public RamAccess<string> PackTypeRecoded
+        public virtual RamAccess<string> PackTypeRecoded
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(PackTypeRecoded), value);
+                    _dataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
 
-
+        
         private bool PackTypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
-        }
+            value.ClearErrors(); return true;}
         //PackTypeRecoded property
 
         //PackTypeNote property
-        public RamAccess<string> PackTypeNote
+        public virtual RamAccess<string> PackTypeNote
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(PackTypeNote));//OK
+                    return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(PackTypeNote), value);
+                    _dataAccess.Set(nameof(PackTypeNote), value);
                 }
                 OnPropertyChanged(nameof(PackTypeNote));
             }
         }
 
-
+        
         private bool PackTypeNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
-        }
+            value.ClearErrors(); return true;}
         //PackTypeNote property
 
         //PackQuantity property
-        [Attributes.Form_Property("Количество упаковок, шт.")]
-        public RamAccess<int?> PackQuantity
+        [Attributes.Form_Property("Количество упаковок, шт.")]public int? PackQuantityId { get; set; }
+        public virtual RamAccess<int?> PackQuantity
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<int?>(nameof(PackQuantity));
+                    return _dataAccess.Get<int?>(nameof(PackQuantity));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(PackQuantity), value);
+                    _dataAccess.Set(nameof(PackQuantity), value);
                 }
                 OnPropertyChanged(nameof(PackQuantity));
             }
@@ -450,29 +446,29 @@ namespace Models
             }
             return true;
         }
-        //PackQuantity property
+            //PackQuantity property
 
-        //CodeRAO property
-        [Attributes.Form_Property("Код РАО")]
-        public RamAccess<string> CodeRAO
+            //CodeRAO property
+            [Attributes.Form_Property("Код РАО")]public int? CodeRAOId { get; set; }
+        public virtual RamAccess<string> CodeRAO
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(CodeRAO));
+                    return _dataAccess.Get<string>(nameof(CodeRAO));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(CodeRAO), value);
+                    _dataAccess.Set(nameof(CodeRAO), value);
                 }
                 OnPropertyChanged(nameof(CodeRAO));
             }
@@ -482,7 +478,7 @@ namespace Models
         private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            Regex a = new Regex("^[0-9]{11}$");
+            var a = new Regex("^[0-9]{11}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -493,26 +489,26 @@ namespace Models
         //CodeRAO property
 
         //StatusRAO property
-        [Attributes.Form_Property("Статус РАО")]
-        public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
+        [Attributes.Form_Property("Статус РАО")]public int? StatusRAOId { get; set; }
+        public virtual RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(StatusRAO));
+                    return _dataAccess.Get<string>(nameof(StatusRAO));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(StatusRAO), value);
+                    _dataAccess.Set(nameof(StatusRAO), value);
                 }
                 OnPropertyChanged(nameof(StatusRAO));
             }
@@ -545,7 +541,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -555,43 +551,43 @@ namespace Models
         //StatusRAO property
 
         //VolumeInPack property
-        [Attributes.Form_Property("Объем с упаковкой, куб. м")]
-        public RamAccess<string> VolumeInPack
+        [Attributes.Form_Property("Объем с упаковкой, куб. м")]public int? VolumeInPackId { get; set; }
+        public virtual RamAccess<string> VolumeInPack
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(VolumeInPack));
+                    return _dataAccess.Get<string>(nameof(VolumeInPack));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(VolumeInPack), value);
+                    _dataAccess.Set(nameof(VolumeInPack), value);
                 }
                 OnPropertyChanged(nameof(VolumeInPack));
             }
         }
 
-
+        
         private bool VolumeInPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
             {
-                return false;
+return false;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -600,58 +596,58 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError( "Недопустимое значение"); return false;
             }
             return true;
         }
         //VolumeInPack property
 
         //MassInPack Property
-        [Attributes.Form_Property("Масса с упаковкой, т")]
-        public RamAccess<string> MassInPack
+        [Attributes.Form_Property("Масса с упаковкой, т")]public int? MassInPackId { get; set; }
+        public virtual RamAccess<string> MassInPack
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(MassInPack));
+                    return _dataAccess.Get<string>(nameof(MassInPack));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(MassInPack), value);
+                    _dataAccess.Set(nameof(MassInPack), value);
                 }
                 OnPropertyChanged(nameof(MassInPack));
             }
         }
 
-
+        
         private bool MassInPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
             {
-                return false;
+return false;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -660,7 +656,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -668,54 +664,54 @@ namespace Models
                 {
                     value.AddError("Число должно быть больше нуля"); return false;
                 }
-            }
+                }
             catch
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError( "Недопустимое значение"); return false;
             }
             return true;
         }
         //MassInPack Property
 
         //VolumeOutOfPack property
-        [Attributes.Form_Property("Объем без упаковки, куб. м")]
-        public RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
+        [Attributes.Form_Property("Объем без упаковки, куб. м")]public int? VolumeOutOfPackId { get; set; }
+        public virtual RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(VolumeOutOfPack));
+                    return _dataAccess.Get<string>(nameof(VolumeOutOfPack));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(VolumeOutOfPack), value);
+                    _dataAccess.Set(nameof(VolumeOutOfPack), value);
                 }
                 OnPropertyChanged(nameof(VolumeOutOfPack));
             }
         }
 
-
+        
         private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Equals(""))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                value.AddError( "Поле не заполнено");
+return false;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                value.AddError( "Недопустимое значение");
+return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -724,41 +720,41 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
             }
             catch
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError( "Недопустимое значение"); return false;
             }
             return true;
         }
         //VolumeOutOfPack property
 
         //MassOutOfPack Property
-        [Attributes.Form_Property("Масса без упаковки, т")]
-        public RamAccess<string> MassOutOfPack//SUMMARIZABLE
+        [Attributes.Form_Property("Масса без упаковки, т")]public int? MassOutOfPackId { get; set; }
+        public virtual RamAccess<string> MassOutOfPack//SUMMARIZABLE
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(MassOutOfPack));
+                    return _dataAccess.Get<string>(nameof(MassOutOfPack));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(MassOutOfPack), value);
+                    _dataAccess.Set(nameof(MassOutOfPack), value);
                 }
                 OnPropertyChanged(nameof(MassOutOfPack));
             }
@@ -785,7 +781,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -804,27 +800,27 @@ namespace Models
         //MassOutOfPack Property
 
         //QuantityOZIII property
-        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public RamAccess<int?> QuantityOZIII//SUMMARIZABLE
+        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]public int? QuantityOZIIIId { get; set; }
+        public virtual RamAccess<int?> QuantityOZIII//SUMMARIZABLE
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<int?>(nameof(QuantityOZIII));//OK
+                    return _dataAccess.Get<int?>(nameof(QuantityOZIII));//OK
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
 
-
+                
                 {
-                    DataAccess.Set(nameof(QuantityOZIII), value);
+                    _dataAccess.Set(nameof(QuantityOZIII), value);
                 }
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
@@ -843,26 +839,26 @@ namespace Models
         //QuantityOZIII property
 
         //TritiumActivity property
-        [Attributes.Form_Property("Активность трития, Бк")]
-        public RamAccess<string> TritiumActivity//SUMMARIZABLE
+        [Attributes.Form_Property("Активность трития, Бк")]public int? TritiumActivityId { get; set; }
+        public virtual RamAccess<string> TritiumActivity//SUMMARIZABLE
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(TritiumActivity));
+                    return _dataAccess.Get<string>(nameof(TritiumActivity));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(TritiumActivity), value);
+                    _dataAccess.Set(nameof(TritiumActivity), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivity));
             }
@@ -889,7 +885,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -904,26 +900,26 @@ namespace Models
         //TritiumActivity property
 
         //BetaGammaActivity property
-        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public RamAccess<string> BetaGammaActivity//SUMMARIZABLE
+        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]public int? BetaGammaActivityId { get; set; }
+        public virtual RamAccess<string> BetaGammaActivity//SUMMARIZABLE
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(BetaGammaActivity));
+                    return _dataAccess.Get<string>(nameof(BetaGammaActivity));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(BetaGammaActivity), value);
+                    _dataAccess.Set(nameof(BetaGammaActivity), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
@@ -950,7 +946,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -965,26 +961,26 @@ namespace Models
         //BetaGammaActivity property
 
         //AlphaActivity property
-        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public RamAccess<string> AlphaActivity//SUMMARIZABLE
+        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]public int? AlphaActivityId { get; set; }
+        public virtual RamAccess<string> AlphaActivity//SUMMARIZABLE
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(AlphaActivity));
+                    return _dataAccess.Get<string>(nameof(AlphaActivity));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(AlphaActivity), value);
+                    _dataAccess.Set(nameof(AlphaActivity), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivity));
             }
@@ -1011,7 +1007,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -1026,26 +1022,26 @@ namespace Models
         //AlphaActivity property
 
         //TransuraniumActivity property
-        [Attributes.Form_Property("Активность трансурановых, Бк")]
-        public RamAccess<string> TransuraniumActivity//SUMMARIZABLE
+        [Attributes.Form_Property("Активность трансурановых, Бк")]public int? TransuraniumActivityId { get; set; }
+        public virtual RamAccess<string> TransuraniumActivity//SUMMARIZABLE
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(TransuraniumActivity));
+                    return _dataAccess.Get<string>(nameof(TransuraniumActivity));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(TransuraniumActivity), value);
+                    _dataAccess.Set(nameof(TransuraniumActivity), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivity));
             }
@@ -1072,7 +1068,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -1087,26 +1083,26 @@ namespace Models
         //TransuraniumActivity property
 
         //MainRadionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> MainRadionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? MainRadionuclidsId { get; set; }
+        public virtual RamAccess<string> MainRadionuclids
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(MainRadionuclids));
+                    return _dataAccess.Get<string>(nameof(MainRadionuclids));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(MainRadionuclids), value);
+                    _dataAccess.Set(nameof(MainRadionuclids), value);
                 }
                 OnPropertyChanged(nameof(MainRadionuclids));
             }
@@ -1116,7 +1112,7 @@ namespace Models
         private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            List<string> spr = new List<string>();
+            var spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -1127,26 +1123,26 @@ namespace Models
         //MainRadionuclids property
 
         //Subsidy property
-        [Attributes.Form_Property("Субсидия, %")]
-        public RamAccess<string> Subsidy // 0<number<=100 or empty.
+        [Attributes.Form_Property("Субсидия, %")]public int? SubsidyId { get; set; }
+        public virtual RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
             {
-
+                
                 {
-                    return DataAccess.Get<string>(nameof(Subsidy));
+                    return _dataAccess.Get<string>(nameof(Subsidy));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
 
-
+                
                 {
-                    DataAccess.Set(nameof(Subsidy), value);
+                    _dataAccess.Set(nameof(Subsidy), value);
                 }
                 OnPropertyChanged(nameof(Subsidy));
             }
@@ -1158,7 +1154,7 @@ namespace Models
             value.ClearErrors();
             try
             {
-                int tmp = int.Parse(value.Value);
+                int tmp = Int32.Parse(value.Value);
                 if (!((tmp > 0) && (tmp <= 100)))
                 {
                     value.AddError("Недопустимое значение"); return false;
@@ -1173,33 +1169,32 @@ namespace Models
         //Subsidy property
 
         //FcpNumber property
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public RamAccess<string> FcpNumber
+        [Attributes.Form_Property("Номер мероприятия ФЦП")]public int? FcpNumberId { get; set; }
+        public virtual RamAccess<string> FcpNumber
         {
             get
             {
                 {
-                    return DataAccess.Get<string>(nameof(FcpNumber));
+                    return _dataAccess.Get<string>(nameof(FcpNumber));
                 }
-
+                
                 {
-
+                    
                 }
             }
             set
             {
                 {
-                    DataAccess.Set(nameof(FcpNumber), value);
+                    _dataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
 
-
+        
         private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
-        }
+            value.ClearErrors(); return true;}
         //FcpNumber property
     }
 }

@@ -9,8 +9,8 @@ namespace Models
     {
         public Form32_3() : base()
         {
-            FormNum.Value = "32_3";
-            NumberOfFields.Value = 2;
+            //FormNum.Valueue = "32_3";
+            //NumberOfFields.Valueue = 2;
         }
 
         [Attributes.Form_Property("Форма")]
@@ -20,14 +20,14 @@ namespace Models
         }
 
         //IdName property
-        [Attributes.Form_Property("Идентификатор")]
-        public RamAccess<string> IdName
+        [Attributes.Form_Property("Идентификатор")]public int? IdNameId { get; set; }
+        public virtual RamAccess<string> IdName
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(IdName));
+                    return _dataAccess.Get<string>(nameof(IdName));
                 }
 
                 {
@@ -39,7 +39,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(IdName), value);
+                    _dataAccess.Set(nameof(IdName), value);
                 }
                 OnPropertyChanged(nameof(IdName));
             }
@@ -48,15 +48,15 @@ namespace Models
 
         //IdName Property
 
-        //Val property
-        [Attributes.Form_Property("Значение")]
-        public RamAccess<string> Val
+        //Value property
+        [Attributes.Form_Property("Значение")]public int? ValueId { get; set; }
+        public virtual RamAccess<string> Value
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Val));
+                    return _dataAccess.Get<string>(nameof(Value));
                 }
 
                 {
@@ -68,13 +68,13 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Val), value);
+                    _dataAccess.Set(nameof(Value), value);
                 }
-                OnPropertyChanged(nameof(Val));
+                OnPropertyChanged(nameof(Value));
             }
         }
 
 
-        //Val property
+        //Value property
     }
 }

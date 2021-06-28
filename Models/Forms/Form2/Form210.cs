@@ -9,8 +9,8 @@ namespace Models
     {
         public Form210() : base()
         {
-            FormNum.Value = "210";
-            NumberOfFields.Value = 12;
+            //FormNum.Value = "210";
+            //NumberOfFields.Value = 12;
             Init();
             Validate_all();
         }
@@ -53,15 +53,15 @@ namespace Models
             FcpNumber_Validation(FcpNumber);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property("Форма")]    
         public override bool Object_Validation()
         {
             return false;
         }
 
         //IndicatorName property
-        [Attributes.Form_Property("Наименование показателя")]
-        public RamAccess<string> IndicatorName
+        [Attributes.Form_Property("Наименование показателя")]public int? IndicatorNameId { get; set; }
+        public virtual RamAccess<string> IndicatorName
         {
             get => DataAccess.Get<string>(nameof(IndicatorName));
             set
@@ -78,8 +78,8 @@ namespace Models
         //IndicatorName property
 
         //PlotName property
-        [Attributes.Form_Property("Наименование участка")]
-        public RamAccess<string> PlotName
+        [Attributes.Form_Property("Наименование участка")]public int? PlotNameId { get; set; }
+        public virtual RamAccess<string> PlotName
         {
             get
             {
@@ -110,8 +110,8 @@ namespace Models
         //PlotName property
 
         //PlotKadastrNumber property
-        [Attributes.Form_Property("Кадастровый номер участка")]
-        public RamAccess<string> PlotKadastrNumber
+        [Attributes.Form_Property("Кадастровый номер участка")]public int? PlotKadastrNumberId { get; set; }
+        public virtual RamAccess<string> PlotKadastrNumber
         {
             get
             {
@@ -142,8 +142,8 @@ namespace Models
         //PlotKadastrNumber property
 
         //PlotCode property
-        [Attributes.Form_Property("Код участка")]
-        public RamAccess<string> PlotCode
+        [Attributes.Form_Property("Код участка")]public int? PlotCodeId { get; set; }
+        public virtual RamAccess<string> PlotCode
         {
             get
             {
@@ -174,8 +174,8 @@ namespace Models
         //PlotCode property
 
         //InfectedArea property
-        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public RamAccess<int?> InfectedArea
+        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]public int? InfectedAreaId { get; set; }
+        public virtual RamAccess<int?> InfectedArea
         {
             get
             {
@@ -206,8 +206,8 @@ namespace Models
         //InfectedArea property
 
         //AvgGammaRaysDosePower property
-        [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]
-        public RamAccess<double> AvgGammaRaysDosePower
+        [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]public int? AvgGammaRaysDosePowerId { get; set; }
+        public virtual RamAccess<double> AvgGammaRaysDosePower
         {
             get
             {
@@ -238,8 +238,8 @@ namespace Models
         //AvgGammaRaysDosePower property
 
         //MaxGammaRaysDosePower property
-        [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
-        public RamAccess<double> MaxGammaRaysDosePower
+        [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]public int? MaxGammaRaysDosePowerId { get; set; }
+        public virtual RamAccess<double> MaxGammaRaysDosePower
         {
             get
             {
@@ -270,8 +270,8 @@ namespace Models
         //MaxGammaRaysDosePower property
 
         //WasteDensityAlpha property
-        [Attributes.Form_Property("Средняя плотность загрязнения альфа-излучающими радионуклидами, Бк/кв. м")]
-        public RamAccess<double> WasteDensityAlpha
+        [Attributes.Form_Property("Средняя плотность загрязнения альфа-излучающими радионуклидами, Бк/кв. м")]public int? WasteDensityAlphaId { get; set; }
+        public virtual RamAccess<double> WasteDensityAlpha
         {
             get
             {
@@ -302,8 +302,8 @@ namespace Models
         //WasteDensityAlpha property
 
         //WasteDensityBeta property
-        [Attributes.Form_Property("Средняя плотность загрязнения бета-излучающими радионуклидами, Бк/кв. м")]
-        public RamAccess<double> WasteDensityBeta
+        [Attributes.Form_Property("Средняя плотность загрязнения бета-излучающими радионуклидами, Бк/кв. м")]public int? WasteDensityBetaId { get; set; }
+        public virtual RamAccess<double> WasteDensityBeta
         {
             get
             {
@@ -334,8 +334,8 @@ namespace Models
         //WasteDensityBeta property
 
         //FcpNumber property
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public RamAccess<string> FcpNumber
+        [Attributes.Form_Property("Номер мероприятия ФЦП")]public int? FcpNumberId { get; set; }
+        public virtual RamAccess<string> FcpNumber
         {
             get
             {

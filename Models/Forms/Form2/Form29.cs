@@ -10,8 +10,8 @@ namespace Models
     {
         public Form29() : base()
         {
-            FormNum.Value = "29";
-            NumberOfFields.Value = 8;
+            //FormNum.Value = "29";
+            //NumberOfFields.Value = 8;
             Init();
             Validate_all();
         }
@@ -43,8 +43,8 @@ namespace Models
         }
 
         //WasteSourceName property
-        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
-        public RamAccess<string> WasteSourceName
+        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]public int? WasteSourceNameId { get; set; }
+        public virtual RamAccess<string> WasteSourceName
         {
             get
             {
@@ -76,8 +76,8 @@ namespace Models
         //WasteSourceName property
 
         //RadionuclidName property
-        [Attributes.Form_Property("Радионуклид")]
-        public RamAccess<string> RadionuclidName
+        [Attributes.Form_Property("Радионуклид")]public int? RadionuclidNameId { get; set; }
+        public virtual RamAccess<string> RadionuclidName
         {
             get
             {
@@ -109,8 +109,8 @@ namespace Models
         //RadionuclidName property
 
         //AllowedActivity property
-        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
-        public RamAccess<string> AllowedActivity
+        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]public int? AllowedActivityId { get; set; }
+        public virtual RamAccess<string> AllowedActivity
         {
             get
             {
@@ -170,7 +170,7 @@ namespace Models
         //AllowedActivity property
 
         //AllowedActivityNote property
-        public RamAccess<string> AllowedActivityNote
+        public virtual RamAccess<string> AllowedActivityNote
         {
             get
             {
@@ -202,8 +202,8 @@ namespace Models
         //AllowedActivityNote property
 
         //FactedActivity property
-        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
-        public RamAccess<string> FactedActivity
+        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]public int? FactedActivityId { get; set; }
+        public virtual RamAccess<string> FactedActivity
         {
             get
             {
@@ -260,7 +260,7 @@ namespace Models
         //FactedActivity property
 
         //FactedActivityNote property
-        public RamAccess<string> FactedActivityNote
+        public virtual RamAccess<string> FactedActivityNote
         {
             get
             {

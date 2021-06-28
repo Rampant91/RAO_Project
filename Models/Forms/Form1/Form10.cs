@@ -11,8 +11,8 @@ namespace Models
     {
         public Form10() : base()
         {
-            NumberOfFields.Value = 19;
-            FormNum.Value = "10";
+            ////NumberOfFields.Value = 19;
+            ////FormNum.Value = "10";
             Init_base();
             Validate_base();
         }
@@ -69,17 +69,17 @@ namespace Models
             Okopf_Validation(Okopf);
             Inn_Validation(Inn);
             Kpp_Validation(Kpp);
-            Kpp_Validation(RegNo);
-            Kpp_Validation(OrganUprav);
-            Kpp_Validation(SubjectRF);
-            Kpp_Validation(JurLico);
-            Kpp_Validation(ShortJurLico);
-            Kpp_Validation(JurLicoAddress);
-            Kpp_Validation(JurLicoFactAddress);
-            Kpp_Validation(GradeFIO);
-            Kpp_Validation(Telephone);
-            Kpp_Validation(Fax);
-            Kpp_Validation(Email);
+            RegNo_Validation(RegNo);
+            OrganUprav_Validation(OrganUprav);
+            SubjectRF_Validation(SubjectRF);
+            JurLico_Validation(JurLico);
+            ShortJurLico_Validation(ShortJurLico);
+            JurLicoAddress_Validation(JurLicoAddress);
+            JurLicoFactAddress_Validation(JurLicoFactAddress);
+            GradeFIO_Validation(GradeFIO);
+            Telephone_Validation(Telephone);
+            Fax_Validation(Fax);
+            Email_Validation(Email);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -89,8 +89,9 @@ namespace Models
         }
 
         //RegNo property
+        public int? RegNoId { get; set; }
         [Attributes.Form_Property("Рег. №")]
-        public RamAccess<string> RegNo
+        public virtual RamAccess<string> RegNo
         {
             get => DataAccess.Get<string>(nameof(RegNo));
             set
@@ -107,8 +108,9 @@ namespace Models
         //RegNo property
 
         //OrganUprav property
+        public int? OrganUpravId { get; set; }
         [Attributes.Form_Property("Орган управления")]
-        public RamAccess<string> OrganUprav
+        public virtual RamAccess<string> OrganUprav
         {
             get => DataAccess.Get<string>(nameof(OrganUprav));
             set
@@ -126,8 +128,9 @@ namespace Models
         //OrganUprav property
 
         //SubjectRF property
+        public int? SubjectRFId { get; set; }
         [Attributes.Form_Property("Субъект РФ")]
-        public RamAccess<string> SubjectRF
+        public virtual RamAccess<string> SubjectRF
         {
             get => DataAccess.Get<string>(nameof(SubjectRF));
             set
@@ -145,8 +148,9 @@ namespace Models
         //SubjectRF property
 
         //JurLico property
+        public int? JurLicoId { get; set; }
         [Attributes.Form_Property("Юр. лицо")]
-        public RamAccess<string> JurLico
+        public virtual RamAccess<string> JurLico
         {
             get => DataAccess.Get<string>(nameof(JurLico));
             set
@@ -163,8 +167,9 @@ namespace Models
         //JurLico property
 
         //ShortJurLico property
+        public int? ShortJurLicoId { get; set; }
         [Attributes.Form_Property("Краткое наименование юр. лица")]
-        public RamAccess<string> ShortJurLico
+        public virtual RamAccess<string> ShortJurLico
         {
             get => DataAccess.Get<string>(nameof(ShortJurLico));
             set
@@ -181,8 +186,9 @@ namespace Models
         //ShortJurLico property
 
         //JurLicoAddress property
+        public int? JurLicoAddressId { get; set; }
         [Attributes.Form_Property("Адрес юр. лица")]
-        public RamAccess<string> JurLicoAddress
+        public virtual RamAccess<string> JurLicoAddress
         {
             get
             {
@@ -212,8 +218,9 @@ namespace Models
         //JurLicoAddress property
 
         //JurLicoFactAddress property
+        public int? JurLicoFactAddressId { get; set; }
         [Attributes.Form_Property("Фактический адрес юр. лица")]
-        public RamAccess<string> JurLicoFactAddress
+        public virtual RamAccess<string> JurLicoFactAddress
         {
             get
             {
@@ -243,8 +250,8 @@ namespace Models
         //JurLicoFactAddress property
 
         //GradeFIO property
-        [Attributes.Form_Property("ФИО, должность")]
-        public RamAccess<string> GradeFIO
+        [Attributes.Form_Property("ФИО, должность")]public int? GradeFIOId { get; set; }
+        public virtual RamAccess<string> GradeFIO
         {
             get
             {
@@ -274,8 +281,8 @@ namespace Models
         //GradeFIO property
 
         //Telephone property
-        [Attributes.Form_Property("Телефон")]
-        public RamAccess<string> Telephone
+        [Attributes.Form_Property("Телефон")]public int? TelephoneId { get; set; }
+        public virtual RamAccess<string> Telephone
         {
             get
             {
@@ -306,8 +313,8 @@ namespace Models
         //Telephone property
 
         //Fax property
-        [Attributes.Form_Property("Факс")]
-        public RamAccess<string> Fax
+        [Attributes.Form_Property("Факс")]public int? FaxId { get; set; }
+        public virtual RamAccess<string> Fax
         {
             get
             {
@@ -338,8 +345,8 @@ namespace Models
         //Fax property
 
         //Email property
-        [Attributes.Form_Property("Эл. почта")]
-        public RamAccess<string> Email
+        [Attributes.Form_Property("Эл. почта")]public int? EmailId { get; set; }
+        public virtual RamAccess<string> Email
         {
             get
             {
@@ -369,8 +376,8 @@ namespace Models
         //Email property
 
         //Okpo property
-        [Attributes.Form_Property("ОКПО")]
-        public RamAccess<string> Okpo
+        [Attributes.Form_Property("ОКПО")]public int? OkpoId { get; set; }
+        public virtual RamAccess<string> Okpo
         {
             get
             {
@@ -413,8 +420,8 @@ namespace Models
         //Okpo property
 
         //Okved property
-        [Attributes.Form_Property("ОКВЭД")]
-        public RamAccess<string> Okved
+        [Attributes.Form_Property("ОКВЭД")]public int? OkvedId { get; set; }
+        public virtual RamAccess<string> Okved
         {
             get
             {
@@ -451,8 +458,8 @@ namespace Models
         //Okved property
 
         //Okogu property
-        [Attributes.Form_Property("ОКОГУ")]
-        public RamAccess<string> Okogu
+        [Attributes.Form_Property("ОКОГУ")]public int? OkoguId { get; set; }
+        public virtual RamAccess<string> Okogu
         {
             get
             {
@@ -489,8 +496,8 @@ namespace Models
         //Okogu property
 
         //Oktmo property
-        [Attributes.Form_Property("ОКТМО")]
-        public RamAccess<string> Oktmo
+        [Attributes.Form_Property("ОКТМО")]public int? OktmoId { get; set; }
+        public virtual RamAccess<string> Oktmo
         {
             get
             {
@@ -527,8 +534,8 @@ namespace Models
         //Oktmo property
 
         //Inn property
-        [Attributes.Form_Property("ИНН")]
-        public RamAccess<string> Inn
+        [Attributes.Form_Property("ИНН")]public int? InnId { get; set; }
+        public virtual RamAccess<string> Inn
         {
             get
             {
@@ -565,8 +572,8 @@ namespace Models
         //Inn property
 
         //Kpp property
-        [Attributes.Form_Property("КПП")]
-        public RamAccess<string> Kpp
+        [Attributes.Form_Property("КПП")]public int? KppId { get; set; }
+        public virtual RamAccess<string> Kpp
         {
             get
             {
@@ -603,8 +610,8 @@ namespace Models
         //Kpp property
 
         //Okopf property
-        [Attributes.Form_Property("ОКОПФ")]
-        public RamAccess<string> Okopf
+        [Attributes.Form_Property("ОКОПФ")]public int? OkopfId { get; set; }
+        public virtual RamAccess<string> Okopf
         {
             get
             {
@@ -641,8 +648,8 @@ namespace Models
         //Okopf property
 
         //Okfs property
-        [Attributes.Form_Property("ОКФС")]
-        public RamAccess<string> Okfs
+        [Attributes.Form_Property("ОКФС")]public int? OkfsId { get; set; }
+        public virtual RamAccess<string> Okfs
         {
             get
             {

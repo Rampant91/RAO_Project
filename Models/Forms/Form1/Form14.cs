@@ -12,8 +12,8 @@ namespace Models
     {
         public Form14() : base()
         {
-            FormNum.Value = "14";
-            NumberOfFields.Value = 35;
+            //FormNum.Value = "14";
+            //NumberOfFields.Value = 35;
             Init();
             Validate_all();
         }
@@ -90,8 +90,8 @@ namespace Models
         }
 
         //PassportNumber property
-        [Attributes.Form_Property("Номер паспорта")]
-        public RamAccess<string> PassportNumber
+        [Attributes.Form_Property("Номер паспорта")]public int? PassportNumberId { get; set; }
+        public virtual RamAccess<string> PassportNumber
         {
             get
             {
@@ -175,7 +175,7 @@ namespace Models
         }
 
         //PassportNumberNote property
-        public RamAccess<string> PassportNumberNote
+        public virtual RamAccess<string> PassportNumberNote
         {
             get
             {
@@ -214,8 +214,8 @@ namespace Models
         //PassportNumberNote property
 
         //PassportNumberRecoded property
-        [Attributes.Form_Property("Номер упаковки")]
-        public RamAccess<string> PassportNumberRecoded
+        public int? PassportNumberRecodedId { get; set; }
+        public virtual RamAccess<string> PassportNumberRecoded
         {
             get
             {
@@ -248,8 +248,8 @@ namespace Models
         //PassportNumberRecoded property
 
         //Name property
-        [Attributes.Form_Property("Наименование")]
-        public RamAccess<string> Name
+        [Attributes.Form_Property("Наименование")]public int? NameId { get; set; }
+        public virtual RamAccess<string> Name
         {
             get
             {
@@ -288,8 +288,8 @@ namespace Models
         //Name property
 
         //Sort property
-        [Attributes.Form_Property("Вид")]
-        public RamAccess<byte?> Sort
+        [Attributes.Form_Property("Вид")]public int? SortId { get; set; }
+        public virtual RamAccess<byte?> Sort
         {
             get
             {
@@ -333,8 +333,8 @@ namespace Models
         //Sort property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]
-        public RamAccess<string> Radionuclids
+        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public virtual RamAccess<string> Radionuclids
         {
             get
             {
@@ -383,8 +383,8 @@ namespace Models
         //Radionuclids property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]
-        public RamAccess<string> Activity
+        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public virtual RamAccess<string> Activity
         {
             get
             {
@@ -439,8 +439,8 @@ namespace Models
         //Activity property
 
         //ActivityMeasurementDate property
-        [Attributes.Form_Property("Дата измерения активности")]
-        public RamAccess<string> ActivityMeasurementDate
+        [Attributes.Form_Property("Дата измерения активности")]public int? ActivityMeasurementDateId { get; set; }
+        public virtual RamAccess<string> ActivityMeasurementDate
         {
             get
             {
@@ -468,8 +468,8 @@ namespace Models
         //ActivityMeasurementDate property
 
         //Volume property
-        [Attributes.Form_Property("Объем, куб. м")]
-        public RamAccess<string> Volume
+        [Attributes.Form_Property("Объем, куб. м")]public int? VolumeId { get; set; }
+        public virtual RamAccess<string> Volume
         {
             get => DataAccess.Get<string>(nameof(Volume));
             set
@@ -510,8 +510,8 @@ namespace Models
         //Volume property
 
         //Mass Property
-        [Attributes.Form_Property("Масса, кг")]
-        public RamAccess<string> Mass
+        [Attributes.Form_Property("Масса, кг")]public int? MassId { get; set; }
+        public virtual RamAccess<string> Mass
         {
             get
             {
@@ -564,8 +564,9 @@ namespace Models
         //Mass Property
 
         //AggregateState property
+public int? AggregateStateId { get; set; }
         [Attributes.Form_Property("Агрегатное состояние")]
-        public RamAccess<byte?> AggregateState//1 2 3
+        public virtual RamAccess<byte?> AggregateState//1 2 3
         {
             get
             {
@@ -608,8 +609,8 @@ namespace Models
         //AggregateState property
 
         //PropertyCode property
-        [Attributes.Form_Property("Код собственности")]
-        public RamAccess<byte?> PropertyCode
+        [Attributes.Form_Property("Код собственности")]public int? PropertyCodeId { get; set; }
+        public virtual RamAccess<byte?> PropertyCode
         {
             get => DataAccess.Get<byte?>(nameof(PropertyCode));//OK
             set
@@ -643,7 +644,7 @@ namespace Models
         //PropertyCode property
 
         //OwnerNote property
-        public RamAccess<string> OwnerNote
+        public virtual RamAccess<string> OwnerNote
         {
             get
             {
@@ -683,8 +684,8 @@ namespace Models
         //OwnerNote property
 
         //Owner property
-        [Attributes.Form_Property("Владелец")]
-        public RamAccess<string> Owner
+        [Attributes.Form_Property("Владелец")]public int? OwnerId { get; set; }
+        public virtual RamAccess<string> Owner
         {
             get
             {
@@ -740,8 +741,8 @@ namespace Models
         //Owner property
 
         //ProviderOrRecieverOKPO property
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]
-        public RamAccess<string> ProviderOrRecieverOKPO
+        [Attributes.Form_Property("ОКПО поставщика/получателя")]public int? ProviderOrRecieverOKPOId { get; set; }
+        public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
@@ -810,7 +811,7 @@ namespace Models
         //ProviderOrRecieverOKPO property
 
         //ProviderOrRecieverOKPONote property
-        public RamAccess<string> ProviderOrRecieverOKPONote
+        public virtual RamAccess<string> ProviderOrRecieverOKPONote
         {
             get
             {
@@ -849,8 +850,8 @@ namespace Models
         //ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
-        [Attributes.Form_Property("ОКПО перевозчика")]
-        public RamAccess<string> TransporterOKPO
+        [Attributes.Form_Property("ОКПО перевозчика")]public int? TransporterOKPOId { get; set; }
+        public virtual RamAccess<string> TransporterOKPO
         {
             get
             {
@@ -907,7 +908,7 @@ namespace Models
         //TransporterOKPO property
 
         //TransporterOKPONote property
-        public RamAccess<string> TransporterOKPONote
+        public virtual RamAccess<string> TransporterOKPONote
         {
             get
             {
@@ -940,8 +941,8 @@ namespace Models
         //TransporterOKPONote property
 
         //PackName property
-        [Attributes.Form_Property("Наименование упаковки")]
-        public RamAccess<string> PackName
+        [Attributes.Form_Property("Наименование упаковки")]public int? PackNameId { get; set; }
+        public virtual RamAccess<string> PackName
         {
             get
             {
@@ -987,7 +988,7 @@ namespace Models
         //PackName property
 
         //PackNameNote property
-        public RamAccess<string> PackNameNote
+        public virtual RamAccess<string> PackNameNote
         {
             get
             {
@@ -1020,8 +1021,8 @@ namespace Models
         //PackNameNote property
 
         //PackType property
-        [Attributes.Form_Property("Тип упаковки")]
-        public RamAccess<string> PackType
+        [Attributes.Form_Property("Тип упаковки")]public int? PackTypeId { get; set; }
+        public virtual RamAccess<string> PackType
         {
             get
             {
@@ -1067,7 +1068,7 @@ namespace Models
         //PackType property
 
         //PackTypeRecoded property
-        public RamAccess<string> PackTypeRecoded
+        public virtual RamAccess<string> PackTypeRecoded
         {
             get
             {
@@ -1100,7 +1101,7 @@ namespace Models
         //PackTypeRecoded property
 
         //PackTypeNote property
-        public RamAccess<string> PackTypeNote
+        public virtual RamAccess<string> PackTypeNote
         {
             get
             {
@@ -1133,8 +1134,8 @@ namespace Models
         //PackTypeNote property
 
         //PackNumber property
-        [Attributes.Form_Property("Номер упаковки")]
-        public RamAccess<string> PackNumber
+        [Attributes.Form_Property("Номер упаковки")]public int? PackNumberId { get; set; }
+        public virtual RamAccess<string> PackNumber
         {
             get
             {
@@ -1179,7 +1180,7 @@ namespace Models
         //PackNumber property
 
         //PackNumberNote property
-        public RamAccess<string> PackNumberNote
+        public virtual RamAccess<string> PackNumberNote
         {
             get
             {
@@ -1219,8 +1220,8 @@ namespace Models
         //PackNumberNote property
 
         //PackNumberRecoded property
-        [Attributes.Form_Property("Номер упаковки")]
-        public RamAccess<string> PackNumberRecoded
+        public int? PackNumberRecodedId { get; set; }
+        public virtual RamAccess<string> PackNumberRecoded
         {
             get
             {
@@ -1269,7 +1270,7 @@ namespace Models
         }
 
         //DocumentNumberNote property
-        public RamAccess<string> DocumentNumberNote
+        public virtual RamAccess<string> DocumentNumberNote
         {
             get
             {
