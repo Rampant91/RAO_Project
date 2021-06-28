@@ -1,13 +1,8 @@
 ﻿using Models.DataAccess;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Runtime.CompilerServices;
-using System.ComponentModel.DataAnnotations;
-using System.Collections;
 using System.ComponentModel;
-using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Models.Abstracts
 {
@@ -26,21 +21,21 @@ namespace Models.Abstracts
 
         private void Init_base()
         {
-            _dataAccess.Init<short?>(nameof(OperationCode), OperationCode_Validation, null);
+            DataAccess.Init<short?>(nameof(OperationCode), OperationCode_Validation, null);
             OperationCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(OperationDate), OperationDate_Validation, null);
+            DataAccess.Init<string>(nameof(OperationDate), OperationDate_Validation, null);
             OperationDate.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
+            DataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
             DocumentNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<byte?>(nameof(DocumentVid), DocumentVid_Validation, null);
+            DataAccess.Init<byte?>(nameof(DocumentVid), DocumentVid_Validation, null);
             DocumentNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(DocumentNumberRecoded), DocumentNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(DocumentNumberRecoded), DocumentNumberRecoded_Validation, null);
             DocumentNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
+            DataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
             DocumentDate.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, 0);
+            DataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, 0);
             NumberInOrder.PropertyChanged += InPropertyChanged;
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
+            //DataAccess.Init<string>(nameof(), _Validation, null);
         }
         protected void Validate_base()
         {
@@ -58,19 +53,16 @@ namespace Models.Abstracts
         [Attributes.Form_Property("№ п/п")]
         public RamAccess<int> NumberInOrder
         {
-            get
-            {
-                    return _dataAccess.Get<int>(nameof(NumberInOrder));
-            }
+            get => DataAccess.Get<int>(nameof(NumberInOrder));
             set
             {
-                    _dataAccess.Set(nameof(NumberInOrder), value);
+                DataAccess.Set(nameof(NumberInOrder), value);
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
         private bool NumberInOrder_Validation(RamAccess<int> value)
         {
-            value.ClearErrors(); 
+            value.ClearErrors();
             return true;
         }
         //NumberInOrder property
@@ -81,11 +73,11 @@ namespace Models.Abstracts
         //{
         //    get
         //    {
-        //            return _dataAccess.Get<byte>(nameof(CorrectionNumber));
+        //            return DataAccess.Get<byte>(nameof(CorrectionNumber));
         //    }
         //    set
         //    {
-        //            _dataAccess.Set(nameof(CorrectionNumber), value);
+        //            DataAccess.Set(nameof(CorrectionNumber), value);
         //        OnPropertyChanged(nameof(CorrectionNumber));
         //    }
         //}
@@ -99,31 +91,25 @@ namespace Models.Abstracts
         [Attributes.Form_Property("Код")]
         public RamAccess<short?> OperationCode
         {
-            get
-            {
-                    return _dataAccess.Get<short?>(nameof(OperationCode));
-            }
+            get => DataAccess.Get<short?>(nameof(OperationCode));
             set
             {
-                    _dataAccess.Set(nameof(OperationCode), value);
+                DataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
         protected virtual bool OperationCode_Validation(RamAccess<short?> arg) { return true; }
 
         //OprationCode property
-        
+
         //OperationDate property
         [Attributes.Form_Property("Дата операции")]
         public RamAccess<string> OperationDate
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(OperationDate));
-            }
+            get => DataAccess.Get<string>(nameof(OperationDate));
             set
             {
-                    _dataAccess.Set(nameof(OperationDate), value);
+                DataAccess.Set(nameof(OperationDate), value);
                 OnPropertyChanged(nameof(OperationDate));
             }
         }
@@ -133,20 +119,20 @@ namespace Models.Abstracts
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -156,13 +142,10 @@ return false;
         [Attributes.Form_Property("Вид документа")]
         public RamAccess<byte?> DocumentVid
         {
-            get
-            {
-                    return _dataAccess.Get<byte?>(nameof(DocumentVid));//Ok
-            }
+            get => DataAccess.Get<byte?>(nameof(DocumentVid));//Ok
             set
             {
-                    _dataAccess.Set(nameof(DocumentVid), value);
+                DataAccess.Set(nameof(DocumentVid), value);
                 OnPropertyChanged(nameof(DocumentVid));
             }
         }
@@ -195,10 +178,12 @@ return false;
                 new Tuple<byte, string>(15,""),
                 new Tuple<byte, string>(19,"")
             };   //HERE BINDS SPRAVOCHNICK
-            foreach (var item in spr)
+            foreach (Tuple<byte, string> item in spr)
             {
                 if (value.Value == item.Item1)
+                {
                     return true;
+                }
             }
             value.AddError("Недопустимое значение");
             return false;
@@ -209,13 +194,10 @@ return false;
         [Attributes.Form_Property("Номер документа")]
         public RamAccess<string> DocumentNumber
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(DocumentNumber));//Ok
-            }
+            get => DataAccess.Get<string>(nameof(DocumentNumber));//Ok
             set
             {
-                    _dataAccess.Set(nameof(DocumentNumber), value);
+                DataAccess.Set(nameof(DocumentNumber), value);
                 OnPropertyChanged(nameof(DocumentNumber));
             }
         }
@@ -227,33 +209,28 @@ return false;
         //DocumentNumberRecoded property
         public RamAccess<string> DocumentNumberRecoded
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(DocumentNumberRecoded));//ok
-            }
+            get => DataAccess.Get<string>(nameof(DocumentNumberRecoded));//ok
             set
             {
-                    _dataAccess.Set(nameof(DocumentNumberRecoded), value);
+                DataAccess.Set(nameof(DocumentNumberRecoded), value);
                 OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
         }
 
         private bool DocumentNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //DocumentNumberRecoded property
 
         //DocumentDate property
         [Attributes.Form_Property("Дата документа")]
         public RamAccess<string> DocumentDate
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(DocumentDate));//OK
-            }
+            get => DataAccess.Get<string>(nameof(DocumentDate));//OK
             set
             {
-                    _dataAccess.Set(nameof(DocumentDate), value);
+                DataAccess.Set(nameof(DocumentDate), value);
                 OnPropertyChanged(nameof(DocumentDate));
             }
         }
@@ -289,20 +266,20 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             bool ab = (OperationCode.Value >= 11) && (OperationCode.Value <= 18);
             bool b = (OperationCode.Value >= 41) && (OperationCode.Value <= 49);
@@ -311,7 +288,9 @@ return false;
             if (ab || b || c || d)
             {
                 if (!value.Value.Equals(OperationDate))
+                {
                     value.AddError("Заполните примечание");//to do note handling
+                }
             }
             return true;
         }
@@ -323,11 +302,11 @@ return false;
         //{
         //    get
         //    {
-        //            return _dataAccess.Get<string>(nameof(DocumentDateNote));
+        //            return DataAccess.Get<string>(nameof(DocumentDateNote));
         //    }
         //    set
         //    {
-        //            _dataAccess.Set(nameof(DocumentDateNote), value);
+        //            DataAccess.Set(nameof(DocumentDateNote), value);
         //        OnPropertyChanged(nameof(DocumentDateNote));
         //    }
         //}
@@ -337,5 +316,5 @@ return false;
         //{
         //    value.ClearErrors(); return true;}
         ////DocumentDateNote property
-        }
+    }
 }

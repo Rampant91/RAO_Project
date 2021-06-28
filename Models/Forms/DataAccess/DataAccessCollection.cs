@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Models.DataAccess
 {
-    public class DataAccessCollection:IDataAccessCollection
+    public class DataAccessCollection
     {
-        Dictionary<string, object> Data { get; set; }
+        public Dictionary<string, object> Data { get; set; }
 
         public DataAccessCollection()
         {
@@ -17,11 +16,11 @@ namespace Models.DataAccess
         {
             if (obj is DataAccessCollection)
             {
-                var obj1 = this;
-                var obj2 = obj as DataAccessCollection;
+                DataAccessCollection obj1 = this;
+                DataAccessCollection obj2 = obj as DataAccessCollection;
                 if (obj1.Data.Count == obj2.Data.Count)
                 {
-                    foreach (var item1 in obj1.Data)
+                    foreach (KeyValuePair<string, object> item1 in obj1.Data)
                     {
                         if (obj2.Data.ContainsKey(item1.Key))
                         {
@@ -50,7 +49,6 @@ namespace Models.DataAccess
                 return false;
             }
         }
-
         public static bool operator ==(DataAccessCollection obj1, DataAccessCollection obj2)
         {
             if (obj1 != null)
@@ -74,11 +72,10 @@ namespace Models.DataAccess
             }
         }
 
-        public void Init<T>(string name,Func<RamAccess<T>, bool> handler,T value)
+        public void Init<T>(string name, Func<RamAccess<T>, bool> handler, T value)
         {
-            Data.Add(name,new RamAccess<T>(handler,value));
+            Data.Add(name, new RamAccess<T>(handler, value));
         }
-
         public RamAccess<T> Get<T>(string key)
         {
             return (RamAccess<T>)Data[key];

@@ -1,55 +1,40 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia.Data;
-using Avalonia.Media;
-using Models.Attributes;
 using Avalonia.Input;
-using Avalonia.Input.GestureRecognizers;
-using Avalonia.Interactivity;
-using Models.Collections;
-using Models.DataAccess;
-using System.Collections;
+using Avalonia.Markup.Xaml;
+using Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Client_App.Controls.DataGrid
 {
-    public partial class Cell : UserControl,IChanged
+    public partial class Cell : UserControl, IChanged
     {
-        string _BindingPath = "";
+        private string _BindingPath = "";
         public string BindingPath
         {
-            get { return _BindingPath; }
-            set { _BindingPath = value; }
+            get => _BindingPath;
+            set => _BindingPath = value;
         }
 
-        bool _IsReadOnly = false;
+        private bool _IsReadOnly = false;
         public bool IsReadOnly
         {
-            get { return _IsReadOnly; }
-            set { _IsReadOnly = value; }
+            get => _IsReadOnly;
+            set => _IsReadOnly = value;
         }
 
-        int _cellRow = -1;
+        private int _cellRow = -1;
         public int CellRow
         {
-            get { return _cellRow; }
-            set { _cellRow = value; }
+            get => _cellRow;
+            set => _cellRow = value;
         }
 
-        int _cellColumn = -1;
+        private int _cellColumn = -1;
         public int CellColumn
         {
-            get { return _cellColumn; }
-            set { _cellColumn = value; }
+            get => _cellColumn;
+            set => _cellColumn = value;
         }
         public Cell(object DataContext, string BindingPath, bool IsReadOnly)
         {
@@ -58,9 +43,9 @@ namespace Client_App.Controls.DataGrid
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
 
-            this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
-            this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
-            this.AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
+            AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
+            AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
+            AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
         }
         public Cell(string BindingPath, bool IsReadOnly)
         {
@@ -68,9 +53,9 @@ namespace Client_App.Controls.DataGrid
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
 
-            this.AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
-            this.AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
-            this.AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
+            AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
+            AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
+            AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
         }
         public Cell()
         {
@@ -81,7 +66,7 @@ namespace Client_App.Controls.DataGrid
         {
             AvaloniaXamlLoader.Load(this);
 
-            var t = (TextBox)((Panel)((Border)this.Content).Child).Children[0];
+            TextBox? t = (TextBox)((Panel)((Border)Content).Child).Children[0];
             t.IsEnabled = !IsReadOnly;
             //if (BindingPath != "")
             //{
@@ -91,7 +76,7 @@ namespace Client_App.Controls.DataGrid
 
         public void PanelPointerDown(object sender, PointerPressedEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((Cell)sender);
+            PointerPoint? mouse = args.GetCurrentPoint((Cell)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
             {
                 OnPropertyChanged("Down");
@@ -99,7 +84,7 @@ namespace Client_App.Controls.DataGrid
         }
         public void PanelPointerMoved(object sender, PointerEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((Cell)sender);
+            PointerPoint? mouse = args.GetCurrentPoint((Cell)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 OnPropertyChanged("DownMove");
@@ -107,20 +92,17 @@ namespace Client_App.Controls.DataGrid
         }
         public void PanelPointerUp(object sender, PointerReleasedEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((Cell)sender);
+            PointerPoint? mouse = args.GetCurrentPoint((Cell)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 OnPropertyChanged("Up");
             }
         }
 
-        bool _isChanged = false;
-        public bool IsChanged 
+        private bool _isChanged = false;
+        public bool IsChanged
         {
-            get
-            {
-                return _isChanged;
-            }
+            get => _isChanged;
             set
             {
                 _isChanged = value;
@@ -134,7 +116,9 @@ namespace Client_App.Controls.DataGrid
             {
                 IsChanged = true;
                 if (PropertyChanged != null)
+                {
                     PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                }
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

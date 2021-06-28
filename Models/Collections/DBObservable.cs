@@ -1,22 +1,16 @@
-﻿using Models.DataAccess;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using Collections;
 using System.Collections.Specialized;
-using Models.Collections;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
-using FirebirdSql.Data.FirebirdClient;
+using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Collections
 {
     public class DBObservable
     {
+        protected DBRealization.DBModel dbm { get; set; }
         public DBObservable()
         {
 
@@ -27,17 +21,13 @@ namespace Collections
             OnPropertyChanged(nameof(Reports_Collection));
         }
 
-        //[NotMapped]
-        //public int ID { get; set; }
+        public int Id { get; set; }
 
         [NotMapped]
-        bool _isChanged = true;
+        private bool _isChanged = true;
         public bool IsChanged
         {
-            get
-            {
-                return _isChanged;
-            }
+            get => _isChanged;
             set
             {
                 if (_isChanged != value)
@@ -48,11 +38,14 @@ namespace Collections
             }
         }
 
-        DbSet<Reports> _reports_Collection;
-        public virtual DbSet<Reports> Reports_Collection
+        private ObservableCollectionWithItemPropertyChanged<Reports> _reports_Collection;
+
+        public int? Reports_CollectionId { get; set; }
+        public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
         {
-            get
+            get 
             {
+                dbm.Entry(this).Collection("Reports_Collection").Load();
                 return _reports_Collection;
             }
             set
@@ -73,7 +66,9 @@ namespace Collections
             {
                 IsChanged = true;
                 if (PropertyChanged != null)
+                {
                     PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                }
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

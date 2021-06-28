@@ -27,22 +27,22 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Name));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Name));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Name), value);
+                    DataAccess.Set(nameof(Name), value);
                 }
                 OnPropertyChanged(nameof(Name));
             }
@@ -51,20 +51,18 @@ namespace Models
 
         private bool Name_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //Name property
 
         //OperationCode property
         [Attributes.Form_Property("Код")]
         public RamAccess<short> OperationCode
         {
-            get
-            {
-                    return _dataAccess.Get<short>(nameof(OperationCode));
-            }
+            get => DataAccess.Get<short>(nameof(OperationCode));
             set
             {
-                _dataAccess.Set(nameof(OperationCode), value);
+                DataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
@@ -72,7 +70,8 @@ namespace Models
 
         private bool OperationCode_Validation(RamAccess<short> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //OperationCode property
 
         //Quantity property
@@ -81,14 +80,14 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
-                    
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
@@ -96,9 +95,9 @@ namespace Models
 
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -110,8 +109,8 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -123,23 +122,23 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -159,7 +158,7 @@ return false;
                 value.AddError("Недопустимое значение"); return false;
 
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -167,7 +166,7 @@ return false;
             return true;
         }
         //ProviderOrRecieverOKPO property
-        private List<string> OKSM = new List<string>
+        private readonly List<string> OKSM = new List<string>
             {
                 "АФГАНИСТАН",
                 "АЛБАНИЯ",
@@ -328,22 +327,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
@@ -352,7 +351,8 @@ return false;
 
         private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //ProviderOrRecieverOKPONote property
 
         //Mass Property
@@ -361,21 +361,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<double>(nameof(Mass));
+                    return DataAccess.Get<double>(nameof(Mass));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Mass), value);
+                    DataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -387,8 +387,8 @@ return false;
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }

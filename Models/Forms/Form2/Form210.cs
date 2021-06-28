@@ -17,25 +17,25 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(IndicatorName), IndicatorName_Validation, null);
+            DataAccess.Init<string>(nameof(IndicatorName), IndicatorName_Validation, null);
             IndicatorName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PlotName), PlotName_Validation, null);
+            DataAccess.Init<string>(nameof(PlotName), PlotName_Validation, null);
             PlotName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PlotKadastrNumber), PlotKadastrNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PlotKadastrNumber), PlotKadastrNumber_Validation, null);
             PlotKadastrNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PlotCode), PlotCode_Validation, null);
+            DataAccess.Init<string>(nameof(PlotCode), PlotCode_Validation, null);
             PlotCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<int?>(nameof(InfectedArea), InfectedArea_Validation, null);
+            DataAccess.Init<int?>(nameof(InfectedArea), InfectedArea_Validation, null);
             InfectedArea.PropertyChanged += InPropertyChanged;
-            //2301_dataAccess.Init<double>(nameof(AvgGammaRaysDosePower), AvgGammaRaysDosePower_Validation, null);
+            //2301DataAccess.Init<double>(nameof(AvgGammaRaysDosePower), AvgGammaRaysDosePower_Validation, null);
             AvgGammaRaysDosePower.PropertyChanged += InPropertyChanged;
-            //2301_dataAccess.Init<double>(nameof(MaxGammaRaysDosePower), MaxGammaRaysDosePower_Validation, null);
+            //2301DataAccess.Init<double>(nameof(MaxGammaRaysDosePower), MaxGammaRaysDosePower_Validation, null);
             MaxGammaRaysDosePower.PropertyChanged += InPropertyChanged;
-            //2301_dataAccess.Init<double>(nameof(WasteDensityAlpha), WasteDensityAlpha_Validation, null);
+            //2301DataAccess.Init<double>(nameof(WasteDensityAlpha), WasteDensityAlpha_Validation, null);
             WasteDensityAlpha.PropertyChanged += InPropertyChanged;
-            //2301_dataAccess.Init<double>(nameof(WasteDensityBeta), WasteDensityBeta_Validation, null);
+            //2301DataAccess.Init<double>(nameof(WasteDensityBeta), WasteDensityBeta_Validation, null);
             WasteDensityBeta.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
         }
 
@@ -63,13 +63,10 @@ namespace Models
         [Attributes.Form_Property("Наименование показателя")]
         public RamAccess<string> IndicatorName
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(IndicatorName));
-            }
+            get => DataAccess.Get<string>(nameof(IndicatorName));
             set
             {
-                _dataAccess.Set(nameof(IndicatorName), value);
+                DataAccess.Set(nameof(IndicatorName), value);
                 OnPropertyChanged(nameof(IndicatorName));
             }
         }
@@ -88,7 +85,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PlotName));
+                    return DataAccess.Get<string>(nameof(PlotName));
                 }
 
                 {
@@ -100,7 +97,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PlotName), value);
+                    DataAccess.Set(nameof(PlotName), value);
                 }
                 OnPropertyChanged(nameof(PlotName));
             }
@@ -120,7 +117,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PlotKadastrNumber));
+                    return DataAccess.Get<string>(nameof(PlotKadastrNumber));
                 }
 
                 {
@@ -132,7 +129,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PlotKadastrNumber), value);
+                    DataAccess.Set(nameof(PlotKadastrNumber), value);
                 }
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
@@ -152,7 +149,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PlotCode));
+                    return DataAccess.Get<string>(nameof(PlotCode));
                 }
 
                 {
@@ -164,7 +161,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PlotCode), value);
+                    DataAccess.Set(nameof(PlotCode), value);
                 }
                 OnPropertyChanged(nameof(PlotCode));
             }
@@ -184,7 +181,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<int?>(nameof(InfectedArea));
+                    return DataAccess.Get<int?>(nameof(InfectedArea));
                 }
 
                 {
@@ -196,7 +193,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(InfectedArea), value);
+                    DataAccess.Set(nameof(InfectedArea), value);
                 }
                 OnPropertyChanged(nameof(InfectedArea));
             }
@@ -216,7 +213,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(AvgGammaRaysDosePower));
+                    return DataAccess.Get<double>(nameof(AvgGammaRaysDosePower));
                 }
 
                 {
@@ -228,7 +225,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(AvgGammaRaysDosePower), value);
+                    DataAccess.Set(nameof(AvgGammaRaysDosePower), value);
                 }
                 OnPropertyChanged(nameof(AvgGammaRaysDosePower));
             }
@@ -248,7 +245,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(MaxGammaRaysDosePower));
+                    return DataAccess.Get<double>(nameof(MaxGammaRaysDosePower));
                 }
 
                 {
@@ -260,7 +257,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(MaxGammaRaysDosePower), value);
+                    DataAccess.Set(nameof(MaxGammaRaysDosePower), value);
                 }
                 OnPropertyChanged(nameof(MaxGammaRaysDosePower));
             }
@@ -280,7 +277,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(WasteDensityAlpha));
+                    return DataAccess.Get<double>(nameof(WasteDensityAlpha));
                 }
 
                 {
@@ -292,7 +289,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(WasteDensityAlpha), value);
+                    DataAccess.Set(nameof(WasteDensityAlpha), value);
                 }
                 OnPropertyChanged(nameof(WasteDensityAlpha));
             }
@@ -312,7 +309,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(WasteDensityBeta));
+                    return DataAccess.Get<double>(nameof(WasteDensityBeta));
                 }
 
                 {
@@ -324,7 +321,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(WasteDensityBeta), value);
+                    DataAccess.Set(nameof(WasteDensityBeta), value);
                 }
                 OnPropertyChanged(nameof(WasteDensityBeta));
             }
@@ -344,7 +341,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FcpNumber));
+                    return DataAccess.Get<string>(nameof(FcpNumber));
                 }
 
                 {
@@ -356,7 +353,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(FcpNumber), value);
+                    DataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }

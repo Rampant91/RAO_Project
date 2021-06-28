@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Collections;
-using System.Collections;
-using System.Collections.ObjectModel;
-using Avalonia.Collections;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using Models.Collections;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -20,7 +12,7 @@ namespace Client_App.Controls.DataGrid
         private PropertyChangedEventHandler Handler { get; set; }
         public ItemsObserver(PropertyChangedEventHandler handler)
         {
-            this.Handler = handler;
+            Handler = handler;
         }
         public void OnCompleted()
         {
@@ -33,9 +25,9 @@ namespace Client_App.Controls.DataGrid
 
         public void OnNext(AvaloniaPropertyChangedEventArgs<IEnumerable<IChanged>> obj)
         {
-            if(obj.NewValue.Value!=null)
+            if (obj.NewValue.Value != null)
             {
-                if(Handler!=null)
+                if (Handler != null)
                 {
                     if (Handler.Target != null)
                     {

@@ -20,61 +20,61 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
+            DataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
             CodeRAO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            DataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
             PackName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
             PackNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
             PackNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackFactoryNumber), PackFactoryNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PackFactoryNumber), PackFactoryNumber_Validation, null);
             PackFactoryNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
             PackTypeRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            DataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
             PackType.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
+            DataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
             Volume.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
+            DataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
             Mass.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
             TransporterOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
+            DataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
             TritiumActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
+            DataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
             BetaGammaActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
+            DataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
             AlphaActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
+            DataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
             TransuraniumActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FormingDate), FormingDate_Validation, null);
+            DataAccess.Init<string>(nameof(FormingDate), FormingDate_Validation, null);
             FormingDate.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
             Radionuclids.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
             PassportNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(RefineOrSortRAOCode), RefineOrSortRAOCode_Validation, null);
+            DataAccess.Init<string>(nameof(RefineOrSortRAOCode), RefineOrSortRAOCode_Validation, null);
             RefineOrSortRAOCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
+            DataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
             StatusRAO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
+            DataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
             Subsidy.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            DataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
             Quantity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(VolumeOutOfPack), VolumeOutOfPack_Validation, null);
+            DataAccess.Init<string>(nameof(VolumeOutOfPack), VolumeOutOfPack_Validation, null);
             VolumeOutOfPack.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassOutOfPack), MassOutOfPack_Validation, null);
+            DataAccess.Init<string>(nameof(MassOutOfPack), MassOutOfPack_Validation, null);
             MassOutOfPack.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
             StoragePlaceName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
             StoragePlaceCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(SpecificActivity), SpecificActivity_Validation, null);
+            DataAccess.Init<string>(nameof(SpecificActivity), SpecificActivity_Validation, null);
             SpecificActivity.PropertyChanged += InPropertyChanged;
         }
 
@@ -122,23 +122,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PackName));//OK
-                    
+                    return DataAccess.Get<string>(nameof(PackName));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PackName), value);
+                    DataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
@@ -148,11 +148,11 @@ namespace Models
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            var spr = new List<string>();
+            List<string> spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -163,22 +163,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PackNameNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(PackNameNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PackNameNote), value);
+                    DataAccess.Set(nameof(PackNameNote), value);
                 }
                 OnPropertyChanged(nameof(PackNameNote));
             }
@@ -187,7 +187,8 @@ return false;
 
         private bool PackNameNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackNameNote property
 
         //PackType property
@@ -196,23 +197,23 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PackType));//OK
-                    
+                    return DataAccess.Get<string>(nameof(PackType));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PackType), value);
+                    DataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -221,7 +222,8 @@ return false;
 
         private bool PackType_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackType property
 
         //PackTypeRecoded property
@@ -229,22 +231,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-                    
+                    return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PackTypeRecoded), value);
+                    DataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
@@ -253,7 +255,8 @@ return false;
 
         private bool PackTypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackTypeRecoded property
 
         //PackTypeNote property
@@ -261,22 +264,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(PackTypeNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PackTypeNote), value);
+                    DataAccess.Set(nameof(PackTypeNote), value);
                 }
                 OnPropertyChanged(nameof(PackTypeNote));
             }
@@ -285,7 +288,8 @@ return false;
 
         private bool PackTypeNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackTypeNote property
 
         //PackNumber property
@@ -294,23 +298,23 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PackNumber));//OK
-                    
+                    return DataAccess.Get<string>(nameof(PackNumber));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PackNumber), value);
+                    DataAccess.Set(nameof(PackNumber), value);
                 }
                 OnPropertyChanged(nameof(PackNumber));
             }
@@ -319,7 +323,8 @@ return false;
 
         private bool PackNumber_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackNumber property
 
         //PackNumberNote property
@@ -327,23 +332,23 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PackNumberNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(PackNumberNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PackNumberNote), value);
+                    DataAccess.Set(nameof(PackNumberNote), value);
                 }
                 OnPropertyChanged(nameof(PackNumberNote));
             }
@@ -355,8 +360,8 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -368,22 +373,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PackNumberRecoded));//OK
-                    
+                    return DataAccess.Get<string>(nameof(PackNumberRecoded));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PackNumberRecoded), value);
+                    DataAccess.Set(nameof(PackNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackNumberRecoded));
             }
@@ -392,7 +397,8 @@ return false;
 
         private bool PackNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackNumberRecoded property
 
         //PackFactoryNumber property
@@ -401,21 +407,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PackFactoryNumber));
+                    return DataAccess.Get<string>(nameof(PackFactoryNumber));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PackFactoryNumber), value);
+                    DataAccess.Set(nameof(PackFactoryNumber), value);
                 }
                 OnPropertyChanged(nameof(PackFactoryNumber));
             }
@@ -424,7 +430,8 @@ return false;
 
         private bool PackFactoryNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackFactoryNumber property
 
         //FormingDate property
@@ -433,21 +440,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(FormingDate));
+                    return DataAccess.Get<string>(nameof(FormingDate));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(FormingDate), value);
+                    DataAccess.Set(nameof(FormingDate), value);
                 }
                 OnPropertyChanged(nameof(FormingDate));
             }
@@ -457,17 +464,17 @@ return false;
         private bool FormingDate_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -479,21 +486,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Volume));
+                    return DataAccess.Get<string>(nameof(Volume));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Volume), value);
+                    DataAccess.Set(nameof(Volume), value);
                 }
                 OnPropertyChanged(nameof(Volume));
             }
@@ -508,7 +515,7 @@ return false;
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -529,22 +536,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Mass));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Mass));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Mass), value);
+                    DataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -564,7 +571,7 @@ return false;
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -585,23 +592,23 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(PassportNumber));//OK
-                    
+                    return DataAccess.Get<string>(nameof(PassportNumber));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(PassportNumber), value);
+                    DataAccess.Set(nameof(PassportNumber), value);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
@@ -610,7 +617,8 @@ return false;
 
         private bool PassportNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PassportNumber property
 
         //Radionuclids property
@@ -619,23 +627,23 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -647,19 +655,19 @@ return false;
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item2.Equals(value.Value))
                 {
                     Radionuclids.Value = item.Item2;
-return true;
+                    return true;
                 }
             }
-            value.AddError( "Недопустимое значение");
+            value.AddError("Недопустимое значение");
             return false;
         }
         //Radionuclids property
@@ -670,21 +678,21 @@ return true;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(SpecificActivity));
+                    return DataAccess.Get<string>(nameof(SpecificActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(SpecificActivity), value);
+                    DataAccess.Set(nameof(SpecificActivity), value);
                 }
                 OnPropertyChanged(nameof(SpecificActivity));
             }
@@ -696,23 +704,23 @@ return true;
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            if (!(value.Value.Contains('e')||value.Value.Contains('E')))
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -724,23 +732,23 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -763,7 +771,7 @@ return false;
                 value.AddError("Недопустимое значение"); return false;
             }
 
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -777,22 +785,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
@@ -801,7 +809,8 @@ return false;
 
         private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
@@ -810,23 +819,23 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(TransporterOKPO));//OK
-                    
+                    return DataAccess.Get<string>(nameof(TransporterOKPO));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(TransporterOKPO), value);
+                    DataAccess.Set(nameof(TransporterOKPO), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPO));
             }
@@ -852,7 +861,7 @@ return false;
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -867,22 +876,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(TransporterOKPONote), value);
+                    DataAccess.Set(nameof(TransporterOKPONote), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPONote));
             }
@@ -891,7 +900,8 @@ return false;
 
         private bool TransporterOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //TransporterOKPONote property
 
         //StoragePlaceName property
@@ -900,21 +910,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceName));
+                    return DataAccess.Get<string>(nameof(StoragePlaceName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(StoragePlaceName), value);
+                    DataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
@@ -924,7 +934,7 @@ return false;
         private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            var spr = new List<string>();
+            List<string> spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -939,21 +949,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceNameNote));
+                    return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(StoragePlaceNameNote), value);
+                    DataAccess.Set(nameof(StoragePlaceNameNote), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
@@ -962,7 +972,8 @@ return false;
 
         private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //StoragePlaceNameNote property
 
         //StoragePlaceCode property
@@ -971,21 +982,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceCode));
+                    return DataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(StoragePlaceCode), value);
+                    DataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
@@ -995,7 +1006,7 @@ return false;
         private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var lst = new List<string>();//HERE binds spr
+            List<string> lst = new List<string>();//HERE binds spr
             if (!lst.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -1010,21 +1021,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Subsidy));
+                    return DataAccess.Get<string>(nameof(Subsidy));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Subsidy), value);
+                    DataAccess.Set(nameof(Subsidy), value);
                 }
                 OnPropertyChanged(nameof(Subsidy));
             }
@@ -1036,7 +1047,7 @@ return false;
             value.ClearErrors();
             try
             {
-                int tmp = Int32.Parse(value.Value);
+                int tmp = int.Parse(value.Value);
                 if (!((tmp > 0) && (tmp <= 100)))
                 {
                     value.AddError("Недопустимое значение"); return false;
@@ -1057,21 +1068,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(FcpNumber));
+                    return DataAccess.Get<string>(nameof(FcpNumber));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(FcpNumber), value);
+                    DataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
@@ -1080,7 +1091,8 @@ return false;
 
         private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //FcpNumber property
 
         //CodeRAO property
@@ -1089,21 +1101,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(CodeRAO));
+                    return DataAccess.Get<string>(nameof(CodeRAO));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(CodeRAO), value);
+                    DataAccess.Set(nameof(CodeRAO), value);
                 }
                 OnPropertyChanged(nameof(CodeRAO));
             }
@@ -1115,14 +1127,14 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            var a = new Regex("^[0-9]{11}$");
+            Regex a = new Regex("^[0-9]{11}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -1134,21 +1146,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(StatusRAO));
+                    return DataAccess.Get<string>(nameof(StatusRAO));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(StatusRAO), value);
+                    DataAccess.Set(nameof(StatusRAO), value);
                 }
                 OnPropertyChanged(nameof(StatusRAO));
             }
@@ -1166,12 +1178,12 @@ return false;
                     tmp = int.Parse(value.Value);
                     if ((tmp < 1) || ((tmp > 4) && (tmp != 6) && (tmp != 9)))
                     {
-                        value.AddError( "Недопустимое значение"); return false;
+                        value.AddError("Недопустимое значение"); return false;
                     }
                 }
                 catch (Exception)
                 {
-                    value.AddError( "Недопустимое значение"); return false;
+                    value.AddError("Недопустимое значение"); return false;
                 }
                 return true;
             }
@@ -1179,7 +1191,7 @@ return false;
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -1194,21 +1206,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(VolumeOutOfPack));
+                    return DataAccess.Get<string>(nameof(VolumeOutOfPack));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(VolumeOutOfPack), value);
+                    DataAccess.Set(nameof(VolumeOutOfPack), value);
                 }
                 OnPropertyChanged(nameof(VolumeOutOfPack));
             }
@@ -1220,23 +1232,23 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля"); return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -1248,21 +1260,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(MassOutOfPack));
+                    return DataAccess.Get<string>(nameof(MassOutOfPack));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(MassOutOfPack), value);
+                    DataAccess.Set(nameof(MassOutOfPack), value);
                 }
                 OnPropertyChanged(nameof(MassOutOfPack));
             }
@@ -1274,23 +1286,23 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            if (!(value.Value.Contains('e')||value.Value.Contains('E')))
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -1303,22 +1315,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int?>(nameof(Quantity));//OK;
+                    return DataAccess.Get<int?>(nameof(Quantity));//OK;
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -1343,21 +1355,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(TritiumActivity));
+                    return DataAccess.Get<string>(nameof(TritiumActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(TritiumActivity), value);
+                    DataAccess.Set(nameof(TritiumActivity), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivity));
             }
@@ -1377,7 +1389,7 @@ return false;
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -1397,21 +1409,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(BetaGammaActivity));
+                    return DataAccess.Get<string>(nameof(BetaGammaActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivity), value);
+                    DataAccess.Set(nameof(BetaGammaActivity), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
@@ -1431,7 +1443,7 @@ return false;
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -1451,21 +1463,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(AlphaActivity));
+                    return DataAccess.Get<string>(nameof(AlphaActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(AlphaActivity), value);
+                    DataAccess.Set(nameof(AlphaActivity), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivity));
             }
@@ -1485,7 +1497,7 @@ return false;
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -1505,21 +1517,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(TransuraniumActivity));
+                    return DataAccess.Get<string>(nameof(TransuraniumActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(TransuraniumActivity), value);
+                    DataAccess.Set(nameof(TransuraniumActivity), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivity));
             }
@@ -1539,7 +1551,7 @@ return false;
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -1559,21 +1571,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(RefineOrSortRAOCode));
+                    return DataAccess.Get<string>(nameof(RefineOrSortRAOCode));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(RefineOrSortRAOCode), value);
+                    DataAccess.Set(nameof(RefineOrSortRAOCode), value);
                 }
                 OnPropertyChanged(nameof(RefineOrSortRAOCode));
             }
@@ -1585,13 +1597,13 @@ return false;
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-return false;
+                return false;
             }
-            var a = new Regex("^[0-9][0-9]$");
+            Regex a = new Regex("^[0-9][0-9]$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -1602,14 +1614,14 @@ return false;
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
             if (!spr.Contains((short)value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             bool a0 = value.Value == 1;
             bool a1 = value.Value == 10;
@@ -1632,7 +1644,8 @@ return false;
         }
         protected override bool DocumentNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         protected override bool DocumentVid_Validation(RamAccess<byte?> value)
         {
             value.ClearErrors();
@@ -1657,11 +1670,11 @@ return false;
                 new Tuple<byte?, string>(19,""),
                 new Tuple<byte?, string>(null,"")
             };   //HERE BINDS SPRAVOCHNICK
-            foreach (var item in spr)
+            foreach (Tuple<byte?, string> item in spr)
             {
-return false;
+                return false;
             }
-            value.AddError( "Недопустимое значение");
+            value.AddError("Недопустимое значение");
             return true;
         }
 
@@ -1673,27 +1686,30 @@ return false;
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             bool ab = (OperationCode.Value == 51) || (OperationCode.Value == 52);
             bool c = (OperationCode.Value == 68);
             bool d = (OperationCode.Value == 18) || (OperationCode.Value == 55);
             if (ab || c || d)
+            {
                 if (!value.Value.Equals(OperationDate))
                 {
                     value.AddError("Заполните примечание");// to do note handling
                     return true;
                 }
+            }
+
             return true;
         }
     }

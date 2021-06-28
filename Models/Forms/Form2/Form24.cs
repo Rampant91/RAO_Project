@@ -1,6 +1,6 @@
 ﻿using Models.DataAccess;
-using System.Globalization;
 using System;
+using System.Globalization;
 
 namespace Models
 {
@@ -18,37 +18,37 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
+            DataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
             CodeOYAT.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityFromAnothers), QuantityFromAnothers_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityFromAnothers), QuantityFromAnothers_Validation, null);
             QuantityFromAnothers.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityFromAnothersImported), QuantityFromAnothersImported_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityFromAnothersImported), QuantityFromAnothersImported_Validation, null);
             QuantityFromAnothersImported.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityCreated), QuantityCreated_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityCreated), QuantityCreated_Validation, null);
             QuantityCreated.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityRemovedFromAccount), QuantityRemovedFromAccount_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityRemovedFromAccount), QuantityRemovedFromAccount_Validation, null);
             QuantityRemovedFromAccount.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassCreated), MassCreated_Validation, null);
+            DataAccess.Init<string>(nameof(MassCreated), MassCreated_Validation, null);
             MassCreated.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassFromAnothers), MassFromAnothers_Validation, null);
+            DataAccess.Init<string>(nameof(MassFromAnothers), MassFromAnothers_Validation, null);
             MassFromAnothers.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassFromAnothersImported), MassFromAnothersImported_Validation, null);
+            DataAccess.Init<string>(nameof(MassFromAnothersImported), MassFromAnothersImported_Validation, null);
             MassFromAnothersImported.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassRemovedFromAccount), MassRemovedFromAccount_Validation, null);
+            DataAccess.Init<string>(nameof(MassRemovedFromAccount), MassRemovedFromAccount_Validation, null);
             MassRemovedFromAccount.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityTransferredToAnother), QuantityTransferredToAnother_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityTransferredToAnother), QuantityTransferredToAnother_Validation, null);
             QuantityTransferredToAnother.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassAnotherReasons), MassAnotherReasons_Validation, null);
+            DataAccess.Init<string>(nameof(MassAnotherReasons), MassAnotherReasons_Validation, null);
             MassAnotherReasons.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassTransferredToAnother), MassTransferredToAnother_Validation, null);
+            DataAccess.Init<string>(nameof(MassTransferredToAnother), MassTransferredToAnother_Validation, null);
             MassTransferredToAnother.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityAnotherReasons), QuantityAnotherReasons_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityAnotherReasons), QuantityAnotherReasons_Validation, null);
             QuantityAnotherReasons.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityRefined), QuantityRefined_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityRefined), QuantityRefined_Validation, null);
             QuantityRefined.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassRefined), MassRefined_Validation, null);
+            DataAccess.Init<string>(nameof(MassRefined), MassRefined_Validation, null);
             MassRefined.PropertyChanged += InPropertyChanged;
         }
 
@@ -84,21 +84,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(CodeOYAT));
+                    return DataAccess.Get<string>(nameof(CodeOYAT));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(CodeOYAT), value);
+                    DataAccess.Set(nameof(CodeOYAT), value);
                 }
                 OnPropertyChanged(nameof(CodeOYAT));
             }
@@ -116,29 +116,30 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(CodeOYATnote));
+                    return DataAccess.Get<string>(nameof(CodeOYATnote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(CodeOYATnote), value);
+                    DataAccess.Set(nameof(CodeOYATnote), value);
                 }
                 OnPropertyChanged(nameof(CodeOYATnote));
             }
         }
 
-                private bool CodeOYATnote_Validation(RamAccess<string> value)
+        private bool CodeOYATnote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //CodeOYATnote property
 
         //FcpNumber property
@@ -147,27 +148,27 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(FcpNumber));
+                    return DataAccess.Get<string>(nameof(FcpNumber));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(FcpNumber), value);
+                    DataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
 
-                private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+        private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             return true;
@@ -180,27 +181,27 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(MassCreated));
+                    return DataAccess.Get<string>(nameof(MassCreated));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(MassCreated), value);
+                    DataAccess.Set(nameof(MassCreated), value);
                 }
                 OnPropertyChanged(nameof(MassCreated));
             }
         }
 
-                private bool MassCreated_Validation(RamAccess<string> value)//TODO
+        private bool MassCreated_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -219,7 +220,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -240,14 +241,14 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityCreated));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityCreated));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
@@ -255,15 +256,15 @@ namespace Models
 
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityCreated), value);
+                    DataAccess.Set(nameof(QuantityCreated), value);
                 }
                 OnPropertyChanged(nameof(QuantityCreated));
             }
         }
         // positive int.
-                private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
+        private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -293,28 +294,28 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityCreatedNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityCreatedNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityCreatedNote), value);
+                    DataAccess.Set(nameof(QuantityCreatedNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityCreatedNote));
             }
         }
         // positive int.
-                private bool QuantityCreatedNote_Validation(RamAccess<string> value)//Ready
+        private bool QuantityCreatedNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -345,23 +346,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(MassFromAnothers));
+                    return DataAccess.Get<string>(nameof(MassFromAnothers));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(MassFromAnothers), value);
+                DataAccess.Set(nameof(MassFromAnothers), value);
                 OnPropertyChanged(nameof(MassFromAnothers));
             }
         }
 
-                private bool MassFromAnothers_Validation(RamAccess<string> value)//TODO
+        private bool MassFromAnothers_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -380,7 +381,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -401,24 +402,24 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityFromAnothers));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityFromAnothers));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(QuantityFromAnothers), value);
+                DataAccess.Set(nameof(QuantityFromAnothers), value);
                 OnPropertyChanged(nameof(QuantityFromAnothers));
             }
         }
         // positive int.
-                private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
+        private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -448,24 +449,24 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(QuantityFromAnothersNote), value);
+                DataAccess.Set(nameof(QuantityFromAnothersNote), value);
                 OnPropertyChanged(nameof(QuantityFromAnothersNote));
             }
         }
         // positive int.
-                private bool QuantityFromAnothersNote_Validation(RamAccess<string> value)//Ready
+        private bool QuantityFromAnothersNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -496,27 +497,27 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(MassFromAnothersImported));
+                    return DataAccess.Get<string>(nameof(MassFromAnothersImported));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(MassFromAnothersImported), value);
+                    DataAccess.Set(nameof(MassFromAnothersImported), value);
                 }
                 OnPropertyChanged(nameof(MassFromAnothersImported));
             }
         }
 
-                private bool MassFromAnothersImported_Validation(RamAccess<string> value)//TODO
+        private bool MassFromAnothersImported_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -535,7 +536,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -556,14 +557,14 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityFromAnothersImported));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityFromAnothersImported));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
@@ -571,15 +572,15 @@ namespace Models
 
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityFromAnothersImported), value);
+                    DataAccess.Set(nameof(QuantityFromAnothersImported), value);
                 }
                 OnPropertyChanged(nameof(QuantityFromAnothersImported));
             }
         }
         // positive int.
-                private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//Ready
+        private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -609,28 +610,28 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityFromImportedNote), value);
+                    DataAccess.Set(nameof(QuantityFromImportedNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityFromImportedNote));
             }
         }
         // positive int.
-                private bool QuantityFromImportedNote_Validation(RamAccess<string> value)//Ready
+        private bool QuantityFromImportedNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -661,27 +662,27 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(MassAnotherReasons));
+                    return DataAccess.Get<string>(nameof(MassAnotherReasons));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(MassAnotherReasons), value);
+                    DataAccess.Set(nameof(MassAnotherReasons), value);
                 }
                 OnPropertyChanged(nameof(MassAnotherReasons));
             }
         }
 
-                private bool MassAnotherReasons_Validation(RamAccess<string> value)//TODO
+        private bool MassAnotherReasons_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -700,7 +701,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -721,29 +722,29 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityAnotherReasons));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityAnotherReasons));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityAnotherReasons), value);
+                    DataAccess.Set(nameof(QuantityAnotherReasons), value);
                 }
                 OnPropertyChanged(nameof(QuantityAnotherReasons));
             }
         }
         // positive int.
-                private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
+        private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -773,28 +774,28 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
+                    DataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
             }
         }
         // positive int.
-                private bool QuantityAnotherReasonsNote_Validation(RamAccess<string> value)//Ready
+        private bool QuantityAnotherReasonsNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -825,23 +826,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(MassTransferredToAnother));
+                    return DataAccess.Get<string>(nameof(MassTransferredToAnother));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(MassTransferredToAnother), value);
+                DataAccess.Set(nameof(MassTransferredToAnother), value);
                 OnPropertyChanged(nameof(MassTransferredToAnother));
             }
         }
 
-                private bool MassTransferredToAnother_Validation(RamAccess<string> value)//TODO
+        private bool MassTransferredToAnother_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -860,7 +861,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -881,29 +882,29 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityTransferredToAnother));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityTransferredToAnother));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityTransferredToAnother), value);
+                    DataAccess.Set(nameof(QuantityTransferredToAnother), value);
                 }
                 OnPropertyChanged(nameof(QuantityTransferredToAnother));
             }
         }
         // positive int.
-                private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//Ready
+        private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -933,28 +934,28 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityTransferredToNote), value);
+                    DataAccess.Set(nameof(QuantityTransferredToNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityTransferredToNote));
             }
         }
         // positive int.
-                private bool QuantityTransferredToNote_Validation(RamAccess<string> value)//Ready
+        private bool QuantityTransferredToNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -985,23 +986,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(MassRefined));
+                    return DataAccess.Get<string>(nameof(MassRefined));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(MassRefined), value);
+                DataAccess.Set(nameof(MassRefined), value);
                 OnPropertyChanged(nameof(MassRefined));
             }
         }
 
-                private bool MassRefined_Validation(RamAccess<string> value)//TODO
+        private bool MassRefined_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -1020,7 +1021,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -1041,29 +1042,29 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityRefined));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityRefined));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityRefined), value);
+                    DataAccess.Set(nameof(QuantityRefined), value);
                 }
                 OnPropertyChanged(nameof(QuantityRefined));
             }
         }
         // positive int.
-                private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
+        private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -1093,28 +1094,28 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityRefinedNote), value);
+                    DataAccess.Set(nameof(QuantityRefinedNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityRefinedNote));
             }
         }
         // positive int.
-                private bool QuantityRefinedNote_Validation(RamAccess<string> value)//Ready
+        private bool QuantityRefinedNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -1145,27 +1146,27 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(MassRemovedFromAccount));
+                    return DataAccess.Get<string>(nameof(MassRemovedFromAccount));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(MassRemovedFromAccount), value);
+                    DataAccess.Set(nameof(MassRemovedFromAccount), value);
                 }
                 OnPropertyChanged(nameof(MassRemovedFromAccount));
             }
         }
 
-                private bool MassRemovedFromAccount_Validation(RamAccess<string> value)//TODO
+        private bool MassRemovedFromAccount_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -1184,7 +1185,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -1205,29 +1206,29 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityRemovedFromAccount));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityRemovedFromAccount));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityRemovedFromAccount), value);
+                    DataAccess.Set(nameof(QuantityRemovedFromAccount), value);
                 }
                 OnPropertyChanged(nameof(QuantityRemovedFromAccount));
             }
         }
         // positive int.
-                private bool QuantityRemovedFromAccount_Validation(RamAccess<string> value)//Ready
+        private bool QuantityRemovedFromAccount_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -1258,28 +1259,28 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityRemovedFromNote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(QuantityRemovedFromNote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityRemovedFromNote), value);
+                    DataAccess.Set(nameof(QuantityRemovedFromNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityRemovedFromNote));
             }
         }
         // positive int.
-                private bool QuantityRemovedFromNote_Validation(RamAccess<string> value)//Ready
+        private bool QuantityRemovedFromNote_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))

@@ -1,40 +1,39 @@
-﻿using Models.DataAccess;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
+﻿using Collections;
+using Models.DataAccess;
 using System.Collections.Specialized;
-using Models.Collections;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace Collections
 {
-    public class Reports : IChanged,IKey
+    public class Reports : IChanged, IKey
     {
-        IDataAccessCollection _dataAccess { get; set; }
+        protected DataAccessCollection DataAccess { get; set; }
+        protected DBRealization.DBModel dbm { get; set; }
 
-        public Reports(IDataAccessCollection Access)
+        public Reports(DataAccessCollection Access)
         {
-            _dataAccess = Access;
+            dbm = DBRealization.StaticConfiguration.DBModel;
+            DataAccess = Access;
             Init();
         }
         public Reports()
         {
-            _dataAccess = new DataAccessCollection();
+            dbm = DBRealization.StaticConfiguration.DBModel;
+            DataAccess = new DataAccessCollection();
             Init();
         }
 
-        void Init()
+        private void Init()
         {
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection), Report_Collection_Validation, null);
-            _dataAccess.Init<Report>(nameof(Master), Master_Validation, null);
+            DataAccess.Init(nameof(Report_Collection), Report_Collection_Validation, new ObservableCollectionWithItemPropertyChanged<Report>());
+            DataAccess.Init(nameof(Master), Master_Validation, new Report());
 
-            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
-            Report_Collection.CollectionChanged += CollectionChanged;
+            dbm.Add(Master);
+            //dbm.Add(Report_Collection);
+
+            //Report_Collection.CollectionChanged += CollectionChanged;
         }
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -42,18 +41,19 @@ namespace Collections
             OnPropertyChanged(nameof(Report_Collection));
         }
 
-        [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
+        public int? MasterId { get; set; }
         public virtual RamAccess<Report> Master
         {
             get
             {
-                return _dataAccess.Get<Report>(nameof(Master));
+                var tmp = DataAccess.Get<Report>(nameof(Master));
+                return tmp;
             }
             set
             {
-                _dataAccess.Set(nameof(Master), value);
+                DataAccess.Set(nameof(Master), value);
                 OnPropertyChanged(nameof(Master));
             }
         }
@@ -62,15 +62,17 @@ namespace Collections
             return true;
         }
 
+        public int? Report_CollectionId { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
         {
             get
             {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection)).Value;
+                var tmp = DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection));
+                return tmp.Value;
             }
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection)).Value = value;
                 OnPropertyChanged(nameof(Report_Collection));
             }
         }
@@ -80,13 +82,10 @@ namespace Collections
         }
 
         [NotMapped]
-        bool _isChanged = true;
+        private bool _isChanged = true;
         public bool IsChanged
         {
-            get
-            {
-                return _isChanged;
-            }
+            get => _isChanged;
             set
             {
                 if (_isChanged != value)
@@ -104,7 +103,9 @@ namespace Collections
             {
                 IsChanged = true;
                 if (PropertyChanged != null)
+                {
                     PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                }
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

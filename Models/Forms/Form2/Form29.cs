@@ -18,13 +18,13 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(WasteSourceName), WasteSourceName_Validation, null);
+            DataAccess.Init<string>(nameof(WasteSourceName), WasteSourceName_Validation, null);
             WasteSourceName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
+            DataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
             RadionuclidName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(AllowedActivity), AllowedActivity_Validation, null);
+            DataAccess.Init<string>(nameof(AllowedActivity), AllowedActivity_Validation, null);
             AllowedActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FactedActivity), FactedActivity_Validation, null);
+            DataAccess.Init<string>(nameof(FactedActivity), FactedActivity_Validation, null);
             FactedActivity.PropertyChanged += InPropertyChanged;
         }
 
@@ -50,7 +50,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(WasteSourceName));
+                    return DataAccess.Get<string>(nameof(WasteSourceName));
                 }
 
                 {
@@ -62,7 +62,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(WasteSourceName), value);
+                    DataAccess.Set(nameof(WasteSourceName), value);
                 }
                 OnPropertyChanged(nameof(WasteSourceName));
             }
@@ -83,7 +83,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(RadionuclidName));
+                    return DataAccess.Get<string>(nameof(RadionuclidName));
                 }
 
                 {
@@ -95,7 +95,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(RadionuclidName), value);
+                    DataAccess.Set(nameof(RadionuclidName), value);
                 }
                 OnPropertyChanged(nameof(RadionuclidName));
             }
@@ -116,7 +116,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(AllowedActivity));
+                    return DataAccess.Get<string>(nameof(AllowedActivity));
                 }
 
                 {
@@ -128,7 +128,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(AllowedActivity), value);
+                    DataAccess.Set(nameof(AllowedActivity), value);
                 }
                 OnPropertyChanged(nameof(AllowedActivity));
             }
@@ -150,7 +150,7 @@ namespace Models
             }
             if (value.Value != "прим.")
             {
-                var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                    NumberStyles.AllowExponent;
                 try
                 {
@@ -176,7 +176,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(AllowedActivityNote));
+                    return DataAccess.Get<string>(nameof(AllowedActivityNote));
                 }
 
                 {
@@ -188,7 +188,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(AllowedActivityNote), value);
+                    DataAccess.Set(nameof(AllowedActivityNote), value);
                 }
                 OnPropertyChanged(nameof(AllowedActivityNote));
             }
@@ -209,7 +209,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FactedActivity));
+                    return DataAccess.Get<string>(nameof(FactedActivity));
                 }
 
                 {
@@ -221,7 +221,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(FactedActivity), value);
+                    DataAccess.Set(nameof(FactedActivity), value);
                 }
                 OnPropertyChanged(nameof(FactedActivity));
             }
@@ -241,7 +241,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -266,7 +266,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FactedActivityNote));
+                    return DataAccess.Get<string>(nameof(FactedActivityNote));
                 }
 
                 {
@@ -278,7 +278,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(FactedActivityNote), value);
+                    DataAccess.Set(nameof(FactedActivityNote), value);
                 }
                 OnPropertyChanged(nameof(FactedActivityNote));
             }

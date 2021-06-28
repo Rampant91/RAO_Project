@@ -25,13 +25,10 @@ namespace Models
         [Attributes.Form_Property("Регистрационный номер")]
         public RamAccess<string> RegNo
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(RegNo));
-            }
+            get => DataAccess.Get<string>(nameof(RegNo));
             set
             {
-                    _dataAccess.Set(nameof(RegNo), value);
+                DataAccess.Set(nameof(RegNo), value);
                 OnPropertyChanged(nameof(RegNo));
             }
         }
@@ -43,13 +40,10 @@ namespace Models
         [Attributes.Form_Property("ОКПО")]
         public RamAccess<string> Okpo
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(Okpo));
-            }
+            get => DataAccess.Get<string>(nameof(Okpo));
             set
             {
-                    _dataAccess.Set(nameof(Okpo), value);
+                DataAccess.Set(nameof(Okpo), value);
                 OnPropertyChanged(nameof(Okpo));
             }
         }
@@ -62,10 +56,10 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-                if (!mask.IsMatch(value.Value))
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            if (!mask.IsMatch(value.Value))
             {
-                    value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -76,13 +70,10 @@ namespace Models
         [Attributes.Form_Property("Наименование организации")]
         public RamAccess<string> OrgName
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(OrgName));
-            }
+            get => DataAccess.Get<string>(nameof(OrgName));
             set
             {
-                    _dataAccess.Set(nameof(OrgName), value);
+                DataAccess.Set(nameof(OrgName), value);
                 OnPropertyChanged(nameof(OrgName));
             }
         }
@@ -94,13 +85,10 @@ namespace Models
         [Attributes.Form_Property("Наименование и номер докумета о признании")]
         public RamAccess<string> DocumentNameNumber
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(DocumentNameNumber));
-            }
+            get => DataAccess.Get<string>(nameof(DocumentNameNumber));
             set
             {
-                    _dataAccess.Set(nameof(DocumentNameNumber), value);
+                DataAccess.Set(nameof(DocumentNameNumber), value);
                 OnPropertyChanged(nameof(DocumentNameNumber));
             }
         }
@@ -112,13 +100,10 @@ namespace Models
         [Attributes.Form_Property("Наименование и номер разрешительного докумета")]
         public RamAccess<string> PermissionNameNumber
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(PermissionNameNumber));
-            }
+            get => DataAccess.Get<string>(nameof(PermissionNameNumber));
             set
             {
-                    _dataAccess.Set(nameof(PermissionNameNumber), value);
+                DataAccess.Set(nameof(PermissionNameNumber), value);
                 OnPropertyChanged(nameof(PermissionNameNumber));
             }
         }
@@ -130,13 +115,10 @@ namespace Models
         [Attributes.Form_Property("Разрешенный вид деятельности")]
         public RamAccess<string> AllowedActivity
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(AllowedActivity));
-            }
+            get => DataAccess.Get<string>(nameof(AllowedActivity));
             set
             {
-                    _dataAccess.Set(nameof(AllowedActivity), value);
+                DataAccess.Set(nameof(AllowedActivity), value);
                 OnPropertyChanged(nameof(AllowedActivity));
             }
         }
@@ -147,17 +129,17 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || (value.Value.Equals("")))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             if (value.Value != "прим.")
             {
-                var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                    NumberStyles.AllowExponent;
                 try
                 {
@@ -169,7 +151,7 @@ return false;
                 }
                 catch
                 {
-                    value.AddError( "Недопустимое значение");
+                    value.AddError("Недопустимое значение");
                     return false;
                 }
             }
@@ -181,13 +163,10 @@ return false;
         [Attributes.Form_Property("Примечание")]
         public RamAccess<string> Note
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(Note));
-            }
+            get => DataAccess.Get<string>(nameof(Note));
             set
             {
-                    _dataAccess.Set(nameof(Note), value);
+                DataAccess.Set(nameof(Note), value);
                 OnPropertyChanged(nameof(Note));
             }
         }

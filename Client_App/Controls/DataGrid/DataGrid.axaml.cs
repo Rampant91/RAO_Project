@@ -1,27 +1,22 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Collections;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using Avalonia.Collections;
-using System.ComponentModel;
-using Avalonia.Input;
 using Avalonia.Media;
+using Collections;
 using System;
-using Models.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Client_App.Controls.DataGrid
 {
     public enum ChooseMode
     {
-        Cell=0,
+        Cell = 0,
         Line
     }
     public enum MultilineMode
     {
-        Multi=0,
+        Multi = 0,
         Single
     }
     public class DataGrid : UserControl
@@ -36,7 +31,7 @@ namespace Client_App.Controls.DataGrid
 
         public IEnumerable<IChanged> Items
         {
-            get { return _items; }
+            get => _items;
             set
             {
                 if (value != null)
@@ -56,10 +51,7 @@ namespace Client_App.Controls.DataGrid
         private IEnumerable<IChanged> _selecteditems = new ObservableCollectionWithItemPropertyChanged<IChanged>();
         public IEnumerable<IChanged> SelectedItems
         {
-            get
-            {
-                return _selecteditems;
-            }
+            get => _selecteditems;
             set
             {
                 if (value != null)
@@ -77,7 +69,7 @@ namespace Client_App.Controls.DataGrid
         private string _type = "";
         public string Type
         {
-            get { return _type; }
+            get => _type;
             set
             {
                 SetAndRaise(TypeProperty, ref _type, value);
@@ -90,8 +82,8 @@ namespace Client_App.Controls.DataGrid
 
         public ChooseMode ChooseMode
         {
-            get { return GetValue(ChooseModeProperty); }
-            set { SetValue(ChooseModeProperty, value); }
+            get => GetValue(ChooseModeProperty);
+            set => SetValue(ChooseModeProperty, value);
         }
 
         public static readonly StyledProperty<MultilineMode> MultilineModeProperty =
@@ -99,8 +91,8 @@ namespace Client_App.Controls.DataGrid
 
         public MultilineMode MultilineMode
         {
-            get { return GetValue(MultilineModeProperty); }
-            set { SetValue(MultilineModeProperty, value); }
+            get => GetValue(MultilineModeProperty);
+            set => SetValue(MultilineModeProperty, value);
         }
 
         public static readonly StyledProperty<Brush> ChooseColorProperty =
@@ -108,13 +100,13 @@ namespace Client_App.Controls.DataGrid
 
         public Brush ChooseColor
         {
-            get { return GetValue(ChooseColorProperty); }
-            set { SetValue(ChooseColorProperty, value); }
+            get => GetValue(ChooseColorProperty);
+            set => SetValue(ChooseColorProperty, value);
         }
 
 
         public Panel Columns { get; set; }
-        RowCollection Rows { get; set; }
+        private RowCollection Rows { get; set; }
 
         public DataGrid()
         {
@@ -122,12 +114,14 @@ namespace Client_App.Controls.DataGrid
 
             ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
         }
-        List<Control> SelectedCells = new List<Control>();
-        void SetSelectedControls()
+
+        private readonly List<Control> SelectedCells = new List<Control>();
+
+        private void SetSelectedControls()
         {
-            if(ChooseMode==ChooseMode.Cell)
+            if (ChooseMode == ChooseMode.Cell)
             {
-                if(MultilineMode==MultilineMode.Multi)
+                if (MultilineMode == MultilineMode.Multi)
                 {
                     SetSelectedControls_CellMulti();
                 }
@@ -148,19 +142,20 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
-        void SetSelectedControls_LineSingle()
+
+        private void SetSelectedControls_LineSingle()
         {
-            var Row = FirstPressedItem[0];
-            var sel = SelectedCells.ToArray();
+            int Row = FirstPressedItem[0];
+            Control[]? sel = SelectedCells.ToArray();
             foreach (Row item in sel)
             {
                 if (item.SRow != Row)
                 {
-                    item.Background = this.Background ;
+                    item.Background = Background;
                     SelectedCells.Remove(item);
                 }
             }
-            if (!SelectedCells.Contains(Rows[Row] == null ? null:Rows[Row].SCells))
+            if (!SelectedCells.Contains(Rows[Row] == null ? null : Rows[Row].SCells))
             {
                 if (Rows[Row] != null)
                 {
@@ -169,38 +164,40 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
-        void SetSelectedControls_CellSingle()
+
+        private void SetSelectedControls_CellSingle()
         {
-            var Row = FirstPressedItem[0];
-            var Column = FirstPressedItem[1];
-            var sel = SelectedCells.ToArray();
+            int Row = FirstPressedItem[0];
+            int Column = FirstPressedItem[1];
+            Control[]? sel = SelectedCells.ToArray();
             foreach (Cell item in sel)
             {
                 if (item.CellRow != Row && item.CellColumn != Column)
                 {
-                    item.Background = this.Background;
+                    item.Background = Background;
                     SelectedCells.Remove(item);
                 }
             }
             if (!SelectedCells.Contains(Rows[Row, Column]))
             {
-                if (Rows[Row, Column]!=null)
+                if (Rows[Row, Column] != null)
                 {
                     Rows[Row, Column].Background = ChooseColor;
                     SelectedCells.Add(Rows[Row, Column]);
                 }
             }
         }
-        void SetSelectedControls_LineMulti()
+
+        private void SetSelectedControls_LineMulti()
         {
-            var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
-            var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
-            var sel = SelectedCells.ToArray();
+            int minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
+            int maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
+            Control[]? sel = SelectedCells.ToArray();
             foreach (Row item in sel)
             {
                 if (!(item.SRow >= minRow && item.SRow <= maxRow))
                 {
-                    item.Background = this.Background ;
+                    item.Background = Background;
                     SelectedCells.Remove(item);
                 }
             }
@@ -208,7 +205,7 @@ namespace Client_App.Controls.DataGrid
             {
                 if (!SelectedCells.Contains(Rows[i].SCells))
                 {
-                    if (Rows[i]!=null)
+                    if (Rows[i] != null)
                     {
                         Rows[i].SCells.Background = ChooseColor;
                         SelectedCells.Add(Rows[i].SCells);
@@ -216,23 +213,24 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
-        void SetSelectedControls_CellMulti()
+
+        private void SetSelectedControls_CellMulti()
         {
-            var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
-            var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
-            var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-            var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-            var sel = SelectedCells.ToArray();
-            foreach(Cell item in sel)
+            int minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
+            int maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
+            int minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+            int maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+            Control[]? sel = SelectedCells.ToArray();
+            foreach (Cell item in sel)
             {
-                if(!(item.CellRow>=minRow&&item.CellRow<=maxRow))
+                if (!(item.CellRow >= minRow && item.CellRow <= maxRow))
                 {
-                    item.Background = this.Background;
+                    item.Background = Background;
                     SelectedCells.Remove(item);
                 }
                 if (!(item.CellColumn >= minColumn && item.CellColumn <= maxColumn))
                 {
-                    item.Background = this.Background;
+                    item.Background = Background;
                     SelectedCells.Remove(item);
                 }
             }
@@ -242,7 +240,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     if (!SelectedCells.Contains(Rows[i, j]))
                     {
-                        if (Rows[i, j]!=null)
+                        if (Rows[i, j] != null)
                         {
                             Rows[i, j].Background = ChooseColor;
                             SelectedCells.Add(Rows[i, j]);
@@ -251,25 +249,26 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
-        void SetSelectedItems()
+
+        private void SetSelectedItems()
         {
-            var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+            ObservableCollectionWithItemPropertyChanged<IChanged>? lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
             if (FirstPressedItem[0] != 0 && FirstPressedItem[1] != 0)
             {
                 if (LastPressedItem[0] != 0 && LastPressedItem[1] != 0)
                 {
-                    foreach (var item in SelectedCells)
+                    foreach (Control? item in SelectedCells)
                     {
                         if (item is Cell)
                         {
-                            var ch = (Border)((Cell)item).Content;
-                            var ch2 = (Panel)ch.Child;
-                            var text = (TextBox)ch2.Children[0];
+                            Border? ch = (Border)((Cell)item).Content;
+                            Panel? ch2 = (Panel)ch.Child;
+                            TextBox? text = (TextBox)ch2.Children[0];
                             lst.Add((IChanged)text.DataContext);
                         }
                         if (item is StackPanel)
                         {
-                            var ch = (Cell)((StackPanel)item).Children[0];
+                            Cell? ch = (Cell)((StackPanel)item).Children[0];
                             lst.Add((IChanged)ch.DataContext);
                         }
                     }
@@ -277,25 +276,26 @@ namespace Client_App.Controls.DataGrid
             }
             _selecteditems = lst;
         }
-        void SetSelectedItemsWithHandler()
+
+        private void SetSelectedItemsWithHandler()
         {
-            var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
-            if(FirstPressedItem[0]!=0&&FirstPressedItem[1]!=0)
+            ObservableCollectionWithItemPropertyChanged<IChanged>? lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+            if (FirstPressedItem[0] != 0 && FirstPressedItem[1] != 0)
             {
                 if (LastPressedItem[0] != 0 && LastPressedItem[1] != 0)
                 {
-                    foreach(var item in SelectedCells)
+                    foreach (Control? item in SelectedCells)
                     {
                         if (item is Cell)
                         {
-                            var ch = (Border)((Cell)item).Content;
-                            var ch2 = (Panel)ch.Child;
-                            var text = (TextBox)ch2.Children[0];
+                            Border? ch = (Border)((Cell)item).Content;
+                            Panel? ch2 = (Panel)ch.Child;
+                            TextBox? text = (TextBox)ch2.Children[0];
                             lst.Add((IChanged)text.DataContext);
                         }
-                        if(item is StackPanel)
+                        if (item is StackPanel)
                         {
-                            var ch = (IChanged)item.DataContext;
+                            IChanged? ch = (IChanged)item.DataContext;
                             lst.Add(ch);
                         }
                     }
@@ -304,10 +304,10 @@ namespace Client_App.Controls.DataGrid
             SelectedItems = lst;
         }
 
-        int[] FirstPressedItem { get; set; } = new int[2];
-        int[] LastPressedItem { get; set; } = new int[2];
+        private int[] FirstPressedItem { get; set; } = new int[2];
+        private int[] LastPressedItem { get; set; } = new int[2];
 
-        void CellPropChangeEventHandler(object sender, PropertyChangedEventArgs args)
+        private void CellPropChangeEventHandler(object sender, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Down")
             {
@@ -326,8 +326,8 @@ namespace Client_App.Controls.DataGrid
                 LastPressedItem[0] = ((Cell)sender).CellRow;
                 LastPressedItem[1] = ((Cell)sender).CellColumn;
             }
-            if (args.PropertyName == "Down"||
-                args.PropertyName == "DownMove"||
+            if (args.PropertyName == "Down" ||
+                args.PropertyName == "DownMove" ||
                 args.PropertyName == "Up")
             {
                 SetSelectedControls();
@@ -335,15 +335,15 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
-        void UpdateAllCells()
+        private void UpdateAllCells()
         {
             NameScope scp = new NameScope();
-            scp.Register(this.Name,this);
+            scp.Register(Name, this);
             Rows.Clear();
             int count = 1;
-            foreach (var item in _items)
+            foreach (IChanged? item in _items)
             {
-                var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp,this.Name);
+                Row? tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
                 Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
                 count++;
             }
@@ -351,12 +351,12 @@ namespace Client_App.Controls.DataGrid
             SetSelectedItemsWithHandler();
         }
 
-        void UpdateCells()
+        private void UpdateCells()
         {
             NameScope scp = new NameScope();
-            scp.Register(this.Name, this);
+            scp.Register(Name, this);
             int count = 1;
-            foreach (var item in _items)
+            foreach (IChanged? item in _items)
             {
                 if (Rows.Count >= count)
                 {
@@ -364,23 +364,23 @@ namespace Client_App.Controls.DataGrid
                     {
                         if (((IKey)(Rows[count].SCells).DataContext) != null)
                         {
-                            if (((IKey)(Rows[count].SCells).DataContext).ID != ((IKey)item).ID)
+                            if (((IKey)(Rows[count].SCells).DataContext).Id != ((IKey)item).Id)
                             {
-                                var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp,this.Name);
+                                Row? tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
                                 Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
                             }
                         }
                     }
                     else
                     {
-                        var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, this.Name);
+                        Row? tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
                         Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
                         count++;
                     }
                 }
                 else
                 {
-                    var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp,this.Name);
+                    Row? tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
                     Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
                     count++;
                 }
@@ -389,9 +389,10 @@ namespace Client_App.Controls.DataGrid
             SetSelectedControls();
             SetSelectedItemsWithHandler();
         }
-        void ItemsChanged(object sender, PropertyChangedEventArgs args)
+
+        private void ItemsChanged(object sender, PropertyChangedEventArgs args)
         {
-            if(Rows.Count>0)
+            if (Rows.Count > 0)
             {
                 UpdateCells();
             }
@@ -412,29 +413,38 @@ namespace Client_App.Controls.DataGrid
             AvaloniaXamlLoader.Load(this);
             Init();
         }
-        void Init()
+
+        private void Init()
         {
 
-            Border brd = new Border();
-            brd.BorderThickness = Thickness.Parse("1");
-            brd.BorderBrush = new SolidColorBrush(Color.Parse("Gray"));
+            Border brd = new Border
+            {
+                BorderThickness = Thickness.Parse("1"),
+                BorderBrush = new SolidColorBrush(Color.Parse("Gray"))
+            };
 
-            ScrollViewer vwm = new ScrollViewer();
-            //vw.SetValue(Grid.RowProperty, 1);
-            vwm.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
-            vwm.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-            vwm.HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-            vwm.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled;
-            vwm.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
+            ScrollViewer vwm = new ScrollViewer
+            {
+                //vw.SetValue(Grid.RowProperty, 1);
+                Background = new SolidColorBrush(Color.Parse("WhiteSmoke")),
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
+                HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto
+            };
             brd.Child = vwm;
 
-            Panel p = new Panel();
-            p.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            Panel p = new Panel
+            {
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
+            };
             vwm.Content = p;
 
             Grid grd = new Grid();
-            RowDefinition rd = new RowDefinition();
-            rd.Height = GridLength.Parse("30");
+            RowDefinition rd = new RowDefinition
+            {
+                Height = GridLength.Parse("30")
+            };
             grd.RowDefinitions.Add(rd);
             grd.RowDefinitions.Add(new RowDefinition());
             p.Children.Add(grd);
@@ -452,16 +462,18 @@ namespace Client_App.Controls.DataGrid
             vw.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
             grd.Children.Add(vw);
 
-            StackPanel stck = new StackPanel();
-            stck.Margin = Thickness.Parse("0,-1,0,0");
-            stck.Spacing = -1;
-            stck.Orientation = Avalonia.Layout.Orientation.Vertical;
-            stck.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-            stck.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+            StackPanel stck = new StackPanel
+            {
+                Margin = Thickness.Parse("0,-1,0,0"),
+                Spacing = -1,
+                Orientation = Avalonia.Layout.Orientation.Vertical,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+            };
             vw.Content = stck;
             Rows = new RowCollection(stck, CellPropChangeEventHandler);
 
-            this.Content = brd;
+            Content = brd;
         }
     }
 }

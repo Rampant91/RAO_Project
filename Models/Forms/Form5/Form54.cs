@@ -27,27 +27,27 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(TypeOfAccountedParts));
+                    return DataAccess.Get<int>(nameof(TypeOfAccountedParts));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(TypeOfAccountedParts), value);
+                    DataAccess.Set(nameof(TypeOfAccountedParts), value);
                 }
                 OnPropertyChanged(nameof(TypeOfAccountedParts));
             }
         }
         //1 or 2
- //1 or 2
+        //1 or 2
         private bool TypeOfAccountedParts_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
@@ -65,21 +65,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(KindOri));
+                    return DataAccess.Get<int>(nameof(KindOri));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(KindOri), value);
+                    DataAccess.Set(nameof(KindOri), value);
                 }
                 OnPropertyChanged(nameof(KindOri));
             }
@@ -98,21 +98,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<byte>(nameof(AggregateState));
+                    return DataAccess.Get<byte>(nameof(AggregateState));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(AggregateState), value);
+                    DataAccess.Set(nameof(AggregateState), value);
                 }
                 OnPropertyChanged(nameof(AggregateState));
             }
@@ -137,23 +137,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -165,15 +165,15 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;
+                    Radionuclids.Value = item.Item2;
                     return true;
                 }
             }
@@ -187,22 +187,22 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Activity));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Activity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Activity), value);
+                    DataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -214,15 +214,15 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -233,7 +233,7 @@ return false;
             }
             catch
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -245,14 +245,14 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
-                    
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
@@ -260,9 +260,9 @@ return false;
 
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -287,21 +287,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<double>(nameof(Volume));
+                    return DataAccess.Get<double>(nameof(Volume));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Volume), value);
+                    DataAccess.Set(nameof(Volume), value);
                 }
                 OnPropertyChanged(nameof(Volume));
             }
@@ -313,8 +313,8 @@ return false;
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -326,21 +326,21 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<double>(nameof(Mass));
+                    return DataAccess.Get<double>(nameof(Mass));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Mass), value);
+                    DataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -352,8 +352,8 @@ return false;
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }

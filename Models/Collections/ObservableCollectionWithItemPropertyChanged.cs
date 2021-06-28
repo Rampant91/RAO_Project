@@ -1,44 +1,25 @@
-﻿using Models.DataAccess;
-using Models.Attributes;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Collections.Specialized;
-using Models.Collections;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using FirebirdSql.Data.FirebirdClient;
+using System.Collections.ObjectModel;
+using Collections;
 
-namespace Models.Collections
+namespace Collections
 {
-    public partial class ObservableCollectionWithItemPropertyChanged<T> :DbSet<T>,INotifyCollectionChanged
-        where T : class,IChanged
+    public partial class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollection<T>, IKey
+        where T : class, IChanged
     {
-        public ObservableCollectionWithItemPropertyChanged() : base() { }
-
-        public ObservableCollectionWithItemPropertyChanged(IEnumerable<T> collection):base()
+        public int Id { get; set; }
+        public ObservableCollectionWithItemPropertyChanged() : base()
         {
-            if (collection == null)
-                throw new ArgumentNullException("collection");
-            CopyFrom(collection);
+
         }
 
-        public override EntityEntry<T> Add(T obj)
-        {
-            if(CollectionChanged!=null)
-            {
-                CollectionChanged(obj,new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add));
-            }
-            return base.Add(obj);
-        }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
         private void CopyFrom(IEnumerable<T> collection)
         {
             if (collection != null)
@@ -47,20 +28,17 @@ namespace Models.Collections
                 {
                     while (enumerator.MoveNext())
                     {
-                        this.Add(enumerator.Current);
+                        Add(enumerator.Current);
                     }
                 }
             }
         }
 
         [NotMapped]
-        bool _isChanged = true;
+        private bool _isChanged = true;
         public bool IsChanged
         {
-            get
-            {
-                return _isChanged;
-            }
+            get => _isChanged;
             set
             {
                 if (_isChanged != value)

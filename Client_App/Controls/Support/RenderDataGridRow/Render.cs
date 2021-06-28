@@ -1,30 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia.Controls;
-using Avalonia.Input;
+﻿using Avalonia.Controls;
 
 namespace Client_App.Controls.Support.RenderDataGridRow
 {
     public class Render
     {
-        public static Control GetControl(string Type,int Row, INameScope scp,string TopName)
+        public static Control GetControl(string Type, int Row, INameScope scp, string TopName)
         {
             Control ctrl = null;
             if (Type != "")
             {
-                var formT1 = Type.Split('/')[0];
-                var formT2 = Type.Split('/')[1];
+                string? formT1 = Type.Split('/')[0];
+                string? formT2 = Type.Split('/')[1];
 
                 switch (formT1)
                 {
                     case "0":
-                        ctrl = Support.RenderDataGridRow.Main.GetControl(formT2,Row,scp, TopName);
+                        ctrl = Support.RenderDataGridRow.Main.GetControl(formT2, Row, scp, TopName);
                         break;
                     case "1":
-                        ctrl = Support.RenderDataGridRow.Form1.GetControl(formT2,Row,scp, TopName);
+                        ctrl = Support.RenderDataGridRow.Form1.GetControl(formT2, Row, scp, TopName);
                         break;
                     case "2":
                         ctrl = Support.RenderDataGridRow.Form2.GetControl(formT2);

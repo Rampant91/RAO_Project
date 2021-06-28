@@ -1,182 +1,180 @@
-﻿using Models.DataAccess;
-using Models.Attributes;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Models.Attributes;
+using Collections;
+using Models.DataAccess;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Collections.Specialized;
-using Models.Collections;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Collections
 {
-    public class Report : IChanged,IKey
+    public class Report : IChanged, IKey
     {
-        IDataAccessCollection _dataAccess { get; set; }
+        protected DataAccessCollection DataAccess { get; set; }
+        protected DBRealization.DBModel dbm { get; set; }
 
-        public Report(IDataAccessCollection Access)
+        public Report(DataAccessCollection Access)
         {
-            _dataAccess = Access;
+            dbm = DBRealization.StaticConfiguration.DBModel;
+            DataAccess = Access;
             Init();
         }
-
         public Report()
         {
-            _dataAccess = new DataAccessCollection();
+            dbm = DBRealization.StaticConfiguration.DBModel;
+            DataAccess = new DataAccessCollection();
             Init();
         }
-        void Init()
+
+        private void Init()
         {
 
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form10>>(nameof(Rows10), Rows10_Validation, null);
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form10>>(nameof(Rows10), Rows10_Validation, null);
             Rows10 = new ObservableCollectionWithItemPropertyChanged<Models.Form10>();
-            Rows10.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form11>>(nameof(Rows11), Rows11_Validation, null);
+            ////Rows10.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form11>>(nameof(Rows11), Rows11_Validation, null);
             Rows11 = new ObservableCollectionWithItemPropertyChanged<Models.Form11>();
-            Rows11.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form12>>(nameof(Rows12), Rows12_Validation, null);
+            ////Rows11.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form12>>(nameof(Rows12), Rows12_Validation, null);
             Rows12 = new ObservableCollectionWithItemPropertyChanged<Models.Form12>();
-            Rows12.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form13>>(nameof(Rows13), Rows13_Validation, null);
+            ////Rows12.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form13>>(nameof(Rows13), Rows13_Validation, null);
             Rows13 = new ObservableCollectionWithItemPropertyChanged<Models.Form13>();
-            Rows13.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form14>>(nameof(Rows14), Rows14_Validation, null);
+            ////Rows13.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form14>>(nameof(Rows14), Rows14_Validation, null);
             Rows14 = new ObservableCollectionWithItemPropertyChanged<Models.Form14>();
-            Rows14.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form15>>(nameof(Rows15), Rows15_Validation, null);
+            //Rows14.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form15>>(nameof(Rows15), Rows15_Validation, null);
             Rows15 = new ObservableCollectionWithItemPropertyChanged<Models.Form15>();
-            Rows15.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form16>>(nameof(Rows16), Rows16_Validation, null);
+            //Rows15.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form16>>(nameof(Rows16), Rows16_Validation, null);
             Rows16 = new ObservableCollectionWithItemPropertyChanged<Models.Form16>();
-            Rows16.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form17>>(nameof(Rows17), Rows17_Validation, null);
+            //Rows16.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form17>>(nameof(Rows17), Rows17_Validation, null);
             Rows17 = new ObservableCollectionWithItemPropertyChanged<Models.Form17>();
-            Rows17.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form18>>(nameof(Rows18), Rows18_Validation, null);
+            //Rows17.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form18>>(nameof(Rows18), Rows18_Validation, null);
             Rows18 = new ObservableCollectionWithItemPropertyChanged<Models.Form18>();
-            Rows18.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form19>>(nameof(Rows19), Rows19_Validation, null);
+            //Rows18.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form19>>(nameof(Rows19), Rows19_Validation, null);
             Rows19 = new ObservableCollectionWithItemPropertyChanged<Models.Form19>();
-            Rows19.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form20>>(nameof(Rows20), Rows20_Validation, null);
+            //Rows19.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form20>>(nameof(Rows20), Rows20_Validation, null);
             Rows20 = new ObservableCollectionWithItemPropertyChanged<Models.Form20>();
-            Rows20.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form21>>(nameof(Rows21), Rows21_Validation, null);
+            //Rows20.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form21>>(nameof(Rows21), Rows21_Validation, null);
             Rows21 = new ObservableCollectionWithItemPropertyChanged<Models.Form21>();
-            Rows21.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form22>>(nameof(Rows22), Rows22_Validation, null);
+            //Rows21.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form22>>(nameof(Rows22), Rows22_Validation, null);
             Rows22 = new ObservableCollectionWithItemPropertyChanged<Models.Form22>();
-            Rows22.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form23>>(nameof(Rows23), Rows23_Validation, null);
+            //Rows22.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form23>>(nameof(Rows23), Rows23_Validation, null);
             Rows23 = new ObservableCollectionWithItemPropertyChanged<Models.Form23>();
-            Rows23.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form24>>(nameof(Rows24), Rows24_Validation, null);
+            //Rows23.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form24>>(nameof(Rows24), Rows24_Validation, null);
             Rows24 = new ObservableCollectionWithItemPropertyChanged<Models.Form24>();
-            Rows24.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form25>>(nameof(Rows25), Rows25_Validation, null);
+            //Rows24.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form25>>(nameof(Rows25), Rows25_Validation, null);
             Rows25 = new ObservableCollectionWithItemPropertyChanged<Models.Form25>();
-            Rows25.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form26>>(nameof(Rows26), Rows26_Validation, null);
+            //Rows25.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form26>>(nameof(Rows26), Rows26_Validation, null);
             Rows26 = new ObservableCollectionWithItemPropertyChanged<Models.Form26>();
-            Rows26.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form27>>(nameof(Rows27), Rows27_Validation, null);
+            //Rows26.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form27>>(nameof(Rows27), Rows27_Validation, null);
             Rows27 = new ObservableCollectionWithItemPropertyChanged<Models.Form27>();
-            Rows27.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form28>>(nameof(Rows28), Rows28_Validation, null);
+            //Rows27.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form28>>(nameof(Rows28), Rows28_Validation, null);
             Rows28 = new ObservableCollectionWithItemPropertyChanged<Models.Form28>();
-            Rows28.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form29>>(nameof(Rows29), Rows29_Validation, null);
+            //Rows28.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form29>>(nameof(Rows29), Rows29_Validation, null);
             Rows29 = new ObservableCollectionWithItemPropertyChanged<Models.Form29>();
-            Rows29.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form210>>(nameof(Rows210), Rows210_Validation, null);
+            //Rows29.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form210>>(nameof(Rows210), Rows210_Validation, null);
             Rows210 = new ObservableCollectionWithItemPropertyChanged<Models.Form210>();
-            Rows210.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form211>>(nameof(Rows211), Rows211_Validation, null);
+            //Rows210.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form211>>(nameof(Rows211), Rows211_Validation, null);
             Rows211 = new ObservableCollectionWithItemPropertyChanged<Models.Form211>();
-            Rows211.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form212>>(nameof(Rows212), Rows212_Validation, null);
+            //Rows211.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form212>>(nameof(Rows212), Rows212_Validation, null);
             Rows212 = new ObservableCollectionWithItemPropertyChanged<Models.Form212>();
-            Rows212.CollectionChanged += CollectionChanged;
+            //Rows212.CollectionChanged += CollectionChanged;
 
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form30>>(nameof(Rows30), Rows30_Validation, null);
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form30>>(nameof(Rows30), Rows30_Validation, null);
             Rows30 = new ObservableCollectionWithItemPropertyChanged<Models.Form30>();
-            Rows30.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form31>>(nameof(Rows31), Rows31_Validation, null);
+            //Rows30.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form31>>(nameof(Rows31), Rows31_Validation, null);
             Rows31 = new ObservableCollectionWithItemPropertyChanged<Models.Form31>();
-            Rows31.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form31_1>>(nameof(Rows31_1), Rows31_1_Validation, null);
+            //Rows31.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form31_1>>(nameof(Rows31_1), Rows31_1_Validation, null);
             Rows31_1 = new ObservableCollectionWithItemPropertyChanged<Models.Form31_1>();
-            Rows31_1.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form32>>(nameof(Rows32), Rows32_Validation, null);
+            //Rows31_1.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form32>>(nameof(Rows32), Rows32_Validation, null);
             Rows32 = new ObservableCollectionWithItemPropertyChanged<Models.Form32>();
-            Rows32.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form32_1>>(nameof(Rows32_1), Rows32_1_Validation, null);
+            //Rows32.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form32_1>>(nameof(Rows32_1), Rows32_1_Validation, null);
             Rows32_1 = new ObservableCollectionWithItemPropertyChanged<Models.Form32_1>();
-            Rows32_1.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form32_2>>(nameof(Rows32_2), Rows32_2_Validation, null);
+            //Rows32_1.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form32_2>>(nameof(Rows32_2), Rows32_2_Validation, null);
             Rows32_2 = new ObservableCollectionWithItemPropertyChanged<Models.Form32_2>();
-            Rows32_2.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form32_3>>(nameof(Rows32_3), Rows32_3_Validation, null);
+            //Rows32_2.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form32_3>>(nameof(Rows32_3), Rows32_3_Validation, null);
             Rows32_3 = new ObservableCollectionWithItemPropertyChanged<Models.Form32_3>();
-            Rows32_3.CollectionChanged += CollectionChanged;
+            //Rows32_3.CollectionChanged += CollectionChanged;
 
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form40>>(nameof(Rows40), Rows40_Validation, null);
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form40>>(nameof(Rows40), Rows40_Validation, null);
             Rows40 = new ObservableCollectionWithItemPropertyChanged<Models.Form40>();
-            Rows40.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form41>>(nameof(Rows41), Rows41_Validation, null);
+            //Rows40.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form41>>(nameof(Rows41), Rows41_Validation, null);
             Rows41 = new ObservableCollectionWithItemPropertyChanged<Models.Form41>();
-            Rows41.CollectionChanged += CollectionChanged;
+            //Rows41.CollectionChanged += CollectionChanged;
 
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form50>>(nameof(Rows50), Rows50_Validation, null);
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form50>>(nameof(Rows50), Rows50_Validation, null);
             Rows50 = new ObservableCollectionWithItemPropertyChanged<Models.Form50>();
-            Rows50.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form51>>(nameof(Rows51), Rows51_Validation, null);
+            //Rows50.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form51>>(nameof(Rows51), Rows51_Validation, null);
             Rows51 = new ObservableCollectionWithItemPropertyChanged<Models.Form51>();
-            Rows51.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form52>>(nameof(Rows52), Rows52_Validation, null);
+            //Rows51.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form52>>(nameof(Rows52), Rows52_Validation, null);
             Rows52 = new ObservableCollectionWithItemPropertyChanged<Models.Form52>();
-            Rows52.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form53>>(nameof(Rows53), Rows53_Validation, null);
+            //Rows52.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form53>>(nameof(Rows53), Rows53_Validation, null);
             Rows53 = new ObservableCollectionWithItemPropertyChanged<Models.Form53>();
-            Rows53.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form54>>(nameof(Rows54), Rows54_Validation, null);
+            //Rows53.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form54>>(nameof(Rows54), Rows54_Validation, null);
             Rows54 = new ObservableCollectionWithItemPropertyChanged<Models.Form54>();
-            Rows54.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form55>>(nameof(Rows55), Rows55_Validation, null);
+            //Rows54.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form55>>(nameof(Rows55), Rows55_Validation, null);
             Rows55 = new ObservableCollectionWithItemPropertyChanged<Models.Form55>();
-            Rows55.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form56>>(nameof(Rows56), Rows56_Validation, null);
+            //Rows55.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form56>>(nameof(Rows56), Rows56_Validation, null);
             Rows56 = new ObservableCollectionWithItemPropertyChanged<Models.Form56>();
-            Rows56.CollectionChanged += CollectionChanged;
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form57>>(nameof(Rows57), Rows57_Validation, null);
+            //Rows56.CollectionChanged += CollectionChanged;
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Form57>>(nameof(Rows57), Rows57_Validation, null);
             Rows57 = new ObservableCollectionWithItemPropertyChanged<Models.Form57>();
-            Rows57.CollectionChanged += CollectionChanged;
+            //Rows57.CollectionChanged += CollectionChanged;
 
-            _dataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Note>>(nameof(Notes), Notes_Validation, null);
+            DataAccess.Init<ObservableCollectionWithItemPropertyChanged<Models.Note>>(nameof(Notes), Notes_Validation, null);
             Notes = new ObservableCollectionWithItemPropertyChanged<Models.Note>();
-            Notes.CollectionChanged += CollectionChanged;
+            //Notes.CollectionChanged += CollectionChanged;
 
-            _dataAccess.Init<string>(nameof(StartPeriod), StartPeriod_Validation, "");
-            _dataAccess.Init<string>(nameof(Comments), Comments_Validation, "");
-            _dataAccess.Init<byte>(nameof(CorrectionNumber), CorrectionNumber_Validation, 0);
-            _dataAccess.Init<bool>(nameof(IsCorrection), IsCorrection_Validation, false);
-            _dataAccess.Init<string>(nameof(NumberInOrder), NumberInOrder_Validation, "");
-            _dataAccess.Init<string>(nameof(EndPeriod), EndPeriod_Validation, "");
-            _dataAccess.Init<string>(nameof(ExportDate), ExportDate_Validation, "");
+            DataAccess.Init<string>(nameof(StartPeriod), StartPeriod_Validation, "");
+            DataAccess.Init<string>(nameof(Comments), Comments_Validation, "");
+            DataAccess.Init<byte>(nameof(CorrectionNumber), CorrectionNumber_Validation, 0);
+            DataAccess.Init<bool>(nameof(IsCorrection), IsCorrection_Validation, false);
+            DataAccess.Init<string>(nameof(NumberInOrder), NumberInOrder_Validation, "");
+            DataAccess.Init<string>(nameof(EndPeriod), EndPeriod_Validation, "");
+            DataAccess.Init<string>(nameof(ExportDate), ExportDate_Validation, "");
         }
 
         public bool Equals(object obj)
         {
             if (obj is Report)
             {
-                var obj1 = this;
-                var obj2 = obj as Report;
+                Report obj1 = this;
+                Report obj2 = obj as Report;
 
-                return obj1._dataAccess == obj2._dataAccess;
+                return obj1.DataAccess == obj2.DataAccess;
             }
             else
             {
@@ -207,7 +205,6 @@ namespace Collections
                 return obj2 as object != null ? true : false;
             }
         }
-
 
         protected void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
@@ -256,19 +253,18 @@ namespace Collections
             OnPropertyChanged(nameof(Rows56));
             OnPropertyChanged(nameof(Rows57));
         }
+        public int Id { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-
+        public int? Rows10Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form10> Rows10
         {
             get
             {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form10>>(nameof(Rows10)).Value;
+                return DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form10>>(nameof(Rows10)).Value;
             }
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form10>>(nameof(Rows10)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form10>>(nameof(Rows10)).Value = value;
                 OnPropertyChanged(nameof(Rows10));
             }
         }
@@ -277,16 +273,16 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows11Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form11> Rows11
         {
             get
             {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form11>>(nameof(Rows11)).Value;
+                return DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form11>>(nameof(Rows11)).Value;
             }
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form11>>(nameof(Rows11)).Value = value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form11>>(nameof(Rows11)).Value = value;
                 OnPropertyChanged(nameof(Rows11));
             }
         }
@@ -295,16 +291,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows12Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form12> Rows12
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form12>>(nameof(Rows12)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form12>>(nameof(Rows12)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form12>>(nameof(Rows12)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form12>>(nameof(Rows12)).Value = value;
                 OnPropertyChanged(nameof(Rows12));
             }
         }
@@ -313,15 +306,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows13Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form13> Rows13
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form13>>(nameof(Rows13)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form13>>(nameof(Rows13)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form13>>(nameof(Rows13)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form13>>(nameof(Rows13)).Value = value;
                 OnPropertyChanged(nameof(Rows13));
             }
         }
@@ -330,15 +321,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows14Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form14> Rows14
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form14>>(nameof(Rows14)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form14>>(nameof(Rows14)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form14>>(nameof(Rows14)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form14>>(nameof(Rows14)).Value = value;
                 OnPropertyChanged(nameof(Rows14));
             }
         }
@@ -347,15 +336,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows15Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form15> Rows15
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form15>>(nameof(Rows15)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form15>>(nameof(Rows15)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form15>>(nameof(Rows15)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form15>>(nameof(Rows15)).Value = value;
                 OnPropertyChanged(nameof(Rows15));
             }
         }
@@ -364,15 +351,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows16Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form16> Rows16
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form16>>(nameof(Rows16)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form16>>(nameof(Rows16)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form16>>(nameof(Rows16)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form16>>(nameof(Rows16)).Value = value;
                 OnPropertyChanged(nameof(Rows16));
             }
         }
@@ -381,15 +366,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows17Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form17> Rows17
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form17>>(nameof(Rows17)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form17>>(nameof(Rows17)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form17>>(nameof(Rows17)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form17>>(nameof(Rows17)).Value = value;
                 OnPropertyChanged(nameof(Rows17));
             }
         }
@@ -398,15 +381,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows18Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form18> Rows18
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form18>>(nameof(Rows18)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form18>>(nameof(Rows18)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form18>>(nameof(Rows18)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form18>>(nameof(Rows18)).Value = value;
                 OnPropertyChanged(nameof(Rows18));
             }
         }
@@ -415,15 +396,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows19Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form19> Rows19
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form19>>(nameof(Rows19)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form19>>(nameof(Rows19)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form19>>(nameof(Rows19)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form19>>(nameof(Rows19)).Value = value;
                 OnPropertyChanged(nameof(Rows19));
             }
         }
@@ -432,15 +411,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows20Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form20> Rows20
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form20>>(nameof(Rows20)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form20>>(nameof(Rows20)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form20>>(nameof(Rows20)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form20>>(nameof(Rows20)).Value = value;
                 OnPropertyChanged(nameof(Rows20));
             }
         }
@@ -449,15 +426,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows21Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form21> Rows21
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form21>>(nameof(Rows21)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form21>>(nameof(Rows21)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form21>>(nameof(Rows21)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form21>>(nameof(Rows21)).Value = value;
                 OnPropertyChanged(nameof(Rows21));
             }
         }
@@ -466,16 +441,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows22Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form22> Rows22
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form22>>(nameof(Rows22)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form22>>(nameof(Rows22)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form22>>(nameof(Rows22)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form22>>(nameof(Rows22)).Value = value;
                 OnPropertyChanged(nameof(Rows22));
             }
         }
@@ -484,16 +456,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows23Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form23> Rows23
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form23>>(nameof(Rows23)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form23>>(nameof(Rows23)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form23>>(nameof(Rows23)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form23>>(nameof(Rows23)).Value = value;
                 OnPropertyChanged(nameof(Rows23));
             }
         }
@@ -502,16 +471,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows24Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form24> Rows24
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form24>>(nameof(Rows24)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form24>>(nameof(Rows24)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form24>>(nameof(Rows24)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form24>>(nameof(Rows24)).Value = value;
                 OnPropertyChanged(nameof(Rows24));
             }
         }
@@ -520,16 +486,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows25Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form25> Rows25
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form25>>(nameof(Rows25)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form25>>(nameof(Rows25)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form25>>(nameof(Rows25)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form25>>(nameof(Rows25)).Value = value;
                 OnPropertyChanged(nameof(Rows25));
             }
         }
@@ -538,15 +501,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows26Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form26> Rows26
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form26>>(nameof(Rows26)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form26>>(nameof(Rows26)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form26>>(nameof(Rows26)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form26>>(nameof(Rows26)).Value = value;
                 OnPropertyChanged(nameof(Rows26));
             }
         }
@@ -555,15 +516,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows27Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form27> Rows27
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form27>>(nameof(Rows27)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form27>>(nameof(Rows27)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form27>>(nameof(Rows27)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form27>>(nameof(Rows27)).Value = value;
                 OnPropertyChanged(nameof(Rows27));
             }
         }
@@ -572,16 +531,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows28Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form28> Rows28
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form28>>(nameof(Rows28)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form28>>(nameof(Rows28)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form28>>(nameof(Rows28)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form28>>(nameof(Rows28)).Value = value;
                 OnPropertyChanged(nameof(Rows28));
             }
         }
@@ -590,16 +546,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows29Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form29> Rows29
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form29>>(nameof(Rows29)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form29>>(nameof(Rows29)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form29>>(nameof(Rows29)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form29>>(nameof(Rows29)).Value = value;
                 OnPropertyChanged(nameof(Rows29));
             }
         }
@@ -608,16 +561,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows210Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form210> Rows210
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form210>>(nameof(Rows210)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form210>>(nameof(Rows210)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form210>>(nameof(Rows210)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form210>>(nameof(Rows210)).Value = value;
                 OnPropertyChanged(nameof(Rows210));
             }
         }
@@ -626,16 +576,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows211Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form211> Rows211
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form211>>(nameof(Rows211)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form211>>(nameof(Rows211)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form211>>(nameof(Rows211)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form211>>(nameof(Rows211)).Value = value;
                 OnPropertyChanged(nameof(Rows211));
             }
         }
@@ -644,16 +591,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows212Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form212> Rows212
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form212>>(nameof(Rows212)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form212>>(nameof(Rows212)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form212>>(nameof(Rows212)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form212>>(nameof(Rows212)).Value = value;
                 OnPropertyChanged(nameof(Rows212));
             }
         }
@@ -662,16 +606,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows30Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form30> Rows30
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form30>>(nameof(Rows30)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form30>>(nameof(Rows30)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form30>>(nameof(Rows30)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form30>>(nameof(Rows30)).Value = value;
                 OnPropertyChanged(nameof(Rows30));
             }
         }
@@ -680,16 +621,13 @@ namespace Collections
             return true;
         }
 
-
+        public int? Rows31Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form31> Rows31
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form31>>(nameof(Rows31)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form31>>(nameof(Rows31)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form31>>(nameof(Rows31)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form31>>(nameof(Rows31)).Value = value;
                 OnPropertyChanged(nameof(Rows31));
             }
         }
@@ -698,15 +636,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows31_1Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form31_1> Rows31_1
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form31_1>>(nameof(Rows31_1)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form31_1>>(nameof(Rows31_1)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form31_1>>(nameof(Rows31_1)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form31_1>>(nameof(Rows31_1)).Value = value;
                 OnPropertyChanged(nameof(Rows31_1));
             }
         }
@@ -715,15 +651,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows32Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form32> Rows32
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32>>(nameof(Rows32)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32>>(nameof(Rows32)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32>>(nameof(Rows32)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32>>(nameof(Rows32)).Value = value;
                 OnPropertyChanged(nameof(Rows32));
             }
         }
@@ -732,15 +666,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows32_1Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form32_1> Rows32_1
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_1>>(nameof(Rows32_1)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_1>>(nameof(Rows32_1)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_1>>(nameof(Rows32_1)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_1>>(nameof(Rows32_1)).Value = value;
                 OnPropertyChanged(nameof(Rows32_1));
             }
         }
@@ -749,15 +681,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows32_2Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form32_2> Rows32_2
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_2>>(nameof(Rows32_2)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_2>>(nameof(Rows32_2)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_2>>(nameof(Rows32_2)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_2>>(nameof(Rows32_2)).Value = value;
                 OnPropertyChanged(nameof(Rows32_2));
             }
         }
@@ -766,15 +696,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows32_3Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form32_3> Rows32_3
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_3>>(nameof(Rows32_3)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_3>>(nameof(Rows32_3)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_3>>(nameof(Rows32_3)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form32_3>>(nameof(Rows32_3)).Value = value;
                 OnPropertyChanged(nameof(Rows32_3));
             }
         }
@@ -783,15 +711,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows40Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form40> Rows40
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form40>>(nameof(Rows40)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form40>>(nameof(Rows40)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form40>>(nameof(Rows40)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form40>>(nameof(Rows40)).Value = value;
                 OnPropertyChanged(nameof(Rows40));
             }
         }
@@ -800,15 +726,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows41Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form41> Rows41
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form41>>(nameof(Rows41)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form41>>(nameof(Rows41)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form41>>(nameof(Rows41)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form41>>(nameof(Rows41)).Value = value;
                 OnPropertyChanged(nameof(Rows41));
             }
         }
@@ -817,15 +741,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows50Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form50> Rows50
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form50>>(nameof(Rows50)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form50>>(nameof(Rows50)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form50>>(nameof(Rows50)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form50>>(nameof(Rows50)).Value = value;
                 OnPropertyChanged(nameof(Rows50));
             }
         }
@@ -834,15 +756,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows51Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form51> Rows51
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form51>>(nameof(Rows51)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form51>>(nameof(Rows51)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form51>>(nameof(Rows51)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form51>>(nameof(Rows51)).Value = value;
                 OnPropertyChanged(nameof(Rows51));
             }
         }
@@ -851,15 +771,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows52Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form52> Rows52
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form52>>(nameof(Rows52)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form52>>(nameof(Rows52)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form52>>(nameof(Rows52)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form52>>(nameof(Rows52)).Value = value;
                 OnPropertyChanged(nameof(Rows52));
             }
         }
@@ -868,15 +786,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows53Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form53> Rows53
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form53>>(nameof(Rows53)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form53>>(nameof(Rows53)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form53>>(nameof(Rows53)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form53>>(nameof(Rows53)).Value = value;
                 OnPropertyChanged(nameof(Rows53));
             }
         }
@@ -885,15 +801,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows54Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form54> Rows54
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form54>>(nameof(Rows54)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form54>>(nameof(Rows54)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form54>>(nameof(Rows54)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form54>>(nameof(Rows54)).Value = value;
                 OnPropertyChanged(nameof(Rows54));
             }
         }
@@ -902,15 +816,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows55Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form55> Rows55
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form55>>(nameof(Rows55)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form55>>(nameof(Rows55)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form55>>(nameof(Rows55)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form55>>(nameof(Rows55)).Value = value;
                 OnPropertyChanged(nameof(Rows55));
             }
         }
@@ -919,15 +831,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows56Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form56> Rows56
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form56>>(nameof(Rows56)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form56>>(nameof(Rows56)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form56>>(nameof(Rows56)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form56>>(nameof(Rows56)).Value = value;
                 OnPropertyChanged(nameof(Rows56));
             }
         }
@@ -936,15 +846,13 @@ namespace Collections
             return true;
         }
 
+        public int? Rows57Id { get; set; }
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Form57> Rows57
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form57>>(nameof(Rows57)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form57>>(nameof(Rows57)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form57>>(nameof(Rows57)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Form57>>(nameof(Rows57)).Value = value;
                 OnPropertyChanged(nameof(Rows57));
             }
         }
@@ -954,55 +862,56 @@ namespace Collections
         }
 
         [Form_Property("Форма")]
+        public int? FormNumId { get; set; }
         public RamAccess<string> FormNum
         {
             get
             {
-                if (Rows10.Count() > 0) { return new RamAccess<string>(null,"1/0"); }
-                if (Rows11.Count() > 0) { return new RamAccess<string>(null,"1/1"); }
-                if (Rows12.Count() > 0) { return new RamAccess<string>(null,"1/2"); }
-                if (Rows13.Count() > 0) { return new RamAccess<string>(null,"1/3"); }
-                if (Rows14.Count() > 0) { return new RamAccess<string>(null,"1/4"); }
-                if (Rows15.Count() > 0) { return new RamAccess<string>(null,"1/5"); }
-                if (Rows16.Count() > 0) { return new RamAccess<string>(null,"1/6"); }
-                if (Rows17.Count() > 0) { return new RamAccess<string>(null,"1/7"); }
-                if (Rows18.Count() > 0) { return new RamAccess<string>(null,"1/8"); }
-                if (Rows19.Count() > 0) { return new RamAccess<string>(null,"1/9"); }
+                if (Rows10.Count() > 0) { return new RamAccess<string>(null, "1/0"); }
+                if (Rows11.Count() > 0) { return new RamAccess<string>(null, "1/1"); }
+                if (Rows12.Count() > 0) { return new RamAccess<string>(null, "1/2"); }
+                if (Rows13.Count() > 0) { return new RamAccess<string>(null, "1/3"); }
+                if (Rows14.Count() > 0) { return new RamAccess<string>(null, "1/4"); }
+                if (Rows15.Count() > 0) { return new RamAccess<string>(null, "1/5"); }
+                if (Rows16.Count() > 0) { return new RamAccess<string>(null, "1/6"); }
+                if (Rows17.Count() > 0) { return new RamAccess<string>(null, "1/7"); }
+                if (Rows18.Count() > 0) { return new RamAccess<string>(null, "1/8"); }
+                if (Rows19.Count() > 0) { return new RamAccess<string>(null, "1/9"); }
 
-                if (Rows20.Count() > 0) { return new RamAccess<string>(null,"2/0"); }
-                if (Rows21.Count() > 0) { return new RamAccess<string>(null,"2/1"); }
-                if (Rows22.Count() > 0) { return new RamAccess<string>(null,"2/2"); }
-                if (Rows23.Count() > 0) { return new RamAccess<string>(null,"2/3"); }
-                if (Rows24.Count() > 0) { return new RamAccess<string>(null,"2/4"); }
-                if (Rows25.Count() > 0) { return new RamAccess<string>(null,"2/5"); }
-                if (Rows26.Count() > 0) { return new RamAccess<string>(null,"2/6"); }
-                if (Rows27.Count() > 0) { return new RamAccess<string>(null,"2/7"); }
-                if (Rows28.Count() > 0) { return new RamAccess<string>(null,"2/8"); }
-                if (Rows29.Count() > 0) { return new RamAccess<string>(null,"2/9"); }
-                if (Rows210.Count() > 0) { return new RamAccess<string>(null,"2/10"); }
-                if (Rows211.Count() > 0) { return new RamAccess<string>(null,"2/11"); }
-                if (Rows212.Count() > 0) { return new RamAccess<string>(null,"2/12"); }
+                if (Rows20.Count() > 0) { return new RamAccess<string>(null, "2/0"); }
+                if (Rows21.Count() > 0) { return new RamAccess<string>(null, "2/1"); }
+                if (Rows22.Count() > 0) { return new RamAccess<string>(null, "2/2"); }
+                if (Rows23.Count() > 0) { return new RamAccess<string>(null, "2/3"); }
+                if (Rows24.Count() > 0) { return new RamAccess<string>(null, "2/4"); }
+                if (Rows25.Count() > 0) { return new RamAccess<string>(null, "2/5"); }
+                if (Rows26.Count() > 0) { return new RamAccess<string>(null, "2/6"); }
+                if (Rows27.Count() > 0) { return new RamAccess<string>(null, "2/7"); }
+                if (Rows28.Count() > 0) { return new RamAccess<string>(null, "2/8"); }
+                if (Rows29.Count() > 0) { return new RamAccess<string>(null, "2/9"); }
+                if (Rows210.Count() > 0) { return new RamAccess<string>(null, "2/10"); }
+                if (Rows211.Count() > 0) { return new RamAccess<string>(null, "2/11"); }
+                if (Rows212.Count() > 0) { return new RamAccess<string>(null, "2/12"); }
 
-                if (Rows30.Count() > 0) { return new RamAccess<string>(null,"3/0"); }
-                if (Rows31.Count() > 0) { return new RamAccess<string>(null,"3/1"); }
-                if (Rows31_1.Count() > 0) { return new RamAccess<string>(null,"3/1_1"); }
-                if (Rows32.Count() > 0) { return new RamAccess<string>(null,"3/2"); }
-                if (Rows32_1.Count() > 0) { return new RamAccess<string>(null,"3/2_1"); }
-                if (Rows32_2.Count() > 0) { return new RamAccess<string>(null,"3/2_2"); }
-                if (Rows32_3.Count() > 0) { return new RamAccess<string>(null,"3/2_3"); }
+                if (Rows30.Count() > 0) { return new RamAccess<string>(null, "3/0"); }
+                if (Rows31.Count() > 0) { return new RamAccess<string>(null, "3/1"); }
+                if (Rows31_1.Count() > 0) { return new RamAccess<string>(null, "3/1_1"); }
+                if (Rows32.Count() > 0) { return new RamAccess<string>(null, "3/2"); }
+                if (Rows32_1.Count() > 0) { return new RamAccess<string>(null, "3/2_1"); }
+                if (Rows32_2.Count() > 0) { return new RamAccess<string>(null, "3/2_2"); }
+                if (Rows32_3.Count() > 0) { return new RamAccess<string>(null, "3/2_3"); }
 
-                if (Rows40.Count() > 0) { return new RamAccess<string>(null,"4/0"); }
-                if (Rows41.Count() > 0) { return new RamAccess<string>(null,"4/1"); }
+                if (Rows40.Count() > 0) { return new RamAccess<string>(null, "4/0"); }
+                if (Rows41.Count() > 0) { return new RamAccess<string>(null, "4/1"); }
 
-                if (Rows50.Count() > 0) { return new RamAccess<string>(null,"5/0"); }
-                if (Rows51.Count() > 0) { return new RamAccess<string>(null,"5/1"); }
-                if (Rows52.Count() > 0) { return new RamAccess<string>(null,"5/2"); }
-                if (Rows53.Count() > 0) { return new RamAccess<string>(null,"5/3"); }
-                if (Rows54.Count() > 0) { return new RamAccess<string>(null,"5/4"); }
-                if (Rows55.Count() > 0) { return new RamAccess<string>(null,"5/5"); }
-                if (Rows56.Count() > 0) { return new RamAccess<string>(null,"5/6"); }
-                if (Rows57.Count() > 0) { return new RamAccess<string>(null,"5/7"); }
-                return new RamAccess<string>(null,"0");
+                if (Rows50.Count() > 0) { return new RamAccess<string>(null, "5/0"); }
+                if (Rows51.Count() > 0) { return new RamAccess<string>(null, "5/1"); }
+                if (Rows52.Count() > 0) { return new RamAccess<string>(null, "5/2"); }
+                if (Rows53.Count() > 0) { return new RamAccess<string>(null, "5/3"); }
+                if (Rows54.Count() > 0) { return new RamAccess<string>(null, "5/4"); }
+                if (Rows55.Count() > 0) { return new RamAccess<string>(null, "5/5"); }
+                if (Rows56.Count() > 0) { return new RamAccess<string>(null, "5/6"); }
+                if (Rows57.Count() > 0) { return new RamAccess<string>(null, "5/7"); }
+                return new RamAccess<string>(null, "0");
             }
             set
             {
@@ -1010,17 +919,15 @@ namespace Collections
             }
         }
 
+        public int? IsCorrectionId { get; set; }
         //IsCorrection 
         [Form_Property("Корректирующий отчет")]
         public RamAccess<bool> IsCorrection
         {
-            get
-            {
-                return _dataAccess.Get<bool>(nameof(IsCorrection));
-            }
+            get => DataAccess.Get<bool>(nameof(IsCorrection));
             set
             {
-                _dataAccess.Set(nameof(IsCorrection), value);
+                DataAccess.Set(nameof(IsCorrection), value);
                 OnPropertyChanged(nameof(IsCorrection));
             }
         }
@@ -1030,17 +937,15 @@ namespace Collections
         }
         //IsCorrection
 
+        public int? CorrectionNumberId { get; set; }
         //CorrectionNumber property
         [Form_Property("Номер корректировки")]
         public RamAccess<byte> CorrectionNumber
         {
-            get
-            {
-                return _dataAccess.Get<byte>(nameof(CorrectionNumber));
-            }
+            get => DataAccess.Get<byte>(nameof(CorrectionNumber));
             set
             {
-                _dataAccess.Set(nameof(CorrectionNumber), value);
+                DataAccess.Set(nameof(CorrectionNumber), value);
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
@@ -1050,17 +955,15 @@ namespace Collections
         }
         //CorrectionNumber property
 
+        public int? NumberInOrderId { get; set; }
         //NumberInOrder property
         [Form_Property("Номер")]
         public RamAccess<string> NumberInOrder
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(NumberInOrder));
-            }
+            get => DataAccess.Get<string>(nameof(NumberInOrder));
             set
             {
-                _dataAccess.Set(nameof(NumberInOrder), value);
+                DataAccess.Set(nameof(NumberInOrder), value);
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
@@ -1070,17 +973,15 @@ namespace Collections
         }
         //NumberInOrder property
 
+        public int? CommentsId { get; set; }
         //Comments property
         [Form_Property("Комментарий")]
         public RamAccess<string> Comments
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(Comments));
-            }
+            get => DataAccess.Get<string>(nameof(Comments));
             set
             {
-                _dataAccess.Set(nameof(Comments), value);
+                DataAccess.Set(nameof(Comments), value);
                 OnPropertyChanged(nameof(Comments));
             }
         }
@@ -1090,17 +991,15 @@ namespace Collections
         }
         //Comments property
 
+        public int NotesId { get; set; }
         //Notes property
         [Form_Property("Примечания")]
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Note> Notes
         {
-            get
-            {
-                return _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Note>>(nameof(Notes)).Value;
-            }
+            get => DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Note>>(nameof(Notes)).Value;
             set
             {
-                _dataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Note>>(nameof(Notes)).Value=value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Models.Note>>(nameof(Notes)).Value = value;
                 OnPropertyChanged(nameof(Notes));
             }
         }
@@ -1110,17 +1009,15 @@ namespace Collections
         }
         //Notes property
 
+        public int? StartPeriodId { get; set; }
         //StartPeriod
         [Form_Property("Начало")]
         public RamAccess<string> StartPeriod
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(StartPeriod));
-            }
+            get => DataAccess.Get<string>(nameof(StartPeriod));
             set
             {
-                _dataAccess.Set(nameof(StartPeriod), value);
+                DataAccess.Set(nameof(StartPeriod), value);
                 OnPropertyChanged(nameof(StartPeriod));
             }
         }
@@ -1130,17 +1027,15 @@ namespace Collections
         }
         //StartPeriod
 
+        public int? EndPeriodId { get; set; }
         //EndPeriod
         [Form_Property("Конец")]
         public RamAccess<string> EndPeriod
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(EndPeriod));
-            }
+            get => DataAccess.Get<string>(nameof(EndPeriod));
             set
             {
-                _dataAccess.Set(nameof(EndPeriod), value);
+                DataAccess.Set(nameof(EndPeriod), value);
                 OnPropertyChanged(nameof(EndPeriod));
             }
         }
@@ -1150,17 +1045,15 @@ namespace Collections
         }
         //EndPeriod
 
+        public int? ExportDateId { get; set; }
         //ExportDate
         [Form_Property("Дата выгрузки")]
         public RamAccess<string> ExportDate
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(ExportDate));
-            }
+            get => DataAccess.Get<string>(nameof(ExportDate));
             set
             {
-                _dataAccess.Set(nameof(ExportDate), value);
+                DataAccess.Set(nameof(ExportDate), value);
                 OnPropertyChanged(nameof(ExportDate));
             }
         }
@@ -1171,13 +1064,10 @@ namespace Collections
         //ExportDate
 
         [NotMapped]
-        bool _isChanged = true;
+        private bool _isChanged = true;
         public bool IsChanged
         {
-            get
-            {
-                return _isChanged;
-            }
+            get => _isChanged;
             set
             {
                 if (_isChanged != value)
@@ -1195,7 +1085,9 @@ namespace Collections
             {
                 IsChanged = true;
                 if (PropertyChanged != null)
+                {
                     PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                }
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

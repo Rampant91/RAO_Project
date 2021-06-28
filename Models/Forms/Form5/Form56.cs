@@ -25,22 +25,22 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(NameIOU));//OK
-                    
+                    return DataAccess.Get<string>(nameof(NameIOU));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(NameIOU), value);
+                    DataAccess.Set(nameof(NameIOU), value);
                 }
                 OnPropertyChanged(nameof(NameIOU));
             }
@@ -49,7 +49,8 @@ namespace Models
 
         private bool NameIOU_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //NameIOU property
 
         //Quantity property
@@ -58,14 +59,14 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
-                    
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
@@ -73,9 +74,9 @@ namespace Models
 
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -85,7 +86,8 @@ namespace Models
         private bool Quantity_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0) {
+            if (value.Value <= 0)
+            {
                 value.AddError("Недопустимое значение");
                 return false;
             }
@@ -99,21 +101,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<double>(nameof(Mass));
+                    return DataAccess.Get<double>(nameof(Mass));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Mass), value);
+                    DataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -125,8 +127,8 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }

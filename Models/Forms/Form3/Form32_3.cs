@@ -27,7 +27,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(IdName));
+                    return DataAccess.Get<string>(nameof(IdName));
                 }
 
                 {
@@ -39,7 +39,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(IdName), value);
+                    DataAccess.Set(nameof(IdName), value);
                 }
                 OnPropertyChanged(nameof(IdName));
             }
@@ -56,7 +56,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Val));
+                    return DataAccess.Get<string>(nameof(Val));
                 }
 
                 {
@@ -68,7 +68,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Val), value);
+                    DataAccess.Set(nameof(Val), value);
                 }
                 OnPropertyChanged(nameof(Val));
             }

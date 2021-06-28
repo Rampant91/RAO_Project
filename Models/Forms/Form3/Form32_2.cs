@@ -27,7 +27,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackName));//OK
+                    return DataAccess.Get<string>(nameof(PackName));//OK
 
                 }
 
@@ -41,13 +41,11 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackName), value);
+                    DataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
         }
-
-
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -68,7 +66,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackType));//OK
+                    return DataAccess.Get<string>(nameof(PackType));//OK
 
                 }
 
@@ -82,7 +80,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackType), value);
+                    DataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -108,7 +106,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+                    return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
 
                 }
 
@@ -121,13 +119,11 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackTypeRecoded), value);
+                    DataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
-
-
         private bool PackTypeRecoded_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
@@ -136,13 +132,13 @@ namespace Models
 
         //Id property
         [Attributes.Form_Property("Идентификационный номер")]
-        public RamAccess<string> Id
+        public RamAccess<string> IdentificationId
         {
             get
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Id));
+                    return DataAccess.Get<string>(nameof(Id));
                 }
 
                 {
@@ -154,13 +150,11 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Id), value);
+                    DataAccess.Set(nameof(Id), value);
                 }
                 OnPropertyChanged(nameof(Id));
             }
         }
-
-
         //Id property
 
         //CreationYear property
@@ -171,7 +165,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<int>(nameof(CreationYear));
+                    return DataAccess.Get<int>(nameof(CreationYear));
                 }
 
                 {
@@ -183,13 +177,11 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(CreationYear), value);
+                    DataAccess.Set(nameof(CreationYear), value);
                 }
                 OnPropertyChanged(nameof(CreationYear));
             }
         }
-
-
         //CreationYear property
 
         //DepletedUraniumMass property
@@ -200,7 +192,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(DepletedUraniumMass));
+                    return DataAccess.Get<double>(nameof(DepletedUraniumMass));
                 }
 
                 {
@@ -212,13 +204,11 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(DepletedUraniumMass), value);
+                    DataAccess.Set(nameof(DepletedUraniumMass), value);
                 }
                 OnPropertyChanged(nameof(DepletedUraniumMass));
             }
         }
-
-
         //DepletedUraniumMass property
     }
 }

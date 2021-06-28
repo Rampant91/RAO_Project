@@ -29,7 +29,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(UniqueAgreementId));
+                    return DataAccess.Get<string>(nameof(UniqueAgreementId));
                 }
 
                 {
@@ -41,7 +41,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(UniqueAgreementId), value);
+                    DataAccess.Set(nameof(UniqueAgreementId), value);
                 }
                 OnPropertyChanged(nameof(UniqueAgreementId));
             }
@@ -57,7 +57,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(SupplyDate));
+                    return DataAccess.Get<string>(nameof(SupplyDate));
                 }
 
                 {
@@ -69,7 +69,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(SupplyDate), value);
+                    DataAccess.Set(nameof(SupplyDate), value);
                 }
                 OnPropertyChanged(nameof(SupplyDate));
             }
@@ -85,7 +85,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(RecieverName));
+                    return DataAccess.Get<string>(nameof(RecieverName));
                 }
 
                 {
@@ -97,7 +97,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(RecieverName), value);
+                    DataAccess.Set(nameof(RecieverName), value);
                 }
                 OnPropertyChanged(nameof(RecieverName));
             }
@@ -113,7 +113,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<byte>(nameof(FieldsOfWorking));
+                    return DataAccess.Get<byte>(nameof(FieldsOfWorking));
                 }
 
                 {
@@ -125,7 +125,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(FieldsOfWorking), value);
+                    DataAccess.Set(nameof(FieldsOfWorking), value);
                 }
                 OnPropertyChanged(nameof(FieldsOfWorking));
             }
@@ -141,7 +141,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(LicenseIdRv));
+                    return DataAccess.Get<string>(nameof(LicenseIdRv));
                 }
 
                 {
@@ -153,7 +153,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(LicenseIdRv), value);
+                    DataAccess.Set(nameof(LicenseIdRv), value);
                 }
                 OnPropertyChanged(nameof(LicenseIdRv));
             }
@@ -169,7 +169,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ValidThruRv));
+                    return DataAccess.Get<string>(nameof(ValidThruRv));
                 }
 
                 {
@@ -181,7 +181,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ValidThruRv), value);
+                    DataAccess.Set(nameof(ValidThruRv), value);
                 }
                 OnPropertyChanged(nameof(ValidThruRv));
             }
@@ -197,7 +197,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(LicenseIdRao));
+                    return DataAccess.Get<string>(nameof(LicenseIdRao));
                 }
 
                 {
@@ -209,7 +209,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(LicenseIdRao), value);
+                    DataAccess.Set(nameof(LicenseIdRao), value);
                 }
                 OnPropertyChanged(nameof(LicenseIdRao));
             }
@@ -225,7 +225,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ValidThruRao));
+                    return DataAccess.Get<string>(nameof(ValidThruRao));
                 }
 
                 {
@@ -237,7 +237,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ValidThruRao), value);
+                    DataAccess.Set(nameof(ValidThruRao), value);
                 }
                 OnPropertyChanged(nameof(ValidThruRao));
             }
@@ -253,7 +253,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(SupplyAddress));
+                    return DataAccess.Get<string>(nameof(SupplyAddress));
                 }
 
                 {
@@ -265,7 +265,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(SupplyAddress), value);
+                    DataAccess.Set(nameof(SupplyAddress), value);
                 }
                 OnPropertyChanged(nameof(SupplyAddress));
             }
@@ -281,7 +281,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
 
                 }
 
@@ -295,7 +295,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -310,7 +310,7 @@ namespace Models
                 return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
@@ -330,7 +330,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
 
                 }
 
@@ -344,7 +344,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -369,7 +369,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(SummaryActivity));
+                    return DataAccess.Get<string>(nameof(SummaryActivity));
                 }
 
                 {
@@ -381,7 +381,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(SummaryActivity), value);
+                    DataAccess.Set(nameof(SummaryActivity), value);
                 }
                 OnPropertyChanged(nameof(SummaryActivity));
             }
@@ -407,7 +407,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -427,7 +427,7 @@ namespace Models
         private List<Form32_1> _zriInfo = new List<Form32_1>();
         public List<Form32_1> ZriInfo
         {
-            get { return _zriInfo; }
+            get => _zriInfo;
             set
             {
                 _zriInfo = value;
@@ -438,7 +438,7 @@ namespace Models
         private List<Form32_2> _packInfo = new List<Form32_2>();
         public List<Form32_2> PackInfo
         {
-            get { return _packInfo; }
+            get => _packInfo;
             set
             {
                 _packInfo = value;
@@ -449,7 +449,7 @@ namespace Models
         private List<Form32_3> _idsInfo = new List<Form32_3>();
         public List<Form32_3> IdsInfo
         {
-            get { return _idsInfo; }
+            get => _idsInfo;
             set
             {
                 _idsInfo = value;

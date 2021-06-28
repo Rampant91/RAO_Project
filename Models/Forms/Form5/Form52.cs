@@ -1,6 +1,6 @@
 ﻿using Models.DataAccess;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Models
@@ -26,23 +26,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -54,16 +54,16 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;
-return true;
+                    Radionuclids.Value = item.Item2;
+                    return true;
                 }
             }
             return false;
@@ -76,21 +76,21 @@ return true;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<short>(nameof(Kategory));
+                    return DataAccess.Get<short>(nameof(Kategory));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Kategory), value);
+                    DataAccess.Set(nameof(Kategory), value);
                 }
                 OnPropertyChanged(nameof(Kategory));
             }
@@ -99,7 +99,8 @@ return true;
 
         private bool Kategory_Validation(RamAccess<short> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //Kategory property
 
         //Activity property
@@ -108,22 +109,22 @@ return true;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Activity));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Activity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Activity), value);
+                    DataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -135,15 +136,15 @@ return true;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -151,10 +152,10 @@ return false;
                 {
                     value.AddError("Число должно быть больше нуля"); return false;
                 }
-                }
+            }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -167,14 +168,14 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
-                    
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
@@ -182,9 +183,9 @@ return false;
 
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }

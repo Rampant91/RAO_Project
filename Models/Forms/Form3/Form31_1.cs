@@ -30,7 +30,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
 
                 }
 
@@ -44,7 +44,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -60,7 +60,7 @@ namespace Models
                 return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
@@ -80,7 +80,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
 
                 }
 
@@ -94,7 +94,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -120,7 +120,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(SummaryActivity));
+                    return DataAccess.Get<string>(nameof(SummaryActivity));
                 }
 
                 {
@@ -132,7 +132,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(SummaryActivity), value);
+                    DataAccess.Set(nameof(SummaryActivity), value);
                 }
                 OnPropertyChanged(nameof(SummaryActivity));
             }
@@ -159,7 +159,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {

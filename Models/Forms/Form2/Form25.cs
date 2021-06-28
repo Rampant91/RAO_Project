@@ -1,7 +1,7 @@
 ﻿using Models.DataAccess;
 using System;
-using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -19,23 +19,23 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
+            DataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
             CodeOYAT.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
             StoragePlaceCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
             StoragePlaceName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FuelMass), FuelMass_Validation, null);
+            DataAccess.Init<string>(nameof(FuelMass), FuelMass_Validation, null);
             FuelMass.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(CellMass), CellMass_Validation, null);
+            DataAccess.Init<string>(nameof(CellMass), CellMass_Validation, null);
             CellMass.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            DataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
             Quantity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
+            DataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
             BetaGammaActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
+            DataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
             AlphaActivity.PropertyChanged += InPropertyChanged;
         }
 
@@ -64,29 +64,30 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceName));
+                    return DataAccess.Get<string>(nameof(StoragePlaceName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(StoragePlaceName), value);
+                    DataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
         }
         //If change this change validation
-                private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
+        private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //StoragePlaceName property
 
         //CodeOYAT property
@@ -95,29 +96,30 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(CodeOYAT));
+                    return DataAccess.Get<string>(nameof(CodeOYAT));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(CodeOYAT), value);
+                    DataAccess.Set(nameof(CodeOYAT), value);
                 }
                 OnPropertyChanged(nameof(CodeOYAT));
             }
         }
 
-                private bool CodeOYAT_Validation(RamAccess<string> value)
+        private bool CodeOYAT_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //CodeOYAT property
 
         //CodeOYATnote property
@@ -125,28 +127,29 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(CodeOYATnote));
+                    return DataAccess.Get<string>(nameof(CodeOYATnote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(CodeOYATnote), value);
+                    DataAccess.Set(nameof(CodeOYATnote), value);
                 }
                 OnPropertyChanged(nameof(CodeOYATnote));
             }
         }
-                private bool CodeOYATnote_Validation(RamAccess<string> value)
+        private bool CodeOYATnote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //CodeOYATnote property
 
         //StoragePlaceCode property
@@ -155,21 +158,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceCode));
+                    return DataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(StoragePlaceCode), value);
+                    DataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
@@ -178,11 +181,14 @@ namespace Models
         {
             value.ClearErrors();
             if (!(value.Value == "-"))
+            {
                 if (value.Value.Length != 8)
                 {
                     value.AddError("Недопустимое значение");
                     return false;
                 }
+            }
+
             Regex a = new Regex("^[0-9]{8}$");
             if (!a.IsMatch(value.Value))
             {
@@ -199,29 +205,30 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(FcpNumber));
+                    return DataAccess.Get<string>(nameof(FcpNumber));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(FcpNumber), value);
+                    DataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
 
-                private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+        private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //FcpNumber property
 
         //FuelMass property
@@ -230,21 +237,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(FuelMass));
+                    return DataAccess.Get<string>(nameof(FuelMass));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(FuelMass), value);
+                    DataAccess.Set(nameof(FuelMass), value);
                 }
                 OnPropertyChanged(nameof(FuelMass));
             }
@@ -268,7 +275,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -289,21 +296,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(CellMass));
+                    return DataAccess.Get<string>(nameof(CellMass));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(CellMass), value);
+                    DataAccess.Set(nameof(CellMass), value);
                 }
                 OnPropertyChanged(nameof(CellMass));
             }
@@ -327,7 +334,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -348,23 +355,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int?>(nameof(Quantity));//OK
-                    
+                    return DataAccess.Get<int?>(nameof(Quantity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -391,21 +398,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(BetaGammaActivity));
+                    return DataAccess.Get<string>(nameof(BetaGammaActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivity), value);
+                    DataAccess.Set(nameof(BetaGammaActivity), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
@@ -430,7 +437,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -453,21 +460,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(AlphaActivity));
+                    return DataAccess.Get<string>(nameof(AlphaActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(AlphaActivity), value);
+                    DataAccess.Set(nameof(AlphaActivity), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivity));
             }
@@ -493,7 +500,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {

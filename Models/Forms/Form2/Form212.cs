@@ -1,7 +1,7 @@
 ﻿using Models.DataAccess;
 using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -19,15 +19,15 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
             Radionuclids.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(OperationCode), OperationCode_Validation, null);
+            DataAccess.Init<string>(nameof(OperationCode), OperationCode_Validation, null);
             OperationCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ObjectTypeCode), ObjectTypeCode_Validation, null);
+            DataAccess.Init<string>(nameof(ObjectTypeCode), ObjectTypeCode_Validation, null);
             ObjectTypeCode.PropertyChanged += InPropertyChanged;
-            //2301_dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
+            //2301DataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
             Activity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
         }
 
@@ -50,13 +50,10 @@ namespace Models
         [Attributes.Form_Property("Код")]
         public RamAccess<short> OperationCode
         {
-            get
-            {
-                return _dataAccess.Get<short>(nameof(OperationCode));
-            }
+            get => DataAccess.Get<short>(nameof(OperationCode));
             set
             {
-                _dataAccess.Set(nameof(OperationCode), value);
+                DataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
@@ -76,7 +73,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ObjectTypeCode));
+                    return DataAccess.Get<string>(nameof(ObjectTypeCode));
                 }
 
                 {
@@ -88,7 +85,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ObjectTypeCode), value);
+                    DataAccess.Set(nameof(ObjectTypeCode), value);
                 }
                 OnPropertyChanged(nameof(ObjectTypeCode));
             }
@@ -109,7 +106,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
 
                 }
 
@@ -123,7 +120,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -139,7 +136,7 @@ namespace Models
                 return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
@@ -159,7 +156,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(Activity));
+                    return DataAccess.Get<double>(nameof(Activity));
                 }
 
                 {
@@ -171,7 +168,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Activity), value);
+                    DataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -202,7 +199,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
 
                 }
 
@@ -216,7 +213,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -235,7 +232,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -276,7 +273,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
 
                 }
 
@@ -289,7 +286,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }

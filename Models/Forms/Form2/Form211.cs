@@ -1,6 +1,6 @@
 ﻿using Models.DataAccess;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace Models
 {
@@ -18,21 +18,21 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
             Radionuclids.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PlotName), PlotName_Validation, null);
+            DataAccess.Init<string>(nameof(PlotName), PlotName_Validation, null);
             PlotName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PlotKadastrNumber), PlotKadastrNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PlotKadastrNumber), PlotKadastrNumber_Validation, null);
             PlotKadastrNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PlotCode), PlotCode_Validation, null);
+            DataAccess.Init<string>(nameof(PlotCode), PlotCode_Validation, null);
             PlotCode.PropertyChanged += InPropertyChanged;
-            //2301_dataAccess.Init<int>(nameof(InfectedArea), InfectedArea_Validation, null);
+            //2301DataAccess.Init<int>(nameof(InfectedArea), InfectedArea_Validation, null);
             InfectedArea.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(SpecificActivityOfPlot), SpecificActivityOfPlot_Validation, null);
+            DataAccess.Init<string>(nameof(SpecificActivityOfPlot), SpecificActivityOfPlot_Validation, null);
             SpecificActivityOfPlot.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(SpecificActivityOfLiquidPart), SpecificActivityOfLiquidPart_Validation, null);
+            DataAccess.Init<string>(nameof(SpecificActivityOfLiquidPart), SpecificActivityOfLiquidPart_Validation, null);
             SpecificActivityOfLiquidPart.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(SpecificActivityOfDensePart), SpecificActivityOfDensePart_Validation, null);
+            DataAccess.Init<string>(nameof(SpecificActivityOfDensePart), SpecificActivityOfDensePart_Validation, null);
             SpecificActivityOfDensePart.PropertyChanged += InPropertyChanged;
         }
 
@@ -62,7 +62,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PlotName));
+                    return DataAccess.Get<string>(nameof(PlotName));
                 }
 
                 {
@@ -74,7 +74,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PlotName), value);
+                    DataAccess.Set(nameof(PlotName), value);
                 }
                 OnPropertyChanged(nameof(PlotName));
             }
@@ -94,7 +94,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PlotKadastrNumber));
+                    return DataAccess.Get<string>(nameof(PlotKadastrNumber));
                 }
 
                 {
@@ -106,7 +106,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PlotKadastrNumber), value);
+                    DataAccess.Set(nameof(PlotKadastrNumber), value);
                 }
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
@@ -126,7 +126,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PlotCode));
+                    return DataAccess.Get<string>(nameof(PlotCode));
                 }
 
                 {
@@ -138,7 +138,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PlotCode), value);
+                    DataAccess.Set(nameof(PlotCode), value);
                 }
                 OnPropertyChanged(nameof(PlotCode));
             }
@@ -158,7 +158,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<int>(nameof(InfectedArea));
+                    return DataAccess.Get<int>(nameof(InfectedArea));
                 }
 
                 {
@@ -170,7 +170,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(InfectedArea), value);
+                    DataAccess.Set(nameof(InfectedArea), value);
                 }
                 OnPropertyChanged(nameof(InfectedArea));
             }
@@ -190,7 +190,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
 
                 }
 
@@ -204,7 +204,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -219,7 +219,7 @@ namespace Models
                 return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
@@ -238,7 +238,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(RadionuclidNameNote));
+                    return DataAccess.Get<string>(nameof(RadionuclidNameNote));
                 }
 
                 {
@@ -250,7 +250,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(RadionuclidNameNote), value);
+                    DataAccess.Set(nameof(RadionuclidNameNote), value);
                 }
                 OnPropertyChanged(nameof(RadionuclidNameNote));
             }
@@ -270,7 +270,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(SpecificActivityOfPlot));
+                    return DataAccess.Get<string>(nameof(SpecificActivityOfPlot));
                 }
 
                 {
@@ -282,7 +282,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(SpecificActivityOfPlot), value);
+                    DataAccess.Set(nameof(SpecificActivityOfPlot), value);
                 }
                 OnPropertyChanged(nameof(SpecificActivityOfPlot));
             }
@@ -313,7 +313,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(SpecificActivityOfLiquidPart));
+                    return DataAccess.Get<string>(nameof(SpecificActivityOfLiquidPart));
                 }
 
                 {
@@ -325,7 +325,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(SpecificActivityOfLiquidPart), value);
+                    DataAccess.Set(nameof(SpecificActivityOfLiquidPart), value);
                 }
                 OnPropertyChanged(nameof(SpecificActivityOfLiquidPart));
             }
@@ -352,16 +352,13 @@ namespace Models
         [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]
         public RamAccess<string> SpecificActivityOfDensePart
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(SpecificActivityOfDensePart));
-            }
+            get => DataAccess.Get<string>(nameof(SpecificActivityOfDensePart));
             set
             {
 
 
                 {
-                    _dataAccess.Set(nameof(SpecificActivityOfDensePart), value);
+                    DataAccess.Set(nameof(SpecificActivityOfDensePart), value);
                 }
                 OnPropertyChanged(nameof(SpecificActivityOfDensePart));
             }

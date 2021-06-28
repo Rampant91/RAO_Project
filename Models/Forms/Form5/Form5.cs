@@ -14,39 +14,35 @@ namespace Models.Abstracts
         [Attributes.Form_Property("№ п/п")]
         public RamAccess<int> NumberInOrder
         {
-            get
-            {
-                    return _dataAccess.Get<int>(nameof(NumberInOrder));
-            }
+            get => DataAccess.Get<int>(nameof(NumberInOrder));
             set
             {
-                    _dataAccess.Set(nameof(NumberInOrder), value);
+                DataAccess.Set(nameof(NumberInOrder), value);
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
         private bool NumberInOrder_Validation(RamAccess<int> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //NumberInOrder property
 
         //CorrectionNumber property
         [Attributes.Form_Property("Номер корректировки")]
         public RamAccess<byte> CorrectionNumber
         {
-            get
-            {
-                    return _dataAccess.Get<byte>(nameof(CorrectionNumber));
-            }
+            get => DataAccess.Get<byte>(nameof(CorrectionNumber));
             set
             {
-                    _dataAccess.Set(nameof(CorrectionNumber), value);
+                DataAccess.Set(nameof(CorrectionNumber), value);
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
 
         private bool CorrectionNumber_Validation(RamAccess<byte> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //CorrectionNumber property
     }
 }

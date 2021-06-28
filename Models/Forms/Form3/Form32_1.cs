@@ -30,7 +30,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PassportNumber));//OK
+                    return DataAccess.Get<string>(nameof(PassportNumber));//OK
 
                 }
 
@@ -44,7 +44,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PassportNumber), value);
+                    DataAccess.Set(nameof(PassportNumber), value);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
@@ -77,7 +77,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
+                    return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
 
                 }
 
@@ -90,7 +90,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PassportNumberNote), value);
+                    DataAccess.Set(nameof(PassportNumberNote), value);
                 }
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
@@ -110,7 +110,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
+                    return DataAccess.Get<string>(nameof(CreatorOKPO));//OK
 
                 }
 
@@ -124,7 +124,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(CreatorOKPO), value);
+                    DataAccess.Set(nameof(CreatorOKPO), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPO));
             }
@@ -143,7 +143,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -152,7 +152,7 @@ namespace Models
         }
         //CreatorOKPO property
 
-        private List<string> OKSM = new List<string>
+        private readonly List<string> OKSM = new List<string>
             {
                 "АФГАНИСТАН",
                 "АЛБАНИЯ",
@@ -317,7 +317,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Type));//OK
+                    return DataAccess.Get<string>(nameof(Type));//OK
 
                 }
 
@@ -330,7 +330,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Type), value);
+                    DataAccess.Set(nameof(Type), value);
                 }
                 OnPropertyChanged(nameof(Type));
             }
@@ -349,7 +349,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(TypeRecoded));//OK
+                    return DataAccess.Get<string>(nameof(TypeRecoded));//OK
 
                 }
 
@@ -362,7 +362,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(TypeRecoded), value);
+                    DataAccess.Set(nameof(TypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(TypeRecoded));
             }
@@ -382,7 +382,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
 
                 }
 
@@ -396,7 +396,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -411,7 +411,7 @@ namespace Models
                 return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item1.Equals(Type))
                 {
@@ -431,7 +431,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FactoryNumber));//OK
+                    return DataAccess.Get<string>(nameof(FactoryNumber));//OK
 
                 }
 
@@ -444,7 +444,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(FactoryNumber), value);
+                    DataAccess.Set(nameof(FactoryNumber), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumber));
             }
@@ -469,7 +469,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
+                    return DataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
 
                 }
 
@@ -482,7 +482,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(FactoryNumberRecoded), value);
+                    DataAccess.Set(nameof(FactoryNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
@@ -502,7 +502,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ActivityOnCreation));//OK
+                    return DataAccess.Get<string>(nameof(ActivityOnCreation));//OK
 
                 }
 
@@ -515,7 +515,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ActivityOnCreation), value);
+                    DataAccess.Set(nameof(ActivityOnCreation), value);
                 }
                 OnPropertyChanged(nameof(ActivityOnCreation));
             }
@@ -524,7 +524,7 @@ namespace Models
         private bool ActivityOnCreation_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -550,7 +550,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(CreationDate));
+                    return DataAccess.Get<string>(nameof(CreationDate));
                 }
 
                 {
@@ -562,7 +562,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(CreationDate), value);
+                    DataAccess.Set(nameof(CreationDate), value);
                 }
                 OnPropertyChanged(nameof(CreationDate));
             }
@@ -581,7 +581,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(CreatorOKPONote));//OK
 
                 }
 
@@ -596,7 +596,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(CreatorOKPONote), value);
+                    DataAccess.Set(nameof(CreatorOKPONote), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPONote));
             }
@@ -612,13 +612,10 @@ namespace Models
         [Attributes.Form_Property("Категория")]
         public RamAccess<short> Kategory
         {
-            get
-            {
-                return _dataAccess.Get<short>(nameof(Kategory));
-            }
+            get => DataAccess.Get<short>(nameof(Kategory));
             set
             {
-                _dataAccess.Set(nameof(Kategory), value);
+                DataAccess.Set(nameof(Kategory), value);
                 OnPropertyChanged(nameof(Kategory));
             }
         }
@@ -637,7 +634,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(NuclearMaterialPresence));
+                    return DataAccess.Get<double>(nameof(NuclearMaterialPresence));
                 }
 
                 {
@@ -649,7 +646,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(NuclearMaterialPresence), value);
+                    DataAccess.Set(nameof(NuclearMaterialPresence), value);
                 }
                 OnPropertyChanged(nameof(NuclearMaterialPresence));
             }
@@ -665,7 +662,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(CertificateId));
+                    return DataAccess.Get<string>(nameof(CertificateId));
                 }
 
                 {
@@ -677,7 +674,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(CertificateId), value);
+                    DataAccess.Set(nameof(CertificateId), value);
                 }
                 OnPropertyChanged(nameof(CertificateId));
             }
@@ -693,7 +690,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ValidThru));
+                    return DataAccess.Get<string>(nameof(ValidThru));
                 }
 
                 {
@@ -705,7 +702,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ValidThru), value);
+                    DataAccess.Set(nameof(ValidThru), value);
                 }
                 OnPropertyChanged(nameof(ValidThru));
             }

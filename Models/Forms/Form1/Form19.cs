@@ -1,8 +1,8 @@
 ﻿using Models.DataAccess;
-using System.Text.RegularExpressions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -20,13 +20,13 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            DataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
             Quantity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
+            DataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
             Activity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<short?>(nameof(CodeTypeAccObject), CodeTypeAccObject_Validation, null);
+            DataAccess.Init<short?>(nameof(CodeTypeAccObject), CodeTypeAccObject_Validation, null);
             CodeTypeAccObject.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
             Radionuclids.PropertyChanged += InPropertyChanged;
         }
 
@@ -50,18 +50,18 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int?>(nameof(Quantity));//OK;
+                    return DataAccess.Get<int?>(nameof(Quantity));//OK;
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(Quantity), value);
+                DataAccess.Set(nameof(Quantity), value);
                 OnPropertyChanged(nameof(Quantity));
             }
         }
@@ -90,21 +90,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<short?>(nameof(CodeTypeAccObject));
+                    return DataAccess.Get<short?>(nameof(CodeTypeAccObject));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(CodeTypeAccObject), value);
+                    DataAccess.Set(nameof(CodeTypeAccObject), value);
                 }
                 OnPropertyChanged(nameof(CodeTypeAccObject));
             }
@@ -116,14 +116,14 @@ namespace Models
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<short> spr = new List<short>();
             if (!spr.Contains((short)value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -135,23 +135,23 @@ return false;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -163,16 +163,16 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;
-return true;
+                    Radionuclids.Value = item.Item2;
+                    return true;
                 }
             }
             return false;
@@ -185,22 +185,22 @@ return true;
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Activity));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Activity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Activity), value);
+                    DataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -212,23 +212,23 @@ return true;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            if (!(value.Value.Contains('e')||value.Value.Contains('E')))
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -246,26 +246,26 @@ return false;
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            var date = DateTimeOffset.Parse(value.Value);
+            DateTimeOffset date = DateTimeOffset.Parse(value.Value);
             if (date.Date > DateTimeOffset.Now.Date)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -275,26 +275,26 @@ return false;
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            var date = DateTimeOffset.Parse(value.Value);
+            DateTimeOffset date = DateTimeOffset.Parse(value.Value);
             if (date.Date > DateTimeOffset.Now.Date)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -304,8 +304,8 @@ return false;
             value.ClearErrors();
             if ((value.Value == null))//ok
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (value.Value.Equals("прим."))
             {

@@ -1,41 +1,36 @@
-﻿using Models.DataAccess;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Collections;
+using Models.DataAccess;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.ComponentModel.DataAnnotations;
-using Avalonia.Data;
 using System.ComponentModel.DataAnnotations.Schema;
-using Models.Collections;
+using System.Runtime.CompilerServices;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : IChanged,IKey
+    public abstract class Form : IChanged, IKey
     {
-        protected IDataAccessCollection _dataAccess { get; set; }
-
+        protected DataAccessCollection DataAccess { get; set; }
+        protected DBRealization.DBModel dbm { get; set; }
         public Form()
         {
-            _dataAccess = new DataAccessCollection();
+            dbm = DBRealization.StaticConfiguration.DBModel;
+            DataAccess = new DataAccessCollection();
             Init();
         }
 
-        void Init()
+        private void Init()
         {
-            _dataAccess.Init<string>(nameof(FormNum), FormNum_Validation, "");
-            _dataAccess.Init<int>(nameof(NumberOfFields), NumberOfFields_Validation, 0);
+            DataAccess.Init<string>(nameof(FormNum), FormNum_Validation, "");
+            DataAccess.Init<int>(nameof(NumberOfFields), NumberOfFields_Validation, 0);
         }
 
         public bool Equals(object obj)
         {
-            if(obj is Form)
+            if (obj is Form)
             {
-                var obj1 = this;
-                var obj2 = obj as Form;
+                Form obj1 = this;
+                Form obj2 = obj as Form;
 
-                return obj1._dataAccess == obj2._dataAccess;
+                return obj1.DataAccess == obj2.DataAccess;
             }
             else
             {
@@ -66,8 +61,7 @@ namespace Models.Abstracts
             }
         }
 
-        [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         //FormNum property
         [Attributes.Form_Property("Форма")]
@@ -75,11 +69,11 @@ namespace Models.Abstracts
         {
             get
             {
-                return _dataAccess.Get<string>(nameof(FormNum));
+                return DataAccess.Get<string>(nameof(FormNum));
             }
             set
             {
-                _dataAccess.Set(nameof(FormNum), value);
+                DataAccess.Set(nameof(FormNum), value);
                 OnPropertyChanged(nameof(FormNum));
             }
         }
@@ -93,13 +87,10 @@ namespace Models.Abstracts
         //NumberOfFields property
         public RamAccess<int> NumberOfFields
         {
-            get
-            {
-                return _dataAccess.Get<int>(nameof(NumberOfFields));
-            }
+            get => DataAccess.Get<int>(nameof(NumberOfFields));
             set
             {
-                _dataAccess.Set(nameof(NumberOfFields), value);
+                DataAccess.Set(nameof(NumberOfFields), value);
                 OnPropertyChanged(nameof(NumberOfFields));
             }
         }
@@ -116,13 +107,10 @@ namespace Models.Abstracts
         //Для валидации
 
         [NotMapped]
-        bool _isChanged = true;
+        private bool _isChanged = true;
         public bool IsChanged
         {
-            get
-            {
-                return _isChanged;
-            }
+            get => _isChanged;
             set
             {
                 if (_isChanged != value)
@@ -140,7 +128,9 @@ namespace Models.Abstracts
             {
                 IsChanged = true;
                 if (PropertyChanged != null)
+                {
                     PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                }
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

@@ -12,7 +12,7 @@ namespace Client_App.Short_Visual
         }
 
         //Форма 10
-        static DataGrid Form0_Visual()
+        private static DataGrid Form0_Visual()
         {
             DataGrid grd = new DataGrid();
 
@@ -20,7 +20,7 @@ namespace Client_App.Short_Visual
         }
 
         //Форма 1X
-        static DataGrid FormX_Visual()
+        private static DataGrid FormX_Visual()
         {
             DataGrid grd = new DataGrid();
 
@@ -28,7 +28,7 @@ namespace Client_App.Short_Visual
         }
 
         //Кнопки создания или изменения формы
-        static Panel FormB_Visual()
+        private static Panel FormB_Visual()
         {
             Panel panel = new Panel();
 

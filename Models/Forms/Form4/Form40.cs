@@ -25,21 +25,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(SubjectRF));
+                    return DataAccess.Get<string>(nameof(SubjectRF));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(SubjectRF), value);
+                    DataAccess.Set(nameof(SubjectRF), value);
                 }
                 OnPropertyChanged(nameof(SubjectRF));
             }
@@ -54,21 +54,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(Yyear));
+                    return DataAccess.Get<int>(nameof(Yyear));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Yyear), value);
+                    DataAccess.Set(nameof(Yyear), value);
                 }
                 OnPropertyChanged(nameof(Yyear));
             }
@@ -83,18 +83,18 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(SubjectAuthorityName));
+                    return DataAccess.Get<int>(nameof(SubjectAuthorityName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(SubjectAuthorityName), value);
+                DataAccess.Set(nameof(SubjectAuthorityName), value);
                 OnPropertyChanged(nameof(SubjectAuthorityName));
             }
         }
@@ -108,21 +108,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(ShortSubjectAuthorityName));
+                    return DataAccess.Get<int>(nameof(ShortSubjectAuthorityName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ShortSubjectAuthorityName), value);
+                    DataAccess.Set(nameof(ShortSubjectAuthorityName), value);
                 }
                 OnPropertyChanged(nameof(ShortSubjectAuthorityName));
             }
@@ -137,21 +137,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(FactAddress));
+                    return DataAccess.Get<string>(nameof(FactAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(FactAddress), value);
+                    DataAccess.Set(nameof(FactAddress), value);
                 }
                 OnPropertyChanged(nameof(FactAddress));
             }
@@ -166,21 +166,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(GradeFIOchef));
+                    return DataAccess.Get<string>(nameof(GradeFIOchef));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(GradeFIOchef), value);
+                    DataAccess.Set(nameof(GradeFIOchef), value);
                 }
                 OnPropertyChanged(nameof(GradeFIOchef));
             }
@@ -195,21 +195,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(GradeFIOresponsibleExecutor));
+                    return DataAccess.Get<string>(nameof(GradeFIOresponsibleExecutor));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(GradeFIOresponsibleExecutor), value);
+                    DataAccess.Set(nameof(GradeFIOresponsibleExecutor), value);
                 }
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor));
             }
@@ -224,21 +224,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Telephone));
+                    return DataAccess.Get<string>(nameof(Telephone));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Telephone), value);
+                    DataAccess.Set(nameof(Telephone), value);
                 }
                 OnPropertyChanged(nameof(Telephone));
             }
@@ -253,21 +253,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Fax));
+                    return DataAccess.Get<string>(nameof(Fax));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Fax), value);
+                    DataAccess.Set(nameof(Fax), value);
                 }
                 OnPropertyChanged(nameof(Fax));
             }
@@ -282,21 +282,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Email));
+                    return DataAccess.Get<string>(nameof(Email));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Email), value);
+                    DataAccess.Set(nameof(Email), value);
                 }
                 OnPropertyChanged(nameof(Email));
             }
@@ -311,21 +311,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Telephone1));
+                    return DataAccess.Get<string>(nameof(Telephone1));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Telephone1), value);
+                    DataAccess.Set(nameof(Telephone1), value);
                 }
                 OnPropertyChanged(nameof(Telephone1));
             }
@@ -340,21 +340,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Fax1));
+                    return DataAccess.Get<string>(nameof(Fax1));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Fax1), value);
+                    DataAccess.Set(nameof(Fax1), value);
                 }
                 OnPropertyChanged(nameof(Fax1));
             }
@@ -369,21 +369,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Email1));
+                    return DataAccess.Get<string>(nameof(Email1));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Email1), value);
+                    DataAccess.Set(nameof(Email1), value);
                 }
                 OnPropertyChanged(nameof(Email1));
             }
@@ -398,21 +398,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(OrgName));
+                    return DataAccess.Get<string>(nameof(OrgName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(OrgName), value);
+                    DataAccess.Set(nameof(OrgName), value);
                 }
                 OnPropertyChanged(nameof(OrgName));
             }
@@ -427,21 +427,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ShortOrgName));
+                    return DataAccess.Get<string>(nameof(ShortOrgName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ShortOrgName), value);
+                    DataAccess.Set(nameof(ShortOrgName), value);
                 }
                 OnPropertyChanged(nameof(ShortOrgName));
             }
@@ -456,21 +456,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(FactAddress1));
+                    return DataAccess.Get<string>(nameof(FactAddress1));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(FactAddress1), value);
+                    DataAccess.Set(nameof(FactAddress1), value);
                 }
                 OnPropertyChanged(nameof(FactAddress1));
             }
@@ -485,21 +485,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(GradeFIOchef1));
+                    return DataAccess.Get<string>(nameof(GradeFIOchef1));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(GradeFIOchef1), value);
+                    DataAccess.Set(nameof(GradeFIOchef1), value);
                 }
                 OnPropertyChanged(nameof(GradeFIOchef1));
             }
@@ -514,21 +514,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(GradeFIOresponsibleExecutor1));
+                    return DataAccess.Get<string>(nameof(GradeFIOresponsibleExecutor1));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(GradeFIOresponsibleExecutor1), value);
+                    DataAccess.Set(nameof(GradeFIOresponsibleExecutor1), value);
                 }
                 OnPropertyChanged(nameof(GradeFIOresponsibleExecutor1));
             }

@@ -20,9 +20,9 @@ namespace Models.Abstracts
 
         private void Init_base()
         {
-            _dataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, -1);
+            DataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, -1);
             NumberInOrder.PropertyChanged += InPropertyChanged;
-            //_dataAccess.Init<string>(nameof(), _Validation, null);
+            //DataAccess.Init<string>(nameof(), _Validation, null);
         }
         protected void Validate_base()
         {
@@ -35,22 +35,22 @@ namespace Models.Abstracts
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<byte>(nameof(CorrectionNumber));
-                    
+                    return DataAccess.Get<byte>(nameof(CorrectionNumber));
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(CorrectionNumber), value);
+                    DataAccess.Set(nameof(CorrectionNumber), value);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
@@ -68,30 +68,31 @@ namespace Models.Abstracts
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(NumberInOrder));
-                    
+                    return DataAccess.Get<int>(nameof(NumberInOrder));
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(NumberInOrder), value);
+                    DataAccess.Set(nameof(NumberInOrder), value);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
 
-                private bool NumberInOrder_Validation(RamAccess<int> value)
+        private bool NumberInOrder_Validation(RamAccess<int> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //NumberInOrder property
     }
 }

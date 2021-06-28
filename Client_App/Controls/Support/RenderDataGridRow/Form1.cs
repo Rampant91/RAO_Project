@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia;
 using Avalonia.Data;
 using Avalonia.Media;
-using Models.Attributes;
-using Avalonia.Input;
-using Avalonia.Input.GestureRecognizers;
-using Avalonia.Interactivity;
+using System;
 
 namespace Client_App.Controls.Support.RenderDataGridRow
 {
@@ -21,7 +13,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             switch (type)
             {
                 case "0": return Get0();
-                case "1": return Get1(Row, scp,TopName);
+                case "1": return Get1(Row, scp, TopName);
                 case "2": return Get2();
                 case "3": return Get3();
                 case "4": return Get4();
@@ -34,24 +26,30 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return null;
         }
 
-        static Control Get0()
+        private static Control Get0()
         {
             return null;
         }
-        static int Wdth1 = 100;
-        static int RowHeight1 = 30;
-        static Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-        static Control Get1Row(int starWidth, int Row,int Column, string Binding, INameScope scp, string TopName)
-        {
-            var cell = new Controls.DataGrid.Cell(Binding,false);
-            cell.Width = starWidth * Wdth1;
-            cell.Height= RowHeight1;
-            cell.BorderBrush = new SolidColorBrush(border_color1);
 
-            Binding b = new Binding();
-            b.Path = "Items[" + (Row - 1).ToString() + "]." + Binding;
-            b.ElementName = TopName;
-            b.NameScope = new WeakReference<INameScope>(scp);
+        private static readonly int Wdth1 = 100;
+        private static readonly int RowHeight1 = 30;
+        private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
+
+        private static Control Get1Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+
+            Binding b = new Binding
+            {
+                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
 
             cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
@@ -60,22 +58,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return cell;
         }
-        static Control Get1(int Row, INameScope scp,string TopName)
-        {
-            DataGrid.Row stck = new DataGrid.Row();
-            stck.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            stck.Orientation = Avalonia.Layout.Orientation.Horizontal;
-            stck.Width = 24 * Wdth1;
-            stck.Spacing = -1;
 
-            Binding b = new Binding();
-            b.Path = "Items[" + (Row - 1).ToString() + "]";
-            b.ElementName = TopName;
-            b.NameScope = new WeakReference<INameScope>(scp);
+        private static Control Get1(int Row, INameScope scp, string TopName)
+        {
+            DataGrid.Row stck = new DataGrid.Row
+            {
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Width = 24 * Wdth1,
+                Spacing = -1
+            };
+
+            Binding b = new Binding
+            {
+                Path = "Items[" + (Row - 1).ToString() + "]",
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
 
             stck.Bind(StackPanel.DataContextProperty, b);
 
-            stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp,TopName));
+            stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get1Row(2, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 3, "OperationDate", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 4, "PassportNumber", scp, TopName));
@@ -104,35 +107,43 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
-        static Control Get2()
+
+        private static Control Get2()
         {
             return null;
         }
-        static Control Get3()
+
+        private static Control Get3()
         {
             return null;
         }
-        static Control Get4()
+
+        private static Control Get4()
         {
             return null;
         }
-        static Control Get5()
+
+        private static Control Get5()
         {
             return null;
         }
-        static Control Get6()
+
+        private static Control Get6()
         {
             return null;
         }
-        static Control Get7()
+
+        private static Control Get7()
         {
             return null;
         }
-        static Control Get8()
+
+        private static Control Get8()
         {
             return null;
         }
-        static Control Get9()
+
+        private static Control Get9()
         {
             return null;
         }

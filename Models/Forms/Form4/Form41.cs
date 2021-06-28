@@ -26,22 +26,22 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(NumberInOrder));
-                    
+                    return DataAccess.Get<int>(nameof(NumberInOrder));
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(NumberInOrder), value);
+                    DataAccess.Set(nameof(NumberInOrder), value);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
@@ -50,7 +50,8 @@ namespace Models
 
         private bool NumberInOrder_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //NumberInOrder property
 
         //RegNo property
@@ -59,21 +60,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(RegNo));
+                    return DataAccess.Get<string>(nameof(RegNo));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(RegNo), value);
+                    DataAccess.Set(nameof(RegNo), value);
                 }
                 OnPropertyChanged(nameof(RegNo));
             }
@@ -88,21 +89,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Okpo));
+                    return DataAccess.Get<string>(nameof(Okpo));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Okpo), value);
+                    DataAccess.Set(nameof(Okpo), value);
                 }
                 OnPropertyChanged(nameof(Okpo));
             }
@@ -115,7 +116,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -131,21 +132,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(OrgName));
+                    return DataAccess.Get<string>(nameof(OrgName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(OrgName), value);
+                    DataAccess.Set(nameof(OrgName), value);
                 }
                 OnPropertyChanged(nameof(OrgName));
             }
@@ -160,21 +161,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(LicenseInfo));
+                    return DataAccess.Get<string>(nameof(LicenseInfo));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(LicenseInfo), value);
+                    DataAccess.Set(nameof(LicenseInfo), value);
                 }
                 OnPropertyChanged(nameof(LicenseInfo));
             }
@@ -189,23 +190,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityOfFormsInv));//OK
-                    
+                    return DataAccess.Get<int>(nameof(QuantityOfFormsInv));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityOfFormsInv), value);
+                    DataAccess.Set(nameof(QuantityOfFormsInv), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsInv));
             }
@@ -217,7 +218,8 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
@@ -229,23 +231,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityOfFormsOper));//OK
-                    
+                    return DataAccess.Get<int>(nameof(QuantityOfFormsOper));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityOfFormsOper), value);
+                    DataAccess.Set(nameof(QuantityOfFormsOper), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsOper));
             }
@@ -269,23 +271,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityOfFormsYear));//OK
-                    
+                    return DataAccess.Get<int>(nameof(QuantityOfFormsYear));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityOfFormsYear), value);
+                    DataAccess.Set(nameof(QuantityOfFormsYear), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsYear));
             }
@@ -309,21 +311,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Notes));
+                    return DataAccess.Get<string>(nameof(Notes));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Notes), value);
+                    DataAccess.Set(nameof(Notes), value);
                 }
                 OnPropertyChanged(nameof(Notes));
             }

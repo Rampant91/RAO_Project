@@ -1,12 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.Media;
-using Models.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Client_App.Long_Visual
 {
@@ -63,28 +59,42 @@ namespace Client_App.Long_Visual
         public static Grid Form11_Visual(INameScope scp)
         {
             Grid maingrid = new Grid();
-            var row = new RowDefinition();
-            row.Height = new GridLength(0.5, GridUnitType.Star);
+            RowDefinition? row = new RowDefinition
+            {
+                Height = new GridLength(0.5, GridUnitType.Star)
+            };
             maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition();
-            row.Height = new GridLength(0.7, GridUnitType.Star);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
+            };
             maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition();
-            row.Height = new GridLength(5, GridUnitType.Star);
+            row = new RowDefinition
+            {
+                Height = new GridLength(5, GridUnitType.Star)
+            };
             maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition();
-            row.Height = new GridLength(2, GridUnitType.Star);
+            row = new RowDefinition
+            {
+                Height = new GridLength(2, GridUnitType.Star)
+            };
             maingrid.RowDefinitions.Add(row);
 
-            var topPnl1 = new Grid();
-            var column = new ColumnDefinition();
-            column.Width = new GridLength(0.3, GridUnitType.Star);
+            Grid? topPnl1 = new Grid();
+            ColumnDefinition? column = new ColumnDefinition
+            {
+                Width = new GridLength(0.3, GridUnitType.Star)
+            };
             topPnl1.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl1.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl1.ColumnDefinitions.Add(column);
             topPnl1.SetValue(Grid.RowProperty, 0);
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -93,21 +103,31 @@ namespace Client_App.Long_Visual
             topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", double.NaN));
             maingrid.Children.Add(topPnl1);
 
-            var topPnl2 = new Grid();
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            Grid? topPnl2 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
             column = new ColumnDefinition();
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -132,31 +152,35 @@ namespace Client_App.Long_Visual
             grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
             grd.SetValue(Grid.RowProperty, 2);
 
-            Binding b = new Binding();
-            b.Path = "DataContext.Storage.Rows11";
-            b.ElementName = "ChangingPanel";
-            b.NameScope = new WeakReference<INameScope>(scp);
+            Binding b = new Binding
+            {
+                Path = "DataContext.Storage.Rows11",
+                ElementName = "ChangingPanel",
+                NameScope = new WeakReference<INameScope>(scp)
+            };
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
-            
 
-            var cntx = new ContextMenu();
-            List<MenuItem> itms = new List<MenuItem>();
-            itms.Add(new MenuItem
+
+            ContextMenu? cntx = new ContextMenu();
+            List<MenuItem> itms = new List<MenuItem>
             {
-                Header = "Добавить строку",
-                [!MenuItem.CommandProperty] = new Binding("AddRow"),
-            });
-            itms.Add(new MenuItem
-            {
-                Header = "Вставить из буфера",
-                [!MenuItem.CommandProperty] = new Binding("PasteRows"),
-            });
-            itms.Add(new MenuItem
-            {
-                Header = "Удалить строки",
-                [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
-                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-            });
+                new MenuItem
+                {
+                    Header = "Добавить строку",
+                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить из буфера",
+                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                },
+                new MenuItem
+                {
+                    Header = "Удалить строки",
+                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                }
+            };
             cntx.Items = itms;
 
             grd.ContextMenu = cntx;
@@ -250,28 +274,42 @@ namespace Client_App.Long_Visual
         public static Grid Form12_Visual(INameScope scp)
         {
             Grid maingrid = new Grid();
-            var row = new RowDefinition();
-            row.Height = new GridLength(0.5, GridUnitType.Star);
+            RowDefinition? row = new RowDefinition
+            {
+                Height = new GridLength(0.5, GridUnitType.Star)
+            };
             maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition();
-            row.Height = new GridLength(0.7, GridUnitType.Star);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
+            };
             maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition();
-            row.Height = new GridLength(5, GridUnitType.Star);
+            row = new RowDefinition
+            {
+                Height = new GridLength(5, GridUnitType.Star)
+            };
             maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition();
-            row.Height = new GridLength(2, GridUnitType.Star);
+            row = new RowDefinition
+            {
+                Height = new GridLength(2, GridUnitType.Star)
+            };
             maingrid.RowDefinitions.Add(row);
 
-            var topPnl1 = new Grid();
-            var column = new ColumnDefinition();
-            column.Width = new GridLength(0.3, GridUnitType.Star);
+            Grid? topPnl1 = new Grid();
+            ColumnDefinition? column = new ColumnDefinition
+            {
+                Width = new GridLength(0.3, GridUnitType.Star)
+            };
             topPnl1.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl1.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl1.ColumnDefinitions.Add(column);
             topPnl1.SetValue(Grid.RowProperty, 0);
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -280,21 +318,31 @@ namespace Client_App.Long_Visual
             topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", double.NaN));
             maingrid.Children.Add(topPnl1);
 
-            var topPnl2 = new Grid();
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            Grid? topPnl2 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            column.Width = new GridLength(1, GridUnitType.Star);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
             column = new ColumnDefinition();
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -310,38 +358,44 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid();
-            grd.Name = "Form12Data_";
-            grd.Type = "1/2";
-            grd.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
-            grd.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
+            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            {
+                Name = "Form12Data_",
+                Type = "1/2",
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+            };
             grd.SetValue(Grid.RowProperty, 2);
 
-            Binding b = new Binding();
-            b.Path = "DataContext.Storage.Rows12";
-            b.ElementName = "ChangingPanel";
-            b.NameScope = new WeakReference<INameScope>(scp);
+            Binding b = new Binding
+            {
+                Path = "DataContext.Storage.Rows12",
+                ElementName = "ChangingPanel",
+                NameScope = new WeakReference<INameScope>(scp)
+            };
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
 
-            var cntx = new ContextMenu();
-            List<MenuItem> itms = new List<MenuItem>();
-            itms.Add(new MenuItem
+            ContextMenu? cntx = new ContextMenu();
+            List<MenuItem> itms = new List<MenuItem>
             {
-                Header = "Добавить строку",
-                [!MenuItem.CommandProperty] = new Binding("AddRow"),
-            });
-            itms.Add(new MenuItem
-            {
-                Header = "Вставить из буфера",
-                [!MenuItem.CommandProperty] = new Binding("PasteRows"),
-            });
-            itms.Add(new MenuItem
-            {
-                Header = "Удалить строки",
-                [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
-                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-            });
+                new MenuItem
+                {
+                    Header = "Добавить строку",
+                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить из буфера",
+                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                },
+                new MenuItem
+                {
+                    Header = "Удалить строки",
+                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                }
+            };
             cntx.Items = itms;
 
             grd.ContextMenu = cntx;

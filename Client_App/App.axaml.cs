@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Client_App.ViewModels;
 using Client_App.Views;
 
 namespace Client_App

@@ -28,19 +28,19 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<short>(nameof(OperationCode));
-                    
+                    return DataAccess.Get<short>(nameof(OperationCode));
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(OperationCode), value);
+                DataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
@@ -58,23 +58,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
                 Radionuclids_Validation(value);
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -86,15 +86,15 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
+                value.AddError("Поле не заполнено");
                 return;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item2.Equals(value))
                 {
-                    Radionuclids.Value =item.Item2;
+                    Radionuclids.Value = item.Item2;
                     return;
                 }
             }
@@ -107,21 +107,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<short>(nameof(Kategory));
+                    return DataAccess.Get<short>(nameof(Kategory));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Kategory), value);
+                    DataAccess.Set(nameof(Kategory), value);
                 }
                 OnPropertyChanged(nameof(Kategory));
             }
@@ -140,22 +140,22 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Activity));//OK
-                    
+                    return DataAccess.Get<string>(nameof(Activity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Activity), value);
+                    DataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -167,24 +167,26 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
+                value.AddError("Поле не заполнено");
                 return;
             }
             if (!(value.Value.Contains('e')))
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
                 if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
-                    value.AddError( "Число должно быть больше нуля");
+                {
+                    value.AddError("Число должно быть больше нуля");
+                }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
             }
         }
         //Activity property
@@ -195,14 +197,14 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
-                    
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
@@ -210,9 +212,9 @@ namespace Models
                 Quantity_Validation(value);
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -224,7 +226,7 @@ namespace Models
             value.ClearErrors();
             if (value.Value <= 0)
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return;
             }
         }
@@ -236,23 +238,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
                 ProviderOrRecieverOKPO_Validation(value);
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -264,23 +266,35 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
+                value.AddError("Поле не заполнено");
                 return;
             }
-            if (value.Value.Equals("Минобороны") || value.Value.Equals("прим.")) return;
-            if (OKSM.Contains(value.Value)) return;
-            if ((value.Value.Length != 8) && (value.Value.Length != 14))
-                value.AddError( "Недопустимое значение");
-            
+            if (value.Value.Equals("Минобороны") || value.Value.Equals("прим."))
             {
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+                return;
+            }
+
+            if (OKSM.Contains(value.Value))
+            {
+                return;
+            }
+
+            if ((value.Value.Length != 8) && (value.Value.Length != 14))
+            {
+                value.AddError("Недопустимое значение");
+            }
+
+            {
+                Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
                 if (!mask.IsMatch(value.Value))
-                    value.AddError( "Недопустимое значение");
+                {
+                    value.AddError("Недопустимое значение");
+                }
             }
         }
         //ProviderOrRecieverOKPO property
 
-        private List<string> OKSM = new List<string>
+        private readonly List<string> OKSM = new List<string>
             {
                 "АФГАНИСТАН",
                 "АЛБАНИЯ",
@@ -442,22 +456,22 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }

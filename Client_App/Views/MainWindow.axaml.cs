@@ -1,12 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
 using System;
 using System.ComponentModel;
-using Avalonia.ReactiveUI;
-using ReactiveUI;
-using ReactiveUI.Validation.Extensions;
-using ReactiveUI.Validation.Formatters;
 
 namespace Client_App.Views
 {
@@ -14,7 +11,7 @@ namespace Client_App.Views
     {
         public MainWindow()
         {
-            this.DataContext = new ViewModels.MainWindowVM();
+            DataContext = new ViewModels.MainWindowVM();
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();

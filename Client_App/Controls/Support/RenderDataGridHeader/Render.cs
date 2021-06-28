@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 
 namespace Client_App.Controls.Support.RenderDataGridHeader
 {
@@ -14,8 +9,8 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             Control ctrl = null;
             if (Type != "")
             {
-                var formT1 = Type.Split('/')[0];
-                var formT2 = Type.Split('/')[1];
+                string? formT1 = Type.Split('/')[0];
+                string? formT2 = Type.Split('/')[1];
 
                 switch (formT1)
                 {
