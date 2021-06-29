@@ -293,6 +293,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     if (((Cell) sender).CellColumn != LastPressedItem[1])
                     {
+                        
                         LastPressedItem[0] = ((Cell)sender).CellRow;
                         LastPressedItem[1] = ((Cell)sender).CellColumn;
                         SetSelectedControls();
