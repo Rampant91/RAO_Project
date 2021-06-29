@@ -47,7 +47,8 @@ namespace Models
         }
 
         //ObservedSourceNumber property
-        [Attributes.Form_Property("Номер наблюдательной скважины")]public int? ObservedSourceNumberId { get; set; }
+        public int? ObservedSourceNumberId { get; set; }
+        [Attributes.Form_Property("Номер наблюдательной скважины")]
         public virtual RamAccess<string> ObservedSourceNumber
         {
             get
@@ -74,7 +75,8 @@ namespace Models
         //ObservedSourceNumber property
 
         //PermissionNumber property
-        [Attributes.Form_Property("Номер разрешительного документа")]public int? PermissionNumberId { get; set; }
+        public int? PermissionNumberId { get; set; }
+        [Attributes.Form_Property("Номер разрешительного документа")]
         public virtual RamAccess<string> PermissionNumber
         {
             get
@@ -108,7 +110,8 @@ namespace Models
         //PermissionNumber property
 
         //PermissionIssueDate property
-        [Attributes.Form_Property("Дата выпуска разрешительного документа")]public int? PermissionIssueDateId { get; set; }
+        public int? PermissionIssueDateId { get; set; }
+        [Attributes.Form_Property("Дата выпуска разрешительного документа")]
         public virtual RamAccess<string> PermissionIssueDate
         {
             get
@@ -141,7 +144,8 @@ namespace Models
         //PermissionIssueDate property
 
         //PermissionDocumentName property
-        [Attributes.Form_Property("Наименование разрешительного документа")]public int? PermissionDocumentNameId { get; set; }
+        public int? PermissionDocumentNameId { get; set; }
+        [Attributes.Form_Property("Наименование разрешительного документа")]
         public virtual RamAccess<string> PermissionDocumentName
         {
             get
@@ -174,7 +178,8 @@ namespace Models
         //PermissionDocumentName property
 
         //ValidBegin property
-        [Attributes.Form_Property("Действует с")]public int? ValidBeginId { get; set; }
+        public int? ValidBeginId { get; set; }
+        [Attributes.Form_Property("Действует с")]
         public virtual RamAccess<string> ValidBegin
         {
             get
@@ -207,7 +212,8 @@ namespace Models
         //ValidBegin property
 
         //ValidThru property
-        [Attributes.Form_Property("Действует по")]public int? ValidThruId { get; set; }
+        public int? ValidThruId { get; set; }
+        [Attributes.Form_Property("Действует по")]
         public virtual RamAccess<string> ValidThru
         {
             get
@@ -317,7 +323,8 @@ namespace Models
         //RadionuclidNameNote property
 
         //AllowedWasteValue property
-        [Attributes.Form_Property("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]public int? AllowedWasteValueId { get; set; }
+        public int? AllowedWasteValueId { get; set; }
+        [Attributes.Form_Property("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]
         public virtual RamAccess<string> AllowedWasteValue
         {
             get
@@ -408,7 +415,8 @@ namespace Models
         //AllowedWasteValueNote property
 
         //FactedWasteValue property
-        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]public int? FactedWasteValueId { get; set; }
+        public int? FactedWasteValueId { get; set; }
+        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]
         public virtual RamAccess<string> FactedWasteValue
         {
             get
@@ -506,7 +514,8 @@ namespace Models
         //FactedWasteValueNote property
 
         //WasteOutbreakPreviousYear property
-        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]public int? WasteOutbreakPreviousYearId { get; set; }
+        public int? WasteOutbreakPreviousYearId { get; set; }
+        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]
         public virtual RamAccess<string> WasteOutbreakPreviousYear
         {
             get

@@ -55,7 +55,8 @@ namespace Models
         }
 
         //PlotName property
-        [Attributes.Form_Property("Наименование участка")]public int? PlotNameId { get; set; }
+        public int? PlotNameId { get; set; }
+        [Attributes.Form_Property("Наименование участка")]
         public virtual RamAccess<string> PlotName
         {
             get
@@ -87,7 +88,8 @@ namespace Models
         //PlotName property
 
         //PlotKadastrNumber property
-        [Attributes.Form_Property("Кадастровый номер участка")]public int? PlotKadastrNumberId { get; set; }
+        public int? PlotKadastrNumberId { get; set; }
+        [Attributes.Form_Property("Кадастровый номер участка")]
         public virtual RamAccess<string> PlotKadastrNumber
         {
             get
@@ -119,7 +121,8 @@ namespace Models
         //PlotKadastrNumber property
 
         //PlotCode property
-        [Attributes.Form_Property("Код участка")]public int? PlotCodeId { get; set; }
+        public int? PlotCodeId { get; set; }
+        [Attributes.Form_Property("Код участка")]
         public virtual RamAccess<string> PlotCode
         {
             get
@@ -151,7 +154,8 @@ namespace Models
         //PlotCode property
 
         //InfectedArea property
-        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]public int? InfectedAreaId { get; set; }
+        public int? InfectedAreaId { get; set; }
+        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
         public virtual RamAccess<int> InfectedArea
         {
             get
@@ -183,7 +187,8 @@ namespace Models
         //InfectedArea property
 
         //Radionuclids property
-        [Attributes.Form_Property("Наименования радионуклидов")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Наименования радионуклидов")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -263,7 +268,8 @@ namespace Models
         //RadionuclidNameNote property
 
         //SpecificActivityOfPlot property
-        [Attributes.Form_Property("Удельная активность, Бк/г")]public int? SpecificActivityOfPlotId { get; set; }
+        public int? SpecificActivityOfPlotId { get; set; }
+        [Attributes.Form_Property("Удельная активность, Бк/г")]
         public virtual RamAccess<string> SpecificActivityOfPlot
         {
             get
@@ -306,7 +312,8 @@ namespace Models
         //SpecificActivityOfPlot property
 
         //SpecificActivityOfLiquidPart property
-        [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]public int? SpecificActivityOfLiquidPartId { get; set; }
+        public int? SpecificActivityOfLiquidPartId { get; set; }
+        [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]
         public virtual RamAccess<string> SpecificActivityOfLiquidPart
         {
             get
@@ -349,7 +356,8 @@ namespace Models
         //SpecificActivityOfLiquidPart property
 
         //SpecificActivityOfDensePart property
-        [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]public int? SpecificActivityOfDensePartId { get; set; }
+        public int? SpecificActivityOfDensePartId { get; set; }
+        [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]
         public virtual RamAccess<string> SpecificActivityOfDensePart
         {
             get

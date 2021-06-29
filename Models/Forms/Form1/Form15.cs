@@ -99,26 +99,27 @@ namespace Models
         }
 
         //PassportNumber property
-        [Attributes.Form_Property("Номер паспорта")]public int? PassportNumberId { get; set; }
+        public int? PassportNumberId { get; set; }
+        [Attributes.Form_Property("Номер паспорта")]
         public virtual RamAccess<string> PassportNumber
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PassportNumber));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(PassportNumber), value);
                 }
@@ -132,8 +133,8 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
@@ -150,20 +151,20 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PassportNumberNote), value);
                 }
@@ -174,29 +175,30 @@ return false;
 
         private bool PassportNumberNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PassportNumberNote property
 
         //PassportNumberRecoded property
-public int? PassportNumberRecodedId { get; set; }
+        public int? PassportNumberRecodedId { get; set; }
         public virtual RamAccess<string> PassportNumberRecoded
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PassportNumberRecoded));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PassportNumberRecoded), value);
                 }
@@ -207,29 +209,31 @@ public int? PassportNumberRecodedId { get; set; }
 
         private bool PassportNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PassportNumberRecoded property
 
         //Type property
-        [Attributes.Form_Property("Тип")]public int? TypeId { get; set; }
+        public int? TypeId { get; set; }
+        [Attributes.Form_Property("Тип")]
         public virtual RamAccess<string> Type
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Type));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Type), value);
                 }
@@ -240,7 +244,8 @@ public int? PassportNumberRecodedId { get; set; }
 
         private bool Type_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //Type property
 
         //TypeRecoded property
@@ -248,20 +253,20 @@ public int? PassportNumberRecodedId { get; set; }
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(TypeRecoded));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(TypeRecoded), value);
                 }
@@ -272,30 +277,32 @@ public int? PassportNumberRecodedId { get; set; }
 
         private bool TypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //TypeRecoded property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -309,8 +316,8 @@ public int? PassportNumberRecodedId { get; set; }
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
             foreach (var item in spr)
@@ -318,7 +325,7 @@ return false;
                 if (item.Item1.Equals(Type))
                 {
                     Radionuclids.Value = item.Item2;
-return true;
+                    return true;
                 }
             }
             return true;
@@ -326,25 +333,26 @@ return true;
         //Radionuclids property
 
         //FactoryNumber property
-        [Attributes.Form_Property("Заводской номер")]public int? FactoryNumberId { get; set; }
+        public int? FactoryNumberId { get; set; }
+        [Attributes.Form_Property("Заводской номер")]
         public virtual RamAccess<string> FactoryNumber
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FactoryNumber));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FactoryNumber), value);
                 }
@@ -358,8 +366,8 @@ return true;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -370,20 +378,20 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FactoryNumberRecoded), value);
                 }
@@ -393,23 +401,25 @@ return false;
 
         private bool FactoryNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //FactoryNumberRecoded property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public int? QuantityId { get; set; }
+        [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int?> Quantity
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<int?>(nameof(Quantity));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
@@ -417,7 +427,7 @@ return false;
 
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(Quantity), value);
                 }
@@ -444,24 +454,25 @@ return false;
         //Quantity property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public int? ActivityId { get; set; }
+        [Attributes.Form_Property("Активность, Бк")]
         public virtual RamAccess<string> Activity
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Activity));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(Activity), value);
+                _dataAccess.Set(nameof(Activity), value);
                 OnPropertyChanged(nameof(Activity));
             }
         }
@@ -472,15 +483,15 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
-            if (!(value.Value.Contains('e')||value.Value.Contains('E')))
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            string tmp=value.Value;
+            string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -491,11 +502,11 @@ return false;
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -503,24 +514,25 @@ return false;
         //Activity property
 
         //CreationDate property
-        [Attributes.Form_Property("Дата изготовления")]public int? CreationDateId { get; set; }
+        public int? CreationDateId { get; set; }
+        [Attributes.Form_Property("Дата изготовления")]
         public virtual RamAccess<string> CreationDate
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(CreationDate));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(CreationDate), value);
+                _dataAccess.Set(nameof(CreationDate), value);
                 OnPropertyChanged(nameof(CreationDate));
             }
         }
@@ -531,44 +543,45 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             try { DateTimeOffset.Parse(value.Value); }
             catch (Exception)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
         //CreationDate property
 
         //StatusRAO property
-        [Attributes.Form_Property("Статус РАО")]public int? StatusRAOId { get; set; }
+        public int? StatusRAOId { get; set; }
+        [Attributes.Form_Property("Статус РАО")]
         public virtual RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(StatusRAO));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(StatusRAO), value);
                 }
@@ -613,26 +626,27 @@ return false;
         //StatusRAO property
 
         //ProviderOrRecieverOKPO property
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]public int? ProviderOrRecieverOKPOId { get; set; }
+        public int? ProviderOrRecieverOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО поставщика/получателя")]
         public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
@@ -646,8 +660,8 @@ return false;
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (value.Value.Equals("прим.")) { return true; }
             short tmp = (short)OperationCode.Value;
@@ -667,7 +681,7 @@ return false;
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-                var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -681,20 +695,20 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
@@ -705,30 +719,32 @@ return false;
 
         private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
-        [Attributes.Form_Property("ОКПО перевозчика")]public int? TransporterOKPOId { get; set; }
+        public int? TransporterOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО перевозчика")]
         public virtual RamAccess<string> TransporterOKPO
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(TransporterOKPO));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(TransporterOKPO), value);
                 }
@@ -769,20 +785,20 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(TransporterOKPONote), value);
                 }
@@ -793,30 +809,32 @@ return false;
 
         private bool TransporterOKPONote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //TransporterOKPONote property
 
         //PackName property
-        [Attributes.Form_Property("Наименование упаковки")]public int? PackNameId { get; set; }
+        public int? PackNameId { get; set; }
+        [Attributes.Form_Property("Наименование упаковки")]
         public virtual RamAccess<string> PackName
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackName));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackName), value);
                 }
@@ -830,8 +848,8 @@ return false;
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -842,20 +860,20 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackNameNote));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackNameNote), value);
                 }
@@ -866,30 +884,32 @@ return false;
 
         private bool PackNameNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackNameNote property
 
         //PackType property
-        [Attributes.Form_Property("Тип упаковки")]public int? PackTypeId { get; set; }
+        public int? PackTypeId { get; set; }
+        [Attributes.Form_Property("Тип упаковки")]
         public virtual RamAccess<string> PackType
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackType));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackType), value);
                 }
@@ -903,14 +923,14 @@ return false;
             value.ClearErrors();
             if ((value.Value == null))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
                 //if ((PackTypeNote == null) || PackTypeNote.Equals(""))
                 //    value.AddError( "Заполните примечание");// to do note handling
-return true;
+                return true;
             }
             return true;
         }
@@ -921,20 +941,20 @@ return true;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackTypeRecoded), value);
                 }
@@ -945,7 +965,8 @@ return true;
 
         private bool PackTypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackTypeRecoded property
 
         //PackTypeNote property
@@ -953,20 +974,20 @@ return true;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackTypeNote), value);
                 }
@@ -977,30 +998,32 @@ return true;
 
         private bool PackTypeNote_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackTypeNote property
 
         //PackNumber property
-        [Attributes.Form_Property("Номер упаковки")]public int? PackNumberId { get; set; }
+        public int? PackNumberId { get; set; }
+        [Attributes.Form_Property("Номер упаковки")]
         public virtual RamAccess<string> PackNumber
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackNumber));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackNumber), value);
                 }
@@ -1014,8 +1037,8 @@ return true;
             value.ClearErrors();
             if ((value.Value == null))//ok
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -1026,21 +1049,21 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackNumberNote));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackNumberNote), value);
                 }
@@ -1054,8 +1077,8 @@ return false;
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -1067,20 +1090,20 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(PackNumberRecoded));//OK
-                    
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(PackNumberRecoded), value);
                 }
@@ -1091,28 +1114,30 @@ return false;
 
         private bool PackNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackNumberRecoded property
 
         //StoragePlaceName property
-        [Attributes.Form_Property("Наименование ПХ")]public int? StoragePlaceNameId { get; set; }
+        public int? StoragePlaceNameId { get; set; }
+        [Attributes.Form_Property("Наименование ПХ")]
         public virtual RamAccess<string> StoragePlaceName
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(StoragePlaceName), value);
                 }
@@ -1132,7 +1157,7 @@ return false;
             var a = new List<string>();//here binds spr
             if (a.Contains(value.Value))
                 return true;
-            value.AddError( "Недопустимое значение");
+            value.AddError("Недопустимое значение");
             return false;
         }
         //StoragePlaceName property
@@ -1142,19 +1167,19 @@ return false;
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceNameNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(StoragePlaceNameNote), value);
                 }
@@ -1165,28 +1190,30 @@ return false;
 
         private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors();return true;}
+            value.ClearErrors(); return true;
+        }
         //StoragePlaceNameNote property
 
         //StoragePlaceCode property
-        [Attributes.Form_Property("Код ПХ")]public int? StoragePlaceCodeId { get; set; }
+        public int? StoragePlaceCodeId { get; set; }
+        [Attributes.Form_Property("Код ПХ")]
         public virtual RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(StoragePlaceCode), value);
                 }
@@ -1214,24 +1241,25 @@ return false;
         //StoragePlaceCode property
 
         //RefineOrSortRAOCode property
-        [Attributes.Form_Property("Код переработки/сортировки РАО")]public int? RefineOrSortRAOCodeId { get; set; }
+        public int? RefineOrSortRAOCodeId { get; set; }
+        [Attributes.Form_Property("Код переработки/сортировки РАО")]
         public virtual RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(RefineOrSortRAOCode));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(RefineOrSortRAOCode), value);
                 }
@@ -1243,14 +1271,14 @@ return false;
         private bool RefineOrSortRAOCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if((value.Value == null) || value.Value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
-return false;  
+                return false;
             }
             var a = new Regex("^[0-9][0-9]$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -1258,24 +1286,25 @@ return false;
         //RefineOrSortRAOCode property
 
         //Subsidy property
-        [Attributes.Form_Property("Субсидия, %")]public int? SubsidyId { get; set; }
+        public int? SubsidyId { get; set; }
+        [Attributes.Form_Property("Субсидия, %")]
         public virtual RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(Subsidy));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(Subsidy), value);
                 }
@@ -1297,7 +1326,7 @@ return false;
             }
             catch
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -1305,24 +1334,25 @@ return false;
         //Subsidy property
 
         //FcpNumber property
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]public int? FcpNumberId { get; set; }
+        public int? FcpNumberId { get; set; }
+        [Attributes.Form_Property("Номер мероприятия ФЦП")]
         public virtual RamAccess<string> FcpNumber
         {
             get
             {
-                
+
                 {
                     return _dataAccess.Get<string>(nameof(FcpNumber));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
                     _dataAccess.Set(nameof(FcpNumber), value);
                 }
@@ -1333,7 +1363,8 @@ return false;
 
         private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //FcpNumber property
 
         protected override bool DocumentNumber_Validation(RamAccess<string> value)
@@ -1341,8 +1372,8 @@ return false;
             value.ClearErrors();
             if ((value.Value == null))//ok
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             return true;
         }
@@ -1352,8 +1383,8 @@ return false;
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError( "Поле не заполнено");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
             bool flag = false;
@@ -1363,30 +1394,30 @@ return false;
             }
             if (!flag)
             {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            bool a0 = value.Value==15;
-            bool a1 = value.Value==17;
-            bool a2 = value.Value==46;
-            bool a3 = value.Value==47;
-            bool a4 = value.Value==53;
-            bool a5 = value.Value==54;
-            bool a6 = value.Value==58;
-            bool a7 = value.Value==61;
-            bool a8 = value.Value==62;
-            bool a9 = value.Value==65;
-            bool a10 = value.Value==66;
-            bool a11 = value.Value==67;
-            bool a12 = value.Value==81;
-            bool a13 = value.Value==82;
-            bool a14 = value.Value==83;
-            bool a15 = value.Value==85;
-            bool a16 = value.Value==86;
-            bool a17 = value.Value==87;
+            bool a0 = value.Value == 15;
+            bool a1 = value.Value == 17;
+            bool a2 = value.Value == 46;
+            bool a3 = value.Value == 47;
+            bool a4 = value.Value == 53;
+            bool a5 = value.Value == 54;
+            bool a6 = value.Value == 58;
+            bool a7 = value.Value == 61;
+            bool a8 = value.Value == 62;
+            bool a9 = value.Value == 65;
+            bool a10 = value.Value == 66;
+            bool a11 = value.Value == 67;
+            bool a12 = value.Value == 81;
+            bool a13 = value.Value == 82;
+            bool a14 = value.Value == 83;
+            bool a15 = value.Value == 85;
+            bool a16 = value.Value == 86;
+            bool a17 = value.Value == 87;
             if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15 || a16 || a17)
-                value.AddError( "Код операции не может быть использован для РАО");
-return false;
+                value.AddError("Код операции не может быть использован для РАО");
+            return false;
         }
     }
 }

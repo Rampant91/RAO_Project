@@ -154,7 +154,8 @@ namespace Models
         //OwnerNote property
 
         //PassportNumber property
-        [Attributes.Form_Property("Номер паспорта")]public int? PassportNumberId { get; set; }
+        public int? PassportNumberId { get; set; }
+        [Attributes.Form_Property("Номер паспорта")]
         public virtual RamAccess<string> PassportNumber
         {
             get
@@ -273,7 +274,8 @@ return false;
         //PassportNumberRecoded property
 
         //Type property
-        [Attributes.Form_Property("Тип")]public int? TypeId { get; set; }
+        public int? TypeId { get; set; }
+        [Attributes.Form_Property("Тип")]
         public virtual RamAccess<string> Type
         {
             get
@@ -338,7 +340,8 @@ return false;
         //TypeRecoded property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -388,7 +391,8 @@ return true;
         //Radionuclids property
 
         //FactoryNumber property
-        [Attributes.Form_Property("Заводской номер")]public int? FactoryNumberId { get; set; }
+        public int? FactoryNumberId { get; set; }
+        [Attributes.Form_Property("Заводской номер")]
         public virtual RamAccess<string> FactoryNumber
         {
             get
@@ -460,7 +464,8 @@ return false;
         //FactoryNumberRecoded property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public int? ActivityId { get; set; }
+        [Attributes.Form_Property("Активность, Бк")]
         public virtual RamAccess<string> Activity
         {
             get
@@ -557,7 +562,8 @@ return false;
         //ActivityNote property
 
         //CreationDate property
-        [Attributes.Form_Property("Дата изготовления")]public int? CreationDateId { get; set; }
+        public int? CreationDateId { get; set; }
+        [Attributes.Form_Property("Дата изготовления")]
         public virtual RamAccess<string> CreationDate
         {
             get
@@ -651,7 +657,8 @@ return false;
         //CreationDateNote property
 
         //CreatorOKPO property
-        [Attributes.Form_Property("ОКПО изготовителя")]public int? CreatorOKPOId { get; set; }
+        public int? CreatorOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО изготовителя")]
         public virtual RamAccess<string> CreatorOKPO
         {
             get
@@ -786,7 +793,8 @@ return true;
         //AggregateState property
 
         //PropertyCode property
-        [Attributes.Form_Property("Код собственности")]public int? PropertyCodeId { get; set; }
+        public int? PropertyCodeId { get; set; }
+        [Attributes.Form_Property("Код собственности")]
         public virtual RamAccess<byte?> PropertyCode
         {
             get
@@ -832,7 +840,8 @@ return true;
         //PropertyCode property
 
         //Owner property
-        [Attributes.Form_Property("Владелец")]public int? OwnerId { get; set; }
+        public int? OwnerId { get; set; }
+        [Attributes.Form_Property("Владелец")]
         public virtual RamAccess<string> Owner
         {
             get
@@ -889,7 +898,8 @@ return true;
         //Owner property
 
         //ProviderOrRecieverOKPO property
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]public int? ProviderOrRecieverOKPOId { get; set; }
+        public int? ProviderOrRecieverOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО поставщика/получателя")]
         public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -1286,7 +1296,8 @@ return true;
         //PackTypeNote property
 
         //PackNumber property
-        [Attributes.Form_Property("Номер упаковки")]public int? PackNumberId { get; set; }
+        public int? PackNumberId { get; set; }
+        [Attributes.Form_Property("Номер упаковки")]
         public virtual RamAccess<string> PackNumber
         {
             get

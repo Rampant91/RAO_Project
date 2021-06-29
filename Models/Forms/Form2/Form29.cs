@@ -43,7 +43,8 @@ namespace Models
         }
 
         //WasteSourceName property
-        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]public int? WasteSourceNameId { get; set; }
+        public int? WasteSourceNameId { get; set; }
+        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
         public virtual RamAccess<string> WasteSourceName
         {
             get
@@ -76,7 +77,8 @@ namespace Models
         //WasteSourceName property
 
         //RadionuclidName property
-        [Attributes.Form_Property("Радионуклид")]public int? RadionuclidNameId { get; set; }
+        public int? RadionuclidNameId { get; set; }
+        [Attributes.Form_Property("Радионуклид")]
         public virtual RamAccess<string> RadionuclidName
         {
             get
@@ -109,7 +111,8 @@ namespace Models
         //RadionuclidName property
 
         //AllowedActivity property
-        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]public int? AllowedActivityId { get; set; }
+        public int? AllowedActivityId { get; set; }
+        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
         public virtual RamAccess<string> AllowedActivity
         {
             get
@@ -202,7 +205,8 @@ namespace Models
         //AllowedActivityNote property
 
         //FactedActivity property
-        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]public int? FactedActivityId { get; set; }
+        public int? FactedActivityId { get; set; }
+        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
         public virtual RamAccess<string> FactedActivity
         {
             get

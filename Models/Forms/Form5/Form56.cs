@@ -20,7 +20,8 @@ namespace Models
         }
 
         //NameIOU property
-        [Attributes.Form_Property("Наименование ИОУ")]public int? NameIOUId { get; set; }
+        public int? NameIOUId { get; set; }
+        [Attributes.Form_Property("Наименование ИОУ")]
         public virtual RamAccess<string> NameIOU
         {
             get
@@ -53,7 +54,8 @@ namespace Models
         //NameIOU property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public int? QuantityId { get; set; }
+        [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int> Quantity
         {
             get
@@ -94,7 +96,8 @@ namespace Models
         //Quantity property
 
         //Mass Property
-        [Attributes.Form_Property("Масса, кг")]public int? MassId { get; set; }
+        public int? MassId { get; set; }
+        [Attributes.Form_Property("Масса, кг")]
         public virtual RamAccess<double> Mass
         {
             get

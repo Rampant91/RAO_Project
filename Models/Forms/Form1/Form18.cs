@@ -105,7 +105,8 @@ namespace Models
         }
 
         //IndividualNumberZHRO property
-        [Attributes.Form_Property("Индивидуальный номер ЖРО")]public int? IndividualNumberZHROId { get; set; }
+        public int? IndividualNumberZHROId { get; set; }
+        [Attributes.Form_Property("Индивидуальный номер ЖРО")]
         public virtual RamAccess<string> IndividualNumberZHRO
         {
             get
@@ -168,7 +169,8 @@ namespace Models
         //IndividualNumberZHROrecoded property
 
         //PassportNumber property
-        [Attributes.Form_Property("Номер паспорта")]public int? PassportNumberId { get; set; }
+        public int? PassportNumberId { get; set; }
+        [Attributes.Form_Property("Номер паспорта")]
         public virtual RamAccess<string> PassportNumber
         {
             get
@@ -282,7 +284,8 @@ return false;
         //PassportNumberRecoded property
 
         //Volume6 property
-        [Attributes.Form_Property("Объем, куб. м")]public int? Volume6Id { get; set; }
+        public int? Volume6Id { get; set; }
+        [Attributes.Form_Property("Объем, куб. м")]
         public virtual RamAccess<string> Volume6
         {
             get
@@ -327,7 +330,8 @@ return false;
         //Volume6 property
 
         //Mass7 Property
-        [Attributes.Form_Property("Масса, т")]public int? Mass7Id { get; set; }
+        public int? Mass7Id { get; set; }
+        [Attributes.Form_Property("Масса, т")]
         public virtual RamAccess<string> Mass7
         {
             get
@@ -372,7 +376,8 @@ return false;
         //Mass7 Property
 
         //SaltConcentration property
-        [Attributes.Form_Property("Солесодержание, г/л")]public int? SaltConcentrationId { get; set; }
+        public int? SaltConcentrationId { get; set; }
+        [Attributes.Form_Property("Солесодержание, г/л")]
         public virtual RamAccess<double?> SaltConcentration
         {
             get
@@ -411,7 +416,8 @@ return false;
         //SaltConcentration property
 
         //Radionuclids property
-        [Attributes.Form_Property("Наименования радионуклидов")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Наименования радионуклидов")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -448,7 +454,8 @@ return false;
         //Radionuclids property
 
         //SpecificActivity property
-        [Attributes.Form_Property("Удельная активность, Бк/г")]public int? SpecificActivityId { get; set; }
+        public int? SpecificActivityId { get; set; }
+        [Attributes.Form_Property("Удельная активность, Бк/г")]
         public virtual RamAccess<string> SpecificActivity
         {
             get
@@ -496,7 +503,8 @@ return false;
         //SpecificActivity property
 
         //ProviderOrRecieverOKPO property
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]public int? ProviderOrRecieverOKPOId { get; set; }
+        public int? ProviderOrRecieverOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО поставщика/получателя")]
         public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -577,7 +585,8 @@ return false;
         //ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
-        [Attributes.Form_Property("ОКПО перевозчика")]public int? TransporterOKPOId { get; set; }
+        public int? TransporterOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО перевозчика")]
         public virtual RamAccess<string> TransporterOKPO
         {
             get
@@ -664,7 +673,8 @@ return false;
         //TransporterOKPONote property
 
         //StoragePlaceName property
-        [Attributes.Form_Property("Наименование ПХ")]public int? StoragePlaceNameId { get; set; }
+        public int? StoragePlaceNameId { get; set; }
+        [Attributes.Form_Property("Наименование ПХ")]
         public virtual RamAccess<string> StoragePlaceName
         {
             get
@@ -735,7 +745,8 @@ return false;
         //StoragePlaceNameNote property
 
         //StoragePlaceCode property
-        [Attributes.Form_Property("Код ПХ")]public int? StoragePlaceCodeId { get; set; }
+        public int? StoragePlaceCodeId { get; set; }
+        [Attributes.Form_Property("Код ПХ")]
         public virtual RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -774,7 +785,8 @@ return false;
         //StoragePlaceCode property
 
         //CodeRAO property
-        [Attributes.Form_Property("Код РАО")]public int? CodeRAOId { get; set; }
+        public int? CodeRAOId { get; set; }
+        [Attributes.Form_Property("Код РАО")]
         public virtual RamAccess<string> CodeRAO
         {
             get
@@ -819,7 +831,8 @@ return false;
         //CodeRAO property
 
         //StatusRAO property
-        [Attributes.Form_Property("Статус РАО")]public int? StatusRAOId { get; set; }
+        public int? StatusRAOId { get; set; }
+        [Attributes.Form_Property("Статус РАО")]
         public virtual RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
@@ -879,7 +892,8 @@ return false;
         //StatusRAO property
 
         //Volume20 property
-        [Attributes.Form_Property("Объем, куб. м")]public int? Volume20Id { get; set; }
+        public int? Volume20Id { get; set; }
+        [Attributes.Form_Property("Объем, куб. м")]
         public virtual RamAccess<string> Volume20
         {
             get
@@ -928,7 +942,8 @@ return false;
         //Volume20 property
 
         //Mass21 Property
-        [Attributes.Form_Property("Масса, т")]public int? Mass21Id { get; set; }
+        public int? Mass21Id { get; set; }
+        [Attributes.Form_Property("Масса, т")]
         public virtual RamAccess<string> Mass21
         {
             get
@@ -978,7 +993,8 @@ return false;
         //Mass21 Property
 
         //TritiumActivity property
-        [Attributes.Form_Property("Активность трития, Бк")]public int? TritiumActivityId { get; set; }
+        public int? TritiumActivityId { get; set; }
+        [Attributes.Form_Property("Активность трития, Бк")]
         public virtual RamAccess<string> TritiumActivity
         {
             get
@@ -1032,7 +1048,8 @@ return false;
         //TritiumActivity property
 
         //BetaGammaActivity property
-        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]public int? BetaGammaActivityId { get; set; }
+        public int? BetaGammaActivityId { get; set; }
+        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
         public virtual RamAccess<string> BetaGammaActivity
         {
             get
@@ -1086,7 +1103,8 @@ return false;
         //BetaGammaActivity property
 
         //AlphaActivity property
-        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]public int? AlphaActivityId { get; set; }
+        public int? AlphaActivityId { get; set; }
+        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
         public virtual RamAccess<string> AlphaActivity
         {
             get
@@ -1140,7 +1158,8 @@ return false;
         //AlphaActivity property
 
         //TransuraniumActivity property
-        [Attributes.Form_Property("Активность трансурановых, Бк")]public int? TransuraniumActivityId { get; set; }
+        public int? TransuraniumActivityId { get; set; }
+        [Attributes.Form_Property("Активность трансурановых, Бк")]
         public virtual RamAccess<string> TransuraniumActivity
         {
             get
@@ -1194,7 +1213,8 @@ return false;
         //TransuraniumActivity property
 
         //RefineOrSortRAOCode property
-        [Attributes.Form_Property("Код переработки/сортировки РАО")]public int? RefineOrSortRAOCodeId { get; set; }
+        public int? RefineOrSortRAOCodeId { get; set; }
+        [Attributes.Form_Property("Код переработки/сортировки РАО")]
         public virtual RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
         {
             get
@@ -1250,7 +1270,8 @@ return false;
         //RefineOrSortRAOCode property
 
         //Subsidy property
-        [Attributes.Form_Property("Субсидия, %")]public int? SubsidyId { get; set; }
+        public int? SubsidyId { get; set; }
+        [Attributes.Form_Property("Субсидия, %")]
         public virtual RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
@@ -1296,7 +1317,8 @@ return false;
         //Subsidy property
 
         //FcpNumber property
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]public int? FcpNumberId { get; set; }
+        public int? FcpNumberId { get; set; }
+        [Attributes.Form_Property("Номер мероприятия ФЦП")]
         public virtual RamAccess<string> FcpNumber
         {
             get

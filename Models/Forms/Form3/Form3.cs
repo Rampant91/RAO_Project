@@ -11,7 +11,8 @@ namespace Models.Abstracts
         }
 
         //CorrectionNumber property
-        [Attributes.Form_Property("Номер корректировки")]public int? CorrectionNumberId { get; set; }
+        public int? CorrectionNumberId { get; set; }
+        [Attributes.Form_Property("Номер корректировки")]
         public virtual RamAccess<byte> CorrectionNumber
         {
             get
@@ -44,7 +45,8 @@ namespace Models.Abstracts
         //CorrectionNumber property
 
         //NotificationDate property
-        [Attributes.Form_Property("Дата уведомления")]public int? NotificationDateId { get; set; }
+        public int? NotificationDateId { get; set; }
+        [Attributes.Form_Property("Дата уведомления")]
         public virtual RamAccess<string> NotificationDate
         {
             get

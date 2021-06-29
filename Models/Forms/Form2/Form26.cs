@@ -53,7 +53,8 @@ namespace Models
         }
 
         //SourcesQuantity property
-        [Attributes.Form_Property("Количество источников, шт.")]public int? SourcesQuantityId { get; set; }
+        public int? SourcesQuantityId { get; set; }
+        [Attributes.Form_Property("Количество источников, шт.")]
         public virtual RamAccess<int> SourcesQuantity
         {
             get
@@ -86,7 +87,8 @@ namespace Models
         //SourcesQuantity property
 
         //ObservedSourceNumber property
-        [Attributes.Form_Property("Номер наблюдательной скважины")]public int? ObservedSourceNumberId { get; set; }
+        public int? ObservedSourceNumberId { get; set; }
+        [Attributes.Form_Property("Номер наблюдательной скважины")]
         public virtual RamAccess<string> ObservedSourceNumber
         {
             get
@@ -107,7 +109,8 @@ namespace Models
         //ObservedSourceNumber property
 
         //ControlledAreaName property
-        [Attributes.Form_Property("Наименование зоны контроля")]public int? ControlledAreaNameId { get; set; }
+        public int? ControlledAreaNameId { get; set; }
+        [Attributes.Form_Property("Наименование зоны контроля")]
         public virtual RamAccess<string> ControlledAreaName
         {
             get
@@ -145,7 +148,8 @@ namespace Models
         //ControlledAreaName property
 
         //SupposedWasteSource property
-        [Attributes.Form_Property("Предполагаемый источник поступления радиоактивных веществ")]public int? SupposedWasteSourceId { get; set; }
+        public int? SupposedWasteSourceId { get; set; }
+        [Attributes.Form_Property("Предполагаемый источник поступления радиоактивных веществ")]
         public virtual RamAccess<string> SupposedWasteSource
         {
             get
@@ -167,7 +171,8 @@ namespace Models
         //SupposedWasteSource property
 
         //DistanceToWasteSource property
-        [Attributes.Form_Property("Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м")]public int? DistanceToWasteSourceId { get; set; }
+        public int? DistanceToWasteSourceId { get; set; }
+        [Attributes.Form_Property("Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м")]
         public virtual RamAccess<string> DistanceToWasteSource
         {
             get
@@ -215,7 +220,8 @@ namespace Models
         //DistanceToWasteSource property
 
         //TestDepth property
-        [Attributes.Form_Property("Глубина отбора проб, м")]public int? TestDepthId { get; set; }
+        public int? TestDepthId { get; set; }
+        [Attributes.Form_Property("Глубина отбора проб, м")]
         public virtual RamAccess<string> TestDepth
         {
             get
@@ -302,7 +308,8 @@ namespace Models
         //TestDepthNote property
 
         //RadionuclidName property
-        [Attributes.Form_Property("Радионуклид")]public int? RadionuclidNameId { get; set; }
+        public int? RadionuclidNameId { get; set; }
+        [Attributes.Form_Property("Радионуклид")]
         public virtual RamAccess<string> RadionuclidName
         {
             get
@@ -342,7 +349,8 @@ namespace Models
         //RadionuclidName property
 
         //AverageYearConcentration property
-        [Attributes.Form_Property("Среднегодовое содержание радионуклида, Бк/кг")]public int? AverageYearConcentrationId { get; set; }
+        public int? AverageYearConcentrationId { get; set; }
+        [Attributes.Form_Property("Среднегодовое содержание радионуклида, Бк/кг")]
         public virtual RamAccess<string> AverageYearConcentration
         {
             get

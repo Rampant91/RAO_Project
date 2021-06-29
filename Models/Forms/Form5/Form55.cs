@@ -22,7 +22,8 @@ namespace Models
         }
 
         //Name property
-        [Attributes.Form_Property("Наименование")]public int? NameId { get; set; }
+        public int? NameId { get; set; }
+        [Attributes.Form_Property("Наименование")]
         public virtual RamAccess<string> Name
         {
             get
@@ -55,7 +56,8 @@ namespace Models
         //Name property
 
         //OperationCode property
-        [Attributes.Form_Property("Код")]public int? OperationCodeId { get; set; }
+        public int? OperationCodeId { get; set; }
+        [Attributes.Form_Property("Код")]
         public virtual RamAccess<short> OperationCode
         {
             get
@@ -76,7 +78,8 @@ namespace Models
         //OperationCode property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public int? QuantityId { get; set; }
+        [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int> Quantity
         {
             get
@@ -118,7 +121,8 @@ return false;
         //Quantity property
 
         //ProviderOrRecieverOKPO property
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]public int? ProviderOrRecieverOKPOId { get; set; }
+        public int? ProviderOrRecieverOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО поставщика/получателя")]
         public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -224,7 +228,8 @@ return false;
         //ProviderOrRecieverOKPONote property
 
         //Mass Property
-        [Attributes.Form_Property("Масса, кг")]public int? MassId { get; set; }
+        public int? MassId { get; set; }
+        [Attributes.Form_Property("Масса, кг")]
         public virtual RamAccess<double> Mass
         {
             get

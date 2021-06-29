@@ -20,7 +20,8 @@ namespace Models
         }
 
         //IdName property
-        [Attributes.Form_Property("Идентификатор")]public int? IdNameId { get; set; }
+        public int? IdNameId { get; set; }
+        [Attributes.Form_Property("Идентификатор")]
         public virtual RamAccess<string> IdName
         {
             get
@@ -49,7 +50,8 @@ namespace Models
         //IdName Property
 
         //Value property
-        [Attributes.Form_Property("Значение")]public int? ValueId { get; set; }
+        public int? ValueId { get; set; }
+        [Attributes.Form_Property("Значение")]
         public virtual RamAccess<string> Value
         {
             get

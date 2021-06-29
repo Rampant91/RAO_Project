@@ -22,7 +22,8 @@ namespace Models
         }
 
         //RecieverName property
-        [Attributes.Form_Property("Получатель")]public int? RecieverNameId { get; set; }
+        public int? RecieverNameId { get; set; }
+        [Attributes.Form_Property("Получатель")]
         public virtual RamAccess<string> RecieverName
         {
             get
@@ -53,7 +54,8 @@ namespace Models
         //RecieverName property
 
         //RecieverAddress property
-        [Attributes.Form_Property("Адрес получателя")]public int? RecieverAddressId { get; set; }
+        public int? RecieverAddressId { get; set; }
+        [Attributes.Form_Property("Адрес получателя")]
         public virtual RamAccess<string> RecieverAddress
         {
             get
@@ -84,7 +86,8 @@ namespace Models
         //RecieverAddress property
 
         //RecieverFactAddress property
-        [Attributes.Form_Property("Фактический адрес получателя")]public int? RecieverFactAddressId { get; set; }
+        public int? RecieverFactAddressId { get; set; }
+        [Attributes.Form_Property("Фактический адрес получателя")]
         public virtual RamAccess<string> RecieverFactAddress
         {
             get
@@ -114,7 +117,8 @@ namespace Models
         //RecieverFactAddress property
 
         //Licenseid property
-        [Attributes.Form_Property("Номер лицензии")]public int? LicenseidId { get; set; }
+        public int? LicenseidId { get; set; }
+        [Attributes.Form_Property("Номер лицензии")]
         public virtual RamAccess<string> Licenseid
         {
             get
@@ -144,7 +148,8 @@ namespace Models
         //Licenseid property
 
         //ValidThru property
-        [Attributes.Form_Property("Действует по")]public int? ValidThruId { get; set; }
+        public int? ValidThruId { get; set; }
+        [Attributes.Form_Property("Действует по")]
         public virtual RamAccess<string> ValidThru
         {
             get
@@ -174,7 +179,8 @@ namespace Models
         //ValidThru property
 
         //SuggestedSolutionDate property
-        [Attributes.Form_Property("")]public int? SuggestedSolutionDateId { get; set; }
+        public int? SuggestedSolutionDateId { get; set; }
+        [Attributes.Form_Property("")]
         public virtual RamAccess<string> SuggestedSolutionDate
         {
             get
@@ -204,7 +210,8 @@ namespace Models
         //SuggestedSolutionDate property
 
         //UserName property
-        [Attributes.Form_Property("Наименование пользователя")]public int? UserNameId { get; set; }
+        public int? UserNameId { get; set; }
+        [Attributes.Form_Property("Наименование пользователя")]
         public virtual RamAccess<string> UserName
         {
             get
@@ -234,7 +241,8 @@ namespace Models
         //UserName property
 
         //UserAddress property
-        [Attributes.Form_Property("Адрес")]public int? UserAddressId { get; set; }
+        public int? UserAddressId { get; set; }
+        [Attributes.Form_Property("Адрес")]
         public virtual RamAccess<string> UserAddress
         {
             get
@@ -264,7 +272,8 @@ namespace Models
         //UserAddress property
 
         //UserFactAddress property
-        [Attributes.Form_Property("Фактический адрес")]public int? UserFactAddressId { get; set; }
+        public int? UserFactAddressId { get; set; }
+        [Attributes.Form_Property("Фактический адрес")]
         public virtual RamAccess<string> UserFactAddress
         {
             get
@@ -294,7 +303,8 @@ namespace Models
         //UserFactAddress property
 
         //UserTelephone property
-        [Attributes.Form_Property("Телефон")]public int? UserTelephoneId { get; set; }
+        public int? UserTelephoneId { get; set; }
+        [Attributes.Form_Property("Телефон")]
         public virtual RamAccess<string> UserTelephone
         {
             get
@@ -325,7 +335,8 @@ namespace Models
         //UserTelephone property
 
         //UserFax property
-        [Attributes.Form_Property("Факс")]public int? UserFaxId { get; set; }
+        public int? UserFaxId { get; set; }
+        [Attributes.Form_Property("Факс")]
         public virtual RamAccess<string> UserFax
         {
             get
@@ -355,7 +366,8 @@ namespace Models
         //UserFax property
 
         //Email property
-        [Attributes.Form_Property("Электронная почта")]public int? EmailId { get; set; }
+        public int? EmailId { get; set; }
+        [Attributes.Form_Property("Электронная почта")]
         public virtual RamAccess<string> Email
         {
             get
@@ -385,7 +397,8 @@ namespace Models
         //Email property
 
         //ZriUsageScope property
-        [Attributes.Form_Property("Область применения ЗРИ")]public int? ZriUsageScopeId { get; set; }
+        public int? ZriUsageScopeId { get; set; }
+        [Attributes.Form_Property("Область применения ЗРИ")]
         public virtual RamAccess<string> ZriUsageScope
         {
             get
@@ -415,7 +428,8 @@ namespace Models
         //ZriUsageScope property
 
         //Contractid property
-        [Attributes.Form_Property("Номер контракта")]public int? ContractidId { get; set; }
+        public int? ContractidId { get; set; }
+        [Attributes.Form_Property("Номер контракта")]
         public virtual RamAccess<string> Contractid
         {
             get
@@ -445,7 +459,8 @@ namespace Models
         //Contractid property
 
         //ContractDate property
-        [Attributes.Form_Property("Дата контракта")]public int? ContractDateId { get; set; }
+        public int? ContractDateId { get; set; }
+        [Attributes.Form_Property("Дата контракта")]
         public virtual RamAccess<string> ContractDate
         {
             get
@@ -475,7 +490,8 @@ namespace Models
         //ContractDate property
 
         //CountryCreator property
-        [Attributes.Form_Property("Страна-изготовитель")]public int? CountryCreatorId { get; set; }
+        public int? CountryCreatorId { get; set; }
+        [Attributes.Form_Property("Страна-изготовитель")]
         public virtual RamAccess<string> CountryCreator
         {
             get

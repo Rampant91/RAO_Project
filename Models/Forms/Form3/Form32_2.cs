@@ -20,7 +20,8 @@ namespace Models
         }
 
         //PackName property
-        [Attributes.Form_Property("Наименование упаковки")]public int? PackNameid { get; set; }
+        public int? PackNameid { get; set; }
+        [Attributes.Form_Property("Наименование упаковки")]
         public virtual RamAccess<string> PackName
         {
             get
@@ -61,7 +62,8 @@ namespace Models
         //PackName property
 
         //PackType property
-        [Attributes.Form_Property("Тип упаковки")]public int? PackTypeid { get; set; }
+        public int? PackTypeid { get; set; }
+        [Attributes.Form_Property("Тип упаковки")]
         public virtual RamAccess<string> PackType
         {
             get
@@ -135,7 +137,8 @@ namespace Models
         //PackTypeRecoded property
 
         //id property
-        [Attributes.Form_Property("Идентификационный номер")]public int? idId { get; set; }
+        public int? idId { get; set; }
+        [Attributes.Form_Property("Идентификационный номер")]
         public virtual RamAccess<string> id
         {
             get
@@ -164,7 +167,8 @@ namespace Models
         //id property
 
         //CreationYear property
-        [Attributes.Form_Property("Год изготовления")]public int? CreationYearId { get; set; }
+        public int? CreationYearId { get; set; }
+        [Attributes.Form_Property("Год изготовления")]
         public virtual RamAccess<int> CreationYear
         {
             get
@@ -193,7 +197,8 @@ namespace Models
         //CreationYear property
 
         //DepletedUraniumMass property
-        [Attributes.Form_Property("Масса обедненного урана")]public int? DepletedUraniumMassId { get; set; }
+        public int? DepletedUraniumMassId { get; set; }
+        [Attributes.Form_Property("Масса обедненного урана")]
         public virtual RamAccess<double> DepletedUraniumMass
         {
             get

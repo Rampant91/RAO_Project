@@ -22,7 +22,8 @@ namespace Models
         }
 
         //UniqueAgreementid property
-        [Attributes.Form_Property("Уникльный номер соглашения")]public int? UniqueAgreementidId { get; set; }
+        public int? UniqueAgreementidId { get; set; }
+        [Attributes.Form_Property("Уникльный номер соглашения")]
         public virtual RamAccess<string> UniqueAgreementid
         {
             get
@@ -50,7 +51,8 @@ namespace Models
         //UniqueAgreementid property
 
         //SupplyDate property
-        [Attributes.Form_Property("Дата поступления")]public int? SupplyDateId { get; set; }
+        public int? SupplyDateId { get; set; }
+        [Attributes.Form_Property("Дата поступления")]
         public virtual RamAccess<string> SupplyDate
         {
             get
@@ -78,7 +80,8 @@ namespace Models
         //SupplyDate property
 
         //RecieverName property
-        [Attributes.Form_Property("Наименование получателя")]public int? RecieverNameId { get; set; }
+        public int? RecieverNameId { get; set; }
+        [Attributes.Form_Property("Наименование получателя")]
         public virtual RamAccess<string> RecieverName
         {
             get
@@ -106,7 +109,8 @@ namespace Models
         //RecieverName property
 
         //FieldsOfWorking property
-        [Attributes.Form_Property("Вид деятельности")]public int? FieldsOfWorkingId { get; set; }
+        public int? FieldsOfWorkingId { get; set; }
+        [Attributes.Form_Property("Вид деятельности")]
         public virtual RamAccess<byte> FieldsOfWorking
         {
             get
@@ -134,7 +138,8 @@ namespace Models
         //FieldsOfWorking property
 
         //LicenseidRv property
-        [Attributes.Form_Property("Номер лицензии на обращение с РВ")]public int? LicenseidRvId { get; set; }
+        public int? LicenseidRvId { get; set; }
+        [Attributes.Form_Property("Номер лицензии на обращение с РВ")]
         public virtual RamAccess<string> LicenseidRv
         {
             get
@@ -162,7 +167,8 @@ namespace Models
         //LicenseidRv property
 
         //ValidThruRv property
-        [Attributes.Form_Property("Лицензия истекает(РВ)")]public int? ValidThruRvId { get; set; }
+        public int? ValidThruRvId { get; set; }
+        [Attributes.Form_Property("Лицензия истекает(РВ)")]
         public virtual RamAccess<string> ValidThruRv
         {
             get
@@ -190,7 +196,8 @@ namespace Models
         //ValidThruRv property
 
         //LicenseidRao property
-        [Attributes.Form_Property("Номер лицензии на обращение с РАО")]public int? LicenseidRaoId { get; set; }
+        public int? LicenseidRaoId { get; set; }
+        [Attributes.Form_Property("Номер лицензии на обращение с РАО")]
         public virtual RamAccess<string> LicenseidRao
         {
             get
@@ -218,7 +225,8 @@ namespace Models
         //LicenseidRao property
 
         //ValidThruRao property
-        [Attributes.Form_Property("Лицензия истекает(РАО)")]public int? ValidThruRaoId { get; set; }
+        public int? ValidThruRaoId { get; set; }
+        [Attributes.Form_Property("Лицензия истекает(РАО)")]
         public virtual RamAccess<string> ValidThruRao
         {
             get
@@ -246,7 +254,8 @@ namespace Models
         //ValidThruRao property
 
         //SupplyAddress property
-        [Attributes.Form_Property("Адрес поставки")]public int? SupplyAddressId { get; set; }
+        public int? SupplyAddressId { get; set; }
+        [Attributes.Form_Property("Адрес поставки")]
         public virtual RamAccess<string> SupplyAddress
         {
             get
@@ -274,7 +283,8 @@ namespace Models
         //SupplyAddress property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -323,7 +333,8 @@ namespace Models
         //Radionuclids property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public int? QuantityId { get; set; }
+        [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int> Quantity
         {
             get
@@ -362,7 +373,8 @@ namespace Models
         //Quantity property
 
         //SummaryActivity property
-        [Attributes.Form_Property("Суммарная активность, Бк")]public int? SummaryActivityId { get; set; }
+        public int? SummaryActivityId { get; set; }
+        [Attributes.Form_Property("Суммарная активность, Бк")]
         public virtual RamAccess<string> SummaryActivity
         {
             get

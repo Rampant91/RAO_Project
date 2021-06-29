@@ -21,7 +21,8 @@ namespace Models
         }
 
         //NumberInOrder property
-        [Attributes.Form_Property("№ п/п")]public int? NumberInOrderId { get; set; }
+        public int? NumberInOrderId { get; set; }
+        [Attributes.Form_Property("№ п/п")]
         public virtual RamAccess<int> NumberInOrder
         {
             get
@@ -54,7 +55,8 @@ namespace Models
         //NumberInOrder property
 
         //RegNo property
-        [Attributes.Form_Property("Регистрационный номер")]public int? RegNoId { get; set; }
+        public int? RegNoId { get; set; }
+        [Attributes.Form_Property("Регистрационный номер")]
         public virtual RamAccess<string> RegNo
         {
             get
@@ -83,7 +85,8 @@ namespace Models
         //RegNo property
 
         //Okpo property
-        [Attributes.Form_Property("ОКПО")]public int? OkpoId { get; set; }
+        public int? OkpoId { get; set; }
+        [Attributes.Form_Property("ОКПО")]
         public virtual RamAccess<string> Okpo
         {
             get
@@ -126,7 +129,8 @@ namespace Models
         //Okpo property
 
         //OrgName property
-        [Attributes.Form_Property("Наименование организации")]public int? OrgNameId { get; set; }
+        public int? OrgNameId { get; set; }
+        [Attributes.Form_Property("Наименование организации")]
         public virtual RamAccess<string> OrgName
         {
             get
@@ -155,7 +159,8 @@ namespace Models
         //OrgName property
 
         //LicenseInfo property
-        [Attributes.Form_Property("Сведения о лицензии")]public int? LicenseInfoId { get; set; }
+        public int? LicenseInfoId { get; set; }
+        [Attributes.Form_Property("Сведения о лицензии")]
         public virtual RamAccess<string> LicenseInfo
         {
             get
@@ -184,7 +189,8 @@ namespace Models
         //LicenseInfo property
 
         //QuantityOfFormsInv property
-        [Attributes.Form_Property("Количество отчетных форм по инвентаризации, шт.")]public int? QuantityOfFormsInvId { get; set; }
+        public int? QuantityOfFormsInvId { get; set; }
+        [Attributes.Form_Property("Количество отчетных форм по инвентаризации, шт.")]
         public virtual RamAccess<int> QuantityOfFormsInv
         {
             get
@@ -225,7 +231,8 @@ return false;
         //QuantityOfFormsInv property
 
         //QuantityOfFormsOper property
-        [Attributes.Form_Property("Количество форм оперативных отчетов, шт.")]public int? QuantityOfFormsOperId { get; set; }
+        public int? QuantityOfFormsOperId { get; set; }
+        [Attributes.Form_Property("Количество форм оперативных отчетов, шт.")]
         public virtual RamAccess<int> QuantityOfFormsOper
         {
             get
@@ -265,7 +272,8 @@ return false;
         //QuantityOfFormsOper property
 
         //QuantityOfFormsYear property
-        [Attributes.Form_Property("Количество форм годовых отчетов, шт.")]public int? QuantityOfFormsYearId { get; set; }
+        public int? QuantityOfFormsYearId { get; set; }
+        [Attributes.Form_Property("Количество форм годовых отчетов, шт.")]
         public virtual RamAccess<int> QuantityOfFormsYear
         {
             get
@@ -305,7 +313,8 @@ return false;
         //QuantityOfFormsYear property
 
         //Notes property
-        [Attributes.Form_Property("Примечания")]public int? NotesId { get; set; }
+        public int? NotesId { get; set; }
+        [Attributes.Form_Property("Примечания")]
         public virtual RamAccess<string> Notes
         {
             get

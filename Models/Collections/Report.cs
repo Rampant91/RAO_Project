@@ -953,7 +953,8 @@ namespace Collections
             return true;
         }
 
-        [Form_Property("Форма")]public int? FormNumId { get; set; }
+        public int? FormNumId { get; set; }
+        [Form_Property("Форма")]
         public virtual RamAccess<string> FormNum
         {
             get
@@ -1011,7 +1012,8 @@ namespace Collections
         }
 
         //IsCorrection 
-        [Form_Property("Корректирующий отчет")]public int? IsCorrectionId { get; set; }
+        public int? IsCorrectionId { get; set; }
+        [Form_Property("Корректирующий отчет")]
         public virtual RamAccess<bool> IsCorrection
         {
             get
@@ -1031,7 +1033,8 @@ namespace Collections
         //IsCorrection
 
         //CorrectionNumber property
-        [Form_Property("Номер корректировки")]public int? CorrectionNumberId { get; set; }
+        public int? CorrectionNumberId { get; set; }
+        [Form_Property("Номер корректировки")]
         public virtual RamAccess<byte> CorrectionNumber
         {
             get
@@ -1051,7 +1054,8 @@ namespace Collections
         //CorrectionNumber property
 
         //NumberInOrder property
-        [Form_Property("Номер")]public int? NumberInOrderId { get; set; }
+        public int? NumberInOrderId { get; set; }
+        [Form_Property("Номер")]
         public virtual RamAccess<string> NumberInOrder
         {
             get
@@ -1071,7 +1075,8 @@ namespace Collections
         //NumberInOrder property
 
         //Comments property
-        [Form_Property("Комментарий")]public int? CommentsId { get; set; }
+        public int? CommentsId { get; set; }
+        [Form_Property("Комментарий")]
         public virtual RamAccess<string> Comments
         {
             get
@@ -1091,7 +1096,8 @@ namespace Collections
         //Comments property
 
         //Notes property
-        [Form_Property("Примечания")]public int? NotesId { get; set; }
+        public int? NotesId { get; set; }
+        [Form_Property("Примечания")]
         public virtual ObservableCollectionWithItemPropertyChanged<Models.Note> Notes
         {
             get
@@ -1111,7 +1117,8 @@ namespace Collections
         //Notes property
 
         //StartPeriod
-        [Form_Property("Начало")]public int? StartPeriodId { get; set; }
+        public int? StartPeriodId { get; set; }
+        [Form_Property("Начало")]
         public virtual RamAccess<string> StartPeriod
         {
             get
@@ -1131,7 +1138,8 @@ namespace Collections
         //StartPeriod
 
         //EndPeriod
-        [Form_Property("Конец")]public int? EndPeriodId { get; set; }
+        public int? EndPeriodId { get; set; }
+        [Form_Property("Конец")]
         public virtual RamAccess<string> EndPeriod
         {
             get
@@ -1151,7 +1159,8 @@ namespace Collections
         //EndPeriod
 
         //ExportDate
-        [Form_Property("Дата выгрузки")]public int? ExportDateId { get; set; }
+        public int? ExportDateId { get; set; }
+        [Form_Property("Дата выгрузки")]
         public virtual RamAccess<string> ExportDate
         {
             get

@@ -23,7 +23,8 @@ namespace Models
         }
 
         //PassportNumber property
-        [Attributes.Form_Property("Номер паспорта")]public int? PassportNumberId { get; set; }
+        public int? PassportNumberId { get; set; }
+        [Attributes.Form_Property("Номер паспорта")]
         public virtual RamAccess<string> PassportNumber
         {
             get
@@ -103,7 +104,8 @@ namespace Models
         //PassportNumberNote property
 
         //CreatorOKPO property
-        [Attributes.Form_Property("ОКПО изготовителя")]public int? CreatorOKPOId { get; set; }
+        public int? CreatorOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО изготовителя")]
         public virtual RamAccess<string> CreatorOKPO
         {
             get
@@ -178,7 +180,8 @@ protected List<string> OKSM = new List<string>
             };
 
 //Type property
-[Attributes.Form_Property("Тип")]public int? TypeId { get; set; }
+        public int? TypeId { get; set; }
+        [Attributes.Form_Property("Тип")]
         public virtual RamAccess<string> Type
         {
             get
@@ -243,7 +246,8 @@ protected List<string> OKSM = new List<string>
         //TypeRecoded property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -292,7 +296,8 @@ protected List<string> OKSM = new List<string>
         //Radionuclids property
 
         //FactoryNumber property
-        [Attributes.Form_Property("Заводской номер")]public int? FactoryNumberId { get; set; }
+        public int? FactoryNumberId { get; set; }
+        [Attributes.Form_Property("Заводской номер")]
         public virtual RamAccess<string> FactoryNumber
         {
             get
@@ -363,7 +368,8 @@ protected List<string> OKSM = new List<string>
         //FactoryNumberRecoded property
 
         //ActivityOnCreation property
-        [Attributes.Form_Property("Активность на дату создания, Бк")]public int? ActivityOnCreationId { get; set; }
+        public int? ActivityOnCreationId { get; set; }
+        [Attributes.Form_Property("Активность на дату создания, Бк")]
         public virtual RamAccess<string> ActivityOnCreation
         {
             get
@@ -411,7 +417,8 @@ protected List<string> OKSM = new List<string>
         //ActivityOnCreation property
 
         //CreationDate property
-        [Attributes.Form_Property("Дата изготовления")]public int? CreationDateId { get; set; }
+        public int? CreationDateId { get; set; }
+        [Attributes.Form_Property("Дата изготовления")]
         public virtual RamAccess<string> CreationDate
         {
             get
@@ -477,7 +484,8 @@ protected List<string> OKSM = new List<string>
         //CreatorOKPONote property
 
         //Kategory property
-        [Attributes.Form_Property("Категория")]public int? KategoryId { get; set; }
+        public int? KategoryId { get; set; }
+        [Attributes.Form_Property("Категория")]
         public virtual RamAccess<short> Kategory
         {
             get
@@ -498,7 +506,8 @@ protected List<string> OKSM = new List<string>
         //Kategory property
 
         //NuclearMaterialPresence property
-        [Attributes.Form_Property("Содержание ядерных материалов")]public int? NuclearMaterialPresenceId { get; set; }
+        public int? NuclearMaterialPresenceId { get; set; }
+        [Attributes.Form_Property("Содержание ядерных материалов")]
         public virtual RamAccess<double> NuclearMaterialPresence
         {
             get
@@ -526,7 +535,8 @@ protected List<string> OKSM = new List<string>
         //NuclearMaterialPresence property
 
         //Certificateid property
-        [Attributes.Form_Property("Номер сертификата")]public int? CertificateidId { get; set; }
+        public int? CertificateidId { get; set; }
+        [Attributes.Form_Property("Номер сертификата")]
         public virtual RamAccess<string> Certificateid
         {
             get
@@ -554,7 +564,8 @@ protected List<string> OKSM = new List<string>
         //Certificateid property
 
         //ValidThru property
-        [Attributes.Form_Property("Действует по")]public int? ValidThruId { get; set; }
+        public int? ValidThruId { get; set; }
+        [Attributes.Form_Property("Действует по")]
         public virtual RamAccess<string> ValidThru
         {
             get

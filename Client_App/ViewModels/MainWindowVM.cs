@@ -138,7 +138,7 @@ namespace Client_App.ViewModels
                     if (obj!=null)
                     {
                         var rep = (Report)obj;
-                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.//FormNum.Value, DBPath, rep,dbm);
+                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum.Value, DBPath, rep,dbm);
                         await frm.ShowDialog(desktop.MainWindow);
                     }
                 }

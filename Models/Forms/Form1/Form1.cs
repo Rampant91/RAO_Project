@@ -55,7 +55,8 @@ namespace Models.Abstracts
         }
 
         //NumberInOrder property
-        [Attributes.Form_Property("№ п/п")]public int? NumberInOrderId { get; set; }
+        public int? NumberInOrderId { get; set; }
+        [Attributes.Form_Property("№ п/п")]
         public virtual RamAccess<int> NumberInOrder
         {
             get
@@ -96,7 +97,8 @@ namespace Models.Abstracts
         //CorrectionNumber property
 
         //OperationCode property
-        [Attributes.Form_Property("Код")]public int? OperationCodeId { get; set; }
+        public int? OperationCodeId { get; set; }
+        [Attributes.Form_Property("Код")]
         public virtual RamAccess<short?> OperationCode
         {
             get
@@ -114,7 +116,8 @@ namespace Models.Abstracts
         //OprationCode property
         
         //OperationDate property
-        [Attributes.Form_Property("Дата операции")]public int? OperationDateId { get; set; }
+        public int? OperationDateId { get; set; }
+        [Attributes.Form_Property("Дата операции")]
         public virtual RamAccess<string> OperationDate
         {
             get
@@ -153,7 +156,8 @@ return false;
         //OperationDate property
 
         //DocumentVid property
-        [Attributes.Form_Property("Вид документа")]public int? DocumentVidId { get; set; }
+        public int? DocumentVidId { get; set; }
+        [Attributes.Form_Property("Вид документа")]
         public virtual RamAccess<byte?> DocumentVid
         {
             get
@@ -206,7 +210,8 @@ return false;
         //DocumentVid property
 
         //DocumentNumber property
-        [Attributes.Form_Property("Номер документа")]public int? DocumentNumberId { get; set; }
+        public int? DocumentNumberId { get; set; }
+        [Attributes.Form_Property("Номер документа")]
         public virtual RamAccess<string> DocumentNumber
         {
             get
@@ -244,7 +249,8 @@ return false;
         //DocumentNumberRecoded property
 
         //DocumentDate property
-        [Attributes.Form_Property("Дата документа")]public int? DocumentDateId { get; set; }
+        public int? DocumentDateId { get; set; }
+        [Attributes.Form_Property("Дата документа")]
         public virtual RamAccess<string> DocumentDate
         {
             get
