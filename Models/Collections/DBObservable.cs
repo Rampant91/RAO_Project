@@ -1,30 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Collections;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using DBRealization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Collections
 {
     public class DBObservable
     {
-        protected DBRealization.DBModel dbm { get; set; }
-        public DBObservable()
-        {
+        [NotMapped] private bool _isChanged = true;
 
-        }
+        private ObservableCollectionWithItemPropertyChanged<Reports> _reports_Collection;
 
-        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-        {
-            OnPropertyChanged(nameof(Reports_Collection));
-        }
+        protected DBModel dbm { get; set; }
 
         public int Id { get; set; }
 
-        [NotMapped]
-        private bool _isChanged = true;
         public bool IsChanged
         {
             get => _isChanged;
@@ -38,12 +30,11 @@ namespace Collections
             }
         }
 
-        private ObservableCollectionWithItemPropertyChanged<Reports> _reports_Collection;
-
         public int? Reports_CollectionId { get; set; }
+
         public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
         {
-            get 
+            get
             {
                 dbm.Entry(this).Collection("Reports_Collection").Load();
                 return _reports_Collection;
@@ -54,6 +45,12 @@ namespace Collections
                 OnPropertyChanged(nameof(Reports_Collection));
             }
         }
+
+        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Reports_Collection));
+        }
+
         private bool Reports_Collection_Validation(DbSet<Reports> value)
         {
             return true;
@@ -65,12 +62,10 @@ namespace Collections
             if (prop != nameof(IsChanged))
             {
                 IsChanged = true;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
-                }
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

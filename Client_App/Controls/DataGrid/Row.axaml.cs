@@ -5,16 +5,12 @@ namespace Client_App.Controls.DataGrid
 {
     public class Row : StackPanel
     {
-        private int _SRow = -1;
-        public int SRow
-        {
-            get => _SRow;
-            set => _SRow = value;
-        }
-        public Row() : base()
+        public Row()
         {
             Initialization();
         }
+
+        public int SRow { get; set; } = -1;
 
         private void Initialization()
         {
