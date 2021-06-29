@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 
 namespace Client_App.Controls.Support.RenderDataGridRow
 {
@@ -24,31 +19,37 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return null;
         }
 
-        static Control Get0()
+        private static Control Get0()
         {
             return null;
         }
-        static Control Get1()
+
+        private static Control Get1()
         {
             return null;
         }
-        static Control Get1_1()
+
+        private static Control Get1_1()
         {
             return null;
         }
-        static Control Get2()
+
+        private static Control Get2()
         {
             return null;
         }
-        static Control Get2_1()
+
+        private static Control Get2_1()
         {
             return null;
         }
-        static Control Get2_2()
+
+        private static Control Get2_2()
         {
             return null;
         }
-        static Control Get2_3()
+
+        private static Control Get2_3()
         {
             return null;
         }

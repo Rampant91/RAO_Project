@@ -20,43 +20,43 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
             StoragePlaceName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
             StoragePlaceCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            DataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
             PackName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            DataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
             PackType.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
+            DataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
             CodeRAO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
+            DataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
             StatusRAO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(VolumeOutOfPack), VolumeOutOfPack_Validation, null);
+            DataAccess.Init<string>(nameof(VolumeOutOfPack), VolumeOutOfPack_Validation, null);
             VolumeOutOfPack.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassInPack), MassInPack_Validation, null);
+            DataAccess.Init<string>(nameof(MassInPack), MassInPack_Validation, null);
             MassInPack.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
+            DataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
             QuantityOZIII.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
+            DataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
             TritiumActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
+            DataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
             BetaGammaActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
+            DataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
             TransuraniumActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
+            DataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
             AlphaActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(VolumeInPack), VolumeInPack_Validation, null);
+            DataAccess.Init<string>(nameof(VolumeInPack), VolumeInPack_Validation, null);
             VolumeInPack.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassOutOfPack), MassOutOfPack_Validation, null);
+            DataAccess.Init<string>(nameof(MassOutOfPack), MassOutOfPack_Validation, null);
             MassOutOfPack.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MainRadionuclids), MainRadionuclids_Validation, null);
+            DataAccess.Init<string>(nameof(MainRadionuclids), MainRadionuclids_Validation, null);
             MainRadionuclids.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
+            DataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
             Subsidy.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<int?>(nameof(PackQuantity), PackQuantity_Validation, null);
+            DataAccess.Init<int?>(nameof(PackQuantity), PackQuantity_Validation, null);
             PackQuantity.PropertyChanged += InPropertyChanged;
         }
 
@@ -98,7 +98,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceName));
+                    return DataAccess.Get<string>(nameof(StoragePlaceName));
                 }
                 
                 {
@@ -110,7 +110,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(StoragePlaceName), value);
+                    DataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
@@ -142,7 +142,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceNameNote));
+                    return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
                 }
                 
                 {
@@ -154,7 +154,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(StoragePlaceNameNote), value);
+                    DataAccess.Set(nameof(StoragePlaceNameNote), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
@@ -175,7 +175,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceCode));
+                    return DataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
                 
                 {
@@ -187,7 +187,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(StoragePlaceCode), value);
+                    DataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
@@ -221,7 +221,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackName));//OK
+                    return DataAccess.Get<string>(nameof(PackName));//OK
                 }
                 
                 {
@@ -234,7 +234,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackName), value);
+                    DataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
@@ -270,7 +270,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackNameNote));//OK
+                    return DataAccess.Get<string>(nameof(PackNameNote));//OK
                 }
                 
                 {
@@ -282,7 +282,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackNameNote), value);
+                    DataAccess.Set(nameof(PackNameNote), value);
                 }
                 OnPropertyChanged(nameof(PackNameNote));
             }
@@ -303,7 +303,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackType));//OK
+                    return DataAccess.Get<string>(nameof(PackType));//OK
                 }
                 
                 {
@@ -316,7 +316,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackType), value);
+                    DataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -354,7 +354,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+                    return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
                 }
                 
                 {
@@ -366,7 +366,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackTypeRecoded), value);
+                    DataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
@@ -385,7 +385,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
+                    return DataAccess.Get<string>(nameof(PackTypeNote));//OK
                 }
                 
                 {
@@ -397,7 +397,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackTypeNote), value);
+                    DataAccess.Set(nameof(PackTypeNote), value);
                 }
                 OnPropertyChanged(nameof(PackTypeNote));
             }
@@ -418,7 +418,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<int?>(nameof(PackQuantity));
+                    return DataAccess.Get<int?>(nameof(PackQuantity));
                 }
                 
                 {
@@ -430,7 +430,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackQuantity), value);
+                    DataAccess.Set(nameof(PackQuantity), value);
                 }
                 OnPropertyChanged(nameof(PackQuantity));
             }
@@ -462,7 +462,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(CodeRAO));
+                    return DataAccess.Get<string>(nameof(CodeRAO));
                 }
                 
                 {
@@ -474,7 +474,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(CodeRAO), value);
+                    DataAccess.Set(nameof(CodeRAO), value);
                 }
                 OnPropertyChanged(nameof(CodeRAO));
             }
@@ -503,7 +503,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(StatusRAO));
+                    return DataAccess.Get<string>(nameof(StatusRAO));
                 }
                 
                 {
@@ -515,7 +515,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(StatusRAO), value);
+                    DataAccess.Set(nameof(StatusRAO), value);
                 }
                 OnPropertyChanged(nameof(StatusRAO));
             }
@@ -566,7 +566,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(VolumeInPack));
+                    return DataAccess.Get<string>(nameof(VolumeInPack));
                 }
                 
                 {
@@ -578,7 +578,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(VolumeInPack), value);
+                    DataAccess.Set(nameof(VolumeInPack), value);
                 }
                 OnPropertyChanged(nameof(VolumeInPack));
             }
@@ -627,7 +627,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassInPack));
+                    return DataAccess.Get<string>(nameof(MassInPack));
                 }
                 
                 {
@@ -639,7 +639,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(MassInPack), value);
+                    DataAccess.Set(nameof(MassInPack), value);
                 }
                 OnPropertyChanged(nameof(MassInPack));
             }
@@ -691,7 +691,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(VolumeOutOfPack));
+                    return DataAccess.Get<string>(nameof(VolumeOutOfPack));
                 }
                 
                 {
@@ -703,7 +703,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(VolumeOutOfPack), value);
+                    DataAccess.Set(nameof(VolumeOutOfPack), value);
                 }
                 OnPropertyChanged(nameof(VolumeOutOfPack));
             }
@@ -753,7 +753,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassOutOfPack));
+                    return DataAccess.Get<string>(nameof(MassOutOfPack));
                 }
                 
                 {
@@ -765,7 +765,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(MassOutOfPack), value);
+                    DataAccess.Set(nameof(MassOutOfPack), value);
                 }
                 OnPropertyChanged(nameof(MassOutOfPack));
             }
@@ -819,7 +819,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<int?>(nameof(QuantityOZIII));//OK
+                    return DataAccess.Get<int?>(nameof(QuantityOZIII));//OK
                 }
                 
                 {
@@ -832,7 +832,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityOZIII), value);
+                    DataAccess.Set(nameof(QuantityOZIII), value);
                 }
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
@@ -859,7 +859,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(TritiumActivity));
+                    return DataAccess.Get<string>(nameof(TritiumActivity));
                 }
                 
                 {
@@ -871,7 +871,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(TritiumActivity), value);
+                    DataAccess.Set(nameof(TritiumActivity), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivity));
             }
@@ -921,7 +921,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(BetaGammaActivity));
+                    return DataAccess.Get<string>(nameof(BetaGammaActivity));
                 }
                 
                 {
@@ -933,7 +933,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivity), value);
+                    DataAccess.Set(nameof(BetaGammaActivity), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
@@ -983,7 +983,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(AlphaActivity));
+                    return DataAccess.Get<string>(nameof(AlphaActivity));
                 }
                 
                 {
@@ -995,7 +995,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(AlphaActivity), value);
+                    DataAccess.Set(nameof(AlphaActivity), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivity));
             }
@@ -1045,7 +1045,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(TransuraniumActivity));
+                    return DataAccess.Get<string>(nameof(TransuraniumActivity));
                 }
                 
                 {
@@ -1057,7 +1057,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(TransuraniumActivity), value);
+                    DataAccess.Set(nameof(TransuraniumActivity), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivity));
             }
@@ -1107,7 +1107,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MainRadionuclids));
+                    return DataAccess.Get<string>(nameof(MainRadionuclids));
                 }
                 
                 {
@@ -1119,7 +1119,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(MainRadionuclids), value);
+                    DataAccess.Set(nameof(MainRadionuclids), value);
                 }
                 OnPropertyChanged(nameof(MainRadionuclids));
             }
@@ -1148,7 +1148,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Subsidy));
+                    return DataAccess.Get<string>(nameof(Subsidy));
                 }
                 
                 {
@@ -1160,7 +1160,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(Subsidy), value);
+                    DataAccess.Set(nameof(Subsidy), value);
                 }
                 OnPropertyChanged(nameof(Subsidy));
             }
@@ -1194,7 +1194,7 @@ return false;
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(FcpNumber));
+                    return DataAccess.Get<string>(nameof(FcpNumber));
                 }
                 
                 {
@@ -1204,7 +1204,7 @@ return false;
             set
             {
                 {
-                    _dataAccess.Set(nameof(FcpNumber), value);
+                    DataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }

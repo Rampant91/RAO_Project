@@ -1,33 +1,26 @@
-﻿using Models.DataAccess;
+﻿using Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.ComponentModel.DataAnnotations;
-using Avalonia.Data;
-using System.Text.RegularExpressions;
-using System.ComponentModel.DataAnnotations.Schema;
-using Models.Collections;
 
 namespace Models.DataAccess
 {
-    public class RamAccess<T> : INotifyDataErrorInfo,IChanged,IKey
+    public class RamAccess<T> : INotifyDataErrorInfo, IChanged, IKey
     {
         [NotMapped]
         public Func<RamAccess<T>, bool> Handler { get; set; }
 
-        [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
-        T _value;
-        public T Value 
+        public int? ValueId { get; set; }
+        private T _value;
+        public T Value
         {
-            get
-            {
-                return _value;
-            }
+            get => _value;
             set
             {
                 _value = value;
@@ -38,7 +31,7 @@ namespace Models.DataAccess
                 }
             }
         }
-        public RamAccess(Func<RamAccess<T>, bool> Handler,T Value)
+        public RamAccess(Func<RamAccess<T>, bool> Handler, T Value)
         {
             this.Handler = Handler;
             this.Value = Value;
@@ -54,14 +47,14 @@ namespace Models.DataAccess
         }
         public void AddError(string error)
         {
-            AddError("Value",error);
+            AddError("Value", error);
         }
 
         public override bool Equals(object obj)
         {
-            if(obj is RamAccess<T>)
+            if (obj is RamAccess<T>)
             {
-                dynamic val1 = this.Value;
+                dynamic val1 = Value;
                 dynamic val2 = (obj as RamAccess<T>).Value;
                 return val1 == val2;
             }
@@ -101,12 +94,12 @@ namespace Models.DataAccess
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
         public IEnumerable GetErrors(string propertyName)
         {
-            var tmp = _errorsByPropertyName.Count>0 ?
+            List<string> tmp = _errorsByPropertyName.Count > 0 ?
                 _errorsByPropertyName : null;
             if (tmp != null)
             {
                 List<Exception> lst = new List<Exception>();
-                foreach (var item in tmp)
+                foreach (string item in tmp)
                 {
                     lst.Add(new Exception(item));
                 }
@@ -123,7 +116,7 @@ namespace Models.DataAccess
         }
         protected void ClearErrors(string propertyName)
         {
-            if (_errorsByPropertyName.Count>0)
+            if (_errorsByPropertyName.Count > 0)
             {
                 _errorsByPropertyName.Clear();
                 OnErrorsChanged(propertyName);
@@ -140,13 +133,10 @@ namespace Models.DataAccess
         //Data Validation
 
         [NotMapped]
-        bool _isChanged = true;
+        private bool _isChanged = true;
         public bool IsChanged
         {
-            get
-            {
-                return _isChanged;
-            }
+            get => _isChanged;
             set
             {
                 if (_isChanged != value)
@@ -164,7 +154,9 @@ namespace Models.DataAccess
             {
                 IsChanged = true;
                 if (PropertyChanged != null)
+                {
                     PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                }
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

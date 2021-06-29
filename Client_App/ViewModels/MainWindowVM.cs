@@ -1,47 +1,23 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Collections;
+using Collections;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
 
 namespace Client_App.ViewModels
 {
     public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
-        string _DBPath = @"C:\Databases\local.raodb";
-        string DBPath
-        {
-            get
-            {
-                return _DBPath;
-            }
-            set
-            {
-                if (_DBPath != value)
-                {
-                    _DBPath = value;
-                    NotifyPropertyChanged("DBPath");
-                }
-            }
-        }
 
         private DBObservable _local_Reports = new DBObservable();
         public DBObservable Local_Reports
         {
-            get
-            {
-                return _local_Reports;
-            }
+            get => _local_Reports;
             set
             {
                 if (_local_Reports != value)
@@ -64,20 +40,26 @@ namespace Client_App.ViewModels
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        DBRealization.DBModel dbm { get; set; }
+
+        private DBRealization.DBModel dbm { get; set; }
         public MainWindowVM()
         {
             Local_Reports = new DBObservable();
-            dbm = new DBRealization.DBModel(_DBPath);
-            var t = dbm.Database.EnsureCreated();
+            dbm = DBRealization.StaticConfiguration.DBModel;
+            bool t = dbm.Database.EnsureCreated();
 
-            dbm.LoadAllTables();
-            Local_Reports.Reports_Collection = dbm.coll_reports;
-            if (dbm.coll_reports.Count() == 0)
+            dbm.LoadTables();
+            if(dbm.DBObservable_DbSet.Local.Count()==0)
+            {
+                dbm.DBObservable_DbSet.Add(new DBObservable());
+            }
+            dbm.SaveChanges();
+            Local_Reports = dbm.DBObservable_DbSet.Local.First();
+            if (dbm.ReportsCollection_DbSet.Count() == 0)
             {
                 Local_Reports.Reports_Collection.Add(new Reports());
             }
@@ -94,77 +76,72 @@ namespace Client_App.ViewModels
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
-            ChangeForm = ReactiveCommand.CreateFromTask< ObservableCollectionWithItemPropertyChanged <IChanged >>(_ChangeForm);
+            ChangeForm = ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IChanged>>(_ChangeForm);
             DeleteForm = ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IChanged>>(_DeleteForm);
 
             Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
 
         }
 
-        void _AddSort(string param)
+        private void _AddSort(string param)
         {
-            var type = param.Split('/')[0];
-            var path = param.Split('/')[1];
+            string? type = param.Split('/')[0];
+            string? path = param.Split('/')[1];
 
             //FormModel_Local.Dictionary.Filters.SortPath = path;
         }
 
-        async Task _AddForm(string param)
+        private async Task _AddForm(string param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var rt = new Report();
-                //var obj= dbm.coll_reports
-                //if (dbm.coll_reports.Count() == 0)
-                //{
-                //    var tmp = new DBObservable();
-                //    dbm.coll_reports.Add(new DBObservable());
-                //    tmp.Reps.Add(new Reports());
-                //    dbm.SaveChanges();
-                //}
+                Report? rt = new Report();
                 Local_Reports.Reports_Collection.First().Report_Collection.Add(rt);
-                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param, DBPath, rt,dbm);
+                Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(param, rt);
                 await frm.ShowDialog<Models.Abstracts.Form>(desktop.MainWindow);
             }
         }
 
-        async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<IChanged> param)
+        private async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<IChanged> param)
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 if (param != null)
                 {
-                    var obj = param.First();
-                    if (obj!=null)
+                    IChanged? obj = param.First();
+                    if (obj != null)
                     {
-                        var rep = (Report)obj;
-                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum.Value, DBPath, rep,dbm);
+                        Report? rep = (Report)obj;
+                        Views.FormChangeOrCreate frm = new Views.FormChangeOrCreate(rep.FormNum.Value, rep);
                         await frm.ShowDialog(desktop.MainWindow);
                     }
                 }
             }
         }
-        async Task _DeleteForm(ObservableCollectionWithItemPropertyChanged<IChanged> param)
+
+        private async Task _DeleteForm(ObservableCollectionWithItemPropertyChanged<IChanged> param)
         {
             if (param != null)
             {
-                foreach (var item in param)
+                foreach (IChanged? item in param)
                 {
                     Local_Reports.Reports_Collection.First().Report_Collection.Remove((Report)item);
                 }
             }
         }
 
-        async Task _Excel_Export()
+        private async Task _Excel_Export()
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 SaveFileDialog dial = new SaveFileDialog();
-                var filter = new FileDialogFilter();
-                filter.Name = "Excel";
+                FileDialogFilter? filter = new FileDialogFilter
+                {
+                    Name = "Excel"
+                };
                 filter.Extensions.Add("*.xlsx");
                 dial.Filters.Add(filter);
-                var res = await dial.ShowAsync(desktop.MainWindow);
+                string? res = await dial.ShowAsync(desktop.MainWindow);
                 if (res.Count() != 0)
                 {
                     //Models.Saving.Excel exp = new Models.Saving.Excel();
@@ -173,7 +150,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
+        private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
         {
             NotifyPropertyChanged("Local_Reports");
         }

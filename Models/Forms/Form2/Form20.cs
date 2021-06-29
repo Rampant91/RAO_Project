@@ -1,7 +1,7 @@
 ﻿using Models.DataAccess;
 using System;
-using System.Text.RegularExpressions;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -23,41 +23,41 @@ namespace Models
 
         private void Init_base()
         {
-            _dataAccess.Init<string>(nameof(Okpo), Okpo_Validation, null);
+            DataAccess.Init<string>(nameof(Okpo), Okpo_Validation, null);
             Okpo.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Okved), Okved_Validation, null);
+            DataAccess.Init<string>(nameof(Okved), Okved_Validation, null);
             Okved.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Oktmo), Oktmo_Validation, null);
+            DataAccess.Init<string>(nameof(Oktmo), Oktmo_Validation, null);
             Oktmo.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Okogu), Okogu_Validation, null);
+            DataAccess.Init<string>(nameof(Okogu), Okogu_Validation, null);
             Oktmo.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Okopf), Okopf_Validation, null);
+            DataAccess.Init<string>(nameof(Okopf), Okopf_Validation, null);
             Okopf.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Inn), Inn_Validation, null);
+            DataAccess.Init<string>(nameof(Inn), Inn_Validation, null);
             Inn.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Kpp), Kpp_Validation, null);
+            DataAccess.Init<string>(nameof(Kpp), Kpp_Validation, null);
             Kpp.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(RegNo), RegNo_Validation, null);
+            DataAccess.Init<string>(nameof(RegNo), RegNo_Validation, null);
             RegNo.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(OrganUprav), OrganUprav_Validation, null);
+            DataAccess.Init<string>(nameof(OrganUprav), OrganUprav_Validation, null);
             OrganUprav.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(SubjectRF), SubjectRF_Validation, null);
+            DataAccess.Init<string>(nameof(SubjectRF), SubjectRF_Validation, null);
             SubjectRF.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(JurLico), JurLico_Validation, null);
+            DataAccess.Init<string>(nameof(JurLico), JurLico_Validation, null);
             OrganUprav.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ShortJurLico), ShortJurLico_Validation, null);
+            DataAccess.Init<string>(nameof(ShortJurLico), ShortJurLico_Validation, null);
             ShortJurLico.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(JurLicoAddress), JurLicoAddress_Validation, null);
+            DataAccess.Init<string>(nameof(JurLicoAddress), JurLicoAddress_Validation, null);
             JurLicoAddress.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(JurLicoFactAddress), JurLicoFactAddress_Validation, null);
+            DataAccess.Init<string>(nameof(JurLicoFactAddress), JurLicoFactAddress_Validation, null);
             JurLicoFactAddress.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(GradeFIO), GradeFIO_Validation, null);
+            DataAccess.Init<string>(nameof(GradeFIO), GradeFIO_Validation, null);
             GradeFIO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Telephone), Telephone_Validation, null);
+            DataAccess.Init<string>(nameof(Telephone), Telephone_Validation, null);
             Telephone.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Fax), Fax_Validation, null);
+            DataAccess.Init<string>(nameof(Fax), Fax_Validation, null);
             Fax.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Email), Email_Validation, null);
+            DataAccess.Init<string>(nameof(Email), Email_Validation, null);
             Email.PropertyChanged += InPropertyChanged;
         }
         protected void Validate_base()
@@ -95,21 +95,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(RegNo));
+                    return DataAccess.Get<string>(nameof(RegNo));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(RegNo), value);
+                    DataAccess.Set(nameof(RegNo), value);
                 }
                 OnPropertyChanged(nameof(RegNo));
             }
@@ -127,21 +127,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(OrganUprav));
+                    return DataAccess.Get<string>(nameof(OrganUprav));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(OrganUprav), value);
+                    DataAccess.Set(nameof(OrganUprav), value);
                 }
                 OnPropertyChanged(nameof(OrganUprav));
             }
@@ -159,21 +159,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(SubjectRF));
+                    return DataAccess.Get<string>(nameof(SubjectRF));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(SubjectRF), value);
+                    DataAccess.Set(nameof(SubjectRF), value);
                 }
                 OnPropertyChanged(nameof(SubjectRF));
             }
@@ -191,21 +191,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(JurLico));
+                    return DataAccess.Get<string>(nameof(JurLico));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(JurLico), value);
+                    DataAccess.Set(nameof(JurLico), value);
                 }
                 OnPropertyChanged(nameof(JurLico));
             }
@@ -223,21 +223,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ShortJurLico));
+                    return DataAccess.Get<string>(nameof(ShortJurLico));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ShortJurLico), value);
+                    DataAccess.Set(nameof(ShortJurLico), value);
                 }
                 OnPropertyChanged(nameof(ShortJurLico));
             }
@@ -255,21 +255,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(JurLicoAddress));
+                    return DataAccess.Get<string>(nameof(JurLicoAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(JurLicoAddress), value);
+                    DataAccess.Set(nameof(JurLicoAddress), value);
                 }
                 OnPropertyChanged(nameof(JurLicoAddress));
             }
@@ -287,21 +287,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(JurLicoFactAddress));
+                    return DataAccess.Get<string>(nameof(JurLicoFactAddress));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(JurLicoFactAddress), value);
+                    DataAccess.Set(nameof(JurLicoFactAddress), value);
                 }
                 OnPropertyChanged(nameof(JurLicoFactAddress));
             }
@@ -319,21 +319,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(GradeFIO));
+                    return DataAccess.Get<string>(nameof(GradeFIO));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(GradeFIO), value);
+                    DataAccess.Set(nameof(GradeFIO), value);
                 }
                 OnPropertyChanged(nameof(GradeFIO));
             }
@@ -351,21 +351,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Telephone));
+                    return DataAccess.Get<string>(nameof(Telephone));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Telephone), value);
+                    DataAccess.Set(nameof(Telephone), value);
                 }
                 OnPropertyChanged(nameof(Telephone));
             }
@@ -383,21 +383,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Fax));
+                    return DataAccess.Get<string>(nameof(Fax));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Fax), value);
+                    DataAccess.Set(nameof(Fax), value);
                 }
                 OnPropertyChanged(nameof(Fax));
             }
@@ -415,21 +415,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Email));
+                    return DataAccess.Get<string>(nameof(Email));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Email), value);
+                    DataAccess.Set(nameof(Email), value);
                 }
                 OnPropertyChanged(nameof(Email));
             }
@@ -447,21 +447,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Okpo));
+                    return DataAccess.Get<string>(nameof(Okpo));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Okpo), value);
+                    DataAccess.Set(nameof(Okpo), value);
                 }
                 OnPropertyChanged(nameof(Okpo));
             }
@@ -473,7 +473,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -489,30 +489,30 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Okved));
+                    return DataAccess.Get<string>(nameof(Okved));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Okved), value);
+                    DataAccess.Set(nameof(Okved), value);
                 }
                 OnPropertyChanged(nameof(Okved));
             }
         }
 
-                private bool Okved_Validation(RamAccess<string> value)
+        private bool Okved_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            var ex = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex ex = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -528,32 +528,33 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Okogu));
+                    return DataAccess.Get<string>(nameof(Okogu));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Okogu), value);
+                    DataAccess.Set(nameof(Okogu), value);
                 }
                 OnPropertyChanged(nameof(Okogu));
             }
         }
 
-                private bool Okogu_Validation(RamAccess<string> value)
+        private bool Okogu_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            var ex = new Regex("^[0-9]{5}$");
-            if (!ex.IsMatch(value.Value)){
-                value.AddError( "Недопустимое значение"); return false;
+            Regex ex = new Regex("^[0-9]{5}$");
+            if (!ex.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -566,21 +567,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Oktmo));
+                    return DataAccess.Get<string>(nameof(Oktmo));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Oktmo), value);
+                    DataAccess.Set(nameof(Oktmo), value);
                 }
                 OnPropertyChanged(nameof(Oktmo));
             }
@@ -589,10 +590,10 @@ namespace Models
         private bool Oktmo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            var ex = new Regex("^[0-9]{11}$");
+            Regex ex = new Regex("^[0-9]{11}$");
             if (!ex.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -606,33 +607,33 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Inn));
+                    return DataAccess.Get<string>(nameof(Inn));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Inn), value);
+                    DataAccess.Set(nameof(Inn), value);
                 }
                 OnPropertyChanged(nameof(Inn));
             }
         }
 
-                private bool Inn_Validation(RamAccess<string> value)
+        private bool Inn_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            var ex = new Regex("[0-9]{10}");
+            Regex ex = new Regex("[0-9]{10}");
             if (!ex.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -645,33 +646,33 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Kpp));
+                    return DataAccess.Get<string>(nameof(Kpp));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Kpp), value);
+                    DataAccess.Set(nameof(Kpp), value);
                 }
                 OnPropertyChanged(nameof(Kpp));
             }
         }
 
-                private bool Kpp_Validation(RamAccess<string> value)
+        private bool Kpp_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            var ex = new Regex("[0-9]{9}");
+            Regex ex = new Regex("[0-9]{9}");
             if (!ex.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -685,21 +686,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Okopf));
+                    return DataAccess.Get<string>(nameof(Okopf));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Okopf), value);
+                    DataAccess.Set(nameof(Okopf), value);
                 }
                 OnPropertyChanged(nameof(Okopf));
             }
@@ -708,7 +709,7 @@ namespace Models
         private bool Okopf_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            var ex = new Regex("[0-9]{5}");
+            Regex ex = new Regex("[0-9]{5}");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -725,33 +726,33 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Okfs));
+                    return DataAccess.Get<string>(nameof(Okfs));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Okfs), value);
+                    DataAccess.Set(nameof(Okfs), value);
                 }
                 OnPropertyChanged(nameof(Okfs));
             }
         }
 
-                private bool Okfs_Validation(RamAccess<string> value)
+        private bool Okfs_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            var ex = new Regex("^[0-9]{2}$");
+            Regex ex = new Regex("^[0-9]{2}$");
             if (!ex.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }

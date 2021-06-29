@@ -1,18 +1,12 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
-using FirebirdSql.Data.FirebirdClient;
-using System.IO;
-using DBRealization;
-using System.Collections.ObjectModel;
 
 namespace DBRealization
 {
     public class DBModel : DbContext
     {
-        public string _path{get;set;}
-        public DBModel(string Path) 
+        public string _path { get; set; }
+        public DBModel(string Path)
         {
             _path = Path;
         }
@@ -27,20 +21,25 @@ namespace DBRealization
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Models.DataAccess.RamAccess<Collections.Report>>()
+                .ToTable("access_report");
+            modelBuilder.Entity<Models.DataAccess.RamAccess<Collections.Reports>>()
+                .ToTable("access_reports");
+
+            modelBuilder.Entity<Collections.DBObservable>()
+                .ToTable("DBObservable_DbSet");
 
             modelBuilder.Entity<Collections.Reports>()
-                .ToTable("coll_reports");
-            //modelBuilder.Entity<Collections.Reports>()
-            //    .ToTable("reports");
-            //modelBuilder.Entity<Collections.Report>()
-            //    .ToTable("report");
+                .ToTable("ReportsCollection_DbSet");
+            modelBuilder.Entity<Collections.Report>()
+                .ToTable("ReportCollection_DbSet");
             ////modelBuilder.Entity<Models.Note>()
             ////    .ToTable("notes");
 
-            ////modelBuilder.Entity<Models.Form10>()
-            ////    .ToTable("form_10");
-            //modelBuilder.Entity<Models.Form11>()
-            //    .ToTable("form_11");
+            modelBuilder.Entity<Models.Form10>()
+                .ToTable("form_10");
+            modelBuilder.Entity<Models.Form11>()
+                .ToTable("form_11");
             //modelBuilder.Entity<Models.Form12>()
             //    .ToTable("form_12");
             //modelBuilder.Entity<Models.Form13>()
@@ -128,16 +127,15 @@ namespace DBRealization
             //    .ToTable("access_string");
         }
 
-        public void LoadAllTables()
+        public void LoadTables()
         {
-            this.coll_reports.Load();
-            //this.coll_reports.Include(x => x.Reports_Collection).ThenInclude(x=>x.Master).Load();
+            DBObservable_DbSet.Load();
         }
 
         public void UndoChanges()
         {
-            var coll = this.ChangeTracker.Entries();
-            foreach (var entry in coll)
+            IEnumerable<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry> coll = ChangeTracker.Entries();
+            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry in coll)
             {
                 switch (entry.State)
                 {
@@ -157,14 +155,19 @@ namespace DBRealization
         //public DbSet<Models.DataAccess.RamAccess<short?>> access_null_short { get; set; }
         //public DbSet<Models.DataAccess.RamAccess<short>> access_short { get; set; }
         //public DbSet<Models.DataAccess.RamAccess<string>> access_string { get; set; }
+        public DbSet<Models.DataAccess.RamAccess<Collections.Report>> access_report { get; set; }
+        public DbSet<Models.DataAccess.RamAccess<Collections.Reports>> access_reports { get; set; }
 
-        public DbSet<Collections.Reports> coll_reports { get; set; }
+        public DbSet<Collections.DBObservable> DBObservable_DbSet { get; set; }
+        public DbSet<Collections.Reports> ReportsCollection_DbSet { get; set; }
+        public DbSet<Collections.Report> ReportCollection_DbSet { get; set; }
+
         //public DbSet<Collections.Reports> reports { get; set; }
         //public DbSet<Collections.Report> report { get; set; }
         ////public DbSet<Models.Note> notes { get; set; }
 
-        ////public DbSet<Models.Form10> form_10 { get; set; }
-        //public DbSet<Models.Form11> form_11 { get; set; }
+        public DbSet<Models.Form10> form_10 { get; set; }
+        public DbSet<Models.Form11> form_11 { get; set; }
         //public DbSet<Models.Form12> form_12 { get; set; }
         //public DbSet<Models.Form13> form_13 { get; set; }
         //public DbSet<Models.Form14> form_14 { get; set; }

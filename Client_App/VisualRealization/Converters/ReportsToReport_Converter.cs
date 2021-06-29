@@ -1,28 +1,26 @@
-﻿using Avalonia.Data.Converters;
-using System;
-using System.Globalization;
+﻿using Avalonia.Collections;
+using Avalonia.Data.Converters;
 using Collections;
+using System;
 using System.Collections;
-using System.Collections.Generic;
-using Avalonia.Collections;
-using Models.Collections;
+using System.Globalization;
 
 namespace Client_App.Converters
 {
     public class ReportsToReport_Converter : IValueConverter
     {
-        Reports last_item { get; set; }
+        private Reports last_item { get; set; }
         public object Convert(object Value, Type tp, object Param, CultureInfo info)
         {
             if (Value != null)
             {
-                var rps_coll = (IEnumerable)Value;
-                var lst = new AvaloniaList<IChanged>();
-                foreach (var item in rps_coll)
+                IEnumerable? rps_coll = (IEnumerable)Value;
+                AvaloniaList<IChanged>? lst = new AvaloniaList<IChanged>();
+                foreach (object? item in rps_coll)
                 {
-                    var rps = (Reports)item;
+                    Reports? rps = (Reports)item;
                     last_item = rps;
-                    foreach (var it in rps.Report_Collection)
+                    foreach (Report? it in rps.Report_Collection)
                     {
                         it.IsChanged = true;
                         lst.Add(it);
@@ -34,7 +32,7 @@ namespace Client_App.Converters
         }
         public object ConvertBack(object Value, Type tp, object Param, CultureInfo info)
         {
-            if(last_item!=null)
+            if (last_item != null)
             {
                 return last_item;
             }

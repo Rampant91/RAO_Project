@@ -1,13 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Media;
 using Models.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections;
-using Avalonia.Media;
 
 namespace Client_App.Short_Visual
 {
@@ -16,23 +14,23 @@ namespace Client_App.Short_Visual
         //Полный вывод
         public static void FormF_Visual(in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
-            var tp = pnl0.FindNameScope();
-            var grd1 = (Controls.DataGrid.DataGrid)Form0_Visual(tp);
+            INameScope? tp = pnl0.FindNameScope();
+            Controls.DataGrid.DataGrid? grd1 = (Controls.DataGrid.DataGrid)Form0_Visual(tp);
             pnl0.Children.Add(grd1);
 
             NameScope scp = new NameScope();
             scp.Register(grd1.Name, grd1);
             scp.Complete();
-            var grd2 = (Controls.DataGrid.DataGrid)FormX_Visual(scp);
+            Controls.DataGrid.DataGrid? grd2 = (Controls.DataGrid.DataGrid)FormX_Visual(scp);
             pnlx.Children.Add(grd2);
 
 
-            var grd3 = FormB_Visual();
+            Panel? grd3 = FormB_Visual();
             pnlb.Children.Add(grd3);
         }
 
         //Форма 10
-        static Control Form0_Visual(INameScope scp)
+        private static Control Form0_Visual(INameScope scp)
         {
             Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
             {
@@ -40,39 +38,43 @@ namespace Client_App.Short_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
-                ChooseColor = new SolidColorBrush(new Color(255,255,0,0)),
+                ChooseColor = new SolidColorBrush(new Color(255, 255, 0, 0)),
                 Type = "0/0"
-        };
+            };
 
             grd.Name = "Form10AllDataGrid_";
 
-            Binding b = new Binding();
-            b.Path = "DataContext.Local_Reports.Reports_Collection";
-            b.ElementName = "MainWindow";
-            b.NameScope = new WeakReference<INameScope>(scp);
+            Binding b = new Binding
+            {
+                Path = "DataContext.Local_Reports.Reports_Collection",
+                ElementName = "MainWindow",
+                NameScope = new WeakReference<INameScope>(scp)
+            };
 
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
-            var cntx = new ContextMenu();
-            List<MenuItem> itms = new List<MenuItem>();
-            itms.Add(new MenuItem
+            ContextMenu? cntx = new ContextMenu();
+            List<MenuItem> itms = new List<MenuItem>
             {
-                Header = "Добавить форму",
-                [!MenuItem.CommandProperty] = new Binding("AddForm"),
-                CommandParameter = "10",
-            });
-            itms.Add(new MenuItem
-            {
-                Header = "Изменить форму",
-                [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
-                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
-            });
-            itms.Add(new MenuItem
-            {
-                Header = "Удалить форму",
-                [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
-                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
-            });
+                new MenuItem
+                {
+                    Header = "Добавить форму",
+                    [!MenuItem.CommandProperty] = new Binding("AddForm"),
+                    CommandParameter = "10",
+                },
+                new MenuItem
+                {
+                    Header = "Изменить форму",
+                    [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+                },
+                new MenuItem
+                {
+                    Header = "Удалить форму",
+                    [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+                }
+            };
             cntx.Items = itms;
 
             grd.ContextMenu = cntx;
@@ -81,7 +83,7 @@ namespace Client_App.Short_Visual
         }
 
         //Форма 1X
-        static Control FormX_Visual(INameScope scp)
+        private static Control FormX_Visual(INameScope scp)
         {
             Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
             {
@@ -93,28 +95,32 @@ namespace Client_App.Short_Visual
                 ChooseMode = Controls.DataGrid.ChooseMode.Line
             };
 
-            Binding b = new Binding();
-            b.Path = "SelectedItems";
-            b.ElementName = "Form10AllDataGrid_";
-            b.NameScope = new WeakReference<INameScope>(scp);
-            b.Converter = new Converters.ReportsToReport_Converter();
+            Binding b = new Binding
+            {
+                Path = "SelectedItems",
+                ElementName = "Form10AllDataGrid_",
+                NameScope = new WeakReference<INameScope>(scp),
+                Converter = new Converters.ReportsToReport_Converter()
+            };
 
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
-            var cntx = new ContextMenu();
-            List<MenuItem> itms = new List<MenuItem>();
-            itms.Add(new MenuItem
+            ContextMenu? cntx = new ContextMenu();
+            List<MenuItem> itms = new List<MenuItem>
             {
-                Header = "Изменить форму",
-                [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
-                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-            });
-            itms.Add(new MenuItem
-            {
-                Header = "Удалить форму",
-                [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
-                [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-            });
+                new MenuItem
+                {
+                    Header = "Изменить форму",
+                    [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                },
+                new MenuItem
+                {
+                    Header = "Удалить форму",
+                    [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                }
+            };
             cntx.Items = itms;
 
             grd.ContextMenu = cntx;
@@ -122,14 +128,18 @@ namespace Client_App.Short_Visual
         }
 
         //Кнопки создания или изменения формы
-        static Panel FormB_Visual()
+        private static Panel FormB_Visual()
         {
-            Panel panel = new Panel();
-            panel.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-            panel.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            Panel panel = new Panel
+            {
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
+            };
 
-            Button btn1 = new Button();
-            btn1.Content = ((Form_ClassAttribute)Type.GetType("Models.Form11,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            Button btn1 = new Button
+            {
+                Content = ((Form_ClassAttribute)Type.GetType("Models.Form11,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            };
             btn1.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn1.CommandParameter = "1/1";
             btn1.Height = 30;
@@ -137,8 +147,10 @@ namespace Client_App.Short_Visual
             btn1.Margin = Thickness.Parse("5,0,0,0");
             panel.Children.Add(btn1);
 
-            Button btn2 = new Button();
-            btn2.Content = ((Form_ClassAttribute)Type.GetType("Models.Form12,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            Button btn2 = new Button
+            {
+                Content = ((Form_ClassAttribute)Type.GetType("Models.Form12,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
+            };
             btn2.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn2.CommandParameter = "1/2";
             btn2.Height = 30;

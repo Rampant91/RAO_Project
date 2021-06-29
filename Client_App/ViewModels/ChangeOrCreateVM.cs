@@ -3,7 +3,6 @@ using Avalonia.Metadata;
 using Collections;
 using Models;
 using ReactiveUI;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,18 +15,15 @@ namespace Client_App.ViewModels
     public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        string _FormType;
+        private string _FormType;
         public string FormType
         {
-            get
-            {
-                return _FormType;
-            }
+            get => _FormType;
             set
             {
                 if (_FormType != value)
@@ -38,13 +34,10 @@ namespace Client_App.ViewModels
             }
         }
 
-        string _DBPath = @"C:\Databases\local.raodb";
+        private string _DBPath = @"C:\Databases\local.raodb";
         public string DBPath
         {
-            get
-            {
-                return _DBPath;
-            }
+            get => _DBPath;
             set
             {
                 if (_DBPath != value)
@@ -55,13 +48,10 @@ namespace Client_App.ViewModels
             }
         }
 
-        Report _Storage;
+        private Report _Storage;
         public Report Storage
         {
-            get
-            {
-                return _Storage;
-            }
+            get => _Storage;
             set
             {
                 if (_Storage != value)
@@ -80,7 +70,7 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<Unit, Unit> PasteRows { get; }
 
-        DBRealization.DBModel dbm { get; set; }
+        private DBRealization.DBModel dbm { get; set; }
         public ChangeOrCreateVM(DBRealization.DBModel dbm)
         {
             this.dbm = dbm;
@@ -90,17 +80,19 @@ namespace Client_App.ViewModels
             CheckReport = ReactiveCommand.Create(_CheckReport);
             PasteRows = ReactiveCommand.CreateFromTask(_PasteRows);
         }
-        bool _isCanSaveReportEnabled = false;
-        bool IsCanSaveReportEnabled
+
+        private bool _isCanSaveReportEnabled = false;
+
+        private bool IsCanSaveReportEnabled
         {
-            get
-            {
-                return _isCanSaveReportEnabled;
-            }
+            get => _isCanSaveReportEnabled;
             set
             {
                 if (value == _isCanSaveReportEnabled)
+                {
                     return;
+                }
+
                 _isCanSaveReportEnabled = value;
                 PropertyChanged?
                     .Invoke(this, new PropertyChangedEventArgs(nameof(IsCanSaveReportEnabled)));
@@ -108,7 +100,7 @@ namespace Client_App.ViewModels
         }
 
         [DependsOn(nameof(IsCanSaveReportEnabled))]
-        bool CanSaveReport(object parameter)
+        private bool CanSaveReport(object parameter)
         {
             return _isCanSaveReportEnabled;
         }
@@ -116,7 +108,7 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                foreach (var item in desktop.Windows)
+                foreach (Avalonia.Controls.Window? item in desktop.Windows)
                 {
                     if (item is Views.FormChangeOrCreate)
                     {
@@ -127,16 +119,17 @@ namespace Client_App.ViewModels
             }
 
         }
-        void _CheckReport()
+
+        private void _CheckReport()
         {
             IsCanSaveReportEnabled = true;
         }
 
-        void _AddRow()
+        private void _AddRow()
         {
             //if (FormType == "1/0") { var frm = new Form10(); Storage.Rows10.Add(frm); }
-            if (FormType == "1/1") { var frm = new Form11(); Storage.Rows11.Add(frm); }
-            if (FormType == "1/2") { var frm = new Form12(); Storage.Rows12.Add(frm); }
+            if (FormType == "1/1") { Form11? frm = new Form11(); Storage.Rows11.Add(frm); }
+            if (FormType == "1/2") { Form12? frm = new Form12(); Storage.Rows12.Add(frm); }
             //if (FormType == "1/3") { var frm = new Form13(); Storage.Rows13.Add(frm); }
             //if (FormType == "1/4") { var frm = new Form14(); Storage.Rows14.Add(frm); }
             //if (FormType == "1/5") { var frm = new Form15(); Storage.Rows15.Add(frm); }
@@ -146,35 +139,35 @@ namespace Client_App.ViewModels
             //if (FormType == "1/9") { var frm = new Form19(); Storage.Rows19.Add(frm); }
         }
 
-        void _DeleteRow(IList param)
+        private void _DeleteRow(IList param)
         {
             List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
-            foreach (var item in param)
+            foreach (object? item in param)
             {
                 lst.Add((Models.Abstracts.Form)item);
             }
-            foreach (var item in lst)
+            foreach (Models.Abstracts.Form? item in lst)
             {
                 //Storage.Rows11.Remove(item);
             }
         }
 
-        void _AddSort(string param)
+        private void _AddSort(string param)
         {
             //Storage.Filters.SortPath = param;
         }
 
-        async Task _PasteRows()
+        private async Task _PasteRows()
         {
             PasteRealization.Excel ex = new PasteRealization.Excel();
 
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
-                var text = await clip.GetTextAsync();
-                var lt = ex.Convert(text, FormType);
+                string? text = await clip.GetTextAsync();
+                List<Models.Abstracts.Form>? lt = ex.Convert(text, FormType);
                 if (lt != null)
                 {
-                    foreach (var item in lt)
+                    foreach (Models.Abstracts.Form? item in lt)
                     {
                         //Storage.Rows.Add(item);
                     }

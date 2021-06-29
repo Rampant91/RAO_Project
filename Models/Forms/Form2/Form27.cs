@@ -1,6 +1,6 @@
 ﻿using Models.DataAccess;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Models
@@ -19,15 +19,15 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(ObservedSourceNumber), ObservedSourceNumber_Validation, null);
+            DataAccess.Init<string>(nameof(ObservedSourceNumber), ObservedSourceNumber_Validation, null);
             ObservedSourceNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
+            DataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
             RadionuclidName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(AllowedWasteValue), AllowedWasteValue_Validation, null);
+            DataAccess.Init<string>(nameof(AllowedWasteValue), AllowedWasteValue_Validation, null);
             AllowedWasteValue.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FactedWasteValue), FactedWasteValue_Validation, null);
+            DataAccess.Init<string>(nameof(FactedWasteValue), FactedWasteValue_Validation, null);
             FactedWasteValue.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(WasteOutbreakPreviousYear), WasteOutbreakPreviousYear_Validation, null);
+            DataAccess.Init<string>(nameof(WasteOutbreakPreviousYear), WasteOutbreakPreviousYear_Validation, null);
             WasteOutbreakPreviousYear.PropertyChanged += InPropertyChanged;
         }
 
@@ -51,13 +51,10 @@ namespace Models
         [Attributes.Form_Property("Номер наблюдательной скважины")]
         public virtual RamAccess<string> ObservedSourceNumber
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(ObservedSourceNumber));
-            }
+            get => DataAccess.Get<string>(nameof(ObservedSourceNumber));
             set
             {
-                _dataAccess.Set(nameof(ObservedSourceNumber), value);
+                DataAccess.Set(nameof(ObservedSourceNumber), value);
                 OnPropertyChanged(nameof(ObservedSourceNumber));
             }
         }
@@ -83,7 +80,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionNumber));
+                    return DataAccess.Get<string>(nameof(PermissionNumber));
                 }
 
                 {
@@ -95,7 +92,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PermissionNumber), value);
+                    DataAccess.Set(nameof(PermissionNumber), value);
                 }
                 OnPropertyChanged(nameof(PermissionNumber));
             }
@@ -118,7 +115,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionIssueDate));
+                    return DataAccess.Get<string>(nameof(PermissionIssueDate));
                 }
 
                 {
@@ -130,7 +127,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PermissionIssueDate), value);
+                    DataAccess.Set(nameof(PermissionIssueDate), value);
                 }
                 OnPropertyChanged(nameof(PermissionIssueDate));
             }
@@ -152,7 +149,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionDocumentName));
+                    return DataAccess.Get<string>(nameof(PermissionDocumentName));
                 }
 
                 {
@@ -164,7 +161,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PermissionDocumentName), value);
+                    DataAccess.Set(nameof(PermissionDocumentName), value);
                 }
                 OnPropertyChanged(nameof(PermissionDocumentName));
             }
@@ -186,7 +183,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ValidBegin));
+                    return DataAccess.Get<string>(nameof(ValidBegin));
                 }
 
                 {
@@ -198,7 +195,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ValidBegin), value);
+                    DataAccess.Set(nameof(ValidBegin), value);
                 }
                 OnPropertyChanged(nameof(ValidBegin));
             }
@@ -220,7 +217,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ValidThru));
+                    return DataAccess.Get<string>(nameof(ValidThru));
                 }
 
                 {
@@ -232,7 +229,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ValidThru), value);
+                    DataAccess.Set(nameof(ValidThru), value);
                 }
                 OnPropertyChanged(nameof(ValidThru));
             }
@@ -252,7 +249,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(RadionuclidName));
+                    return DataAccess.Get<string>(nameof(RadionuclidName));
                 }
 
                 {
@@ -264,7 +261,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(RadionuclidName), value);
+                    DataAccess.Set(nameof(RadionuclidName), value);
                 }
                 OnPropertyChanged(nameof(RadionuclidName));
             }
@@ -279,11 +276,13 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var spr = new List<Tuple<string, string>>();
-            foreach (var item in spr)
+            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item1.Equals(value.Value))
+                {
                     return true;
+                }
             }
             value.AddError("Недопустимое значение");
             return false;
@@ -297,7 +296,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(RadionuclidNameNote));
+                    return DataAccess.Get<string>(nameof(RadionuclidNameNote));
                 }
 
                 {
@@ -309,7 +308,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(RadionuclidNameNote), value);
+                    DataAccess.Set(nameof(RadionuclidNameNote), value);
                 }
                 OnPropertyChanged(nameof(RadionuclidNameNote));
             }
@@ -331,7 +330,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(AllowedWasteValue));
+                    return DataAccess.Get<string>(nameof(AllowedWasteValue));
                 }
 
                 {
@@ -343,7 +342,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(AllowedWasteValue), value);
+                    DataAccess.Set(nameof(AllowedWasteValue), value);
                 }
                 OnPropertyChanged(nameof(AllowedWasteValue));
             }
@@ -367,7 +366,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -389,7 +388,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(AllowedWasteValueNote));
+                    return DataAccess.Get<string>(nameof(AllowedWasteValueNote));
                 }
 
                 {
@@ -401,7 +400,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(AllowedWasteValueNote), value);
+                    DataAccess.Set(nameof(AllowedWasteValueNote), value);
                 }
                 OnPropertyChanged(nameof(AllowedWasteValueNote));
             }
@@ -423,7 +422,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FactedWasteValue));
+                    return DataAccess.Get<string>(nameof(FactedWasteValue));
                 }
 
                 {
@@ -435,7 +434,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(FactedWasteValue), value);
+                    DataAccess.Set(nameof(FactedWasteValue), value);
                 }
                 OnPropertyChanged(nameof(FactedWasteValue));
             }
@@ -466,7 +465,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -488,7 +487,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FactedWasteValueNote));
+                    return DataAccess.Get<string>(nameof(FactedWasteValueNote));
                 }
 
                 {
@@ -500,7 +499,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(FactedWasteValueNote), value);
+                    DataAccess.Set(nameof(FactedWasteValueNote), value);
                 }
                 OnPropertyChanged(nameof(FactedWasteValueNote));
             }
@@ -522,7 +521,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(WasteOutbreakPreviousYear));
+                    return DataAccess.Get<string>(nameof(WasteOutbreakPreviousYear));
                 }
 
                 {
@@ -534,7 +533,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(WasteOutbreakPreviousYear), value);
+                    DataAccess.Set(nameof(WasteOutbreakPreviousYear), value);
                 }
                 OnPropertyChanged(nameof(WasteOutbreakPreviousYear));
             }
@@ -565,7 +564,7 @@ namespace Models
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {

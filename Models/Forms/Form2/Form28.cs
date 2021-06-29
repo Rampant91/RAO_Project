@@ -1,6 +1,6 @@
 ﻿using Models.DataAccess;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Models
@@ -19,17 +19,17 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(WasteSourceName), WasteSourceName_Validation, null);
+            DataAccess.Init<string>(nameof(WasteSourceName), WasteSourceName_Validation, null);
             WasteSourceName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(WasteRecieverName), WasteRecieverName_Validation, null);
+            DataAccess.Init<string>(nameof(WasteRecieverName), WasteRecieverName_Validation, null);
             WasteRecieverName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(RecieverTypeCode), RecieverTypeCode_Validation, null);
+            DataAccess.Init<string>(nameof(RecieverTypeCode), RecieverTypeCode_Validation, null);
             RecieverTypeCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(AllowedWasteRemovalVolume), AllowedWasteRemovalVolume_Validation, null);
+            DataAccess.Init<string>(nameof(AllowedWasteRemovalVolume), AllowedWasteRemovalVolume_Validation, null);
             AllowedWasteRemovalVolume.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(RemovedWasteVolume), RemovedWasteVolume_Validation, null);
+            DataAccess.Init<string>(nameof(RemovedWasteVolume), RemovedWasteVolume_Validation, null);
             RemovedWasteVolume.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PoolDistrictName), PoolDistrictName_Validation, null);
+            DataAccess.Init<string>(nameof(PoolDistrictName), PoolDistrictName_Validation, null);
             PoolDistrictName.PropertyChanged += InPropertyChanged;
         }
 
@@ -58,7 +58,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionNumber));
+                    return DataAccess.Get<string>(nameof(PermissionNumber));
                 }
 
                 {
@@ -70,7 +70,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PermissionNumber), value);
+                    DataAccess.Set(nameof(PermissionNumber), value);
                 }
                 OnPropertyChanged(nameof(PermissionNumber));
             }
@@ -93,7 +93,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionIssueDate));
+                    return DataAccess.Get<string>(nameof(PermissionIssueDate));
                 }
 
                 {
@@ -105,7 +105,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PermissionIssueDate), value);
+                    DataAccess.Set(nameof(PermissionIssueDate), value);
                 }
                 OnPropertyChanged(nameof(PermissionIssueDate));
             }
@@ -127,7 +127,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionDocumentName));
+                    return DataAccess.Get<string>(nameof(PermissionDocumentName));
                 }
 
                 {
@@ -139,7 +139,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PermissionDocumentName), value);
+                    DataAccess.Set(nameof(PermissionDocumentName), value);
                 }
                 OnPropertyChanged(nameof(PermissionDocumentName));
             }
@@ -161,7 +161,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ValidBegin));
+                    return DataAccess.Get<string>(nameof(ValidBegin));
                 }
 
                 {
@@ -173,7 +173,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ValidBegin), value);
+                    DataAccess.Set(nameof(ValidBegin), value);
                 }
                 OnPropertyChanged(nameof(ValidBegin));
             }
@@ -195,7 +195,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ValidThru));
+                    return DataAccess.Get<string>(nameof(ValidThru));
                 }
 
                 {
@@ -207,7 +207,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ValidThru), value);
+                    DataAccess.Set(nameof(ValidThru), value);
                 }
                 OnPropertyChanged(nameof(ValidThru));
             }
@@ -225,13 +225,10 @@ namespace Models
         [Attributes.Form_Property("Номер разрешительного документа")]
         public virtual RamAccess<string> PermissionNumber1
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PermissionNumber1));
-            }
+            get => DataAccess.Get<string>(nameof(PermissionNumber1));
             set
             {
-                _dataAccess.Set(nameof(PermissionNumber1), value);
+                DataAccess.Set(nameof(PermissionNumber1), value);
                 OnPropertyChanged(nameof(PermissionNumber1));
             }
         }
@@ -251,7 +248,7 @@ namespace Models
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionIssueDate1));
+                    return DataAccess.Get<string>(nameof(PermissionIssueDate1));
                 }
 
                 {
@@ -260,7 +257,7 @@ namespace Models
             }
             set
             {
-                _dataAccess.Set(nameof(PermissionIssueDate1), value);
+                DataAccess.Set(nameof(PermissionIssueDate1), value);
                 OnPropertyChanged(nameof(PermissionIssueDate1));
             }
         }
@@ -280,7 +277,7 @@ namespace Models
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionDocumentName1));
+                    return DataAccess.Get<string>(nameof(PermissionDocumentName1));
                 }
 
                 {
@@ -289,7 +286,7 @@ namespace Models
             }
             set
             {
-                _dataAccess.Set(nameof(PermissionDocumentName1), value);
+                DataAccess.Set(nameof(PermissionDocumentName1), value);
                 OnPropertyChanged(nameof(PermissionDocumentName1));
             }
         }
@@ -309,7 +306,7 @@ namespace Models
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(ValidBegin1));
+                    return DataAccess.Get<string>(nameof(ValidBegin1));
                 }
 
                 {
@@ -318,7 +315,7 @@ namespace Models
             }
             set
             {
-                _dataAccess.Set(nameof(ValidBegin1), value);
+                DataAccess.Set(nameof(ValidBegin1), value);
                 OnPropertyChanged(nameof(ValidBegin1));
             }
         }
@@ -335,13 +332,10 @@ namespace Models
         [Attributes.Form_Property("Действует по")]
         public virtual RamAccess<string> ValidThru1
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(ValidThru1));
-            }
+            get => DataAccess.Get<string>(nameof(ValidThru1));
             set
             {
-                _dataAccess.Set(nameof(ValidThru1), value);
+                DataAccess.Set(nameof(ValidThru1), value);
                 OnPropertyChanged(nameof(ValidThru1));
             }
         }
@@ -358,13 +352,10 @@ namespace Models
         [Attributes.Form_Property("Номер разрешительного документа")]
         public virtual RamAccess<string> PermissionNumber2
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PermissionNumber2));
-            }
+            get => DataAccess.Get<string>(nameof(PermissionNumber2));
             set
             {
-                _dataAccess.Set(nameof(PermissionNumber2), value);
+                DataAccess.Set(nameof(PermissionNumber2), value);
                 OnPropertyChanged(nameof(PermissionNumber2));
             }
         }
@@ -384,7 +375,7 @@ namespace Models
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionIssueDate2));
+                    return DataAccess.Get<string>(nameof(PermissionIssueDate2));
                 }
 
                 {
@@ -393,7 +384,7 @@ namespace Models
             }
             set
             {
-                _dataAccess.Set(nameof(PermissionIssueDate2), value);
+                DataAccess.Set(nameof(PermissionIssueDate2), value);
                 OnPropertyChanged(nameof(PermissionIssueDate2));
             }
         }
@@ -413,7 +404,7 @@ namespace Models
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(PermissionDocumentName2));
+                    return DataAccess.Get<string>(nameof(PermissionDocumentName2));
                 }
 
                 {
@@ -425,7 +416,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PermissionDocumentName2), value);
+                    DataAccess.Set(nameof(PermissionDocumentName2), value);
                 }
                 OnPropertyChanged(nameof(PermissionDocumentName2));
             }
@@ -443,13 +434,10 @@ namespace Models
         [Attributes.Form_Property("Действует с")]
         public virtual RamAccess<string> ValidBegin2
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(ValidBegin2));
-            }
+            get => DataAccess.Get<string>(nameof(ValidBegin2));
             set
             {
-                _dataAccess.Set(nameof(ValidBegin2), value);
+                DataAccess.Set(nameof(ValidBegin2), value);
                 OnPropertyChanged(nameof(ValidBegin2));
             }
         }
@@ -469,7 +457,7 @@ namespace Models
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(ValidThru2));
+                    return DataAccess.Get<string>(nameof(ValidThru2));
                 }
 
                 {
@@ -478,7 +466,7 @@ namespace Models
             }
             set
             {
-                _dataAccess.Set(nameof(ValidThru2), value);
+                DataAccess.Set(nameof(ValidThru2), value);
                 OnPropertyChanged(nameof(ValidThru2));
             }
         }
@@ -499,7 +487,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(WasteSourceName));
+                    return DataAccess.Get<string>(nameof(WasteSourceName));
                 }
 
                 {
@@ -511,7 +499,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(WasteSourceName), value);
+                    DataAccess.Set(nameof(WasteSourceName), value);
                 }
                 OnPropertyChanged(nameof(WasteSourceName));
             }
@@ -539,7 +527,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(WasteRecieverName));
+                    return DataAccess.Get<string>(nameof(WasteRecieverName));
                 }
 
                 {
@@ -551,7 +539,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(WasteRecieverName), value);
+                    DataAccess.Set(nameof(WasteRecieverName), value);
                 }
                 OnPropertyChanged(nameof(WasteRecieverName));
             }
@@ -579,7 +567,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(RecieverTypeCode));
+                    return DataAccess.Get<string>(nameof(RecieverTypeCode));
                 }
 
                 {
@@ -591,7 +579,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(RecieverTypeCode), value);
+                    DataAccess.Set(nameof(RecieverTypeCode), value);
                 }
                 OnPropertyChanged(nameof(RecieverTypeCode));
             }
@@ -606,7 +594,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var spr = new List<string>();
+            List<string> spr = new List<string>();
             if (spr.Contains(value.Value))
             {
                 return true;
@@ -625,7 +613,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PoolDistrictName));
+                    return DataAccess.Get<string>(nameof(PoolDistrictName));
                 }
 
                 {
@@ -637,7 +625,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PoolDistrictName), value);
+                    DataAccess.Set(nameof(PoolDistrictName), value);
                 }
                 OnPropertyChanged(nameof(PoolDistrictName));
             }
@@ -652,7 +640,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var spr = new List<string>();
+            List<string> spr = new List<string>();
             if (spr.Contains(value.Value))
             {
                 return true;
@@ -671,7 +659,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(AllowedWasteRemovalVolume));
+                    return DataAccess.Get<string>(nameof(AllowedWasteRemovalVolume));
                 }
 
                 {
@@ -683,7 +671,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(AllowedWasteRemovalVolume), value);
+                    DataAccess.Set(nameof(AllowedWasteRemovalVolume), value);
                 }
                 OnPropertyChanged(nameof(AllowedWasteRemovalVolume));
             }
@@ -707,7 +695,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -731,7 +719,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(RemovedWasteVolume));
+                    return DataAccess.Get<string>(nameof(RemovedWasteVolume));
                 }
 
                 {
@@ -743,7 +731,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(RemovedWasteVolume), value);
+                    DataAccess.Set(nameof(RemovedWasteVolume), value);
                 }
                 OnPropertyChanged(nameof(RemovedWasteVolume));
             }
@@ -763,7 +751,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -785,7 +773,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(RemovedWasteVolumeNote));
+                    return DataAccess.Get<double>(nameof(RemovedWasteVolumeNote));
                 }
 
                 {
@@ -797,7 +785,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(RemovedWasteVolumeNote), value);
+                    DataAccess.Set(nameof(RemovedWasteVolumeNote), value);
                 }
                 OnPropertyChanged(nameof(RemovedWasteVolumeNote));
             }

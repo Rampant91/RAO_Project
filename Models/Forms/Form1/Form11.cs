@@ -20,49 +20,49 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
+            DataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
             Activity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<short?>(nameof(Category), Category_Validation, null);
+            DataAccess.Init<short?>(nameof(Category), Category_Validation, null);
             Category.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
+            DataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
             CreationDate.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
             CreatorOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
             FactoryNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
+            DataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
             FactoryNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
+            DataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
             Owner.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            DataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
             PackName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
             PackNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
             PackNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
             PackTypeRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            DataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
             PackType.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
             PassportNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
             PassportNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
+            DataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
             PropertyCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
+            DataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
             Quantity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
+            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
             Radionuclids.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
+            DataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
             SignedServicePeriod.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
             TransporterOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TypeRecoded), TypeRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(TypeRecoded), TypeRecoded_Validation, null);
             TypeRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Type), Type_Validation, null);
+            DataAccess.Init<string>(nameof(Type), Type_Validation, null);
             Type.PropertyChanged += InPropertyChanged;
         }
 
@@ -102,13 +102,10 @@ namespace Models
         [Attributes.Form_Property("Номер паспорта")]
         public virtual RamAccess<string> PassportNumber
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PassportNumber));//OK
-            }
+            get => DataAccess.Get<string>(nameof(PassportNumber));//OK
             set
             {
-                _dataAccess.Set(nameof(PassportNumber), value);
+                DataAccess.Set(nameof(PassportNumber), value);
                 OnPropertyChanged(nameof(PassportNumber));
             }
         }
@@ -136,11 +133,11 @@ namespace Models
         //        {
         //            get
         //            {
-        //                return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
+        //                return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
         //            }
         //            set
         //            {
-        //                _dataAccess.Set(nameof(PassportNumberNote), value);
+        //                DataAccess.Set(nameof(PassportNumberNote), value);
         //                OnPropertyChanged(nameof(PassportNumberNote));
         //            }
         //        }
@@ -161,20 +158,18 @@ namespace Models
         public int? PassportNumberRecodedId { get; set; }
         public virtual RamAccess<string> PassportNumberRecoded
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PassportNumberRecoded));//OK 
-            }
+            get => DataAccess.Get<string>(nameof(PassportNumberRecoded));//OK 
             set
             {
-                _dataAccess.Set(nameof(PassportNumberRecoded), value);
+                DataAccess.Set(nameof(PassportNumberRecoded), value);
                 OnPropertyChanged(nameof(PassportNumberRecoded));
             }
         }
         //If change this change validation
         private bool PassportNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true; }
+            value.ClearErrors(); return true;
+        }
         //PassportNumberRecoded property
 
         //Type property
@@ -182,17 +177,14 @@ namespace Models
         [Attributes.Form_Property("Тип")]
         public virtual RamAccess<string> Type
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(Type));//OK
-            }
+            get => DataAccess.Get<string>(nameof(Type));//OK
             set
             {
 
 
 
                 {
-                    _dataAccess.Set(nameof(Type), value);
+                    DataAccess.Set(nameof(Type), value);
                 }
                 OnPropertyChanged(nameof(Type));
             }
@@ -218,20 +210,18 @@ namespace Models
         //TypeRecoded property
         public virtual RamAccess<string> TypeRecoded
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(TypeRecoded));//OK
-            }
+            get => DataAccess.Get<string>(nameof(TypeRecoded));//OK
             set
             {
-                _dataAccess.Set(nameof(TypeRecoded), value);
+                DataAccess.Set(nameof(TypeRecoded), value);
                 OnPropertyChanged(nameof(TypeRecoded));
             }
         }
 
         private bool TypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true; }
+            value.ClearErrors(); return true;
+        }
         //TypeRecoded property
 
         //Radionuclids property
@@ -239,13 +229,10 @@ namespace Models
         [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(Radionuclids));//OK
-            }
+            get => DataAccess.Get<string>(nameof(Radionuclids));//OK
             set
             {
-                _dataAccess.Set(nameof(Radionuclids), value);
+                DataAccess.Set(nameof(Radionuclids), value);
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -259,7 +246,7 @@ namespace Models
                 return false;
             }
             List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (Tuple<string, string> item in spr)
             {
                 if (item.Item1.Equals(Type))
                 {
@@ -276,13 +263,10 @@ namespace Models
         [Attributes.Form_Property("Заводской номер")]
         public virtual RamAccess<string> FactoryNumber
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(FactoryNumber));//OK
-            }
+            get => DataAccess.Get<string>(nameof(FactoryNumber));//OK
             set
             {
-                _dataAccess.Set(nameof(FactoryNumber), value);
+                DataAccess.Set(nameof(FactoryNumber), value);
                 OnPropertyChanged(nameof(FactoryNumber));
             }
         }
@@ -302,20 +286,18 @@ namespace Models
         //FactoryNumberRecoded property
         public virtual RamAccess<string> FactoryNumberRecoded
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
-            }
+            get => DataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
             set
             {
-                _dataAccess.Set(nameof(FactoryNumberRecoded), value);
+                DataAccess.Set(nameof(FactoryNumberRecoded), value);
                 OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
         }
         //If change this change validation
         private bool FactoryNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true; }
+            value.ClearErrors(); return true;
+        }
         //FactoryNumberRecoded property
 
         //Quantity property
@@ -323,13 +305,10 @@ namespace Models
         [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int?> Quantity
         {
-            get
-            {
-                return _dataAccess.Get<int?>(nameof(Quantity));//OK;
-            }
+            get => DataAccess.Get<int?>(nameof(Quantity));//OK;
             set
             {
-                _dataAccess.Set(nameof(Quantity), value);
+                DataAccess.Set(nameof(Quantity), value);
                 OnPropertyChanged(nameof(Quantity));
             }
         }
@@ -355,13 +334,10 @@ namespace Models
         [Attributes.Form_Property("Активность, Бк")]
         public virtual RamAccess<string> Activity
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(Activity));//OK
-            }
+            get => DataAccess.Get<string>(nameof(Activity));//OK
             set
             {
-                _dataAccess.Set(nameof(Activity), value);
+                DataAccess.Set(nameof(Activity), value);
                 OnPropertyChanged(nameof(Activity));
             }
         }
@@ -385,7 +361,7 @@ namespace Models
                 //    value.AddError("Заполните примечание");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -405,11 +381,11 @@ namespace Models
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(ActivityNote));//OK
+        //        return DataAccess.Get<string>(nameof(ActivityNote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(ActivityNote), value);
+        //        DataAccess.Set(nameof(ActivityNote), value);
         //        OnPropertyChanged(nameof(ActivityNote));
         //    }
         //}
@@ -424,13 +400,10 @@ namespace Models
         [Attributes.Form_Property("Дата изготовления")]
         public virtual RamAccess<string> CreationDate
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(CreationDate));//OK
-            }
+            get => DataAccess.Get<string>(nameof(CreationDate));//OK
             set
             {
-                _dataAccess.Set(nameof(CreationDate), value);
+                DataAccess.Set(nameof(CreationDate), value);
                 OnPropertyChanged(nameof(CreationDate));
             }
         }
@@ -449,7 +422,7 @@ namespace Models
                 //    value.AddError("Заполните примечание");
                 return false;
             }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -470,11 +443,11 @@ namespace Models
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(CreationDateNote));//OK
+        //        return DataAccess.Get<string>(nameof(CreationDateNote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(CreationDateNote), value);
+        //        DataAccess.Set(nameof(CreationDateNote), value);
         //        OnPropertyChanged(nameof(CreationDateNote));
         //    }
         //}
@@ -490,13 +463,10 @@ namespace Models
         [Attributes.Form_Property("ОКПО изготовителя")]
         public virtual RamAccess<string> CreatorOKPO
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
-            }
+            get => DataAccess.Get<string>(nameof(CreatorOKPO));//OK
             set
             {
-                _dataAccess.Set(nameof(CreatorOKPO), value);
+                DataAccess.Set(nameof(CreatorOKPO), value);
                 OnPropertyChanged(nameof(CreatorOKPO));
             }
         }
@@ -519,7 +489,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -533,11 +503,11 @@ namespace Models
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
+        //        return DataAccess.Get<string>(nameof(CreatorOKPONote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(CreatorOKPONote), value);
+        //        DataAccess.Set(nameof(CreatorOKPONote), value);
         //        OnPropertyChanged(nameof(CreatorOKPONote));
         //    }
         //}
@@ -552,13 +522,10 @@ namespace Models
         [Attributes.Form_Property("Категория")]
         public virtual RamAccess<short?> Category
         {
-            get
-            {
-                return _dataAccess.Get<short?>(nameof(Category));//OK
-            }
+            get => DataAccess.Get<short?>(nameof(Category));//OK
             set
             {
-                _dataAccess.Set(nameof(Category), value);
+                DataAccess.Set(nameof(Category), value);
                 OnPropertyChanged(nameof(Category));
             }
         }
@@ -585,13 +552,10 @@ namespace Models
         [Attributes.Form_Property("НСС, мес.")]
         public virtual RamAccess<float> SignedServicePeriod
         {
-            get
-            {
-                return _dataAccess.Get<float>(nameof(SignedServicePeriod));//OK
-            }
+            get => DataAccess.Get<float>(nameof(SignedServicePeriod));//OK
             set
             {
-                _dataAccess.Set(nameof(SignedServicePeriod), value);
+                DataAccess.Set(nameof(SignedServicePeriod), value);
                 OnPropertyChanged(nameof(SignedServicePeriod));
             }
         }
@@ -613,13 +577,10 @@ namespace Models
         [Attributes.Form_Property("Код собственности")]
         public virtual RamAccess<byte?> PropertyCode
         {
-            get
-            {
-                return _dataAccess.Get<byte?>(nameof(PropertyCode));//OK
-            }
+            get => DataAccess.Get<byte?>(nameof(PropertyCode));//OK
             set
             {
-                _dataAccess.Set(nameof(PropertyCode), value);
+                DataAccess.Set(nameof(PropertyCode), value);
                 OnPropertyChanged(nameof(PropertyCode));
             }
         }
@@ -645,11 +606,11 @@ namespace Models
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(OwnerNote));//OK
+        //        return DataAccess.Get<string>(nameof(OwnerNote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(OwnerNote), value);
+        //        DataAccess.Set(nameof(OwnerNote), value);
         //        OnPropertyChanged(nameof(OwnerNote));
         //    }
         //}
@@ -664,13 +625,10 @@ namespace Models
         [Attributes.Form_Property("Владелец")]
         public virtual RamAccess<string> Owner
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(Owner));//OK
-            }
+            get => DataAccess.Get<string>(nameof(Owner));//OK
             set
             {
-                _dataAccess.Set(nameof(Owner), value);
+                DataAccess.Set(nameof(Owner), value);
                 OnPropertyChanged(nameof(Owner));
             }
         }
@@ -694,7 +652,7 @@ namespace Models
                 value.AddError("Недопустимое значение"); return false;
 
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -708,13 +666,10 @@ namespace Models
         [Attributes.Form_Property("ОКПО поставщика/получателя")]
         public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-            }
+            get => DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
             set
             {
-                _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
@@ -739,7 +694,7 @@ namespace Models
                 return false;
 
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -754,11 +709,11 @@ namespace Models
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+        //        return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+        //        DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
         //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
         //    }
         //}
@@ -773,13 +728,10 @@ namespace Models
         [Attributes.Form_Property("ОКПО перевозчика")]
         public virtual RamAccess<string> TransporterOKPO
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(TransporterOKPO));//OK
-            }
+            get => DataAccess.Get<string>(nameof(TransporterOKPO));//OK
             set
             {
-                _dataAccess.Set(nameof(TransporterOKPO), value);
+                DataAccess.Set(nameof(TransporterOKPO), value);
                 OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
@@ -802,7 +754,7 @@ namespace Models
             {
                 value.AddError("Недопустимое значение"); return false;
             }
-            var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
+            Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -816,11 +768,11 @@ namespace Models
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+        //        return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(TransporterOKPONote), value);
+        //        DataAccess.Set(nameof(TransporterOKPONote), value);
         //        OnPropertyChanged(nameof(TransporterOKPONote));
         //    }
         //}
@@ -835,13 +787,10 @@ namespace Models
         [Attributes.Form_Property("Наименование упаковки")]
         public virtual RamAccess<string> PackName
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PackName));//OK
-            }
+            get => DataAccess.Get<string>(nameof(PackName));//OK
             set
             {
-                _dataAccess.Set(nameof(PackName), value);
+                DataAccess.Set(nameof(PackName), value);
                 OnPropertyChanged(nameof(PackName));
             }
         }
@@ -852,13 +801,13 @@ namespace Models
             if (value.Value == null)
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
                 //if ((PackNameNote == null) || PackNameNote.Equals(""))
                 //    value.AddError("Заполните примечание");//to do note handling
-return true;
+                return true;
             }
             return true;
         }
@@ -869,11 +818,11 @@ return true;
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(PackNameNote));//OK
+        //        return DataAccess.Get<string>(nameof(PackNameNote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(PackNameNote), value);
+        //        DataAccess.Set(nameof(PackNameNote), value);
         //        OnPropertyChanged(nameof(PackNameNote));
         //    }
         //}
@@ -888,13 +837,10 @@ return true;
         [Attributes.Form_Property("Тип упаковки")]
         public virtual RamAccess<string> PackType
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PackType));//OK
-            }
+            get => DataAccess.Get<string>(nameof(PackType));//OK
             set
             {
-                _dataAccess.Set(nameof(PackType), value);
+                DataAccess.Set(nameof(PackType), value);
                 OnPropertyChanged(nameof(PackType));
             }
         }
@@ -905,7 +851,7 @@ return true;
             if (value.Value == null)
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
@@ -920,20 +866,18 @@ return false;
         //PackTypeRecoded property
         public virtual RamAccess<string> PackTypeRecoded
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-            }
+            get => DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
             set
             {
-                _dataAccess.Set(nameof(PackTypeRecoded), value);
+                DataAccess.Set(nameof(PackTypeRecoded), value);
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
         }
 
         private bool PackTypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackTypeRecoded property
 
         ////DocumentNumberNote property
@@ -941,11 +885,11 @@ return false;
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(DocumentNumberNote));//OK
+        //        return DataAccess.Get<string>(nameof(DocumentNumberNote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(DocumentNumberNote), value);
+        //        DataAccess.Set(nameof(DocumentNumberNote), value);
         //        OnPropertyChanged(nameof(DocumentNumberNote));
         //    }
         //}
@@ -960,11 +904,11 @@ return false;
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
+        //        return DataAccess.Get<string>(nameof(PackTypeNote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(PackTypeNote), value);
+        //        DataAccess.Set(nameof(PackTypeNote), value);
         //        OnPropertyChanged(nameof(PackTypeNote));
         //    }
         //}
@@ -979,13 +923,10 @@ return false;
         [Attributes.Form_Property("Номер упаковки")]
         public virtual RamAccess<string> PackNumber
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PackNumber));//OK
-            }
+            get => DataAccess.Get<string>(nameof(PackNumber));//OK
             set
             {
-                _dataAccess.Set(nameof(PackNumber), value);
+                DataAccess.Set(nameof(PackNumber), value);
                 OnPropertyChanged(nameof(PackNumber));
             }
         }
@@ -996,13 +937,13 @@ return false;
             if (value.Value == null)//ok
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
                 //if ((PackNumberNote == null) || PackNumberNote.Equals(""))
                 //    value.AddError("Заполните примечание");//to do note handling
-return true;
+                return true;
             }
             return true;
         }
@@ -1012,20 +953,18 @@ return true;
         public int? PackNumberRecodedId { get; set; }
         public virtual RamAccess<string> PackNumberRecoded
         {
-            get
-            {
-                return _dataAccess.Get<string>(nameof(PackNumberRecoded));
-            }
+            get => DataAccess.Get<string>(nameof(PackNumberRecoded));
             set
             {
-                _dataAccess.Set(nameof(PackNumberRecoded), value);
+                DataAccess.Set(nameof(PackNumberRecoded), value);
                 OnPropertyChanged(nameof(PackNumberRecoded));
             }
         }
         //If change this change validation
         private bool PackNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackNumberRecoded property
 
         ////PackNumberNote property
@@ -1033,11 +972,11 @@ return true;
         //{
         //    get
         //    {
-        //        return _dataAccess.Get<string>(nameof(PackNumberNote));//OK
+        //        return DataAccess.Get<string>(nameof(PackNumberNote));//OK
         //    }
         //    set
         //    {
-        //        _dataAccess.Set(nameof(PackNumberNote), value);
+        //        DataAccess.Set(nameof(PackNumberNote), value);
         //        OnPropertyChanged(nameof(PackNumberNote));
         //    }
         //}
@@ -1061,7 +1000,7 @@ return true;
             if (value.Value == null)//ok
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             return true;
         }
@@ -1072,7 +1011,7 @@ return false;
             if (value.Value == null)
             {
                 value.AddError("Поле не заполнено");
-return false;
+                return false;
             }
             List<short> spr = new List<short>()
             {
@@ -1083,7 +1022,7 @@ return false;
             if (!spr.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
-return false;
+                return false;
             }
             if ((value.Value == 1) || (value.Value == 13) ||
                 (value.Value == 14) || (value.Value == 16) ||
@@ -1093,8 +1032,11 @@ return false;
                 (value.Value == 52) || (value.Value == 55) ||
                 (value.Value == 56) || (value.Value == 57) ||
                 (value.Value == 59) || (value.Value == 76))
+            {
                 value.AddError("Код операции не может быть использован для РВ");
-return false;
+            }
+
+            return false;
         }
     }
 }

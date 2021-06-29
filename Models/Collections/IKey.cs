@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Models.Collections
+﻿namespace Collections
 {
     public interface IKey
     {
-        int ID { get; set; }
+        int Id { get; set; }
     }
 }

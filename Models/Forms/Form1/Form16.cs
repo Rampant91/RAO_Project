@@ -20,51 +20,51 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
+            DataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
             CodeRAO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            DataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
             PackName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
             PackNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
             PackNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
             PackTypeRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            DataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
             PackType.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
+            DataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
             Volume.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
+            DataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
             Mass.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
             TransporterOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
+            DataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
             TritiumActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
+            DataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
             BetaGammaActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
+            DataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
             AlphaActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
+            DataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
             TransuraniumActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MainRadionuclids), MainRadionuclids_Validation, null);
+            DataAccess.Init<string>(nameof(MainRadionuclids), MainRadionuclids_Validation, null);
             MainRadionuclids.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ActivityMeasurementDate), ActivityMeasurementDate_Validation, null);
+            DataAccess.Init<string>(nameof(ActivityMeasurementDate), ActivityMeasurementDate_Validation, null);
             ActivityMeasurementDate.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
+            DataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
             QuantityOZIII.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(RefineOrSortRAOCode), RefineOrSortRAOCode_Validation, null);
+            DataAccess.Init<string>(nameof(RefineOrSortRAOCode), RefineOrSortRAOCode_Validation, null);
             RefineOrSortRAOCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
+            DataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
             StatusRAO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
+            DataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
             Subsidy.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
             StoragePlaceName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
             StoragePlaceCode.PropertyChanged += InPropertyChanged;
         }
 
@@ -110,7 +110,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(CodeRAO));
+                    return DataAccess.Get<string>(nameof(CodeRAO));
                 }
 
                 {
@@ -122,7 +122,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(CodeRAO), value);
+                    DataAccess.Set(nameof(CodeRAO), value);
                 }
                 OnPropertyChanged(nameof(CodeRAO));
             }
@@ -156,7 +156,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(StatusRAO));
+                    return DataAccess.Get<string>(nameof(StatusRAO));
                 }
 
                 {
@@ -168,7 +168,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(StatusRAO), value);
+                    DataAccess.Set(nameof(StatusRAO), value);
                 }
                 OnPropertyChanged(nameof(StatusRAO));
             }
@@ -219,7 +219,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Volume));
+                    return DataAccess.Get<string>(nameof(Volume));
                 }
 
                 {
@@ -231,7 +231,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Volume), value);
+                    DataAccess.Set(nameof(Volume), value);
                 }
                 OnPropertyChanged(nameof(Volume));
             }
@@ -279,7 +279,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Mass));
+                    return DataAccess.Get<string>(nameof(Mass));
                 }
 
                 {
@@ -291,7 +291,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Mass), value);
+                    DataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -334,7 +334,7 @@ namespace Models
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(MainRadionuclids));
+                    return DataAccess.Get<string>(nameof(MainRadionuclids));
                 }
 
                 {
@@ -343,7 +343,7 @@ namespace Models
             }
             set
             {
-                _dataAccess.Set(nameof(MainRadionuclids), value);
+                DataAccess.Set(nameof(MainRadionuclids), value);
                 OnPropertyChanged(nameof(MainRadionuclids));
             }
         }
@@ -376,7 +376,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(TritiumActivity));
+                    return DataAccess.Get<string>(nameof(TritiumActivity));
                 }
 
                 {
@@ -388,7 +388,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(TritiumActivity), value);
+                    DataAccess.Set(nameof(TritiumActivity), value);
                 }
                 OnPropertyChanged(nameof(TritiumActivity));
             }
@@ -439,7 +439,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(BetaGammaActivity));
+                    return DataAccess.Get<string>(nameof(BetaGammaActivity));
                 }
 
                 {
@@ -451,7 +451,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(BetaGammaActivity), value);
+                    DataAccess.Set(nameof(BetaGammaActivity), value);
                 }
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
@@ -502,7 +502,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(AlphaActivity));
+                    return DataAccess.Get<string>(nameof(AlphaActivity));
                 }
 
                 {
@@ -514,7 +514,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(AlphaActivity), value);
+                    DataAccess.Set(nameof(AlphaActivity), value);
                 }
                 OnPropertyChanged(nameof(AlphaActivity));
             }
@@ -565,7 +565,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(TransuraniumActivity));
+                    return DataAccess.Get<string>(nameof(TransuraniumActivity));
                 }
 
                 {
@@ -577,7 +577,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(TransuraniumActivity), value);
+                    DataAccess.Set(nameof(TransuraniumActivity), value);
                 }
                 OnPropertyChanged(nameof(TransuraniumActivity));
             }
@@ -627,11 +627,11 @@ namespace Models
         {
             get
             {
-                return _dataAccess.Get<string>(nameof(ActivityMeasurementDate));
+                return DataAccess.Get<string>(nameof(ActivityMeasurementDate));
             }
             set
             {
-                _dataAccess.Set(nameof(ActivityMeasurementDate), value);
+                DataAccess.Set(nameof(ActivityMeasurementDate), value);
                 OnPropertyChanged(nameof(ActivityMeasurementDate));
             }
         }
@@ -670,7 +670,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<int?>(nameof(QuantityOZIII));//OK
+                    return DataAccess.Get<int?>(nameof(QuantityOZIII));//OK
 
                 }
 
@@ -684,7 +684,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(QuantityOZIII), value);
+                    DataAccess.Set(nameof(QuantityOZIII), value);
                 }
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
@@ -717,7 +717,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
 
                 }
 
@@ -731,7 +731,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -779,7 +779,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
 
                 }
 
@@ -792,7 +792,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
@@ -814,7 +814,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(TransporterOKPO));//OK
+                    return DataAccess.Get<string>(nameof(TransporterOKPO));//OK
 
                 }
 
@@ -828,7 +828,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(TransporterOKPO), value);
+                    DataAccess.Set(nameof(TransporterOKPO), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPO));
             }
@@ -869,7 +869,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
 
                 }
 
@@ -882,7 +882,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(TransporterOKPONote), value);
+                    DataAccess.Set(nameof(TransporterOKPONote), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPONote));
             }
@@ -904,7 +904,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackName));//OK
+                    return DataAccess.Get<string>(nameof(PackName));//OK
 
                 }
 
@@ -918,7 +918,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackName), value);
+                    DataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
@@ -950,7 +950,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackNameNote));//OK
+                    return DataAccess.Get<string>(nameof(PackNameNote));//OK
 
                 }
 
@@ -963,7 +963,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackNameNote), value);
+                    DataAccess.Set(nameof(PackNameNote), value);
                 }
                 OnPropertyChanged(nameof(PackNameNote));
             }
@@ -985,7 +985,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackType));//OK
+                    return DataAccess.Get<string>(nameof(PackType));//OK
 
                 }
 
@@ -999,7 +999,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackType), value);
+                    DataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -1031,7 +1031,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+                    return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
 
                 }
 
@@ -1044,7 +1044,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackTypeRecoded), value);
+                    DataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
@@ -1064,7 +1064,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
+                    return DataAccess.Get<string>(nameof(PackTypeNote));//OK
 
                 }
 
@@ -1077,7 +1077,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackTypeNote), value);
+                    DataAccess.Set(nameof(PackTypeNote), value);
                 }
                 OnPropertyChanged(nameof(PackTypeNote));
             }
@@ -1099,7 +1099,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackNumber));
+                    return DataAccess.Get<string>(nameof(PackNumber));
                 }
 
                 {
@@ -1112,7 +1112,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackNumber), value);
+                    DataAccess.Set(nameof(PackNumber), value);
                 }
                 OnPropertyChanged(nameof(PackNumber));
             }
@@ -1144,7 +1144,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackNumberNote));//OK
+                    return DataAccess.Get<string>(nameof(PackNumberNote));//OK
 
                 }
 
@@ -1158,7 +1158,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackNumberNote), value);
+                    DataAccess.Set(nameof(PackNumberNote), value);
                 }
                 OnPropertyChanged(nameof(PackNumberNote));
             }
@@ -1186,7 +1186,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceName));
+                    return DataAccess.Get<string>(nameof(StoragePlaceName));
                 }
 
                 {
@@ -1198,7 +1198,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(StoragePlaceName), value);
+                    DataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
@@ -1229,7 +1229,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceCode));
+                    return DataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
 
                 {
@@ -1241,7 +1241,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(StoragePlaceCode), value);
+                    DataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
@@ -1274,7 +1274,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackNumberRecoded));
+                    return DataAccess.Get<string>(nameof(PackNumberRecoded));
                 }
 
                 {
@@ -1286,7 +1286,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackNumberRecoded), value);
+                    DataAccess.Set(nameof(PackNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackNumberRecoded));
             }
@@ -1308,7 +1308,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Subsidy));
+                    return DataAccess.Get<string>(nameof(Subsidy));
                 }
 
                 {
@@ -1320,7 +1320,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(Subsidy), value);
+                    DataAccess.Set(nameof(Subsidy), value);
                 }
                 OnPropertyChanged(nameof(Subsidy));
             }
@@ -1356,7 +1356,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FcpNumber));
+                    return DataAccess.Get<string>(nameof(FcpNumber));
                 }
 
                 {
@@ -1368,7 +1368,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(FcpNumber), value);
+                    DataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
@@ -1390,7 +1390,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(RefineOrSortRAOCode));
+                    return DataAccess.Get<string>(nameof(RefineOrSortRAOCode));
                 }
 
                 {
@@ -1402,7 +1402,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(RefineOrSortRAOCode), value);
+                    DataAccess.Set(nameof(RefineOrSortRAOCode), value);
                 }
                 OnPropertyChanged(nameof(RefineOrSortRAOCode));
             }

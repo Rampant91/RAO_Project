@@ -18,41 +18,41 @@ namespace Models
         }
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(NameIOU), NameIOU_Validation, null);
+            DataAccess.Init<string>(nameof(NameIOU), NameIOU_Validation, null);
             NameIOU.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
+            DataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
             Mass.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
+            DataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
             CreationDate.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
             CreatorOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
+            DataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
             FactoryNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
+            DataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
             Owner.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
+            DataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
             PackName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
             PackNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
+            DataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
             PackType.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
+            DataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
             PassportNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
+            DataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
             PropertyCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
+            DataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
             SignedServicePeriod.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
+            DataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
             TransporterOKPO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
             FactoryNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
             PackNumberRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
             PackTypeRecoded.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
             PassportNumberRecoded.PropertyChanged += InPropertyChanged;
         }
         private void Validate_all()
@@ -90,7 +90,7 @@ namespace Models
         //    {
                 
         //        {
-        //            return _dataAccess.Get<string>(nameof(DocumentNumberNote));//OK
+        //            return DataAccess.Get<string>(nameof(DocumentNumberNote));//OK
                     
         //        }
                 
@@ -104,7 +104,7 @@ namespace Models
 
                 
         //        {
-        //            _dataAccess.Set(nameof(DocumentNumberNote), value);
+        //            DataAccess.Set(nameof(DocumentNumberNote), value);
         //        }
         //        OnPropertyChanged(nameof(DocumentNumberNote));
         //    }
@@ -125,7 +125,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PassportNumber));//OK
+                    return DataAccess.Get<string>(nameof(PassportNumber));//OK
                     
                 }
                 
@@ -139,7 +139,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(PassportNumber), value);
+                    DataAccess.Set(nameof(PassportNumber), value);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
@@ -171,7 +171,7 @@ return true;
         //    {
                 
         //        {
-        //            return _dataAccess.Get<string>(nameof(OwnerNote));//OK
+        //            return DataAccess.Get<string>(nameof(OwnerNote));//OK
                     
         //        }
                 
@@ -185,7 +185,7 @@ return true;
 
                 
         //        {
-        //            _dataAccess.Set(nameof(OwnerNote), value);
+        //            DataAccess.Set(nameof(OwnerNote), value);
         //        }
         //        OnPropertyChanged(nameof(OwnerNote));
         //    }
@@ -233,7 +233,7 @@ return true;
         //    {
                 
         //        {
-        //            return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
+        //            return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
                     
         //        }
                 
@@ -247,7 +247,7 @@ return true;
 
                 
         //        {
-        //            _dataAccess.Set(nameof(PassportNumberNote), value);
+        //            DataAccess.Set(nameof(PassportNumberNote), value);
         //        }
         //        OnPropertyChanged(nameof(PassportNumberNote));
         //    }
@@ -267,7 +267,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PassportNumberRecoded));//OK
+                    return DataAccess.Get<string>(nameof(PassportNumberRecoded));//OK
                     
                 }
                 
@@ -280,7 +280,7 @@ return true;
 
                 
                 {
-                    _dataAccess.Set(nameof(PassportNumberRecoded), value);
+                    DataAccess.Set(nameof(PassportNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(PassportNumberRecoded));
             }
@@ -301,7 +301,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(NameIOU));//OK
+                    return DataAccess.Get<string>(nameof(NameIOU));//OK
                     
                 }
                 
@@ -315,7 +315,7 @@ return true;
 
                 
                 {
-                    _dataAccess.Set(nameof(NameIOU), value);
+                    DataAccess.Set(nameof(NameIOU), value);
                 }
                 OnPropertyChanged(nameof(NameIOU));
             }
@@ -343,7 +343,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(FactoryNumber));//OK
+                    return DataAccess.Get<string>(nameof(FactoryNumber));//OK
                     
                 }
                 
@@ -353,7 +353,7 @@ return true;
             }
             set
             {
-                    _dataAccess.Set(nameof(FactoryNumber), value);
+                    DataAccess.Set(nameof(FactoryNumber), value);
                 OnPropertyChanged(nameof(FactoryNumber));
             }
         }
@@ -378,7 +378,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
+                    return DataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
                     
                 }
                 
@@ -391,7 +391,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(FactoryNumberRecoded), value);
+                    DataAccess.Set(nameof(FactoryNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
@@ -412,7 +412,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Mass));//OK
+                    return DataAccess.Get<string>(nameof(Mass));//OK
                     
                 }
                 
@@ -425,7 +425,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(Mass), value);
+                    DataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -468,7 +468,7 @@ return false;
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
+                    return DataAccess.Get<string>(nameof(CreatorOKPO));//OK
                     
                 }
                 
@@ -482,7 +482,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(CreatorOKPO), value);
+                    DataAccess.Set(nameof(CreatorOKPO), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPO));
             }
@@ -525,7 +525,7 @@ return false;
         //    {
                 
         //        {
-        //            return _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
+        //            return DataAccess.Get<string>(nameof(CreatorOKPONote));//OK
                     
         //        }
                 
@@ -540,7 +540,7 @@ return false;
 
                 
         //        {
-        //            _dataAccess.Set(nameof(CreatorOKPONote), value);
+        //            DataAccess.Set(nameof(CreatorOKPONote), value);
         //        }
         //        OnPropertyChanged(nameof(CreatorOKPONote));
         //    }
@@ -561,7 +561,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(CreationDate));//OK
+                    return DataAccess.Get<string>(nameof(CreationDate));//OK
                     
                 }
                 
@@ -575,7 +575,7 @@ return false;
                 
                 
                 {
-                    _dataAccess.Set(nameof(CreationDate), value);
+                    DataAccess.Set(nameof(CreationDate), value);
                 }
                 OnPropertyChanged(nameof(CreationDate));
             }
@@ -619,7 +619,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(CreationDateNote));//OK
+                    return DataAccess.Get<string>(nameof(CreationDateNote));//OK
                     
                 }
                 
@@ -633,7 +633,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(CreationDateNote), value);
+                    DataAccess.Set(nameof(CreationDateNote), value);
                 }
                 OnPropertyChanged(nameof(CreationDateNote));
             }
@@ -653,7 +653,7 @@ return false;
         {
             get
             {
-                    return _dataAccess.Get<float>(nameof(SignedServicePeriod));//OK
+                    return DataAccess.Get<float>(nameof(SignedServicePeriod));//OK
             }
             set
             {
@@ -661,7 +661,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(SignedServicePeriod), value);
+                    DataAccess.Set(nameof(SignedServicePeriod), value);
                 }
                 OnPropertyChanged(nameof(SignedServicePeriod));
             }
@@ -687,11 +687,11 @@ return false;
         {
             get
             {
-                    return _dataAccess.Get<byte?>(nameof(PropertyCode));//OK
+                    return DataAccess.Get<byte?>(nameof(PropertyCode));//OK
             }
             set
             {
-                    _dataAccess.Set(nameof(PropertyCode), value);
+                    DataAccess.Set(nameof(PropertyCode), value);
                 OnPropertyChanged(nameof(PropertyCode));
             }
         }
@@ -726,7 +726,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Owner));//OK
+                    return DataAccess.Get<string>(nameof(Owner));//OK
                     
                 }
                 
@@ -740,7 +740,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(Owner), value);
+                    DataAccess.Set(nameof(Owner), value);
                 }
                 OnPropertyChanged(nameof(Owner));
             }
@@ -784,7 +784,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
                     
                 }
                 
@@ -798,7 +798,7 @@ return true;
 
                 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -852,7 +852,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
                     
                 }
                 
@@ -865,7 +865,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
@@ -886,7 +886,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(TransporterOKPO));//OK
+                    return DataAccess.Get<string>(nameof(TransporterOKPO));//OK
                     
                 }
                 
@@ -900,7 +900,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(TransporterOKPO), value);
+                    DataAccess.Set(nameof(TransporterOKPO), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPO));
             }
@@ -942,7 +942,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
                     
                 }
                 
@@ -955,7 +955,7 @@ return true;
 
                 
                 {
-                    _dataAccess.Set(nameof(TransporterOKPONote), value);
+                    DataAccess.Set(nameof(TransporterOKPONote), value);
                 }
                 OnPropertyChanged(nameof(TransporterOKPONote));
             }
@@ -976,7 +976,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackName));//OK
+                    return DataAccess.Get<string>(nameof(PackName));//OK
                     
                 }
                 
@@ -990,7 +990,7 @@ return true;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackName), value);
+                    DataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
@@ -1022,7 +1022,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackNameNote));//OK
+                    return DataAccess.Get<string>(nameof(PackNameNote));//OK
                     
                 }
                 
@@ -1035,7 +1035,7 @@ return true;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackNameNote), value);
+                    DataAccess.Set(nameof(PackNameNote), value);
                 }
                 OnPropertyChanged(nameof(PackNameNote));
             }
@@ -1056,7 +1056,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackType));//OK
+                    return DataAccess.Get<string>(nameof(PackType));//OK
                     
                 }
                 
@@ -1070,7 +1070,7 @@ return true;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackType), value);
+                    DataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -1102,7 +1102,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+                    return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
                     
                 }
                 
@@ -1115,7 +1115,7 @@ return true;
 
                 
                 {
-                    _dataAccess.Set(nameof(PackTypeRecoded), value);
+                    DataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
@@ -1134,7 +1134,7 @@ return true;
         //    {
                 
         //        {
-        //            return _dataAccess.Get<string>(nameof(PackTypeNote));//OK
+        //            return DataAccess.Get<string>(nameof(PackTypeNote));//OK
                     
         //        }
                 
@@ -1144,7 +1144,7 @@ return true;
         //    }
         //    set
         //    {
-        //            _dataAccess.Set(nameof(PackTypeNote), value);
+        //            DataAccess.Set(nameof(PackTypeNote), value);
         //        OnPropertyChanged(nameof(PackTypeNote));
         //    }
         //}
@@ -1164,7 +1164,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackNumber));//OK
+                    return DataAccess.Get<string>(nameof(PackNumber));//OK
                     
                 }
                 
@@ -1174,7 +1174,7 @@ return true;
             }
             set
             {
-                    _dataAccess.Set(nameof(PackNumber), value);
+                    DataAccess.Set(nameof(PackNumber), value);
                 OnPropertyChanged(nameof(PackNumber));
             }
         }
@@ -1205,7 +1205,7 @@ return true;
 //            {
                 
 //                {
-//                    return _dataAccess.Get<string>(nameof(PackNumberNote));//OK
+//                    return DataAccess.Get<string>(nameof(PackNumberNote));//OK
                     
 //                }
                 
@@ -1219,7 +1219,7 @@ return true;
 
                 
 //                {
-//                    _dataAccess.Set(nameof(PackNumberNote), value);
+//                    DataAccess.Set(nameof(PackNumberNote), value);
 //                }
 //                OnPropertyChanged(nameof(PackNumberNote));
 //            }
@@ -1246,7 +1246,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(PackNumberRecoded));//OK
+                    return DataAccess.Get<string>(nameof(PackNumberRecoded));//OK
                     
                 }
                 
@@ -1256,7 +1256,7 @@ return true;
             }
             set
             {
-                    _dataAccess.Set(nameof(PackNumberRecoded), value);
+                    DataAccess.Set(nameof(PackNumberRecoded), value);
                 OnPropertyChanged(nameof(PackNumberRecoded));
             }
         }

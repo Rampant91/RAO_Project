@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 
 namespace Client_App.Controls.Support.RenderDataGridRow
 {
@@ -20,11 +15,12 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return null;
         }
 
-        static Control Get0()
+        private static Control Get0()
         {
             return null;
         }
-        static Control Get1()
+
+        private static Control Get1()
         {
             return null;
         }

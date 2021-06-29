@@ -1,37 +1,25 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using System;
-using System.ComponentModel;
 using Avalonia.ReactiveUI;
-using ReactiveUI;
-using ReactiveUI.Validation;
-using ReactiveUI.Validation.Extensions;
-using ReactiveUI.Validation.Formatters;
 using Collections;
-using Avalonia.Controls.ApplicationLifetimes;
+using System.ComponentModel;
 
 namespace Client_App.Views
 {
     public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     {
-        string _param = "";
-        DBRealization.DBModel dbm { get; set; }
-        public FormChangeOrCreate(string param, string DBPath, Report rep,DBRealization.DBModel dbm)
+        private readonly string _param = "";
+
+        private DBRealization.DBModel dbm { get; set; }
+        public FormChangeOrCreate(string param, Report rep)
         {
-            var tmp = new ViewModels.ChangeOrCreateVM(dbm);
-            this.dbm = dbm;
-            if (DBPath != null)
-            {
-                tmp.DBPath = DBPath;
-                tmp.Storage = rep;
-            }
-            else
-            {
-                this.Close();
-            }
+            this.dbm = DBRealization.StaticConfiguration.DBModel;
+            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM(dbm);
+            tmp.DBPath = DBRealization.StaticConfiguration.DBPath;
+            tmp.Storage = rep;
             tmp.FormType = param;
-            this.DataContext = tmp;
+            DataContext = tmp;
             _param = param;
 
             InitializeComponent();
@@ -55,39 +43,70 @@ namespace Client_App.Views
             base.OnClosing(e);
         }
 
-        void Form1Init(in Panel panel)
+        private void Form1Init(in Panel panel)
         {
             if (_param == "1/0")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual(this.FindNameScope()));
+            }
+
             if (_param == "1/1")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form11_Visual(this.FindNameScope()));
+            }
+
             if (_param == "1/2")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form12_Visual(this.FindNameScope()));
+            }
+
             if (_param == "1/3")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form13_Visual(this.FindNameScope()));
+            }
+
             if (_param == "1/4")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form14_Visual(this.FindNameScope()));
+            }
+
             if (_param == "1/5")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form15_Visual(this.FindNameScope()));
+            }
+
             if (_param == "1/6")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form16_Visual(this.FindNameScope()));
+            }
+
             if (_param == "1/7")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form17_Visual(this.FindNameScope()));
+            }
+
             if (_param == "1/8")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form18_Visual(this.FindNameScope()));
+            }
+
             if (_param == "1/9")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form19_Visual(this.FindNameScope()));
+            }
         }
 
-        void Form2Init(in Panel panel)
+        private void Form2Init(in Panel panel)
         {
             if (_param == "2/0")
+            {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual(this.FindNameScope()));
+            }
         }
 
-        void Init()
+        private void Init()
         {
-            var panel = this.FindControl<Panel>("ChangingPanel");
+            Panel? panel = this.FindControl<Panel>("ChangingPanel");
             Form1Init(panel);
         }
 

@@ -1,7 +1,7 @@
 ﻿using Models.DataAccess;
 using System;
-using System.Globalization;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Models
 {
@@ -19,19 +19,19 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(ObservedSourceNumber), ObservedSourceNumber_Validation, null);
+            DataAccess.Init<string>(nameof(ObservedSourceNumber), ObservedSourceNumber_Validation, null);
             ObservedSourceNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ControlledAreaName), ControlledAreaName_Validation, null);
+            DataAccess.Init<string>(nameof(ControlledAreaName), ControlledAreaName_Validation, null);
             ControlledAreaName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(SupposedWasteSource), SupposedWasteSource_Validation, null);
+            DataAccess.Init<string>(nameof(SupposedWasteSource), SupposedWasteSource_Validation, null);
             SupposedWasteSource.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(DistanceToWasteSource), DistanceToWasteSource_Validation, null);
+            DataAccess.Init<string>(nameof(DistanceToWasteSource), DistanceToWasteSource_Validation, null);
             DistanceToWasteSource.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(TestDepth), TestDepth_Validation, null);
+            DataAccess.Init<string>(nameof(TestDepth), TestDepth_Validation, null);
             TestDepth.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
+            DataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
             RadionuclidName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(AverageYearConcentration), AverageYearConcentration_Validation, null);
+            DataAccess.Init<string>(nameof(AverageYearConcentration), AverageYearConcentration_Validation, null);
             AverageYearConcentration.PropertyChanged += InPropertyChanged;
         }
 
@@ -59,23 +59,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int>(nameof(SourcesQuantity));
+                    return DataAccess.Get<int>(nameof(SourcesQuantity));
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(SourcesQuantity), value);
+                    DataAccess.Set(nameof(SourcesQuantity), value);
                 }
                 OnPropertyChanged(nameof(SourcesQuantity));
             }
         }
         // positive int.
-                private bool SourcesQuantity_Validation(RamAccess<int?> value)//Ready
+        private bool SourcesQuantity_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value <= 0)
@@ -91,13 +91,10 @@ namespace Models
         [Attributes.Form_Property("Номер наблюдательной скважины")]
         public virtual RamAccess<string> ObservedSourceNumber
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(ObservedSourceNumber));
-            }
+            get => DataAccess.Get<string>(nameof(ObservedSourceNumber));
             set
             {
-                    _dataAccess.Set(nameof(ObservedSourceNumber), value);
+                DataAccess.Set(nameof(ObservedSourceNumber), value);
                 OnPropertyChanged(nameof(ObservedSourceNumber));
             }
         }
@@ -113,25 +110,22 @@ namespace Models
         [Attributes.Form_Property("Наименование зоны контроля")]
         public virtual RamAccess<string> ControlledAreaName
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(ControlledAreaName));
-            }
+            get => DataAccess.Get<string>(nameof(ControlledAreaName));
             set
             {
-                    _dataAccess.Set(nameof(ControlledAreaName), value);
+                DataAccess.Set(nameof(ControlledAreaName), value);
                 OnPropertyChanged(nameof(ControlledAreaName));
             }
         }
         //If change this change validation
-                private bool ControlledAreaName_Validation(RamAccess<string> value)//Ready
+        private bool ControlledAreaName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
-            var spr = new List<string>()
+            List<string> spr = new List<string>()
             {
                 "пп",
                 "сзз",
@@ -152,18 +146,15 @@ namespace Models
         [Attributes.Form_Property("Предполагаемый источник поступления радиоактивных веществ")]
         public virtual RamAccess<string> SupposedWasteSource
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(SupposedWasteSource));
-            }
+            get => DataAccess.Get<string>(nameof(SupposedWasteSource));
             set
             {
-                    _dataAccess.Set(nameof(SupposedWasteSource), value);
+                DataAccess.Set(nameof(SupposedWasteSource), value);
                 OnPropertyChanged(nameof(SupposedWasteSource));
             }
         }
 
-                private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
+        private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();//done
             return true;
@@ -175,16 +166,13 @@ namespace Models
         [Attributes.Form_Property("Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м")]
         public virtual RamAccess<string> DistanceToWasteSource
         {
-            get
-            {
-                    return _dataAccess.Get<string>(nameof(DistanceToWasteSource));
-            }
+            get => DataAccess.Get<string>(nameof(DistanceToWasteSource));
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(DistanceToWasteSource), value);
+                    DataAccess.Set(nameof(DistanceToWasteSource), value);
                 }
                 OnPropertyChanged(nameof(DistanceToWasteSource));
             }
@@ -226,27 +214,27 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(TestDepth));
+                    return DataAccess.Get<string>(nameof(TestDepth));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(TestDepth), value);
+                    DataAccess.Set(nameof(TestDepth), value);
                 }
                 OnPropertyChanged(nameof(TestDepth));
             }
         }
 
-                private bool TestDepth_Validation(RamAccess<string> value)//Ready
+        private bool TestDepth_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -280,21 +268,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(TestDepthNote));
+                    return DataAccess.Get<string>(nameof(TestDepthNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(TestDepthNote), value);
+                    DataAccess.Set(nameof(TestDepthNote), value);
                 }
                 OnPropertyChanged(nameof(TestDepthNote));
             }
@@ -314,23 +302,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(RadionuclidName));
+                    return DataAccess.Get<string>(nameof(RadionuclidName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                _dataAccess.Set(nameof(RadionuclidName), value);
+                DataAccess.Set(nameof(RadionuclidName), value);
                 OnPropertyChanged(nameof(RadionuclidName));
             }
         }
         //If change this change validation
-                private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
+        private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -338,7 +326,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var spr = new List<string>();
+            List<string> spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -355,21 +343,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(AverageYearConcentration));
+                    return DataAccess.Get<string>(nameof(AverageYearConcentration));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(AverageYearConcentration), value);
+                    DataAccess.Set(nameof(AverageYearConcentration), value);
                 }
                 OnPropertyChanged(nameof(AverageYearConcentration));
             }
@@ -388,7 +376,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {

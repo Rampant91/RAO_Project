@@ -1,5 +1,4 @@
 ﻿using Models.DataAccess;
-using System;
 
 namespace Models.Abstracts
 {
@@ -17,31 +16,32 @@ namespace Models.Abstracts
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<byte>(nameof(CorrectionNumber));
-                    
+                    return DataAccess.Get<byte>(nameof(CorrectionNumber));
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(CorrectionNumber), value);
+                    DataAccess.Set(nameof(CorrectionNumber), value);
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
 
-        
+
         private bool CorrectionNumber_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //CorrectionNumber property
 
         //NotificationDate property
@@ -51,27 +51,27 @@ namespace Models.Abstracts
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(NotificationDate));
+                    return DataAccess.Get<string>(nameof(NotificationDate));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(NotificationDate), value);
+                    DataAccess.Set(nameof(NotificationDate), value);
                 }
                 OnPropertyChanged(nameof(NotificationDate));
             }
         }
 
-        
+
         //NotificationDate property
     }
 }

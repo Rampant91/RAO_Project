@@ -1,43 +1,25 @@
-﻿using Models.DataAccess;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Collections.Specialized;
-using Models.Collections;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
+using DBRealization;
 using Microsoft.EntityFrameworkCore;
-using FirebirdSql.Data.FirebirdClient;
 
 namespace Collections
 {
     public class DBObservable
     {
-        public DBObservable()
-        {
+        [NotMapped] private bool _isChanged = true;
 
-        }
+        private ObservableCollectionWithItemPropertyChanged<Reports> _reports_Collection;
 
-        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-        {
-            OnPropertyChanged(nameof(Reports_Collection));
-        }
+        protected DBModel dbm { get; set; }
 
-        //[NotMapped]
-        //public int ID { get; set; }
+        public int Id { get; set; }
 
-        [NotMapped]
-        bool _isChanged = true;
         public bool IsChanged
         {
-            get
-            {
-                return _isChanged;
-            }
+            get => _isChanged;
             set
             {
                 if (_isChanged != value)
@@ -48,11 +30,13 @@ namespace Collections
             }
         }
 
-        DbSet<Reports> _reports_Collection;
-        public virtual DbSet<Reports> Reports_Collection
+        public int? Reports_CollectionId { get; set; }
+
+        public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
         {
             get
             {
+                dbm.Entry(this).Collection("Reports_Collection").Load();
                 return _reports_Collection;
             }
             set
@@ -61,6 +45,12 @@ namespace Collections
                 OnPropertyChanged(nameof(Reports_Collection));
             }
         }
+
+        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Reports_Collection));
+        }
+
         private bool Reports_Collection_Validation(DbSet<Reports> value)
         {
             return true;
@@ -72,10 +62,10 @@ namespace Collections
             if (prop != nameof(IsChanged))
             {
                 IsChanged = true;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

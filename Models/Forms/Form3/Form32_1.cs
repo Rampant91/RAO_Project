@@ -31,7 +31,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PassportNumber));//OK
+                    return DataAccess.Get<string>(nameof(PassportNumber));//OK
 
                 }
 
@@ -45,7 +45,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PassportNumber), value);
+                    DataAccess.Set(nameof(PassportNumber), value);
                 }
                 OnPropertyChanged(nameof(PassportNumber));
             }
@@ -78,7 +78,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PassportNumberNote));//OK
+                    return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
 
                 }
 
@@ -91,7 +91,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PassportNumberNote), value);
+                    DataAccess.Set(nameof(PassportNumberNote), value);
                 }
                 OnPropertyChanged(nameof(PassportNumberNote));
             }
@@ -112,7 +112,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(CreatorOKPO));//OK
+                    return DataAccess.Get<string>(nameof(CreatorOKPO));//OK
 
                 }
 
@@ -126,7 +126,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(CreatorOKPO), value);
+                    DataAccess.Set(nameof(CreatorOKPO), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPO));
             }
@@ -188,7 +188,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Type));//OK
+                    return DataAccess.Get<string>(nameof(Type));//OK
 
                 }
 
@@ -201,7 +201,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(Type), value);
+                    DataAccess.Set(nameof(Type), value);
                 }
                 OnPropertyChanged(nameof(Type));
             }
@@ -220,7 +220,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(TypeRecoded));//OK
+                    return DataAccess.Get<string>(nameof(TypeRecoded));//OK
 
                 }
 
@@ -233,7 +233,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(TypeRecoded), value);
+                    DataAccess.Set(nameof(TypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(TypeRecoded));
             }
@@ -254,7 +254,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
 
                 }
 
@@ -268,7 +268,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -304,7 +304,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FactoryNumber));//OK
+                    return DataAccess.Get<string>(nameof(FactoryNumber));//OK
 
                 }
 
@@ -317,7 +317,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(FactoryNumber), value);
+                    DataAccess.Set(nameof(FactoryNumber), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumber));
             }
@@ -342,7 +342,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
+                    return DataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
 
                 }
 
@@ -355,7 +355,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(FactoryNumberRecoded), value);
+                    DataAccess.Set(nameof(FactoryNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(FactoryNumberRecoded));
             }
@@ -376,7 +376,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ActivityOnCreation));//OK
+                    return DataAccess.Get<string>(nameof(ActivityOnCreation));//OK
 
                 }
 
@@ -389,7 +389,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(ActivityOnCreation), value);
+                    DataAccess.Set(nameof(ActivityOnCreation), value);
                 }
                 OnPropertyChanged(nameof(ActivityOnCreation));
             }
@@ -425,7 +425,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(CreationDate));
+                    return DataAccess.Get<string>(nameof(CreationDate));
                 }
 
                 {
@@ -437,7 +437,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(CreationDate), value);
+                    DataAccess.Set(nameof(CreationDate), value);
                 }
                 OnPropertyChanged(nameof(CreationDate));
             }
@@ -456,7 +456,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(CreatorOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(CreatorOKPONote));//OK
 
                 }
 
@@ -471,7 +471,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(CreatorOKPONote), value);
+                    DataAccess.Set(nameof(CreatorOKPONote), value);
                 }
                 OnPropertyChanged(nameof(CreatorOKPONote));
             }
@@ -490,11 +490,11 @@ protected List<string> OKSM = new List<string>
         {
             get
             {
-                return _dataAccess.Get<short>(nameof(Kategory));
+                return DataAccess.Get<short>(nameof(Kategory));
             }
             set
             {
-                _dataAccess.Set(nameof(Kategory), value);
+                DataAccess.Set(nameof(Kategory), value);
                 OnPropertyChanged(nameof(Kategory));
             }
         }
@@ -514,7 +514,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(NuclearMaterialPresence));
+                    return DataAccess.Get<double>(nameof(NuclearMaterialPresence));
                 }
 
                 {
@@ -526,7 +526,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(NuclearMaterialPresence), value);
+                    DataAccess.Set(nameof(NuclearMaterialPresence), value);
                 }
                 OnPropertyChanged(nameof(NuclearMaterialPresence));
             }
@@ -543,7 +543,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(Certificateid));
+                    return DataAccess.Get<string>(nameof(Certificateid));
                 }
 
                 {
@@ -555,7 +555,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(Certificateid), value);
+                    DataAccess.Set(nameof(Certificateid), value);
                 }
                 OnPropertyChanged(nameof(Certificateid));
             }
@@ -572,7 +572,7 @@ protected List<string> OKSM = new List<string>
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(ValidThru));
+                    return DataAccess.Get<string>(nameof(ValidThru));
                 }
 
                 {
@@ -584,7 +584,7 @@ protected List<string> OKSM = new List<string>
 
 
                 {
-                    _dataAccess.Set(nameof(ValidThru), value);
+                    DataAccess.Set(nameof(ValidThru), value);
                 }
                 OnPropertyChanged(nameof(ValidThru));
             }

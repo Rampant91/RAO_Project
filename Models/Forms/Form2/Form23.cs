@@ -1,8 +1,8 @@
 ﻿using Models.DataAccess;
 using System;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -20,29 +20,29 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
             StoragePlaceName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
+            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
             StoragePlaceCode.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ProjectVolume), ProjectVolume_Validation, null);
+            DataAccess.Init<string>(nameof(ProjectVolume), ProjectVolume_Validation, null);
             ProjectVolume.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
+            DataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
             CodeRAO.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
+            DataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
             Volume.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
+            DataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
             Mass.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(SummaryActivity), SummaryActivity_Validation, null);
+            DataAccess.Init<string>(nameof(SummaryActivity), SummaryActivity_Validation, null);
             SummaryActivity.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
+            DataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
             QuantityOZIII.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
+            DataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
             DocumentNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(ExpirationDate), ExpirationDate_Validation, null);
+            DataAccess.Init<string>(nameof(ExpirationDate), ExpirationDate_Validation, null);
             ExpirationDate.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(DocumentName), DocumentName_Validation, null);
+            DataAccess.Init<string>(nameof(DocumentName), DocumentName_Validation, null);
             DocumentName.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
+            DataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
             DocumentDate.PropertyChanged += InPropertyChanged;
         }
 
@@ -75,21 +75,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceName));
+                    return DataAccess.Get<string>(nameof(StoragePlaceName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(StoragePlaceName), value);
+                    DataAccess.Set(nameof(StoragePlaceName), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
@@ -104,7 +104,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var spr = new List<string>();
+            List<string> spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
                 value.AddError("Недопустиое значение");
@@ -119,30 +119,31 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceNameNote));
+                    return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(StoragePlaceNameNote), value);
+                    DataAccess.Set(nameof(StoragePlaceNameNote), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceNameNote));
             }
         }
         //If change this change validation
-        
+
         private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //StoragePlaceNameNote property
 
         //StoragePlaceCode property
@@ -152,27 +153,27 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(StoragePlaceCode));
+                    return DataAccess.Get<string>(nameof(StoragePlaceCode));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(StoragePlaceCode), value);
+                    DataAccess.Set(nameof(StoragePlaceCode), value);
                 }
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }
         //if change this change validation
-        
+
         private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
@@ -185,10 +186,10 @@ namespace Models
             {
                 return true;
             }
-            var spr = new List<string>();
+            List<string> spr = new List<string>();
             if (!spr.Contains(value.Value))
             {
-                value.AddError( "Недопустиое значение");
+                value.AddError("Недопустиое значение");
                 return false;
             }
             return true;
@@ -202,21 +203,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ProjectVolume));
+                    return DataAccess.Get<string>(nameof(ProjectVolume));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ProjectVolume), value);
+                    DataAccess.Set(nameof(ProjectVolume), value);
                 }
                 OnPropertyChanged(nameof(ProjectVolume));
             }
@@ -240,7 +241,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -259,23 +260,23 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<double>(nameof(ProjectVolumeNote));
+                    return DataAccess.Get<double>(nameof(ProjectVolumeNote));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(ProjectVolumeNote), value);
+                DataAccess.Set(nameof(ProjectVolumeNote), value);
                 OnPropertyChanged(nameof(ProjectVolumeNote));
             }
         }
 
-        
+
         private bool ProjectVolumeNote_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
@@ -291,23 +292,23 @@ namespace Models
             get
             {
                 {
-                    return _dataAccess.Get<string>(nameof(CodeRAO));
+                    return DataAccess.Get<string>(nameof(CodeRAO));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
                 {
-                    _dataAccess.Set(nameof(CodeRAO), value);
+                    DataAccess.Set(nameof(CodeRAO), value);
                 }
                 OnPropertyChanged(nameof(CodeRAO));
             }
         }
 
-        
+
         private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
@@ -316,10 +317,10 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var a = new Regex("^[0-9X]{11}$");
+            Regex a = new Regex("^[0-9X]{11}$");
             if (!a.IsMatch(value.Value))
             {
-                value.AddError( "Недопустимое значение");
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -333,21 +334,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Volume));
+                    return DataAccess.Get<string>(nameof(Volume));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Volume), value);
+                    DataAccess.Set(nameof(Volume), value);
                 }
                 OnPropertyChanged(nameof(Volume));
             }
@@ -366,7 +367,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -388,21 +389,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(Mass));
+                    return DataAccess.Get<string>(nameof(Mass));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(Mass), value);
+                    DataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }
@@ -421,7 +422,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -443,22 +444,22 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<int?>(nameof(QuantityOZIII));//OK
+                    return DataAccess.Get<int?>(nameof(QuantityOZIII));//OK
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
 
-                
+
                 {
-                    _dataAccess.Set(nameof(QuantityOZIII), value);
+                    DataAccess.Set(nameof(QuantityOZIII), value);
                 }
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
@@ -487,21 +488,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(SummaryActivity));
+                    return DataAccess.Get<string>(nameof(SummaryActivity));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(SummaryActivity), value);
+                    DataAccess.Set(nameof(SummaryActivity), value);
                 }
                 OnPropertyChanged(nameof(SummaryActivity));
             }
@@ -520,7 +521,7 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
@@ -542,22 +543,22 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(DocumentNumber));//OK
-                    
+                    return DataAccess.Get<string>(nameof(DocumentNumber));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(DocumentNumber), value);
+                    DataAccess.Set(nameof(DocumentNumber), value);
                 }
                 OnPropertyChanged(nameof(DocumentNumber));
             }
@@ -581,31 +582,32 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(DocumentNumberRecoded));//OK
-                    
+                    return DataAccess.Get<string>(nameof(DocumentNumberRecoded));//OK
+
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(DocumentNumberRecoded), value);
+                    DataAccess.Set(nameof(DocumentNumberRecoded), value);
                 }
                 OnPropertyChanged(nameof(DocumentNumberRecoded));
             }
         }
 
-        
+
         private bool DocumentNumberRecoded_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //DocumentNumberRecoded property
 
         //DocumentDate property
@@ -615,18 +617,18 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(DocumentDate));//OK
+                    return DataAccess.Get<string>(nameof(DocumentDate));//OK
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
-                    _dataAccess.Set(nameof(DocumentDate), value);
+                DataAccess.Set(nameof(DocumentDate), value);
                 OnPropertyChanged(nameof(DocumentDate));
             }
         }
@@ -640,7 +642,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -663,21 +665,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(ExpirationDate));
+                    return DataAccess.Get<string>(nameof(ExpirationDate));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(ExpirationDate), value);
+                    DataAccess.Set(nameof(ExpirationDate), value);
                 }
                 OnPropertyChanged(nameof(ExpirationDate));
             }
@@ -692,7 +694,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -715,21 +717,21 @@ namespace Models
         {
             get
             {
-                
+
                 {
-                    return _dataAccess.Get<string>(nameof(DocumentName));
+                    return DataAccess.Get<string>(nameof(DocumentName));
                 }
-                
+
                 {
-                    
+
                 }
             }
             set
             {
 
-                
+
                 {
-                    _dataAccess.Set(nameof(DocumentName), value);
+                    DataAccess.Set(nameof(DocumentName), value);
                 }
                 OnPropertyChanged(nameof(DocumentName));
             }
