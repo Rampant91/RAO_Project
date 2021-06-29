@@ -154,7 +154,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
-
                 }
 
                 {
@@ -188,7 +187,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PassportNumberRecoded));//OK
-
                 }
 
                 {
@@ -223,7 +221,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(Type));//OK
-
                 }
 
                 {
@@ -256,7 +253,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(TypeRecoded));//OK
-
                 }
 
                 {
@@ -291,7 +287,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(Radionuclids));//OK
-
                 }
 
                 {
@@ -342,7 +337,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(FactoryNumber));//OK
-
                 }
 
                 {
@@ -381,7 +375,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
-
                 }
 
                 {
@@ -415,7 +408,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<int?>(nameof(Quantity));//OK
-
                 }
 
                 {
@@ -463,7 +455,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(Activity));//OK
-
                 }
 
                 {
@@ -523,7 +514,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(CreationDate));//OK
-
                 }
 
                 {
@@ -635,7 +625,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-
                 }
 
                 {
@@ -698,7 +687,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-
                 }
 
                 {
@@ -733,7 +721,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(TransporterOKPO));//OK
-
                 }
 
                 {
@@ -788,7 +775,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
-
                 }
 
                 {
@@ -823,7 +809,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PackName));//OK
-
                 }
 
                 {
@@ -863,7 +848,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PackNameNote));//OK
-
                 }
 
                 {
@@ -898,7 +882,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PackType));//OK
-
                 }
 
                 {
@@ -944,7 +927,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-
                 }
 
                 {
@@ -977,7 +959,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PackTypeNote));//OK
-
                 }
 
                 {
@@ -1012,7 +993,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PackNumber));//OK
-
                 }
 
                 {
@@ -1052,7 +1032,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PackNumberNote));//OK
-
                 }
 
                 {
@@ -1093,7 +1072,6 @@ namespace Models
 
                 {
                     return DataAccess.Get<string>(nameof(PackNumberRecoded));//OK
-
                 }
 
                 {
@@ -1159,7 +1137,6 @@ namespace Models
             {
                 return true;
             }
-
             value.AddError("Недопустимое значение");
             return false;
         }
@@ -1389,16 +1366,13 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
-            bool flag = false;
-            foreach (short item in spr)
+            List<short> spr = new List<short>()
             {
-                if (item == value.Value)
-                {
-                    flag = true;
-                }
-            }
-            if (!flag)
+                1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,
+                46,47,48,49,51,52,53,54,55,56,57,58,59,61,62,63,64,65,66,67,68,71,72,73,74,75,76,81,82,
+                83,84,85,86,87,88,97,98,99
+            };    //HERE BINDS SPRAVOCHNIK
+            if (!spr.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1424,9 +1398,9 @@ namespace Models
             if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15 || a16 || a17)
             {
                 value.AddError("Код операции не может быть использован для РАО");
+                return false;
             }
-
-            return false;
+            return true;
         }
     }
 }

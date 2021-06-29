@@ -1034,9 +1034,9 @@ namespace Models
                 (value.Value == 59) || (value.Value == 76))
             {
                 value.AddError("Код операции не может быть использован для РВ");
+                return false;
             }
-
-            return false;
+            return true;
         }
     }
 }
