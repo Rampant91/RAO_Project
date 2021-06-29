@@ -31,7 +31,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<short>(nameof(OperationCode));
+                    return DataAccess.Get<short>(nameof(OperationCode));
                     
                 }
                 
@@ -41,7 +41,7 @@ namespace Models
             }
             set
             {
-                    _dataAccess.Set(nameof(OperationCode), value);
+                    DataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
@@ -62,7 +62,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
                     
                 }
                 
@@ -76,7 +76,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -111,7 +111,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<short>(nameof(Kategory));
+                    return DataAccess.Get<short>(nameof(Kategory));
                 }
                 
                 {
@@ -123,7 +123,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(Kategory), value);
+                    DataAccess.Set(nameof(Kategory), value);
                 }
                 OnPropertyChanged(nameof(Kategory));
             }
@@ -144,7 +144,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Activity));//OK
+                    return DataAccess.Get<string>(nameof(Activity));//OK
                     
                 }
                 
@@ -157,7 +157,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(Activity), value);
+                    DataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -199,7 +199,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
                     
                 }
                 
@@ -214,7 +214,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -240,7 +240,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
                     
                 }
                 
@@ -254,7 +254,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -314,7 +314,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
                     
                 }
                 
@@ -327,7 +327,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }

@@ -10,14 +10,14 @@ namespace Models
 {
     public class Note : IChanged
     {
-        protected DataAccessCollection _dataAccess { get; set; }
+        protected DataAccessCollection DataAccess { get; set; }
         public Note(DataAccessCollection Access)
         {
-            _dataAccess = Access;
+            DataAccess = Access;
         }
         public Note()
         {
-            _dataAccess = new DataAccessCollection();
+            DataAccess = new DataAccessCollection();
         }
         [Key]
         public int NoteId { get; set; }
@@ -26,10 +26,10 @@ namespace Models
         [Attributes.Form_Property("Номер строки")]
         public RamAccess<int> RowNumber
         {
-            get => _dataAccess.Get<int>(nameof(RowNumber));
+            get => DataAccess.Get<int>(nameof(RowNumber));
             set
             {
-                _dataAccess.Set(nameof(RowNumber), value);
+                DataAccess.Set(nameof(RowNumber), value);
                 OnPropertyChanged(nameof(RowNumber));
             }
         }
@@ -44,10 +44,10 @@ namespace Models
         [Attributes.Form_Property("Номер графы")]
         public RamAccess<int> GraphNumber
         {
-            get => _dataAccess.Get<int>(nameof(GraphNumber));
+            get => DataAccess.Get<int>(nameof(GraphNumber));
             set
             {
-                _dataAccess.Set(nameof(GraphNumber), value);
+                DataAccess.Set(nameof(GraphNumber), value);
                 OnPropertyChanged(nameof(GraphNumber));
             }
         }
@@ -62,10 +62,10 @@ namespace Models
         [Attributes.Form_Property("Комментарий")]
         public RamAccess<string> Comment
         {
-            get => _dataAccess.Get<string>(nameof(Comment));
+            get => DataAccess.Get<string>(nameof(Comment));
             set
             {
-                _dataAccess.Set(nameof(Comment), value);
+                DataAccess.Set(nameof(Comment), value);
                 OnPropertyChanged(nameof(Comment));
             }
         }

@@ -18,37 +18,37 @@ namespace Models
 
         private void Init()
         {
-            _dataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
+            DataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
             CodeOYAT.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
+            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityFromAnothers), QuantityFromAnothers_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityFromAnothers), QuantityFromAnothers_Validation, null);
             QuantityFromAnothers.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityFromAnothersImported), QuantityFromAnothersImported_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityFromAnothersImported), QuantityFromAnothersImported_Validation, null);
             QuantityFromAnothersImported.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityCreated), QuantityCreated_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityCreated), QuantityCreated_Validation, null);
             QuantityCreated.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityRemovedFromAccount), QuantityRemovedFromAccount_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityRemovedFromAccount), QuantityRemovedFromAccount_Validation, null);
             QuantityRemovedFromAccount.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassCreated), MassCreated_Validation, null);
+            DataAccess.Init<string>(nameof(MassCreated), MassCreated_Validation, null);
             MassCreated.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassFromAnothers), MassFromAnothers_Validation, null);
+            DataAccess.Init<string>(nameof(MassFromAnothers), MassFromAnothers_Validation, null);
             MassFromAnothers.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassFromAnothersImported), MassFromAnothersImported_Validation, null);
+            DataAccess.Init<string>(nameof(MassFromAnothersImported), MassFromAnothersImported_Validation, null);
             MassFromAnothersImported.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassRemovedFromAccount), MassRemovedFromAccount_Validation, null);
+            DataAccess.Init<string>(nameof(MassRemovedFromAccount), MassRemovedFromAccount_Validation, null);
             MassRemovedFromAccount.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityTransferredToAnother), QuantityTransferredToAnother_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityTransferredToAnother), QuantityTransferredToAnother_Validation, null);
             QuantityTransferredToAnother.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassAnotherReasons), MassAnotherReasons_Validation, null);
+            DataAccess.Init<string>(nameof(MassAnotherReasons), MassAnotherReasons_Validation, null);
             MassAnotherReasons.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassTransferredToAnother), MassTransferredToAnother_Validation, null);
+            DataAccess.Init<string>(nameof(MassTransferredToAnother), MassTransferredToAnother_Validation, null);
             MassTransferredToAnother.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityAnotherReasons), QuantityAnotherReasons_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityAnotherReasons), QuantityAnotherReasons_Validation, null);
             QuantityAnotherReasons.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(QuantityRefined), QuantityRefined_Validation, null);
+            DataAccess.Init<string>(nameof(QuantityRefined), QuantityRefined_Validation, null);
             QuantityRefined.PropertyChanged += InPropertyChanged;
-            _dataAccess.Init<string>(nameof(MassRefined), MassRefined_Validation, null);
+            DataAccess.Init<string>(nameof(MassRefined), MassRefined_Validation, null);
             MassRefined.PropertyChanged += InPropertyChanged;
         }
 
@@ -86,7 +86,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(CodeOYAT));
+                    return DataAccess.Get<string>(nameof(CodeOYAT));
                 }
                 
                 {
@@ -98,7 +98,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(CodeOYAT), value);
+                    DataAccess.Set(nameof(CodeOYAT), value);
                 }
                 OnPropertyChanged(nameof(CodeOYAT));
             }
@@ -118,7 +118,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(CodeOYATnote));
+                    return DataAccess.Get<string>(nameof(CodeOYATnote));
                 }
                 
                 {
@@ -130,7 +130,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(CodeOYATnote), value);
+                    DataAccess.Set(nameof(CodeOYATnote), value);
                 }
                 OnPropertyChanged(nameof(CodeOYATnote));
             }
@@ -149,7 +149,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(FcpNumber));
+                    return DataAccess.Get<string>(nameof(FcpNumber));
                 }
                 
                 {
@@ -161,7 +161,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(FcpNumber), value);
+                    DataAccess.Set(nameof(FcpNumber), value);
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
@@ -182,7 +182,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassCreated));
+                    return DataAccess.Get<string>(nameof(MassCreated));
                 }
                 
                 {
@@ -194,7 +194,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(MassCreated), value);
+                    DataAccess.Set(nameof(MassCreated), value);
                 }
                 OnPropertyChanged(nameof(MassCreated));
             }
@@ -242,7 +242,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityCreated));//OK
+                    return DataAccess.Get<string>(nameof(QuantityCreated));//OK
                     
                 }
                 
@@ -257,7 +257,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityCreated), value);
+                    DataAccess.Set(nameof(QuantityCreated), value);
                 }
                 OnPropertyChanged(nameof(QuantityCreated));
             }
@@ -295,7 +295,7 @@ namespace Models
         //    {
                 
         //        {
-        //            return _dataAccess.Get<string>(nameof(QuantityCreatedNote));//OK
+        //            return DataAccess.Get<string>(nameof(QuantityCreatedNote));//OK
                     
         //        }
                 
@@ -308,7 +308,7 @@ namespace Models
 
                 
         //        {
-        //            _dataAccess.Set(nameof(QuantityCreatedNote), value);
+        //            DataAccess.Set(nameof(QuantityCreatedNote), value);
         //        }
         //        OnPropertyChanged(nameof(QuantityCreatedNote));
         //    }
@@ -347,7 +347,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassFromAnothers));
+                    return DataAccess.Get<string>(nameof(MassFromAnothers));
                 }
                 
                 {
@@ -356,7 +356,7 @@ namespace Models
             }
             set
             {
-                    _dataAccess.Set(nameof(MassFromAnothers), value);
+                    DataAccess.Set(nameof(MassFromAnothers), value);
                 OnPropertyChanged(nameof(MassFromAnothers));
             }
         }
@@ -403,7 +403,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityFromAnothers));//OK
+                    return DataAccess.Get<string>(nameof(QuantityFromAnothers));//OK
                     
                 }
                 
@@ -413,7 +413,7 @@ namespace Models
             }
             set
             {
-                    _dataAccess.Set(nameof(QuantityFromAnothers), value);
+                    DataAccess.Set(nameof(QuantityFromAnothers), value);
                 OnPropertyChanged(nameof(QuantityFromAnothers));
             }
         }
@@ -450,7 +450,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
+                    return DataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
                     
                 }
                 
@@ -460,7 +460,7 @@ namespace Models
             }
             set
             {
-                    _dataAccess.Set(nameof(QuantityFromAnothersNote), value);
+                    DataAccess.Set(nameof(QuantityFromAnothersNote), value);
                 OnPropertyChanged(nameof(QuantityFromAnothersNote));
             }
         }
@@ -498,7 +498,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassFromAnothersImported));
+                    return DataAccess.Get<string>(nameof(MassFromAnothersImported));
                 }
                 
                 {
@@ -510,7 +510,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(MassFromAnothersImported), value);
+                    DataAccess.Set(nameof(MassFromAnothersImported), value);
                 }
                 OnPropertyChanged(nameof(MassFromAnothersImported));
             }
@@ -558,7 +558,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityFromAnothersImported));//OK
+                    return DataAccess.Get<string>(nameof(QuantityFromAnothersImported));//OK
                     
                 }
                 
@@ -573,7 +573,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityFromAnothersImported), value);
+                    DataAccess.Set(nameof(QuantityFromAnothersImported), value);
                 }
                 OnPropertyChanged(nameof(QuantityFromAnothersImported));
             }
@@ -611,7 +611,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
+                    return DataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
                     
                 }
                 
@@ -624,7 +624,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityFromImportedNote), value);
+                    DataAccess.Set(nameof(QuantityFromImportedNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityFromImportedNote));
             }
@@ -663,7 +663,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassAnotherReasons));
+                    return DataAccess.Get<string>(nameof(MassAnotherReasons));
                 }
                 
                 {
@@ -675,7 +675,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(MassAnotherReasons), value);
+                    DataAccess.Set(nameof(MassAnotherReasons), value);
                 }
                 OnPropertyChanged(nameof(MassAnotherReasons));
             }
@@ -723,7 +723,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityAnotherReasons));//OK
+                    return DataAccess.Get<string>(nameof(QuantityAnotherReasons));//OK
                     
                 }
                 
@@ -737,7 +737,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityAnotherReasons), value);
+                    DataAccess.Set(nameof(QuantityAnotherReasons), value);
                 }
                 OnPropertyChanged(nameof(QuantityAnotherReasons));
             }
@@ -775,7 +775,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
+                    return DataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
                     
                 }
                 
@@ -788,7 +788,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
+                    DataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
             }
@@ -827,7 +827,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassTransferredToAnother));
+                    return DataAccess.Get<string>(nameof(MassTransferredToAnother));
                 }
                 
                 {
@@ -836,7 +836,7 @@ namespace Models
             }
             set
             {
-                    _dataAccess.Set(nameof(MassTransferredToAnother), value);
+                    DataAccess.Set(nameof(MassTransferredToAnother), value);
                 OnPropertyChanged(nameof(MassTransferredToAnother));
             }
         }
@@ -883,7 +883,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityTransferredToAnother));//OK
+                    return DataAccess.Get<string>(nameof(QuantityTransferredToAnother));//OK
                     
                 }
                 
@@ -897,7 +897,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityTransferredToAnother), value);
+                    DataAccess.Set(nameof(QuantityTransferredToAnother), value);
                 }
                 OnPropertyChanged(nameof(QuantityTransferredToAnother));
             }
@@ -935,7 +935,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
+                    return DataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
                     
                 }
                 
@@ -948,7 +948,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityTransferredToNote), value);
+                    DataAccess.Set(nameof(QuantityTransferredToNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityTransferredToNote));
             }
@@ -987,7 +987,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassRefined));
+                    return DataAccess.Get<string>(nameof(MassRefined));
                 }
                 
                 {
@@ -996,7 +996,7 @@ namespace Models
             }
             set
             {
-                    _dataAccess.Set(nameof(MassRefined), value);
+                    DataAccess.Set(nameof(MassRefined), value);
                 OnPropertyChanged(nameof(MassRefined));
             }
         }
@@ -1043,7 +1043,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityRefined));//OK
+                    return DataAccess.Get<string>(nameof(QuantityRefined));//OK
                     
                 }
                 
@@ -1057,7 +1057,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityRefined), value);
+                    DataAccess.Set(nameof(QuantityRefined), value);
                 }
                 OnPropertyChanged(nameof(QuantityRefined));
             }
@@ -1095,7 +1095,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
+                    return DataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
                     
                 }
                 
@@ -1108,7 +1108,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityRefinedNote), value);
+                    DataAccess.Set(nameof(QuantityRefinedNote), value);
                 }
                 OnPropertyChanged(nameof(QuantityRefinedNote));
             }
@@ -1147,7 +1147,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(MassRemovedFromAccount));
+                    return DataAccess.Get<string>(nameof(MassRemovedFromAccount));
                 }
                 
                 {
@@ -1159,7 +1159,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(MassRemovedFromAccount), value);
+                    DataAccess.Set(nameof(MassRemovedFromAccount), value);
                 }
                 OnPropertyChanged(nameof(MassRemovedFromAccount));
             }
@@ -1207,7 +1207,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(QuantityRemovedFromAccount));//OK
+                    return DataAccess.Get<string>(nameof(QuantityRemovedFromAccount));//OK
                     
                 }
                 
@@ -1221,7 +1221,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityRemovedFromAccount), value);
+                    DataAccess.Set(nameof(QuantityRemovedFromAccount), value);
                 }
                 OnPropertyChanged(nameof(QuantityRemovedFromAccount));
             }
@@ -1259,7 +1259,7 @@ namespace Models
         //    {
                 
         //        {
-        //            return _dataAccess.Get<string>(nameof(QuantityRemovedFromNote));//OK
+        //            return DataAccess.Get<string>(nameof(QuantityRemovedFromNote));//OK
                     
         //        }
                 
@@ -1272,7 +1272,7 @@ namespace Models
 
                 
         //        {
-        //            _dataAccess.Set(nameof(QuantityRemovedFromNote), value);
+        //            DataAccess.Set(nameof(QuantityRemovedFromNote), value);
         //        }
         //        OnPropertyChanged(nameof(QuantityRemovedFromNote));
         //    }

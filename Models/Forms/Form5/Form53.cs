@@ -30,7 +30,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<short>(nameof(OperationCode));
+                    return DataAccess.Get<short>(nameof(OperationCode));
                     
                 }
                 
@@ -40,7 +40,7 @@ namespace Models
             }
             set
             {
-                _dataAccess.Set(nameof(OperationCode), value);
+                DataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
@@ -59,7 +59,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(TypeOfAccountedParts));
+                    return DataAccess.Get<int>(nameof(TypeOfAccountedParts));
                 }
                 
                 {
@@ -71,7 +71,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(TypeOfAccountedParts), value);
+                    DataAccess.Set(nameof(TypeOfAccountedParts), value);
                 }
                 OnPropertyChanged(nameof(TypeOfAccountedParts));
             }
@@ -97,7 +97,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(KindOri));
+                    return DataAccess.Get<int>(nameof(KindOri));
                 }
                 
                 {
@@ -109,7 +109,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(KindOri), value);
+                    DataAccess.Set(nameof(KindOri), value);
                 }
                 OnPropertyChanged(nameof(KindOri));
             }
@@ -131,7 +131,7 @@ public int? AggregateStateId { get; set; }
             {
                 
                 {
-                    return _dataAccess.Get<byte>(nameof(AggregateState));
+                    return DataAccess.Get<byte>(nameof(AggregateState));
                 }
                 
                 {
@@ -143,7 +143,7 @@ public int? AggregateStateId { get; set; }
 
                 
                 {
-                    _dataAccess.Set(nameof(AggregateState), value);
+                    DataAccess.Set(nameof(AggregateState), value);
                 }
                 OnPropertyChanged(nameof(AggregateState));
             }
@@ -169,7 +169,7 @@ public int? AggregateStateId { get; set; }
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
                     
                 }
                 
@@ -183,7 +183,7 @@ public int? AggregateStateId { get; set; }
 
                 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -243,7 +243,7 @@ public int? AggregateStateId { get; set; }
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
                     
                 }
                 
@@ -256,7 +256,7 @@ public int? AggregateStateId { get; set; }
 
                 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
@@ -276,7 +276,7 @@ public int? AggregateStateId { get; set; }
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Radionuclids));//OK
+                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
                     
                 }
                 
@@ -290,7 +290,7 @@ public int? AggregateStateId { get; set; }
 
                 
                 {
-                    _dataAccess.Set(nameof(Radionuclids), value);
+                    DataAccess.Set(nameof(Radionuclids), value);
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -326,7 +326,7 @@ return true;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Activity));//OK
+                    return DataAccess.Get<string>(nameof(Activity));//OK
                     
                 }
                 
@@ -339,7 +339,7 @@ return true;
 
                 
                 {
-                    _dataAccess.Set(nameof(Activity), value);
+                    DataAccess.Set(nameof(Activity), value);
                 }
                 OnPropertyChanged(nameof(Activity));
             }
@@ -386,7 +386,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
                     
                 }
                 
@@ -401,7 +401,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -428,7 +428,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(Volume));
+                    return DataAccess.Get<double>(nameof(Volume));
                 }
                 
                 {
@@ -440,7 +440,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(Volume), value);
+                    DataAccess.Set(nameof(Volume), value);
                 }
                 OnPropertyChanged(nameof(Volume));
             }
@@ -467,7 +467,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(Mass));
+                    return DataAccess.Get<double>(nameof(Mass));
                 }
                 
                 {
@@ -479,7 +479,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(Mass), value);
+                    DataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }

@@ -64,7 +64,8 @@ namespace Models.Abstracts
         public int Id { get; set; }
 
         //FormNum property
-        [Attributes.Form_Property("Форма")]public int? FormNumId { get; set; }
+        public int? FormNumId { get; set; }
+        [Attributes.Form_Property("Форма")]
         public virtual RamAccess<string> FormNum
         {
             get

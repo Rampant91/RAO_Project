@@ -376,7 +376,9 @@ namespace Models
         //Email property
 
         //Okpo property
-        [Attributes.Form_Property("ОКПО")]public int? OkpoId { get; set; }
+        public int? OkpoId { get; set; }
+
+        [Attributes.Form_Property("ОКПО")]        
         public virtual RamAccess<string> Okpo
         {
             get

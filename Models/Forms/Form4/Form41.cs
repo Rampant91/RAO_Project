@@ -28,7 +28,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(NumberInOrder));
+                    return DataAccess.Get<int>(nameof(NumberInOrder));
                     
                 }
                 
@@ -41,7 +41,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(NumberInOrder), value);
+                    DataAccess.Set(nameof(NumberInOrder), value);
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
@@ -61,7 +61,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(RegNo));
+                    return DataAccess.Get<string>(nameof(RegNo));
                 }
                 
                 {
@@ -73,7 +73,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(RegNo), value);
+                    DataAccess.Set(nameof(RegNo), value);
                 }
                 OnPropertyChanged(nameof(RegNo));
             }
@@ -90,7 +90,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Okpo));
+                    return DataAccess.Get<string>(nameof(Okpo));
                 }
                 
                 {
@@ -102,7 +102,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(Okpo), value);
+                    DataAccess.Set(nameof(Okpo), value);
                 }
                 OnPropertyChanged(nameof(Okpo));
             }
@@ -133,7 +133,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(OrgName));
+                    return DataAccess.Get<string>(nameof(OrgName));
                 }
                 
                 {
@@ -145,7 +145,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(OrgName), value);
+                    DataAccess.Set(nameof(OrgName), value);
                 }
                 OnPropertyChanged(nameof(OrgName));
             }
@@ -162,7 +162,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(LicenseInfo));
+                    return DataAccess.Get<string>(nameof(LicenseInfo));
                 }
                 
                 {
@@ -174,7 +174,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(LicenseInfo), value);
+                    DataAccess.Set(nameof(LicenseInfo), value);
                 }
                 OnPropertyChanged(nameof(LicenseInfo));
             }
@@ -191,7 +191,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityOfFormsInv));//OK
+                    return DataAccess.Get<int>(nameof(QuantityOfFormsInv));//OK
                     
                 }
                 
@@ -205,7 +205,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityOfFormsInv), value);
+                    DataAccess.Set(nameof(QuantityOfFormsInv), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsInv));
             }
@@ -232,7 +232,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityOfFormsOper));//OK
+                    return DataAccess.Get<int>(nameof(QuantityOfFormsOper));//OK
                     
                 }
                 
@@ -246,7 +246,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityOfFormsOper), value);
+                    DataAccess.Set(nameof(QuantityOfFormsOper), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsOper));
             }
@@ -272,7 +272,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(QuantityOfFormsYear));//OK
+                    return DataAccess.Get<int>(nameof(QuantityOfFormsYear));//OK
                     
                 }
                 
@@ -286,7 +286,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(QuantityOfFormsYear), value);
+                    DataAccess.Set(nameof(QuantityOfFormsYear), value);
                 }
                 OnPropertyChanged(nameof(QuantityOfFormsYear));
             }
@@ -312,7 +312,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Notes));
+                    return DataAccess.Get<string>(nameof(Notes));
                 }
                 
                 {
@@ -324,7 +324,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(Notes), value);
+                    DataAccess.Set(nameof(Notes), value);
                 }
                 OnPropertyChanged(nameof(Notes));
             }

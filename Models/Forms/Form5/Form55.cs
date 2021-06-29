@@ -29,7 +29,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(Name));//OK
+                    return DataAccess.Get<string>(nameof(Name));//OK
                     
                 }
                 
@@ -42,7 +42,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(Name), value);
+                    DataAccess.Set(nameof(Name), value);
                 }
                 OnPropertyChanged(nameof(Name));
             }
@@ -60,11 +60,11 @@ namespace Models
         {
             get
             {
-                    return _dataAccess.Get<short>(nameof(OperationCode));
+                    return DataAccess.Get<short>(nameof(OperationCode));
             }
             set
             {
-                _dataAccess.Set(nameof(OperationCode), value);
+                DataAccess.Set(nameof(OperationCode), value);
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
@@ -83,7 +83,7 @@ namespace Models
             {
                 
                 {
-                    return _dataAccess.Get<int>(nameof(Quantity));//OK
+                    return DataAccess.Get<int>(nameof(Quantity));//OK
                     
                 }
                 
@@ -98,7 +98,7 @@ namespace Models
 
                 
                 {
-                    _dataAccess.Set(nameof(Quantity), value);
+                    DataAccess.Set(nameof(Quantity), value);
                 }
                 OnPropertyChanged(nameof(Quantity));
             }
@@ -125,7 +125,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
                     
                 }
                 
@@ -139,7 +139,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
@@ -198,7 +198,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
                     
                 }
                 
@@ -211,7 +211,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
                 }
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
             }
@@ -231,7 +231,7 @@ return false;
             {
                 
                 {
-                    return _dataAccess.Get<double>(nameof(Mass));
+                    return DataAccess.Get<double>(nameof(Mass));
                 }
                 
                 {
@@ -243,7 +243,7 @@ return false;
 
                 
                 {
-                    _dataAccess.Set(nameof(Mass), value);
+                    DataAccess.Set(nameof(Mass), value);
                 }
                 OnPropertyChanged(nameof(Mass));
             }

@@ -27,7 +27,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackName));//OK
+                    return DataAccess.Get<string>(nameof(PackName));//OK
 
                 }
 
@@ -41,7 +41,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackName), value);
+                    DataAccess.Set(nameof(PackName), value);
                 }
                 OnPropertyChanged(nameof(PackName));
             }
@@ -68,7 +68,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackType));//OK
+                    return DataAccess.Get<string>(nameof(PackType));//OK
 
                 }
 
@@ -82,7 +82,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackType), value);
+                    DataAccess.Set(nameof(PackType), value);
                 }
                 OnPropertyChanged(nameof(PackType));
             }
@@ -108,7 +108,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(PackTypeRecoded));//OK
+                    return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
 
                 }
 
@@ -121,7 +121,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(PackTypeRecoded), value);
+                    DataAccess.Set(nameof(PackTypeRecoded), value);
                 }
                 OnPropertyChanged(nameof(PackTypeRecoded));
             }
@@ -142,7 +142,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<string>(nameof(id));
+                    return DataAccess.Get<string>(nameof(id));
                 }
 
                 {
@@ -154,7 +154,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(id), value);
+                    DataAccess.Set(nameof(id), value);
                 }
                 OnPropertyChanged(nameof(id));
             }
@@ -171,7 +171,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<int>(nameof(CreationYear));
+                    return DataAccess.Get<int>(nameof(CreationYear));
                 }
 
                 {
@@ -183,7 +183,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(CreationYear), value);
+                    DataAccess.Set(nameof(CreationYear), value);
                 }
                 OnPropertyChanged(nameof(CreationYear));
             }
@@ -200,7 +200,7 @@ namespace Models
             {
 
                 {
-                    return _dataAccess.Get<double>(nameof(DepletedUraniumMass));
+                    return DataAccess.Get<double>(nameof(DepletedUraniumMass));
                 }
 
                 {
@@ -212,7 +212,7 @@ namespace Models
 
 
                 {
-                    _dataAccess.Set(nameof(DepletedUraniumMass), value);
+                    DataAccess.Set(nameof(DepletedUraniumMass), value);
                 }
                 OnPropertyChanged(nameof(DepletedUraniumMass));
             }
