@@ -141,7 +141,7 @@ namespace Client_App.Controls.DataGrid
 
         private void SetSelectedControls_LineSingle()
         {
-            var Row = FirstPressedItem[0];
+            var Row = LastPressedItem[0];
             var sel = SelectedCells.ToArray();
             foreach (Row item in sel)
                 if (item.SRow != Row)
@@ -160,8 +160,8 @@ namespace Client_App.Controls.DataGrid
 
         private void SetSelectedControls_CellSingle()
         {
-            var Row = FirstPressedItem[0];
-            var Column = FirstPressedItem[1];
+            var Row = LastPressedItem[0];
+            var Column = LastPressedItem[1];
             var sel = SelectedCells.ToArray();
             foreach (Cell item in sel)
                 if (item.CellRow != Row && item.CellColumn != Column)
@@ -234,49 +234,45 @@ namespace Client_App.Controls.DataGrid
         private void SetSelectedItems()
         {
             var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
-            if (FirstPressedItem[0] != 0 && FirstPressedItem[1] != 0)
-                if (LastPressedItem[0] != 0 && LastPressedItem[1] != 0)
-                    foreach (var item in SelectedCells)
-                    {
-                        if (item is Cell)
-                        {
-                            var ch = (Border) ((Cell) item).Content;
-                            var ch2 = (Panel) ch.Child;
-                            var text = (TextBox) ch2.Children[0];
-                            lst.Add((IChanged) text.DataContext);
-                        }
+            foreach (var item in SelectedCells)
+            {
+                if (item is Cell)
+                {
+                    var ch = (Border) ((Cell) item).Content;
+                    var ch2 = (Panel) ch.Child;
+                    var text = (TextBox) ch2.Children[0];
+                    lst.Add((IChanged) text.DataContext);
+                }
 
-                        if (item is StackPanel)
-                        {
-                            var ch = (Cell) ((StackPanel) item).Children[0];
-                            lst.Add((IChanged) ch.DataContext);
-                        }
-                    }
+                if (item is StackPanel)
+                {
+                    var ch = (Cell) ((StackPanel) item).Children[0];
+                    lst.Add((IChanged) ch.DataContext);
+                }
 
-            _selecteditems = lst;
+                _selecteditems = lst;
+            }
         }
 
         private void SetSelectedItemsWithHandler()
         {
             var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
-            if (FirstPressedItem[0] != 0 && FirstPressedItem[1] != 0)
-                if (LastPressedItem[0] != 0 && LastPressedItem[1] != 0)
-                    foreach (var item in SelectedCells)
-                    {
-                        if (item is Cell)
-                        {
-                            var ch = (Border) ((Cell) item).Content;
-                            var ch2 = (Panel) ch.Child;
-                            var text = (TextBox) ch2.Children[0];
-                            lst.Add((IChanged) text.DataContext);
-                        }
+            foreach (var item in SelectedCells)
+            {
+                if (item is Cell)
+                {
+                    var ch = (Border) ((Cell) item).Content;
+                    var ch2 = (Panel) ch.Child;
+                    var text = (TextBox) ch2.Children[0];
+                    lst.Add((IChanged) text.DataContext);
+                }
 
-                        if (item is StackPanel)
-                        {
-                            var ch = (IChanged) item.DataContext;
-                            lst.Add(ch);
-                        }
-                    }
+                if (item is StackPanel)
+                {
+                    var ch = (IChanged) item.DataContext;
+                    lst.Add(ch);
+                }
+            }
 
             SelectedItems = lst;
         }
@@ -293,8 +289,16 @@ namespace Client_App.Controls.DataGrid
 
             if (args.PropertyName == "DownMove")
             {
-                LastPressedItem[0] = ((Cell) sender).CellRow;
-                LastPressedItem[1] = ((Cell) sender).CellColumn;
+                if(((Cell)sender).CellRow != LastPressedItem[0])
+                {
+                    if (((Cell) sender).CellColumn != LastPressedItem[1])
+                    {
+                        LastPressedItem[0] = ((Cell)sender).CellRow;
+                        LastPressedItem[1] = ((Cell)sender).CellColumn;
+                        SetSelectedControls();
+                        SetSelectedItemsWithHandler();
+                    }
+                }
             }
 
             if (args.PropertyName == "Up")
@@ -304,7 +308,6 @@ namespace Client_App.Controls.DataGrid
             }
 
             if (args.PropertyName == "Down" ||
-                args.PropertyName == "DownMove" ||
                 args.PropertyName == "Up")
             {
                 SetSelectedControls();

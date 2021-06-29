@@ -11,7 +11,7 @@ using Collections;
 
 namespace Collections
 {
-    public partial class ObservableCollectionWithItemPropertyChanged<T> : List<T>, IKey
+    public partial class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollection<T>, IKey
         where T : class, IChanged
     {
         public int Id { get; set; }

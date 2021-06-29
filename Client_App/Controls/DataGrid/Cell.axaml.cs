@@ -80,7 +80,7 @@ namespace Client_App.Controls.DataGrid
         public void PanelPointerMoved(object sender, PointerEventArgs args)
         {
             var mouse = args.GetCurrentPoint((Cell) sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            if (mouse.Properties.IsLeftButtonPressed)
                 OnPropertyChanged("DownMove");
         }
 
