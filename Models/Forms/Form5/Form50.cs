@@ -27,7 +27,8 @@ namespace Models
         }
 
         //Authority1 property
-        [Attributes.Form_Property("ВИАЦ")]public int? Authority1Id { get; set; }
+        public int? Authority1Id { get; set; }
+        [Attributes.Form_Property("ВИАЦ")]
         public virtual RamAccess<Authority> Authority1
         {
             get
@@ -56,7 +57,8 @@ namespace Models
         //Authority1 property
 
         //Yyear property
-        [Attributes.Form_Property("Год")]public int? YyearId { get; set; }
+        public int? YyearId { get; set; }
+        [Attributes.Form_Property("Год")]
         public virtual RamAccess<int> Yyear
         {
             get
@@ -85,7 +87,8 @@ namespace Models
         //Yyear property
 
         //JurLico property
-        [Attributes.Form_Property("Юр. лицо")]public int? JurLicoId { get; set; }
+        public int? JurLicoId { get; set; }
+        [Attributes.Form_Property("Юр. лицо")]
         public virtual RamAccess<string> JurLico
         {
             get
@@ -114,7 +117,8 @@ namespace Models
         //JurLico property
 
         //ShortJurLico property
-        [Attributes.Form_Property("Краткое наименование юр. лица")]public int? ShortJurLicoId { get; set; }
+        public int? ShortJurLicoId { get; set; }
+        [Attributes.Form_Property("Краткое наименование юр. лица")]
         public virtual RamAccess<string> ShortJurLico
         {
             get
@@ -143,7 +147,8 @@ namespace Models
         //ShortJurLico property
 
         //JurLicoAddress property
-        [Attributes.Form_Property("Адрес юр. лица")]public int? JurLicoAddressId { get; set; }
+        public int? JurLicoAddressId { get; set; }
+        [Attributes.Form_Property("Адрес юр. лица")]
         public virtual RamAccess<string> JurLicoAddress
         {
             get
@@ -172,7 +177,8 @@ namespace Models
         //JurLicoAddress property
 
         //JurLicoFactAddress property
-        [Attributes.Form_Property("Фактический адрес юр. лица")]public int? JurLicoFactAddressId { get; set; }
+        public int? JurLicoFactAddressId { get; set; }
+        [Attributes.Form_Property("Фактический адрес юр. лица")]
         public virtual RamAccess<string> JurLicoFactAddress
         {
             get
@@ -201,7 +207,8 @@ namespace Models
         //JurLicoFactAddress property
 
         //GradeFIO property
-        [Attributes.Form_Property("ФИО, должность")]public int? GradeFIOId { get; set; }
+        public int? GradeFIOId { get; set; }
+        [Attributes.Form_Property("ФИО, должность")]
         public virtual RamAccess<string> GradeFIO
         {
             get
@@ -230,7 +237,8 @@ namespace Models
         //GradeFIO property
 
         //GradeFIOresponsibleExecutor property
-        [Attributes.Form_Property("ФИО, должность ответственного исполнителя")]public int? GradeFIOresponsibleExecutorId { get; set; }
+        public int? GradeFIOresponsibleExecutorId { get; set; }
+        [Attributes.Form_Property("ФИО, должность ответственного исполнителя")]
         public virtual RamAccess<string> GradeFIOresponsibleExecutor
         {
             get
@@ -259,7 +267,8 @@ namespace Models
         //GradeFIOresponsibleExecutor property
 
         //Telephone property
-        [Attributes.Form_Property("Телефон")]public int? TelephoneId { get; set; }
+        public int? TelephoneId { get; set; }
+        [Attributes.Form_Property("Телефон")]
         public virtual RamAccess<string> Telephone
         {
             get
@@ -288,7 +297,8 @@ namespace Models
         //Telephone property
 
         //Fax property
-        [Attributes.Form_Property("Факс")]public int? FaxId { get; set; }
+        public int? FaxId { get; set; }
+        [Attributes.Form_Property("Факс")]
         public virtual RamAccess<string> Fax
         {
             get
@@ -317,7 +327,8 @@ namespace Models
         //Fax property
 
         //Email property
-        [Attributes.Form_Property("Эл. почта")]public int? EmailId { get; set; }
+        public int? EmailId { get; set; }
+        [Attributes.Form_Property("Эл. почта")]
         public virtual RamAccess<string> Email
         {
             get

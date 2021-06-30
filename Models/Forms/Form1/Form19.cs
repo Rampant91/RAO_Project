@@ -45,7 +45,8 @@ namespace Models
         }
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public int? QuantityId { get; set; }
+        [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int?> Quantity
         {
             get
@@ -85,7 +86,8 @@ namespace Models
         //Quantity property
 
         //CodeTypeAccObject property
-        [Attributes.Form_Property("Код типа объектов учета")]public int? CodeTypeAccObjectId { get; set; }
+        public int? CodeTypeAccObjectId { get; set; }
+        [Attributes.Form_Property("Код типа объектов учета")]
         public virtual RamAccess<short?> CodeTypeAccObject
         {
             get
@@ -130,7 +132,8 @@ namespace Models
         //CodeTypeAccObject property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -180,7 +183,8 @@ namespace Models
         //Radionuclids property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public int? ActivityId { get; set; }
+        [Attributes.Form_Property("Активность, Бк")]
         public virtual RamAccess<string> Activity
         {
             get

@@ -30,7 +30,8 @@ namespace Models.Abstracts
         }
 
         //CorrectionNumber property
-        [Attributes.Form_Property("Номер корректировки")]public int? CorrectionNumberId { get; set; }
+        public int? CorrectionNumberId { get; set; }
+        [Attributes.Form_Property("Номер корректировки")]
         public virtual RamAccess<byte> CorrectionNumber
         {
             get
@@ -63,7 +64,8 @@ namespace Models.Abstracts
         //CorrectionNumber property
 
         //NumberInOrder property
-        [Attributes.Form_Property("№ п/п")]public int? NumberInOrderId { get; set; }
+        public int? NumberInOrderId { get; set; }
+        [Attributes.Form_Property("№ п/п")]
         public virtual RamAccess<int> NumberInOrder
         {
             get

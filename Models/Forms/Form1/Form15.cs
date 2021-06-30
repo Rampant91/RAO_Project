@@ -99,7 +99,8 @@ namespace Models
         }
 
         //PassportNumber property
-        [Attributes.Form_Property("Номер паспорта")]public int? PassportNumberId { get; set; }
+        public int? PassportNumberId { get; set; }
+        [Attributes.Form_Property("Номер паспорта")]
         public virtual RamAccess<string> PassportNumber
         {
             get
@@ -145,41 +146,40 @@ namespace Models
         }
         //PassportNumber property
 
-        //PassportNumberNote property
-        public virtual RamAccess<string> PassportNumberNote
-        {
-            get
-            {
+        ////PassportNumberNote property
+        //public virtual RamAccess<string> PassportNumberNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
+        //        }
 
-                }
+        //        {
 
-                {
-
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PassportNumberNote), value);
-                }
-                OnPropertyChanged(nameof(PassportNumberNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool PassportNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //PassportNumberNote property
+        //        {
+        //            DataAccess.Set(nameof(PassportNumberNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PassportNumberNote));
+        //    }
+        //}
+
+
+        //private bool PassportNumberNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////PassportNumberNote property
 
         //PassportNumberRecoded property
-public int? PassportNumberRecodedId { get; set; }
+        public int? PassportNumberRecodedId { get; set; }
         public virtual RamAccess<string> PassportNumberRecoded
         {
             get
@@ -187,7 +187,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(PassportNumberRecoded));//OK
-
                 }
 
                 {
@@ -213,7 +212,8 @@ public int? PassportNumberRecodedId { get; set; }
         //PassportNumberRecoded property
 
         //Type property
-        [Attributes.Form_Property("Тип")]public int? TypeId { get; set; }
+        public int? TypeId { get; set; }
+        [Attributes.Form_Property("Тип")]
         public virtual RamAccess<string> Type
         {
             get
@@ -221,7 +221,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(Type));//OK
-
                 }
 
                 {
@@ -247,6 +246,7 @@ public int? PassportNumberRecodedId { get; set; }
         //Type property
 
         //TypeRecoded property
+        public int? TypeRecodedId { get; set; }
         public virtual RamAccess<string> TypeRecoded
         {
             get
@@ -254,7 +254,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(TypeRecoded));//OK
-
                 }
 
                 {
@@ -280,7 +279,8 @@ public int? PassportNumberRecodedId { get; set; }
         //TypeRecoded property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -288,7 +288,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(Radionuclids));//OK
-
                 }
 
                 {
@@ -330,7 +329,8 @@ public int? PassportNumberRecodedId { get; set; }
         //Radionuclids property
 
         //FactoryNumber property
-        [Attributes.Form_Property("Заводской номер")]public int? FactoryNumberId { get; set; }
+        public int? FactoryNumberId { get; set; }
+        [Attributes.Form_Property("Заводской номер")]
         public virtual RamAccess<string> FactoryNumber
         {
             get
@@ -338,7 +338,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(FactoryNumber));//OK
-
                 }
 
                 {
@@ -370,6 +369,7 @@ public int? PassportNumberRecodedId { get; set; }
         //FactoryNumber property
 
         //FactoryNumberRecoded property
+        public int? FactoryNumberRecodedId { get; set; }
         public virtual RamAccess<string> FactoryNumberRecoded
         {
             get
@@ -377,7 +377,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(FactoryNumberRecoded));//OK
-
                 }
 
                 {
@@ -402,7 +401,8 @@ public int? PassportNumberRecodedId { get; set; }
         //FactoryNumberRecoded property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public int? QuantityId { get; set; }
+        [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int?> Quantity
         {
             get
@@ -410,7 +410,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<int?>(nameof(Quantity));//OK
-
                 }
 
                 {
@@ -449,7 +448,8 @@ public int? PassportNumberRecodedId { get; set; }
         //Quantity property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public int? ActivityId { get; set; }
+        [Attributes.Form_Property("Активность, Бк")]
         public virtual RamAccess<string> Activity
         {
             get
@@ -457,7 +457,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(Activity));//OK
-
                 }
 
                 {
@@ -508,7 +507,8 @@ public int? PassportNumberRecodedId { get; set; }
         //Activity property
 
         //CreationDate property
-        [Attributes.Form_Property("Дата изготовления")]public int? CreationDateId { get; set; }
+        public int? CreationDateId { get; set; }
+        [Attributes.Form_Property("Дата изготовления")]
         public virtual RamAccess<string> CreationDate
         {
             get
@@ -516,7 +516,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(CreationDate));//OK
-
                 }
 
                 {
@@ -556,7 +555,8 @@ public int? PassportNumberRecodedId { get; set; }
         //CreationDate property
 
         //StatusRAO property
-        [Attributes.Form_Property("Статус РАО")]public int? StatusRAOId { get; set; }
+        public int? StatusRAOId { get; set; }
+        [Attributes.Form_Property("Статус РАО")]
         public virtual RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
@@ -618,7 +618,8 @@ public int? PassportNumberRecodedId { get; set; }
         //StatusRAO property
 
         //ProviderOrRecieverOKPO property
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]public int? ProviderOrRecieverOKPOId { get; set; }
+        public int? ProviderOrRecieverOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО поставщика/получателя")]
         public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -626,7 +627,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-
                 }
 
                 {
@@ -681,41 +681,41 @@ public int? PassportNumberRecodedId { get; set; }
         }
         //ProviderOrRecieverOKPO property
 
-        //ProviderOrRecieverOKPONote property
-        public virtual RamAccess<string> ProviderOrRecieverOKPONote
-        {
-            get
-            {
+        ////ProviderOrRecieverOKPONote property
+        //public virtual RamAccess<string> ProviderOrRecieverOKPONote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+        //        }
 
-                }
+        //        {
 
-                {
-
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
-                }
-                OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //ProviderOrRecieverOKPONote property
+        //        {
+        //            DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+        //        }
+        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
+        //    }
+        //}
+
+
+        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
-        [Attributes.Form_Property("ОКПО перевозчика")]public int? TransporterOKPOId { get; set; }
+        public int? TransporterOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО перевозчика")]
         public virtual RamAccess<string> TransporterOKPO
         {
             get
@@ -723,7 +723,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(TransporterOKPO));//OK
-
                 }
 
                 {
@@ -770,41 +769,41 @@ public int? PassportNumberRecodedId { get; set; }
         }
         //TransporterOKPO property
 
-        //TransporterOKPONote property
-        public virtual RamAccess<string> TransporterOKPONote
-        {
-            get
-            {
+        ////TransporterOKPONote property
+        //public virtual RamAccess<string> TransporterOKPONote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+        //        }
 
-                }
+        //        {
 
-                {
-
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(TransporterOKPONote), value);
-                }
-                OnPropertyChanged(nameof(TransporterOKPONote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool TransporterOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //TransporterOKPONote property
+        //        {
+        //            DataAccess.Set(nameof(TransporterOKPONote), value);
+        //        }
+        //        OnPropertyChanged(nameof(TransporterOKPONote));
+        //    }
+        //}
+
+
+        //private bool TransporterOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////TransporterOKPONote property
 
         //PackName property
-        [Attributes.Form_Property("Наименование упаковки")]public int? PackNameId { get; set; }
+        public int? PackNameId { get; set; }
+        [Attributes.Form_Property("Наименование упаковки")]
         public virtual RamAccess<string> PackName
         {
             get
@@ -812,7 +811,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(PackName));//OK
-
                 }
 
                 {
@@ -844,41 +842,41 @@ public int? PassportNumberRecodedId { get; set; }
         }
         //PackName property
 
-        //PackNameNote property
-        public virtual RamAccess<string> PackNameNote
-        {
-            get
-            {
+        ////PackNameNote property
+        //public virtual RamAccess<string> PackNameNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PackNameNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PackNameNote));//OK
+        //        }
 
-                }
+        //        {
 
-                {
-
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PackNameNote), value);
-                }
-                OnPropertyChanged(nameof(PackNameNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool PackNameNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //PackNameNote property
+        //        {
+        //            DataAccess.Set(nameof(PackNameNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PackNameNote));
+        //    }
+        //}
+
+
+        //private bool PackNameNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////PackNameNote property
 
         //PackType property
-        [Attributes.Form_Property("Тип упаковки")]public int? PackTypeId { get; set; }
+        public int? PackTypeId { get; set; }
+        [Attributes.Form_Property("Тип упаковки")]
         public virtual RamAccess<string> PackType
         {
             get
@@ -886,7 +884,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(PackType));//OK
-
                 }
 
                 {
@@ -925,6 +922,7 @@ public int? PassportNumberRecodedId { get; set; }
         //PackType property
 
         //PackTypeRecoded property
+        public int? PackTypeRecodedId { get; set; }
         public virtual RamAccess<string> PackTypeRecoded
         {
             get
@@ -932,7 +930,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-
                 }
 
                 {
@@ -957,41 +954,41 @@ public int? PassportNumberRecodedId { get; set; }
         }
         //PackTypeRecoded property
 
-        //PackTypeNote property
-        public virtual RamAccess<string> PackTypeNote
-        {
-            get
-            {
+        ////PackTypeNote property
+        //public virtual RamAccess<string> PackTypeNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PackTypeNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PackTypeNote));//OK
+        //        }
 
-                }
+        //        {
 
-                {
-
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PackTypeNote), value);
-                }
-                OnPropertyChanged(nameof(PackTypeNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool PackTypeNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //PackTypeNote property
+        //        {
+        //            DataAccess.Set(nameof(PackTypeNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PackTypeNote));
+        //    }
+        //}
+
+
+        //private bool PackTypeNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////PackTypeNote property
 
         //PackNumber property
-        [Attributes.Form_Property("Номер упаковки")]public int? PackNumberId { get; set; }
+        public int? PackNumberId { get; set; }
+        [Attributes.Form_Property("Номер упаковки")]
         public virtual RamAccess<string> PackNumber
         {
             get
@@ -999,7 +996,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(PackNumber));//OK
-
                 }
 
                 {
@@ -1031,45 +1027,44 @@ public int? PassportNumberRecodedId { get; set; }
         }
         //PackNumber property
 
-        //PackNumberNote property
-        public virtual RamAccess<string> PackNumberNote
-        {
-            get
-            {
+        ////PackNumberNote property
+        //public virtual RamAccess<string> PackNumberNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PackNumberNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PackNumberNote));//OK
+        //        }
 
-                }
+        //        {
 
-                {
-
-                }
-            }
-            set
-            {
-
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-                {
-                    DataAccess.Set(nameof(PackNumberNote), value);
-                }
-                OnPropertyChanged(nameof(PackNumberNote));
-            }
-        }
+
+        //        {
+        //            DataAccess.Set(nameof(PackNumberNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PackNumberNote));
+        //    }
+        //}
 
 
-        private bool PackNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            return true;
-        }
-        //PackNumberNote property
+        //private bool PackNumberNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors();
+        //    if ((value.Value == null) || value.Value.Equals(""))
+        //    {
+        //        value.AddError("Поле не заполнено");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////PackNumberNote property
 
         //PackNumberRecoded property
         public int? PackNumberRecodedId { get; set; }
@@ -1080,7 +1075,6 @@ public int? PassportNumberRecodedId { get; set; }
 
                 {
                     return DataAccess.Get<string>(nameof(PackNumberRecoded));//OK
-
                 }
 
                 {
@@ -1106,7 +1100,8 @@ public int? PassportNumberRecodedId { get; set; }
         //PackNumberRecoded property
 
         //StoragePlaceName property
-        [Attributes.Form_Property("Наименование ПХ")]public int? StoragePlaceNameId { get; set; }
+        public int? StoragePlaceNameId { get; set; }
+        [Attributes.Form_Property("Наименование ПХ")]
         public virtual RamAccess<string> StoragePlaceName
         {
             get
@@ -1145,46 +1140,46 @@ public int? PassportNumberRecodedId { get; set; }
             {
                 return true;
             }
-
             value.AddError("Недопустимое значение");
             return false;
         }
         //StoragePlaceName property
 
-        //StoragePlaceNameNote property
-        public virtual RamAccess<string> StoragePlaceNameNote
-        {
-            get
-            {
+        ////StoragePlaceNameNote property
+        //public virtual RamAccess<string> StoragePlaceNameNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-                {
-                    DataAccess.Set(nameof(StoragePlaceNameNote), value);
-                }
-                OnPropertyChanged(nameof(StoragePlaceNameNote));
-            }
-        }
-        //If change this change validation
+        //        {
+        //            DataAccess.Set(nameof(StoragePlaceNameNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(StoragePlaceNameNote));
+        //    }
+        //}
+        ////If change this change validation
 
-        private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors(); return true;
-        }
-        //StoragePlaceNameNote property
+        //private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////StoragePlaceNameNote property
 
         //StoragePlaceCode property
-        [Attributes.Form_Property("Код ПХ")]public int? StoragePlaceCodeId { get; set; }
+        public int? StoragePlaceCodeId { get; set; }
+        [Attributes.Form_Property("Код ПХ")]
         public virtual RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -1229,7 +1224,8 @@ public int? PassportNumberRecodedId { get; set; }
         //StoragePlaceCode property
 
         //RefineOrSortRAOCode property
-        [Attributes.Form_Property("Код переработки/сортировки РАО")]public int? RefineOrSortRAOCodeId { get; set; }
+        public int? RefineOrSortRAOCodeId { get; set; }
+        [Attributes.Form_Property("Код переработки/сортировки РАО")]
         public virtual RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
         {
             get
@@ -1273,7 +1269,8 @@ public int? PassportNumberRecodedId { get; set; }
         //RefineOrSortRAOCode property
 
         //Subsidy property
-        [Attributes.Form_Property("Субсидия, %")]public int? SubsidyId { get; set; }
+        public int? SubsidyId { get; set; }
+        [Attributes.Form_Property("Субсидия, %")]
         public virtual RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
@@ -1320,7 +1317,8 @@ public int? PassportNumberRecodedId { get; set; }
         //Subsidy property
 
         //FcpNumber property
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]public int? FcpNumberId { get; set; }
+        public int? FcpNumberId { get; set; }
+        [Attributes.Form_Property("Номер мероприятия ФЦП")]
         public virtual RamAccess<string> FcpNumber
         {
             get
@@ -1371,16 +1369,13 @@ public int? PassportNumberRecodedId { get; set; }
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
-            bool flag = false;
-            foreach (short item in spr)
+            List<short> spr = new List<short>()
             {
-                if (item == value.Value)
-                {
-                    flag = true;
-                }
-            }
-            if (!flag)
+                1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,
+                46,47,48,49,51,52,53,54,55,56,57,58,59,61,62,63,64,65,66,67,68,71,72,73,74,75,76,81,82,
+                83,84,85,86,87,88,97,98,99
+            };    //HERE BINDS SPRAVOCHNIK
+            if (!spr.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1406,9 +1401,9 @@ public int? PassportNumberRecodedId { get; set; }
             if (a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11 || a12 || a13 || a14 || a15 || a16 || a17)
             {
                 value.AddError("Код операции не может быть использован для РАО");
+                return false;
             }
-
-            return false;
+            return true;
         }
     }
 }

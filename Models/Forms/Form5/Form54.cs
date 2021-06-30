@@ -22,7 +22,8 @@ namespace Models
         }
 
         //TypeOfAccountedParts property
-        [Attributes.Form_Property("Тип учетных единиц")]public int? TypeOfAccountedPartsId { get; set; }
+        public int? TypeOfAccountedPartsId { get; set; }
+        [Attributes.Form_Property("Тип учетных единиц")]
         public virtual RamAccess<int> TypeOfAccountedParts
         {
             get
@@ -60,7 +61,8 @@ namespace Models
         //TypeOfAccountedParts property
 
         //KindOri property
-        [Attributes.Form_Property("Вид ОРИ")]public int? KindOriId { get; set; }
+        public int? KindOriId { get; set; }
+        [Attributes.Form_Property("Вид ОРИ")]
         public virtual RamAccess<int> KindOri
         {
             get
@@ -133,7 +135,8 @@ public int? AggregateStateId { get; set; }
         //AggregateState property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -183,7 +186,8 @@ public int? AggregateStateId { get; set; }
         //Radionuclids property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public int? ActivityId { get; set; }
+        [Attributes.Form_Property("Активность, Бк")]
         public virtual RamAccess<string> Activity
         {
             get
@@ -241,7 +245,8 @@ public int? AggregateStateId { get; set; }
         //Activity property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public int? QuantityId { get; set; }
+        [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int> Quantity
         {
             get
@@ -283,7 +288,8 @@ public int? AggregateStateId { get; set; }
         //Quantity property
 
         //Volume property
-        [Attributes.Form_Property("Объем, куб. м")]public int? VolumeId { get; set; }
+        public int? VolumeId { get; set; }
+        [Attributes.Form_Property("Объем, куб. м")]
         public virtual RamAccess<double> Volume
         {
             get
@@ -322,7 +328,8 @@ public int? AggregateStateId { get; set; }
         //Volume property
 
         //Mass Property
-        [Attributes.Form_Property("Масса, кг")]public int? MassId { get; set; }
+        public int? MassId { get; set; }
+        [Attributes.Form_Property("Масса, кг")]
         public virtual RamAccess<double> Mass
         {
             get

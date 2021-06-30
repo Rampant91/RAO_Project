@@ -79,7 +79,8 @@ namespace Models
         }
 
         //CodeOYAT property
-        [Attributes.Form_Property("Код ОЯТ")]public int? CodeOYATId { get; set; }
+        public int? CodeOYATId { get; set; }
+        [Attributes.Form_Property("Код ОЯТ")]
         public virtual RamAccess<string> CodeOYAT
         {
             get
@@ -142,7 +143,8 @@ namespace Models
         //CodeOYATnote property
 
         //FcpNumber property
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]public int? FcpNumberId { get; set; }
+        public int? FcpNumberId { get; set; }
+        [Attributes.Form_Property("Номер мероприятия ФЦП")]
         public virtual RamAccess<string> FcpNumber
         {
             get
@@ -175,7 +177,8 @@ namespace Models
         //FcpNumber property
 
         //MassCreated Property
-        [Attributes.Form_Property("Масса образованного, т")]public int? MassCreatedId { get; set; }
+        public int? MassCreatedId { get; set; }
+        [Attributes.Form_Property("Масса образованного, т")]
         public virtual RamAccess<string> MassCreated
         {
             get
@@ -235,7 +238,8 @@ namespace Models
         //MassCreated Property
 
         //QuantityCreated property
-        [Attributes.Form_Property("Количество образованного, шт.")]public int? QuantityCreatedId { get; set; }
+        public int? QuantityCreatedId { get; set; }
+        [Attributes.Form_Property("Количество образованного, шт.")]
         public virtual RamAccess<string> QuantityCreated
         {
             get
@@ -340,7 +344,8 @@ namespace Models
         ////QuantityCreatedNote property
 
         //MassFromAnothers Property
-        [Attributes.Form_Property("Масса поступившего от сторонних, т")]public int? MassFromAnothersId { get; set; }
+        public int? MassFromAnothersId { get; set; }
+        [Attributes.Form_Property("Масса поступившего от сторонних, т")]
         public virtual RamAccess<string> MassFromAnothers
         {
             get
@@ -396,7 +401,8 @@ namespace Models
         //MassFromAnothers Property
 
         //QuantityFromAnothers property
-        [Attributes.Form_Property("Количество поступившего от сторонних, шт.")]public int? QuantityFromAnothersId { get; set; }
+        public int? QuantityFromAnothersId { get; set; }
+        [Attributes.Form_Property("Количество поступившего от сторонних, шт.")]
         public virtual RamAccess<string> QuantityFromAnothers
         {
             get
@@ -443,55 +449,56 @@ namespace Models
         }
         //QuantityFromAnothers property
 
-        //QuantityFromAnothersNote property
-        public virtual RamAccess<string> QuantityFromAnothersNote
-        {
-            get
-            {
+        ////QuantityFromAnothersNote property
+        //public virtual RamAccess<string> QuantityFromAnothersNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
-                    DataAccess.Set(nameof(QuantityFromAnothersNote), value);
-                OnPropertyChanged(nameof(QuantityFromAnothersNote));
-            }
-        }
-        // positive int.
-                private bool QuantityFromAnothersNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityFromAnothersNote property
+        //        }
+        //    }
+        //    set
+        //    {
+        //            DataAccess.Set(nameof(QuantityFromAnothersNote), value);
+        //        OnPropertyChanged(nameof(QuantityFromAnothersNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityFromAnothersNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityFromAnothersNote property
 
         //MassFromAnothersImported Property
-        [Attributes.Form_Property("Масса импортированного от сторонних, т")]public int? MassFromAnothersImportedId { get; set; }
+        public int? MassFromAnothersImportedId { get; set; }
+        [Attributes.Form_Property("Масса импортированного от сторонних, т")]
         public virtual RamAccess<string> MassFromAnothersImported
         {
             get
@@ -551,7 +558,8 @@ namespace Models
         //MassFromAnothersImported Property
 
         //QuantityFromAnothersImported property
-        [Attributes.Form_Property("Количество импортированного от сторонних, шт.")]public int? QuantityFromAnothersImportedId { get; set; }
+        public int? QuantityFromAnothersImportedId { get; set; }
+        [Attributes.Form_Property("Количество импортированного от сторонних, шт.")]
         public virtual RamAccess<string> QuantityFromAnothersImported
         {
             get
@@ -604,59 +612,60 @@ namespace Models
         }
         //QuantityFromAnothersImported property
 
-        //QuantityFromImportedNote property
-        public virtual RamAccess<string> QuantityFromImportedNote
-        {
-            get
-            {
+        ////QuantityFromImportedNote property
+        //public virtual RamAccess<string> QuantityFromImportedNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(QuantityFromImportedNote), value);
-                }
-                OnPropertyChanged(nameof(QuantityFromImportedNote));
-            }
-        }
-        // positive int.
-                private bool QuantityFromImportedNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityFromImportedNote property
+        //        {
+        //            DataAccess.Set(nameof(QuantityFromImportedNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(QuantityFromImportedNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityFromImportedNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityFromImportedNote property
 
         //MassAnotherReasons Property
-        [Attributes.Form_Property("Масса поставленного на учет по другим причинам, т")]public int? MassAnotherReasonsId { get; set; }
+        public int? MassAnotherReasonsId { get; set; }
+        [Attributes.Form_Property("Масса поставленного на учет по другим причинам, т")]
         public virtual RamAccess<string> MassAnotherReasons
         {
             get
@@ -716,7 +725,8 @@ namespace Models
         //MassAnotherReasons Property
 
         //QuantityAnotherReasons property
-        [Attributes.Form_Property("Количество поступившего на учет по другим причинам, шт.")]public int? QuantityAnotherReasonsId { get; set; }
+        public int? QuantityAnotherReasonsId { get; set; }
+        [Attributes.Form_Property("Количество поступившего на учет по другим причинам, шт.")]
         public virtual RamAccess<string> QuantityAnotherReasons
         {
             get
@@ -768,59 +778,60 @@ namespace Models
         }
         //QuantityAnotherReasons property
 
-        //QuantityAnotherReasonsNote property
-        public virtual RamAccess<string> QuantityAnotherReasonsNote
-        {
-            get
-            {
+        ////QuantityAnotherReasonsNote property
+        //public virtual RamAccess<string> QuantityAnotherReasonsNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
-                }
-                OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
-            }
-        }
-        // positive int.
-                private bool QuantityAnotherReasonsNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityAnotherReasonsNote property
+        //        {
+        //            DataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityAnotherReasonsNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityAnotherReasonsNote property
 
         //MassTransferredToAnother Property
-        [Attributes.Form_Property("Масса переданного сторонним, т")]public int? MassTransferredToAnotherId { get; set; }
+        public int? MassTransferredToAnotherId { get; set; }
+        [Attributes.Form_Property("Масса переданного сторонним, т")]
         public virtual RamAccess<string> MassTransferredToAnother
         {
             get
@@ -876,7 +887,8 @@ namespace Models
         //MassTransferredToAnother Property
 
         //QuantityTransferredToAnother property
-        [Attributes.Form_Property("Количество переданного сторонним, шт.")]public int? QuantityTransferredToAnotherId { get; set; }
+        public int? QuantityTransferredToAnotherId { get; set; }
+        [Attributes.Form_Property("Количество переданного сторонним, шт.")]
         public virtual RamAccess<string> QuantityTransferredToAnother
         {
             get
@@ -928,59 +940,60 @@ namespace Models
         }
         //QuantityTransferredToAnother property
 
-        //QuantityTransferredToNote property
-        public virtual RamAccess<string> QuantityTransferredToNote
-        {
-            get
-            {
+        ////QuantityTransferredToNote property
+        //public virtual RamAccess<string> QuantityTransferredToNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(QuantityTransferredToNote), value);
-                }
-                OnPropertyChanged(nameof(QuantityTransferredToNote));
-            }
-        }
-        // positive int.
-                private bool QuantityTransferredToNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityTransferredToNote property
+        //        {
+        //            DataAccess.Set(nameof(QuantityTransferredToNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(QuantityTransferredToNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityTransferredToNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityTransferredToNote property
 
         //MassRefined Property
-        [Attributes.Form_Property("Масса переработанного, т")]public int? MassRefinedId { get; set; }
+        public int? MassRefinedId { get; set; }
+        [Attributes.Form_Property("Масса переработанного, т")]
         public virtual RamAccess<string> MassRefined
         {
             get
@@ -1036,7 +1049,8 @@ namespace Models
         //MassRefined Property
 
         //QuantityRefined property
-        [Attributes.Form_Property("Количество переработанного, шт.")]public int? QuantityRefinedId { get; set; }
+        public int? QuantityRefinedId { get; set; }
+        [Attributes.Form_Property("Количество переработанного, шт.")]
         public virtual RamAccess<string> QuantityRefined
         {
             get
@@ -1088,59 +1102,60 @@ namespace Models
         }
         //QuantityRefined property
 
-        //QuantityRefinedNote property
-        public virtual RamAccess<string> QuantityRefinedNote
-        {
-            get
-            {
+        ////QuantityRefinedNote property
+        //public virtual RamAccess<string> QuantityRefinedNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(QuantityRefinedNote), value);
-                }
-                OnPropertyChanged(nameof(QuantityRefinedNote));
-            }
-        }
-        // positive int.
-                private bool QuantityRefinedNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityRefinedNote property
+        //        {
+        //            DataAccess.Set(nameof(QuantityRefinedNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(QuantityRefinedNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityRefinedNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityRefinedNote property
 
         //MassRemovedFromAccount Property
-        [Attributes.Form_Property("Масса снятого с учета, т")]public int? MassRemovedFromAccountId { get; set; }
+        public int? MassRemovedFromAccountId { get; set; }
+        [Attributes.Form_Property("Масса снятого с учета, т")]
         public virtual RamAccess<string> MassRemovedFromAccount
         {
             get
@@ -1200,7 +1215,8 @@ namespace Models
         //MassRemovedFromAccount Property
 
         //QuantityRemovedFromAccount property
-        [Attributes.Form_Property("Количество снятого с учета, шт.")]public int? QuantityRemovedFromAccountId { get; set; }
+        public int? QuantityRemovedFromAccountId { get; set; }
+        [Attributes.Form_Property("Количество снятого с учета, шт.")]
         public virtual RamAccess<string> QuantityRemovedFromAccount
         {
             get

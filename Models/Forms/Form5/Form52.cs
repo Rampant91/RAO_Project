@@ -21,7 +21,8 @@ namespace Models
         }
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -71,7 +72,8 @@ namespace Models
         //Radionuclids property
 
         //Kategory property
-        [Attributes.Form_Property("Категория")]public int? KategoryId { get; set; }
+        public int? KategoryId { get; set; }
+        [Attributes.Form_Property("Категория")]
         public virtual RamAccess<short> Kategory
         {
             get
@@ -104,7 +106,8 @@ namespace Models
         //Kategory property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public int? ActivityId { get; set; }
+        [Attributes.Form_Property("Активность, Бк")]
         public virtual RamAccess<string> Activity
         {
             get
@@ -163,7 +166,8 @@ namespace Models
         //Activity property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public int? QuantityId { get; set; }
+        [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int> Quantity
         {
             get

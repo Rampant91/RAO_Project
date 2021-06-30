@@ -60,7 +60,8 @@ namespace Models
         }
 
         //IndicatorName property
-        [Attributes.Form_Property("Наименование показателя")]public int? IndicatorNameId { get; set; }
+        public int? IndicatorNameId { get; set; }
+        [Attributes.Form_Property("Наименование показателя")]
         public virtual RamAccess<string> IndicatorName
         {
             get => DataAccess.Get<string>(nameof(IndicatorName));
@@ -78,7 +79,8 @@ namespace Models
         //IndicatorName property
 
         //PlotName property
-        [Attributes.Form_Property("Наименование участка")]public int? PlotNameId { get; set; }
+        public int? PlotNameId { get; set; }
+        [Attributes.Form_Property("Наименование участка")]
         public virtual RamAccess<string> PlotName
         {
             get
@@ -110,7 +112,8 @@ namespace Models
         //PlotName property
 
         //PlotKadastrNumber property
-        [Attributes.Form_Property("Кадастровый номер участка")]public int? PlotKadastrNumberId { get; set; }
+        public int? PlotKadastrNumberId { get; set; }
+        [Attributes.Form_Property("Кадастровый номер участка")]
         public virtual RamAccess<string> PlotKadastrNumber
         {
             get
@@ -142,7 +145,8 @@ namespace Models
         //PlotKadastrNumber property
 
         //PlotCode property
-        [Attributes.Form_Property("Код участка")]public int? PlotCodeId { get; set; }
+        public int? PlotCodeId { get; set; }
+        [Attributes.Form_Property("Код участка")]
         public virtual RamAccess<string> PlotCode
         {
             get
@@ -174,7 +178,8 @@ namespace Models
         //PlotCode property
 
         //InfectedArea property
-        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]public int? InfectedAreaId { get; set; }
+        public int? InfectedAreaId { get; set; }
+        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
         public virtual RamAccess<int?> InfectedArea
         {
             get
@@ -206,7 +211,8 @@ namespace Models
         //InfectedArea property
 
         //AvgGammaRaysDosePower property
-        [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]public int? AvgGammaRaysDosePowerId { get; set; }
+        public int? AvgGammaRaysDosePowerId { get; set; }
+        [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]
         public virtual RamAccess<double> AvgGammaRaysDosePower
         {
             get
@@ -238,7 +244,8 @@ namespace Models
         //AvgGammaRaysDosePower property
 
         //MaxGammaRaysDosePower property
-        [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]public int? MaxGammaRaysDosePowerId { get; set; }
+        public int? MaxGammaRaysDosePowerId { get; set; }
+        [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
         public virtual RamAccess<double> MaxGammaRaysDosePower
         {
             get
@@ -270,7 +277,8 @@ namespace Models
         //MaxGammaRaysDosePower property
 
         //WasteDensityAlpha property
-        [Attributes.Form_Property("Средняя плотность загрязнения альфа-излучающими радионуклидами, Бк/кв. м")]public int? WasteDensityAlphaId { get; set; }
+        public int? WasteDensityAlphaId { get; set; }
+        [Attributes.Form_Property("Средняя плотность загрязнения альфа-излучающими радионуклидами, Бк/кв. м")]
         public virtual RamAccess<double> WasteDensityAlpha
         {
             get
@@ -302,7 +310,8 @@ namespace Models
         //WasteDensityAlpha property
 
         //WasteDensityBeta property
-        [Attributes.Form_Property("Средняя плотность загрязнения бета-излучающими радионуклидами, Бк/кв. м")]public int? WasteDensityBetaId { get; set; }
+        public int? WasteDensityBetaId { get; set; }
+        [Attributes.Form_Property("Средняя плотность загрязнения бета-излучающими радионуклидами, Бк/кв. м")]
         public virtual RamAccess<double> WasteDensityBeta
         {
             get
@@ -334,7 +343,8 @@ namespace Models
         //WasteDensityBeta property
 
         //FcpNumber property
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]public int? FcpNumberId { get; set; }
+        public int? FcpNumberId { get; set; }
+        [Attributes.Form_Property("Номер мероприятия ФЦП")]
         public virtual RamAccess<string> FcpNumber
         {
             get

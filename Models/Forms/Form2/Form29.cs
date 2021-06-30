@@ -43,7 +43,8 @@ namespace Models
         }
 
         //WasteSourceName property
-        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]public int? WasteSourceNameId { get; set; }
+        public int? WasteSourceNameId { get; set; }
+        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
         public virtual RamAccess<string> WasteSourceName
         {
             get
@@ -76,7 +77,8 @@ namespace Models
         //WasteSourceName property
 
         //RadionuclidName property
-        [Attributes.Form_Property("Радионуклид")]public int? RadionuclidNameId { get; set; }
+        public int? RadionuclidNameId { get; set; }
+        [Attributes.Form_Property("Радионуклид")]
         public virtual RamAccess<string> RadionuclidName
         {
             get
@@ -109,7 +111,8 @@ namespace Models
         //RadionuclidName property
 
         //AllowedActivity property
-        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]public int? AllowedActivityId { get; set; }
+        public int? AllowedActivityId { get; set; }
+        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
         public virtual RamAccess<string> AllowedActivity
         {
             get
@@ -169,40 +172,41 @@ namespace Models
         }
         //AllowedActivity property
 
-        //AllowedActivityNote property
-        public virtual RamAccess<string> AllowedActivityNote
-        {
-            get
-            {
+        ////AllowedActivityNote property
+        //public virtual RamAccess<string> AllowedActivityNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(AllowedActivityNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(AllowedActivityNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(AllowedActivityNote), value);
-                }
-                OnPropertyChanged(nameof(AllowedActivityNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool AllowedActivityNote_Validation(RamAccess<string> value)//Ready
-        {
-            return true;
-        }
-        //AllowedActivityNote property
+        //        {
+        //            DataAccess.Set(nameof(AllowedActivityNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(AllowedActivityNote));
+        //    }
+        //}
+
+
+        //private bool AllowedActivityNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    return true;
+        //}
+        ////AllowedActivityNote property
 
         //FactedActivity property
-        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]public int? FactedActivityId { get; set; }
+        public int? FactedActivityId { get; set; }
+        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
         public virtual RamAccess<string> FactedActivity
         {
             get
@@ -259,36 +263,36 @@ namespace Models
         }
         //FactedActivity property
 
-        //FactedActivityNote property
-        public virtual RamAccess<string> FactedActivityNote
-        {
-            get
-            {
+        ////FactedActivityNote property
+        //public virtual RamAccess<string> FactedActivityNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(FactedActivityNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(FactedActivityNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(FactedActivityNote), value);
-                }
-                OnPropertyChanged(nameof(FactedActivityNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool FactedActivityNote_Validation(RamAccess<string> value)//Ready
-        {
-            return true;
-        }
-        //FactedActivityNote property
+        //        {
+        //            DataAccess.Set(nameof(FactedActivityNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(FactedActivityNote));
+        //    }
+        //}
+
+
+        //private bool FactedActivityNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    return true;
+        //}
+        ////FactedActivityNote property
     }
 }

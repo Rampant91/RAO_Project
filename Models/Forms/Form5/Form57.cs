@@ -22,7 +22,8 @@ namespace Models
         }
 
         //RegNo property
-        [Attributes.Form_Property("Регистрационный номер")]public int? RegNoId { get; set; }
+        public int? RegNoId { get; set; }
+        [Attributes.Form_Property("Регистрационный номер")]
         public virtual RamAccess<string> RegNo
         {
             get => DataAccess.Get<string>(nameof(RegNo));
@@ -37,7 +38,8 @@ namespace Models
         //RegNo property
 
         //Okpo property
-        [Attributes.Form_Property("ОКПО")]public int? OkpoId { get; set; }
+        public int? OkpoId { get; set; }
+        [Attributes.Form_Property("ОКПО")]
         public virtual RamAccess<string> Okpo
         {
             get => DataAccess.Get<string>(nameof(Okpo));
@@ -67,7 +69,8 @@ namespace Models
         //Okpo property
 
         //OrgName property
-        [Attributes.Form_Property("Наименование организации")]public int? OrgNameId { get; set; }
+        public int? OrgNameId { get; set; }
+        [Attributes.Form_Property("Наименование организации")]
         public virtual RamAccess<string> OrgName
         {
             get => DataAccess.Get<string>(nameof(OrgName));
@@ -82,7 +85,8 @@ namespace Models
         //OrgName property
 
         //DocumentNameNumber property
-        [Attributes.Form_Property("Наименование и номер докумета о признании")]public int? DocumentNameNumberId { get; set; }
+        public int? DocumentNameNumberId { get; set; }
+        [Attributes.Form_Property("Наименование и номер докумета о признании")]
         public virtual RamAccess<string> DocumentNameNumber
         {
             get => DataAccess.Get<string>(nameof(DocumentNameNumber));
@@ -97,7 +101,8 @@ namespace Models
         //DocumentNameNumber property
 
         //PermissionNameNumber property
-        [Attributes.Form_Property("Наименование и номер разрешительного докумета")]public int? PermissionNameNumberId { get; set; }
+        public int? PermissionNameNumberId { get; set; }
+        [Attributes.Form_Property("Наименование и номер разрешительного докумета")]
         public virtual RamAccess<string> PermissionNameNumber
         {
             get => DataAccess.Get<string>(nameof(PermissionNameNumber));
@@ -112,7 +117,8 @@ namespace Models
         //PermissionNameNumber property
 
         //AllowedActivity property
-        [Attributes.Form_Property("Разрешенный вид деятельности")]public int? AllowedActivityId { get; set; }
+        public int? AllowedActivityId { get; set; }
+        [Attributes.Form_Property("Разрешенный вид деятельности")]
         public virtual RamAccess<string> AllowedActivity
         {
             get => DataAccess.Get<string>(nameof(AllowedActivity));
@@ -160,7 +166,8 @@ namespace Models
         //AllowedActivity property
 
         //Note property
-        [Attributes.Form_Property("Примечание")]public int? NoteId { get; set; }
+        public int? NoteId { get; set; }
+        [Attributes.Form_Property("Примечание")]
         public virtual RamAccess<string> Note
         {
             get => DataAccess.Get<string>(nameof(Note));

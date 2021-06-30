@@ -952,7 +952,8 @@ namespace Collections
             return true;
         }
 
-        [Form_Property("Форма")]public int? FormNumId { get; set; }
+        public int? FormNumId { get; set; }
+        [Form_Property("Форма")]
         public virtual RamAccess<string> FormNum
         {
             get

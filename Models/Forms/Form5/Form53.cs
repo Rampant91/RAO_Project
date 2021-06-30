@@ -23,7 +23,8 @@ namespace Models
         }
 
         //OperationCode property
-        [Attributes.Form_Property("Код")]public int? OperationCodeId { get; set; }
+        public int? OperationCodeId { get; set; }
+        [Attributes.Form_Property("Код")]
         public virtual RamAccess<short> OperationCode
         {
             get
@@ -52,7 +53,8 @@ namespace Models
         //OperationCode property
 
         //TypeOfAccountedParts property
-        [Attributes.Form_Property("Тип учетных единиц")]public int? TypeOfAccountedPartsId { get; set; }
+        public int? TypeOfAccountedPartsId { get; set; }
+        [Attributes.Form_Property("Тип учетных единиц")]
         public virtual RamAccess<int> TypeOfAccountedParts
         {
             get
@@ -90,7 +92,8 @@ namespace Models
         //TypeOfAccountedParts property
 
         //KindOri property
-        [Attributes.Form_Property("Вид ОРИ")]public int? KindOriId { get; set; }
+        public int? KindOriId { get; set; }
+        [Attributes.Form_Property("Вид ОРИ")]
         public virtual RamAccess<int> KindOri
         {
             get
@@ -162,7 +165,8 @@ public int? AggregateStateId { get; set; }
         //AggregateState property
 
         //ProviderOrRecieverOKPO property
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]public int? ProviderOrRecieverOKPOId { get; set; }
+        public int? ProviderOrRecieverOKPOId { get; set; }
+        [Attributes.Form_Property("ОКПО поставщика/получателя")]
         public virtual RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -236,40 +240,41 @@ public int? AggregateStateId { get; set; }
                 "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН","ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН","ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ"
             };
 
-        //ProviderOrRecieverOKPONote property
-        public virtual RamAccess<string> ProviderOrRecieverOKPONote
-        {
-            get
-            {
+        ////ProviderOrRecieverOKPONote property
+        //public virtual RamAccess<string> ProviderOrRecieverOKPONote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
-                }
-                OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-            }
-        }
+        //        {
+        //            DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+        //        }
+        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
+        //    }
+        //}
 
 
-        private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //ProviderOrRecieverOKPONote property
+        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////ProviderOrRecieverOKPONote property
 
         //Radionuclids property
-        [Attributes.Form_Property("Радионуклиды")]public int? RadionuclidsId { get; set; }
+        public int? RadionuclidsId { get; set; }
+        [Attributes.Form_Property("Радионуклиды")]
         public virtual RamAccess<string> Radionuclids
         {
             get
@@ -319,7 +324,8 @@ return true;
         //Radionuclids property
 
         //Activity property
-        [Attributes.Form_Property("Активность, Бк")]public int? ActivityId { get; set; }
+        public int? ActivityId { get; set; }
+        [Attributes.Form_Property("Активность, Бк")]
         public virtual RamAccess<string> Activity
         {
             get
@@ -379,7 +385,8 @@ return false;
         //Activity property
 
         //Quantity property
-        [Attributes.Form_Property("Количество, шт.")]public int? QuantityId { get; set; }
+        public int? QuantityId { get; set; }
+        [Attributes.Form_Property("Количество, шт.")]
         public virtual RamAccess<int> Quantity
         {
             get
@@ -421,7 +428,8 @@ return false;
         //Quantity property
 
         //Volume property
-        [Attributes.Form_Property("Объем, куб. м")]public int? VolumeId { get; set; }
+        public int? VolumeId { get; set; }
+        [Attributes.Form_Property("Объем, куб. м")]
         public virtual RamAccess<double> Volume
         {
             get
@@ -460,7 +468,8 @@ return false;
         //Volume property
 
         //Mass Property
-        [Attributes.Form_Property("Масса, кг")]public int? MassId { get; set; }
+        public int? MassId { get; set; }
+        [Attributes.Form_Property("Масса, кг")]
         public virtual RamAccess<double> Mass
         {
             get
