@@ -46,7 +46,6 @@ namespace Models.Abstracts
             DocumentNumberRecoded_Validation(DocumentNumberRecoded);
             DocumentDate_Validation(DocumentDate);
             NumberInOrder_Validation(NumberInOrder);
-            DocumentNumberRecoded_Validation(DocumentNumberRecoded);
         }
 
         //NumberInOrder property
@@ -212,6 +211,7 @@ namespace Models.Abstracts
         //DocumentNumber property
 
         //DocumentNumberRecoded property
+        //public int? DocumentNumberRecodedId { get; set; }
         public virtual RamAccess<string> DocumentNumberRecoded
         {
             get => DataAccess.Get<string>(nameof(DocumentNumberRecoded));//ok

@@ -766,36 +766,36 @@ namespace Models
         }
         //RemovedWasteVolume property
 
-        //RemovedWasteVolumeNote property
-        public virtual RamAccess<double> RemovedWasteVolumeNote
-        {
-            get
-            {
+        ////RemovedWasteVolumeNote property
+        //public virtual RamAccess<double> RemovedWasteVolumeNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<double>(nameof(RemovedWasteVolumeNote));
-                }
+        //        {
+        //            return DataAccess.Get<double>(nameof(RemovedWasteVolumeNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(RemovedWasteVolumeNote), value);
-                }
-                OnPropertyChanged(nameof(RemovedWasteVolumeNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool RemovedWasteVolumeNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //RemovedWasteVolumeNote property
+        //        {
+        //            DataAccess.Set(nameof(RemovedWasteVolumeNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(RemovedWasteVolumeNote));
+        //    }
+        //}
+
+
+        //private bool RemovedWasteVolumeNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////RemovedWasteVolumeNote property
     }
 }

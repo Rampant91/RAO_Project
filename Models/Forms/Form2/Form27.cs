@@ -289,37 +289,37 @@ namespace Models
         }
         //RadionuclidName property
 
-        //RadionuclidNameNote property
-        public virtual RamAccess<string> RadionuclidNameNote
-        {
-            get
-            {
+        ////RadionuclidNameNote property
+        //public virtual RamAccess<string> RadionuclidNameNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(RadionuclidNameNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(RadionuclidNameNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(RadionuclidNameNote), value);
-                }
-                OnPropertyChanged(nameof(RadionuclidNameNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool RadionuclidNameNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //RadionuclidNameNote property
+        //        {
+        //            DataAccess.Set(nameof(RadionuclidNameNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(RadionuclidNameNote));
+        //    }
+        //}
+
+
+        //private bool RadionuclidNameNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////RadionuclidNameNote property
 
         //AllowedWasteValue property
         public int? AllowedWasteValueId { get; set; }
@@ -381,37 +381,37 @@ namespace Models
         }
         //AllowedWasteValue property
 
-        //AllowedWasteValueNote property
-        public virtual RamAccess<string> AllowedWasteValueNote
-        {
-            get
-            {
+        ////AllowedWasteValueNote property
+        //public virtual RamAccess<string> AllowedWasteValueNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(AllowedWasteValueNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(AllowedWasteValueNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(AllowedWasteValueNote), value);
-                }
-                OnPropertyChanged(nameof(AllowedWasteValueNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool AllowedWasteValueNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //AllowedWasteValueNote property
+        //        {
+        //            DataAccess.Set(nameof(AllowedWasteValueNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(AllowedWasteValueNote));
+        //    }
+        //}
+
+
+        //private bool AllowedWasteValueNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////AllowedWasteValueNote property
 
         //FactedWasteValue property
         public int? FactedWasteValueId { get; set; }
@@ -480,37 +480,37 @@ namespace Models
         }
         //FactedWasteValue property
 
-        //FactedWasteValueNote property
-        public virtual RamAccess<string> FactedWasteValueNote
-        {
-            get
-            {
+        ////FactedWasteValueNote property
+        //public virtual RamAccess<string> FactedWasteValueNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(FactedWasteValueNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(FactedWasteValueNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(FactedWasteValueNote), value);
-                }
-                OnPropertyChanged(nameof(FactedWasteValueNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool FactedWasteValueNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //FactedWasteValueNote property
+        //        {
+        //            DataAccess.Set(nameof(FactedWasteValueNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(FactedWasteValueNote));
+        //    }
+        //}
+
+
+        //private bool FactedWasteValueNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////FactedWasteValueNote property
 
         //WasteOutbreakPreviousYear property
         public int? WasteOutbreakPreviousYearId { get; set; }

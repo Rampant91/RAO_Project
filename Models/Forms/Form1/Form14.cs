@@ -175,44 +175,44 @@ namespace Models
             return false;
         }
 
-        //PassportNumberNote property
-        public virtual RamAccess<string> PassportNumberNote
-        {
-            get
-            {
+        ////PassportNumberNote property
+        //public virtual RamAccess<string> PassportNumberNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PassportNumberNote), value);
-                }
-                OnPropertyChanged(nameof(PassportNumberNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool PassportNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            return true;
-        }
-        //PassportNumberNote property
+        //        {
+        //            DataAccess.Set(nameof(PassportNumberNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PassportNumberNote));
+        //    }
+        //}
+
+
+        //private bool PassportNumberNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors();
+        //    if ((value.Value == null) || value.Value.Equals(""))
+        //    {
+        //        value.AddError("Поле не заполнено");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////PassportNumberNote property
 
         //PassportNumberRecoded property
         public int? PassportNumberRecodedId { get; set; }
@@ -652,45 +652,45 @@ public int? AggregateStateId { get; set; }
         }
         //PropertyCode property
 
-        //OwnerNote property
-        public virtual RamAccess<string> OwnerNote
-        {
-            get
-            {
+        ////OwnerNote property
+        //public virtual RamAccess<string> OwnerNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(OwnerNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(OwnerNote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
 
 
-                {
-                    DataAccess.Set(nameof(OwnerNote), value);
-                }
-                OnPropertyChanged(nameof(OwnerNote));
-            }
-        }
-        //if change this change validation
+        //        {
+        //            DataAccess.Set(nameof(OwnerNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(OwnerNote));
+        //    }
+        //}
+        ////if change this change validation
 
-        private bool OwnerNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            return true;
-        }
-        //OwnerNote property
+        //private bool OwnerNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors();
+        //    if ((value.Value == null) || value.Value.Equals(""))
+        //    {
+        //        value.AddError("Поле не заполнено");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////OwnerNote property
 
         //Owner property
         public int? OwnerId { get; set; }
@@ -821,44 +821,44 @@ public int? AggregateStateId { get; set; }
         }
         //ProviderOrRecieverOKPO property
 
-        //ProviderOrRecieverOKPONote property
-        public virtual RamAccess<string> ProviderOrRecieverOKPONote
-        {
-            get
-            {
+        ////ProviderOrRecieverOKPONote property
+        //public virtual RamAccess<string> ProviderOrRecieverOKPONote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
-                }
-                OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            return true;
-        }
-        //ProviderOrRecieverOKPONote property
+        //        {
+        //            DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+        //        }
+        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
+        //    }
+        //}
+
+
+        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors();
+        //    if ((value.Value == null) || value.Value.Equals(""))
+        //    {
+        //        value.AddError("Поле не заполнено");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
         public int? TransporterOKPOId { get; set; }
@@ -919,38 +919,38 @@ public int? AggregateStateId { get; set; }
         }
         //TransporterOKPO property
 
-        //TransporterOKPONote property
-        public virtual RamAccess<string> TransporterOKPONote
-        {
-            get
-            {
+        ////TransporterOKPONote property
+        //public virtual RamAccess<string> TransporterOKPONote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(TransporterOKPONote), value);
-                }
-                OnPropertyChanged(nameof(TransporterOKPONote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool TransporterOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //TransporterOKPONote property
+        //        {
+        //            DataAccess.Set(nameof(TransporterOKPONote), value);
+        //        }
+        //        OnPropertyChanged(nameof(TransporterOKPONote));
+        //    }
+        //}
+
+
+        //private bool TransporterOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////TransporterOKPONote property
 
         //PackName property
         public int? PackNameId { get; set; }
@@ -1000,38 +1000,38 @@ public int? AggregateStateId { get; set; }
         }
         //PackName property
 
-        //PackNameNote property
-        public virtual RamAccess<string> PackNameNote
-        {
-            get
-            {
+        ////PackNameNote property
+        //public virtual RamAccess<string> PackNameNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PackNameNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PackNameNote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PackNameNote), value);
-                }
-                OnPropertyChanged(nameof(PackNameNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool PackNameNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //PackNameNote property
+        //        {
+        //            DataAccess.Set(nameof(PackNameNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PackNameNote));
+        //    }
+        //}
+
+
+        //private bool PackNameNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////PackNameNote property
 
         //PackType property
         public int? PackTypeId { get; set; }
@@ -1082,6 +1082,7 @@ public int? AggregateStateId { get; set; }
         //PackType property
 
         //PackTypeRecoded property
+        public int? PackTypeRecodedId { get; set; }
         public virtual RamAccess<string> PackTypeRecoded
         {
             get
@@ -1114,38 +1115,38 @@ public int? AggregateStateId { get; set; }
         }
         //PackTypeRecoded property
 
-        //PackTypeNote property
-        public virtual RamAccess<string> PackTypeNote
-        {
-            get
-            {
+        ////PackTypeNote property
+        //public virtual RamAccess<string> PackTypeNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PackTypeNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PackTypeNote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PackTypeNote), value);
-                }
-                OnPropertyChanged(nameof(PackTypeNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool PackTypeNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //PackTypeNote property
+        //        {
+        //            DataAccess.Set(nameof(PackTypeNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PackTypeNote));
+        //    }
+        //}
+
+
+        //private bool PackTypeNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////PackTypeNote property
 
         //PackNumber property
         public int? PackNumberId { get; set; }
@@ -1194,45 +1195,45 @@ public int? AggregateStateId { get; set; }
         }
         //PackNumber property
 
-        //PackNumberNote property
-        public virtual RamAccess<string> PackNumberNote
-        {
-            get
-            {
+        ////PackNumberNote property
+        //public virtual RamAccess<string> PackNumberNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PackNumberNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PackNumberNote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-
-                {
-                    DataAccess.Set(nameof(PackNumberNote), value);
-                }
-                OnPropertyChanged(nameof(PackNumberNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool PackNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            return true;
-        }
-        //PackNumberNote property
+
+        //        {
+        //            DataAccess.Set(nameof(PackNumberNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PackNumberNote));
+        //    }
+        //}
+
+
+        //private bool PackNumberNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors();
+        //    if ((value.Value == null) || value.Value.Equals(""))
+        //    {
+        //        value.AddError("Поле не заполнено");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////PackNumberNote property
 
         //PackNumberRecoded property
         public int? PackNumberRecodedId { get; set; }
@@ -1284,44 +1285,44 @@ public int? AggregateStateId { get; set; }
             return true;
         }
 
-        //DocumentNumberNote property
-        public virtual RamAccess<string> DocumentNumberNote
-        {
-            get
-            {
+        ////DocumentNumberNote property
+        //public virtual RamAccess<string> DocumentNumberNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(DocumentNumberNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(DocumentNumberNote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-
-                {
-                    DataAccess.Set(nameof(DocumentNumberNote), value);
-                }
-                OnPropertyChanged(nameof(DocumentNumberNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool DocumentNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            return true;
-        }
-        //DocumentNumberNote property
+
+        //        {
+        //            DataAccess.Set(nameof(DocumentNumberNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(DocumentNumberNote));
+        //    }
+        //}
+
+
+        //private bool DocumentNumberNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors();
+        //    if ((value.Value == null) || value.Value.Equals(""))
+        //    {
+        //        value.AddError("Поле не заполнено");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////DocumentNumberNote property
     }
 }

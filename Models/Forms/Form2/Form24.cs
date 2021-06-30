@@ -449,52 +449,52 @@ namespace Models
         }
         //QuantityFromAnothers property
 
-        //QuantityFromAnothersNote property
-        public virtual RamAccess<string> QuantityFromAnothersNote
-        {
-            get
-            {
+        ////QuantityFromAnothersNote property
+        //public virtual RamAccess<string> QuantityFromAnothersNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
-                    DataAccess.Set(nameof(QuantityFromAnothersNote), value);
-                OnPropertyChanged(nameof(QuantityFromAnothersNote));
-            }
-        }
-        // positive int.
-                private bool QuantityFromAnothersNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityFromAnothersNote property
+        //        }
+        //    }
+        //    set
+        //    {
+        //            DataAccess.Set(nameof(QuantityFromAnothersNote), value);
+        //        OnPropertyChanged(nameof(QuantityFromAnothersNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityFromAnothersNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityFromAnothersNote property
 
         //MassFromAnothersImported Property
         public int? MassFromAnothersImportedId { get; set; }
@@ -612,56 +612,56 @@ namespace Models
         }
         //QuantityFromAnothersImported property
 
-        //QuantityFromImportedNote property
-        public virtual RamAccess<string> QuantityFromImportedNote
-        {
-            get
-            {
+        ////QuantityFromImportedNote property
+        //public virtual RamAccess<string> QuantityFromImportedNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(QuantityFromImportedNote), value);
-                }
-                OnPropertyChanged(nameof(QuantityFromImportedNote));
-            }
-        }
-        // positive int.
-                private bool QuantityFromImportedNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityFromImportedNote property
+        //        {
+        //            DataAccess.Set(nameof(QuantityFromImportedNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(QuantityFromImportedNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityFromImportedNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityFromImportedNote property
 
         //MassAnotherReasons Property
         public int? MassAnotherReasonsId { get; set; }
@@ -778,56 +778,56 @@ namespace Models
         }
         //QuantityAnotherReasons property
 
-        //QuantityAnotherReasonsNote property
-        public virtual RamAccess<string> QuantityAnotherReasonsNote
-        {
-            get
-            {
+        ////QuantityAnotherReasonsNote property
+        //public virtual RamAccess<string> QuantityAnotherReasonsNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
-                }
-                OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
-            }
-        }
-        // positive int.
-                private bool QuantityAnotherReasonsNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityAnotherReasonsNote property
+        //        {
+        //            DataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityAnotherReasonsNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityAnotherReasonsNote property
 
         //MassTransferredToAnother Property
         public int? MassTransferredToAnotherId { get; set; }
@@ -940,56 +940,56 @@ namespace Models
         }
         //QuantityTransferredToAnother property
 
-        //QuantityTransferredToNote property
-        public virtual RamAccess<string> QuantityTransferredToNote
-        {
-            get
-            {
+        ////QuantityTransferredToNote property
+        //public virtual RamAccess<string> QuantityTransferredToNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(QuantityTransferredToNote), value);
-                }
-                OnPropertyChanged(nameof(QuantityTransferredToNote));
-            }
-        }
-        // positive int.
-                private bool QuantityTransferredToNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityTransferredToNote property
+        //        {
+        //            DataAccess.Set(nameof(QuantityTransferredToNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(QuantityTransferredToNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityTransferredToNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityTransferredToNote property
 
         //MassRefined Property
         public int? MassRefinedId { get; set; }
@@ -1102,56 +1102,56 @@ namespace Models
         }
         //QuantityRefined property
 
-        //QuantityRefinedNote property
-        public virtual RamAccess<string> QuantityRefinedNote
-        {
-            get
-            {
+        ////QuantityRefinedNote property
+        //public virtual RamAccess<string> QuantityRefinedNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
                     
-                }
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(QuantityRefinedNote), value);
-                }
-                OnPropertyChanged(nameof(QuantityRefinedNote));
-            }
-        }
-        // positive int.
-                private bool QuantityRefinedNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-            {
-                return true;
-            }
-            try
-            {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
-            }
-            catch
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        //QuantityRefinedNote property
+        //        {
+        //            DataAccess.Set(nameof(QuantityRefinedNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(QuantityRefinedNote));
+        //    }
+        //}
+        //// positive int.
+        //        private bool QuantityRefinedNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
+        //    {
+        //        return true;
+        //    }
+        //    try
+        //    {
+        //        int k = int.Parse(value.Value);
+        //        if (k <= 0)
+        //        {
+        //            value.AddError("Недопустимое значение");
+        //            return false;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        ////QuantityRefinedNote property
 
         //MassRemovedFromAccount Property
         public int? MassRemovedFromAccountId { get; set; }

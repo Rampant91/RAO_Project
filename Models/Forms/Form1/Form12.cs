@@ -1015,7 +1015,7 @@ return true;
         }
         //PackName property
 
-        //PackNameNote property
+        ////PackNameNote property
         //public virtual RamAccess<string> PackNameNote
         //{
         //    get
@@ -1198,7 +1198,7 @@ return true;
         }
         //PackNumber property
 
-//        //PackNumberNote property
+////PackNumberNote property
 //        public virtual RamAccess<string> PackNumberNote
 //        {
 //            get
@@ -1236,7 +1236,7 @@ return true;
 //            }
 //            return true;
 //        }
-//        //PackNumberNote property
+////PackNumberNote property
 
         //PackNumberRecoded property
         public int? PackNumberRecodedId { get; set; }

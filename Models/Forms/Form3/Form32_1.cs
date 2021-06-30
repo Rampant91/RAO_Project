@@ -71,37 +71,37 @@ namespace Models
         }
         //PassportNumber property
 
-        //PassportNumberNote property
-        public virtual RamAccess<string> PassportNumberNote
-        {
-            get
-            {
+        ////PassportNumberNote property
+        //public virtual RamAccess<string> PassportNumberNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-                {
-                    DataAccess.Set(nameof(PassportNumberNote), value);
-                }
-                OnPropertyChanged(nameof(PassportNumberNote));
-            }
-        }
+        //        {
+        //            DataAccess.Set(nameof(PassportNumberNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PassportNumberNote));
+        //    }
+        //}
 
-        private bool PassportNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //PassportNumberNote property
+        //private bool PassportNumberNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////PassportNumberNote property
 
         //CreatorOKPO property
         public int? CreatorOKPOId { get; set; }
@@ -449,39 +449,39 @@ protected List<string> OKSM = new List<string>
         }
         //CreationDate property
 
-        //CreatorOKPONote property
-        public virtual RamAccess<string> CreatorOKPONote
-        {
-            get
-            {
+        ////CreatorOKPONote property
+        //public virtual RamAccess<string> CreatorOKPONote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(CreatorOKPONote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(CreatorOKPONote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-                {
-                    DataAccess.Set(nameof(CreatorOKPONote), value);
-                }
-                OnPropertyChanged(nameof(CreatorOKPONote));
-            }
-        }
 
-        private bool CreatorOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //CreatorOKPONote property
+
+        //        {
+        //            DataAccess.Set(nameof(CreatorOKPONote), value);
+        //        }
+        //        OnPropertyChanged(nameof(CreatorOKPONote));
+        //    }
+        //}
+
+        //private bool CreatorOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////CreatorOKPONote property
 
         //Kategory property
         public int? KategoryId { get; set; }

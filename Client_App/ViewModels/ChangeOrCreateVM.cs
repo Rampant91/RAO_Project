@@ -127,16 +127,16 @@ namespace Client_App.ViewModels
 
         private void _AddRow()
         {
-            //if (FormType == "1/0") { var frm = new Form10(); Storage.Rows10.Add(frm); }
+            if (FormType == "1/0") { Form10? frm = new Form10(); Storage.Rows10.Add(frm); }
             if (FormType == "1/1") { Form11? frm = new Form11(); Storage.Rows11.Add(frm); }
             if (FormType == "1/2") { Form12? frm = new Form12(); Storage.Rows12.Add(frm); }
-            //if (FormType == "1/3") { var frm = new Form13(); Storage.Rows13.Add(frm); }
-            //if (FormType == "1/4") { var frm = new Form14(); Storage.Rows14.Add(frm); }
-            //if (FormType == "1/5") { var frm = new Form15(); Storage.Rows15.Add(frm); }
-            //if (FormType == "1/6") { var frm = new Form16(); Storage.Rows16.Add(frm); }
-            //if (FormType == "1/7") { var frm = new Form17(); Storage.Rows17.Add(frm); }
-            //if (FormType == "1/8") { var frm = new Form18(); Storage.Rows18.Add(frm); }
-            //if (FormType == "1/9") { var frm = new Form19(); Storage.Rows19.Add(frm); }
+            if (FormType == "1/3") { Form13? frm = new Form13(); Storage.Rows13.Add(frm); }
+            if (FormType == "1/4") { Form14? frm = new Form14(); Storage.Rows14.Add(frm); }
+            if (FormType == "1/5") { Form15? frm = new Form15(); Storage.Rows15.Add(frm); }
+            if (FormType == "1/6") { Form16? frm = new Form16(); Storage.Rows16.Add(frm); }
+            if (FormType == "1/7") { Form17? frm = new Form17(); Storage.Rows17.Add(frm); }
+            if (FormType == "1/8") { Form18? frm = new Form18(); Storage.Rows18.Add(frm); }
+            if (FormType == "1/9") { Form19? frm = new Form19(); Storage.Rows19.Add(frm); }
         }
 
         private void _DeleteRow(IList param)

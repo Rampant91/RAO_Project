@@ -114,37 +114,37 @@ namespace Models
         }
         //StoragePlaceName property
 
-        //StoragePlaceNameNote property
-        public virtual RamAccess<string> StoragePlaceNameNote
-        {
-            get
-            {
+        ////StoragePlaceNameNote property
+        //public virtual RamAccess<string> StoragePlaceNameNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-                {
-                    DataAccess.Set(nameof(StoragePlaceNameNote), value);
-                }
-                OnPropertyChanged(nameof(StoragePlaceNameNote));
-            }
-        }
-        //If change this change validation
+        //        {
+        //            DataAccess.Set(nameof(StoragePlaceNameNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(StoragePlaceNameNote));
+        //    }
+        //}
+        ////If change this change validation
 
-        private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors(); return true;
-        }
-        //StoragePlaceNameNote property
+        //private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////StoragePlaceNameNote property
 
         //StoragePlaceCode property
         public int? StoragePlaceCodeId { get; set; }
@@ -255,34 +255,34 @@ namespace Models
         }
         //ProjectVolume property
 
-        //ProjectVolumeNote property
-        public virtual RamAccess<double> ProjectVolumeNote
-        {
-            get
-            {
+        ////ProjectVolumeNote property
+        //public virtual RamAccess<double> ProjectVolumeNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<double>(nameof(ProjectVolumeNote));
-                }
+        //        {
+        //            return DataAccess.Get<double>(nameof(ProjectVolumeNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-                DataAccess.Set(nameof(ProjectVolumeNote), value);
-                OnPropertyChanged(nameof(ProjectVolumeNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
+        //        DataAccess.Set(nameof(ProjectVolumeNote), value);
+        //        OnPropertyChanged(nameof(ProjectVolumeNote));
+        //    }
+        //}
 
 
-        private bool ProjectVolumeNote_Validation(RamAccess<double?> value)//TODO
-        {
-            value.ClearErrors();
-            return true;
-        }
-        //ProjectVolumeNote property
+        //private bool ProjectVolumeNote_Validation(RamAccess<double?> value)//TODO
+        //{
+        //    value.ClearErrors();
+        //    return true;
+        //}
+        ////ProjectVolumeNote property
 
         //CodeRAO property
         public int? CodeRAOId { get; set; }

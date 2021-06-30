@@ -271,37 +271,37 @@ namespace Models
                 "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН","ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН","ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ"
             };
 
-        //ProviderOrRecieverOKPONote property
-        public virtual RamAccess<string> ProviderOrRecieverOKPONote
-        {
-            get
-            {
+        ////ProviderOrRecieverOKPONote property
+        //public virtual RamAccess<string> ProviderOrRecieverOKPONote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
-                }
-                OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //ProviderOrRecieverOKPONote property
+        //        {
+        //            DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+        //        }
+        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
+        //    }
+        //}
+
+
+        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////ProviderOrRecieverOKPONote property
     }
 }

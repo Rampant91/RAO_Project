@@ -172,37 +172,37 @@ namespace Models
         }
         //AllowedActivity property
 
-        //AllowedActivityNote property
-        public virtual RamAccess<string> AllowedActivityNote
-        {
-            get
-            {
+        ////AllowedActivityNote property
+        //public virtual RamAccess<string> AllowedActivityNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(AllowedActivityNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(AllowedActivityNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(AllowedActivityNote), value);
-                }
-                OnPropertyChanged(nameof(AllowedActivityNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool AllowedActivityNote_Validation(RamAccess<string> value)//Ready
-        {
-            return true;
-        }
-        //AllowedActivityNote property
+        //        {
+        //            DataAccess.Set(nameof(AllowedActivityNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(AllowedActivityNote));
+        //    }
+        //}
+
+
+        //private bool AllowedActivityNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    return true;
+        //}
+        ////AllowedActivityNote property
 
         //FactedActivity property
         public int? FactedActivityId { get; set; }
@@ -263,36 +263,36 @@ namespace Models
         }
         //FactedActivity property
 
-        //FactedActivityNote property
-        public virtual RamAccess<string> FactedActivityNote
-        {
-            get
-            {
+        ////FactedActivityNote property
+        //public virtual RamAccess<string> FactedActivityNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(FactedActivityNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(FactedActivityNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(FactedActivityNote), value);
-                }
-                OnPropertyChanged(nameof(FactedActivityNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool FactedActivityNote_Validation(RamAccess<string> value)//Ready
-        {
-            return true;
-        }
-        //FactedActivityNote property
+        //        {
+        //            DataAccess.Set(nameof(FactedActivityNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(FactedActivityNote));
+        //    }
+        //}
+
+
+        //private bool FactedActivityNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    return true;
+        //}
+        ////FactedActivityNote property
     }
 }

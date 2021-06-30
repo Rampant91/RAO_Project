@@ -263,37 +263,37 @@ namespace Models
         }
         //TestDepth property
 
-        //TestDepthNote property
-        public virtual RamAccess<string> TestDepthNote
-        {
-            get
-            {
+        ////TestDepthNote property
+        //public virtual RamAccess<string> TestDepthNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(TestDepthNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(TestDepthNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-                {
-                    DataAccess.Set(nameof(TestDepthNote), value);
-                }
-                OnPropertyChanged(nameof(TestDepthNote));
-            }
-        }
+        //        {
+        //            DataAccess.Set(nameof(TestDepthNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(TestDepthNote));
+        //    }
+        //}
 
-        private bool TestDepthNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            return true;
-        }
-        //TestDepthNote property
+        //private bool TestDepthNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    return true;
+        //}
+        ////TestDepthNote property
 
         //RadionuclidName property
         public int? RadionuclidNameId { get; set; }

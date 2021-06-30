@@ -135,36 +135,36 @@ return false;
         }
         //StoragePlaceName property
 
-        //StoragePlaceNameNote property
-        public virtual RamAccess<string> StoragePlaceNameNote
-        {
-            get
-            {
+        ////StoragePlaceNameNote property
+        //public virtual RamAccess<string> StoragePlaceNameNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(StoragePlaceNameNote), value);
-                }
-                OnPropertyChanged(nameof(StoragePlaceNameNote));
-            }
-        }
-        //If change this change validation
+        //        {
+        //            DataAccess.Set(nameof(StoragePlaceNameNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(StoragePlaceNameNote));
+        //    }
+        //}
+        ////If change this change validation
         
-        private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors(); return true;}
-        //StoragePlaceNameNote property
+        //private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors(); return true;}
+        ////StoragePlaceNameNote property
 
         //StoragePlaceCode property
         public int? StoragePlaceCodeId { get; set; }
@@ -263,36 +263,36 @@ return false;
         }
         //PackName property
 
-        //PackNameNote property
-        public virtual RamAccess<string> PackNameNote
-        {
-            get
-            {
+        ////PackNameNote property
+        //public virtual RamAccess<string> PackNameNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(PackNameNote));//OK
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(PackNameNote));//OK
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(PackNameNote), value);
-                }
-                OnPropertyChanged(nameof(PackNameNote));
-            }
-        }
+        //        {
+        //            DataAccess.Set(nameof(PackNameNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PackNameNote));
+        //    }
+        //}
 
         
-        private bool PackNameNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //PackNameNote property
+        //private bool PackNameNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////PackNameNote property
 
         //PackType property
         public int? PackTypeId { get; set; }
@@ -378,36 +378,36 @@ return false;
             value.ClearErrors(); return true;}
         //PackTypeRecoded property
 
-        //PackTypeNote property
-        public virtual RamAccess<string> PackTypeNote
-        {
-            get
-            {
+        ////PackTypeNote property
+        //public virtual RamAccess<string> PackTypeNote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(PackTypeNote));//OK
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(PackTypeNote));//OK
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(PackTypeNote), value);
-                }
-                OnPropertyChanged(nameof(PackTypeNote));
-            }
-        }
+        //        {
+        //            DataAccess.Set(nameof(PackTypeNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PackTypeNote));
+        //    }
+        //}
 
         
-        private bool PackTypeNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
-        //PackTypeNote property
+        //private bool PackTypeNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
+        ////PackTypeNote property
 
         //PackQuantity property
         public int? PackQuantityId { get; set; }

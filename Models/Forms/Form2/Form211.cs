@@ -236,36 +236,36 @@ namespace Models
         }
         //Radionuclids property
 
-        //RadionuclidNameNote property
-        public virtual RamAccess<string> RadionuclidNameNote
-        {
-            get
-            {
+        ////RadionuclidNameNote property
+        //public virtual RamAccess<string> RadionuclidNameNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(RadionuclidNameNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(RadionuclidNameNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-                {
-                    DataAccess.Set(nameof(RadionuclidNameNote), value);
-                }
-                OnPropertyChanged(nameof(RadionuclidNameNote));
-            }
-        }
+        //        {
+        //            DataAccess.Set(nameof(RadionuclidNameNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(RadionuclidNameNote));
+        //    }
+        //}
 
-        private bool RadionuclidNameNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //RadionuclidNameNote property
+        //private bool RadionuclidNameNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////RadionuclidNameNote property
 
         //SpecificActivityOfPlot property
         public int? SpecificActivityOfPlotId { get; set; }

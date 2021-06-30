@@ -220,38 +220,38 @@ namespace Models
         }
         //PassportNumber property
 
-        //PassportNumberNote property
-        public virtual RamAccess<string> PassportNumberNote
-        {
-            get
-            {
+        ////PassportNumberNote property
+        //public virtual RamAccess<string> PassportNumberNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PassportNumberNote), value);
-                }
-                OnPropertyChanged(nameof(PassportNumberNote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool PassportNumberNote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //PassportNumberNote property
+        //        {
+        //            DataAccess.Set(nameof(PassportNumberNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(PassportNumberNote));
+        //    }
+        //}
+
+
+        //private bool PassportNumberNote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////PassportNumberNote property
 
         //PassportNumberRecoded property
         public int? PassportNumberRecodedId { get; set; }
@@ -550,38 +550,38 @@ namespace Models
         }
         //ProviderOrRecieverOKPO property
 
-        //ProviderOrRecieverOKPONote property
-        public virtual RamAccess<string> ProviderOrRecieverOKPONote
-        {
-            get
-            {
+        ////ProviderOrRecieverOKPONote property
+        //public virtual RamAccess<string> ProviderOrRecieverOKPONote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
-                }
-                OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //ProviderOrRecieverOKPONote property
+        //        {
+        //            DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+        //        }
+        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
+        //    }
+        //}
+
+
+        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////ProviderOrRecieverOKPONote property
 
         //TransporterOKPO property
         public int? TransporterOKPOId { get; set; }
@@ -639,38 +639,38 @@ namespace Models
         }
         //TransporterOKPO property
 
-        //TransporterOKPONote property
-        public virtual RamAccess<string> TransporterOKPONote
-        {
-            get
-            {
+        ////TransporterOKPONote property
+        //public virtual RamAccess<string> TransporterOKPONote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
+        //        {
+        //            return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(TransporterOKPONote), value);
-                }
-                OnPropertyChanged(nameof(TransporterOKPONote));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool TransporterOKPONote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //TransporterOKPONote property
+        //        {
+        //            DataAccess.Set(nameof(TransporterOKPONote), value);
+        //        }
+        //        OnPropertyChanged(nameof(TransporterOKPONote));
+        //    }
+        //}
+
+
+        //private bool TransporterOKPONote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////TransporterOKPONote property
 
         //StoragePlaceName property
         public int? StoragePlaceNameId { get; set; }
@@ -713,37 +713,37 @@ namespace Models
         }
         //StoragePlaceName property
 
-        //StoragePlaceNameNote property
-        public virtual RamAccess<string> StoragePlaceNameNote
-        {
-            get
-            {
+        ////StoragePlaceNameNote property
+        //public virtual RamAccess<string> StoragePlaceNameNote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-                {
-                    DataAccess.Set(nameof(StoragePlaceNameNote), value);
-                }
-                OnPropertyChanged(nameof(StoragePlaceNameNote));
-            }
-        }
-        //If change this change validation
+        //        {
+        //            DataAccess.Set(nameof(StoragePlaceNameNote), value);
+        //        }
+        //        OnPropertyChanged(nameof(StoragePlaceNameNote));
+        //    }
+        //}
+        ////If change this change validation
 
-        private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors(); return true;
-        }
-        //StoragePlaceNameNote property
+        //private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////StoragePlaceNameNote property
 
         //StoragePlaceCode property
         public int? StoragePlaceCodeId { get; set; }

@@ -128,7 +128,7 @@ namespace Models
 
         //PassportNumber property
 
-        //        //PassportNumberNote property
+        ////PassportNumberNote property
         //        public virtual RamAccess<string> PassportNumberNote
         //        {
         //            get
@@ -152,7 +152,7 @@ namespace Models
         //            }
         //            return true;
         //        }
-        //        //PassportNumberNote property
+        ////PassportNumberNote property
 
         //PassportNumberRecoded property
         public int? PassportNumberRecodedId { get; set; }
