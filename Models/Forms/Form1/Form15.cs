@@ -179,7 +179,7 @@ namespace Models
         ////PassportNumberNote property
 
         //PassportNumberRecoded property
-        public int? PassportNumberRecodedId { get; set; }
+        //public int? PassportNumberRecodedId { get; set; }
         public virtual RamAccess<string> PassportNumberRecoded
         {
             get
@@ -246,7 +246,7 @@ namespace Models
         //Type property
 
         //TypeRecoded property
-        public int? TypeRecodedId { get; set; }
+        //public int? TypeRecodedId { get; set; }
         public virtual RamAccess<string> TypeRecoded
         {
             get
@@ -369,7 +369,7 @@ namespace Models
         //FactoryNumber property
 
         //FactoryNumberRecoded property
-        public int? FactoryNumberRecodedId { get; set; }
+        //public int? FactoryNumberRecodedId { get; set; }
         public virtual RamAccess<string> FactoryNumberRecoded
         {
             get
@@ -922,7 +922,7 @@ namespace Models
         //PackType property
 
         //PackTypeRecoded property
-        public int? PackTypeRecodedId { get; set; }
+        //public int? PackTypeRecodedId { get; set; }
         public virtual RamAccess<string> PackTypeRecoded
         {
             get
@@ -1067,7 +1067,7 @@ namespace Models
         ////PackNumberNote property
 
         //PackNumberRecoded property
-        public int? PackNumberRecodedId { get; set; }
+        //public int? PackNumberRecodedId { get; set; }
         public virtual RamAccess<string> PackNumberRecoded
         {
             get

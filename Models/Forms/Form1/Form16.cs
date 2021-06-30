@@ -1267,7 +1267,7 @@ namespace Models
         //StoragePlaceCode property
 
         //PackNumberRecoded property
-        public int? PackNumberRecodedId { get; set; }
+        //public int? PackNumberRecodedId { get; set; }
         public virtual RamAccess<string> PackNumberRecoded
         {
             get

@@ -158,32 +158,32 @@ namespace Client_App.Short_Visual
             btn2.Margin = Thickness.Parse("5,35,0,0");
             panel.Children.Add(btn2);
 
-            //Button btn3 = new Button();
-            //btn3.Content = ((Form_ClassAttribute)Type.GetType("Models.Form13,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
-            //btn3.Bind(Button.CommandProperty, new Binding("AddForm"));
-            //btn3.CommandParameter = "1/3";
-            //btn3.Height = 30;
-            //btn3.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            //btn3.Margin = Thickness.Parse("5,70,0,0");
-            //panel.Children.Add(btn3);
+            Button btn3 = new Button();
+            btn3.Content = ((Form_ClassAttribute)Type.GetType("Models.Form13,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            btn3.Bind(Button.CommandProperty, new Binding("AddForm"));
+            btn3.CommandParameter = "1/3";
+            btn3.Height = 30;
+            btn3.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            btn3.Margin = Thickness.Parse("5,70,0,0");
+            panel.Children.Add(btn3);
 
-            //Button btn4 = new Button();
-            //btn4.Content = ((Form_ClassAttribute)Type.GetType("Models.Form14,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
-            //btn4.Bind(Button.CommandProperty, new Binding("AddForm"));
-            //btn4.CommandParameter = "1/4";
-            //btn4.Height = 30;
-            //btn4.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            //btn4.Margin = Thickness.Parse("5,105,0,0");
-            //panel.Children.Add(btn4);
+            Button btn4 = new Button();
+            btn4.Content = ((Form_ClassAttribute)Type.GetType("Models.Form14,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            btn4.Bind(Button.CommandProperty, new Binding("AddForm"));
+            btn4.CommandParameter = "1/4";
+            btn4.Height = 30;
+            btn4.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            btn4.Margin = Thickness.Parse("5,105,0,0");
+            panel.Children.Add(btn4);
 
-            //Button btn5 = new Button();
-            //btn5.Content = ((Form_ClassAttribute)Type.GetType("Models.Form15,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
-            //btn5.Bind(Button.CommandProperty, new Binding("AddForm"));
-            //btn5.CommandParameter = "1/5";
-            //btn5.Height = 30;
-            //btn5.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            //btn5.Margin = Thickness.Parse("5,140,0,0");
-            //panel.Children.Add(btn5);
+            Button btn5 = new Button();
+            btn5.Content = ((Form_ClassAttribute)Type.GetType("Models.Form15,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            btn5.Bind(Button.CommandProperty, new Binding("AddForm"));
+            btn5.CommandParameter = "1/5";
+            btn5.Height = 30;
+            btn5.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            btn5.Margin = Thickness.Parse("5,140,0,0");
+            panel.Children.Add(btn5);
 
             //Button btn6 = new Button();
             //btn6.Content = ((Form_ClassAttribute)Type.GetType("Models.Form16,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
