@@ -33,7 +33,7 @@ namespace Collections
             dbm.Add(Master);
             //dbm.Add(Report_Collection);
 
-            //Report_Collection.CollectionChanged += CollectionChanged;
+            Report_Collection.CollectionChanged += CollectionChanged;
         }
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
