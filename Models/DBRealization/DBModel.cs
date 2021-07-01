@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DBRealization
 {
@@ -140,7 +141,7 @@ namespace DBRealization
 
         public void UndoChanges()
         {
-            IEnumerable<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry> coll = ChangeTracker.Entries();
+            var coll = ChangeTracker.Entries().ToList();
             foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry in coll)
             {
                 switch (entry.State)
