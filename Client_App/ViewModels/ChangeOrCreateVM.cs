@@ -117,7 +117,6 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-
         }
 
         private void _CheckReport()
@@ -137,6 +136,19 @@ namespace Client_App.ViewModels
             if (FormType == "1/7") { Form17? frm = new Form17(); Storage.Rows17.Add(frm); }
             if (FormType == "1/8") { Form18? frm = new Form18(); Storage.Rows18.Add(frm); }
             if (FormType == "1/9") { Form19? frm = new Form19(); Storage.Rows19.Add(frm); }
+            if (FormType == "2/0") { Form20? frm = new Form20(); Storage.Rows20.Add(frm); }
+            if (FormType == "2/1") { Form21? frm = new Form21(); Storage.Rows21.Add(frm); }
+            if (FormType == "2/2") { Form22? frm = new Form22(); Storage.Rows22.Add(frm); }
+            if (FormType == "2/3") { Form23? frm = new Form23(); Storage.Rows23.Add(frm); }
+            if (FormType == "2/4") { Form24? frm = new Form24(); Storage.Rows24.Add(frm); }
+            if (FormType == "2/5") { Form25? frm = new Form25(); Storage.Rows25.Add(frm); }
+            if (FormType == "2/6") { Form26? frm = new Form26(); Storage.Rows26.Add(frm); }
+            if (FormType == "2/7") { Form27? frm = new Form27(); Storage.Rows27.Add(frm); }
+            if (FormType == "2/8") { Form28? frm = new Form28(); Storage.Rows28.Add(frm); }
+            if (FormType == "2/9") { Form29? frm = new Form29(); Storage.Rows29.Add(frm); }
+            if (FormType == "2/10") { Form210? frm = new Form210(); Storage.Rows210.Add(frm); }
+            if (FormType == "2/11") { Form211? frm = new Form211(); Storage.Rows211.Add(frm); }
+            if (FormType == "2/12") { Form212? frm = new Form212(); Storage.Rows212.Add(frm); }
         }
 
         private void _DeleteRow(IList param)
