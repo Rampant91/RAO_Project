@@ -38,7 +38,7 @@ namespace Client_App.Short_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
-                ChooseColor = new SolidColorBrush(new Color(255, 255, 0, 0)),
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 Type = "0/0"
             };
 
@@ -92,7 +92,8 @@ namespace Client_App.Short_Visual
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
-                ChooseMode = Controls.DataGrid.ChooseMode.Line
+                ChooseMode = Controls.DataGrid.ChooseMode.Line,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
 
             Binding b = new Binding

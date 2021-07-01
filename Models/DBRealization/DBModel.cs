@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DBRealization
 {
@@ -129,12 +130,18 @@ namespace DBRealization
 
         public void LoadTables()
         {
-            DBObservable_DbSet.Load();
+            DBObservableDbSet.Load();
+            accessReport.Load();
+            accessReports.Load();
+            ReportCollectionDbSet.Load();
+            ReportsCollectionDbSet.Load();
+            form_10.Load();
+            form_11.Load();
         }
 
         public void UndoChanges()
         {
-            IEnumerable<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry> coll = ChangeTracker.Entries();
+            var coll = ChangeTracker.Entries().ToList();
             foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry in coll)
             {
                 switch (entry.State)
@@ -155,12 +162,12 @@ namespace DBRealization
         //public DbSet<Models.DataAccess.RamAccess<short?>> access_null_short { get; set; }
         //public DbSet<Models.DataAccess.RamAccess<short>> access_short { get; set; }
         //public DbSet<Models.DataAccess.RamAccess<string>> access_string { get; set; }
-        public DbSet<Models.DataAccess.RamAccess<Collections.Report>> access_report { get; set; }
-        public DbSet<Models.DataAccess.RamAccess<Collections.Reports>> access_reports { get; set; }
+        public DbSet<Models.DataAccess.RamAccess<Collections.Report>> accessReport { get; set; }
+        public DbSet<Models.DataAccess.RamAccess<Collections.Reports>> accessReports { get; set; }
 
-        public DbSet<Collections.DBObservable> DBObservable_DbSet { get; set; }
-        public DbSet<Collections.Reports> ReportsCollection_DbSet { get; set; }
-        public DbSet<Collections.Report> ReportCollection_DbSet { get; set; }
+        public DbSet<Collections.DBObservable> DBObservableDbSet { get; set; }
+        public DbSet<Collections.Reports> ReportsCollectionDbSet { get; set; }
+        public DbSet<Collections.Report> ReportCollectionDbSet { get; set; }
 
         //public DbSet<Collections.Reports> reports { get; set; }
         //public DbSet<Collections.Report> report { get; set; }

@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Collections;
-using Collections;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Linq;
@@ -53,13 +52,13 @@ namespace Client_App.ViewModels
             bool t = dbm.Database.EnsureCreated();
 
             dbm.LoadTables();
-            if(dbm.DBObservable_DbSet.Local.Count()==0)
+            if(dbm.DBObservableDbSet.Local.Count()==0)
             {
-                dbm.DBObservable_DbSet.Add(new DBObservable());
+                dbm.DBObservableDbSet.Add(new DBObservable());
             }
             dbm.SaveChanges();
-            Local_Reports = dbm.DBObservable_DbSet.Local.First();
-            if (dbm.ReportsCollection_DbSet.Count() == 0)
+            Local_Reports = dbm.DBObservableDbSet.Local.First();
+            if (dbm.ReportsCollectionDbSet.Count() == 0)
             {
                 Local_Reports.Reports_Collection.Add(new Reports());
             }
