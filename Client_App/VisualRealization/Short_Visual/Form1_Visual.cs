@@ -136,10 +136,8 @@ namespace Client_App.Short_Visual
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
             };
 
-            Button btn1 = new Button
-            {
-                Content = ((Form_ClassAttribute)Type.GetType("Models.Form11,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
-            };
+            Button btn1 = new Button();
+            btn1.Content = ((Form_ClassAttribute)Type.GetType("Models.Form11,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn1.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn1.CommandParameter = "1/1";
             btn1.Height = 30;
@@ -147,10 +145,8 @@ namespace Client_App.Short_Visual
             btn1.Margin = Thickness.Parse("5,0,0,0");
             panel.Children.Add(btn1);
 
-            Button btn2 = new Button
-            {
-                Content = ((Form_ClassAttribute)Type.GetType("Models.Form12,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name
-            };
+            Button btn2 = new Button();
+            btn2.Content = ((Form_ClassAttribute)Type.GetType("Models.Form12,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn2.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn2.CommandParameter = "1/2";
             btn2.Height = 30;
