@@ -64,6 +64,8 @@ namespace Models
             StoragePlaceCode.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
             FactoryNumberRecoded.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(RefineOrSortRAOCode), FactoryNumberRecoded_Validation, null);
+            RefineOrSortRAOCode.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -88,6 +90,7 @@ namespace Models
             Subsidy_Validation(Subsidy);
             FcpNumber_Validation(FcpNumber);
             StatusRAO_Validation(StatusRAO);
+            RefineOrSortRAOCode_Validation(RefineOrSortRAOCode);
             StoragePlaceName_Validation(StoragePlaceName);
             StoragePlaceCode_Validation(StoragePlaceCode);
         }

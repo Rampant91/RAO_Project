@@ -243,6 +243,8 @@ namespace Models
         //ValidThru property
 
         //RadionuclidName property
+        public int? RadionuclidNameId { get; set; }
+        [Attributes.Form_Property("Наименование радионуклида")]
         public virtual RamAccess<string> RadionuclidName
         {
             get

@@ -29,6 +29,8 @@ namespace Models
             Activity.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(Radionuclids), ProviderOrRecieverOKPO_Validation, null);
+            Radionuclids.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -38,6 +40,7 @@ namespace Models
             ObjectTypeCode_Validation(ObjectTypeCode);
             //2301Activity_Validation(Activity);
             ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
+            Radionuclids_Validation(Radionuclids);
         }
 
         [Attributes.Form_Property("Форма")]
