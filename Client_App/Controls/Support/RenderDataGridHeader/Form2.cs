@@ -407,43 +407,43 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 9,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 10,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("CodeOYAT").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 11,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("FcpNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("StoragePlaceCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 5,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("StoragePlaceName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 6,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("FuelMass").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 7,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("CellMass").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 8,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("Quantity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 9,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("BetaGammaActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 10,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").
                     GetProperty("AlphaActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
@@ -459,35 +459,35 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 9,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").
                     GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 10,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").
                     GetProperty("ObservedSourceNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 11,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").
                     GetProperty("ControlledAreaName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").
                     GetProperty("SupposedWasteSource").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 5,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").
                     GetProperty("DistanceToWasteSource").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 6,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").
                     GetProperty("TestDepth").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 7,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").
                     GetProperty("RadionuclidName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 8,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form26,Models").
                     GetProperty("AverageYearConcentration").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
@@ -503,27 +503,27 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 9,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form27,Models").
                     GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 10,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form27,Models").
                     GetProperty("ObservedSourceNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 11,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form27,Models").
                     GetProperty("RadionuclidName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form27,Models").
                     GetProperty("AllowedWasteValue").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 5,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form27,Models").
                     GetProperty("FactedWasteValue").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 6,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form27,Models").
                     GetProperty("WasteOutbreakPreviousYear").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
@@ -539,31 +539,31 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 9,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").
                     GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 10,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").
                     GetProperty("WasteSourceName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 11,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").
                     GetProperty("WasteRecieverName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").
                     GetProperty("RecieverTypeCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 5,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").
                     GetProperty("AllowedWasteRemovalVolume").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 6,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").
                     GetProperty("RemovedWasteVolume").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 7,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").
                     GetProperty("PoolDistrictName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
@@ -579,23 +579,23 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 9,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form29,Models").
                     GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 10,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form29,Models").
                     GetProperty("WasteSourceName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 11,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form29,Models").
                     GetProperty("RadionuclidName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form29,Models").
                     GetProperty("AllowedActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 5,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form29,Models").
                     GetProperty("FactedActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
@@ -611,47 +611,47 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 9,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 10,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("IndicatorName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 11,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("PlotName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("PlotKadastrNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 5,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("PlotCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 6,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("InfectedArea").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 7,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("AvgGammaRaysDosePower").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 8,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("MaxGammaRaysDosePower").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 9,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("WasteDensityAlpha").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 10,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("WasteDensityBeta").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 11,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form210,Models").
                     GetProperty("FcpNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
@@ -667,39 +667,39 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 9,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form211,Models").
                     GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 10,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form211,Models").
                     GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 11,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form211,Models").
                     GetProperty("PlotName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form211,Models").
                     GetProperty("PlotKadastrNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 5,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form211,Models").
                     GetProperty("PlotCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 6,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form211,Models").
                     GetProperty("InfectedArea").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 7,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form211,Models").
                     GetProperty("SpecificActivityOfPlot").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 8,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form211,Models").
                     GetProperty("SpecificActivityOfLiquidPart").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 9,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form211,Models").
                     GetProperty("SpecificActivityOfDensePart").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
@@ -715,23 +715,23 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 9,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form212,Models").
                     GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 10,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form212,Models").
                     GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 11,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form212,Models").
                     GetProperty("PlotName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 12,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form212,Models").
                     GetProperty("PlotKadastrNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 13,
+            stck.Children.Add(Get1Header(1, 5,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form212,Models").
                     GetProperty("PlotCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));

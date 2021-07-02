@@ -705,35 +705,35 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     ((Form_PropertyAttribute)Type.GetType("Models.Form16,Models").
                     GetProperty("Subsidy").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 20,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form16,Models").
                     GetProperty("FcpNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 21,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form16,Models").
                     GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 22,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form16,Models").
                     GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 23,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form16,Models").
                     GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 24,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form16,Models").
                     GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 25,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form16,Models").
                     GetProperty("RefineOrSortRAOCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 26,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form16,Models").
                     GetProperty("StatusRAO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 27,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form16,Models").
                     GetProperty("Volume").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
@@ -826,67 +826,67 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 20,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 21,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 22,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 23,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("PackNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 24,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("FcpNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 25,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("Subsidy").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 26,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("TritiumActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 27,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("TransuraniumActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 28,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("BetaGammaActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 29,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("AlphaActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 30,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("SpecificActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 31,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("PackFactoryNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 32,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
                     GetProperty("Volume").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            //stck.Children.Add(Get1Header(1, 19,
+            //stck.Children.Add(Get1Header(1, 33,
             //        ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
             //        GetProperty("PackTypeRecoded").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //    ));
-            //stck.Children.Add(Get1Header(1, 19,
+            //stck.Children.Add(Get1Header(1, 34,
             //        ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
             //        GetProperty("PackNumberRecoded").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //    ));
-            //stck.Children.Add(Get1Header(1, 19,
+            //stck.Children.Add(Get1Header(1, 35,
             //        ((Form_PropertyAttribute)Type.GetType("Models.Form17,Models").
             //        GetProperty("DocumentNumberRecoded").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //    ));
@@ -979,51 +979,51 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 20,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("Volume20").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 21,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("Mass21").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 22,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("TritiumActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 23,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("TransuraniumActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 24,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("BetaGammaActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 25,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("AlphaActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 26,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 27,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("RefineOrSortRAOCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 19,
+            stck.Children.Add(Get1Header(1, 28,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
                     GetProperty("Mass7").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            //stck.Children.Add(Get1Header(1, 19,
+            //stck.Children.Add(Get1Header(1, 29,
             //        ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
             //        GetProperty("PassportNumberRecoded").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //    ));
-            //stck.Children.Add(Get1Header(1, 19,
+            //stck.Children.Add(Get1Header(1, 30,
             //        ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
             //        GetProperty("IndividualNumberZHROrecoded").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //    ));
-            //stck.Children.Add(Get1Header(1, 19,
+            //stck.Children.Add(Get1Header(1, 31,
             //        ((Form_PropertyAttribute)Type.GetType("Models.Form18,Models").
             //        GetProperty("DocumentNumberRecoded").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //    ));
@@ -1080,10 +1080,10 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     ((Form_PropertyAttribute)Type.GetType("Models.Form19,Models").
                     GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 11,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Form19,Models").
-                    GetProperty("DocumentNumberRecoded").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+            //stck.Children.Add(Get1Header(1, 11,
+            //        ((Form_PropertyAttribute)Type.GetType("Models.Form19,Models").
+            //        GetProperty("DocumentNumberRecoded").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //    ));
 
             return stck;
         }

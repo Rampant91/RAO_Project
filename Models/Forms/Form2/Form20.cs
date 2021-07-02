@@ -69,17 +69,17 @@ namespace Models
             Okopf_Validation(Okopf);
             Inn_Validation(Inn);
             Kpp_Validation(Kpp);
-            Kpp_Validation(RegNo);
-            Kpp_Validation(OrganUprav);
-            Kpp_Validation(SubjectRF);
-            Kpp_Validation(JurLico);
-            Kpp_Validation(ShortJurLico);
-            Kpp_Validation(JurLicoAddress);
-            Kpp_Validation(JurLicoFactAddress);
-            Kpp_Validation(GradeFIO);
-            Kpp_Validation(Telephone);
-            Kpp_Validation(Fax);
-            Kpp_Validation(Email);
+            RegNo_Validation(RegNo);
+            OrganUprav_Validation(OrganUprav);
+            SubjectRF_Validation(SubjectRF);
+            JurLico_Validation(JurLico);
+            ShortJurLico_Validation(ShortJurLico);
+            JurLicoAddress_Validation(JurLicoAddress);
+            JurLicoFactAddress_Validation(JurLicoFactAddress);
+            GradeFIO_Validation(GradeFIO);
+            Telephone_Validation(Telephone);
+            Fax_Validation(Fax);
+            Email_Validation(Email);
         }
 
         [Attributes.Form_Property("Форма")]

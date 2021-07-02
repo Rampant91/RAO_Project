@@ -518,7 +518,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get1Row(1, Row, 18, "DocumentDate", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 19, "Activity", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 20, "Radionuclids", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 29, "DocumentNumberRecoded", scp, TopName));
+            //stck.Children.Add(Get1Row(1, Row, 29, "DocumentNumberRecoded", scp, TopName));
 
             //var bd = "StartPeriod";
             //bd.StringFormat = "{0:d}";
