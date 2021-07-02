@@ -156,6 +156,7 @@ namespace Client_App.Views
         {
             Panel? panel = this.FindControl<Panel>("ChangingPanel");
             Form1Init(panel);
+            Form2Init(panel);
         }
 
         private void InitializeComponent()
