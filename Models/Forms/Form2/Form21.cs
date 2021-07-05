@@ -282,6 +282,10 @@ namespace Models
         private bool StatusRAOIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                return true;
+            }
             if (value.Value.Length == 1)
             {
                 int tmp;
@@ -439,7 +443,7 @@ namespace Models
         private bool QuantityIn_Validation(RamAccess<string> value1)//Ready
         {
             value1.ClearErrors();
-            if (value1.Equals("прим."))
+            if ((value1.Value == null)||value1.Value.Equals("прим."))
             {
                 return true;
             }
@@ -785,6 +789,10 @@ namespace Models
         private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                return true;
+            }
             if (value.Value.Length == 1)
             {
                 int tmp;

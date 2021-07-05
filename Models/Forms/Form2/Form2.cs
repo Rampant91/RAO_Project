@@ -22,6 +22,8 @@ namespace Models.Abstracts
         {
             DataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, -1);
             NumberInOrder.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<byte>(nameof(CorrectionNumber), CorrectionNumber_Validation, 255);
+            CorrectionNumber.PropertyChanged += InPropertyChanged;
             //DataAccess.Init<string>(nameof(), _Validation, null);
         }
         protected void Validate_base()

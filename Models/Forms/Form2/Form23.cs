@@ -38,6 +38,8 @@ namespace Models
             QuantityOZIII.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
             DocumentNumber.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(DocumentNumber), DocumentNumberRecoded_Validation, null);
+            DocumentNumberRecoded.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(ExpirationDate), ExpirationDate_Validation, null);
             ExpirationDate.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(DocumentName), DocumentName_Validation, null);
@@ -57,6 +59,7 @@ namespace Models
             SummaryActivity_Validation(SummaryActivity);
             QuantityOZIII_Validation(QuantityOZIII);
             DocumentNumber_Validation(DocumentNumber);
+            DocumentNumberRecoded_Validation(DocumentNumberRecoded);
             ExpirationDate_Validation(ExpirationDate);
             DocumentName_Validation(DocumentName);
             DocumentDate_Validation(DocumentDate);

@@ -58,6 +58,8 @@ namespace Models
             FcpNumber.PropertyChanged += InPropertyChanged;
             DataAccess.Init<int?>(nameof(PackQuantity), PackQuantity_Validation, null);
             PackQuantity.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
+            PackTypeRecoded.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -81,6 +83,7 @@ namespace Models
             Subsidy_Validation(Subsidy);
             FcpNumber_Validation(FcpNumber);
             PackQuantity_Validation(PackQuantity);
+            PackTypeRecoded_Validation(PackTypeRecoded);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -375,7 +378,8 @@ return false;
         
         private bool PackTypeRecoded_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;}
+            value.ClearErrors(); return true;
+        }
         //PackTypeRecoded property
 
         ////PackTypeNote property
@@ -484,6 +488,10 @@ return false;
         private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                return true;
+            }
             var a = new Regex("^[0-9]{11}$");
             if (!a.IsMatch(value.Value))
             {
@@ -525,6 +533,10 @@ return false;
         private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                return true;
+            }
             if (value.Value.Length == 1)
             {
                 int tmp;
@@ -842,6 +854,10 @@ return false;
         private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                return true;
+            }
             if ((int)value.Value <= 0)
             {
                 value.AddError("Недопустимое значение"); return false;

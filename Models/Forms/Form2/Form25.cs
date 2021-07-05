@@ -87,7 +87,12 @@ namespace Models
         //If change this change validation
         private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено"); return false;
+            }
+            return true;
         }
         //StoragePlaceName property
 
@@ -120,39 +125,44 @@ namespace Models
 
         private bool CodeOYAT_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено"); return false;
+            }
+            return true;
         }
         //CodeOYAT property
 
-        //CodeOYATnote property
-        public virtual RamAccess<string> CodeOYATnote
-        {
-            get
-            {
+        ////CodeOYATnote property
+        //public virtual RamAccess<string> CodeOYATnote
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(CodeOYATnote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(CodeOYATnote));
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-                {
-                    DataAccess.Set(nameof(CodeOYATnote), value);
-                }
-                OnPropertyChanged(nameof(CodeOYATnote));
-            }
-        }
-        private bool CodeOYATnote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //CodeOYATnote property
+        //        {
+        //            DataAccess.Set(nameof(CodeOYATnote), value);
+        //        }
+        //        OnPropertyChanged(nameof(CodeOYATnote));
+        //    }
+        //}
+        //private bool CodeOYATnote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;
+        //}
+        ////CodeOYATnote property
 
         //StoragePlaceCode property
         public int? StoragePlaceCodeId { get; set; }
@@ -183,6 +193,10 @@ namespace Models
         private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено"); return false;
+            }
             if (!(value.Value == "-"))
             {
                 if (value.Value.Length != 8)

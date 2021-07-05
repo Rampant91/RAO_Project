@@ -108,38 +108,42 @@ namespace Models
         private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено"); return false;
+            }
             return true;
         }
         //CodeOYAT property
 
         //CodeOYATnote property
-        public virtual RamAccess<string> CodeOYATnote
-        {
-            get
-            {
+        //public virtual RamAccess<string> CodeOYATnote
+        //{
+        //    get
+        //    {
                 
-                {
-                    return DataAccess.Get<string>(nameof(CodeOYATnote));
-                }
+        //        {
+        //            return DataAccess.Get<string>(nameof(CodeOYATnote));
+        //        }
                 
-                {
+        //        {
                     
-                }
-            }
-            set
-            {
+        //        }
+        //    }
+        //    set
+        //    {
 
                 
-                {
-                    DataAccess.Set(nameof(CodeOYATnote), value);
-                }
-                OnPropertyChanged(nameof(CodeOYATnote));
-            }
-        }
+        //        {
+        //            DataAccess.Set(nameof(CodeOYATnote), value);
+        //        }
+        //        OnPropertyChanged(nameof(CodeOYATnote));
+        //    }
+        //}
 
-                private bool CodeOYATnote_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;}
+        //        private bool CodeOYATnote_Validation(RamAccess<string> value)
+        //{
+        //    value.ClearErrors(); return true;}
         //CodeOYATnote property
 
         //FcpNumber property
