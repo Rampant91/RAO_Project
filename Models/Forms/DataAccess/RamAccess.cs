@@ -31,10 +31,20 @@ namespace Models.DataAccess
                 }
             }
         }
+
+        [NotMapped]
+        public T ValueWithOutHandler
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+            }
+        }
         public RamAccess(Func<RamAccess<T>, bool> Handler, T Value)
         {
             this.Handler = Handler;
-            this.Value = Value;
+            this._value = Value;
         }
         public RamAccess()
         {

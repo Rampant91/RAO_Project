@@ -241,7 +241,7 @@ namespace Models
         protected override bool OperationCode_Validation(RamAccess<short?> value)//OK
         {
             value.ClearErrors();
-            OperationCode.Value = 10;
+            OperationCode.ValueWithOutHandler = 10;
             return true;
         }
 
