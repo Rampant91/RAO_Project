@@ -178,6 +178,11 @@ namespace Models
         private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value.Length == 1)
             {
                 int tmp;

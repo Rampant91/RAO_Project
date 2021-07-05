@@ -516,6 +516,10 @@ namespace Models
         private bool Volume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
                 value.AddError("Недопустимое значение");

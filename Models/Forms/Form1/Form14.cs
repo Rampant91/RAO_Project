@@ -469,7 +469,25 @@ namespace Models
 
         private bool ActivityMeasurementDate_Validation(RamAccess<string> value)//Ready
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //ActivityMeasurementDate property
 
