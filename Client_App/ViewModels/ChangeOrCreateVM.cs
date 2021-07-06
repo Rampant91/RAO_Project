@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using DBRealization;
 
 namespace Client_App.ViewModels
 {
@@ -70,10 +71,8 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<Unit, Unit> PasteRows { get; }
 
-        private DBRealization.DBModel dbm { get; set; }
-        public ChangeOrCreateVM(DBRealization.DBModel dbm)
+        public ChangeOrCreateVM()
         {
-            this.dbm = dbm;
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow = ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);
@@ -112,6 +111,7 @@ namespace Client_App.ViewModels
                 {
                     if (item is Views.FormChangeOrCreate)
                     {
+                        var dbm = StaticConfiguration.DBModel;
                         dbm.SaveChanges();
                         item.Close();
                     }

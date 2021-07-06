@@ -288,19 +288,14 @@ namespace Client_App.Controls.DataGrid
             }
 
             if (args.PropertyName == "DownMove")
-            {
-                if(((Cell)sender).CellRow != LastPressedItem[0])
-                {
+                if (((Cell) sender).CellRow != LastPressedItem[0])
                     if (((Cell) sender).CellColumn != LastPressedItem[1])
                     {
-                        
-                        LastPressedItem[0] = ((Cell)sender).CellRow;
-                        LastPressedItem[1] = ((Cell)sender).CellColumn;
+                        LastPressedItem[0] = ((Cell) sender).CellRow;
+                        LastPressedItem[1] = ((Cell) sender).CellColumn;
                         SetSelectedControls();
                         SetSelectedItemsWithHandler();
                     }
-                }
-            }
 
             if (args.PropertyName == "Up")
             {
