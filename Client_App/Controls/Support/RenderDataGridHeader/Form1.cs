@@ -1098,6 +1098,10 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ));
             stck.Children.Add(Get1Header(1, 9,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form19,Models").
+                    GetProperty("Quantity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
+            stck.Children.Add(Get1Header(1, 10,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form19,Models").
                     GetProperty("Activity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
             //stck.Children.Add(Get1Header(1, 10,
