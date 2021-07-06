@@ -11,9 +11,7 @@ namespace Collections
     {
         [NotMapped] private bool _isChanged = true;
 
-        private ObservableCollectionWithItemPropertyChanged<Reports> _reports_Collection;
-
-        protected DBModel dbm { get; set; }
+        private ObservableCollectionWithItemPropertyChanged<Reports> _reports_Collection=new ObservableCollectionWithItemPropertyChanged<Reports>();
 
         public int Id { get; set; }
 
@@ -30,13 +28,17 @@ namespace Collections
             }
         }
 
+        public DBObservable()
+        {
+            Reports_Collection.CollectionChanged += CollectionChanged;
+        }
+
         public int? Reports_CollectionId { get; set; }
 
         public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
         {
             get
             {
-                dbm.Entry(this).Collection("Reports_Collection").Load();
                 return _reports_Collection;
             }
             set

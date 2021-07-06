@@ -13,21 +13,17 @@ namespace Collections
 
         public Reports(DataAccessCollection Access)
         {
-            dbm = StaticConfiguration.DBModel;
             DataAccess = Access;
             Init();
         }
 
         public Reports()
         {
-            dbm = StaticConfiguration.DBModel;
             DataAccess = new DataAccessCollection();
             Init();
         }
 
         protected DataAccessCollection DataAccess { get; set; }
-        protected DBModel dbm { get; set; }
-
         public int? MasterId { get; set; }
 
         public virtual RamAccess<Report> Master
@@ -84,11 +80,7 @@ namespace Collections
             DataAccess.Init(nameof(Report_Collection), Report_Collection_Validation,
                 new ObservableCollectionWithItemPropertyChanged<Report>());
             DataAccess.Init(nameof(Master), Master_Validation, new Report());
-
-            dbm.Add(Master);
-            //dbm.Add(Report_Collection);
-
-            //Report_Collection.CollectionChanged += CollectionChanged;
+            Report_Collection.CollectionChanged += CollectionChanged;
         }
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)

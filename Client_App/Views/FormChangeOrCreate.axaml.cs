@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using Collections;
 using System.ComponentModel;
+using DBRealization;
 
 namespace Client_App.Views
 {
@@ -11,11 +12,9 @@ namespace Client_App.Views
     {
         private readonly string _param = "";
 
-        private DBRealization.DBModel dbm { get; set; }
         public FormChangeOrCreate(string param, Report rep)
         {
-            this.dbm = DBRealization.StaticConfiguration.DBModel;
-            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM(dbm);
+            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
             tmp.DBPath = DBRealization.StaticConfiguration.DBPath;
             tmp.Storage = rep;
             tmp.FormType = param;
@@ -38,8 +37,12 @@ namespace Client_App.Views
         }
         protected override void OnClosing(CancelEventArgs e)
         {
-            dbm.UndoChanges();
-            dbm.SaveChanges();
+            using (var dbm = StaticConfiguration.DBModel)
+            {
+                dbm.UndoChanges();
+                dbm.SaveChanges();
+            }
+
             base.OnClosing(e);
         }
 
