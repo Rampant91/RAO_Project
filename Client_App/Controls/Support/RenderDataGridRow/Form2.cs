@@ -249,7 +249,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 2, "StoragePlaceName", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 3, "StoragePlaceCode", scp, TopName));
-            stck.Children.Add(Get1Row(2, Row, 4, "CodeOYAT", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 4, "CodeOYAT", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 5, "FcpNumber", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 6, "FuelMass", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 7, "CellMass", scp, TopName));
@@ -280,7 +280,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Bind(StackPanel.DataContextProperty, b);
 
             stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
-            stck.Children.Add(Get1Row(2, Row, 2, "ObservedSourceNumber", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 2, "ObservedSourceNumber", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 3, "ControlledAreaName", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 4, "SupposedWasteSource", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 5, "DistanceToWasteSource", scp, TopName));
