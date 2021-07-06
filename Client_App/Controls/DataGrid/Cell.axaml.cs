@@ -3,13 +3,11 @@ using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using Collections;
 
 namespace Client_App.Controls.DataGrid
 {
     public class Cell : UserControl
     {
-
         public Cell(object DataContext, string BindingPath, bool IsReadOnly)
         {
             this.DataContext = DataContext;
@@ -59,24 +57,26 @@ namespace Client_App.Controls.DataGrid
         public void PanelPointerDown(object sender, PointerPressedEventArgs args)
         {
             var mouse = args.GetCurrentPoint((Cell) sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed) OnPropertyChanged(this,"Down");
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+                OnPropertyChanged(this, "Down");
         }
 
         public void PanelPointerMoved(object sender, PointerEventArgs args)
         {
             var mouse = args.GetCurrentPoint((Cell) sender);
             if (mouse.Properties.IsLeftButtonPressed)
-                OnPropertyChanged(this,"DownMove");
+                OnPropertyChanged(this, "DownMove");
         }
 
         public void PanelPointerUp(object sender, PointerReleasedEventArgs args)
         {
             var mouse = args.GetCurrentPoint((Cell) sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased) OnPropertyChanged(this,"Up");
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+                OnPropertyChanged(this, "Up");
         }
 
         //Property Changed
-        protected void OnPropertyChanged(object obj,[CallerMemberName] string prop = "")
+        protected void OnPropertyChanged(object obj, [CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null) PropertyChanged(obj, new PropertyChangedEventArgs(prop));
         }

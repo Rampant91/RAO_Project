@@ -1,7 +1,7 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Models.Collections;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -9,7 +9,7 @@ namespace Client_App.Controls.DataGrid
     {
         public CellCollection(Row Cells, PropertyChangedEventHandler handler)
         {
-            this.Cells = new ObservableConcurrentDictionary<string, Cell>();
+            this.Cells = new ObservableDictionary<string, Cell>();
             SCells = Cells;
             foreach (Cell item in SCells.Children)
             {
@@ -20,8 +20,11 @@ namespace Client_App.Controls.DataGrid
         }
 
         public Row SCells { get; set; }
-        private ObservableConcurrentDictionary<string, Cell> Cells { get; }
-        public int Count => Cells.Count();
+        private ObservableDictionary<string, Cell> Cells { get; }
+        public int Count
+        {
+            get { return Cells.Count(); }
+        }
 
         public Cell this[int Row, int Column]
         {

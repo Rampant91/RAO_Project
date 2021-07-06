@@ -1,49 +1,35 @@
-﻿using Collections;
-using Models.DataAccess;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
+using DBRealization;
+using Models.DataAccess;
 
 namespace Collections
 {
     public class Reports : IChanged, IKey
     {
-        protected DataAccessCollection DataAccess { get; set; }
-        protected DBRealization.DBModel dbm { get; set; }
+        [NotMapped] private bool _isChanged = true;
 
         public Reports(DataAccessCollection Access)
         {
-            dbm = DBRealization.StaticConfiguration.DBModel;
+            dbm = StaticConfiguration.DBModel;
             DataAccess = Access;
             Init();
         }
+
         public Reports()
         {
-            dbm = DBRealization.StaticConfiguration.DBModel;
+            dbm = StaticConfiguration.DBModel;
             DataAccess = new DataAccessCollection();
             Init();
         }
 
-        private void Init()
-        {
-            DataAccess.Init(nameof(Report_Collection), Report_Collection_Validation, new ObservableCollectionWithItemPropertyChanged<Report>());
-            DataAccess.Init(nameof(Master), Master_Validation, new Report());
-
-            dbm.Add(Master);
-            //dbm.Add(Report_Collection);
-
-            Report_Collection.CollectionChanged += CollectionChanged;
-        }
-
-        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-        {
-            OnPropertyChanged(nameof(Report_Collection));
-        }
-
-        public int Id { get; set; }
+        protected DataAccessCollection DataAccess { get; set; }
+        protected DBModel dbm { get; set; }
 
         public int? MasterId { get; set; }
+
         public virtual RamAccess<Report> Master
         {
             get
@@ -57,32 +43,25 @@ namespace Collections
                 OnPropertyChanged(nameof(Master));
             }
         }
-        private bool Master_Validation(RamAccess<Report> value)
-        {
-            return true;
-        }
 
         public int? Report_CollectionId { get; set; }
+
         public virtual ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
         {
             get
             {
-                var tmp = DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection));
+                var tmp = DataAccess
+                    .Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection));
                 return tmp.Value;
             }
             set
             {
-                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection)).Value = value;
+                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection)).Value =
+                    value;
                 OnPropertyChanged(nameof(Report_Collection));
             }
         }
-        private bool Report_Collection_Validation(RamAccess<ObservableCollectionWithItemPropertyChanged<Report>> value)
-        {
-            return true;
-        }
 
-        [NotMapped]
-        private bool _isChanged = true;
         public bool IsChanged
         {
             get => _isChanged;
@@ -96,19 +75,46 @@ namespace Collections
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int Id { get; set; }
+
+        private void Init()
+        {
+            DataAccess.Init(nameof(Report_Collection), Report_Collection_Validation,
+                new ObservableCollectionWithItemPropertyChanged<Report>());
+            DataAccess.Init(nameof(Master), Master_Validation, new Report());
+
+            dbm.Add(Master);
+            //dbm.Add(Report_Collection);
+
+            //Report_Collection.CollectionChanged += CollectionChanged;
+        }
+
+        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Report_Collection));
+        }
+
+        private bool Master_Validation(RamAccess<Report> value)
+        {
+            return true;
+        }
+
+        private bool Report_Collection_Validation(RamAccess<ObservableCollectionWithItemPropertyChanged<Report>> value)
+        {
+            return true;
+        }
+
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (prop != nameof(IsChanged))
             {
                 IsChanged = true;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
-                }
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
-        public event PropertyChangedEventHandler PropertyChanged;
         //Property Changed
     }
 }
