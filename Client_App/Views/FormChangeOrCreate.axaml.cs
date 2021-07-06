@@ -35,13 +35,12 @@ namespace Client_App.Views
             this.AttachDevTools();
 #endif
         }
+
         protected override void OnClosing(CancelEventArgs e)
         {
-            using (var dbm = StaticConfiguration.DBModel)
-            {
-                dbm.UndoChanges();
-                dbm.SaveChanges();
-            }
+            var dbm = StaticConfiguration.DBModel;
+            dbm.UndoChanges();
+            dbm.SaveChanges();
 
             base.OnClosing(e);
         }
