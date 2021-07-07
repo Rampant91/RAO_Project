@@ -45,12 +45,12 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             stck.Bind(StackPanel.DataContextProperty, b);
 
-            stck.Children.Add(Get1Row(1, Row, 1, "OrganUprav", scp, TopName));
-            stck.Children.Add(Get1Row(2, Row, 2, "JurLico", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 3, "ShortJurLico", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 1, "OrganUprav", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 2, "JurLico", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 3, "ShortJurLico", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 4, "JurLicoAddress", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 5, "JurLicoFactAddress", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 6, "GradeFIO", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 5, "JurLicoFactAddress", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 6, "GradeFIO", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 7, "Telephone", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 8, "Fax", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 9, "Email", scp, TopName));
@@ -118,7 +118,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Bind(StackPanel.DataContextProperty, b);
 
             stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
-            stck.Children.Add(Get1Row(2, Row, 2, "OperationCode", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 3, "OperationDate", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 4, "PassportNumber", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 5, "Type", scp, TopName));
@@ -137,7 +137,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get1Row(1, Row, 18, "DocumentDate", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 19, "ProviderOrRecieverOKPO", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 20, "TransporterOKPO", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 21, "PackName", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 21, "PackName", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 22, "PackType", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 23, "PackNumber", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 24, "DocumentNumberRecoded", scp, TopName));
@@ -168,7 +168,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Bind(StackPanel.DataContextProperty, b);
 
             stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
-            stck.Children.Add(Get1Row(2, Row, 2, "OperationCode", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 3, "OperationDate", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 4, "PassportNumber", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 5, "NameIOU", scp, TopName));
@@ -184,7 +184,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get1Row(1, Row, 15, "DocumentDate", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 16, "ProviderOrRecieverOKPO", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 17, "TransporterOKPO", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 18, "PackName", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 18, "PackName", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 19, "PackType", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 20, "PackNumber", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 21, "DocumentNumberRecoded", scp, TopName));

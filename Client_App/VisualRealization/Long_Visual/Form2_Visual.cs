@@ -540,7 +540,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form23Data_",
                 Type = "2.3",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
             };
             grd.SetValue(Grid.RowProperty, 2);
@@ -806,7 +806,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form25Data_",
                 Type = "2.5",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
             };
             grd.SetValue(Grid.RowProperty, 2);
@@ -939,7 +939,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form26Data_",
                 Type = "2.6",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
             };
             grd.SetValue(Grid.RowProperty, 2);
@@ -1072,7 +1072,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form27Data_",
                 Type = "2.7",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
             };
             grd.SetValue(Grid.RowProperty, 2);
@@ -1338,7 +1338,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form29Data_",
                 Type = "2.9",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
             };
             grd.SetValue(Grid.RowProperty, 2);
@@ -1472,7 +1472,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form210Data_",
                 Type = "2.10",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
             };
             grd.SetValue(Grid.RowProperty, 2);
@@ -1606,7 +1606,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form211Data_",
                 Type = "2.11",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
             };
             grd.SetValue(Grid.RowProperty, 2);
@@ -1740,7 +1740,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form212Data_",
                 Type = "2.12",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
             };
             grd.SetValue(Grid.RowProperty, 2);

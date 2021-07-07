@@ -1338,7 +1338,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form19Data_",
                 Type = "1.9",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
             };
             grd.SetValue(Grid.RowProperty, 2);

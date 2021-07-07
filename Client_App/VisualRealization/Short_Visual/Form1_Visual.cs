@@ -212,6 +212,7 @@ namespace Client_App.Short_Visual
             btn8.Content = ((Form_ClassAttribute)Type.GetType("Models.Form18,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             btn8.Bind(Button.CommandProperty, new Binding("AddForm"));
             btn8.CommandParameter = "1.8";
+            btn8.Height = 30;
             btn8.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             btn8.Margin = Thickness.Parse("5,280,0,0");
             panel.Children.Add(btn8);
