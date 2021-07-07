@@ -469,6 +469,10 @@ namespace Models
         private bool FormingDate_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))
             {
@@ -1064,6 +1068,11 @@ namespace Models
         private bool Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             try
             {
                 int tmp = int.Parse(value.Value);
@@ -1192,6 +1201,11 @@ namespace Models
         private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value.Length == 1)
             {
                 int tmp;

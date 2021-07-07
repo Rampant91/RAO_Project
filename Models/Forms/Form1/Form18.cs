@@ -205,8 +205,7 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value.Equals("прим."))
             {
@@ -313,6 +312,10 @@ namespace Models
         private bool Volume6_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
                 value.AddError("Недопустимое значение");
@@ -359,6 +362,10 @@ namespace Models
         private bool Mass7_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
                 value.AddError("Недопустимое значение");
@@ -410,6 +417,10 @@ namespace Models
         private bool SaltConcentration_Validation(RamAccess<double?> value)
         {
             value.ClearErrors();
+            if (value.Value==null)
+            {
+                return true;
+            }
             if (value.Value <= 0)
             {
                 value.AddError("Недопустимое значение");
@@ -862,6 +873,11 @@ namespace Models
         private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value.Length == 1)
             {
                 int tmp;
@@ -1355,6 +1371,10 @@ namespace Models
         {
             value.ClearErrors();
             List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
+            if (value.Value == null)
+            {
+                return true;
+            }
             if (!spr.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");

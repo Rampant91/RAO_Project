@@ -27,13 +27,13 @@ namespace Models
             PlotCode.PropertyChanged += InPropertyChanged;
             DataAccess.Init<int?>(nameof(InfectedArea), InfectedArea_Validation, null);
             InfectedArea.PropertyChanged += InPropertyChanged;
-            //2301DataAccess.Init<double>(nameof(AvgGammaRaysDosePower), AvgGammaRaysDosePower_Validation, null);
+            DataAccess.Init<double?>(nameof(AvgGammaRaysDosePower), AvgGammaRaysDosePower_Validation, null);
             AvgGammaRaysDosePower.PropertyChanged += InPropertyChanged;
-            //2301DataAccess.Init<double>(nameof(MaxGammaRaysDosePower), MaxGammaRaysDosePower_Validation, null);
+            DataAccess.Init<double?>(nameof(MaxGammaRaysDosePower), MaxGammaRaysDosePower_Validation, null);
             MaxGammaRaysDosePower.PropertyChanged += InPropertyChanged;
-            //2301DataAccess.Init<double>(nameof(WasteDensityAlpha), WasteDensityAlpha_Validation, null);
+            DataAccess.Init<double?>(nameof(WasteDensityAlpha), WasteDensityAlpha_Validation, null);
             WasteDensityAlpha.PropertyChanged += InPropertyChanged;
-            //2301DataAccess.Init<double>(nameof(WasteDensityBeta), WasteDensityBeta_Validation, null);
+            DataAccess.Init<double?>(nameof(WasteDensityBeta), WasteDensityBeta_Validation, null);
             WasteDensityBeta.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
             FcpNumber.PropertyChanged += InPropertyChanged;
@@ -74,7 +74,13 @@ namespace Models
 
         private bool IndicatorName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //IndicatorName property
 
@@ -107,7 +113,13 @@ namespace Models
 
         private bool PlotName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //PlotName property
 
@@ -140,7 +152,13 @@ namespace Models
 
         private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //PlotKadastrNumber property
 
@@ -173,7 +191,13 @@ namespace Models
         //6 symbols code
         private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //PlotCode property
 
@@ -206,20 +230,26 @@ namespace Models
 
         private bool InfectedArea_Validation(RamAccess<int?> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //InfectedArea property
 
         //AvgGammaRaysDosePower property
         public int? AvgGammaRaysDosePowerId { get; set; }
         [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]
-        public virtual RamAccess<double> AvgGammaRaysDosePower
+        public virtual RamAccess<double?> AvgGammaRaysDosePower
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double>(nameof(AvgGammaRaysDosePower));
+                    return DataAccess.Get<double?>(nameof(AvgGammaRaysDosePower));
                 }
 
                 {
@@ -237,22 +267,28 @@ namespace Models
             }
         }
 
-        private bool AvgGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
+        private bool AvgGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //AvgGammaRaysDosePower property
 
         //MaxGammaRaysDosePower property
         public int? MaxGammaRaysDosePowerId { get; set; }
         [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
-        public virtual RamAccess<double> MaxGammaRaysDosePower
+        public virtual RamAccess<double?> MaxGammaRaysDosePower
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double>(nameof(MaxGammaRaysDosePower));
+                    return DataAccess.Get<double?>(nameof(MaxGammaRaysDosePower));
                 }
 
                 {
@@ -270,22 +306,28 @@ namespace Models
             }
         }
 
-        private bool MaxGammaRaysDosePower_Validation(RamAccess<double> value)//TODO
+        private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //MaxGammaRaysDosePower property
 
         //WasteDensityAlpha property
         public int? WasteDensityAlphaId { get; set; }
         [Attributes.Form_Property("Средняя плотность загрязнения альфа-излучающими радионуклидами, Бк/кв. м")]
-        public virtual RamAccess<double> WasteDensityAlpha
+        public virtual RamAccess<double?> WasteDensityAlpha
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double>(nameof(WasteDensityAlpha));
+                    return DataAccess.Get<double?>(nameof(WasteDensityAlpha));
                 }
 
                 {
@@ -303,22 +345,28 @@ namespace Models
             }
         }
 
-        private bool WasteDensityAlpha_Validation(RamAccess<double> value)//TODO
+        private bool WasteDensityAlpha_Validation(RamAccess<double?> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //WasteDensityAlpha property
 
         //WasteDensityBeta property
         public int? WasteDensityBetaId { get; set; }
         [Attributes.Form_Property("Средняя плотность загрязнения бета-излучающими радионуклидами, Бк/кв. м")]
-        public virtual RamAccess<double> WasteDensityBeta
+        public virtual RamAccess<double?> WasteDensityBeta
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double>(nameof(WasteDensityBeta));
+                    return DataAccess.Get<double?>(nameof(WasteDensityBeta));
                 }
 
                 {
@@ -336,9 +384,15 @@ namespace Models
             }
         }
 
-        private bool WasteDensityBeta_Validation(RamAccess<double> value)//TODO
+        private bool WasteDensityBeta_Validation(RamAccess<double?> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //WasteDensityBeta property
 

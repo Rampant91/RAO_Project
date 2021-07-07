@@ -26,7 +26,7 @@ namespace Models
             PlotKadastrNumber.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(PlotCode), PlotCode_Validation, null);
             PlotCode.PropertyChanged += InPropertyChanged;
-            //2301DataAccess.Init<int>(nameof(InfectedArea), InfectedArea_Validation, null);
+            DataAccess.Init<int?>(nameof(InfectedArea), InfectedArea_Validation, null);
             InfectedArea.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(SpecificActivityOfPlot), SpecificActivityOfPlot_Validation, null);
             SpecificActivityOfPlot.PropertyChanged += InPropertyChanged;
@@ -83,7 +83,13 @@ namespace Models
 
         private bool PlotName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //PlotName property
 
@@ -116,7 +122,13 @@ namespace Models
 
         private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //PlotKadastrNumber property
 
@@ -149,20 +161,26 @@ namespace Models
         //6 symbols code
         private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //PlotCode property
 
         //InfectedArea property
         public int? InfectedAreaId { get; set; }
         [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public virtual RamAccess<int> InfectedArea
+        public virtual RamAccess<int?> InfectedArea
         {
             get
             {
 
                 {
-                    return DataAccess.Get<int>(nameof(InfectedArea));
+                    return DataAccess.Get<int?>(nameof(InfectedArea));
                 }
 
                 {
@@ -180,9 +198,15 @@ namespace Models
             }
         }
 
-        private bool InfectedArea_Validation(RamAccess<int> value)//TODO
+        private bool InfectedArea_Validation(RamAccess<int?> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //InfectedArea property
 

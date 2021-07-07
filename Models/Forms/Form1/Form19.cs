@@ -28,6 +28,7 @@ namespace Models
             CodeTypeAccObject.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
             Radionuclids.PropertyChanged += InPropertyChanged;
+            OperationCode.Value = 10;
         }
 
         private void Validate_all()
@@ -241,7 +242,16 @@ namespace Models
         protected override bool OperationCode_Validation(RamAccess<short?> value)//OK
         {
             value.ClearErrors();
-            OperationCode.ValueWithOutHandler = 10;
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value != 10)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
             return true;
         }
 

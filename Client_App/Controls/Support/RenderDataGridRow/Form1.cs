@@ -12,7 +12,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         {
             switch (type)
             {
-                case "0": return Get0();
+                case "0": return Get0(Row, scp, TopName);
                 case "1": return Get1(Row, scp, TopName);
                 case "2": return Get2(Row, scp, TopName);
                 case "3": return Get3(Row, scp, TopName);
@@ -26,9 +26,48 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return null;
         }
 
-        private static Control Get0()
+        private static Control Get0(int Row, INameScope scp, string TopName)
         {
-            return null;
+            DataGrid.Row stck = new DataGrid.Row
+            {
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Width = 24 * Wdth1,
+                Spacing = -1
+            };
+
+            Binding b = new Binding
+            {
+                Path = "Items[" + (Row - 1).ToString() + "]",
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+
+            stck.Bind(StackPanel.DataContextProperty, b);
+
+            stck.Children.Add(Get1Row(1, Row, 1, "OrganUprav", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 2, "JurLico", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 3, "ShortJurLico", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 4, "JurLicoAddress", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 5, "JurLicoFactAddress", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 6, "GradeFIO", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 7, "Telephone", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 8, "Fax", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 9, "Email", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 10, "Okpo", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 11, "Okved", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 12, "Okogu", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 13, "Oktmo", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 14, "Inn", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 15, "Kpp", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 16, "Okopf", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 17, "Okfs", scp, TopName));
+            //stck.Children.Add(Get1Row(1, Row, 24, "DocumentNumberRecoded", scp, TopName));
+
+            //var bd = "StartPeriod";
+            //bd.StringFormat = "{0:d}";
+
+            return stck;
         }
 
         private static readonly int Wdth1 = 100;
