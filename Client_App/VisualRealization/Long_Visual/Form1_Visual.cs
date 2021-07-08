@@ -180,6 +180,23 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd);
 
+            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            {
+                Type = "1.0",
+                Name = "Form10Data_",
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom
+            };
+            grd1.SetValue(Grid.RowProperty, 2);
+
+            Binding b = new Binding
+            {
+                Path = "DataContext.Storage.Rows10",
+                ElementName = "ChangingPanel",
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+
             return maingrid;
         }
 
