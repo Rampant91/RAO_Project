@@ -80,7 +80,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                ZIndex = 10000
             };
 
             Binding b = new Binding

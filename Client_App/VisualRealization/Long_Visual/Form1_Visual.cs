@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using System;
 using System.Collections.Generic;
+using Avalonia.Media;
+using Client_App.Controls.DataGrid;
 
 namespace Client_App.Long_Visual
 {
@@ -274,8 +276,12 @@ namespace Client_App.Long_Visual
             {
                 Type = "1.1",
                 Name = "Form11Data_",
+                Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 

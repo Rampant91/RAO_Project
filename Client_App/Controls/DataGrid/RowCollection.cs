@@ -64,7 +64,7 @@ namespace Client_App.Controls.DataGrid
 
         public void Remove(int Row)
         {
-            var str = Row + ";";
+            var str = Row.ToString();
             if (Rows.ContainsKey(str)) Rows.Remove(str);
             RemoveFromRows(Row);
         }

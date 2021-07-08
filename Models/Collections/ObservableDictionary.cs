@@ -48,7 +48,7 @@ namespace Models.Collections
 
 		void AddWithNotification(TKey key, TValue value)
 		{
-			dictionary.Add(key, value);
+            dictionary.Add(key, value);
 
 			CollectionChanged(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add,
 				new KeyValuePair<TKey, TValue>(key, value)));

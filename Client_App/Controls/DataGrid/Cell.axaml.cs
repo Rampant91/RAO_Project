@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using System.Diagnostics;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -15,9 +16,11 @@ namespace Client_App.Controls.DataGrid
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
 
-            AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
-            AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
-            AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
+            //AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
+            //AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
+            //AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
+
+            this.Focusable = false;
         }
 
         public Cell(string BindingPath, bool IsReadOnly)
@@ -26,9 +29,11 @@ namespace Client_App.Controls.DataGrid
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
 
-            AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
-            AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
-            AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
+            //AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
+            //AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
+            //AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
+
+            this.Focusable = false;
         }
 
         public Cell()
@@ -58,21 +63,23 @@ namespace Client_App.Controls.DataGrid
         {
             var mouse = args.GetCurrentPoint((Cell) sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+            {
                 OnPropertyChanged(this, "Down");
+            }
         }
 
         public void PanelPointerMoved(object sender, PointerEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((Cell) sender);
-            if (mouse.Properties.IsLeftButtonPressed)
-                OnPropertyChanged(this, "DownMove");
+            OnPropertyChanged(this, "Move");
         }
 
         public void PanelPointerUp(object sender, PointerReleasedEventArgs args)
         {
             var mouse = args.GetCurrentPoint((Cell) sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            {
                 OnPropertyChanged(this, "Up");
+            }
         }
 
         //Property Changed

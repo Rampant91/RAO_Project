@@ -15,7 +15,6 @@ namespace Client_App.Views
         public FormChangeOrCreate(string param, Report rep)
         {
             ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
-            tmp.DBPath = DBRealization.StaticConfiguration.DBPath;
             tmp.Storage = rep;
             tmp.FormType = param;
             DataContext = tmp;

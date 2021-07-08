@@ -10,6 +10,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Collections;
 
+using System.Diagnostics;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+
 namespace Client_App.Controls.DataGrid
 {
     public enum ChooseMode
@@ -64,7 +68,9 @@ namespace Client_App.Controls.DataGrid
         {
             InitializeComponent();
 
-            ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
+            AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
+            AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
+            AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
         }
 
         public IEnumerable<IChanged> Items
@@ -120,9 +126,6 @@ namespace Client_App.Controls.DataGrid
 
         public Panel Columns { get; set; }
         private RowCollection Rows { get; set; }
-
-        private int[] FirstPressedItem { get; } = new int[2];
-        private int[] LastPressedItem { get; } = new int[2];
 
         private void SetSelectedControls()
         {
@@ -231,7 +234,7 @@ namespace Client_App.Controls.DataGrid
                     }
         }
 
-        private void SetSelectedItems()
+        public void SetSelectedItems()
         {
             var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
             foreach (var item in SelectedCells)
@@ -277,6 +280,45 @@ namespace Client_App.Controls.DataGrid
             SelectedItems = lst;
         }
 
+        public bool DownFlag { get; set; } = false;
+        public int[] FirstPressedItem { get; set; } = new int[2];
+        public int[] LastPressedItem { get; set; } = new int[2];
+
+        public void DataGridPointerDown(object sender, PointerPressedEventArgs args)
+        {
+            var mouse = args.GetCurrentPoint((DataGrid)sender);
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+            {
+                //FirstPressedItem = FindCellPosMin();
+                // = FindCellPosMax();
+                DownFlag = true;
+                SetSelectedControls();
+                SetSelectedItemsWithHandler();
+            }
+        }
+
+        public void DataGridPointerMoved(object sender, PointerEventArgs args)
+        {
+            if (DownFlag)
+            {
+                //LastPressedItem = FindCellPosMax();
+                SetSelectedControls();
+                SetSelectedItemsWithHandler();
+            }
+        }
+
+        public void DataGridPointerUp(object sender, PointerReleasedEventArgs args)
+        {
+            var mouse = args.GetCurrentPoint((DataGrid)sender);
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            {
+                //LastPressedItem = FindCellPosMax();
+                DownFlag = false;
+                SetSelectedControls();
+                SetSelectedItemsWithHandler();
+            }
+        }
+
         private void CellPropChangeEventHandler(object sender, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Down")
@@ -285,27 +327,30 @@ namespace Client_App.Controls.DataGrid
                 FirstPressedItem[1] = ((Cell) sender).CellColumn;
                 LastPressedItem[0] = ((Cell) sender).CellRow;
                 LastPressedItem[1] = ((Cell) sender).CellColumn;
+                DownFlag = true;
             }
 
-            if (args.PropertyName == "DownMove")
-                if (((Cell) sender).CellRow != LastPressedItem[0])
-                    if (((Cell) sender).CellColumn != LastPressedItem[1])
-                    {
-                        LastPressedItem[0] = ((Cell) sender).CellRow;
-                        LastPressedItem[1] = ((Cell) sender).CellColumn;
-                        SetSelectedControls();
-                        SetSelectedItemsWithHandler();
-                    }
+            if (args.PropertyName == "Move")
+            {
+                if (DownFlag)
+                {
+                    LastPressedItem[0] = ((Cell)sender).CellRow;
+                    LastPressedItem[1] = ((Cell)sender).CellColumn;
+                }
+            }
 
             if (args.PropertyName == "Up")
             {
                 LastPressedItem[0] = ((Cell) sender).CellRow;
                 LastPressedItem[1] = ((Cell) sender).CellColumn;
+                DownFlag = false;
             }
 
             if (args.PropertyName == "Down" ||
-                args.PropertyName == "Up")
+                args.PropertyName == "Up" ||
+                args.PropertyName=="Move")
             {
+                Trace.WriteLine(args.PropertyName+":"+LastPressedItem[0] + ";" + LastPressedItem[1]);
                 SetSelectedControls();
                 SetSelectedItemsWithHandler();
             }

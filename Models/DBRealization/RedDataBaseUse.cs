@@ -14,7 +14,11 @@ namespace DBRealization
             {
                 Directory.CreateDirectory(direct);
             }
+#if DEBUG
+            string pth = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\"));
+#else
             string pth = Path.GetFullPath(AppContext.BaseDirectory);
+#endif
             return new FbConnectionStringBuilder
             {
                 Database = _path,

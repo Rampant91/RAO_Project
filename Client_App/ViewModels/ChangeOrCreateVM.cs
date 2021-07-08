@@ -35,20 +35,6 @@ namespace Client_App.ViewModels
             }
         }
 
-        private string _DBPath = @"C:\Databases\local.raodb";
-        public string DBPath
-        {
-            get => _DBPath;
-            set
-            {
-                if (_DBPath != value)
-                {
-                    _DBPath = value;
-                    NotifyPropertyChanged("DBPath");
-                }
-            }
-        }
-
         private Report _Storage;
         public Report Storage
         {
