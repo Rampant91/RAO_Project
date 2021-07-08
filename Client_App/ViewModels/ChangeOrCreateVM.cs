@@ -160,8 +160,30 @@ namespace Client_App.ViewModels
             }
             foreach (Models.Abstracts.Form? item in lst)
             {
-                
-                //Storage.Rows11.Remove(item);
+                if (item.FormNum.Value == "1.0") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "1.1") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "1.2") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "1.3") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "1.4") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "1.5") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "1.6") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "1.7") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "1.8") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "1.9") { Storage.Rows11.Remove((Form11)item); }
+
+                if (item.FormNum.Value == "2.0") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.1") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.2") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.3") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.4") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.5") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.6") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.7") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.8") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.9") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.10") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.11") { Storage.Rows11.Remove((Form11)item); }
+                if (item.FormNum.Value == "2.12") { Storage.Rows11.Remove((Form11)item); }
             }
         }
 
