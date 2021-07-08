@@ -60,7 +60,7 @@ namespace Client_App.Short_Visual
                 {
                     Header = "Добавить форму",
                     [!MenuItem.CommandProperty] = new Binding("AddForm"),
-                    CommandParameter = "10",
+                    CommandParameter = "1.0",
                 },
                 new MenuItem
                 {

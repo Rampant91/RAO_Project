@@ -9,6 +9,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Views;
 using Collections;
 using DBRealization;
+using Models;
 using Models.Abstracts;
 using ReactiveUI;
 
@@ -94,9 +95,10 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var rt = new Report();
-                Local_Reports.Reports_Collection.First().Report_Collection.Add(rt);
-                FormChangeOrCreate frm = new(param, rt);
+                var rt = new Reports();
+                rt.Master.Value = new Report();
+                Local_Reports.Reports_Collection.Add(rt);
+                FormChangeOrCreate frm = new(param, rt.Master.Value);
                 await frm.ShowDialog<Form>(desktop.MainWindow);
             }
         }

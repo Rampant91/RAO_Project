@@ -184,20 +184,20 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.0",
-                Name = "Form10Data_",
+                Type = "0.2",
+                Name = "Form10Data_Note_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom
             };
             grd1.SetValue(Grid.RowProperty, 2);
 
-            Binding b = new Binding
+            Binding b1 = new Binding
             {
-                Path = "DataContext.Storage.Rows10",
+                Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
 
             return maingrid;
         }
