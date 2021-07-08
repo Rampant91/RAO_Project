@@ -19,6 +19,36 @@ namespace Models
 
         private void Init()
         {
+            DataAccess.Init<string>(nameof(PermissionNumber2), PermissionNumber2_Validation, null);
+            PermissionNumber2.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionIssueDate2), PermissionIssueDate2_Validation, null);
+            PermissionIssueDate2.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(ValidBegin2), ValidBegin2_Validation, null);
+            ValidBegin2.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(ValidThru2), ValidThru2_Validation, null);
+            ValidThru2.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionDocumentName2), PermissionDocumentName2_Validation, null);
+            PermissionDocumentName2.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionNumber1), PermissionNumber1_Validation, null);
+            PermissionNumber1.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionIssueDate1), PermissionIssueDate1_Validation, null);
+            PermissionIssueDate1.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(ValidBegin1), ValidBegin1_Validation, null);
+            ValidBegin1.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(ValidThru1), ValidThru1_Validation, null);
+            ValidThru1.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionDocumentName1), PermissionDocumentName1_Validation, null);
+            PermissionDocumentName1.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionNumber), PermissionNumber_Validation, null);
+            PermissionNumber.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionIssueDate), PermissionIssueDate_Validation, null);
+            PermissionIssueDate.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(ValidBegin), ValidBegin_Validation, null);
+            ValidBegin.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(ValidThru), ValidThru_Validation, null);
+            ValidThru.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionDocumentName), PermissionDocumentName_Validation, null);
+            PermissionDocumentName.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(WasteSourceName), WasteSourceName_Validation, null);
             WasteSourceName.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(WasteRecieverName), WasteRecieverName_Validation, null);
@@ -35,6 +65,21 @@ namespace Models
 
         private void Validate_all()
         {
+            PermissionNumber2_Validation(PermissionNumber2);
+            PermissionIssueDate2_Validation(PermissionIssueDate2);
+            ValidBegin2_Validation(ValidBegin2);
+            ValidThru2_Validation(ValidThru2);
+            PermissionDocumentName2_Validation(PermissionDocumentName2);
+            PermissionNumber_Validation(PermissionNumber);
+            PermissionIssueDate_Validation(PermissionIssueDate);
+            ValidBegin_Validation(ValidBegin);
+            ValidThru_Validation(ValidThru);
+            PermissionDocumentName_Validation(PermissionDocumentName);
+            PermissionNumber1_Validation(PermissionNumber1);
+            PermissionIssueDate1_Validation(PermissionIssueDate1);
+            ValidBegin1_Validation(ValidBegin1);
+            ValidThru1_Validation(ValidThru1);
+            PermissionDocumentName1_Validation(PermissionDocumentName1);
             WasteSourceName_Validation(WasteSourceName);
             WasteRecieverName_Validation(WasteRecieverName);
             RecieverTypeCode_Validation(RecieverTypeCode);

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Models
 {
@@ -25,22 +26,19 @@ namespace Models
             OperationCode.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(ObjectTypeCode), ObjectTypeCode_Validation, null);
             ObjectTypeCode.PropertyChanged += InPropertyChanged;
-            //2301DataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
+            DataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
             Activity.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Radionuclids), ProviderOrRecieverOKPO_Validation, null);
-            Radionuclids.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
         {
             Radionuclids_Validation(Radionuclids);
-            //2301OperationCode_Validation(OperationCode);
+            OperationCode_Validation(OperationCode);
             ObjectTypeCode_Validation(ObjectTypeCode);
-            //2301Activity_Validation(Activity);
+            Activity_Validation(Activity);
             ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
-            Radionuclids_Validation(Radionuclids);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -52,9 +50,9 @@ namespace Models
         //OperationCode property
         public int? OperationCodeId { get; set; }
         [Attributes.Form_Property("Код")]
-        public virtual RamAccess<short> OperationCode
+        public virtual RamAccess<string> OperationCode
         {
-            get => DataAccess.Get<short>(nameof(OperationCode));
+            get => DataAccess.Get<string>(nameof(OperationCode));
             set
             {
                 DataAccess.Set(nameof(OperationCode), value);
@@ -157,13 +155,13 @@ namespace Models
         //Activity property
         public int? ActivityId { get; set; }
         [Attributes.Form_Property("Активность, Бк")]
-        public virtual RamAccess<double> Activity
+        public virtual RamAccess<string> Activity
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double>(nameof(Activity));
+                    return DataAccess.Get<string>(nameof(Activity));
                 }
 
                 {
@@ -182,17 +180,29 @@ namespace Models
         }
 
 
-        private bool Activity_Validation(RamAccess<double?> value)//Ready
+        private bool Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value > 0))
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
-                value.AddError("Число должно быть больше нуля"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }

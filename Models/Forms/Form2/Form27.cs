@@ -19,6 +19,16 @@ namespace Models
 
         private void Init()
         {
+            DataAccess.Init<string>(nameof(ValidBegin), ValidBegin_Validation, null);
+            ValidBegin.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(ValidThru), ValidThru_Validation, null);
+            ValidThru.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionNumber), PermissionNumber_Validation, null);
+            PermissionNumber.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionIssueDate), PermissionIssueDate_Validation, null);
+            PermissionIssueDate.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(PermissionDocumentName), PermissionDocumentName_Validation, null);
+            PermissionDocumentName.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(ObservedSourceNumber), ObservedSourceNumber_Validation, null);
             ObservedSourceNumber.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
@@ -33,6 +43,11 @@ namespace Models
 
         private void Validate_all()
         {
+            ValidThru_Validation(ValidThru);
+            ValidBegin_Validation(ValidBegin);
+            PermissionNumber_Validation(PermissionNumber);
+            PermissionIssueDate_Validation(PermissionIssueDate);
+            PermissionDocumentName_Validation(PermissionDocumentName);
             ObservedSourceNumber_Validation(ObservedSourceNumber);
             RadionuclidName_Validation(RadionuclidName);
             AllowedWasteValue_Validation(AllowedWasteValue);

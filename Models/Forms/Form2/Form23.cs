@@ -38,7 +38,7 @@ namespace Models
             QuantityOZIII.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
             DocumentNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(DocumentNumber), DocumentNumberRecoded_Validation, null);
+            DataAccess.Init<string>(nameof(DocumentNumberRecoded), DocumentNumberRecoded_Validation, null);
             DocumentNumberRecoded.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(ExpirationDate), ExpirationDate_Validation, null);
             ExpirationDate.PropertyChanged += InPropertyChanged;

@@ -9,8 +9,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             Control ctrl = null;
             if (Type != "")
             {
-                string? formT1 = Type.Split('/')[0];
-                string? formT2 = Type.Split('/')[1];
+                string? formT1 = Type.Split('.')[0];
+                string? formT2 = Type.Split('.')[1];
 
                 switch (formT1)
                 {

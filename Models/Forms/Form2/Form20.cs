@@ -23,6 +23,8 @@ namespace Models
 
         private void Init_base()
         {
+            DataAccess.Init<string>(nameof(Okfs), Okpo_Validation, null);
+            Okfs.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(Okpo), Okpo_Validation, null);
             Okpo.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(Okved), Okved_Validation, null);
@@ -62,6 +64,7 @@ namespace Models
         }
         protected void Validate_base()
         {
+            Okfs_Validation(Okfs);
             Okpo_Validation(Okpo);
             Okved_Validation(Okved);
             Oktmo_Validation(Oktmo);
@@ -469,6 +472,11 @@ namespace Models
         private bool Okpo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
                 value.AddError("Недопустимое значение"); return false;
@@ -512,6 +520,11 @@ namespace Models
         private bool Okved_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             Regex ex = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (!ex.IsMatch(value.Value))
             {
@@ -551,6 +564,11 @@ namespace Models
         private bool Okogu_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             Regex ex = new Regex("^[0-9]{5}$");
             if (!ex.IsMatch(value.Value))
             {
@@ -590,6 +608,11 @@ namespace Models
         private bool Oktmo_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             Regex ex = new Regex("^[0-9]{11}$");
             if (!ex.IsMatch(value.Value))
             {
@@ -630,6 +653,11 @@ namespace Models
         private bool Inn_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             Regex ex = new Regex("[0-9]{10}");
             if (!ex.IsMatch(value.Value))
             {
@@ -669,6 +697,11 @@ namespace Models
         private bool Kpp_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             Regex ex = new Regex("[0-9]{9}");
             if (!ex.IsMatch(value.Value))
             {
@@ -709,6 +742,11 @@ namespace Models
         private bool Okopf_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             Regex ex = new Regex("[0-9]{5}");
             if (!ex.IsMatch(value.Value))
             {
@@ -749,6 +787,11 @@ namespace Models
         private bool Okfs_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             Regex ex = new Regex("^[0-9]{2}$");
             if (!ex.IsMatch(value.Value))
             {

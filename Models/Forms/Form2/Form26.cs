@@ -33,6 +33,8 @@ namespace Models
             RadionuclidName.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(AverageYearConcentration), AverageYearConcentration_Validation, null);
             AverageYearConcentration.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<int?>(nameof(SourcesQuantity), SourcesQuantity_Validation, null);
+            SourcesQuantity.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -44,6 +46,7 @@ namespace Models
             TestDepth_Validation(TestDepth);
             RadionuclidName_Validation(RadionuclidName);
             AverageYearConcentration_Validation(AverageYearConcentration);
+            SourcesQuantity_Validation(SourcesQuantity);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -55,13 +58,13 @@ namespace Models
         //SourcesQuantity property
         public int? SourcesQuantityId { get; set; }
         [Attributes.Form_Property("Количество источников, шт.")]
-        public virtual RamAccess<int> SourcesQuantity
+        public virtual RamAccess<int?> SourcesQuantity
         {
             get
             {
 
                 {
-                    return DataAccess.Get<int>(nameof(SourcesQuantity));
+                    return DataAccess.Get<int?>(nameof(SourcesQuantity));
                 }
             }
             set
@@ -78,6 +81,11 @@ namespace Models
         private bool SourcesQuantity_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value <= 0)
             {
                 value.AddError("Недопустимое значение"); return false;

@@ -84,8 +84,8 @@ namespace Client_App.ViewModels
 
         private void _AddSort(string param)
         {
-            var type = param.Split('/')[0];
-            var path = param.Split('/')[1];
+            var type = param.Split('.')[0];
+            var path = param.Split('.')[1];
 
             //FormModel_Local.Dictionary.Filters.SortPath = path;
         }
