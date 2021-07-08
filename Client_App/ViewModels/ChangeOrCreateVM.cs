@@ -161,6 +161,7 @@ namespace Client_App.ViewModels
             }
             foreach (Models.Abstracts.Form? item in lst)
             {
+                
                 //Storage.Rows11.Remove(item);
             }
         }
