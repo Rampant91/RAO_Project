@@ -136,14 +136,15 @@ namespace Client_App.Short_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
             };
-            Button btn0 = new Button();
-            btn0.Content = ((Form_ClassAttribute)Type.GetType("Models.Form10,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
-            btn0.Bind(Button.CommandProperty, new Binding("AddForm"));
-            btn0.CommandParameter = "1.0";
-            btn0.Height = 30;
-            btn0.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn0.Margin = Thickness.Parse("5,0,0,0");
-            panel.Children.Add(btn0);
+
+            //Button btn0 = new Button();
+            //btn0.Content = ((Form_ClassAttribute)Type.GetType("Models.Form10,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            //btn0.Bind(Button.CommandProperty, new Binding("AddForm"));
+            //btn0.CommandParameter = "1.0";
+            //btn0.Height = 30;
+            //btn0.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            //btn0.Margin = Thickness.Parse("5,0,0,0");
+            //panel.Children.Add(btn0);
 
             Button btn1 = new Button();
             btn1.Content = ((Form_ClassAttribute)Type.GetType("Models.Form11,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
@@ -151,7 +152,7 @@ namespace Client_App.Short_Visual
             btn1.CommandParameter = "1.1";
             btn1.Height = 30;
             btn1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn1.Margin = Thickness.Parse("5,35,0,0");
+            btn1.Margin = Thickness.Parse("5,0,0,0");
             panel.Children.Add(btn1);
 
             Button btn2 = new Button();
@@ -160,7 +161,7 @@ namespace Client_App.Short_Visual
             btn2.CommandParameter = "1.2";
             btn2.Height = 30;
             btn2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn2.Margin = Thickness.Parse("5,70,0,0");
+            btn2.Margin = Thickness.Parse("5,35,0,0");
             panel.Children.Add(btn2);
 
             Button btn3 = new Button();
@@ -169,7 +170,7 @@ namespace Client_App.Short_Visual
             btn3.CommandParameter = "1.3";
             btn3.Height = 30;
             btn3.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn3.Margin = Thickness.Parse("5,105,0,0");
+            btn3.Margin = Thickness.Parse("5,70,0,0");
             panel.Children.Add(btn3);
 
             Button btn4 = new Button();
@@ -178,7 +179,7 @@ namespace Client_App.Short_Visual
             btn4.CommandParameter = "1.4";
             btn4.Height = 30;
             btn4.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn4.Margin = Thickness.Parse("5,140,0,0");
+            btn4.Margin = Thickness.Parse("5,105,0,0");
             panel.Children.Add(btn4);
 
             Button btn5 = new Button();
@@ -187,7 +188,7 @@ namespace Client_App.Short_Visual
             btn5.CommandParameter = "1.5";
             btn5.Height = 30;
             btn5.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn5.Margin = Thickness.Parse("5,175,0,0");
+            btn5.Margin = Thickness.Parse("5,140,0,0");
             panel.Children.Add(btn5);
 
             Button btn6 = new Button();
@@ -196,7 +197,7 @@ namespace Client_App.Short_Visual
             btn6.CommandParameter = "1.6";
             btn6.Height = 30;
             btn6.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn6.Margin = Thickness.Parse("5,210,0,0");
+            btn6.Margin = Thickness.Parse("5,175,0,0");
             panel.Children.Add(btn6);
 
             Button btn7 = new Button();
@@ -205,7 +206,7 @@ namespace Client_App.Short_Visual
             btn7.CommandParameter = "1.7";
             btn7.Height = 30;
             btn7.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn7.Margin = Thickness.Parse("5,245,0,0");
+            btn7.Margin = Thickness.Parse("5,210,0,0");
             panel.Children.Add(btn7);
 
             Button btn8 = new Button();
@@ -214,7 +215,7 @@ namespace Client_App.Short_Visual
             btn8.CommandParameter = "1.8";
             btn8.Height = 30;
             btn8.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn8.Margin = Thickness.Parse("5,280,0,0");
+            btn8.Margin = Thickness.Parse("5,245,0,0");
             panel.Children.Add(btn8);
 
             Button btn9 = new Button();
@@ -223,7 +224,7 @@ namespace Client_App.Short_Visual
             btn9.CommandParameter = "1.9";
             btn9.Height = 30;
             btn9.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            btn9.Margin = Thickness.Parse("5,315,0,0");
+            btn9.Margin = Thickness.Parse("5,280,0,0");
             panel.Children.Add(btn9);
 
             return panel;
