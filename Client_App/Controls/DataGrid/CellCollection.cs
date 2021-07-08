@@ -7,14 +7,13 @@ namespace Client_App.Controls.DataGrid
 {
     public class CellCollection
     {
-        public CellCollection(Row Cells, PropertyChangedEventHandler handler)
+        public CellCollection(Row Cells)
         {
             this.Cells = new ObservableDictionary<string, Cell>();
             SCells = Cells;
             foreach (Cell item in SCells.Children)
             {
                 var str = item.CellRow + ";" + item.CellColumn;
-                item.PropertyChanged += handler;
                 this.Cells.Add(str, item);
             }
         }

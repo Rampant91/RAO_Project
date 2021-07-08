@@ -68,6 +68,8 @@ namespace Client_App.Controls.DataGrid
         {
             InitializeComponent();
 
+            ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
+
             AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
             AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
             AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
@@ -284,24 +286,59 @@ namespace Client_App.Controls.DataGrid
         public int[] FirstPressedItem { get; set; } = new int[2];
         public int[] LastPressedItem { get; set; } = new int[2];
 
+        int[] FindCell(PointerPoint mouse)
+        {
+            var h = Rows[1, 1].Height;
+            int[] ret = new int[2];
+
+            int t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity);
+            if (t1 <= Rows.Count&&t1>0)
+            {
+                ret[0] = t1;
+                double sum = 0;
+                for (int i = 1; i <= Rows[t1].Count; i++)
+                {
+                    var tp = Rows[t1, i];
+                    sum += tp.Width;
+                    if (mouse.Position.X <= sum)
+                    {
+                        ret[1] = i;
+                        break;
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         public void DataGridPointerDown(object sender, PointerPressedEventArgs args)
         {
             var mouse = args.GetCurrentPoint((DataGrid)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
             {
-                //FirstPressedItem = FindCellPosMin();
-                // = FindCellPosMax();
-                DownFlag = true;
-                SetSelectedControls();
-                SetSelectedItemsWithHandler();
+                if (Rows.Count > 0)
+                {
+                    var tmp= FindCell(mouse);
+                    FirstPressedItem = tmp;
+                    LastPressedItem = tmp;
+
+                    DownFlag = true;
+                    SetSelectedControls();
+                    SetSelectedItemsWithHandler();
+                }
             }
         }
 
         public void DataGridPointerMoved(object sender, PointerEventArgs args)
         {
+            var mouse = args.GetCurrentPoint((DataGrid)sender);
             if (DownFlag)
             {
-                //LastPressedItem = FindCellPosMax();
+                if (Rows.Count > 0)
+                {
+                    var tmp = FindCell(mouse);
+                    LastPressedItem = tmp;
+                }
                 SetSelectedControls();
                 SetSelectedItemsWithHandler();
             }
@@ -312,45 +349,12 @@ namespace Client_App.Controls.DataGrid
             var mouse = args.GetCurrentPoint((DataGrid)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
-                //LastPressedItem = FindCellPosMax();
-                DownFlag = false;
-                SetSelectedControls();
-                SetSelectedItemsWithHandler();
-            }
-        }
-
-        private void CellPropChangeEventHandler(object sender, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Down")
-            {
-                FirstPressedItem[0] = ((Cell) sender).CellRow;
-                FirstPressedItem[1] = ((Cell) sender).CellColumn;
-                LastPressedItem[0] = ((Cell) sender).CellRow;
-                LastPressedItem[1] = ((Cell) sender).CellColumn;
-                DownFlag = true;
-            }
-
-            if (args.PropertyName == "Move")
-            {
-                if (DownFlag)
+                if (Rows.Count > 0)
                 {
-                    LastPressedItem[0] = ((Cell)sender).CellRow;
-                    LastPressedItem[1] = ((Cell)sender).CellColumn;
+                    var tmp = FindCell(mouse);
+                    LastPressedItem = tmp;
                 }
-            }
-
-            if (args.PropertyName == "Up")
-            {
-                LastPressedItem[0] = ((Cell) sender).CellRow;
-                LastPressedItem[1] = ((Cell) sender).CellColumn;
                 DownFlag = false;
-            }
-
-            if (args.PropertyName == "Down" ||
-                args.PropertyName == "Up" ||
-                args.PropertyName=="Move")
-            {
-                Trace.WriteLine(args.PropertyName+":"+LastPressedItem[0] + ";" + LastPressedItem[1]);
                 SetSelectedControls();
                 SetSelectedItemsWithHandler();
             }
@@ -365,7 +369,7 @@ namespace Client_App.Controls.DataGrid
             foreach (var item in _items)
             {
                 var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
+                Rows.Add(new CellCollection(tmp), count);
                 count++;
             }
 
@@ -388,20 +392,20 @@ namespace Client_App.Controls.DataGrid
                             if (((IKey) Rows[count].SCells.DataContext).Id != ((IKey) item).Id)
                             {
                                 var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                                Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
+                                Rows.Add(new CellCollection(tmp), count);
                             }
                     }
                     else
                     {
                         var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                        Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
+                        Rows.Add(new CellCollection(tmp), count);
                         count++;
                     }
                 }
                 else
                 {
                     var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                    Rows.Add(new CellCollection(tmp, CellPropChangeEventHandler), count);
+                    Rows.Add(new CellCollection(tmp), count);
                     count++;
                 }
 
@@ -488,7 +492,7 @@ namespace Client_App.Controls.DataGrid
                 VerticalAlignment = VerticalAlignment.Stretch
             };
             vw.Content = stck;
-            Rows = new RowCollection(stck, CellPropChangeEventHandler);
+            Rows = new RowCollection(stck);
 
             Content = brd;
         }

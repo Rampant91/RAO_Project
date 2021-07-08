@@ -9,14 +9,14 @@ namespace Client_App.Controls.DataGrid
 {
     public class RowCollection
     {
-        public RowCollection(StackPanel Rows, PropertyChangedEventHandler handler)
+        public RowCollection(StackPanel Rows)
         {
             this.Rows = new ObservableDictionary<string, CellCollection>();
             SRows = Rows;
             foreach (Row item in SRows.Children)
             {
                 var str = item.SRow.ToString();
-                this.Rows.Add(str, new CellCollection(item, handler));
+                this.Rows.Add(str, new CellCollection(item));
             }
         }
 
