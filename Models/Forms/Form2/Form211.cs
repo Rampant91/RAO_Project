@@ -1,6 +1,7 @@
 ﻿using Models.DataAccess;
 using System;
 using System.Collections.Generic;
+using ClassLibrary1;
 
 namespace Models
 {
@@ -247,15 +248,14 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (Tuple<string, string> item in spr)
+            foreach (var item in Spravochniki.SprRadionuclids)
             {
-                if (item.Item2.Equals(value))
+                if (item.Item1.Equals(value.Value))
                 {
-                    Radionuclids.Value = item.Item2;
                     return true;
                 }
             }
+            value.AddError("Недопустимое значение");
             return false;
         }
         //Radionuclids property

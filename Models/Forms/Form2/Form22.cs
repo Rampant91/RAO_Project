@@ -3,6 +3,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Globalization;
+using ClassLibrary1;
 
 namespace Models
 {
@@ -1145,13 +1146,19 @@ return false;
         private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var spr = new List<string>();
-            if (!spr.Contains(value.Value))
+            if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                return true;
             }
-            return true;
+            foreach (var item in Spravochniki.SprRadionuclids)
+            {
+                if (item.Item1.Equals(value.Value))
+                {
+                    return true;
+                }
+            }
+            value.AddError("Недопустимое значение");
+            return false;
         }
         //MainRadionuclids property
 
