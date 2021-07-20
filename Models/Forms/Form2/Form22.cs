@@ -3,7 +3,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Globalization;
-using ClassLibrary1;
+using Spravochniki;
 
 namespace Models
 {
@@ -1150,7 +1150,7 @@ return false;
             {
                 return true;
             }
-            foreach (var item in Spravochniki.SprRadionuclids)
+            foreach (var item in Spravochniks.SprRadionuclids)
             {
                 if (item.Item1.Equals(value.Value))
                 {

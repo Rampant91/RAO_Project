@@ -1,6 +1,6 @@
 ﻿using Models.DataAccess;
 using System;
-using ClassLibrary1;
+using Spravochniki;
 using System.Globalization;
 
 namespace Models
@@ -172,7 +172,7 @@ public int? AggregateStateId { get; set; }
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            foreach (var item in Spravochniki.SprRadionuclids)
+            foreach (var item in Spravochniks.SprRadionuclids)
             {
                 if (item.Item1.Equals(value.Value))
                 {

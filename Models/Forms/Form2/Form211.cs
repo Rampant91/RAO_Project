@@ -1,7 +1,7 @@
 ﻿using Models.DataAccess;
 using System;
 using System.Collections.Generic;
-using ClassLibrary1;
+using Spravochniki;
 
 namespace Models
 {
@@ -248,7 +248,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            foreach (var item in Spravochniki.SprRadionuclids)
+            foreach (var item in Spravochniks.SprRadionuclids)
             {
                 if (item.Item1.Equals(value.Value))
                 {

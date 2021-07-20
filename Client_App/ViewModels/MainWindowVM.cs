@@ -14,7 +14,7 @@ using Collections;
 using DBRealization;
 using Models.Abstracts;
 using ReactiveUI;
-using ClassLibrary1;
+using Spravochniki;
 
 namespace Client_App.ViewModels
 {
@@ -24,7 +24,7 @@ namespace Client_App.ViewModels
 
         public MainWindowVM()
         {
-            var a = Spravochniki.SprRadionuclids;
+            var a = Spravochniks.SprRadionuclids;
 
             Local_Reports = new DBObservable();
             var dbm = StaticConfiguration.DBModel;

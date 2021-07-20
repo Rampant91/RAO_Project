@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
 
-namespace ClassLibrary1
+namespace Spravochniki
 {
-    public static class Spravochniki
+    public static class Spravochniks
     {
         public static List<Tuple<string, long, long>> SprRadionuclids
         {
