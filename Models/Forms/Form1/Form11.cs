@@ -126,34 +126,8 @@ namespace Models
             }
             return true;
         }
-
         //PassportNumber property
 
-        ////PassportNumberNote property
-        //        public virtual RamAccess<string> PassportNumberNote
-        //        {
-        //            get
-        //            {
-        //                return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
-        //            }
-        //            set
-        //            {
-        //                DataAccess.Set(nameof(PassportNumberNote), value);
-        //                OnPropertyChanged(nameof(PassportNumberNote));
-        //            }
-        //        }
-
-        //        private bool PassportNumberNote_Validation(RamAccess<string> value)
-        //        {
-        //            value.ClearErrors();
-        //            if ((value.Value == null) || value.Value.Equals(""))
-        //            {
-        //                value.AddError("Поле не заполнено");
-        //return false;
-        //            }
-        //            return true;
-        //        }
-        ////PassportNumberNote property
 
         //PassportNumberRecoded property
         public int? PassportNumberRecodedId { get; set; }
@@ -248,7 +222,7 @@ namespace Models
             }
             foreach (var item in Spravochniks.SprRadionuclids)
             {
-                if (item.Item1.Equals(value.Value))
+                if (item.Item1.Equals(value.Value.ToLower()))
                 {
                     return true;
                 }

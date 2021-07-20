@@ -34,16 +34,8 @@ namespace Client_App.ViewModels
             if (dbm.DBObservableDbSet.Local.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
 
             dbm.SaveChanges();
+
             Local_Reports = dbm.DBObservableDbSet.Local.First();
-            if (dbm.ReportsCollectionDbSet.Count() == 0) Local_Reports.Reports_Collection.Add(new Reports());
-
-            dbm.SaveChanges();
-            //Local_Reports = new DBObservable();
-            //var rpt = new Reports();
-            //rpt.Report_Collection.Add(new Report());
-            //Local_Reports.Reports_Collection.Add(rpt);
-
-
             Local_Reports.PropertyChanged += Local_ReportsChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
