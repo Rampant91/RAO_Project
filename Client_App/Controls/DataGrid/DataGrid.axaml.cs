@@ -30,14 +30,14 @@ namespace Client_App.Controls.DataGrid
 
     public class DataGrid : UserControl
     {
-        public static readonly DirectProperty<DataGrid, IEnumerable<IChanged>> ItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IChanged>>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> ItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
                 nameof(Items),
                 o => o.Items,
                 (o, v) => o.Items = v, defaultBindingMode: BindingMode.TwoWay);
 
-        public static readonly DirectProperty<DataGrid, IEnumerable<IChanged>> SelectedItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IChanged>>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> SelectedItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
                 nameof(SelectedItems),
                 o => o.SelectedItems,
                 (o, v) => o.SelectedItems = v);
@@ -59,9 +59,9 @@ namespace Client_App.Controls.DataGrid
 
         private readonly List<Control> SelectedCells = new();
 
-        private IEnumerable<IChanged> _items = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+        private IEnumerable<INotifyPropertyChanged> _items = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
 
-        private IEnumerable<IChanged> _selecteditems = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+        private IEnumerable<INotifyPropertyChanged> _selecteditems = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
         private string _type = "";
 
         public DataGrid()
@@ -75,7 +75,7 @@ namespace Client_App.Controls.DataGrid
             AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
         }
 
-        public IEnumerable<IChanged> Items
+        public IEnumerable<INotifyPropertyChanged> Items
         {
             get => _items;
             set
@@ -88,7 +88,7 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
-        public IEnumerable<IChanged> SelectedItems
+        public IEnumerable<INotifyPropertyChanged> SelectedItems
         {
             get => _selecteditems;
             set
@@ -238,7 +238,7 @@ namespace Client_App.Controls.DataGrid
 
         public void SetSelectedItems()
         {
-            var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+            var lst = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
             foreach (var item in SelectedCells)
             {
                 if (item is Cell)
@@ -246,13 +246,13 @@ namespace Client_App.Controls.DataGrid
                     var ch = (Border) ((Cell) item).Content;
                     var ch2 = (Panel) ch.Child;
                     var text = (TextBox) ch2.Children[0];
-                    lst.Add((IChanged) text.DataContext);
+                    lst.Add((INotifyPropertyChanged) text.DataContext);
                 }
 
                 if (item is StackPanel)
                 {
                     var ch = (Cell) ((StackPanel) item).Children[0];
-                    lst.Add((IChanged) ch.DataContext);
+                    lst.Add((INotifyPropertyChanged) ch.DataContext);
                 }
 
                 _selecteditems = lst;
@@ -261,7 +261,7 @@ namespace Client_App.Controls.DataGrid
 
         private void SetSelectedItemsWithHandler()
         {
-            var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+            var lst = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
             foreach (var item in SelectedCells)
             {
                 if (item is Cell)
@@ -269,12 +269,12 @@ namespace Client_App.Controls.DataGrid
                     var ch = (Border) ((Cell) item).Content;
                     var ch2 = (Panel) ch.Child;
                     var text = (TextBox) ch2.Children[0];
-                    lst.Add((IChanged) text.DataContext);
+                    lst.Add((INotifyPropertyChanged) text.DataContext);
                 }
 
                 if (item is StackPanel)
                 {
-                    var ch = (IChanged) item.DataContext;
+                    var ch = (INotifyPropertyChanged) item.DataContext;
                     lst.Add(ch);
                 }
             }

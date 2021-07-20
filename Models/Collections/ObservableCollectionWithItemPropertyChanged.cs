@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Collections
 {
     public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollection<T>, IKey
-        where T : class, IChanged
+        where T : class
     {
         [NotMapped] private bool _isChanged = true;
 

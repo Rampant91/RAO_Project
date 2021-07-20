@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Collections
 {
-    public class DBObservable
+    public class DBObservable:INotifyPropertyChanged
     {
         [NotMapped] private bool _isChanged = true;
 

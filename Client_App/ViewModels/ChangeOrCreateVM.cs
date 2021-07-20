@@ -122,6 +122,7 @@ namespace Client_App.ViewModels
             if (FormType == "1.7") { Form17? frm = new Form17(); Storage.Rows17.Add(frm); }
             if (FormType == "1.8") { Form18? frm = new Form18(); Storage.Rows18.Add(frm); }
             if (FormType == "1.9") { Form19? frm = new Form19(); Storage.Rows19.Add(frm); }
+
             if (FormType == "2.0") { Form20? frm = new Form20(); Storage.Rows20.Add(frm); }
             if (FormType == "2.1") { Form21? frm = new Form21(); Storage.Rows21.Add(frm); }
             if (FormType == "2.2") { Form22? frm = new Form22(); Storage.Rows22.Add(frm); }

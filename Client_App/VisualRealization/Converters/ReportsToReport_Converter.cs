@@ -3,6 +3,7 @@ using Avalonia.Data.Converters;
 using Collections;
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace Client_App.Converters
@@ -15,7 +16,7 @@ namespace Client_App.Converters
             if (Value != null)
             {
                 IEnumerable? rps_coll = (IEnumerable)Value;
-                AvaloniaList<IChanged>? lst = new AvaloniaList<IChanged>();
+                ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>? lst = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
                 foreach (object? item in rps_coll)
                 {
                     Reports? rps = (Reports)item;

@@ -7,7 +7,7 @@ using Models.DataAccess;
 
 namespace Collections
 {
-    public class Reports : IChanged, IKey
+    public class Reports : IKey,INotifyPropertyChanged
     {
         [NotMapped] private bool _isChanged = true;
 

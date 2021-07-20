@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace Models.DataAccess
 {
-    public class RamAccess<T> : INotifyDataErrorInfo, IChanged, IKey
+    public class RamAccess<T> : INotifyDataErrorInfo, INotifyPropertyChanged, IKey
     {
         [NotMapped]
         public Func<RamAccess<T>, bool> Handler { get; set; }

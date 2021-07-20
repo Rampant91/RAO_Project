@@ -9,7 +9,7 @@ using Models.DataAccess;
 
 namespace Collections
 {
-    public class Report : IChanged, IKey
+    public class Report : IKey,INotifyPropertyChanged
     {
         //ExportDate
 
