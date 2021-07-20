@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using ClassLibrary1;
 
 namespace Models
 {
@@ -72,9 +73,6 @@ namespace Models
             }
             set
             {
-                Radionuclids_Validation(value);
-
-                
                 {
                     DataAccess.Set(nameof(Radionuclids), value);
                 }
@@ -83,23 +81,23 @@ namespace Models
         }
         //If change this change validation
 
-        private void Radionuclids_Validation(RamAccess<string> value)//TODO
+        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError( "Поле не заполнено");
-                return;
+                return false;
             }
-            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();//Here binds spravochnik
-            foreach (var item in spr)
+            foreach (var item in Spravochniki.SprRadionuclids)
             {
-                if (item.Item2.Equals(value))
+                if (item.Item1.Equals(value.Value))
                 {
-                    Radionuclids.Value =item.Item2;
-                    return;
+                    return true;
                 }
             }
+            value.AddError("Недопустимое значение");
+            return false;
         }
         //Radionuclids property
         public int? KategoryId { get; set; }

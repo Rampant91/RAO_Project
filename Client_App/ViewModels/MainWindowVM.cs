@@ -12,9 +12,9 @@ using Client_App.Controls.Support.RenderDataGridHeader;
 using Client_App.Views;
 using Collections;
 using DBRealization;
-using Models;
 using Models.Abstracts;
 using ReactiveUI;
+using ClassLibrary1;
 
 namespace Client_App.ViewModels
 {
@@ -24,6 +24,8 @@ namespace Client_App.ViewModels
 
         public MainWindowVM()
         {
+            var a = Spravochniki.SprRadionuclids;
+
             Local_Reports = new DBObservable();
             var dbm = StaticConfiguration.DBModel;
             var t = dbm.Database.EnsureCreated();
