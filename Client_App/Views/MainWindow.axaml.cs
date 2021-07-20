@@ -3,12 +3,32 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using Avalonia.Data;
+using Collections;
 
 namespace Client_App.Views
 {
     public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     {
+
+        public static readonly DirectProperty<MainWindow, IEnumerable<INotifyPropertyChanged>> SelectedReportsProperty =
+            AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<INotifyPropertyChanged>>(
+                nameof(SelectedReports),
+                o => o.SelectedReports,
+                (o, v) => o.SelectedReports = v);
+
+        private IEnumerable<INotifyPropertyChanged> _selectedReports = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+
+        public IEnumerable<INotifyPropertyChanged> SelectedReports
+        {
+            get => _selectedReports;
+            set
+            {
+                if (value != null) SetAndRaise(SelectedReportsProperty, ref _selectedReports, value);
+            }
+        }
         public MainWindow()
         {
             DataContext = new ViewModels.MainWindowVM();
@@ -31,7 +51,7 @@ namespace Client_App.Views
             Panel tab10 = this.FindControl<Panel>("Forms_p1_0");
             Panel tab1X = this.FindControl<Panel>("Forms_p1_X");
             Panel tab1B = this.FindControl<Panel>("Forms_p1_B");
-            Short_Visual.Form1_Visual.FormF_Visual(tab10, tab1X, tab1B);
+            Short_Visual.Form1_Visual.FormF_Visual(this,tab10, tab1X, tab1B);
 
             Panel tab20 = this.FindControl<Panel>("Forms_p2_0");
             Panel tab2X = this.FindControl<Panel>("Forms_p2_X");

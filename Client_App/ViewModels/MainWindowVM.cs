@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
@@ -6,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Client_App.Controls.Support.RenderDataGridHeader;
 using Client_App.Views;
 using Collections;
 using DBRealization;
@@ -43,6 +46,7 @@ namespace Client_App.ViewModels
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
+            AddReport = ReactiveCommand.CreateFromTask<string>(_AddReport);
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
             ChangeForm =
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_ChangeForm);
@@ -50,6 +54,20 @@ namespace Client_App.ViewModels
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_DeleteForm);
 
             Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
+        }
+
+        private IEnumerable<Reports> _selectedReports=new ObservableCollectionWithItemPropertyChanged<Reports>();
+        public IEnumerable<Reports> SelectedReports
+        {
+            get => _selectedReports;
+            set
+            {
+                if (_selectedReports != value)
+                {
+                    _selectedReports = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         public DBObservable Local_Reports
@@ -71,6 +89,7 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<string, Unit> ChooseForm { get; }
 
+        public ReactiveCommand<string, Unit> AddReport { get; }
         public ReactiveCommand<string, Unit> AddForm { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> ChangeForm { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> DeleteForm { get; }
@@ -95,6 +114,21 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var t = desktop.MainWindow as MainWindow;
+                var rt = new Report();
+                if (t.SelectedReports.Count() != 0)
+                {
+                    var y = t.SelectedReports.First() as Reports;
+                    y.Report_Collection.Add(rt);
+                    FormChangeOrCreate frm = new(param, rt);
+                    await frm.ShowDialog<Form>(desktop.MainWindow);
+                }
+            }
+        }
+        private async Task _AddReport(string param)
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
                 if (param.Split('.')[1] == "0")
                 {
                     var rt = new Reports();
@@ -102,10 +136,6 @@ namespace Client_App.ViewModels
                     Local_Reports.Reports_Collection.Add(rt);
                     FormChangeOrCreate frm = new(param, rt.Master.Value);
                     await frm.ShowDialog<Form>(desktop.MainWindow);
-                }
-                else
-                {
-                    
                 }
             }
         }

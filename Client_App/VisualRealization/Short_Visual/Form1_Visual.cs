@@ -6,13 +6,14 @@ using Models.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Client_App.Views;
 
 namespace Client_App.Short_Visual
 {
     public class Form1_Visual
     {
         //Полный вывод
-        public static void FormF_Visual(in Panel pnl0, in Panel pnlx, in Panel pnlb)
+        public static void FormF_Visual(MainWindow v,in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
             INameScope? tp = pnl0.FindNameScope();
             Controls.DataGrid.DataGrid? grd1 = (Controls.DataGrid.DataGrid)Form0_Visual(tp);
@@ -23,6 +24,14 @@ namespace Client_App.Short_Visual
             scp.Complete();
             Controls.DataGrid.DataGrid? grd2 = (Controls.DataGrid.DataGrid)FormX_Visual(scp);
             pnlx.Children.Add(grd2);
+
+            Binding bd = new Binding
+            {
+                Path = "SelectedItems",
+                ElementName = "Form10AllDataGrid_",
+                NameScope = new WeakReference<INameScope>(scp),
+            };
+            v.Bind(MainWindow.SelectedReportsProperty, bd);
 
 
             Panel? grd3 = FormB_Visual();
@@ -59,7 +68,7 @@ namespace Client_App.Short_Visual
                 new MenuItem
                 {
                     Header = "Добавить форму",
-                    [!MenuItem.CommandProperty] = new Binding("AddForm"),
+                    [!MenuItem.CommandProperty] = new Binding("AddReport"),
                     CommandParameter = "1.0",
                 },
                 new MenuItem

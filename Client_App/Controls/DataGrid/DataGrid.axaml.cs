@@ -11,6 +11,7 @@ using Avalonia.Media;
 using Collections;
 
 using System.Diagnostics;
+using System.Linq;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
@@ -381,6 +382,11 @@ namespace Client_App.Controls.DataGrid
         {
             NameScope scp = new();
             scp.Register(Name, this);
+            if (_items.Count() == 0)
+            {
+                UpdateAllCells();
+                return;
+            }
             var count = 1;
             foreach (var item in _items)
             {
