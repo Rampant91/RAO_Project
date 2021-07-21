@@ -648,7 +648,7 @@ namespace Models
         private bool ActivityMeasurementDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -749,7 +749,7 @@ namespace Models
         private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -846,7 +846,7 @@ namespace Models
         private bool TransporterOKPO_Validation(RamAccess<string> value)//Done
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -936,7 +936,7 @@ namespace Models
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1017,7 +1017,7 @@ namespace Models
         private bool PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1130,7 +1130,7 @@ namespace Models
         private bool PackNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1215,7 +1215,7 @@ namespace Models
         private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1259,7 +1259,7 @@ namespace Models
         private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1438,7 +1438,7 @@ namespace Models
         protected override bool DocumentNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null))//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
                 value.AddError("Поле не заполнено");
                 return false;

@@ -132,6 +132,11 @@ namespace Models
         private bool MachineCode_Validation(RamAccess<byte?> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             bool a = (value.Value >= 11) && (value.Value <= 17);
             bool b = (value.Value >= 21) && (value.Value <= 24);
             bool c = (value.Value >= 31) && (value.Value <= 32);
@@ -282,7 +287,7 @@ namespace Models
         private bool StatusRAOIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -789,7 +794,7 @@ namespace Models
         private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }

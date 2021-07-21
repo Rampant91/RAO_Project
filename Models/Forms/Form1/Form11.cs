@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Spravochniki;
+using System.Linq;
 
 namespace Models
 {
@@ -57,7 +58,7 @@ namespace Models
             Quantity.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
             Radionuclids.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
+            DataAccess.Init<float?>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, null);
             SignedServicePeriod.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
             TransporterOKPO.PropertyChanged += InPropertyChanged;
@@ -113,7 +114,7 @@ namespace Models
         protected bool PassportNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -241,20 +242,25 @@ namespace Models
         private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            foreach (var item in Spravochniks.SprRadionuclids)
+            string[] nuclids = value.Value.Split("; ");
+            bool flag = true;
+            foreach(var nucl in nuclids)
             {
-                if (item.Item1.Equals(value.Value))
-                {
-                    return true;
-                }
+                //var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
+                //if (tmp.Count==null)
+                //    flag = false;
             }
-            value.AddError("Недопустимое значение");
-            return false;
+            if (!flag)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //Radionuclids property
 
@@ -274,7 +280,7 @@ namespace Models
         private bool FactoryNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -345,7 +351,7 @@ namespace Models
         private bool Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -411,7 +417,7 @@ namespace Models
         private bool CreationDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -474,7 +480,7 @@ namespace Models
         private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || (value.Value.Equals("")))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -550,9 +556,9 @@ namespace Models
         //SignedServicePeriod property
         public int? SignedServicePeriodId { get; set; }
         [Attributes.Form_Property("НСС, мес.")]
-        public virtual RamAccess<float> SignedServicePeriod
+        public virtual RamAccess<float?> SignedServicePeriod
         {
-            get => DataAccess.Get<float>(nameof(SignedServicePeriod));//OK
+            get => DataAccess.Get<float?>(nameof(SignedServicePeriod));//OK
             set
             {
                 DataAccess.Set(nameof(SignedServicePeriod), value);
@@ -560,9 +566,14 @@ namespace Models
             }
         }
 
-        private bool SignedServicePeriod_Validation(RamAccess<float> value)//Ready
+        private bool SignedServicePeriod_Validation(RamAccess<float?> value)//Ready
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value <= 0)
             {
                 value.AddError("Недопустимое значение");
@@ -636,7 +647,7 @@ namespace Models
         private bool Owner_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -677,7 +688,7 @@ namespace Models
         private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -739,7 +750,7 @@ namespace Models
         private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -798,7 +809,7 @@ namespace Models
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -848,7 +859,7 @@ namespace Models
         private bool PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -934,7 +945,7 @@ namespace Models
         private bool PackNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null)//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -997,7 +1008,7 @@ namespace Models
                 //    value.AddError("Заполните примечание");
                 return true;
             }
-            if (value.Value == null)//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
                 value.AddError("Поле не заполнено");
                 return false;

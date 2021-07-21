@@ -544,7 +544,7 @@ namespace Models
         private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 return false;
             }
@@ -1260,6 +1260,10 @@ namespace Models
         private bool RefineOrSortRAOCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             if (OperationCode.Value == 55)
             {
                 if (string.IsNullOrEmpty(value.Value))
@@ -1317,6 +1321,10 @@ namespace Models
         private bool Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             try
             {
                 int tmp = int.Parse(value.Value);

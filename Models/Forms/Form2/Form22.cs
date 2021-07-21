@@ -248,7 +248,7 @@ return false;
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
 return false;
@@ -330,7 +330,7 @@ return false;
         private bool PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -489,7 +489,7 @@ return false;
         private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -534,7 +534,7 @@ return false;
         private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -601,9 +601,9 @@ return false;
         private bool VolumeInPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
-return false;
+return true;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
@@ -662,9 +662,9 @@ return false;
         private bool MassInPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
-return false;
+                return true;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
@@ -726,7 +726,7 @@ return false;
         private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
 return false;
@@ -788,7 +788,7 @@ return false;
         private bool MassOutOfPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -898,7 +898,7 @@ return false;
         private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1193,6 +1193,10 @@ return false;
         private bool Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             try
             {
                 int tmp = Int32.Parse(value.Value);

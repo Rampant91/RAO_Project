@@ -388,7 +388,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get2Row(1, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 3, "OperationDate", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 4, "PassportNumber", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 5, "NameIOU", scp, TopName));
+            stck.Children.Add(Get2Row(2, Row, 5, "NameIOU", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 6, "FactoryNumber", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 7, "Mass", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 8, "CreatorOKPO", scp, TopName));

@@ -882,7 +882,7 @@ namespace Models
         private bool Owner_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -940,7 +940,7 @@ namespace Models
         private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1049,7 +1049,7 @@ namespace Models
         private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1140,7 +1140,7 @@ namespace Models
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1227,7 +1227,7 @@ namespace Models
         private bool PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1341,7 +1341,7 @@ namespace Models
         private bool PackNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1479,7 +1479,7 @@ namespace Models
                 //    value.AddError( "Заполните примечание");
                 return true;
             }
-            if ((value.Value == null))//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
                 value.AddError("Поле не заполнено");
                 return false;

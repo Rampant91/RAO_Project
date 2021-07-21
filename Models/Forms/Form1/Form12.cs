@@ -42,7 +42,7 @@ namespace Models
             PropertyCode.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
             ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<float>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, 0);
+            DataAccess.Init<float?>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, null);
             SignedServicePeriod.PropertyChanged += InPropertyChanged;
             DataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
             TransporterOKPO.PropertyChanged += InPropertyChanged;
@@ -149,7 +149,7 @@ namespace Models
         private bool PassportNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
 return false;
@@ -325,7 +325,7 @@ return true;
         private bool NameIOU_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
                 return false;
@@ -362,7 +362,7 @@ return true;
         private bool FactoryNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
 return false;
@@ -435,7 +435,7 @@ return false;
         private bool Mass_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
 return false;
@@ -492,7 +492,7 @@ return false;
         private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || (value.Value.Equals("")))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -585,7 +585,7 @@ return false;
         private bool CreationDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -649,11 +649,11 @@ return false;
         //SignedServicePeriod property
         public int? SignedServicePeriodId { get; set; }
         [Attributes.Form_Property("НСС, мес.")]
-        public virtual RamAccess<float> SignedServicePeriod
+        public virtual RamAccess<float?> SignedServicePeriod
         {
             get
             {
-                    return DataAccess.Get<float>(nameof(SignedServicePeriod));//OK
+                    return DataAccess.Get<float?>(nameof(SignedServicePeriod));//OK
             }
             set
             {
@@ -668,9 +668,14 @@ return false;
         }
 
 
-        private bool SignedServicePeriod_Validation(RamAccess<float> value)//Ready
+        private bool SignedServicePeriod_Validation(RamAccess<float?> value)//Ready
         {
             value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
             if (value.Value <= 0)
             {
                 value.AddError("Недопустимое значение");
@@ -750,7 +755,7 @@ return false;
         private bool Owner_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
 return false;
@@ -808,7 +813,7 @@ return true;
         private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
 return false;
@@ -910,16 +915,16 @@ return false;
         private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
-return false;
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
                 //if ((TransporterOKPONote.Value == null) || TransporterOKPONote.Value.Equals(""))
                 //    value.AddError( "Заполните примечание");
-return true;
+                return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
@@ -1000,16 +1005,16 @@ return true;
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
-return false;
+                return false;
             }
             if (value.Value.Equals("прим."))
             {
                 //if ((PackNameNote == null) || PackNameNote.Equals(""))
                 //    value.AddError( "Заполните примечание");//to do note handling
-return true;
+                return true;
             }
             return true;
         }
@@ -1080,7 +1085,7 @@ return true;
         private bool PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1183,7 +1188,7 @@ return true;
         private bool PackNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))//ok
+            if ((string.IsNullOrEmpty(value.Value)))//ok
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1276,7 +1281,7 @@ return true;
                 //    value.AddError( "Заполните примечание");//to do note handling
 return true;
             }
-            if ((value.Value == null))//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
                 value.AddError( "Поле не заполнено");
 return false;

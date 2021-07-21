@@ -577,10 +577,9 @@ namespace Models
         private bool Mass_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
@@ -866,8 +865,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value.Equals("прим."))
             {
@@ -1069,8 +1067,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             try
             {
@@ -1726,8 +1723,7 @@ namespace Models
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
             if (!a.IsMatch(value.Value))

@@ -119,7 +119,7 @@ namespace Models.Abstracts
         protected virtual bool OperationDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;

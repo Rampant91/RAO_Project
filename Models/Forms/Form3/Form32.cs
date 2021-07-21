@@ -315,7 +315,7 @@ namespace Models
         private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -402,7 +402,7 @@ namespace Models
         private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
