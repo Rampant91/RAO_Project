@@ -380,46 +380,47 @@ namespace Client_App.Controls.DataGrid
 
         private void UpdateCells()
         {
-            NameScope scp = new();
-            scp.Register(Name, this);
-            if (_items.Count() == 0)
-            {
-                UpdateAllCells();
-                return;
-            }
-            var count = 1;
-            foreach (var item in _items)
-            {
-                if (Rows.Count >= count)
-                {
-                    if (Rows[count, 1] != null)
-                    {
-                        if ((IKey) Rows[count].SCells.DataContext != null)
-                            if (((IKey) Rows[count].SCells.DataContext).Id != ((IKey) item).Id)
-                            {
-                                var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                                Rows.Add(new CellCollection(tmp), count);
-                            }
-                    }
-                    else
-                    {
-                        var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                        Rows.Add(new CellCollection(tmp), count);
-                        count++;
-                    }
-                }
-                else
-                {
-                    var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                    Rows.Add(new CellCollection(tmp), count);
-                    count++;
-                }
+            UpdateAllCells();
+            //NameScope scp = new();
+            //scp.Register(Name, this);
+            //if (_items.Count() == 0)
+            //{
+            //    UpdateAllCells();
+            //    return;
+            //}
+            //var count = 1;
+            //foreach (var item in _items)
+            //{
+            //    if (Rows.Count >= count)
+            //    {
+            //        if (Rows[count, 1] != null)
+            //        {
+            //            if ((IKey) Rows[count].SCells.DataContext != null)
+            //                if (((IKey) Rows[count].SCells.DataContext).Id != ((IKey) item).Id)
+            //                {
+            //                    var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
+            //                    Rows.Add(new CellCollection(tmp), count);
+            //                }
+            //        }
+            //        else
+            //        {
+            //            var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
+            //            Rows.Add(new CellCollection(tmp), count);
+            //            count++;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
+            //        Rows.Add(new CellCollection(tmp), count);
+            //        count++;
+            //    }
 
-                count++;
-            }
+            //    count++;
+            //}
 
-            SetSelectedControls();
-            SetSelectedItemsWithHandler();
+            //SetSelectedControls();
+            //SetSelectedItemsWithHandler();
         }
 
         private void ItemsChanged(object sender, PropertyChangedEventArgs args)

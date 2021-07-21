@@ -74,14 +74,14 @@ namespace Client_App.Short_Visual
                 new MenuItem
                 {
                     Header = "Изменить форму",
-                    [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+                    [!MenuItem.CommandProperty] = new Binding("ChangeReport"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить форму",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItem"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteReport"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };
             cntx.Items = itms;
