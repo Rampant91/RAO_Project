@@ -12,6 +12,7 @@ using Collections;
 
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
@@ -380,47 +381,70 @@ namespace Client_App.Controls.DataGrid
 
         private void UpdateCells()
         {
-            UpdateAllCells();
-            //NameScope scp = new();
-            //scp.Register(Name, this);
-            //if (_items.Count() == 0)
-            //{
-            //    UpdateAllCells();
-            //    return;
-            //}
-            //var count = 1;
-            //foreach (var item in _items)
-            //{
-            //    if (Rows.Count >= count)
-            //    {
-            //        if (Rows[count, 1] != null)
-            //        {
-            //            if ((IKey) Rows[count].SCells.DataContext != null)
-            //                if (((IKey) Rows[count].SCells.DataContext).Id != ((IKey) item).Id)
-            //                {
-            //                    var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-            //                    Rows.Add(new CellCollection(tmp), count);
-            //                }
-            //        }
-            //        else
-            //        {
-            //            var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-            //            Rows.Add(new CellCollection(tmp), count);
-            //            count++;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-            //        Rows.Add(new CellCollection(tmp), count);
-            //        count++;
-            //    }
+            //UpdateAllCells();
+            NameScope scp = new();
+            scp.Register(Name, this);
+            if (_items.Count() == 0)
+            {
+                UpdateAllCells();
+                return;
+            }
 
-            //    count++;
-            //}
 
-            //SetSelectedControls();
-            //SetSelectedItemsWithHandler();
+            var Id1 = (from item in Rows select item.Value.SCells.DataContext.GetHashCode());
+            var Id2 = (from item in _items select item.GetHashCode());
+
+            var Outer1 = Id1.Except(Id2);
+            var Outer2 = Id2.Except(Id1);
+
+            foreach (var item in Outer1)
+            {
+                int count = 1;
+                foreach (var row in Rows)
+                {
+                    var tmp = row.Value.SCells.DataContext.GetHashCode();
+                    if (item==tmp)
+                    {
+                        Rows.Remove(count);
+                        break;
+                    }
+
+                    count++;
+                }
+            }
+
+            foreach (var item in Outer2)
+            {
+                foreach (var row in _items)
+                {
+                    var tmp = row.GetHashCode();
+                    if (item == tmp)
+                    {
+                        int count = 1;
+                        for (int i=1;i<=Rows.Count;i++)
+                        {
+                            if (Rows[i] == null)
+                            {
+                                var t = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
+                                Rows.Add(new CellCollection(t), count);
+                                break;
+                            }
+                            count++;
+                        }
+
+                        if (count == Rows.Count + 1)
+                        {
+                            count++;
+                            var t = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
+                            Rows.Add(new CellCollection(t), count);
+                        }
+                    }
+                }
+            }
+
+
+            SetSelectedControls();
+            SetSelectedItemsWithHandler();
         }
 
         private void ItemsChanged(object sender, PropertyChangedEventArgs args)

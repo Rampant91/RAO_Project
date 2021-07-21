@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Controls;
 using System.Collections.Concurrent;
@@ -7,7 +8,7 @@ using Models.Collections;
 
 namespace Client_App.Controls.DataGrid
 {
-    public class RowCollection
+    public class RowCollection:IEnumerable<KeyValuePair<string,CellCollection>>
     {
         public RowCollection(StackPanel Rows)
         {
@@ -22,6 +23,16 @@ namespace Client_App.Controls.DataGrid
 
         public StackPanel SRows { get; set; }
         private ObservableDictionary<string, CellCollection> Rows { get; }
+
+        public IEnumerator<KeyValuePair<string, CellCollection>> GetEnumerator()
+        {
+            return Rows.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Rows.GetEnumerator();
+        }
 
         public int Count
         {

@@ -58,12 +58,14 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 4 * Wdth0,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]",
+                Mode = BindingMode.OneTime,
                 ElementName = TopName,
                 NameScope = new WeakReference<INameScope>(scp)
             };
@@ -112,13 +114,15 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Width = 8 * Wdth1,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]",
                 ElementName = TopName,
+                Mode = BindingMode.OneTime,
                 NameScope = new WeakReference<INameScope>(scp)
             };
 
