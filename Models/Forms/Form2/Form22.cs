@@ -899,6 +899,10 @@ return false;
         private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
@@ -961,6 +965,10 @@ return false;
         private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if ((value.Value == null) || value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
@@ -1023,6 +1031,10 @@ return false;
         private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if ((value.Value == null) || value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
@@ -1085,6 +1097,10 @@ return false;
         private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if ((value.Value == null) || value.Equals(""))
             {
                 value.AddError("Поле не заполнено");

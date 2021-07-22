@@ -506,6 +506,10 @@ namespace Models
         private bool TritiumActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
@@ -567,6 +571,10 @@ namespace Models
         private bool BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
@@ -628,6 +636,10 @@ namespace Models
         private bool AlphaActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
@@ -689,6 +701,10 @@ namespace Models
         private bool TransuraniumActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
@@ -1043,6 +1059,10 @@ namespace Models
         private bool TritiumActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
@@ -1104,6 +1124,10 @@ namespace Models
         private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
@@ -1163,6 +1187,10 @@ namespace Models
         private bool AlphaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
@@ -1224,6 +1252,10 @@ namespace Models
         private bool TransuraniumActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (value.Value == "-")
+            {
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
