@@ -7,7 +7,7 @@ using Collections;
 
 namespace Client_App.Controls.DataGrid
 {
-    public class ItemsObserver : IObserver<AvaloniaPropertyChangedEventArgs<IEnumerable<IChanged>>>
+    public class ItemsObserver : IObserver<AvaloniaPropertyChangedEventArgs<IEnumerable<INotifyPropertyChanged>>>
     {
         public ItemsObserver(PropertyChangedEventHandler handler)
         {
@@ -24,7 +24,7 @@ namespace Client_App.Controls.DataGrid
         {
         }
 
-        public void OnNext(AvaloniaPropertyChangedEventArgs<IEnumerable<IChanged>> obj)
+        public void OnNext(AvaloniaPropertyChangedEventArgs<IEnumerable<INotifyPropertyChanged>> obj)
         {
             if (obj.NewValue.Value != null)
                 if (Handler != null)

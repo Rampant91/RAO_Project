@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
@@ -6,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Client_App.Controls.Support.RenderDataGridHeader;
 using Client_App.Views;
 using Collections;
 using DBRealization;
@@ -31,27 +34,39 @@ namespace Client_App.ViewModels
             if (dbm.DBObservableDbSet.Local.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
 
             dbm.SaveChanges();
+
             Local_Reports = dbm.DBObservableDbSet.Local.First();
-            if (dbm.ReportsCollectionDbSet.Count() == 0) Local_Reports.Reports_Collection.Add(new Reports());
-
-            dbm.SaveChanges();
-            //Local_Reports = new DBObservable();
-            //var rpt = new Reports();
-            //rpt.Report_Collection.Add(new Report());
-            //Local_Reports.Reports_Collection.Add(rpt);
-
-
             Local_Reports.PropertyChanged += Local_ReportsChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
+            AddReport = ReactiveCommand.CreateFromTask<string>(_AddReport);
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
+
             ChangeForm =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IChanged>>(_ChangeForm);
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_ChangeForm);
+            ChangeReport =
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_ChangeReport);
             DeleteForm =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IChanged>>(_DeleteForm);
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_DeleteForm);
+            DeleteReport =
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_DeleteReport);
 
             Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
+        }
+
+        private IEnumerable<Reports> _selectedReports=new ObservableCollectionWithItemPropertyChanged<Reports>();
+        public IEnumerable<Reports> SelectedReports
+        {
+            get => _selectedReports;
+            set
+            {
+                if (_selectedReports != value)
+                {
+                    _selectedReports = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         public DBObservable Local_Reports
@@ -73,9 +88,12 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<string, Unit> ChooseForm { get; }
 
+        public ReactiveCommand<string, Unit> AddReport { get; }
         public ReactiveCommand<string, Unit> AddForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IChanged>, Unit> ChangeForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IChanged>, Unit> DeleteForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> ChangeForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> ChangeReport { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> DeleteForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> DeleteReport { get; }
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -97,15 +115,33 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var rt = new Reports();
-                rt.Master.Value = new Report();
-                Local_Reports.Reports_Collection.Add(rt);
-                FormChangeOrCreate frm = new(param, rt.Master.Value);
-                await frm.ShowDialog<Form>(desktop.MainWindow);
+                var t = desktop.MainWindow as MainWindow;
+                var rt = new Report();
+                if (t.SelectedReports.Count() != 0)
+                {
+                    var y = t.SelectedReports.First() as Reports;
+                    y.Report_Collection.Add(rt);
+                    FormChangeOrCreate frm = new(param, rt);
+                    await frm.ShowDialog<Form>(desktop.MainWindow);
+                }
+            }
+        }
+        private async Task _AddReport(string param)
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                if (param.Split('.')[1] == "0")
+                {
+                    var rt = new Reports();
+                    rt.Master.Value = new Report();
+                    Local_Reports.Reports_Collection.Add(rt);
+                    FormChangeOrCreate frm = new(param, rt.Master.Value);
+                    await frm.ShowDialog<Form>(desktop.MainWindow);
+                }
             }
         }
 
-        private async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<IChanged> param)
+        private async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
@@ -120,11 +156,46 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _DeleteForm(ObservableCollectionWithItemPropertyChanged<IChanged> param)
+        private async Task _ChangeReport(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                if (param != null)
+                {
+                    var obj = param.First();
+                    if (obj != null)
+                    {
+                        var rep = (Reports)obj;
+                        FormChangeOrCreate frm = new FormChangeOrCreate(rep.Master.Value.FormNum.Value, rep.Master.Value);
+                        await frm.ShowDialog(desktop.MainWindow);
+                    }
+                }
+        }
+
+        private async Task _DeleteForm(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var t = desktop.MainWindow as MainWindow;
+                if (t.SelectedReports.Count() != 0)
+                {
+
+                    var y = t.SelectedReports.First() as Reports;
+                    if (param != null)
+                    {
+                        foreach (var item in param)
+                        {
+                            y.Report_Collection.Remove((Report)item);
+                        }
+                    }
+                }
+            }
+        }
+
+        private async Task _DeleteReport(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
         {
             if (param != null)
                 foreach (var item in param)
-                    Local_Reports.Reports_Collection.First().Report_Collection.Remove((Report) item);
+                    Local_Reports.Reports_Collection.Remove((Reports)item);
         }
 
         private async Task _Excel_Export()

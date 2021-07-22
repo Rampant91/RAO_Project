@@ -26,7 +26,7 @@ namespace DBRealization
                 UserID = "SYSDBA",
                 Password = "masterkey",
                 Role = "ADMIN",
-                ClientLibrary = pth + "REDDB\\fbclient.dll"
+                ClientLibrary = pth + "data\\REDDB\\fbclient.dll"
             }.ToString();
         }
         public static void CreateDB(string _path)

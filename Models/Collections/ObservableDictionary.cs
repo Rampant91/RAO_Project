@@ -13,12 +13,12 @@ namespace Models.Collections
 	/// <typeparam name="TValue">Specifies the type of the values in this collection.</typeparam>
 	[DebuggerDisplay("Count={Count}")]
 	public class ObservableDictionary<TKey, TValue> :
-		ICollection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>,
+		ICollection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>, IEnumerable<KeyValuePair<TKey,TValue>>,
 		INotifyCollectionChanged, INotifyPropertyChanged
 	{
 		readonly IDictionary<TKey, TValue> dictionary;
 
-		/// <summary>Event raised when the collection changes.</summary>
+        /// <summary>Event raised when the collection changes.</summary>
 		public event NotifyCollectionChangedEventHandler CollectionChanged = (sender, args) => { };
 
 		/// <summary>Event raised when a property on the collection changes.</summary>
@@ -39,7 +39,7 @@ namespace Models.Collections
 		public ObservableDictionary(IDictionary<TKey, TValue> dictionary)
 		{
 			this.dictionary = dictionary;
-		}
+        }
 
 		void AddWithNotification(KeyValuePair<TKey, TValue> item)
 		{
@@ -99,6 +99,13 @@ namespace Models.Collections
 		{
 			PropertyChanged(this, args);
 		}
+		#region IEnumerable<KeyValuePair<TKey,TValue>> Members
+
+		public IEnumerator<KeyValuePair<TKey,TValue>> GetEnumerator()
+        {
+            return dictionary.GetEnumerator();
+        }
+		#endregion
 
 		#region IDictionary<TKey,TValue> Members
 

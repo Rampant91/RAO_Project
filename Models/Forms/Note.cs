@@ -8,7 +8,7 @@ using Collections;
 
 namespace Models
 {
-    public class Note : IChanged
+    public class Note : INotifyPropertyChanged
     {
         protected DataAccessCollection DataAccess { get; set; }
         public Note(DataAccessCollection Access)

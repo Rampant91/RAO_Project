@@ -11,6 +11,8 @@ using Avalonia.Media;
 using Collections;
 
 using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 
@@ -30,14 +32,14 @@ namespace Client_App.Controls.DataGrid
 
     public class DataGrid : UserControl
     {
-        public static readonly DirectProperty<DataGrid, IEnumerable<IChanged>> ItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IChanged>>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> ItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
                 nameof(Items),
                 o => o.Items,
                 (o, v) => o.Items = v, defaultBindingMode: BindingMode.TwoWay);
 
-        public static readonly DirectProperty<DataGrid, IEnumerable<IChanged>> SelectedItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IChanged>>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> SelectedItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
                 nameof(SelectedItems),
                 o => o.SelectedItems,
                 (o, v) => o.SelectedItems = v);
@@ -59,9 +61,9 @@ namespace Client_App.Controls.DataGrid
 
         private readonly List<Control> SelectedCells = new();
 
-        private IEnumerable<IChanged> _items = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+        private IEnumerable<INotifyPropertyChanged> _items = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
 
-        private IEnumerable<IChanged> _selecteditems = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+        private IEnumerable<INotifyPropertyChanged> _selecteditems = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
         private string _type = "";
 
         public DataGrid()
@@ -75,7 +77,7 @@ namespace Client_App.Controls.DataGrid
             AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
         }
 
-        public IEnumerable<IChanged> Items
+        public IEnumerable<INotifyPropertyChanged> Items
         {
             get => _items;
             set
@@ -88,7 +90,7 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
-        public IEnumerable<IChanged> SelectedItems
+        public IEnumerable<INotifyPropertyChanged> SelectedItems
         {
             get => _selecteditems;
             set
@@ -238,7 +240,7 @@ namespace Client_App.Controls.DataGrid
 
         public void SetSelectedItems()
         {
-            var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+            var lst = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
             foreach (var item in SelectedCells)
             {
                 if (item is Cell)
@@ -246,13 +248,13 @@ namespace Client_App.Controls.DataGrid
                     var ch = (Border) ((Cell) item).Content;
                     var ch2 = (Panel) ch.Child;
                     var text = (TextBox) ch2.Children[0];
-                    lst.Add((IChanged) text.DataContext);
+                    lst.Add((INotifyPropertyChanged) text.DataContext);
                 }
 
                 if (item is StackPanel)
                 {
                     var ch = (Cell) ((StackPanel) item).Children[0];
-                    lst.Add((IChanged) ch.DataContext);
+                    lst.Add((INotifyPropertyChanged) ch.DataContext);
                 }
 
                 _selecteditems = lst;
@@ -261,7 +263,7 @@ namespace Client_App.Controls.DataGrid
 
         private void SetSelectedItemsWithHandler()
         {
-            var lst = new ObservableCollectionWithItemPropertyChanged<IChanged>();
+            var lst = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
             foreach (var item in SelectedCells)
             {
                 if (item is Cell)
@@ -269,12 +271,12 @@ namespace Client_App.Controls.DataGrid
                     var ch = (Border) ((Cell) item).Content;
                     var ch2 = (Panel) ch.Child;
                     var text = (TextBox) ch2.Children[0];
-                    lst.Add((IChanged) text.DataContext);
+                    lst.Add((INotifyPropertyChanged) text.DataContext);
                 }
 
                 if (item is StackPanel)
                 {
-                    var ch = (IChanged) item.DataContext;
+                    var ch = (INotifyPropertyChanged) item.DataContext;
                     lst.Add(ch);
                 }
             }
@@ -379,38 +381,67 @@ namespace Client_App.Controls.DataGrid
 
         private void UpdateCells()
         {
+            //UpdateAllCells();
             NameScope scp = new();
             scp.Register(Name, this);
-            var count = 1;
-            foreach (var item in _items)
+            if (_items.Count() == 0)
             {
-                if (Rows.Count >= count)
+                UpdateAllCells();
+                return;
+            }
+
+
+            var Id1 = (from item in Rows select item.Value.SCells.DataContext.GetHashCode());
+            var Id2 = (from item in _items select item.GetHashCode());
+
+            var Outer1 = Id1.Except(Id2);
+            var Outer2 = Id2.Except(Id1);
+
+            foreach (var item in Outer1)
+            {
+                int count = 1;
+                foreach (var row in Rows)
                 {
-                    if (Rows[count, 1] != null)
+                    var tmp = row.Value.SCells.DataContext.GetHashCode();
+                    if (item==tmp)
                     {
-                        if ((IKey) Rows[count].SCells.DataContext != null)
-                            if (((IKey) Rows[count].SCells.DataContext).Id != ((IKey) item).Id)
-                            {
-                                var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                                Rows.Add(new CellCollection(tmp), count);
-                            }
+                        Rows.Remove(count);
+                        break;
                     }
-                    else
-                    {
-                        var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                        Rows.Add(new CellCollection(tmp), count);
-                        count++;
-                    }
-                }
-                else
-                {
-                    var tmp = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                    Rows.Add(new CellCollection(tmp), count);
+
                     count++;
                 }
-
-                count++;
             }
+
+            foreach (var item in Outer2)
+            {
+                foreach (var row in _items)
+                {
+                    var tmp = row.GetHashCode();
+                    if (item == tmp)
+                    {
+                        int count = 1;
+                        for (int i=1;i<=Rows.Count;i++)
+                        {
+                            if (Rows[i] == null)
+                            {
+                                var t = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
+                                Rows.Add(new CellCollection(t), count);
+                                break;
+                            }
+                            count++;
+                        }
+
+                        if (count == Rows.Count + 1)
+                        {
+                            count++;
+                            var t = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
+                            Rows.Add(new CellCollection(t), count);
+                        }
+                    }
+                }
+            }
+
 
             SetSelectedControls();
             SetSelectedItemsWithHandler();

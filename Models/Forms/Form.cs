@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : IChanged, IKey
+    public abstract class Form : INotifyPropertyChanged, IKey
     {
         protected DataAccessCollection DataAccess { get; set; }
         protected DBRealization.DBModel dbm { get; set; }
