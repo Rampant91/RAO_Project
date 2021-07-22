@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using System;
 using System.Collections.Generic;
+using Client_App.Controls.DataGrid;
+using Avalonia.Media;
 
 namespace Client_App.Long_Visual
 {
