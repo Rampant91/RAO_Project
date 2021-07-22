@@ -364,12 +364,12 @@ public int? AggregateStateId { get; set; }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError( "Поле не заполнено");
-return false;
+                return false;
             }
             if (!(value.Value.Contains('e')))
             {
                 value.AddError( "Недопустимое значение");
-return false;
+                return false;
             }
             var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;

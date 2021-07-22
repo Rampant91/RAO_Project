@@ -1228,13 +1228,13 @@ namespace Models
         private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<string> lst = new List<string>();//HERE binds spr
-            if (!lst.Contains(value.Value))
+            Regex a = new Regex("^[0-9]{8}$");
+            if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1274,13 +1274,12 @@ namespace Models
         private bool RefineOrSortRAOCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex a = new Regex("^[0-9][0-9]$");
-            if (!a.IsMatch(value.Value))
+            if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;

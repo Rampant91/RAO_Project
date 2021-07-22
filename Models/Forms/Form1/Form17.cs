@@ -1645,8 +1645,7 @@ namespace Models
             {
                 return false;
             }
-            Regex a = new Regex("^[0-9][0-9]$");
-            if (!a.IsMatch(value.Value))
+            if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
