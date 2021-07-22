@@ -251,9 +251,9 @@ namespace Models
             bool flag = true;
             foreach(var nucl in nuclids)
             {
-                //var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
-                //if (tmp.Count==null)
-                //    flag = false;
+                var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
+                if (tmp.Count() == 0)
+                    flag = false;
             }
             if (!flag)
             {
