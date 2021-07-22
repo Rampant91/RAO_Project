@@ -8,6 +8,9 @@ namespace Spravochniki
 {
     public static class Spravochniks
     {
+        public static List<string> SprRifineOrSortCodes = new List<string> {
+            "11","12","13","14","15","16","17","19","21","22","23","24","29","31","32","39","41","42","43","49","51","52","53","54","55","61","62","63","71","72","73","74","79","99"
+        };
         public static List<Tuple<string, long, long>> SprRadionuclids
         {
             get

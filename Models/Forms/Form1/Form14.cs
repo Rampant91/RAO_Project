@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Spravochniki;
+using System.Linq;
 
 namespace Models
 {
@@ -369,20 +370,25 @@ namespace Models
         private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            foreach (var item in Spravochniks.SprRadionuclids)
+            string[] nuclids = value.Value.Split("; ");
+            bool flag = true;
+            foreach (var nucl in nuclids)
             {
-                if (item.Item1.Equals(value.Value))
-                {
-                    return true;
-                }
+                var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
+                if (tmp.Count() == 0)
+                    flag = false;
             }
-            value.AddError("Недопустимое значение");
-            return false;
+            if (!flag)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //Radionuclids property
 
@@ -743,7 +749,7 @@ public int? AggregateStateId { get; set; }
         private bool Owner_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -801,7 +807,7 @@ public int? AggregateStateId { get; set; }
         private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -911,7 +917,7 @@ public int? AggregateStateId { get; set; }
         private bool TransporterOKPO_Validation(RamAccess<string> value)//Done
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1003,7 +1009,7 @@ public int? AggregateStateId { get; set; }
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1084,7 +1090,7 @@ public int? AggregateStateId { get; set; }
         private bool PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1198,7 +1204,7 @@ public int? AggregateStateId { get; set; }
         private bool PackNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null))//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1295,7 +1301,7 @@ public int? AggregateStateId { get; set; }
                 //    value.AddError( "Заполните примечание");
                 return true;
             }
-            if ((value.Value == null))//ok
+            if (string.IsNullOrEmpty(value.Value))//ok
             {
                 value.AddError("Поле не заполнено");
                 return false;

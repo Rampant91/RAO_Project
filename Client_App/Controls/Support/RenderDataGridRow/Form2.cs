@@ -36,7 +36,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -392,7 +393,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -438,7 +440,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -481,7 +484,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -517,7 +521,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -557,7 +562,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -590,7 +596,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -622,7 +629,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -656,7 +664,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -701,7 +710,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -729,7 +739,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -763,7 +774,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding
@@ -795,7 +807,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1
+                Spacing = -1,
+                SRow = Row
             };
 
             Binding b = new Binding

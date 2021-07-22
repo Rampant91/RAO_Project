@@ -72,7 +72,13 @@ namespace Models
 
         private bool WasteSourceName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //WasteSourceName property
 
@@ -106,7 +112,13 @@ namespace Models
 
         private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
         }
         //RadionuclidName property
 

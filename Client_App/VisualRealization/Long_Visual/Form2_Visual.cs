@@ -141,7 +141,10 @@ namespace Client_App.Long_Visual
                 Type = "2.0",
                 Name = "Form20Data_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -275,7 +278,10 @@ namespace Client_App.Long_Visual
                 Type = "2.1",
                 Name = "Form21Data_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -408,7 +414,10 @@ namespace Client_App.Long_Visual
                 Name = "Form22Data_",
                 Type = "2.2",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -541,7 +550,10 @@ namespace Client_App.Long_Visual
                 Name = "Form23Data_",
                 Type = "2.3",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -674,7 +686,10 @@ namespace Client_App.Long_Visual
                 Name = "Form24Data_",
                 Type = "2.4",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -807,7 +822,10 @@ namespace Client_App.Long_Visual
                 Name = "Form25Data_",
                 Type = "2.5",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -940,7 +958,10 @@ namespace Client_App.Long_Visual
                 Name = "Form26Data_",
                 Type = "2.6",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1073,7 +1094,10 @@ namespace Client_App.Long_Visual
                 Name = "Form27Data_",
                 Type = "2.7",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1206,7 +1230,10 @@ namespace Client_App.Long_Visual
                 Name = "Form28Data_",
                 Type = "2.8",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1339,7 +1366,10 @@ namespace Client_App.Long_Visual
                 Name = "Form29Data_",
                 Type = "2.9",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1473,7 +1503,10 @@ namespace Client_App.Long_Visual
                 Name = "Form210Data_",
                 Type = "2.10",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1607,7 +1640,10 @@ namespace Client_App.Long_Visual
                 Name = "Form211Data_",
                 Type = "2.11",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1741,7 +1777,10 @@ namespace Client_App.Long_Visual
                 Name = "Form212Data_",
                 Type = "2.12",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
 
