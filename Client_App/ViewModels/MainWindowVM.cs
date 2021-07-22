@@ -188,6 +188,8 @@ namespace Client_App.ViewModels
                         }
                     }
                 }
+
+                await StaticConfiguration.DBModel.SaveChangesAsync();
             }
         }
 
@@ -196,6 +198,8 @@ namespace Client_App.ViewModels
             if (param != null)
                 foreach (var item in param)
                     Local_Reports.Reports_Collection.Remove((Reports)item);
+
+            await StaticConfiguration.DBModel.SaveChangesAsync();
         }
 
         private async Task _Excel_Export()
