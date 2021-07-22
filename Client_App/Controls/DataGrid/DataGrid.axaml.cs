@@ -394,22 +394,19 @@ namespace Client_App.Controls.DataGrid
             var Id1 = (from item in Rows select item.Value.SCells.DataContext.GetHashCode());
             var Id2 = (from item in _items select item.GetHashCode());
 
-            var Outer1 = Id1.Except(Id2);
-            var Outer2 = Id2.Except(Id1);
+            var Outer1 = Id1.Except(Id2).ToArray();
+            var Outer2 = Id2.Except(Id1).ToArray();
 
             foreach (var item in Outer1)
             {
-                int count = 1;
                 foreach (var row in Rows)
                 {
                     var tmp = row.Value.SCells.DataContext.GetHashCode();
-                    if (item==tmp)
+                    if (item == tmp)
                     {
-                        Rows.Remove(count);
+                        Rows.Remove(Convert.ToInt32(row.Key));
                         break;
                     }
-
-                    count++;
                 }
             }
 
@@ -420,24 +417,9 @@ namespace Client_App.Controls.DataGrid
                     var tmp = row.GetHashCode();
                     if (item == tmp)
                     {
-                        int count = 1;
-                        for (int i=1;i<=Rows.Count;i++)
-                        {
-                            if (Rows[i] == null)
-                            {
-                                var t = (Row) Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                                Rows.Add(new CellCollection(t), count);
-                                break;
-                            }
-                            count++;
-                        }
-
-                        if (count == Rows.Count + 1)
-                        {
-                            count++;
-                            var t = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                            Rows.Add(new CellCollection(t), count);
-                        }
+                        var tp = Rows.GetFreeRow();
+                        var t = (Row)Support.RenderDataGridRow.Render.GetControl(Type, tp, scp, Name);
+                        Rows.Add(new CellCollection(t),tp);
                     }
                 }
             }

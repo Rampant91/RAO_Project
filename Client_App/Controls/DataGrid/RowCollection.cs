@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Controls;
@@ -68,9 +69,59 @@ namespace Client_App.Controls.DataGrid
             AddToSRows(Row, stck);
         }
 
+        public int Add(CellCollection stck)
+        {
+            int counter = 0;
+            int max = Rows.Max((x)=>Convert.ToInt32(x.Key));
+            for (int i = 1; i < max; i++)
+            {
+                if (this[i] == null)
+                {
+                    counter = i;
+                }
+            }
+
+            if (counter == 0)
+            {
+                counter = max + 1;
+            }
+
+            this.Add(stck, counter);
+
+            return counter;
+        }
+        public int GetFreeRow()
+        {
+            int counter = 0;
+            int max = 0;
+            if (Rows.Count() > 0)
+            {
+                max = Rows.Max((x) => Convert.ToInt32(x.Key));
+            }
+
+            ;
+            for (int i = 1; i <= max; i++)
+            {
+                if (this[i] == null)
+                {
+                    counter = i;
+                }
+            }
+            
+            if (counter == 0)
+            {
+                counter = max + 1;
+            }
+
+            return counter;
+        }
+
         private void AddToSRows(int Row, CellCollection cellCollection)
         {
-            SRows.Children.Add(cellCollection.SCells);
+            SRows.Children.Insert(Row-1,cellCollection.SCells);
+            //SRows.Children.Add(cellCollection.SCells);
+            //var t=SRows.Children.IndexOf(cellCollection.SCells);
+            //SRows.Children.Move(t,Row-1);
         }
 
         public void Remove(int Row)
