@@ -135,9 +135,9 @@ namespace Models
             }
             List<string> spr = new List<string>()
             {
-                "пп",
-                "сзз",
-                "зн",
+                "ПП",
+                "СЗЗ",
+                "ЗН",
                 "прим."
             };
             if (!spr.Contains(value.Value))

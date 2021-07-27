@@ -63,7 +63,7 @@ namespace Models
 
         //ObservedSourceNumber property
         public int? ObservedSourceNumberId { get; set; }
-        [Attributes.Form_Property("Номер наблюдательной скважины")]
+        [Attributes.Form_Property("Номер источника выбросов")]
         public virtual RamAccess<string> ObservedSourceNumber
         {
             get => DataAccess.Get<string>(nameof(ObservedSourceNumber));

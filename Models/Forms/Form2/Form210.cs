@@ -1,5 +1,7 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -78,6 +80,14 @@ namespace Models
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
+                return false;
+            }
+            var spr = new List<string> { 
+                "З","Р","Н"
+            };
+            if (!spr.Contains(value.Value))
+            {
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -195,6 +205,12 @@ namespace Models
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
+                return false;
+            }
+            Regex a = new Regex("^[0-9]{6}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -320,7 +336,7 @@ namespace Models
 
         //WasteDensityAlpha property
         public int? WasteDensityAlphaId { get; set; }
-        [Attributes.Form_Property("Средняя плотность загрязнения альфа-излучающими радионуклидами, Бк/кв. м")]
+        [Attributes.Form_Property("Плотность загрязнения альфа-излучающими радионуклидами (средняя), Бк/кв. м")]
         public virtual RamAccess<double?> WasteDensityAlpha
         {
             get
@@ -359,7 +375,7 @@ namespace Models
 
         //WasteDensityBeta property
         public int? WasteDensityBetaId { get; set; }
-        [Attributes.Form_Property("Средняя плотность загрязнения бета-излучающими радионуклидами, Бк/кв. м")]
+        [Attributes.Form_Property("Плотность загрязнения бета-излучающими радионуклидами (средняя), Бк/кв. м")]
         public virtual RamAccess<double?> WasteDensityBeta
         {
             get

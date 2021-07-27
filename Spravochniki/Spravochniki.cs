@@ -8,7 +8,16 @@ namespace Spravochniki
 {
     public static class Spravochniks
     {
-        public static List<string> SprRifineOrSortCodes = new List<string> {
+        public static List<string> SprPlotCodes = new List<string>
+        {
+
+        };
+        public static List<string> SprRecieverTypeCode = new List<string>
+        {
+            "101","201","211","301","311","401","411","501","601","611","811","821","831","911","921","991","102","202","212","302","312","402","412","502","602","612","812","822","832","912","922","992","109","209","219","309","319","409","419","509","609","619","819","829","839","919","929","999"
+        };
+        public static List<string> SprRifineOrSortCodes = new List<string>
+        {
             "11","12","13","14","15","16","17","19","21","22","23","24","29","31","32","39","41","42","43","49","51","52","53","54","55","61","62","63","71","72","73","74","79","99"
         };
         public static List<Tuple<string, long, long>> SprRadionuclids

@@ -132,12 +132,68 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
 
         private static Control Get2()
         {
-            return null;
+            StackPanel stck = new StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = -1
+            };
+
+            stck.Children.Add(Get0Header(1, 1,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
+                    GetProperty("RegNo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
+
+            stck.Children.Add(Get0Header(2, 2,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
+                    GetProperty("ShortJurLico").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
+            stck.Children.Add(Get0Header(1, 3,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
+                    GetProperty("Okpo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
+
+            return stck;
         }
 
         private static Control Get3()
         {
-            return null;
+            StackPanel stck = new StackPanel
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = -1
+            };
+
+            stck.Children.Add(Get1Header(1, 1,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form2,Models").
+                    GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
+
+            stck.Children.Add(Get1Header(1, 2,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form2,Models").
+                    GetProperty("FormNum").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
+            stck.Children.Add(Get1Header(1, 3,
+                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
+                    GetProperty("StartPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+            stck.Children.Add(Get1Header(1, 4,
+                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
+                    GetProperty("EndPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+            stck.Children.Add(Get1Header(1, 5,
+                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
+                    GetProperty("ExportDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+            stck.Children.Add(Get1Header(2, 6,
+                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
+                    GetProperty("IsCorrection").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+            stck.Children.Add(Get1Header(1, 7,
+                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
+                    GetProperty("Comments").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+
+            return stck;
         }
 
         private static Control Get4()
