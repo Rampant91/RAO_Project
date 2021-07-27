@@ -6,31 +6,133 @@ using Models.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Client_App.Views;
 
 namespace Client_App.Short_Visual
 {
     public class Form2_Visual
     {
-        public static void FormF_Visual(in Panel pnl0, in Panel pnlx, in Panel pnlb)
+        public static void FormF_Visual(MainWindow v, in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
-            pnl0.Children.Add(Form0_Visual());
-            pnlx.Children.Add(FormX_Visual());
-            pnlb.Children.Add(FormB_Visual());
+            INameScope? tp = pnl0.FindNameScope();
+            Controls.DataGrid.DataGrid? grd1 = (Controls.DataGrid.DataGrid)Form0_Visual(tp);
+            pnl0.Children.Add(grd1);
+
+            NameScope scp = new NameScope();
+            scp.Register(grd1.Name, grd1);
+            scp.Complete();
+            Controls.DataGrid.DataGrid? grd2 = (Controls.DataGrid.DataGrid)FormX_Visual(scp);
+            pnlx.Children.Add(grd2);
+
+            Binding bd = new Binding
+            {
+                Path = "SelectedItems",
+                ElementName = "Form20AllDataGrid_",
+                NameScope = new WeakReference<INameScope>(scp),
+            };
+            v.Bind(MainWindow.SelectedReportsProperty, bd);
+
+
+            Panel? grd3 = FormB_Visual();
+            pnlb.Children.Add(grd3);
         }
 
         //Форма 10
-        private static DataGrid Form0_Visual()
+        private static Control Form0_Visual(INameScope scp)
         {
-            DataGrid grd = new DataGrid();
+            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            {
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = Controls.DataGrid.MultilineMode.Single,
+                ChooseMode = Controls.DataGrid.ChooseMode.Line,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                Type = "0.2"
+            };
+
+            grd.Name = "Form20AllDataGrid_";
+
+            Binding b = new Binding
+            {
+                Path = "DataContext.Local_Reports.Reports_Collection",
+                ElementName = "MainWindow",
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+
+            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+
+            ContextMenu? cntx = new ContextMenu();
+            List<MenuItem> itms = new List<MenuItem>
+            {
+                new MenuItem
+                {
+                    Header = "Добавить форму",
+                    [!MenuItem.CommandProperty] = new Binding("AddReport"),
+                    CommandParameter = "2.0",
+                },
+                new MenuItem
+                {
+                    Header = "Изменить форму",
+                    [!MenuItem.CommandProperty] = new Binding("ChangeReport"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                },
+                new MenuItem
+                {
+                    Header = "Удалить форму",
+                    [!MenuItem.CommandProperty] = new Binding("DeleteReport"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                }
+            };
+            cntx.Items = itms;
+
+            grd.ContextMenu = cntx;
 
             return grd;
         }
 
         //Форма 1X
-        private static DataGrid FormX_Visual()
+        private static Control FormX_Visual(INameScope scp)
         {
-            DataGrid grd = new DataGrid();
+            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            {
+                Type = "0.3",
+                Name = "Form2AllDataGrid_",
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = Controls.DataGrid.MultilineMode.Single,
+                ChooseMode = Controls.DataGrid.ChooseMode.Line,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+            };
 
+            Binding b = new Binding
+            {
+                Path = "SelectedItems",
+                ElementName = "Form20AllDataGrid_",
+                NameScope = new WeakReference<INameScope>(scp),
+                Converter = new Converters.ReportsToReport_Converter()
+            };
+
+            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+
+            ContextMenu? cntx = new ContextMenu();
+            List<MenuItem> itms = new List<MenuItem>
+            {
+                new MenuItem
+                {
+                    Header = "Изменить форму",
+                    [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                },
+                new MenuItem
+                {
+                    Header = "Удалить форму",
+                    [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                }
+            };
+            cntx.Items = itms;
+
+            grd.ContextMenu = cntx;
             return grd;
         }
 

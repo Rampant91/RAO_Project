@@ -14,8 +14,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 case "0": return Get0(Row, scp, TopName);
                 case "1": return Get1(Row, scp, TopName);
-                case "2": return Get2();
-                case "3": return Get3();
+                case "2": return Get2(Row, scp, TopName);
+                case "3": return Get3(Row, scp, TopName);
                 case "4": return Get4();
                 case "5": return Get5();
             }
@@ -142,14 +142,116 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return stck;
         }
 
-        private static Control Get2()
+        private static Control Get2Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
         {
-            return null;
+            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, true)
+            {
+                Width = starWidth * Wdth0,
+                Height = RowHeight0,
+                BorderBrush = new SolidColorBrush(border_color0)
+            };
+
+            Binding b = new Binding
+            {
+                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+
+            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+
+            return cell;
         }
 
-        private static Control Get3()
+        private static Control Get2(int Row, INameScope scp, string TopName)
         {
-            return null;
+            DataGrid.Row stck = new DataGrid.Row
+            {
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Width = 4 * Wdth0,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                Spacing = -1,
+                SRow = Row
+            };
+
+            Binding b = new Binding
+            {
+                Path = "Items[" + (Row - 1).ToString() + "]",
+                Mode = BindingMode.OneTime,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+
+            stck.Bind(StackPanel.DataContextProperty, b);
+
+            stck.Children.Add(Get2Row(1, Row, 1, "Master.Value.RegNo", scp, TopName));
+            stck.Children.Add(Get2Row(2, Row, 2, "Master.Value.ShortJurLico", scp, TopName));
+            stck.Children.Add(Get2Row(1, Row, 3, "Master.Value.Okpo", scp, TopName));
+
+            return stck;
+        }
+
+        private static Control Get3Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, true)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+
+            Binding b = new Binding
+            {
+                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+
+            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
+
+        private static Control Get3(int Row, INameScope scp, string TopName)
+        {
+            DataGrid.Row stck = new DataGrid.Row
+            {
+                Width = 8 * Wdth1,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Spacing = -1,
+                SRow = Row
+            };
+
+            Binding b = new Binding
+            {
+                Path = "Items[" + (Row - 1).ToString() + "]",
+                ElementName = TopName,
+                Mode = BindingMode.OneTime,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+
+            stck.Bind(StackPanel.DataContextProperty, b);
+
+
+            stck.Children.Add(Get3Row(1, Row, 1, "NumberInOrder", scp, TopName));
+            stck.Children.Add(Get3Row(1, Row, 2, "FormNum", scp, TopName));
+
+            string? str = "{0:d}";
+            stck.Children.Add(Get3Row(1, Row, 3, "StartPeriod", scp, TopName));
+            stck.Children.Add(Get3Row(1, Row, 4, "EndPeriod", scp, TopName));
+            stck.Children.Add(Get3Row(1, Row, 5, "ExportDate", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 6, "IsCorrection", scp, TopName));
+            stck.Children.Add(Get3Row(1, Row, 7, "Comments", scp, TopName));
+
+            return stck;
         }
 
         private static Control Get4()

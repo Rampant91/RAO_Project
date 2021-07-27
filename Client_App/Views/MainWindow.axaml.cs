@@ -56,7 +56,7 @@ namespace Client_App.Views
             Panel tab20 = this.FindControl<Panel>("Forms_p2_0");
             Panel tab2X = this.FindControl<Panel>("Forms_p2_X");
             Panel tab2B = this.FindControl<Panel>("Forms_p2_B");
-            Short_Visual.Form2_Visual.FormF_Visual(tab20, tab2X, tab2B);
+            Short_Visual.Form2_Visual.FormF_Visual(this,tab20, tab2X, tab2B);
 
             Panel tab30 = this.FindControl<Panel>("Forms_p3_0");
             Panel tab3X = this.FindControl<Panel>("Forms_p3_X");
