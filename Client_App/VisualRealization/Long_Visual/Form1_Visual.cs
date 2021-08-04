@@ -325,10 +325,10 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1",
+                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
@@ -338,7 +338,7 @@ namespace Client_App.Long_Visual
 
             Binding b1 = new Binding
             {
-                Path = "DataContext.Storage.Rows11",
+                Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
@@ -346,22 +346,24 @@ namespace Client_App.Long_Visual
 
 
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };
@@ -507,6 +509,56 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd);
 
+            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            {
+                Type = "1.1*",
+                Name = "Form11Notes_",
+                Focusable = true,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                MultilineMode = MultilineMode.Multi,
+                ChooseMode = ChooseMode.Cell,
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+            };
+            grd1.SetValue(Grid.RowProperty, 3);
+
+            Binding b1 = new Binding
+            {
+                Path = "DataContext.Storage.Notes",
+                ElementName = "ChangingPanel",
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+
+
+            ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            List<MenuItem> itms1 = new List<MenuItem>
+            {
+                mn,
+                new MenuItem
+                {
+                    Header = "Вставить из буфера",
+                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
+                },
+                new MenuItem
+                {
+                    Header = "Удалить строки",
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                }
+            };
+            cntx1.Items = itms1;
+
+            grd1.ContextMenu = cntx1;
+
+            maingrid.Children.Add(grd1);
+
             return maingrid;
         }
         public static Grid Form13_Visual(INameScope scp)
@@ -645,10 +697,10 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1",
+                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
@@ -658,30 +710,31 @@ namespace Client_App.Long_Visual
 
             Binding b1 = new Binding
             {
-                Path = "DataContext.Storage.Rows11",
+                Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
 
-
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };
@@ -829,10 +882,10 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1",
+                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
@@ -842,7 +895,7 @@ namespace Client_App.Long_Visual
 
             Binding b1 = new Binding
             {
-                Path = "DataContext.Storage.Rows11",
+                Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
@@ -850,22 +903,24 @@ namespace Client_App.Long_Visual
 
 
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };
@@ -1013,10 +1068,10 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1",
+                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
@@ -1026,7 +1081,7 @@ namespace Client_App.Long_Visual
 
             Binding b1 = new Binding
             {
-                Path = "DataContext.Storage.Rows11",
+                Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
@@ -1034,22 +1089,24 @@ namespace Client_App.Long_Visual
 
 
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };
@@ -1197,10 +1254,10 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1",
+                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
@@ -1210,7 +1267,7 @@ namespace Client_App.Long_Visual
 
             Binding b1 = new Binding
             {
-                Path = "DataContext.Storage.Rows11",
+                Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
@@ -1218,22 +1275,24 @@ namespace Client_App.Long_Visual
 
 
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };
@@ -1381,10 +1440,10 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1",
+                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
@@ -1394,7 +1453,7 @@ namespace Client_App.Long_Visual
 
             Binding b1 = new Binding
             {
-                Path = "DataContext.Storage.Rows11",
+                Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
@@ -1402,22 +1461,24 @@ namespace Client_App.Long_Visual
 
 
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };
@@ -1565,10 +1626,10 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1",
+                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
@@ -1578,7 +1639,7 @@ namespace Client_App.Long_Visual
 
             Binding b1 = new Binding
             {
-                Path = "DataContext.Storage.Rows11",
+                Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
@@ -1586,22 +1647,24 @@ namespace Client_App.Long_Visual
 
 
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };
@@ -1749,10 +1812,10 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1",
+                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
@@ -1762,7 +1825,7 @@ namespace Client_App.Long_Visual
 
             Binding b1 = new Binding
             {
-                Path = "DataContext.Storage.Rows11",
+                Path = "DataContext.Storage.Notes",
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
@@ -1770,22 +1833,24 @@ namespace Client_App.Long_Visual
 
 
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty,"1.1*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };

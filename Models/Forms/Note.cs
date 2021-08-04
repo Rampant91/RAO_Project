@@ -15,25 +15,45 @@ namespace Models
         {
             DataAccess = Access;
         }
+        public Note(int rowNumber, int graphNumber, string comment)
+        {
+            DataAccess = new DataAccessCollection();
+            RowNumber.Value = rowNumber;
+            GraphNumber.Value = graphNumber;
+            Comment.Value = comment;
+        }
+        protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            OnPropertyChanged(args.PropertyName);
+        }
         public Note()
         {
             DataAccess = new DataAccessCollection();
+            DataAccess.Init<int?>(nameof(RowNumber), RowNumber_Validation, null);
+            RowNumber.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<int?>(nameof(GraphNumber), GraphNumber_Validation, null);
+            GraphNumber.PropertyChanged += InPropertyChanged;
+            DataAccess.Init<string>(nameof(Comment), Comment_Validation, null);
+            Comment.PropertyChanged += InPropertyChanged;
+            RowNumber_Validation(RowNumber);
+            GraphNumber_Validation(GraphNumber);
+            Comment_Validation(Comment);
         }
         [Key]
         public int NoteId { get; set; }
 
         //RowNumber property
         [Attributes.Form_Property("Номер строки")]
-        public RamAccess<int> RowNumber
+        public RamAccess<int?> RowNumber
         {
-            get => DataAccess.Get<int>(nameof(RowNumber));
+            get => DataAccess.Get<int?>(nameof(RowNumber));
             set
             {
                 DataAccess.Set(nameof(RowNumber), value);
                 OnPropertyChanged(nameof(RowNumber));
             }
         }
-        private bool RowNumber_Validation(RamAccess<int> value)
+        private bool RowNumber_Validation(RamAccess<int?> value)
         {
             value.ClearErrors();
             return true;
@@ -42,16 +62,16 @@ namespace Models
 
         //GraphNumber property
         [Attributes.Form_Property("Номер графы")]
-        public RamAccess<int> GraphNumber
+        public RamAccess<int?> GraphNumber
         {
-            get => DataAccess.Get<int>(nameof(GraphNumber));
+            get => DataAccess.Get<int?>(nameof(GraphNumber));
             set
             {
                 DataAccess.Set(nameof(GraphNumber), value);
                 OnPropertyChanged(nameof(GraphNumber));
             }
         }
-        private bool GraphNumber_Validation(RamAccess<int> value)
+        private bool GraphNumber_Validation(RamAccess<int?> value)
         {
             value.ClearErrors();
             return true;
@@ -59,7 +79,7 @@ namespace Models
         //GraphNumber property
 
         //Comment property
-        [Attributes.Form_Property("Комментарий")]
+        [Attributes.Form_Property("Примечание")]
         public RamAccess<string> Comment
         {
             get => DataAccess.Get<string>(nameof(Comment));

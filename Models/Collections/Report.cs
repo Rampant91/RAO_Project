@@ -800,6 +800,7 @@ namespace Collections
             Notes = new ObservableCollectionWithItemPropertyChanged<Note>();
             Notes.CollectionChanged += CollectionChanged;
 
+
             DataAccess.Init(nameof(StartPeriod), StartPeriod_Validation, "");
             DataAccess.Init(nameof(Comments), Comments_Validation, "");
             DataAccess.Init<byte>(nameof(CorrectionNumber), CorrectionNumber_Validation, 0);
@@ -840,6 +841,8 @@ namespace Collections
 
         protected void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
+            OnPropertyChanged(nameof(Notes));
+
             OnPropertyChanged(nameof(Rows10));
             OnPropertyChanged(nameof(Rows11));
             OnPropertyChanged(nameof(Rows12));
