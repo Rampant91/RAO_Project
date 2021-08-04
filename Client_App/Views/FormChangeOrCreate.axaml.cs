@@ -12,7 +12,7 @@ namespace Client_App.Views
     {
         private readonly string _param = "";
 
-        public FormChangeOrCreate(string param, Report rep)
+        public FormChangeOrCreate(string param, in Report rep)
         {
             ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
             tmp.Storage = rep;

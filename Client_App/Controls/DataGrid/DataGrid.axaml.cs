@@ -268,10 +268,8 @@ namespace Client_App.Controls.DataGrid
             {
                 if (item is Cell)
                 {
-                    var ch = (Border) ((Cell) item).Content;
-                    var ch2 = (Panel) ch.Child;
-                    var text = (TextBox) ch2.Children[0];
-                    lst.Add((INotifyPropertyChanged) text.DataContext);
+                    var ch = (Row) ((Cell) item).Parent;
+                    lst.Add((INotifyPropertyChanged) ch.DataContext);
                 }
 
                 if (item is StackPanel)

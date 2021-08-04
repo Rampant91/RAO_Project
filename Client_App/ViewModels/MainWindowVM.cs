@@ -165,6 +165,7 @@ namespace Client_App.ViewModels
                     if (obj != null)
                     {
                         var rep = (Reports)obj;
+
                         FormChangeOrCreate frm = new FormChangeOrCreate(rep.Master.Value.FormNum.Value, rep.Master.Value);
                         await frm.ShowDialog(desktop.MainWindow);
                     }

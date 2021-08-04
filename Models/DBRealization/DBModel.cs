@@ -14,7 +14,6 @@ namespace DBRealization
             _path = Path;
         }
 
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

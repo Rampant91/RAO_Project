@@ -185,23 +185,6 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd);
 
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
-            {
-                Type = "0.2",
-                Name = "Form10Data_Note_",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom
-            };
-            grd1.SetValue(Grid.RowProperty, 2);
-
-            Binding b1 = new Binding
-            {
-                Path = "DataContext.Storage.Notes",
-                ElementName = "ChangingPanel",
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
-
             return maingrid;
         }
 
@@ -351,7 +334,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 2);
+            grd1.SetValue(Grid.RowProperty, 3);
 
             Binding b1 = new Binding
             {

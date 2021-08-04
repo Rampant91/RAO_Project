@@ -57,6 +57,7 @@ namespace Client_App.Controls.DataGrid
 
             var t = (TextBox) ((Panel) ((Border) Content).Child).Children[0];
             t.IsEnabled = !IsReadOnly;
+            t.ContextMenu = null;
         }
 
         public void PanelPointerDown(object sender, PointerPressedEventArgs args)
