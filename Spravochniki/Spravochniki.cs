@@ -31,10 +31,24 @@ namespace Spravochniki
 
             }
         }
+
+        public static List<Tuple<string, string>> SprTypesToRadionuclids
+        {
+            get
+            {
+                return SprTypesToRadionuclidsTask.Result;
+            }
+            private set
+            {
+
+            }
+        }
 #if DEBUG
         private static Task<List<Tuple<string, long, long>>> SprRadionuclidsTask = ReadCsvAsync(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\"))+ "data\\Spravochniki\\RadionuclidsActivities.csv");
+        private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsTask = ReadCsvAsync1(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")) + "data\\Spravochniki\\TypeToRadionuclids.csv");
 #else
         private static Task<List<Tuple<string, long, long>>> SprRadionuclidsTask = ReadCsvAsync(Path.GetFullPath(AppContext.BaseDirectory)+"data\\Spravochniki\\RadionuclidsActivities.csv");
+        private static Task<List<Tuple<string, string>>> SprRadionuclidsTask = ReadCsvAsync(Path.GetFullPath(AppContext.BaseDirectory)+"data\\Spravochniki\\TypeToRadionuclids.csv");
 #endif
 
         private static Task<List<Tuple<string, long, long>>> ReadCsvAsync(string path)
@@ -42,17 +56,36 @@ namespace Spravochniki
             return Task.Run(() => ReadCsv(path));
         }
 
+        private static Task<List<Tuple<string, string>>> ReadCsvAsync1(string path)
+        {
+            return Task.Run(() => ReadCsv1(path));
+        }
+
         private static List<Tuple<string, long, long>> ReadCsv(string path)
         {
             var res = new List<Tuple<string, long, long>>();
-            string[] radionuclids = File.ReadAllLines(path);
-            for (int k = 1; k < radionuclids.Count(); k++)
+            string[] rows = File.ReadAllLines(path);
+            for (int k = 1; k < rows.Count(); k++)
             {
-                var tmp = radionuclids[k].Split(";");
+                var tmp = rows[k].Split(";");
                 string i1 = tmp[0];
                 long i2 = long.Parse(tmp[1]);
                 long i3 = long.Parse(tmp[2]);
                 res.Add(new Tuple<string, long, long>(i1, i2, i3));
+            }
+            return res;
+        }
+
+        private static List<Tuple<string, string>> ReadCsv1(string path)
+        {
+            var res = new List<Tuple<string, string>>();
+            string[] rows = File.ReadAllLines(path);
+            for (int k = 1; k < rows.Count(); k++)
+            {
+                var tmp = rows[k].Split(";");
+                string i1 = tmp[0];
+                string i2 = tmp[1];
+                res.Add(new Tuple<string, string>(i1, i2));
             }
             return res;
         }

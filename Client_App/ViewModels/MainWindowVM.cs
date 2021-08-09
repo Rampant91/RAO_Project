@@ -25,6 +25,7 @@ namespace Client_App.ViewModels
         public MainWindowVM()
         {
             var a = Spravochniks.SprRadionuclids;
+            var b = Spravochniks.SprTypesToRadionuclids;
 
             Local_Reports = new DBObservable();
             var dbm = StaticConfiguration.DBModel;
