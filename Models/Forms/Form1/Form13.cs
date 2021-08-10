@@ -20,6 +20,8 @@ namespace Models
             Validate_all();
         }
 
+        public bool _autoRN = false;
+
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
@@ -308,7 +310,19 @@ namespace Models
 
         private bool Type_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            var a = from item in Spravochniks.SprTypesToRadionuclids where item.Item1 == value.Value select item.Item2;
+            if (a.Count() == 1)
+            {
+                _autoRN = true;
+                Radionuclids.Value = a.First();
+            }
+            return true;
         }
         //Type property
 
@@ -379,6 +393,11 @@ namespace Models
         private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (_autoRN)
+            {
+                _autoRN = false;
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");

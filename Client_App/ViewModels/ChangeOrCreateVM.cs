@@ -54,10 +54,15 @@ namespace Client_App.ViewModels
         public ReactiveCommand<Unit, Unit> CheckReport { get; }
 
         public ReactiveCommand<string, Unit> AddSort { get; }
+        public ReactiveCommand<string, Unit> AddNote { get; }
         public ReactiveCommand<Unit, Unit> AddRow { get; }
         public ReactiveCommand<IList, Unit> DeleteRow { get; }
 
         public ReactiveCommand<Unit, Unit> PasteRows { get; }
+
+        public ReactiveCommand<IList, Unit> DeleteNote { get; }
+
+        public ReactiveCommand<Unit, Unit> PasteNotes { get; }
 
         public ChangeOrCreateVM()
         {
@@ -66,6 +71,9 @@ namespace Client_App.ViewModels
             DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             PasteRows = ReactiveCommand.CreateFromTask(_PasteRows);
+            AddNote = ReactiveCommand.Create<string>(_AddNote);
+            DeleteNote = ReactiveCommand.Create<IList>(_DeleteNote);
+            //PasteNotes = ReactiveCommand.CreateFromTask(_PasteNotes);
         }
 
         private bool _isCanSaveReportEnabled = false;
@@ -302,6 +310,25 @@ namespace Client_App.ViewModels
             {
                 frm.FormNum.Value = FormType;
                 Storage.Rows212.Add((Form212)frm);
+            }
+        }
+
+        private void _AddNote(string Param)
+        {
+            Note? nt = new Note(); 
+            Storage.Notes.Add(nt);
+        }
+
+        private void _DeleteNote(IEnumerable param)
+        {
+            List<Note> lst = new List<Note>();
+            foreach (object? item in param)
+            {
+                lst.Add((Note)item);
+            }
+            foreach (Note nt in lst)
+            {
+                Storage.Notes.Remove((Note)nt);
             }
         }
 

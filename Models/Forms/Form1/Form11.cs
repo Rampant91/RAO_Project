@@ -68,6 +68,8 @@ namespace Models
             Type.PropertyChanged += InPropertyChanged;
         }
 
+        public bool _autoRN = false;
+
         private void Validate_all()
         {
             Activity_Validation(Activity);
@@ -195,15 +197,16 @@ namespace Models
         private bool Type_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            List<string> spr = new List<string>
+            if (string.IsNullOrEmpty(value.Value))
             {
-                "ГИИД-6",
-                "ГИИД-5"
-            };    //HERE BINDS SPRAVOCHNIK
-            if (!spr.Contains(value.Value))
-            {
-                value.AddError("Недопустимое значение");
+                value.AddError("Поле не заполнено");
                 return false;
+            }
+            var a = from item in Spravochniks.SprTypesToRadionuclids where item.Item1 == value.Value select item.Item2;
+            if (a.Count() == 1)
+            {
+                _autoRN = true;
+                Radionuclids.Value = a.First();
             }
             return true;
         }
@@ -242,6 +245,11 @@ namespace Models
         private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (_autoRN)
+            {
+                _autoRN = false;
+                return true;
+            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
