@@ -8,5 +8,7 @@ namespace Collections
         where T : class
     {
         public int Id { get; set; }
+
+
     }
 }

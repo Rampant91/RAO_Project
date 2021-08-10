@@ -1,9 +1,12 @@
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using System.Diagnostics;
+using Avalonia;
+using Avalonia.Data;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -45,7 +48,24 @@ namespace Client_App.Controls.DataGrid
 
         public bool IsReadOnly { get; set; }
 
-        public int CellRow { get; set; } = -1;
+        public static readonly DirectProperty<Cell, int> CellRowProperty =
+            AvaloniaProperty.RegisterDirect<Cell, int>(
+                nameof(CellRow),
+                o => o.CellRow,
+                (o, v) => o.CellRow = v);
+
+        public int cellRow = -1;
+        public int CellRow
+        {
+            get => cellRow;
+            set
+            {
+                if (value != null)
+                {
+                    SetAndRaise(CellRowProperty, ref cellRow, value);
+                }
+            }
+        } 
 
         public int CellColumn { get; set; } = -1;
 
