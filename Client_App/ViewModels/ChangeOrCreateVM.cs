@@ -49,6 +49,42 @@ namespace Client_App.ViewModels
             }
         }
 
+        private Form10 _Storage10;
+        public Form10 Storage10
+        {
+            get
+            {
+                int count = Storage.Rows10.Count;
+                return Storage.Rows10[count - 1];
+            }
+            set
+            {
+                if (_Storage10 != value)
+                {
+                    _Storage10 = value;
+                    NotifyPropertyChanged("Storage10");
+                }
+            }
+        }
+
+        private Form20 _Storage20;
+        public Form20 Storage20
+        {
+            get
+            {
+                int count = Storage.Rows20.Count;
+                return Storage.Rows20[count - 1];
+            }
+            set
+            {
+                if (_Storage20 != value)
+                {
+                    _Storage20 = value;
+                    NotifyPropertyChanged("Storage20");
+                }
+            }
+        }
+
         public ReactiveCommand<Unit, Unit> CheckReport { get; }
 
         public ReactiveCommand<string, Unit> AddSort { get; }
