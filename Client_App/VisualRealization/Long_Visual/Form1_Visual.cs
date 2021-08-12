@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia.Media;
 using Client_App.Controls.DataGrid;
+using Client_App.ViewModels;
 
 namespace Client_App.Long_Visual
 {
@@ -51,7 +52,7 @@ namespace Client_App.Long_Visual
             };
         }
 
-        public static Grid Form10_Visual(INameScope scp)
+        public static Grid Form10_Visual(INameScope scp, ChangeOrCreateVM vm)
         {
             Grid maingrid = new Grid();
             RowDefinition? row = new RowDefinition
@@ -139,6 +140,8 @@ namespace Client_App.Long_Visual
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 1, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
+
+            vm._AddRow10();
 
             Binding[] bindings = new Binding[17];
             for(int k = 0; k < 17; k++)

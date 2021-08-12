@@ -48,7 +48,7 @@ namespace Client_App.Views
         {
             if (_param == "1.0")
             {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual(this.FindNameScope()));
+                panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual(this.FindNameScope(),(ViewModels.ChangeOrCreateVM)DataContext));
             }
 
             if (_param == "1.1")
