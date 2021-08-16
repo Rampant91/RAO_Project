@@ -159,7 +159,7 @@ namespace Client_App.ViewModels
 
         private void _AddRow()
         {
-            //if (FormType == "1.0") { Form10? frm = new Form10(); Storage.Rows10.Add(frm); }
+            if (FormType == "1.0") { Form10? frm = new Form10(); Storage.Rows10.Add(frm); }
             if (FormType == "1.1") { Form11? frm = new Form11(); Storage.Rows11.Add(frm); }
             if (FormType == "1.2") { Form12? frm = new Form12(); Storage.Rows12.Add(frm); }
             if (FormType == "1.3") { Form13? frm = new Form13(); Storage.Rows13.Add(frm); }
@@ -170,7 +170,7 @@ namespace Client_App.ViewModels
             if (FormType == "1.8") { Form18? frm = new Form18(); Storage.Rows18.Add(frm); }
             if (FormType == "1.9") { Form19? frm = new Form19(); Storage.Rows19.Add(frm); }
 
-            //if (FormType == "2.0") { Form20? frm = new Form20(); Storage.Rows20.Add(frm); }
+            if (FormType == "2.0") { Form20? frm = new Form20(); Storage.Rows20.Add(frm); }
             if (FormType == "2.1") { Form21? frm = new Form21(); Storage.Rows21.Add(frm); }
             if (FormType == "2.2") { Form22? frm = new Form22(); Storage.Rows22.Add(frm); }
             if (FormType == "2.3") { Form23? frm = new Form23(); Storage.Rows23.Add(frm); }
