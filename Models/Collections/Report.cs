@@ -13,8 +13,49 @@ namespace Collections
     {
         //ExportDate
 
-        [NotMapped] private bool _isChanged = true;
+        public enum Forms
+        {
+            None,
+            Form10,
+            Form11,
+            Form12,
+            Form13,
+            Form14,
+            Form15,
+            Form16,
+            Form17,
+            Form18,
+            Form19,
+            Form20,
+            Form21,
+            Form22,
+            Form23,
+            Form24,
+            Form25,
+            Form26,
+            Form27,
+            Form28,
+            Form29,
+            Form210,
+            Form211,
+            Form212
+        }
 
+        [NotMapped] private bool _isChanged = true;
+        [NotMapped] private Forms _lastAddedForm = Forms.None;
+
+        [NotMapped]
+        public Forms LastAddedForm
+        {
+            get
+            {
+                return _lastAddedForm;
+            }
+            set
+            {
+                if(!(value==_lastAddedForm)) _lastAddedForm = value;
+            }
+        }
         public Report(DataAccessCollection Access)
         {
             DataAccess = Access;

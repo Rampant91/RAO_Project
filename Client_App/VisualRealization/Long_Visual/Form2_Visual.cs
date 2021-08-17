@@ -56,50 +56,45 @@ namespace Client_App.Long_Visual
             Grid maingrid = new Grid();
             RowDefinition? row = new RowDefinition
             {
-                Height = new GridLength(0.5, GridUnitType.Star)
+                Height = new GridLength(0.07, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(0.7, GridUnitType.Star)
+                Height = new GridLength(0.93, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(2, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            //row = new RowDefinition
+            //{
+            //    Height = new GridLength(5, GridUnitType.Star)
+            //};
+            //maingrid.RowDefinitions.Add(row);
 
-            Grid? topPnl1 = new Grid();
-            ColumnDefinition? column = new ColumnDefinition
-            {
-                Width = new GridLength(0.3, GridUnitType.Star)
-            };
-            topPnl1.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl1.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl1.ColumnDefinitions.Add(column);
-            topPnl1.SetValue(Grid.RowProperty, 0);
-            topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата конца периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", double.NaN));
-            maingrid.Children.Add(topPnl1);
+            //Grid? topPnl1 = new Grid();
+            //ColumnDefinition? column = new ColumnDefinition
+            //{
+            //    Width = new GridLength(0.3, GridUnitType.Star)
+            //};
+            //topPnl1.ColumnDefinitions.Add(column);
+            //column = new ColumnDefinition
+            //{
+            //    Width = new GridLength(1, GridUnitType.Star)
+            //};
+            //topPnl1.ColumnDefinitions.Add(column);
+            //column = new ColumnDefinition
+            //{
+            //    Width = new GridLength(1, GridUnitType.Star)
+            //};
+            //topPnl1.ColumnDefinitions.Add(column);
+            //topPnl1.SetValue(Grid.RowProperty, 0);
+            //topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            //topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            //topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата конца периода:"));
+            //topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", double.NaN));
+            //maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
-            column = new ColumnDefinition
+            ColumnDefinition? column = new ColumnDefinition
             {
                 Width = new GridLength(1, GridUnitType.Star)
             };
@@ -109,32 +104,32 @@ namespace Client_App.Long_Visual
                 Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
+            //column = new ColumnDefinition
+            //{
+            //    Width = new GridLength(1, GridUnitType.Star)
+            //};
+            //topPnl2.ColumnDefinitions.Add(column);
+            //column = new ColumnDefinition
+            //{
+            //    Width = new GridLength(1, GridUnitType.Star)
+            //};
+            //topPnl2.ColumnDefinitions.Add(column);
+            //column = new ColumnDefinition
+            //{
+            //    Width = new GridLength(1, GridUnitType.Star)
+            //};
+            //topPnl2.ColumnDefinitions.Add(column);
+            //column = new ColumnDefinition();
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl2.SetValue(Grid.RowProperty, 1);
+            topPnl2.SetValue(Grid.RowProperty, 0);
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
-            topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber.Value", 70));
-            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
-            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
+            //topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
+            //topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber.Value", 70));
+            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 0, 30, "CheckReport"));
+            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 1, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
 
@@ -148,7 +143,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd.SetValue(Grid.RowProperty, 2);
+            grd.SetValue(Grid.RowProperty, 1);
 
             Binding b = new Binding
             {
