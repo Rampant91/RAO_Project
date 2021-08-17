@@ -130,6 +130,97 @@ namespace Client_App.ViewModels
         }
         public void SaveReport()
         {
+            int k = 1;
+            switch (Storage.LastAddedForm)
+            {
+                case Report.Forms.Form11:
+                    foreach(var item in Storage.Rows11)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form12:
+                    foreach (var item in Storage.Rows12)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form13:
+                    foreach (var item in Storage.Rows13)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form14:
+                    foreach (var item in Storage.Rows14)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form15:
+                    foreach (var item in Storage.Rows15)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form16:
+                    foreach (var item in Storage.Rows16)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form17:
+                    foreach (var item in Storage.Rows17)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form18:
+                    foreach (var item in Storage.Rows18)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form19:
+                    foreach (var item in Storage.Rows19)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form21:
+                    foreach (var item in Storage.Rows21)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form22:
+                    foreach (var item in Storage.Rows22)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form23:
+                    foreach (var item in Storage.Rows23)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form24:
+                    foreach (var item in Storage.Rows24)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form25:
+                    foreach (var item in Storage.Rows25)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form26:
+                    foreach (var item in Storage.Rows26)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form27:
+                    foreach (var item in Storage.Rows27)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form28:
+                    foreach (var item in Storage.Rows28)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form29:
+                    foreach (var item in Storage.Rows29)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form210:
+                    foreach (var item in Storage.Rows210)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form211:
+                    foreach (var item in Storage.Rows211)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.Form212:
+                    foreach (var item in Storage.Rows212)
+                        item.NumberInOrder.Value = k++;
+                    break;
+                case Report.Forms.None:
+                    throw new System.Exception();
+                default:break;
+            }
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 foreach (Avalonia.Controls.Window? item in desktop.Windows)
@@ -159,30 +250,30 @@ namespace Client_App.ViewModels
 
         private void _AddRow()
         {
-            if (FormType == "1.0") { Form10? frm = new Form10(); Storage.Rows10.Add(frm); }
-            if (FormType == "1.1") { Form11? frm = new Form11(); Storage.Rows11.Add(frm); }
-            if (FormType == "1.2") { Form12? frm = new Form12(); Storage.Rows12.Add(frm); }
-            if (FormType == "1.3") { Form13? frm = new Form13(); Storage.Rows13.Add(frm); }
-            if (FormType == "1.4") { Form14? frm = new Form14(); Storage.Rows14.Add(frm); }
-            if (FormType == "1.5") { Form15? frm = new Form15(); Storage.Rows15.Add(frm); }
-            if (FormType == "1.6") { Form16? frm = new Form16(); Storage.Rows16.Add(frm); }
-            if (FormType == "1.7") { Form17? frm = new Form17(); Storage.Rows17.Add(frm); }
-            if (FormType == "1.8") { Form18? frm = new Form18(); Storage.Rows18.Add(frm); }
-            if (FormType == "1.9") { Form19? frm = new Form19(); Storage.Rows19.Add(frm); }
+            if (FormType == "1.0") { Form10? frm = new Form10(); Storage.Rows10.Add(frm); Storage.LastAddedForm = Report.Forms.Form10; }
+            if (FormType == "1.1") { Form11? frm = new Form11(); Storage.Rows11.Add(frm); Storage.LastAddedForm = Report.Forms.Form11; }
+            if (FormType == "1.2") { Form12? frm = new Form12(); Storage.Rows12.Add(frm); Storage.LastAddedForm = Report.Forms.Form12; }
+            if (FormType == "1.3") { Form13? frm = new Form13(); Storage.Rows13.Add(frm); Storage.LastAddedForm = Report.Forms.Form13; }
+            if (FormType == "1.4") { Form14? frm = new Form14(); Storage.Rows14.Add(frm); Storage.LastAddedForm = Report.Forms.Form14; }
+            if (FormType == "1.5") { Form15? frm = new Form15(); Storage.Rows15.Add(frm); Storage.LastAddedForm = Report.Forms.Form15; }
+            if (FormType == "1.6") { Form16? frm = new Form16(); Storage.Rows16.Add(frm); Storage.LastAddedForm = Report.Forms.Form16; }
+            if (FormType == "1.7") { Form17? frm = new Form17(); Storage.Rows17.Add(frm); Storage.LastAddedForm = Report.Forms.Form17; }
+            if (FormType == "1.8") { Form18? frm = new Form18(); Storage.Rows18.Add(frm); Storage.LastAddedForm = Report.Forms.Form18; }
+            if (FormType == "1.9") { Form19? frm = new Form19(); Storage.Rows19.Add(frm); Storage.LastAddedForm = Report.Forms.Form19; }
 
-            if (FormType == "2.0") { Form20? frm = new Form20(); Storage.Rows20.Add(frm); }
-            if (FormType == "2.1") { Form21? frm = new Form21(); Storage.Rows21.Add(frm); }
-            if (FormType == "2.2") { Form22? frm = new Form22(); Storage.Rows22.Add(frm); }
-            if (FormType == "2.3") { Form23? frm = new Form23(); Storage.Rows23.Add(frm); }
-            if (FormType == "2.4") { Form24? frm = new Form24(); Storage.Rows24.Add(frm); }
-            if (FormType == "2.5") { Form25? frm = new Form25(); Storage.Rows25.Add(frm); }
-            if (FormType == "2.6") { Form26? frm = new Form26(); Storage.Rows26.Add(frm); }
-            if (FormType == "2.7") { Form27? frm = new Form27(); Storage.Rows27.Add(frm); }
-            if (FormType == "2.8") { Form28? frm = new Form28(); Storage.Rows28.Add(frm); }
-            if (FormType == "2.9") { Form29? frm = new Form29(); Storage.Rows29.Add(frm); }
-            if (FormType == "2.10") { Form210? frm = new Form210(); Storage.Rows210.Add(frm); }
-            if (FormType == "2.11") { Form211? frm = new Form211(); Storage.Rows211.Add(frm); }
-            if (FormType == "2.12") { Form212? frm = new Form212(); Storage.Rows212.Add(frm); }
+            if (FormType == "2.0") { Form20? frm = new Form20(); Storage.Rows20.Add(frm); Storage.LastAddedForm = Report.Forms.Form20; }
+            if (FormType == "2.1") { Form21? frm = new Form21(); Storage.Rows21.Add(frm); Storage.LastAddedForm = Report.Forms.Form11; }
+            if (FormType == "2.2") { Form22? frm = new Form22(); Storage.Rows22.Add(frm); Storage.LastAddedForm = Report.Forms.Form12; }
+            if (FormType == "2.3") { Form23? frm = new Form23(); Storage.Rows23.Add(frm); Storage.LastAddedForm = Report.Forms.Form13; }
+            if (FormType == "2.4") { Form24? frm = new Form24(); Storage.Rows24.Add(frm); Storage.LastAddedForm = Report.Forms.Form14; }
+            if (FormType == "2.5") { Form25? frm = new Form25(); Storage.Rows25.Add(frm); Storage.LastAddedForm = Report.Forms.Form15; }
+            if (FormType == "2.6") { Form26? frm = new Form26(); Storage.Rows26.Add(frm); Storage.LastAddedForm = Report.Forms.Form16; }
+            if (FormType == "2.7") { Form27? frm = new Form27(); Storage.Rows27.Add(frm); Storage.LastAddedForm = Report.Forms.Form17; }
+            if (FormType == "2.8") { Form28? frm = new Form28(); Storage.Rows28.Add(frm); Storage.LastAddedForm = Report.Forms.Form18; }
+            if (FormType == "2.9") { Form29? frm = new Form29(); Storage.Rows29.Add(frm); Storage.LastAddedForm = Report.Forms.Form19; }
+            if (FormType == "2.10") { Form210? frm = new Form210(); Storage.Rows210.Add(frm); Storage.LastAddedForm = Report.Forms.Form210; }
+            if (FormType == "2.11") { Form211? frm = new Form211(); Storage.Rows211.Add(frm); Storage.LastAddedForm = Report.Forms.Form211; }
+            if (FormType == "2.12") { Form212? frm = new Form212(); Storage.Rows212.Add(frm); Storage.LastAddedForm = Report.Forms.Form212; }
         }
 
         private void _AddNote(string Param)
