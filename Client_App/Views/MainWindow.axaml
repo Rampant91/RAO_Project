@@ -16,13 +16,8 @@
 		<Menu Height="20" DockPanel.Dock="Top">
       <MenuItem Header="_Приложение РАО">
       </MenuItem>
-			<MenuItem Header="_Файл">
-        <MenuItem Header="Открыть" Command="{Binding Load_Local}"/>
-				<MenuItem Header="Сохранить" Command="{Binding Save_Local}"/>
-        <MenuItem Header="Сохранить как..." Command="{Binding Save_ToFile}"/>
-			</MenuItem>
-      <MenuItem Header="_Экспорт">
-        <MenuItem Header="В excel" Command="{Binding Excel_Export}"/>
+            <MenuItem Header="_Импорт">
+        <MenuItem Header="Из RAODB" Command="{Binding ImportForm}"/>
       </MenuItem>
     </Menu>
     <Panel Margin="5,5,5,5" x:Name="MainPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

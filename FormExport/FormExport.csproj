@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="4.5.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Models\Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Forms\Form3\" />
+    <Folder Include="Forms\Form4\" />
+    <Folder Include="Forms\Form5\" />
+    <Folder Include="Forms\Form2\" />
+    <Folder Include="Forms\Form1\" />
+  </ItemGroup>
+
+</Project>
