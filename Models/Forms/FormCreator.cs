@@ -6,30 +6,30 @@
         {
             switch (Param)
             {
-                case "10": return new Form10();
-                case "11": return new Form11();
-                case "12": return new Form12();
-                case "13": return new Form13();
-                case "14": return new Form14();
-                case "15": return new Form15();
-                case "16": return new Form16();
-                case "17": return new Form17();
-                case "18": return new Form18();
-                case "19": return new Form19();
+                case "1.0": return new Form10("1");
+                case "1.1": return new Form11("1");
+                case "1.2": return new Form12("1");
+                case "1.3": return new Form13("1");
+                case "1.4": return new Form14();
+                case "1.5": return new Form15();
+                case "1.6": return new Form16();
+                case "1.7": return new Form17();
+                case "1.8": return new Form18();
+                case "1.9": return new Form19();
 
-                case "20": return new Form20();
-                case "21": return new Form21();
-                case "22": return new Form22();
-                case "23": return new Form23();
-                case "24": return new Form24();
-                case "25": return new Form25();
-                case "26": return new Form26();
-                case "27": return new Form27();
-                case "28": return new Form28();
-                case "29": return new Form29();
-                case "210": return new Form210();
-                case "211": return new Form211();
-                case "212": return new Form212();
+                case "2.0": return new Form20();
+                case "2.1": return new Form21();
+                case "2.2": return new Form22();
+                case "2.3": return new Form23();
+                case "2.4": return new Form24();
+                case "2.5": return new Form25();
+                case "2.6": return new Form26();
+                case "2.7": return new Form27();
+                case "2.8": return new Form28();
+                case "2.9": return new Form29();
+                case "2.10": return new Form210();
+                case "2.11": return new Form211();
+                case "2.12": return new Form212();
 
                 case "30": return new Form30();
                 case "31": return new Form31();

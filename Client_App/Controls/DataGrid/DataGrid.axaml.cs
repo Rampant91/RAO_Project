@@ -422,6 +422,7 @@ namespace Client_App.Controls.DataGrid
                 }
             }
 
+            Rows.Reorgonize(scp, Name);
 
             SetSelectedControls();
             SetSelectedItemsWithHandler();

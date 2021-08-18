@@ -26,16 +26,16 @@ namespace Collections
         protected DataAccessCollection DataAccess { get; set; }
         public int? MasterId { get; set; }
 
-        public virtual RamAccess<Report> Master
+        private Report _master=new Report();
+        public virtual Report Master
         {
             get
             {
-                var tmp = DataAccess.Get<Report>(nameof(Master));
-                return tmp;
+                return _master;
             }
             set
             {
-                DataAccess.Set(nameof(Master), value);
+                _master = value;
                 OnPropertyChanged(nameof(Master));
             }
         }
@@ -79,7 +79,6 @@ namespace Collections
         {
             DataAccess.Init(nameof(Report_Collection), Report_Collection_Validation,
                 new ObservableCollectionWithItemPropertyChanged<Report>());
-            DataAccess.Init(nameof(Master), Master_Validation, new Report());
             Report_Collection.CollectionChanged += CollectionChanged;
         }
 

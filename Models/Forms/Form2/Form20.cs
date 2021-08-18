@@ -11,7 +11,7 @@ namespace Models
     {
         public Form20() : base()
         {
-            //FormNum.Value = "20";
+            FormNum.Value = "2.0";
             //NumberOfFields.Value = 19;
             Init_base();
             Validate_base();

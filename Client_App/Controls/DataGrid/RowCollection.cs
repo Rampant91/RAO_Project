@@ -5,7 +5,10 @@ using System.ComponentModel;
 using Avalonia.Controls;
 using System.Collections.Concurrent;
 using System.Linq;
+using Avalonia.Data;
 using Models.Collections;
+using Avalonia;
+using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -122,6 +125,32 @@ namespace Client_App.Controls.DataGrid
             //SRows.Children.Add(cellCollection.SCells);
             //var t=SRows.Children.IndexOf(cellCollection.SCells);
             //SRows.Children.Move(t,Row-1);
+        }
+
+        public void Reorgonize(NameScope scp, string topName)
+        {
+            var count = 1;
+            foreach (Row item in SRows.Children)
+            {
+                if (item.SRow != count)
+                {
+                    this.Rows.Add(count.ToString(),Rows[item.SRow.ToString()]);
+                    this.Rows.Remove(item.SRow.ToString());
+                    item.SRow = count;
+
+                    Binding b = new Binding
+                    {
+                        Path = "Items[" + (count - 1).ToString() + "]",
+                        ElementName = topName,
+                        NameScope = new WeakReference<INameScope>(scp)
+                    };
+
+                    item.Bind(StackPanel.DataContextProperty, b);
+
+                    this[count].Reorgonize(item.SRow.ToString(),count.ToString());
+                }
+                count++;
+            }
         }
 
         public void Remove(int Row)

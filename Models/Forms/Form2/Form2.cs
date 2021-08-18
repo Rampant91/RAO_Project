@@ -9,6 +9,10 @@ namespace Models.Abstracts
 
         public Form2() : base()
         {
+
+        }
+        public Form2(string T) : base(T)
+        {
             Init_base();
             Validate_base();
         }

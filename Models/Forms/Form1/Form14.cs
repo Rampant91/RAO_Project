@@ -14,7 +14,7 @@ namespace Models
     {
         public Form14() : base()
         {
-            //FormNum.Value = "14";
+            FormNum.Value = "1.4";
             //NumberOfFields.Value = 35;
             Init();
             Validate_all();
@@ -48,7 +48,7 @@ namespace Models
             Radionuclids.PropertyChanged += InPropertyChanged;
             DataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
             PropertyCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Name), Name_Validation, null);
+            DataAccess.Init<string>(nameof(Name), Name_Validation, "");
             Name.PropertyChanged += InPropertyChanged;
             DataAccess.Init<byte?>(nameof(Sort), Sort_Validation, null);
             Sort.PropertyChanged += InPropertyChanged;

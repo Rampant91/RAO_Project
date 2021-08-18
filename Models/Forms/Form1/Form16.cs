@@ -13,8 +13,8 @@ namespace Models
     public class Form16 : Abstracts.Form1
     {
         public Form16() : base()
-        {
-            //FormNum.Value = "16";
+        { 
+            FormNum.Value = "1.6";
             //NumberOfFields.Value = 37;
             Init();
             Validate_all();

@@ -9,7 +9,13 @@ namespace Models.Abstracts
     public abstract class Form1 : Form
     {
         [Attributes.Form_Property("Форма")]
-        public Form1() : base()
+
+        public Form1():base()
+        {
+            Init_base();
+            Validate_base();
+        }
+        public Form1(string T) : base(T)
         {
             Init_base();
             Validate_base();
@@ -88,7 +94,6 @@ namespace Models.Abstracts
         //CorrectionNumber property
 
         //OperationCode property
-        public int? OperationCodeId { get; set; }
         [Attributes.Form_Property("Код")]
         public virtual RamAccess<short?> OperationCode
         {

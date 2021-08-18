@@ -14,8 +14,13 @@ namespace Models
     {
         public Form11() : base()
         {
-            ////FormNum.Value = "11";
-            ////NumberOfFields.Value = 42;
+            FormNum.Value = "1.1";
+            Init();
+            Validate_all();
+        }
+        public Form11(string T) : base(T)
+        {
+            FormNum.Value = "1.1";
             Init();
             Validate_all();
         }

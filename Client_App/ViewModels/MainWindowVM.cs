@@ -145,9 +145,9 @@ namespace Client_App.ViewModels
                 if (param.Split('.')[1] == "0")
                 {
                     var rt = new Reports();
-                    rt.Master.Value = new Report();
+                    rt.Master = new Report();
                     Local_Reports.Reports_Collection.Add(rt);
-                    FormChangeOrCreate frm = new(param, rt.Master.Value);
+                    FormChangeOrCreate frm = new(param, rt.Master);
                     await frm.ShowDialog<Form>(desktop.MainWindow);
                 }
             }
@@ -221,7 +221,7 @@ namespace Client_App.ViewModels
                             foreach (var item in db.ReportsCollectionDbSet)
                             {
                                 var tb = from t in Local_Reports.Reports_Collection
-                                    where t.Master.Value.Rows10[0].Okpo == item.Master.Value.Rows10[0].Okpo
+                                    where t.Master.Rows10[0].Okpo == item.Master.Rows10[0].Okpo
                                     select t;
                                 var r = tb.FirstOrDefault();
                                 if (r!=null)
@@ -266,7 +266,7 @@ namespace Client_App.ViewModels
                     {
                         var rep = (Reports)obj;
 
-                        FormChangeOrCreate frm = new FormChangeOrCreate(rep.Master.Value.FormNum.Value, rep.Master.Value);
+                        FormChangeOrCreate frm = new FormChangeOrCreate(rep.Master.FormNum.Value, rep.Master);
                         await frm.ShowDialog(desktop.MainWindow);
                     }
                 }

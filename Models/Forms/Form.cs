@@ -10,7 +10,14 @@ namespace Models.Abstracts
     {
         protected DataAccessCollection DataAccess { get; set; }
         protected DBRealization.DBModel dbm { get; set; }
+
         public Form()
+        {
+            dbm = DBRealization.StaticConfiguration.DBModel;
+            DataAccess = new DataAccessCollection();
+            Init();
+        }
+        public Form(string T)
         {
             dbm = DBRealization.StaticConfiguration.DBModel;
             DataAccess = new DataAccessCollection();
