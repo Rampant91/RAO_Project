@@ -87,7 +87,7 @@ namespace Models.Abstracts
                 OperationCode_DB = ((RamAccess<short?>)Value).Value;
             }
         }
-        protected bool OperationCode_Validation(RamAccess<short?> value)//Ready
+        protected virtual bool OperationCode_Validation(RamAccess<short?> value)//Ready
         {
             value.ClearErrors();
             return true;
@@ -209,14 +209,14 @@ namespace Models.Abstracts
         #endregion
 
         #region DocumentNumber
-        public int? DocumentNumber_DB { get; set; } = 0;
+        public string DocumentNumber_DB { get; set; } = "";
         [NotMapped]
         [Attributes.Form_Property("Номер документа")]
-        public RamAccess<int?> DocumentNumber
+        public RamAccess<string> DocumentNumber
         {
             get
             {
-                var tmp = new RamAccess<int?>(DocumentNumber_Validation, DocumentNumber_DB);
+                var tmp = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
                 tmp.PropertyChanged += DocumentNumberValueChanged;
                 return tmp;
             }
@@ -230,10 +230,10 @@ namespace Models.Abstracts
         {
             if (args.PropertyName == "Value")
             {
-                DocumentNumber_DB = ((RamAccess<int?>)Value).Value;
+                DocumentNumber_DB = ((RamAccess<string>)Value).Value;
             }
         }
-        protected bool DocumentNumber_Validation(RamAccess<int?> value)//Ready
+        protected virtual bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         { return true; }
         #endregion
 

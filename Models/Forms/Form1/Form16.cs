@@ -15,59 +15,7 @@ namespace Models
         public Form16() : base()
         { 
             FormNum.Value = "1.6";
-            //NumberOfFields.Value = 37;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
-            CodeRAO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
-            PackName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
-            PackNumberRecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
-            PackNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
-            PackTypeRecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
-            PackType.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
-            Volume.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
-            Mass.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
-            ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
-            TransporterOKPO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
-            TritiumActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
-            BetaGammaActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
-            AlphaActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
-            TransuraniumActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MainRadionuclids), MainRadionuclids_Validation, null);
-            MainRadionuclids.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ActivityMeasurementDate), ActivityMeasurementDate_Validation, null);
-            ActivityMeasurementDate.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
-            QuantityOZIII.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(RefineOrSortRAOCode), RefineOrSortRAOCode_Validation, null);
-            RefineOrSortRAOCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
-            StatusRAO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
-            Subsidy.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
-            FcpNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
-            StoragePlaceName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
-            StoragePlaceCode.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -802,38 +750,7 @@ namespace Models
         }
         //ProviderOrRecieverOKPO property
 
-        ////ProviderOrRecieverOKPONote property
-        //public virtual RamAccess<string> ProviderOrRecieverOKPONote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
-        //        }
-        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-        //    }
-        //}
-
-
-        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////ProviderOrRecieverOKPONote property
+        
 
         //TransporterOKPO property
         public int? TransporterOKPOId { get; set; }
@@ -892,39 +809,7 @@ namespace Models
         }
         //TransporterOKPO property
 
-        ////TransporterOKPONote property
-        //public virtual RamAccess<string> TransporterOKPONote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            DataAccess.Set(nameof(TransporterOKPONote), value);
-        //        }
-        //        OnPropertyChanged(nameof(TransporterOKPONote));
-        //    }
-        //}
-
-
-        //private bool TransporterOKPONote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////TransporterOKPONote property
-
+        
         //PackName property
         public int? PackNameId { get; set; }
         [Attributes.Form_Property("Наименование упаковки")]
@@ -973,38 +858,7 @@ namespace Models
         }
         //PackName property
 
-        ////PackNameNote property
-        //public virtual RamAccess<string> PackNameNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            return DataAccess.Get<string>(nameof(PackNameNote));//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            DataAccess.Set(nameof(PackNameNote), value);
-        //        }
-        //        OnPropertyChanged(nameof(PackNameNote));
-        //    }
-        //}
-
-
-        //private bool PackNameNote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////PackNameNote property
+        
 
         //PackType property
         public int? PackTypeId { get; set; }
@@ -1054,71 +908,7 @@ namespace Models
         }
         //PackType property
 
-        //PackTypeRecoded property
-        public virtual RamAccess<string> PackTypeRecoded
-        {
-            get
-            {
-
-                {
-                    return DataAccess.Get<string>(nameof(PackTypeRecoded));//OK
-
-                }
-
-                {
-
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PackTypeRecoded), value);
-                }
-                OnPropertyChanged(nameof(PackTypeRecoded));
-            }
-        }
-
-
-        private bool PackTypeRecoded_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //PackTypeRecoded property
-
-        ////PackTypeNote property
-        //public virtual RamAccess<string> PackTypeNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            return DataAccess.Get<string>(nameof(PackTypeNote));//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            DataAccess.Set(nameof(PackTypeNote), value);
-        //        }
-        //        OnPropertyChanged(nameof(PackTypeNote));
-        //    }
-        //}
-
-
-        //private bool PackTypeNote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////PackTypeNote property
+        
 
         //PackNumber property
         public int? PackNumberId { get; set; }
@@ -1167,45 +957,7 @@ namespace Models
         }
         //PackNumber property
 
-        ////PackNumberNote property
-        //public virtual RamAccess<string> PackNumberNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            return DataAccess.Get<string>(nameof(PackNumberNote));//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-
-        //        {
-        //            DataAccess.Set(nameof(PackNumberNote), value);
-        //        }
-        //        OnPropertyChanged(nameof(PackNumberNote));
-        //    }
-        //}
-
-
-        //private bool PackNumberNote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors();
-        //    if ((value.Value == null) || value.Value.Equals(""))
-        //    {
-        //        value.AddError("Поле не заполнено");
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        ////PackNumberNote property
+        
 
         //StoragePlaceName property
         public int? StoragePlaceNameId { get; set; }
@@ -1296,38 +1048,7 @@ namespace Models
         }
         //StoragePlaceCode property
 
-        //PackNumberRecoded property
-        //public int? PackNumberRecodedId { get; set; }
-        public virtual RamAccess<string> PackNumberRecoded
-        {
-            get
-            {
-
-                {
-                    return DataAccess.Get<string>(nameof(PackNumberRecoded));
-                }
-
-                {
-
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PackNumberRecoded), value);
-                }
-                OnPropertyChanged(nameof(PackNumberRecoded));
-            }
-        }
-        //If change this change validation
-
-        private bool PackNumberRecoded_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors(); return true;
-        }
-        //PackNumberRecoded property
+        
 
         //Subsidy property
         public int? SubsidyId { get; set; }

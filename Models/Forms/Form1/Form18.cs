@@ -20,58 +20,6 @@ namespace Models
             Validate_all();
         }
 
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
-            CodeRAO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(SpecificActivity), SpecificActivity_Validation, null);
-            SpecificActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<double?>(nameof(SaltConcentration), SaltConcentration_Validation, null);
-            SaltConcentration.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
-            ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
-            TransporterOKPO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TritiumActivity), TritiumActivity_Validation, null);
-            TritiumActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
-            BetaGammaActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
-            AlphaActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TransuraniumActivity), TransuraniumActivity_Validation, null);
-            TransuraniumActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(IndividualNumberZHRO), IndividualNumberZHRO_Validation, null);
-            IndividualNumberZHRO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
-            Radionuclids.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
-            PassportNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(RefineOrSortRAOCode), RefineOrSortRAOCode_Validation, null);
-            RefineOrSortRAOCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StatusRAO), StatusRAO_Validation, null);
-            StatusRAO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Subsidy), Subsidy_Validation, null);
-            Subsidy.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(IndividualNumberZHROrecoded), IndividualNumberZHROrecoded_Validation, null);
-            IndividualNumberZHROrecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
-            FcpNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Volume6), Volume6_Validation, null);
-            Volume6.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Mass7), Mass7_Validation, null);
-            Mass7.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Volume20), Volume6_Validation, null);
-            Volume20.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Mass21), Mass7_Validation, null);
-            Mass21.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
-            StoragePlaceName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
-            StoragePlaceCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
-            PassportNumberRecoded.PropertyChanged += InPropertyChanged;
-        }
-
         private void Validate_all()
         {
             CodeRAO_Validation(CodeRAO);
@@ -100,7 +48,6 @@ namespace Models
             PassportNumberRecoded_Validation(PassportNumberRecoded);
         }
 
-        [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
             return false;
@@ -140,37 +87,7 @@ namespace Models
         }
         //IndividualNumberZHRO property
 
-        //IndividualNumberZHROrecoded property
-        public virtual RamAccess<string> IndividualNumberZHROrecoded
-        {
-            get
-            {
-
-                {
-                    return DataAccess.Get<string>(nameof(IndividualNumberZHROrecoded));
-                }
-
-                {
-
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(IndividualNumberZHROrecoded), value);
-                }
-                OnPropertyChanged(nameof(IndividualNumberZHROrecoded));
-            }
-        }
-
-
-        private bool IndividualNumberZHROrecoded_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors(); return true;
-        }
-        //IndividualNumberZHROrecoded property
+        
 
         //PassportNumber property
         public int? PassportNumberId { get; set; }
@@ -221,72 +138,7 @@ namespace Models
         }
         //PassportNumber property
 
-        ////PassportNumberNote property
-        //public virtual RamAccess<string> PassportNumberNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            return DataAccess.Get<string>(nameof(PassportNumberNote));//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            DataAccess.Set(nameof(PassportNumberNote), value);
-        //        }
-        //        OnPropertyChanged(nameof(PassportNumberNote));
-        //    }
-        //}
-
-
-        //private bool PassportNumberNote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////PassportNumberNote property
-
-        //PassportNumberRecoded property
-        public int? PassportNumberRecodedId { get; set; }
-        public virtual RamAccess<string> PassportNumberRecoded
-        {
-            get
-            {
-
-                {
-                    return DataAccess.Get<string>(nameof(PassportNumberRecoded));//OK
-
-                }
-
-                {
-
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(PassportNumberRecoded), value);
-                }
-                OnPropertyChanged(nameof(PassportNumberRecoded));
-            }
-        }
-        //If change this change validation
-
-        private bool PassportNumberRecoded_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors(); return true;
-        }
-        //PassportNumberRecoded property
+        
 
         //Volume6 property
         public int? Volume6Id { get; set; }
@@ -567,38 +419,7 @@ namespace Models
         }
         //ProviderOrRecieverOKPO property
 
-        ////ProviderOrRecieverOKPONote property
-        //public virtual RamAccess<string> ProviderOrRecieverOKPONote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
-        //        }
-        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-        //    }
-        //}
-
-
-        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////ProviderOrRecieverOKPONote property
+        
 
         //TransporterOKPO property
         public int? TransporterOKPOId { get; set; }
@@ -656,38 +477,7 @@ namespace Models
         }
         //TransporterOKPO property
 
-        ////TransporterOKPONote property
-        //public virtual RamAccess<string> TransporterOKPONote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            return DataAccess.Get<string>(nameof(TransporterOKPONote));//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            DataAccess.Set(nameof(TransporterOKPONote), value);
-        //        }
-        //        OnPropertyChanged(nameof(TransporterOKPONote));
-        //    }
-        //}
-
-
-        //private bool TransporterOKPONote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////TransporterOKPONote property
+        
 
         //StoragePlaceName property
         public int? StoragePlaceNameId { get; set; }
@@ -730,37 +520,7 @@ namespace Models
         }
         //StoragePlaceName property
 
-        ////StoragePlaceNameNote property
-        //public virtual RamAccess<string> StoragePlaceNameNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            DataAccess.Set(nameof(StoragePlaceNameNote), value);
-        //        }
-        //        OnPropertyChanged(nameof(StoragePlaceNameNote));
-        //    }
-        //}
-        ////If change this change validation
-
-        //private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////StoragePlaceNameNote property
+       
 
         //StoragePlaceCode property
         public int? StoragePlaceCodeId { get; set; }

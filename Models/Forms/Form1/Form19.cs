@@ -15,22 +15,7 @@ namespace Models
         public Form19() : base()
         {
             FormNum.Value = "1.9";
-            //NumberOfFields.Value = 13;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
-            Quantity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
-            Activity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<short?>(nameof(CodeTypeAccObject), CodeTypeAccObject_Validation, null);
-            CodeTypeAccObject.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
-            Radionuclids.PropertyChanged += InPropertyChanged;
-            OperationCode.Value = 10;
         }
 
         private void Validate_all()
