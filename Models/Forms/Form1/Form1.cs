@@ -259,7 +259,7 @@ namespace Models.Abstracts
         {
             if (args.PropertyName == "Value")
             {
-                DocumentDate_DB = ((RamAccess<string?>)Value).Value;
+                DocumentDate_DB = ((RamAccess<string>)Value).Value;
             }
         }
         protected bool DocumentDate_Validation(RamAccess<string> value)//Ready

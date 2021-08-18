@@ -12,7 +12,7 @@ namespace Models
     {
         public Form10() : base()
         {
-            FormNum = "10";
+            FormNum.Value = "1.0";
             Validate_base();
         }
         protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -52,11 +52,23 @@ namespace Models
         [Attributes.Form_Property("Рег. №")]
         public RamAccess<string> RegNo
         {
-            get => new RamAccess<string>(RegNo_Validation, RegNo_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(RegNo_Validation, RegNo_DB);
+                tmp.PropertyChanged += RegNoValueChanged;
+                return tmp;
+            }
             set
             {
                 RegNo_DB = value.Value;
                 OnPropertyChanged(nameof(RegNo));
+            }
+        }
+        private void RegNoValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                RegNo_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool RegNo_Validation(RamAccess<string> value)//Ready
@@ -72,11 +84,23 @@ namespace Models
         [Attributes.Form_Property("Орган управления")]
         public RamAccess<string> OrganUprav
         {
-            get => new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
+                tmp.PropertyChanged += OrganUpravValueChanged;
+                return tmp;
+            }
             set
             {
                 OrganUprav_DB = value.Value;
                 OnPropertyChanged(nameof(OrganUprav));
+            }
+        }
+        private void OrganUpravValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                OrganUprav_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool OrganUprav_Validation(RamAccess<string> value)//Ready
@@ -92,11 +116,23 @@ namespace Models
         [Attributes.Form_Property("Субъект РФ")]
         public RamAccess<string> SubjectRF
         {
-            get => new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
+                tmp.PropertyChanged += SubjectRFValueChanged;
+                return tmp;
+            }
             set
             {
                 SubjectRF_DB = value.Value;
                 OnPropertyChanged(nameof(SubjectRF));
+            }
+        }
+        private void SubjectRFValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                SubjectRF_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool SubjectRF_Validation(RamAccess<string> value)//Ready
@@ -112,11 +148,23 @@ namespace Models
         [Attributes.Form_Property("Юр. лицо")]
         public RamAccess<string> JurLico
         {
-            get => new RamAccess<string>(JurLico_Validation, JurLico_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(JurLico_Validation, JurLico_DB);
+                tmp.PropertyChanged += JurLicoValueChanged;
+                return tmp;
+            }
             set
             {
                 JurLico_DB = value.Value;
                 OnPropertyChanged(nameof(JurLico));
+            }
+        }
+        private void JurLicoValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                JurLico_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool JurLico_Validation(RamAccess<string> value)//Ready
@@ -127,16 +175,28 @@ namespace Models
         #endregion
 
         #region ShortJurLico
-        public string ShortJurLico_DB { get; set; } = 0;
+        public string ShortJurLico_DB { get; set; } = "";
         [NotMapped]
         [Attributes.Form_Property("Краткое наименование юр. лица")]
         public RamAccess<string> ShortJurLico
         {
-            get => new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
+                tmp.PropertyChanged += ShortJurLicoValueChanged;
+                return tmp;
+            }
             set
             {
                 ShortJurLico_DB = value.Value;
                 OnPropertyChanged(nameof(ShortJurLico));
+            }
+        }
+        private void ShortJurLicoValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ShortJurLico_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ShortJurLico_Validation(RamAccess<string> value)//Ready
@@ -152,11 +212,23 @@ namespace Models
         [Attributes.Form_Property("Адрес юр. лица")]
         public RamAccess<string> JurLicoAddress
         {
-            get => new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
+                tmp.PropertyChanged += JurLicoAddressValueChanged;
+                return tmp;
+            }
             set
             {
                 JurLicoAddress_DB = value.Value;
                 OnPropertyChanged(nameof(JurLicoAddress));
+            }
+        }
+        private void JurLicoAddressValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                JurLicoAddress_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool JurLicoAddress_Validation(RamAccess<string> value)//Ready
@@ -172,11 +244,23 @@ namespace Models
         [Attributes.Form_Property("Фактический адрес юр. лица")]
         public RamAccess<string> JurLicoFactAddress
         {
-            get => new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
+                tmp.PropertyChanged += JurLicoFactAddressValueChanged;
+                return tmp;
+            }
             set
             {
                 JurLicoFactAddress_DB = value.Value;
                 OnPropertyChanged(nameof(JurLicoFactAddress));
+            }
+        }
+        private void JurLicoFactAddressValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                JurLicoFactAddress_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool JurLicoFactAddress_Validation(RamAccess<string> value)//Ready
@@ -192,11 +276,23 @@ namespace Models
         [Attributes.Form_Property("ФИО, должность")]
         public RamAccess<string> GradeFIO
         {
-            get => new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
+                tmp.PropertyChanged += GradeFIOValueChanged;
+                return tmp;
+            }
             set
             {
                 GradeFIO_DB = value.Value;
                 OnPropertyChanged(nameof(GradeFIO));
+            }
+        }
+        private void GradeFIOValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                GradeFIO_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool GradeFIO_Validation(RamAccess<string> value)//Ready
@@ -212,11 +308,23 @@ namespace Models
         [Attributes.Form_Property("Телефон")]
         public RamAccess<string> Telephone
         {
-            get => new RamAccess<string>(Telephone_Validation, Telephone_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Telephone_Validation, Telephone_DB);
+                tmp.PropertyChanged += TelephoneValueChanged;
+                return tmp;
+            }
             set
             {
                 Telephone_DB = value.Value;
                 OnPropertyChanged(nameof(Telephone));
+            }
+        }
+        private void TelephoneValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Telephone_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Telephone_Validation(RamAccess<string> value)//Ready
@@ -232,11 +340,23 @@ namespace Models
         [Attributes.Form_Property("Факс")]
         public RamAccess<string> Fax
         {
-            get => new RamAccess<string>(Fax_Validation, Fax_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Fax_Validation, Fax_DB);
+                tmp.PropertyChanged += FaxValueChanged;
+                return tmp;
+            }
             set
             {
                 Fax_DB = value.Value;
                 OnPropertyChanged(nameof(Fax));
+            }
+        }
+        private void FaxValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Fax_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Fax_Validation(RamAccess<string> value)//Ready
@@ -252,11 +372,23 @@ namespace Models
         [Attributes.Form_Property("Эл. почта")]
         public RamAccess<string> Email
         {
-            get => new RamAccess<string>(Email_Validation, Email_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Email_Validation, Email_DB);
+                tmp.PropertyChanged += EmailValueChanged;
+                return tmp;
+            }
             set
             {
                 Email_DB = value.Value;
                 OnPropertyChanged(nameof(Email));
+            }
+        }
+        private void EmailValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Email_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Email_Validation(RamAccess<string> value)//Ready
@@ -272,11 +404,23 @@ namespace Models
         [Attributes.Form_Property("ОКПО")]
         public RamAccess<string> Okpo
         {
-            get => new RamAccess<string>(Okpo_Validation, Okpo_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Okpo_Validation, Okpo_DB);
+                tmp.PropertyChanged += OkpoValueChanged;
+                return tmp;
+            }
             set
             {
                 Okpo_DB = value.Value;
                 OnPropertyChanged(nameof(Okpo));
+            }
+        }
+        private void OkpoValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Okpo_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Okpo_Validation(RamAccess<string> value)//Ready
@@ -308,11 +452,23 @@ namespace Models
         [Attributes.Form_Property("ОКВЭД")]
         public RamAccess<string> Okved
         {
-            get => new RamAccess<string>(Okved_Validation, Okved_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Okved_Validation, Okved_DB);
+                tmp.PropertyChanged += OkvedValueChanged;
+                return tmp;
+            }
             set
             {
                 Okved_DB = value.Value;
                 OnPropertyChanged(nameof(Okved));
+            }
+        }
+        private void OkvedValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Okved_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Okved_Validation(RamAccess<string> value)//Ready
@@ -338,11 +494,23 @@ namespace Models
         [Attributes.Form_Property("ОКОГУ")]
         public RamAccess<string> Okogu
         {
-            get => new RamAccess<string>(Okogu_Validation, Okogu_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Okogu_Validation, Okogu_DB);
+                tmp.PropertyChanged += OkoguValueChanged;
+                return tmp;
+            }
             set
             {
                 Okogu_DB = value.Value;
                 OnPropertyChanged(nameof(Okogu));
+            }
+        }
+        private void OkoguValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Okogu_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Okogu_Validation(RamAccess<string> value)//Ready
@@ -368,11 +536,23 @@ namespace Models
         [Attributes.Form_Property("ОКТМО")]
         public RamAccess<string> Oktmo
         {
-            get => new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
+                tmp.PropertyChanged += OktmoValueChanged;
+                return tmp;
+            }
             set
             {
                 Oktmo_DB = value.Value;
                 OnPropertyChanged(nameof(Oktmo));
+            }
+        }
+        private void OktmoValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Oktmo_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Oktmo_Validation(RamAccess<string> value)//Ready
@@ -398,11 +578,23 @@ namespace Models
         [Attributes.Form_Property("ИНН")]
         public RamAccess<string> Inn
         {
-            get => new RamAccess<string>(Inn_Validation, Inn_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Inn_Validation, Inn_DB);
+                tmp.PropertyChanged += InnValueChanged;
+                return tmp;
+            }
             set
             {
                 Inn_DB = value.Value;
                 OnPropertyChanged(nameof(Inn));
+            }
+        }
+        private void InnValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Inn_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Inn_Validation(RamAccess<string> value)//Ready
@@ -428,11 +620,23 @@ namespace Models
         [Attributes.Form_Property("КПП")]
         public RamAccess<string> Kpp
         {
-            get => new RamAccess<string>(Kpp_Validation, Kpp_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Kpp_Validation, Kpp_DB);
+                tmp.PropertyChanged += KppValueChanged;
+                return tmp;
+            }
             set
             {
                 Kpp_DB = value.Value;
                 OnPropertyChanged(nameof(Kpp));
+            }
+        }
+        private void KppValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Kpp_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Kpp_Validation(RamAccess<string> value)//Ready
@@ -458,11 +662,23 @@ namespace Models
         [Attributes.Form_Property("ОКОПФ")]
         public RamAccess<string> Okopf
         {
-            get => new RamAccess<string>(Okopf_Validation, Okopf_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Okopf_Validation, Okopf_DB);
+                tmp.PropertyChanged += OkopfValueChanged;
+                return tmp;
+            }
             set
             {
                 Okopf_DB = value.Value;
                 OnPropertyChanged(nameof(Okopf));
+            }
+        }
+        private void OkopfValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Okopf_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Okopf_Validation(RamAccess<string> value)//Ready
@@ -488,11 +704,23 @@ namespace Models
         [Attributes.Form_Property("ОКФС")]
         public RamAccess<string> Okfs
         {
-            get => new RamAccess<string>(Okfs_Validation, Okfs_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(Okfs_Validation, Okfs_DB);
+                tmp.PropertyChanged += OkfsValueChanged;
+                return tmp;
+            }
             set
             {
                 Okfs_DB = value.Value;
                 OnPropertyChanged(nameof(Okfs));
+            }
+        }
+        private void OkfsValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Okfs_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Okfs_Validation(RamAccess<string> value)//Ready
