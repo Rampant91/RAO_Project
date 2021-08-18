@@ -25,7 +25,63 @@ namespace DBRealization
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Form11>().Property(x => x.OperationCode);
+            modelBuilder.Entity<Collections.DBObservable>()
+    .ToTable("DBObservable_DbSet");
+
+            modelBuilder.Entity<Collections.Reports>()
+                .ToTable("ReportsCollection_DbSet");
+            modelBuilder.Entity<Collections.Report>()
+                .ToTable("ReportCollection_DbSet");
+            modelBuilder.Entity<Models.Note>()
+                .ToTable("notes");
+
+            modelBuilder.Entity<Models.Form10>()
+                .ToTable("form_10");
+            modelBuilder.Entity<Models.Form11>()
+                .ToTable("form_11");
+            modelBuilder.Entity<Models.Form12>()
+                .ToTable("form_12");
+            modelBuilder.Entity<Models.Form13>()
+                .ToTable("form_13");
+            modelBuilder.Entity<Models.Form14>()
+                .ToTable("form_14");
+            modelBuilder.Entity<Models.Form15>()
+                .ToTable("form_15");
+            modelBuilder.Entity<Models.Form16>()
+                .ToTable("form_16");
+            modelBuilder.Entity<Models.Form17>()
+                .ToTable("form_17");
+            modelBuilder.Entity<Models.Form18>()
+                .ToTable("form_18");
+            modelBuilder.Entity<Models.Form19>()
+                .ToTable("form_19");
+
+            modelBuilder.Entity<Models.Form20>()
+                .ToTable("form_20");
+            modelBuilder.Entity<Models.Form21>()
+                .ToTable("form_21");
+            modelBuilder.Entity<Models.Form22>()
+                .ToTable("form_22");
+            modelBuilder.Entity<Models.Form23>()
+                .ToTable("form_23");
+            modelBuilder.Entity<Models.Form24>()
+                .ToTable("form_24");
+            modelBuilder.Entity<Models.Form25>()
+                .ToTable("form_25");
+            modelBuilder.Entity<Models.Form26>()
+                .ToTable("form_26");
+            modelBuilder.Entity<Models.Form27>()
+                .ToTable("form_27");
+            modelBuilder.Entity<Models.Form28>()
+                .ToTable("form_28");
+            modelBuilder.Entity<Models.Form29>()
+                .ToTable("form_29");
+            modelBuilder.Entity<Models.Form210>()
+                .ToTable("form_210");
+            modelBuilder.Entity<Models.Form211>()
+                .ToTable("form_211");
+            modelBuilder.Entity<Models.Form212>()
+                .ToTable("form_212");
         }
 
         public void LoadTables()
@@ -35,27 +91,27 @@ namespace DBRealization
             form_10.Load();
             form_11.Load();
             form_12.Load();
-            //form_13.Load();
-            //form_14.Load();
-            //form_15.Load();
-            //form_16.Load();
-            //form_17.Load();
-            //form_18.Load();
-            //form_19.Load();
+            form_13.Load();
+            form_14.Load();
+            form_15.Load();
+            form_16.Load();
+            form_17.Load();
+            form_18.Load();
+            form_19.Load();
 
-            //form_20.Load();
-            //form_21.Load();
-            //form_22.Load();
-            //form_23.Load();
-            //form_24.Load();
-            //form_25.Load();
-            //form_26.Load();
-            //form_27.Load();
-            //form_28.Load();
-            //form_29.Load();
-            //form_210.Load();
-            //form_211.Load();
-            //form_212.Load();
+            form_20.Load();
+            form_21.Load();
+            form_22.Load();
+            form_23.Load();
+            form_24.Load();
+            form_25.Load();
+            form_26.Load();
+            form_27.Load();
+            form_28.Load();
+            form_29.Load();
+            form_210.Load();
+            form_211.Load();
+            form_212.Load();
 
             ReportCollectionDbSet.Load();
             ReportsCollectionDbSet.Load();
@@ -114,25 +170,5 @@ namespace DBRealization
         public DbSet<Models.Form210> form_210 { get; set; }
         public DbSet<Models.Form211> form_211 { get; set; }
         public DbSet<Models.Form212> form_212 { get; set; }
-
-        public DbSet<Models.Form30> form_30 { get; set; }
-        public DbSet<Models.Form31> form_31 { get; set; }
-        public DbSet<Models.Form31_1> form_31_1 { get; set; }
-        public DbSet<Models.Form32> form_32 { get; set; }
-        public DbSet<Models.Form32_1> form_32_1 { get; set; }
-        public DbSet<Models.Form32_2> form_32_2 { get; set; }
-        public DbSet<Models.Form32_3> form_32_3 { get; set; }
-
-        public DbSet<Models.Form40> form_40 { get; set; }
-        public DbSet<Models.Form41> form_41 { get; set; }
-
-        public DbSet<Models.Form50> form_50 { get; set; }
-        public DbSet<Models.Form51> form_51 { get; set; }
-        public DbSet<Models.Form52> form_52 { get; set; }
-        public DbSet<Models.Form53> form_53 { get; set; }
-        public DbSet<Models.Form54> form_54 { get; set; }
-        public DbSet<Models.Form55> form_55 { get; set; }
-        public DbSet<Models.Form56> form_56 { get; set; }
-        public DbSet<Models.Form57> form_57 { get; set; }
     }
 }

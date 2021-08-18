@@ -119,7 +119,7 @@ namespace Models.Abstracts
                 OperationDate_DB = ((RamAccess<string>)Value).Value;
             }
         }
-        protected bool OperationDate_Validation(RamAccess<string> value)//Ready
+        protected virtual bool OperationDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -168,7 +168,7 @@ namespace Models.Abstracts
                 DocumentVid_DB = ((RamAccess<byte?>)Value).Value;
             }
         }
-        protected bool DocumentVid_Validation(RamAccess<byte?> value)//Ready
+        protected virtual bool DocumentVid_Validation(RamAccess<byte?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -262,7 +262,7 @@ namespace Models.Abstracts
                 DocumentDate_DB = ((RamAccess<string>)Value).Value;
             }
         }
-        protected bool DocumentDate_Validation(RamAccess<string> value)//Ready
+        protected virtual bool DocumentDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))

@@ -23,10 +23,6 @@ namespace DBRealization
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Models.DataAccess.RamAccess<Collections.Report>>()
-                .ToTable("access_report");
-            modelBuilder.Entity<Models.DataAccess.RamAccess<Collections.Reports>>()
-                .ToTable("access_reports");
 
             modelBuilder.Entity<Collections.DBObservable>()
                 .ToTable("DBObservable_DbSet");
@@ -85,43 +81,6 @@ namespace DBRealization
                 .ToTable("form_211");
             modelBuilder.Entity<Models.Form212>()
                 .ToTable("form_212");
-
-            modelBuilder.Entity<Models.Form30>()
-                .ToTable("form_30");
-            modelBuilder.Entity<Models.Form31>()
-                .ToTable("form_31");
-            modelBuilder.Entity<Models.Form31_1>()
-                .ToTable("form_31_1");
-            modelBuilder.Entity<Models.Form32>()
-                .ToTable("form_32");
-            modelBuilder.Entity<Models.Form32_1>()
-                .ToTable("form_32_1");
-            modelBuilder.Entity<Models.Form32_2>()
-                .ToTable("form_32_2");
-            modelBuilder.Entity<Models.Form32_3>()
-                .ToTable("form_32_3");
-
-            modelBuilder.Entity<Models.Form40>()
-                .ToTable("form_40");
-            modelBuilder.Entity<Models.Form41>()
-                .ToTable("form_41");
-
-            modelBuilder.Entity<Models.Form50>()
-                .ToTable("form_50");
-            modelBuilder.Entity<Models.Form51>()
-                .ToTable("form_51");
-            modelBuilder.Entity<Models.Form52>()
-                .ToTable("form_52");
-            modelBuilder.Entity<Models.Form53>()
-                .ToTable("form_53");
-            modelBuilder.Entity<Models.Form54>()
-                .ToTable("form_54");
-            modelBuilder.Entity<Models.Form55>()
-                .ToTable("form_55");
-            modelBuilder.Entity<Models.Form56>()
-                .ToTable("form_56");
-            modelBuilder.Entity<Models.Form57>()
-                .ToTable("form_57");
         }
 
         public void LoadTables()
@@ -209,25 +168,5 @@ namespace DBRealization
         public DbSet<Models.Form210> form_210 { get; set; }
         public DbSet<Models.Form211> form_211 { get; set; }
         public DbSet<Models.Form212> form_212 { get; set; }
-
-        public DbSet<Models.Form30> form_30 { get; set; }
-        public DbSet<Models.Form31> form_31 { get; set; }
-        public DbSet<Models.Form31_1> form_31_1 { get; set; }
-        public DbSet<Models.Form32> form_32 { get; set; }
-        public DbSet<Models.Form32_1> form_32_1 { get; set; }
-        public DbSet<Models.Form32_2> form_32_2 { get; set; }
-        public DbSet<Models.Form32_3> form_32_3 { get; set; }
-
-        public DbSet<Models.Form40> form_40 { get; set; }
-        public DbSet<Models.Form41> form_41 { get; set; }
-
-        public DbSet<Models.Form50> form_50 { get; set; }
-        public DbSet<Models.Form51> form_51 { get; set; }
-        public DbSet<Models.Form52> form_52 { get; set; }
-        public DbSet<Models.Form53> form_53 { get; set; }
-        public DbSet<Models.Form54> form_54 { get; set; }
-        public DbSet<Models.Form55> form_55 { get; set; }
-        public DbSet<Models.Form56> form_56 { get; set; }
-        public DbSet<Models.Form57> form_57 { get; set; }
     }
 }
