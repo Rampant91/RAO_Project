@@ -8,80 +8,24 @@ namespace Models.Abstracts
 {
     public abstract class Form : INotifyPropertyChanged, IKey
     {
-        protected DataAccessCollection DataAccess { get; set; }
-        protected DBRealization.DBModel dbm { get; set; }
 
         public Form()
         {
-            dbm = DBRealization.StaticConfiguration.DBModel;
-            DataAccess = new DataAccessCollection();
-            Init();
-        }
-        public Form(string T)
-        {
-            dbm = DBRealization.StaticConfiguration.DBModel;
-            DataAccess = new DataAccessCollection();
-            Init();
-        }
 
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(FormNum), FormNum_Validation, "");
-            DataAccess.Init<int>(nameof(NumberOfFields), NumberOfFields_Validation, 0);
-        }
-
-        public bool Equals(object obj)
-        {
-            if (obj is Form)
-            {
-                Form obj1 = this;
-                Form obj2 = obj as Form;
-
-                return obj1.DataAccess == obj2.DataAccess;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static bool operator ==(Form obj1, Form obj2)
-        {
-            if (obj1 as object != null)
-            {
-                return obj1.Equals(obj2);
-            }
-            else
-            {
-                return obj2 as object == null ? true : false;
-            }
-        }
-        public static bool operator !=(Form obj1, Form obj2)
-        {
-            if (obj1 as object != null)
-            {
-                return !obj1.Equals(obj2);
-            }
-            else
-            {
-                return obj2 as object != null ? true : false;
-            }
         }
 
         public int Id { get; set; }
 
-        //FormNum property
-        public int? FormNumId { get; set; }
+        #region FormNum
+        public string FormNum_DB { get; set; } = "";
+        [NotMapped]
         [Attributes.Form_Property("Форма")]
-        public virtual RamAccess<string> FormNum
+        public RamAccess<string> FormNum
         {
-            get
-            {
-                return DataAccess.Get<string>(nameof(FormNum));
-            }
+            get => new RamAccess<string>(FormNum_Validation,FormNum_DB);
             set
             {
-                DataAccess.Set(nameof(FormNum), value);
+                FormNum_DB = value.Value;
                 OnPropertyChanged(nameof(FormNum));
             }
         }
@@ -90,16 +34,18 @@ namespace Models.Abstracts
             value.ClearErrors();
             return true;
         }
-        //FormNum property
+        #endregion
 
-        public int? NumberOfFieldsId { get; set; }
-        //NumberOfFields property
-        public virtual RamAccess<int> NumberOfFields
+        #region NumberOfFields
+        public int NumberOfFields_DB { get; set; } = 0;
+        [NotMapped]
+        [Attributes.Form_Property("Число полей")]
+        public RamAccess<int> NumberOfFields
         {
-            get => DataAccess.Get<int>(nameof(NumberOfFields));
+            get => new RamAccess<int>(NumberOfFields_Validation, NumberOfFields_DB);
             set
             {
-                DataAccess.Set(nameof(NumberOfFields), value);
+                NumberOfFields_DB = value.Value;
                 OnPropertyChanged(nameof(NumberOfFields));
             }
         }
@@ -109,37 +55,18 @@ namespace Models.Abstracts
             return true;
 
         }
-        //NumberOfFields property
+        #endregion
 
         //Для валидации
         public abstract bool Object_Validation();
         //Для валидации
 
-        [NotMapped]
-        private bool _isChanged = true;
-        public bool IsChanged
-        {
-            get => _isChanged;
-            set
-            {
-                if (_isChanged != value)
-                {
-                    _isChanged = value;
-                    OnPropertyChanged(nameof(IsChanged));
-                }
-            }
-        }
-
         //Property Changed
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (prop != nameof(IsChanged))
+            if (PropertyChanged != null)
             {
-                IsChanged = true;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
-                }
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

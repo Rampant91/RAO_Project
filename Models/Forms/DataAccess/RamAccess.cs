@@ -10,11 +10,11 @@ using Models.Abstracts;
 
 namespace Models.DataAccess
 {
+
     public class RamAccess<T> : INotifyDataErrorInfo, INotifyPropertyChanged, IKey
     {
         [NotMapped]
         public Func<RamAccess<T>, bool> Handler { get; set; }
-
         public int Id { get; set; }
 
         public int? ValueId { get; set; }
@@ -32,21 +32,12 @@ namespace Models.DataAccess
                 }
             }
         }
-
-        [NotMapped]
-        public T ValueWithOutHandler
-        {
-            get => _value;
-            set
-            {
-                _value = value;
-            }
-        }
         public RamAccess(Func<RamAccess<T>, bool> Handler, T Value)
         {
             this.Handler = Handler;
             this._value = Value;
         }
+
         public RamAccess()
         {
 
@@ -61,6 +52,7 @@ namespace Models.DataAccess
             AddError("Value", error);
         }
 
+        #region Equals
         public override bool Equals(object obj)
         {
             if (obj is RamAccess<T>)
@@ -97,9 +89,9 @@ namespace Models.DataAccess
                 return obj2 as object != null ? true : false;
             }
         }
+        #endregion
 
-
-        //Data Validation
+        #region INotifyDataErrorInfo
         protected readonly List<string> _errorsByPropertyName = new List<string>();
         public bool HasErrors => _errorsByPropertyName.Any();
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
@@ -141,8 +133,9 @@ namespace Models.DataAccess
                 OnErrorsChanged(propertyName);
             }
         }
-        //Data Validation
+        #endregion
 
+        #region INotifyPropertyChanged
         [NotMapped]
         private bool _isChanged = true;
         public bool IsChanged
@@ -158,7 +151,6 @@ namespace Models.DataAccess
             }
         }
 
-        //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (prop != nameof(IsChanged))
@@ -171,5 +163,6 @@ namespace Models.DataAccess
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models.Abstracts
 {
@@ -12,12 +13,6 @@ namespace Models.Abstracts
 
         public Form1():base()
         {
-            Init_base();
-            Validate_base();
-        }
-        public Form1(string T) : base(T)
-        {
-            Init_base();
             Validate_base();
         }
         protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -25,24 +20,6 @@ namespace Models.Abstracts
             OnPropertyChanged(args.PropertyName);
         }
 
-        private void Init_base()
-        {
-            DataAccess.Init<short?>(nameof(OperationCode), OperationCode_Validation, null);
-            OperationCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(OperationDate), OperationDate_Validation, null);
-            OperationDate.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
-            DocumentNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<byte?>(nameof(DocumentVid), DocumentVid_Validation, null);
-            DocumentNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(DocumentNumberRecoded), DocumentNumberRecoded_Validation, null);
-            DocumentNumberRecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
-            DocumentDate.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, 0);
-            NumberInOrder.PropertyChanged += InPropertyChanged;
-            //DataAccess.Init<string>(nameof(), _Validation, null);
-        }
         protected void Validate_base()
         {
             OperationCode_Validation(OperationCode);
@@ -54,74 +31,60 @@ namespace Models.Abstracts
             NumberInOrder_Validation(NumberInOrder);
         }
 
-        //NumberInOrder property
-        public int? NumberInOrderId { get; set; }
+        #region NumberInOrder
+        public int NumberInOrder_DB { get; set; } = 0;
+        [NotMapped]
         [Attributes.Form_Property("№ п/п")]
-        public virtual RamAccess<int> NumberInOrder
+        public RamAccess<int> NumberInOrder
         {
-            get => DataAccess.Get<int>(nameof(NumberInOrder));
+            get => new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
             set
             {
-                DataAccess.Set(nameof(NumberInOrder), value);
+                NumberInOrder_DB = value.Value;
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
-        private bool NumberInOrder_Validation(RamAccess<int> value)
+        private bool NumberInOrder_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             return true;
         }
-        //NumberInOrder property
+        #endregion
 
-        ////CorrectionNumber property
-        //[Attributes.Form_Property("Номер корректировки")]public int?  { get; set; }
-        //public virtual RamAccess<byte> CorrectionNumber
-        //{
-        //    get
-        //    {
-        //            return DataAccess.Get<byte>(nameof(CorrectionNumber));
-        //    }
-        //    set
-        //    {
-        //            DataAccess.Set(nameof(CorrectionNumber), value);
-        //        OnPropertyChanged(nameof(CorrectionNumber));
-        //    }
-        //}
-
-        //private bool CorrectionNumber_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;}
-        //CorrectionNumber property
-
-        //OperationCode property
+        #region OperationCode
+        public short? OperationCode_DB { get; set; } = 0;
+        [NotMapped]
         [Attributes.Form_Property("Код")]
-        public virtual RamAccess<short?> OperationCode
+        public RamAccess<short?> OperationCode
         {
-            get => DataAccess.Get<short?>(nameof(OperationCode));
+            get => new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
             set
             {
-                DataAccess.Set(nameof(OperationCode), value);
+                OperationCode_DB = value.Value;
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        protected virtual bool OperationCode_Validation(RamAccess<short?> arg) { return true; }
-
-        //OprationCode property
-
-        //OperationDate property
-        public int? OperationDateId { get; set; }
-        [Attributes.Form_Property("Дата операции")]
-        public virtual RamAccess<string> OperationDate
+        protected virtual bool OperationCode_Validation(RamAccess<short?> value)//Ready
         {
-            get => DataAccess.Get<string>(nameof(OperationDate));
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
+        #region OperationDate
+        public string OperationDate_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Дата операции")]
+        public RamAccess<string> OperationDate
+        {
+            get => new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
             set
             {
-                DataAccess.Set(nameof(OperationDate), value);
-                OnPropertyChanged(nameof(OperationDate));
+                OperationDate_DB = value.Value;
+                OnPropertyChanged(nameof(OperationCode));
             }
         }
-
-        protected virtual bool OperationDate_Validation(RamAccess<string> value)
+        protected virtual bool OperationDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -143,22 +106,22 @@ namespace Models.Abstracts
             }
             return true;
         }
-        //OperationDate property
+        #endregion
 
-        //DocumentVid property
-        public int? DocumentVidId { get; set; }
-        [Attributes.Form_Property("Вид документа")]
-        public virtual RamAccess<byte?> DocumentVid
+        #region DocumentVid
+        public byte? DocumentVid_DB { get; set; } = 0;
+        [NotMapped]
+        [Attributes.Form_Property("Дата операции")]
+        public RamAccess<byte?> DocumentVid
         {
-            get => DataAccess.Get<byte?>(nameof(DocumentVid));//Ok
+            get => new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
             set
             {
-                DataAccess.Set(nameof(DocumentVid), value);
+                DocumentVid_DB = value.Value;
                 OnPropertyChanged(nameof(DocumentVid));
             }
         }
-
-        protected virtual bool DocumentVid_Validation(RamAccess<byte?> value)// TO DO
+        protected virtual bool DocumentVid_Validation(RamAccess<byte?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -196,7 +159,7 @@ namespace Models.Abstracts
             value.AddError("Недопустимое значение");
             return false;
         }
-        //DocumentVid property
+        #endregion
 
         //DocumentNumber property
         public int? DocumentNumberId { get; set; }
@@ -214,6 +177,24 @@ namespace Models.Abstracts
         protected virtual bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         { return true; }
         //DocumentNumber property
+
+        #region DocumentNumber
+        public int? DocumentNumber_DB { get; set; } = 0;
+        [NotMapped]
+        [Attributes.Form_Property("Дата операции")]
+        public RamAccess<int?> DocumentNumber
+        {
+            get => new RamAccess<int?>(DocumentNumber_Validation, DocumentNumber_DB);
+            set
+            {
+                DocumentNumber_DB = value.Value;
+                OnPropertyChanged(nameof(DocumentNumber));
+            }
+        }
+        protected virtual bool DocumentNumber_Validation(RamAccess<int?> value)//Ready
+        { return true; }
+
+        #endregion
 
         //DocumentNumberRecoded property
         //public int? DocumentNumberRecodedId { get; set; }

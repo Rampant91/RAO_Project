@@ -4,6 +4,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using Models.DataAccess;
+using Models;
 
 namespace DBRealization
 {
@@ -24,6 +25,7 @@ namespace DBRealization
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Form11>().Property(x => x.OperationCode);
         }
 
         public void LoadTables()
