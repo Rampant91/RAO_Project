@@ -1,4 +1,4 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Collections.Generic;
 using Spravochniki;
@@ -14,28 +14,7 @@ namespace Models
         {
             FormNum.Value = "2.11";
             //NumberOfFields.Value = 11;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
-            Radionuclids.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PlotName), PlotName_Validation, null);
-            PlotName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PlotKadastrNumber), PlotKadastrNumber_Validation, null);
-            PlotKadastrNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PlotCode), PlotCode_Validation, null);
-            PlotCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(InfectedArea), InfectedArea_Validation, null);
-            InfectedArea.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(SpecificActivityOfPlot), SpecificActivityOfPlot_Validation, null);
-            SpecificActivityOfPlot.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(SpecificActivityOfLiquidPart), SpecificActivityOfLiquidPart_Validation, null);
-            SpecificActivityOfLiquidPart.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(SpecificActivityOfDensePart), SpecificActivityOfDensePart_Validation, null);
-            SpecificActivityOfDensePart.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -57,15 +36,17 @@ namespace Models
         }
 
         //PlotName property
-        public int? PlotNameId { get; set; }
-        [Attributes.Form_Property("Наименование участка")]
-        public virtual RamAccess<string> PlotName
+#region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Наименование участка")]
+        public RamAccess<string> PlotName
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PlotName));
+                    var tmp = new RamAccess<string>(PlotName_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -77,7 +58,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PlotName), value);
+                    PlotName_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(PlotName));
             }
@@ -94,17 +75,20 @@ namespace Models
             return true;
         }
         //PlotName property
+        #endregion
 
         //PlotKadastrNumber property
-        public int? PlotKadastrNumberId { get; set; }
-        [Attributes.Form_Property("Кадастровый номер участка")]
-        public virtual RamAccess<string> PlotKadastrNumber
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Кадастровый номер участка")]
+        public RamAccess<string> PlotKadastrNumber
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PlotKadastrNumber));
+                    var tmp = new RamAccess<string>(PlotKadastrNumber_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -116,7 +100,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PlotKadastrNumber), value);
+                    PlotKadastrNumber_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
@@ -133,17 +117,20 @@ namespace Models
             return true;
         }
         //PlotKadastrNumber property
+        #endregion
 
         //PlotCode property
-        public int? PlotCodeId { get; set; }
-        [Attributes.Form_Property("Код участка")]
-        public virtual RamAccess<string> PlotCode
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Код участка")]
+        public RamAccess<string> PlotCode
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PlotCode));
+                    var tmp = new RamAccess<string>(PlotCode_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -155,7 +142,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PlotCode), value);
+                    PlotCode_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(PlotCode));
             }
@@ -172,17 +159,20 @@ namespace Models
             return true;
         }
         //PlotCode property
+        #endregion
 
         //InfectedArea property
-        public int? InfectedAreaId { get; set; }
-        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public virtual RamAccess<int?> InfectedArea
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
+        public RamAccess<int?> InfectedArea
         {
             get
             {
 
                 {
-                    return DataAccess.Get<int?>(nameof(InfectedArea));
+                    var tmp = new RamAccess<int?>(InfectedArea_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -194,7 +184,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(InfectedArea), value);
+                    InfectedArea_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(InfectedArea));
             }
@@ -211,17 +201,20 @@ namespace Models
             return true;
         }
         //InfectedArea property
+        #endregion
 
         //Radionuclids property
-        public int? RadionuclidsId { get; set; }
-        [Attributes.Form_Property("Наименования радионуклидов")]
-        public virtual RamAccess<string> Radionuclids
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Наименования радионуклидов")]
+        public RamAccess<string> Radionuclids
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
+                    var tmp = new RamAccess<string>(Radionuclids_Validation, _DB);//OK
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
 
                 }
 
@@ -235,7 +228,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Radionuclids), value);
+                    Radionuclids_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Radionuclids));
             }
@@ -265,15 +258,16 @@ namespace Models
             return true;
         }
         //Radionuclids property
+        #endregion
 
         ////RadionuclidNameNote property
-        //public virtual RamAccess<string> RadionuclidNameNote
+        //public RamAccess<string> RadionuclidNameNote
         //{
         //    get
         //    {
 
         //        {
-        //            return DataAccess.Get<string>(nameof(RadionuclidNameNote));
+        //            var tmp = new RamAccess<string>(RadionuclidNameNote_Validation, _DB);
         //        }
 
         //        {
@@ -285,7 +279,7 @@ namespace Models
 
 
         //        {
-        //            DataAccess.Set(nameof(RadionuclidNameNote), value);
+        //            RadionuclidNameNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(RadionuclidNameNote));
         //    }
@@ -298,15 +292,17 @@ namespace Models
         ////RadionuclidNameNote property
 
         //SpecificActivityOfPlot property
-        public int? SpecificActivityOfPlotId { get; set; }
-        [Attributes.Form_Property("Удельная активность, Бк/г")]
-        public virtual RamAccess<string> SpecificActivityOfPlot
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Удельная активность, Бк/г")]
+        public RamAccess<string> SpecificActivityOfPlot
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(SpecificActivityOfPlot));
+                    var tmp = new RamAccess<string>(SpecificActivityOfPlot_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -318,7 +314,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(SpecificActivityOfPlot), value);
+                    SpecificActivityOfPlot_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(SpecificActivityOfPlot));
             }
@@ -340,17 +336,20 @@ namespace Models
             //}
         }
         //SpecificActivityOfPlot property
+        #endregion
 
         //SpecificActivityOfLiquidPart property
-        public int? SpecificActivityOfLiquidPartId { get; set; }
-        [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]
-        public virtual RamAccess<string> SpecificActivityOfLiquidPart
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]
+        public RamAccess<string> SpecificActivityOfLiquidPart
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(SpecificActivityOfLiquidPart));
+                    var tmp = new RamAccess<string>(SpecificActivityOfLiquidPart_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -362,7 +361,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(SpecificActivityOfLiquidPart), value);
+                    SpecificActivityOfLiquidPart_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(SpecificActivityOfLiquidPart));
             }
@@ -384,19 +383,20 @@ namespace Models
             //}
         }
         //SpecificActivityOfLiquidPart property
+        #endregion
 
         //SpecificActivityOfDensePart property
-        public int? SpecificActivityOfDensePartId { get; set; }
-        [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]
-        public virtual RamAccess<string> SpecificActivityOfDensePart
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]
+        public RamAccess<string> SpecificActivityOfDensePart
         {
-            get => DataAccess.Get<string>(nameof(SpecificActivityOfDensePart));
+            get => new RamAccess<string>(SpecificActivityOfDensePart_Validation, _DB);
             set
             {
 
 
                 {
-                    DataAccess.Set(nameof(SpecificActivityOfDensePart), value);
+                    SpecificActivityOfDensePart_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(SpecificActivityOfDensePart));
             }
@@ -418,5 +418,6 @@ namespace Models
             //}
         }
         //SpecificActivityOfDensePart property
+        #endregion
     }
 }

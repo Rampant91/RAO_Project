@@ -1,4 +1,4 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
@@ -13,54 +13,11 @@ namespace Models
         {
             FormNum.Value = "2.0";
             //NumberOfFields.Value = 19;
-            Init_base();
             Validate_base();
         }
         protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             OnPropertyChanged(args.PropertyName);
-        }
-
-        private void Init_base()
-        {
-            DataAccess.Init<string>(nameof(Okfs), Okpo_Validation, null);
-            Okfs.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Okpo), Okpo_Validation, null);
-            Okpo.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Okved), Okved_Validation, null);
-            Okved.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Oktmo), Oktmo_Validation, null);
-            Oktmo.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Okogu), Okogu_Validation, null);
-            Oktmo.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Okopf), Okopf_Validation, null);
-            Okopf.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Inn), Inn_Validation, null);
-            Inn.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Kpp), Kpp_Validation, null);
-            Kpp.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(RegNo), RegNo_Validation, null);
-            RegNo.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(OrganUprav), OrganUprav_Validation, null);
-            OrganUprav.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(SubjectRF), SubjectRF_Validation, null);
-            SubjectRF.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(JurLico), JurLico_Validation, null);
-            OrganUprav.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ShortJurLico), ShortJurLico_Validation, null);
-            ShortJurLico.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(JurLicoAddress), JurLicoAddress_Validation, null);
-            JurLicoAddress.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(JurLicoFactAddress), JurLicoFactAddress_Validation, null);
-            JurLicoFactAddress.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(GradeFIO), GradeFIO_Validation, null);
-            GradeFIO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Telephone), Telephone_Validation, null);
-            Telephone.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Fax), Fax_Validation, null);
-            Fax.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Email), Email_Validation, null);
-            Email.PropertyChanged += InPropertyChanged;
         }
         protected void Validate_base()
         {
@@ -92,15 +49,18 @@ namespace Models
         }
 
         //RegNo property
-        public int? RegNoId { get; set; }
+#region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Рег. №")]
-        public virtual RamAccess<string> RegNo
+        public RamAccess<string> RegNo
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(RegNo));
+                    var tmp = new RamAccess<string>(RegNo_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -112,7 +72,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(RegNo), value);
+                    RegNo_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(RegNo));
             }
@@ -122,17 +82,21 @@ namespace Models
             return true;
         }
         //RegNo property
+        #endregion
 
         //OrganUprav property
-        public int? OrganUpravId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Орган управления")]
-        public virtual RamAccess<string> OrganUprav
+        public RamAccess<string> OrganUprav
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(OrganUprav));
+                    var tmp = new RamAccess<string>(OrganUprav_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -144,7 +108,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(OrganUprav), value);
+                    OrganUprav_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(OrganUprav));
             }
@@ -154,17 +118,21 @@ namespace Models
             return true;
         }
         //OrganUprav property
+        #endregion
 
         //SubjectRF property
-        public int? SubjectRFId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Субъект РФ")]
-        public virtual RamAccess<string> SubjectRF
+        public RamAccess<string> SubjectRF
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(SubjectRF));
+                    var tmp = new RamAccess<string>(SubjectRF_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -176,7 +144,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(SubjectRF), value);
+                    SubjectRF_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(SubjectRF));
             }
@@ -186,17 +154,21 @@ namespace Models
             return true;
         }
         //SubjectRF property
+        #endregion
 
         //JurLico property
-        public int? JurLicoId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Юр. лицо")]
-        public virtual RamAccess<string> JurLico
+        public RamAccess<string> JurLico
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(JurLico));
+                    var tmp = new RamAccess<string>(JurLico_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -208,7 +180,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(JurLico), value);
+                    JurLico_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(JurLico));
             }
@@ -218,17 +190,21 @@ namespace Models
             return true;
         }
         //JurLico property
+        #endregion
 
         //ShortJurLico property
-        public int? ShortJurLicoId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Краткое наименование юр. лица")]
-        public virtual RamAccess<string> ShortJurLico
+        public RamAccess<string> ShortJurLico
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(ShortJurLico));
+                    var tmp = new RamAccess<string>(ShortJurLico_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -240,7 +216,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(ShortJurLico), value);
+                    ShortJurLico_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(ShortJurLico));
             }
@@ -250,17 +226,21 @@ namespace Models
             return true;
         }
         //ShortJurLico property
+        #endregion
 
         //JurLicoAddress property
-        public int? JurLicoAddressId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Адрес юр. лица")]
-        public virtual RamAccess<string> JurLicoAddress
+        public RamAccess<string> JurLicoAddress
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(JurLicoAddress));
+                    var tmp = new RamAccess<string>(JurLicoAddress_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -272,7 +252,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(JurLicoAddress), value);
+                    JurLicoAddress_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(JurLicoAddress));
             }
@@ -282,17 +262,21 @@ namespace Models
             return true;
         }
         //JurLicoAddress property
+        #endregion
 
         //JurLicoFactAddress property
-        public int? JurLicoFactAddressId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Фактический адрес юр. лица")]
-        public virtual RamAccess<string> JurLicoFactAddress
+        public RamAccess<string> JurLicoFactAddress
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(JurLicoFactAddress));
+                    var tmp = new RamAccess<string>(JurLicoFactAddress_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -304,7 +288,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(JurLicoFactAddress), value);
+                    JurLicoFactAddress_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(JurLicoFactAddress));
             }
@@ -314,17 +298,21 @@ namespace Models
             return true;
         }
         //JurLicoFactAddress property
+        #endregion
 
         //GradeFIO property
-        public int? GradeFIOId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("ФИО, должность")]
-        public virtual RamAccess<string> GradeFIO
+        public RamAccess<string> GradeFIO
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(GradeFIO));
+                    var tmp = new RamAccess<string>(GradeFIO_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -336,7 +324,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(GradeFIO), value);
+                    GradeFIO_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(GradeFIO));
             }
@@ -346,17 +334,21 @@ namespace Models
             return true;
         }
         //GradeFIO property
+        #endregion
 
         //Telephone property
-        public int? TelephoneId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Телефон")]
-        public virtual RamAccess<string> Telephone
+        public RamAccess<string> Telephone
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Telephone));
+                    var tmp = new RamAccess<string>(Telephone_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -368,7 +360,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Telephone), value);
+                    Telephone_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Telephone));
             }
@@ -378,17 +370,21 @@ namespace Models
             return true;
         }
         //Telephone property
+        #endregion
 
         //Fax property
-        public int? FaxId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Факс")]
-        public virtual RamAccess<string> Fax
+        public RamAccess<string> Fax
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Fax));
+                    var tmp = new RamAccess<string>(Fax_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -400,7 +396,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Fax), value);
+                    Fax_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Fax));
             }
@@ -410,17 +406,21 @@ namespace Models
             return true;
         }
         //Fax property
+        #endregion
 
         //Email property
-        public int? EmailId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Эл. почта")]
-        public virtual RamAccess<string> Email
+        public RamAccess<string> Email
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Email));
+                    var tmp = new RamAccess<string>(Email_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -432,7 +432,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Email), value);
+                    Email_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Email));
             }
@@ -442,17 +442,21 @@ namespace Models
             return true;
         }
         //Email property
+        #endregion
 
         //Okpo property
-        public int? OkpoId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("ОКПО")]
-        public virtual RamAccess<string> Okpo
+        public RamAccess<string> Okpo
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Okpo));
+                    var tmp = new RamAccess<string>(Okpo_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -464,7 +468,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Okpo), value);
+                    Okpo_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Okpo));
             }
@@ -489,17 +493,21 @@ namespace Models
             return true;
         }
         //Okpo property
+        #endregion
 
         //Okved property
-        public int? OkvedId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("ОКВЭД")]
-        public virtual RamAccess<string> Okved
+        public RamAccess<string> Okved
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Okved));
+                    var tmp = new RamAccess<string>(Okved_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -511,7 +519,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Okved), value);
+                    Okved_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Okved));
             }
@@ -533,17 +541,21 @@ namespace Models
             return true;
         }
         //Okved property
+        #endregion
 
         //Okogu property
-        public int? OkoguId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("ОКОГУ")]
-        public virtual RamAccess<string> Okogu
+        public RamAccess<string> Okogu
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Okogu));
+                    var tmp = new RamAccess<string>(Okogu_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -555,7 +567,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Okogu), value);
+                    Okogu_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Okogu));
             }
@@ -577,17 +589,21 @@ namespace Models
             return true;
         }
         //Okogu property
+        #endregion
 
         //Oktmo property
-        public int? OktmoId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("ОКТМО")]
-        public virtual RamAccess<string> Oktmo
+        public RamAccess<string> Oktmo
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Oktmo));
+                    var tmp = new RamAccess<string>(Oktmo_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -599,7 +615,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Oktmo), value);
+                    Oktmo_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Oktmo));
             }
@@ -622,17 +638,21 @@ namespace Models
             return true;
         }
         //Oktmo property
+        #endregion
 
         //Inn property
-        public int? InnId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("ИНН")]
-        public virtual RamAccess<string> Inn
+        public RamAccess<string> Inn
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Inn));
+                    var tmp = new RamAccess<string>(Inn_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -644,7 +664,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Inn), value);
+                    Inn_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Inn));
             }
@@ -666,17 +686,21 @@ namespace Models
             return true;
         }
         //Inn property
+        #endregion
 
         //Kpp property
-        public int? KppId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("КПП")]
-        public virtual RamAccess<string> Kpp
+        public RamAccess<string> Kpp
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Kpp));
+                    var tmp = new RamAccess<string>(Kpp_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -688,7 +712,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Kpp), value);
+                    Kpp_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Kpp));
             }
@@ -711,17 +735,21 @@ namespace Models
             return true;
         }
         //Kpp property
+        #endregion
 
         //Okopf property
-        public int? OkopfId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("ОКОПФ")]
-        public virtual RamAccess<string> Okopf
+        public RamAccess<string> Okopf
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Okopf));
+                    var tmp = new RamAccess<string>(Okopf_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -733,7 +761,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Okopf), value);
+                    Okopf_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Okopf));
             }
@@ -756,17 +784,21 @@ namespace Models
             return true;
         }
         //Okopf property
+        #endregion
 
         //Okfs property
-        public int? OkfsId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("ОКФС")]
-        public virtual RamAccess<string> Okfs
+        public RamAccess<string> Okfs
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(Okfs));
+                    var tmp = new RamAccess<string>(Okfs_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -778,7 +810,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(Okfs), value);
+                    Okfs_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(Okfs));
             }
@@ -800,5 +832,6 @@ namespace Models
             return true;
         }
         //Okfs property
+        #endregion
     }
 }

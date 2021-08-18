@@ -1,4 +1,4 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Globalization;
 
@@ -12,20 +12,7 @@ namespace Models
         {
             FormNum.Value = "2.9";
             //NumberOfFields.Value = 8;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(WasteSourceName), WasteSourceName_Validation, null);
-            WasteSourceName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
-            RadionuclidName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(AllowedActivity), AllowedActivity_Validation, null);
-            AllowedActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FactedActivity), FactedActivity_Validation, null);
-            FactedActivity.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -43,15 +30,17 @@ namespace Models
         }
 
         //WasteSourceName property
-        public int? WasteSourceNameId { get; set; }
-        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
-        public virtual RamAccess<string> WasteSourceName
+#region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
+        public RamAccess<string> WasteSourceName
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(WasteSourceName));
+                    var tmp = new RamAccess<string>(WasteSourceName_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -63,7 +52,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(WasteSourceName), value);
+                    WasteSourceName_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(WasteSourceName));
             }
@@ -81,17 +70,20 @@ namespace Models
             return true;
         }
         //WasteSourceName property
+        #endregion
 
         //RadionuclidName property
-        public int? RadionuclidNameId { get; set; }
-        [Attributes.Form_Property("Радионуклид")]
-        public virtual RamAccess<string> RadionuclidName
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Радионуклид")]
+        public RamAccess<string> RadionuclidName
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(RadionuclidName));
+                    var tmp = new RamAccess<string>(RadionuclidName_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -103,7 +95,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(RadionuclidName), value);
+                    RadionuclidName_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(RadionuclidName));
             }
@@ -121,17 +113,20 @@ namespace Models
             return true;
         }
         //RadionuclidName property
+        #endregion
 
         //AllowedActivity property
-        public int? AllowedActivityId { get; set; }
-        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
-        public virtual RamAccess<string> AllowedActivity
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
+        public RamAccess<string> AllowedActivity
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(AllowedActivity));
+                    var tmp = new RamAccess<string>(AllowedActivity_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -143,7 +138,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(AllowedActivity), value);
+                    AllowedActivity_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(AllowedActivity));
             }
@@ -183,15 +178,16 @@ namespace Models
             return true;
         }
         //AllowedActivity property
+        #endregion
 
         ////AllowedActivityNote property
-        //public virtual RamAccess<string> AllowedActivityNote
+        //public RamAccess<string> AllowedActivityNote
         //{
         //    get
         //    {
 
         //        {
-        //            return DataAccess.Get<string>(nameof(AllowedActivityNote));
+        //            var tmp = new RamAccess<string>(AllowedActivityNote_Validation, _DB);
         //        }
 
         //        {
@@ -203,7 +199,7 @@ namespace Models
 
 
         //        {
-        //            DataAccess.Set(nameof(AllowedActivityNote), value);
+        //            AllowedActivityNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(AllowedActivityNote));
         //    }
@@ -217,15 +213,17 @@ namespace Models
         ////AllowedActivityNote property
 
         //FactedActivity property
-        public int? FactedActivityId { get; set; }
-        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
-        public virtual RamAccess<string> FactedActivity
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
+        public RamAccess<string> FactedActivity
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(FactedActivity));
+                    var tmp = new RamAccess<string>(FactedActivity_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -237,7 +235,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(FactedActivity), value);
+                    FactedActivity_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(FactedActivity));
             }
@@ -274,15 +272,16 @@ namespace Models
             return true;
         }
         //FactedActivity property
+        #endregion
 
         ////FactedActivityNote property
-        //public virtual RamAccess<string> FactedActivityNote
+        //public RamAccess<string> FactedActivityNote
         //{
         //    get
         //    {
 
         //        {
-        //            return DataAccess.Get<string>(nameof(FactedActivityNote));
+        //            var tmp = new RamAccess<string>(FactedActivityNote_Validation, _DB);
         //        }
 
         //        {
@@ -294,7 +293,7 @@ namespace Models
 
 
         //        {
-        //            DataAccess.Set(nameof(FactedActivityNote), value);
+        //            FactedActivityNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(FactedActivityNote));
         //    }

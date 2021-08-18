@@ -1,4 +1,4 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,28 +13,7 @@ namespace Models
         {
             FormNum.Value = "2.6";
             //NumberOfFields.Value = 11;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(ObservedSourceNumber), ObservedSourceNumber_Validation, null);
-            ObservedSourceNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ControlledAreaName), ControlledAreaName_Validation, null);
-            ControlledAreaName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(SupposedWasteSource), SupposedWasteSource_Validation, null);
-            SupposedWasteSource.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(DistanceToWasteSource), DistanceToWasteSource_Validation, null);
-            DistanceToWasteSource.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TestDepth), TestDepth_Validation, null);
-            TestDepth.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(RadionuclidName), RadionuclidName_Validation, null);
-            RadionuclidName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(AverageYearConcentration), AverageYearConcentration_Validation, null);
-            AverageYearConcentration.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(SourcesQuantity), SourcesQuantity_Validation, null);
-            SourcesQuantity.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -56,15 +35,18 @@ namespace Models
         }
 
         //SourcesQuantity property
-        public int? SourcesQuantityId { get; set; }
+#region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Количество источников, шт.")]
-        public virtual RamAccess<int?> SourcesQuantity
+        public RamAccess<int?> SourcesQuantity
         {
             get
             {
 
                 {
-                    return DataAccess.Get<int?>(nameof(SourcesQuantity));
+                    var tmp = new RamAccess<int?>(SourcesQuantity_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
             }
             set
@@ -72,7 +54,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(SourcesQuantity), value);
+                    SourcesQuantity_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(SourcesQuantity));
             }
@@ -93,16 +75,18 @@ namespace Models
             return true;
         }
         //SourcesQuantity property
+        #endregion
 
         //ObservedSourceNumber property
-        public int? ObservedSourceNumberId { get; set; }
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Номер наблюдательной скважины")]
-        public virtual RamAccess<string> ObservedSourceNumber
+        public RamAccess<string> ObservedSourceNumber
         {
-            get => DataAccess.Get<string>(nameof(ObservedSourceNumber));
+            get => new RamAccess<string>(ObservedSourceNumber_Validation, _DB);
             set
             {
-                DataAccess.Set(nameof(ObservedSourceNumber), value);
+                ObservedSourceNumber_DB = value.Value;
                 OnPropertyChanged(nameof(ObservedSourceNumber));
             }
         }
@@ -112,16 +96,18 @@ namespace Models
             value.ClearErrors(); return true;
         }
         //ObservedSourceNumber property
+        #endregion
 
         //ControlledAreaName property
-        public int? ControlledAreaNameId { get; set; }
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Наименование зоны контроля")]
-        public virtual RamAccess<string> ControlledAreaName
+        public RamAccess<string> ControlledAreaName
         {
-            get => DataAccess.Get<string>(nameof(ControlledAreaName));
+            get => new RamAccess<string>(ControlledAreaName_Validation, _DB);
             set
             {
-                DataAccess.Set(nameof(ControlledAreaName), value);
+                ControlledAreaName_DB = value.Value;
                 OnPropertyChanged(nameof(ControlledAreaName));
             }
         }
@@ -148,16 +134,18 @@ namespace Models
             return true;
         }
         //ControlledAreaName property
+        #endregion
 
         //SupposedWasteSource property
-        public int? SupposedWasteSourceId { get; set; }
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Предполагаемый источник поступления радиоактивных веществ")]
-        public virtual RamAccess<string> SupposedWasteSource
+        public RamAccess<string> SupposedWasteSource
         {
-            get => DataAccess.Get<string>(nameof(SupposedWasteSource));
+            get => new RamAccess<string>(SupposedWasteSource_Validation, _DB);
             set
             {
-                DataAccess.Set(nameof(SupposedWasteSource), value);
+                SupposedWasteSource_DB = value.Value;
                 OnPropertyChanged(nameof(SupposedWasteSource));
             }
         }
@@ -168,19 +156,21 @@ namespace Models
             return true;
         }
         //SupposedWasteSource property
+        #endregion
 
         //DistanceToWasteSource property
-        public int? DistanceToWasteSourceId { get; set; }
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м")]
-        public virtual RamAccess<string> DistanceToWasteSource
+        public RamAccess<string> DistanceToWasteSource
         {
-            get => DataAccess.Get<string>(nameof(DistanceToWasteSource));
+            get => new RamAccess<string>(DistanceToWasteSource_Validation, _DB);
             set
             {
 
 
                 {
-                    DataAccess.Set(nameof(DistanceToWasteSource), value);
+                    DistanceToWasteSource_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(DistanceToWasteSource));
             }
@@ -214,17 +204,21 @@ namespace Models
             return true;
         }
         //DistanceToWasteSource property
+        #endregion
 
         //TestDepth property
-        public int? TestDepthId { get; set; }
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Глубина отбора проб, м")]
-        public virtual RamAccess<string> TestDepth
+        public RamAccess<string> TestDepth
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(TestDepth));
+                    var tmp = new RamAccess<string>(TestDepth_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -236,7 +230,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(TestDepth), value);
+                    TestDepth_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(TestDepth));
             }
@@ -270,15 +264,16 @@ namespace Models
             return true;
         }
         //TestDepth property
+        #endregion
 
         ////TestDepthNote property
-        //public virtual RamAccess<string> TestDepthNote
+        //public RamAccess<string> TestDepthNote
         //{
         //    get
         //    {
 
         //        {
-        //            return DataAccess.Get<string>(nameof(TestDepthNote));
+        //            var tmp = new RamAccess<string>(TestDepthNote_Validation, _DB);
         //        }
 
         //        {
@@ -290,7 +285,7 @@ namespace Models
 
 
         //        {
-        //            DataAccess.Set(nameof(TestDepthNote), value);
+        //            TestDepthNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(TestDepthNote));
         //    }
@@ -304,15 +299,18 @@ namespace Models
         ////TestDepthNote property
 
         //RadionuclidName property
-        public int? RadionuclidNameId { get; set; }
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Радионуклид")]
-        public virtual RamAccess<string> RadionuclidName
+        public RamAccess<string> RadionuclidName
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(RadionuclidName));
+                    var tmp = new RamAccess<string>(RadionuclidName_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -321,7 +319,7 @@ namespace Models
             }
             set
             {
-                DataAccess.Set(nameof(RadionuclidName), value);
+                RadionuclidName_DB = value.Value;
                 OnPropertyChanged(nameof(RadionuclidName));
             }
         }
@@ -343,17 +341,21 @@ namespace Models
             return true;
         }
         //RadionuclidName property
+        #endregion
 
         //AverageYearConcentration property
-        public int? AverageYearConcentrationId { get; set; }
+        #region NumberInOrder 
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Среднегодовое содержание радионуклида, Бк/кг")]
-        public virtual RamAccess<string> AverageYearConcentration
+        public RamAccess<string> AverageYearConcentration
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(AverageYearConcentration));
+                    var tmp = new RamAccess<string>(AverageYearConcentration_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -365,7 +367,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(AverageYearConcentration), value);
+                    AverageYearConcentration_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(AverageYearConcentration));
             }
@@ -398,5 +400,6 @@ namespace Models
             return true;
         }
         //AverageYearConcentration property
+        #endregion
     }
 }

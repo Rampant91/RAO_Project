@@ -1,4 +1,4 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -13,32 +13,7 @@ namespace Models
         {
             FormNum.Value = "2.10";
             //NumberOfFields.Value = 12;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(IndicatorName), IndicatorName_Validation, null);
-            IndicatorName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PlotName), PlotName_Validation, null);
-            PlotName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PlotKadastrNumber), PlotKadastrNumber_Validation, null);
-            PlotKadastrNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PlotCode), PlotCode_Validation, null);
-            PlotCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(InfectedArea), InfectedArea_Validation, null);
-            InfectedArea.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<double?>(nameof(AvgGammaRaysDosePower), AvgGammaRaysDosePower_Validation, null);
-            AvgGammaRaysDosePower.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<double?>(nameof(MaxGammaRaysDosePower), MaxGammaRaysDosePower_Validation, null);
-            MaxGammaRaysDosePower.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<double?>(nameof(WasteDensityAlpha), WasteDensityAlpha_Validation, null);
-            WasteDensityAlpha.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<double?>(nameof(WasteDensityBeta), WasteDensityBeta_Validation, null);
-            WasteDensityBeta.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
-            FcpNumber.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -62,14 +37,14 @@ namespace Models
         }
 
         //IndicatorName property
-        public int? IndicatorNameId { get; set; }
-        [Attributes.Form_Property("Наименование показателя")]
-        public virtual RamAccess<string> IndicatorName
+#region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Наименование показателя")]
+        public RamAccess<string> IndicatorName
         {
-            get => DataAccess.Get<string>(nameof(IndicatorName));
+            get => new RamAccess<string>(IndicatorName_Validation, _DB);
             set
             {
-                DataAccess.Set(nameof(IndicatorName), value);
+                IndicatorName_DB = value.Value;
                 OnPropertyChanged(nameof(IndicatorName));
             }
         }
@@ -93,17 +68,20 @@ namespace Models
             return true;
         }
         //IndicatorName property
+        #endregion
 
         //PlotName property
-        public int? PlotNameId { get; set; }
-        [Attributes.Form_Property("Наименование участка")]
-        public virtual RamAccess<string> PlotName
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Наименование участка")]
+        public RamAccess<string> PlotName
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PlotName));
+                    var tmp = new RamAccess<string>(PlotName_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -115,7 +93,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PlotName), value);
+                    PlotName_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(PlotName));
             }
@@ -132,17 +110,20 @@ namespace Models
             return true;
         }
         //PlotName property
+        #endregion
 
         //PlotKadastrNumber property
-        public int? PlotKadastrNumberId { get; set; }
-        [Attributes.Form_Property("Кадастровый номер участка")]
-        public virtual RamAccess<string> PlotKadastrNumber
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Кадастровый номер участка")]
+        public RamAccess<string> PlotKadastrNumber
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PlotKadastrNumber));
+                    var tmp = new RamAccess<string>(PlotKadastrNumber_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -154,7 +135,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PlotKadastrNumber), value);
+                    PlotKadastrNumber_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
@@ -171,17 +152,20 @@ namespace Models
             return true;
         }
         //PlotKadastrNumber property
+        #endregion
 
         //PlotCode property
-        public int? PlotCodeId { get; set; }
-        [Attributes.Form_Property("Код участка")]
-        public virtual RamAccess<string> PlotCode
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Код участка")]
+        public RamAccess<string> PlotCode
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(PlotCode));
+                    var tmp = new RamAccess<string>(PlotCode_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -193,7 +177,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(PlotCode), value);
+                    PlotCode_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(PlotCode));
             }
@@ -216,17 +200,20 @@ namespace Models
             return true;
         }
         //PlotCode property
+        #endregion
 
         //InfectedArea property
-        public int? InfectedAreaId { get; set; }
-        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public virtual RamAccess<int?> InfectedArea
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
+        public RamAccess<int?> InfectedArea
         {
             get
             {
 
                 {
-                    return DataAccess.Get<int?>(nameof(InfectedArea));
+                    var tmp = new RamAccess<int?>(InfectedArea_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -238,7 +225,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(InfectedArea), value);
+                    InfectedArea_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(InfectedArea));
             }
@@ -255,17 +242,20 @@ namespace Models
             return true;
         }
         //InfectedArea property
+        #endregion
 
         //AvgGammaRaysDosePower property
-        public int? AvgGammaRaysDosePowerId { get; set; }
-        [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]
-        public virtual RamAccess<double?> AvgGammaRaysDosePower
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]
+        public RamAccess<double?> AvgGammaRaysDosePower
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double?>(nameof(AvgGammaRaysDosePower));
+                    var tmp = new RamAccess<double?>(AvgGammaRaysDosePower_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -277,7 +267,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(AvgGammaRaysDosePower), value);
+                    AvgGammaRaysDosePower_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(AvgGammaRaysDosePower));
             }
@@ -294,17 +284,20 @@ namespace Models
             return true;
         }
         //AvgGammaRaysDosePower property
+        #endregion
 
         //MaxGammaRaysDosePower property
-        public int? MaxGammaRaysDosePowerId { get; set; }
-        [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
-        public virtual RamAccess<double?> MaxGammaRaysDosePower
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
+        public RamAccess<double?> MaxGammaRaysDosePower
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double?>(nameof(MaxGammaRaysDosePower));
+                    var tmp = new RamAccess<double?>(MaxGammaRaysDosePower_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -316,7 +309,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(MaxGammaRaysDosePower), value);
+                    MaxGammaRaysDosePower_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(MaxGammaRaysDosePower));
             }
@@ -333,17 +326,20 @@ namespace Models
             return true;
         }
         //MaxGammaRaysDosePower property
+        #endregion
 
         //WasteDensityAlpha property
-        public int? WasteDensityAlphaId { get; set; }
-        [Attributes.Form_Property("Плотность загрязнения альфа-излучающими радионуклидами (средняя), Бк/кв. м")]
-        public virtual RamAccess<double?> WasteDensityAlpha
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Плотность загрязнения альфа-излучающими радионуклидами (средняя), Бк/кв. м")]
+        public RamAccess<double?> WasteDensityAlpha
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double?>(nameof(WasteDensityAlpha));
+                    var tmp = new RamAccess<double?>(WasteDensityAlpha_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -355,7 +351,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(WasteDensityAlpha), value);
+                    WasteDensityAlpha_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(WasteDensityAlpha));
             }
@@ -372,17 +368,20 @@ namespace Models
             return true;
         }
         //WasteDensityAlpha property
+        #endregion
 
         //WasteDensityBeta property
-        public int? WasteDensityBetaId { get; set; }
-        [Attributes.Form_Property("Плотность загрязнения бета-излучающими радионуклидами (средняя), Бк/кв. м")]
-        public virtual RamAccess<double?> WasteDensityBeta
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Плотность загрязнения бета-излучающими радионуклидами (средняя), Бк/кв. м")]
+        public RamAccess<double?> WasteDensityBeta
         {
             get
             {
 
                 {
-                    return DataAccess.Get<double?>(nameof(WasteDensityBeta));
+                    var tmp = new RamAccess<double?>(WasteDensityBeta_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -394,7 +393,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(WasteDensityBeta), value);
+                    WasteDensityBeta_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(WasteDensityBeta));
             }
@@ -411,17 +410,20 @@ namespace Models
             return true;
         }
         //WasteDensityBeta property
+        #endregion
 
         //FcpNumber property
-        public int? FcpNumberId { get; set; }
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public virtual RamAccess<string> FcpNumber
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Номер мероприятия ФЦП")]
+        public RamAccess<string> FcpNumber
         {
             get
             {
 
                 {
-                    return DataAccess.Get<string>(nameof(FcpNumber));
+                    var tmp = new RamAccess<string>(FcpNumber_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
 
                 {
@@ -433,7 +435,7 @@ namespace Models
 
 
                 {
-                    DataAccess.Set(nameof(FcpNumber), value);
+                    FcpNumber_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
@@ -444,5 +446,6 @@ namespace Models
             value.ClearErrors(); return true;
         }
         //FcpNumber property
+        #endregion
     }
 }
