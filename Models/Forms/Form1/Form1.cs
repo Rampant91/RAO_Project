@@ -36,11 +36,23 @@ namespace Models.Abstracts
         [Attributes.Form_Property("№ п/п")]
         public RamAccess<int> NumberInOrder
         {
-            get => new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
+            get
+            {
+                var tmp = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
+                tmp.PropertyChanged += NumberInOrderValueChanged;
+                return tmp;
+            }
             set
             {
                 NumberInOrder_DB = value.Value;
                 OnPropertyChanged(nameof(NumberInOrder));
+            }
+        }
+        private void NumberInOrderValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                NumberInOrder_DB = ((RamAccess<int>)Value).Value;
             }
         }
         private bool NumberInOrder_Validation(RamAccess<int> value)//Ready
@@ -56,14 +68,26 @@ namespace Models.Abstracts
         [Attributes.Form_Property("Код")]
         public RamAccess<short?> OperationCode
         {
-            get => new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
+            get
+            {
+                var tmp = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
+                tmp.PropertyChanged += OperationCodeValueChanged;
+                return tmp;
+            }
             set
             {
                 OperationCode_DB = value.Value;
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
-        protected virtual bool OperationCode_Validation(RamAccess<short?> value)//Ready
+        private void OperationCodeValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                OperationCode_DB = ((RamAccess<short?>)Value).Value;
+            }
+        }
+        protected bool OperationCode_Validation(RamAccess<short?> value)//Ready
         {
             value.ClearErrors();
             return true;
@@ -76,14 +100,26 @@ namespace Models.Abstracts
         [Attributes.Form_Property("Дата операции")]
         public RamAccess<string> OperationDate
         {
-            get => new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
+                tmp.PropertyChanged += OperationDateValueChanged;
+                return tmp;
+            }
             set
             {
                 OperationDate_DB = value.Value;
-                OnPropertyChanged(nameof(OperationCode));
+                OnPropertyChanged(nameof(OperationDate));
             }
         }
-        protected virtual bool OperationDate_Validation(RamAccess<string> value)//Ready
+        private void OperationDateValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                OperationDate_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        protected bool OperationDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -110,17 +146,29 @@ namespace Models.Abstracts
         #region DocumentVid
         public byte? DocumentVid_DB { get; set; } = 0;
         [NotMapped]
-        [Attributes.Form_Property("Дата операции")]
+        [Attributes.Form_Property("Вид документа")]
         public RamAccess<byte?> DocumentVid
         {
-            get => new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
+            get
+            {
+                var tmp = new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
+                tmp.PropertyChanged += DocumentVidValueChanged;
+                return tmp;
+            }
             set
             {
                 DocumentVid_DB = value.Value;
                 OnPropertyChanged(nameof(DocumentVid));
             }
         }
-        protected virtual bool DocumentVid_Validation(RamAccess<byte?> value)//Ready
+        private void DocumentVidValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                DocumentVid_DB = ((RamAccess<byte?>)Value).Value;
+            }
+        }
+        protected bool DocumentVid_Validation(RamAccess<byte?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -163,31 +211,55 @@ namespace Models.Abstracts
         #region DocumentNumber
         public int? DocumentNumber_DB { get; set; } = 0;
         [NotMapped]
-        [Attributes.Form_Property("Дата операции")]
+        [Attributes.Form_Property("Номер документа")]
         public RamAccess<int?> DocumentNumber
         {
-            get => new RamAccess<int?>(DocumentNumber_Validation, DocumentNumber_DB);
+            get
+            {
+                var tmp = new RamAccess<int?>(DocumentNumber_Validation, DocumentNumber_DB);
+                tmp.PropertyChanged += DocumentNumberValueChanged;
+                return tmp;
+            }
             set
             {
                 DocumentNumber_DB = value.Value;
                 OnPropertyChanged(nameof(DocumentNumber));
             }
         }
-        protected virtual bool DocumentNumber_Validation(RamAccess<int?> value)//Ready
+        private void DocumentNumberValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                DocumentNumber_DB = ((RamAccess<int?>)Value).Value;
+            }
+        }
+        protected bool DocumentNumber_Validation(RamAccess<int?> value)//Ready
         { return true; }
         #endregion
 
         #region DocumentDate
-        public string DocumentDate_DB { get; set; } = 0;
+        public string DocumentDate_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Дата операции")]
+        [Attributes.Form_Property("Дата документа")]
         public RamAccess<string> DocumentDate
         {
-            get => new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
+                tmp.PropertyChanged += DocumentDateValueChanged;
+                return tmp;
+            }
             set
             {
                 DocumentDate_DB = value.Value;
                 OnPropertyChanged(nameof(DocumentDate));
+            }
+        }
+        private void DocumentDateValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                DocumentDate_DB = ((RamAccess<string?>)Value).Value;
             }
         }
         protected bool DocumentDate_Validation(RamAccess<string> value)//Ready

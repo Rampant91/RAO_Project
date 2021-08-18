@@ -136,30 +136,12 @@ namespace Models.DataAccess
         #endregion
 
         #region INotifyPropertyChanged
-        [NotMapped]
-        private bool _isChanged = true;
-        public bool IsChanged
-        {
-            get => _isChanged;
-            set
-            {
-                if (_isChanged != value)
-                {
-                    _isChanged = value;
-                    OnPropertyChanged(nameof(IsChanged));
-                }
-            }
-        }
 
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (prop != nameof(IsChanged))
+            if (PropertyChanged != null)
             {
-                IsChanged = true;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
-                }
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

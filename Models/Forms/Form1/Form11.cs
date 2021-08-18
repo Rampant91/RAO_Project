@@ -15,62 +15,7 @@ namespace Models
         public Form11() : base()
         {
             FormNum.Value = "1.1";
-            Init();
             Validate_all();
-        }
-        public Form11(string T) : base(T)
-        {
-            FormNum.Value = "1.1";
-            Init();
-            Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
-            Activity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<short?>(nameof(Category), Category_Validation, null);
-            Category.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(CreationDate), CreationDate_Validation, null);
-            CreationDate.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(CreatorOKPO), CreatorOKPO_Validation, null);
-            CreatorOKPO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FactoryNumberRecoded), FactoryNumberRecoded_Validation, null);
-            FactoryNumberRecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FactoryNumber), FactoryNumber_Validation, null);
-            FactoryNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Owner), Owner_Validation, null);
-            Owner.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackName), PackName_Validation, null);
-            PackName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackNumberRecoded), PackNumberRecoded_Validation, null);
-            PackNumberRecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackNumber), PackNumber_Validation, null);
-            PackNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackTypeRecoded), PackTypeRecoded_Validation, null);
-            PackTypeRecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PackType), PackType_Validation, null);
-            PackType.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PassportNumberRecoded), PassportNumberRecoded_Validation, null);
-            PassportNumberRecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PassportNumber), PassportNumber_Validation, null);
-            PassportNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<byte?>(nameof(PropertyCode), PropertyCode_Validation, null);
-            PropertyCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
-            ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
-            Quantity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
-            Radionuclids.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<float?>(nameof(SignedServicePeriod), SignedServicePeriod_Validation, null);
-            SignedServicePeriod.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TransporterOKPO), TransporterOKPO_Validation, null);
-            TransporterOKPO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(TypeRecoded), TypeRecoded_Validation, null);
-            TypeRecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Type), Type_Validation, null);
-            Type.PropertyChanged += InPropertyChanged;
         }
 
         public bool _autoRN = false;

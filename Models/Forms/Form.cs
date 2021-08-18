@@ -8,12 +8,6 @@ namespace Models.Abstracts
 {
     public abstract class Form : INotifyPropertyChanged, IKey
     {
-
-        public Form()
-        {
-
-        }
-
         public int Id { get; set; }
 
         #region FormNum
@@ -57,11 +51,11 @@ namespace Models.Abstracts
         }
         #endregion
 
-        //Для валидации
+        #region For_Validation
         public abstract bool Object_Validation();
-        //Для валидации
+        #endregion
 
-        //Property Changed
+        #region INotifyPropertyChanged
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
@@ -70,6 +64,6 @@ namespace Models.Abstracts
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
-        //Property Changed
+        #endregion
     }
 }
