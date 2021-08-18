@@ -1,4 +1,4 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System;
@@ -13,44 +13,7 @@ namespace Models
         {
             FormNum.Value = "2.4";
             //NumberOfFields.Value = 26;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
-            CodeOYAT.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
-            FcpNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(QuantityFromAnothers), QuantityFromAnothers_Validation, null);
-            QuantityFromAnothers.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(QuantityFromAnothersImported), QuantityFromAnothersImported_Validation, null);
-            QuantityFromAnothersImported.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(QuantityCreated), QuantityCreated_Validation, null);
-            QuantityCreated.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(QuantityRemovedFromAccount), QuantityRemovedFromAccount_Validation, null);
-            QuantityRemovedFromAccount.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MassCreated), MassCreated_Validation, null);
-            MassCreated.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MassFromAnothers), MassFromAnothers_Validation, null);
-            MassFromAnothers.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MassFromAnothersImported), MassFromAnothersImported_Validation, null);
-            MassFromAnothersImported.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MassRemovedFromAccount), MassRemovedFromAccount_Validation, null);
-            MassRemovedFromAccount.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(QuantityTransferredToAnother), QuantityTransferredToAnother_Validation, null);
-            QuantityTransferredToAnother.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MassAnotherReasons), MassAnotherReasons_Validation, null);
-            MassAnotherReasons.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MassTransferredToAnother), MassTransferredToAnother_Validation, null);
-            MassTransferredToAnother.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(QuantityAnotherReasons), QuantityAnotherReasons_Validation, null);
-            QuantityAnotherReasons.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(QuantityRefined), QuantityRefined_Validation, null);
-            QuantityRefined.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(MassRefined), MassRefined_Validation, null);
-            MassRefined.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -80,15 +43,18 @@ namespace Models
         }
 
         //CodeOYAT property
-        public int? CodeOYATId { get; set; }
+#region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Код ОЯТ")]
-        public virtual RamAccess<string> CodeOYAT
+        public RamAccess<string> CodeOYAT
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(CodeOYAT));
+                    var tmp = new RamAccess<string>(CodeOYAT_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
                 
                 {
@@ -100,7 +66,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(CodeOYAT), value);
+                    CodeOYAT_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(CodeOYAT));
             }
@@ -121,29 +87,30 @@ namespace Models
             return true;
         }
         //CodeOYAT property
+        #endregion
 
         //CodeOYATnote property
-        //public virtual RamAccess<string> CodeOYATnote
+        //public RamAccess<string> CodeOYATnote
         //{
         //    get
         //    {
-                
+
         //        {
-        //            return DataAccess.Get<string>(nameof(CodeOYATnote));
+        //            var tmp = new RamAccess<string>(CodeOYATnote_Validation, _DB);
         //        }
-                
+
         //        {
-                    
+
         //        }
         //    }
         //    set
         //    {
 
-                
+
         //        {
-        //            DataAccess.Set(nameof(CodeOYATnote), value);
+        //            CodeOYATnote_DB = value.Value;
         //        }
-        //        OnPropertyChanged(nameof(CodeOYATnote));
+        //        OnPropertyChanged(nameof(CodeOYATnote_Validation, _DB);
         //    }
         //}
 
@@ -153,15 +120,18 @@ namespace Models
         //CodeOYATnote property
 
         //FcpNumber property
-        public int? FcpNumberId { get; set; }
+        #region  
+public string FcpNumber_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public virtual RamAccess<string> FcpNumber
+        public RamAccess<string> FcpNumber
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(FcpNumber));
+                    var tmp = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
+                    tmp.PropertyChanged += FcpNumberValueChanged;
+                    return tmp;
                 }
                 
                 {
@@ -173,7 +143,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(FcpNumber), value);
+                    FcpNumber_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(FcpNumber));
             }
@@ -185,17 +155,21 @@ namespace Models
             return true;
         }
         //FcpNumber property
+        #endregion
 
         //MassCreated Property
-        public int? MassCreatedId { get; set; }
+        #region  
+public int MassCreated_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Масса образованного, т")]
-        public virtual RamAccess<string> MassCreated
+        public RamAccess<string> MassCreated
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(MassCreated));
+                    var tmp = new RamAccess<string>(MassCreated_Validation, MassCreated_DB);
+                    tmp.PropertyChanged += MassCreatedValueChanged;
+                    return tmp;
                 }
                 
                 {
@@ -207,7 +181,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(MassCreated), value);
+                    MassCreated_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(MassCreated));
             }
@@ -246,18 +220,22 @@ namespace Models
             return true;
         }
         //MassCreated Property
+        #endregion
 
         //QuantityCreated property
-        public int? QuantityCreatedId { get; set; }
+        #region  
+public int QuantityCreated_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Количество образованного, шт.")]
-        public virtual RamAccess<string> QuantityCreated
+        public RamAccess<string> QuantityCreated
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(QuantityCreated));//OK
-                    
+                    var tmp = new RamAccess<string>(QuantityCreated_Validation, QuantityCreated_DB);//OK
+                    tmp.PropertyChanged += QuantityCreatedValueChanged;
+                    return tmp;
+
                 }
                 
                 {
@@ -271,7 +249,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(QuantityCreated), value);
+                    QuantityCreated_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(QuantityCreated));
             }
@@ -301,28 +279,29 @@ namespace Models
             return true;
         }
         //QuantityCreated property
+        #endregion
 
         ////QuantityCreatedNote property
-        //public virtual RamAccess<string> QuantityCreatedNote
+        //public RamAccess<string> QuantityCreatedNote
         //{
         //    get
         //    {
-                
+
         //        {
-        //            return DataAccess.Get<string>(nameof(QuantityCreatedNote));//OK
-                    
+        //            var tmp = new RamAccess<string>(QuantityCreatedNote_Validation, _DB);//OK
+
         //        }
-                
+
         //        {
-                    
+
         //        }
         //    }
         //    set
         //    {
 
-                
+
         //        {
-        //            DataAccess.Set(nameof(QuantityCreatedNote), value);
+        //            QuantityCreatedNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(QuantityCreatedNote));
         //    }
@@ -354,15 +333,18 @@ namespace Models
         ////QuantityCreatedNote property
 
         //MassFromAnothers Property
-        public int? MassFromAnothersId { get; set; }
+        #region  
+public int MassFromAnothers_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Масса поступившего от сторонних, т")]
-        public virtual RamAccess<string> MassFromAnothers
+        public RamAccess<string> MassFromAnothers
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(MassFromAnothers));
+                    var tmp = new RamAccess<string>(MassFromAnothers_Validation, MassFromAnothers_DB);
+                    tmp.PropertyChanged += MassFromAnothersValueChanged;
+                    return tmp;
                 }
                 
                 {
@@ -371,7 +353,7 @@ namespace Models
             }
             set
             {
-                    DataAccess.Set(nameof(MassFromAnothers), value);
+                    MassFromAnothers_DB = value.Value;
                 OnPropertyChanged(nameof(MassFromAnothers));
             }
         }
@@ -409,18 +391,22 @@ namespace Models
             return true;
         }
         //MassFromAnothers Property
+        #endregion
 
         //QuantityFromAnothers property
-        public int? QuantityFromAnothersId { get; set; }
+        #region  
+public int QuantityFromAnothers_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Количество поступившего от сторонних, шт.")]
-        public virtual RamAccess<string> QuantityFromAnothers
+        public RamAccess<string> QuantityFromAnothers
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(QuantityFromAnothers));//OK
-                    
+                    var tmp = new RamAccess<string>(QuantityFromAnothers_Validation, QuantityFromAnothers_DB);//OK
+                    tmp.PropertyChanged += QuantityFromAnothersValueChanged;
+                    return tmp;
+
                 }
                 
                 {
@@ -429,7 +415,7 @@ namespace Models
             }
             set
             {
-                    DataAccess.Set(nameof(QuantityFromAnothers), value);
+                    QuantityFromAnothers_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityFromAnothers));
             }
         }
@@ -458,25 +444,26 @@ namespace Models
             return true;
         }
         //QuantityFromAnothers property
+        #endregion
 
         ////QuantityFromAnothersNote property
-        //public virtual RamAccess<string> QuantityFromAnothersNote
+        //public RamAccess<string> QuantityFromAnothersNote
         //{
         //    get
         //    {
-                
+
         //        {
-        //            return DataAccess.Get<string>(nameof(QuantityFromAnothersNote));//OK
-                    
+        //            var tmp = new RamAccess<string>(QuantityFromAnothersNote_Validation, _DB);//OK
+
         //        }
-                
+
         //        {
-                    
+
         //        }
         //    }
         //    set
         //    {
-        //            DataAccess.Set(nameof(QuantityFromAnothersNote), value);
+        //            QuantityFromAnothersNote_DB = value.Value;
         //        OnPropertyChanged(nameof(QuantityFromAnothersNote));
         //    }
         //}
@@ -507,15 +494,18 @@ namespace Models
         ////QuantityFromAnothersNote property
 
         //MassFromAnothersImported Property
-        public int? MassFromAnothersImportedId { get; set; }
+        #region  
+public int MassFromAnothersImported_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Масса импортированного от сторонних, т")]
-        public virtual RamAccess<string> MassFromAnothersImported
+        public RamAccess<string> MassFromAnothersImported
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(MassFromAnothersImported));
+                    var tmp = new RamAccess<string>(MassFromAnothersImported_Validation, MassFromAnothersImported_DB);
+                    tmp.PropertyChanged += MassFromAnothersImportedValueChanged;
+                    return tmp;
                 }
                 
                 {
@@ -527,7 +517,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(MassFromAnothersImported), value);
+                    MassFromAnothersImported_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(MassFromAnothersImported));
             }
@@ -566,18 +556,22 @@ namespace Models
             return true;
         }
         //MassFromAnothersImported Property
+        #endregion
 
         //QuantityFromAnothersImported property
-        public int? QuantityFromAnothersImportedId { get; set; }
+        #region  
+public int QuantityFromAnothersImported_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Количество импортированного от сторонних, шт.")]
-        public virtual RamAccess<string> QuantityFromAnothersImported
+        public RamAccess<string> QuantityFromAnothersImported
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(QuantityFromAnothersImported));//OK
-                    
+                    var tmp = new RamAccess<string>(QuantityFromAnothersImported_Validation, QuantityFromAnothersImported_DB);//OK
+                    tmp.PropertyChanged += QuantityFromAnothersImportedValueChanged;
+                    return tmp;
+
                 }
                 
                 {
@@ -591,7 +585,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(QuantityFromAnothersImported), value);
+                    QuantityFromAnothersImported_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(QuantityFromAnothersImported));
             }
@@ -621,28 +615,29 @@ namespace Models
             return true;
         }
         //QuantityFromAnothersImported property
+        #endregion
 
         ////QuantityFromImportedNote property
-        //public virtual RamAccess<string> QuantityFromImportedNote
+        //public RamAccess<string> QuantityFromImportedNote
         //{
         //    get
         //    {
-                
+
         //        {
-        //            return DataAccess.Get<string>(nameof(QuantityFromImportedNote));//OK
-                    
+        //            var tmp = new RamAccess<string>(QuantityFromImportedNote_Validation, _DB);//OK
+
         //        }
-                
+
         //        {
-                    
+
         //        }
         //    }
         //    set
         //    {
 
-                
+
         //        {
-        //            DataAccess.Set(nameof(QuantityFromImportedNote), value);
+        //            QuantityFromImportedNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(QuantityFromImportedNote));
         //    }
@@ -674,15 +669,18 @@ namespace Models
         ////QuantityFromImportedNote property
 
         //MassAnotherReasons Property
-        public int? MassAnotherReasonsId { get; set; }
+        #region  
+public int MassAnotherReasons_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Масса поставленного на учет по другим причинам, т")]
-        public virtual RamAccess<string> MassAnotherReasons
+        public RamAccess<string> MassAnotherReasons
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(MassAnotherReasons));
+                    var tmp = new RamAccess<string>(MassAnotherReasons_Validation, MassAnotherReasons_DB);
+                    tmp.PropertyChanged += MassAnotherReasonsValueChanged;
+                    return tmp;
                 }
                 
                 {
@@ -694,7 +692,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(MassAnotherReasons), value);
+                    MassAnotherReasons_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(MassAnotherReasons));
             }
@@ -733,18 +731,22 @@ namespace Models
             return true;
         }
         //MassAnotherReasons Property
+        #endregion
 
         //QuantityAnotherReasons property
-        public int? QuantityAnotherReasonsId { get; set; }
+        #region  
+public int QuantityAnotherReasons_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Количество поступившего на учет по другим причинам, шт.")]
-        public virtual RamAccess<string> QuantityAnotherReasons
+        public RamAccess<string> QuantityAnotherReasons
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(QuantityAnotherReasons));//OK
-                    
+                    var tmp = new RamAccess<string>(QuantityAnotherReasons_Validation, QuantityAnotherReasons_DB);//OK
+                    tmp.PropertyChanged += QuantityAnotherReasonsValueChanged;
+                    return tmp;
+
                 }
                 
                 {
@@ -757,7 +759,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(QuantityAnotherReasons), value);
+                    QuantityAnotherReasons_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(QuantityAnotherReasons));
             }
@@ -787,28 +789,29 @@ namespace Models
             return true;
         }
         //QuantityAnotherReasons property
+        #endregion
 
         ////QuantityAnotherReasonsNote property
-        //public virtual RamAccess<string> QuantityAnotherReasonsNote
+        //public RamAccess<string> QuantityAnotherReasonsNote
         //{
         //    get
         //    {
-                
+
         //        {
-        //            return DataAccess.Get<string>(nameof(QuantityAnotherReasonsNote));//OK
-                    
+        //            var tmp = new RamAccess<string>(QuantityAnotherReasonsNote_Validation, _DB);//OK
+
         //        }
-                
+
         //        {
-                    
+
         //        }
         //    }
         //    set
         //    {
 
-                
+
         //        {
-        //            DataAccess.Set(nameof(QuantityAnotherReasonsNote), value);
+        //            QuantityAnotherReasonsNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
         //    }
@@ -840,15 +843,18 @@ namespace Models
         ////QuantityAnotherReasonsNote property
 
         //MassTransferredToAnother Property
-        public int? MassTransferredToAnotherId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Масса переданного сторонним, т")]
-        public virtual RamAccess<string> MassTransferredToAnother
+        public RamAccess<string> MassTransferredToAnother
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(MassTransferredToAnother));
+                    var tmp = new RamAccess<string>(MassTransferredToAnother_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
                 
                 {
@@ -857,7 +863,7 @@ namespace Models
             }
             set
             {
-                    DataAccess.Set(nameof(MassTransferredToAnother), value);
+                    MassTransferredToAnother_DB = value.Value;
                 OnPropertyChanged(nameof(MassTransferredToAnother));
             }
         }
@@ -895,18 +901,22 @@ namespace Models
             return true;
         }
         //MassTransferredToAnother Property
+        #endregion
 
         //QuantityTransferredToAnother property
-        public int? QuantityTransferredToAnotherId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Количество переданного сторонним, шт.")]
-        public virtual RamAccess<string> QuantityTransferredToAnother
+        public RamAccess<string> QuantityTransferredToAnother
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(QuantityTransferredToAnother));//OK
-                    
+                    var tmp = new RamAccess<string>(QuantityTransferredToAnother_Validation, _DB);//OK
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
+
                 }
                 
                 {
@@ -919,7 +929,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(QuantityTransferredToAnother), value);
+                    QuantityTransferredToAnother_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(QuantityTransferredToAnother));
             }
@@ -949,28 +959,29 @@ namespace Models
             return true;
         }
         //QuantityTransferredToAnother property
+        #endregion
 
         ////QuantityTransferredToNote property
-        //public virtual RamAccess<string> QuantityTransferredToNote
+        //public RamAccess<string> QuantityTransferredToNote
         //{
         //    get
         //    {
-                
+
         //        {
-        //            return DataAccess.Get<string>(nameof(QuantityTransferredToNote));//OK
-                    
+        //            var tmp = new RamAccess<string>(QuantityTransferredToNote_Validation, _DB);//OK
+
         //        }
-                
+
         //        {
-                    
+
         //        }
         //    }
         //    set
         //    {
 
-                
+
         //        {
-        //            DataAccess.Set(nameof(QuantityTransferredToNote), value);
+        //            QuantityTransferredToNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(QuantityTransferredToNote));
         //    }
@@ -1002,15 +1013,18 @@ namespace Models
         ////QuantityTransferredToNote property
 
         //MassRefined Property
-        public int? MassRefinedId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Масса переработанного, т")]
-        public virtual RamAccess<string> MassRefined
+        public RamAccess<string> MassRefined
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(MassRefined));
+                    var tmp = new RamAccess<string>(MassRefined_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
                 
                 {
@@ -1019,7 +1033,7 @@ namespace Models
             }
             set
             {
-                    DataAccess.Set(nameof(MassRefined), value);
+                    MassRefined_DB = value.Value;
                 OnPropertyChanged(nameof(MassRefined));
             }
         }
@@ -1057,18 +1071,22 @@ namespace Models
             return true;
         }
         //MassRefined Property
+        #endregion
 
         //QuantityRefined property
-        public int? QuantityRefinedId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Количество переработанного, шт.")]
-        public virtual RamAccess<string> QuantityRefined
+        public RamAccess<string> QuantityRefined
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(QuantityRefined));//OK
-                    
+                    var tmp = new RamAccess<string>(QuantityRefined_Validation, _DB);//OK
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
+
                 }
                 
                 {
@@ -1081,7 +1099,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(QuantityRefined), value);
+                    QuantityRefined_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(QuantityRefined));
             }
@@ -1111,28 +1129,29 @@ namespace Models
             return true;
         }
         //QuantityRefined property
+        #endregion
 
         ////QuantityRefinedNote property
-        //public virtual RamAccess<string> QuantityRefinedNote
+        //public RamAccess<string> QuantityRefinedNote
         //{
         //    get
         //    {
-                
+
         //        {
-        //            return DataAccess.Get<string>(nameof(QuantityRefinedNote));//OK
-                    
+        //            var tmp = new RamAccess<string>(QuantityRefinedNote_Validation, _DB);//OK
+
         //        }
-                
+
         //        {
-                    
+
         //        }
         //    }
         //    set
         //    {
 
-                
+
         //        {
-        //            DataAccess.Set(nameof(QuantityRefinedNote), value);
+        //            QuantityRefinedNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(QuantityRefinedNote));
         //    }
@@ -1164,15 +1183,18 @@ namespace Models
         ////QuantityRefinedNote property
 
         //MassRemovedFromAccount Property
-        public int? MassRemovedFromAccountId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Масса снятого с учета, т")]
-        public virtual RamAccess<string> MassRemovedFromAccount
+        public RamAccess<string> MassRemovedFromAccount
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(MassRemovedFromAccount));
+                    var tmp = new RamAccess<string>(MassRemovedFromAccount_Validation, _DB);
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
                 }
                 
                 {
@@ -1184,7 +1206,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(MassRemovedFromAccount), value);
+                    MassRemovedFromAccount_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(MassRemovedFromAccount));
             }
@@ -1223,18 +1245,22 @@ namespace Models
             return true;
         }
         //MassRemovedFromAccount Property
+        #endregion
 
         //QuantityRemovedFromAccount property
-        public int? QuantityRemovedFromAccountId { get; set; }
+        #region  
+public int _DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Количество снятого с учета, шт.")]
-        public virtual RamAccess<string> QuantityRemovedFromAccount
+        public RamAccess<string> QuantityRemovedFromAccount
         {
             get
             {
                 
                 {
-                    return DataAccess.Get<string>(nameof(QuantityRemovedFromAccount));//OK
-                    
+                    var tmp = new RamAccess<string>(QuantityRemovedFromAccount_Validation, _DB);//OK
+                    tmp.PropertyChanged += ValueChanged;
+                    return tmp;
+
                 }
                 
                 {
@@ -1247,7 +1273,7 @@ namespace Models
 
                 
                 {
-                    DataAccess.Set(nameof(QuantityRemovedFromAccount), value);
+                    QuantityRemovedFromAccount_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(QuantityRemovedFromAccount));
             }
@@ -1277,28 +1303,29 @@ namespace Models
             return true;
         }
         //QuantityRemovedFromAccount property
+        #endregion
 
         ////QuantityRemovedFromNote property
-        //public virtual RamAccess<string> QuantityRemovedFromNote
+        //public RamAccess<string> QuantityRemovedFromNote
         //{
         //    get
         //    {
-                
+
         //        {
-        //            return DataAccess.Get<string>(nameof(QuantityRemovedFromNote));//OK
-                    
+        //            var tmp = new RamAccess<string>(QuantityRemovedFromNote_Validation, _DB);//OK
+
         //        }
-                
+
         //        {
-                    
+
         //        }
         //    }
         //    set
         //    {
 
-                
+
         //        {
-        //            DataAccess.Set(nameof(QuantityRemovedFromNote), value);
+        //            QuantityRemovedFromNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(QuantityRemovedFromNote));
         //    }

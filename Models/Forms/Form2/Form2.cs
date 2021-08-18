@@ -1,4 +1,4 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
 
 namespace Models.Abstracts
@@ -13,7 +13,6 @@ namespace Models.Abstracts
         }
         public Form2(string T) : base(T)
         {
-            Init_base();
             Validate_base();
         }
 
@@ -21,30 +20,24 @@ namespace Models.Abstracts
         {
             OnPropertyChanged(args.PropertyName);
         }
-
-        private void Init_base()
-        {
-            DataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, -1);
-            NumberInOrder.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<byte>(nameof(CorrectionNumber), CorrectionNumber_Validation, 255);
-            CorrectionNumber.PropertyChanged += InPropertyChanged;
-            //DataAccess.Init<string>(nameof(), _Validation, null);
-        }
         protected void Validate_base()
         {
             NumberInOrder_Validation(NumberInOrder);
         }
 
         //CorrectionNumber property
-        public int? CorrectionNumberId { get; set; }
+        #region CorrectionNumber
+        public byte CorrectionNumber_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("Номер корректировки")]
-        public virtual RamAccess<byte> CorrectionNumber
+        public RamAccess<byte> CorrectionNumber
         {
             get
             {
 
                 {
-                    return DataAccess.Get<byte>(nameof(CorrectionNumber));
+                    var tmp = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
+                    tmp.PropertyChanged += CorrectionNumberValueChanged;
+                    return tmp;
 
                 }
 
@@ -57,7 +50,7 @@ namespace Models.Abstracts
 
 
                 {
-                    DataAccess.Set(nameof(CorrectionNumber), value);
+                    CorrectionNumber_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
@@ -68,17 +61,22 @@ namespace Models.Abstracts
             value.ClearErrors(); return true;
         }
         //CorrectionNumber property
+#endregion
 
         //NumberInOrder property
-        public int? NumberInOrderId { get; set; }
+        #region NumberInOrder
+        
+public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         [Attributes.Form_Property("№ п/п")]
-        public virtual RamAccess<int> NumberInOrder
+        public RamAccess<int> NumberInOrder
         {
             get
             {
 
                 {
-                    return DataAccess.Get<int>(nameof(NumberInOrder));
+                    var tmp = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
+                    tmp.PropertyChanged += NumberInOrderValueChanged;
+                    return tmp;
 
                 }
 
@@ -91,7 +89,7 @@ namespace Models.Abstracts
 
 
                 {
-                    DataAccess.Set(nameof(NumberInOrder), value);
+                    NumberInOrder_DB = value.Value;
                 }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
@@ -102,5 +100,6 @@ namespace Models.Abstracts
             value.ClearErrors(); return true;
         }
         //NumberInOrder property
+#endregion
     }
 }
