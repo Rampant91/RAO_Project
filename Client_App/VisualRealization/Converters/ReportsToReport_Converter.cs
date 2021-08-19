@@ -23,7 +23,6 @@ namespace Client_App.Converters
                     last_item = rps;
                     foreach (Report? it in rps.Report_Collection)
                     {
-                        it.IsChanged = true;
                         lst.Add(it);
                     }
                 }

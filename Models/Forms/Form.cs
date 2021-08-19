@@ -16,11 +16,23 @@ namespace Models.Abstracts
         [Attributes.Form_Property("Форма")]
         public RamAccess<string> FormNum
         {
-            get => new RamAccess<string>(FormNum_Validation,FormNum_DB);
+            get
+            {
+                var tmp = new RamAccess<string>(FormNum_Validation, FormNum_DB);
+                tmp.PropertyChanged += FormNumValueChanged;
+                return tmp;
+            }
             set
             {
                 FormNum_DB = value.Value;
                 OnPropertyChanged(nameof(FormNum));
+            }
+        }
+        private void FormNumValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                FormNum_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool FormNum_Validation(RamAccess<string> value)//Ready
@@ -36,11 +48,23 @@ namespace Models.Abstracts
         [Attributes.Form_Property("Число полей")]
         public RamAccess<int> NumberOfFields
         {
-            get => new RamAccess<int>(NumberOfFields_Validation, NumberOfFields_DB);
+            get
+            {
+                var tmp = new RamAccess<int>(NumberOfFields_Validation, NumberOfFields_DB);
+                tmp.PropertyChanged += NumberOfFieldsValueChanged;
+                return tmp;
+            }
             set
             {
                 NumberOfFields_DB = value.Value;
                 OnPropertyChanged(nameof(NumberOfFields));
+            }
+        }
+        private void NumberOfFieldsValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                NumberOfFields_DB = ((RamAccess<int>)Value).Value;
             }
         }
         private bool NumberOfFields_Validation(RamAccess<int> value)

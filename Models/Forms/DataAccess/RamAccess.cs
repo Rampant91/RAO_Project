@@ -36,6 +36,10 @@ namespace Models.DataAccess
         {
             this.Handler = Handler;
             this._value = Value;
+            if (Handler != null)
+            {
+                Handler(this);
+            }
         }
 
         public RamAccess()

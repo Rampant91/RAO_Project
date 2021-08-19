@@ -129,6 +129,7 @@ namespace Client_App.ViewModels
             {
                 var t = desktop.MainWindow as MainWindow;
                 var rt = new Report();
+                rt.FormNum.Value = param;
                 if (t.SelectedReports.Count() != 0)
                 {
                     var y = t.SelectedReports.First() as Reports;
@@ -146,6 +147,7 @@ namespace Client_App.ViewModels
                 {
                     var rt = new Reports();
                     rt.Master = new Report();
+                    
                     Local_Reports.Reports_Collection.Add(rt);
                     FormChangeOrCreate frm = new(param, rt.Master);
                     await frm.ShowDialog<Form>(desktop.MainWindow);

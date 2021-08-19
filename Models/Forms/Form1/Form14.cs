@@ -418,7 +418,7 @@ namespace Models
         #endregion
 
         #region AggregateState
-        public byte? AggregateState_DB { get; set; } = "";
+        public byte? AggregateState_DB { get; set; } = 0;
         [NotMapped]
         [Attributes.Form_Property("Агрегатное состояние")]
         public RamAccess<byte?> AggregateState//1 2 3

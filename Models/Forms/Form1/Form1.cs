@@ -13,21 +13,11 @@ namespace Models.Abstracts
 
         public Form1():base()
         {
-            Validate_base();
+
         }
         protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             OnPropertyChanged(args.PropertyName);
-        }
-
-        protected void Validate_base()
-        {
-            OperationCode_Validation(OperationCode);
-            OperationDate_Validation(OperationDate);
-            DocumentNumber_Validation(DocumentNumber);
-            DocumentVid_Validation(DocumentVid);
-            DocumentDate_Validation(DocumentDate);
-            NumberInOrder_Validation(NumberInOrder);
         }
 
         #region NumberInOrder

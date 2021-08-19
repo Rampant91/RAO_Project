@@ -136,7 +136,6 @@ namespace Client_App.Controls.DataGrid
                 {
                     this.Rows.Add(count.ToString(),Rows[item.SRow.ToString()]);
                     this.Rows.Remove(item.SRow.ToString());
-                    item.SRow = count;
 
                     Binding b = new Binding
                     {
@@ -148,6 +147,7 @@ namespace Client_App.Controls.DataGrid
                     item.Bind(StackPanel.DataContextProperty, b);
 
                     this[count].Reorgonize(item.SRow.ToString(),count.ToString());
+                    item.SRow = count;
                 }
                 count++;
             }
