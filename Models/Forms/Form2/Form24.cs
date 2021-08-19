@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System;
+using System.ComponentModel;
 
 namespace Models
 {
@@ -43,36 +44,32 @@ namespace Models
         }
 
         //CodeOYAT property
-#region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  CodeOYAT
+        public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Код ОЯТ")]
         public RamAccess<string> CodeOYAT
         {
             get
             {
-                
-                {
-                    var tmp = new RamAccess<string>(CodeOYAT_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(CodeOYAT_Validation, CodeOYAT_DB);
+                    tmp.PropertyChanged += CodeOYATValueChanged;
                     return tmp;
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
                     CodeOYAT_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(CodeOYAT));
             }
         }
 
-        private bool CodeOYAT_Validation(RamAccess<string> value)
+        private void CodeOYATValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                CodeOYAT_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -120,36 +117,32 @@ public int _DB { get; set; } = 0; [NotMapped]
         //CodeOYATnote property
 
         //FcpNumber property
-        #region  
-public string FcpNumber_DB { get; set; } = 0; [NotMapped]
+        #region  FcpNumber
+        public string FcpNumber_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
         public RamAccess<string> FcpNumber
         {
             get
             {
-                
-                {
                     var tmp = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
                     tmp.PropertyChanged += FcpNumberValueChanged;
                     return tmp;
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
                     FcpNumber_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
 
-                private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+                private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                FcpNumber_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             return true;
@@ -158,36 +151,32 @@ public string FcpNumber_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //MassCreated Property
-        #region  
-public int MassCreated_DB { get; set; } = 0; [NotMapped]
+        #region  MassCreated
+        public string MassCreated_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса образованного, т")]
         public RamAccess<string> MassCreated
         {
             get
             {
-                
-                {
                     var tmp = new RamAccess<string>(MassCreated_Validation, MassCreated_DB);
                     tmp.PropertyChanged += MassCreatedValueChanged;
                     return tmp;
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
                     MassCreated_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(MassCreated));
             }
         }
 
-                private bool MassCreated_Validation(RamAccess<string> value)//TODO
+                private void MassCreatedValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                MassCreated_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool MassCreated_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -223,39 +212,32 @@ public int MassCreated_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //QuantityCreated property
-        #region  
-public int QuantityCreated_DB { get; set; } = 0; [NotMapped]
+        #region  QuantityCreated
+        public string QuantityCreated_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Количество образованного, шт.")]
         public RamAccess<string> QuantityCreated
         {
             get
             {
-                
-                {
                     var tmp = new RamAccess<string>(QuantityCreated_Validation, QuantityCreated_DB);//OK
                     tmp.PropertyChanged += QuantityCreatedValueChanged;
                     return tmp;
-
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-
-
-                
-                {
                     QuantityCreated_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(QuantityCreated));
             }
         }
         // positive int.
-                private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
+                private void QuantityCreatedValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                QuantityCreated_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -333,23 +315,16 @@ public int QuantityCreated_DB { get; set; } = 0; [NotMapped]
         ////QuantityCreatedNote property
 
         //MassFromAnothers Property
-        #region  
-public int MassFromAnothers_DB { get; set; } = 0; [NotMapped]
+        #region  MassFromAnothers
+        public string MassFromAnothers_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса поступившего от сторонних, т")]
         public RamAccess<string> MassFromAnothers
         {
             get
             {
-                
-                {
                     var tmp = new RamAccess<string>(MassFromAnothers_Validation, MassFromAnothers_DB);
                     tmp.PropertyChanged += MassFromAnothersValueChanged;
                     return tmp;
-                }
-                
-                {
-                    
-                }
             }
             set
             {
@@ -358,7 +333,14 @@ public int MassFromAnothers_DB { get; set; } = 0; [NotMapped]
             }
         }
 
-                private bool MassFromAnothers_Validation(RamAccess<string> value)//TODO
+                private void MassFromAnothersValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                MassFromAnothers_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool MassFromAnothers_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -394,24 +376,16 @@ public int MassFromAnothers_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //QuantityFromAnothers property
-        #region  
-public int QuantityFromAnothers_DB { get; set; } = 0; [NotMapped]
+        #region  QuantityFromAnothers
+        public string QuantityFromAnothers_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Количество поступившего от сторонних, шт.")]
         public RamAccess<string> QuantityFromAnothers
         {
             get
             {
-                
-                {
                     var tmp = new RamAccess<string>(QuantityFromAnothers_Validation, QuantityFromAnothers_DB);//OK
                     tmp.PropertyChanged += QuantityFromAnothersValueChanged;
                     return tmp;
-
-                }
-                
-                {
-                    
-                }
             }
             set
             {
@@ -420,7 +394,14 @@ public int QuantityFromAnothers_DB { get; set; } = 0; [NotMapped]
             }
         }
         // positive int.
-                private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
+                private void QuantityFromAnothersValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                QuantityFromAnothers_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -494,36 +475,32 @@ public int QuantityFromAnothers_DB { get; set; } = 0; [NotMapped]
         ////QuantityFromAnothersNote property
 
         //MassFromAnothersImported Property
-        #region  
-public int MassFromAnothersImported_DB { get; set; } = 0; [NotMapped]
+        #region  MassFromAnothersImported
+        public string MassFromAnothersImported_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса импортированного от сторонних, т")]
         public RamAccess<string> MassFromAnothersImported
         {
             get
             {
-                
-                {
                     var tmp = new RamAccess<string>(MassFromAnothersImported_Validation, MassFromAnothersImported_DB);
                     tmp.PropertyChanged += MassFromAnothersImportedValueChanged;
                     return tmp;
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
                     MassFromAnothersImported_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(MassFromAnothersImported));
             }
         }
 
-                private bool MassFromAnothersImported_Validation(RamAccess<string> value)//TODO
+                private void MassFromAnothersImportedValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                MassFromAnothersImported_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool MassFromAnothersImported_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -559,39 +536,32 @@ public int MassFromAnothersImported_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //QuantityFromAnothersImported property
-        #region  
-public int QuantityFromAnothersImported_DB { get; set; } = 0; [NotMapped]
+        #region  QuantityFromAnothersImported
+        public string QuantityFromAnothersImported_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Количество импортированного от сторонних, шт.")]
         public RamAccess<string> QuantityFromAnothersImported
         {
             get
             {
-                
-                {
                     var tmp = new RamAccess<string>(QuantityFromAnothersImported_Validation, QuantityFromAnothersImported_DB);//OK
                     tmp.PropertyChanged += QuantityFromAnothersImportedValueChanged;
                     return tmp;
-
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-
-
-                
-                {
                     QuantityFromAnothersImported_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(QuantityFromAnothersImported));
             }
         }
         // positive int.
-                private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//Ready
+                private void QuantityFromAnothersImportedValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                QuantityFromAnothersImported_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -669,36 +639,32 @@ public int QuantityFromAnothersImported_DB { get; set; } = 0; [NotMapped]
         ////QuantityFromImportedNote property
 
         //MassAnotherReasons Property
-        #region  
-public int MassAnotherReasons_DB { get; set; } = 0; [NotMapped]
+        #region  MassAnotherReasons
+        public string MassAnotherReasons_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса поставленного на учет по другим причинам, т")]
         public RamAccess<string> MassAnotherReasons
         {
             get
             {
-                
-                {
                     var tmp = new RamAccess<string>(MassAnotherReasons_Validation, MassAnotherReasons_DB);
                     tmp.PropertyChanged += MassAnotherReasonsValueChanged;
                     return tmp;
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
                     MassAnotherReasons_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(MassAnotherReasons));
             }
         }
 
-                private bool MassAnotherReasons_Validation(RamAccess<string> value)//TODO
+                private void MassAnotherReasonsValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                MassAnotherReasons_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool MassAnotherReasons_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -734,38 +700,32 @@ public int MassAnotherReasons_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //QuantityAnotherReasons property
-        #region  
-public int QuantityAnotherReasons_DB { get; set; } = 0; [NotMapped]
+        #region  QuantityAnotherReasons
+        public string QuantityAnotherReasons_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Количество поступившего на учет по другим причинам, шт.")]
         public RamAccess<string> QuantityAnotherReasons
         {
             get
             {
-                
-                {
-                    var tmp = new RamAccess<string>(QuantityAnotherReasons_Validation, QuantityAnotherReasons_DB);//OK
-                    tmp.PropertyChanged += QuantityAnotherReasonsValueChanged;
-                    return tmp;
-
-                }
-                
-                {
-                    
-                }
+                var tmp = new RamAccess<string>(QuantityAnotherReasons_Validation, QuantityAnotherReasons_DB);//OK
+                tmp.PropertyChanged += QuantityAnotherReasonsValueChanged;
+                return tmp;
             }
             set
             {
-
-
-                
-                {
                     QuantityAnotherReasons_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(QuantityAnotherReasons));
             }
         }
         // positive int.
-                private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
+                private void QuantityAnotherReasonsValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                QuantityAnotherReasons_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -843,23 +803,16 @@ public int QuantityAnotherReasons_DB { get; set; } = 0; [NotMapped]
         ////QuantityAnotherReasonsNote property
 
         //MassTransferredToAnother Property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  MassTransferredToAnother
+        public string MassTransferredToAnother_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса переданного сторонним, т")]
         public RamAccess<string> MassTransferredToAnother
         {
             get
             {
-                
-                {
-                    var tmp = new RamAccess<string>(MassTransferredToAnother_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(MassTransferredToAnother_Validation, MassTransferredToAnother_DB);
+                    tmp.PropertyChanged += MassTransferredToAnotherValueChanged;
                     return tmp;
-                }
-                
-                {
-                    
-                }
             }
             set
             {
@@ -868,7 +821,14 @@ public int _DB { get; set; } = 0; [NotMapped]
             }
         }
 
-                private bool MassTransferredToAnother_Validation(RamAccess<string> value)//TODO
+                private void MassTransferredToAnotherValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                MassTransferredToAnother_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool MassTransferredToAnother_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -904,38 +864,32 @@ public int _DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //QuantityTransferredToAnother property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  QuantityTransferredToAnother
+        public string QuantityTransferredToAnother_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Количество переданного сторонним, шт.")]
         public RamAccess<string> QuantityTransferredToAnother
         {
             get
             {
-                
-                {
-                    var tmp = new RamAccess<string>(QuantityTransferredToAnother_Validation, _DB);//OK
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(QuantityTransferredToAnother_Validation, QuantityTransferredToAnother_DB);//OK
+                    tmp.PropertyChanged += QuantityTransferredToAnotherValueChanged;
                     return tmp;
-
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-
-                
-                {
                     QuantityTransferredToAnother_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(QuantityTransferredToAnother));
             }
         }
         // positive int.
-                private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//Ready
+                private void QuantityTransferredToAnotherValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                QuantityTransferredToAnother_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -1013,23 +967,16 @@ public int _DB { get; set; } = 0; [NotMapped]
         ////QuantityTransferredToNote property
 
         //MassRefined Property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  MassRefined
+        public string MassRefined_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса переработанного, т")]
         public RamAccess<string> MassRefined
         {
             get
             {
-                
-                {
-                    var tmp = new RamAccess<string>(MassRefined_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(MassRefined_Validation, MassRefined_DB);
+                    tmp.PropertyChanged += MassRefinedValueChanged;
                     return tmp;
-                }
-                
-                {
-                    
-                }
             }
             set
             {
@@ -1038,7 +985,14 @@ public int _DB { get; set; } = 0; [NotMapped]
             }
         }
 
-                private bool MassRefined_Validation(RamAccess<string> value)//TODO
+                private void MassRefinedValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                MassRefined_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool MassRefined_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -1074,38 +1028,32 @@ public int _DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //QuantityRefined property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  QuantityRefined
+        public string QuantityRefined_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Количество переработанного, шт.")]
         public RamAccess<string> QuantityRefined
         {
             get
             {
-                
-                {
-                    var tmp = new RamAccess<string>(QuantityRefined_Validation, _DB);//OK
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(QuantityRefined_Validation, QuantityRefined_DB);//OK
+                    tmp.PropertyChanged += QuantityRefinedValueChanged;
                     return tmp;
-
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-
-                
-                {
                     QuantityRefined_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(QuantityRefined));
             }
         }
         // positive int.
-                private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
+                private void QuantityRefinedValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                QuantityRefined_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -1183,36 +1131,32 @@ public int _DB { get; set; } = 0; [NotMapped]
         ////QuantityRefinedNote property
 
         //MassRemovedFromAccount Property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  MassRemovedFromAccount
+        public string MassRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса снятого с учета, т")]
         public RamAccess<string> MassRemovedFromAccount
         {
             get
             {
-                
-                {
-                    var tmp = new RamAccess<string>(MassRemovedFromAccount_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(MassRemovedFromAccount_Validation, MassRemovedFromAccount_DB);
+                    tmp.PropertyChanged += MassRemovedFromAccountValueChanged;
                     return tmp;
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-                
-                {
                     MassRemovedFromAccount_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(MassRemovedFromAccount));
             }
         }
 
-                private bool MassRemovedFromAccount_Validation(RamAccess<string> value)//TODO
+                private void MassRemovedFromAccountValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                MassRemovedFromAccount_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool MassRemovedFromAccount_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -1248,38 +1192,32 @@ public int _DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //QuantityRemovedFromAccount property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  QuantityRemovedFromAccount
+        public string QuantityRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Количество снятого с учета, шт.")]
         public RamAccess<string> QuantityRemovedFromAccount
         {
             get
             {
-                
-                {
-                    var tmp = new RamAccess<string>(QuantityRemovedFromAccount_Validation, _DB);//OK
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(QuantityRemovedFromAccount_Validation, QuantityRemovedFromAccount_DB);//OK
+                    tmp.PropertyChanged += QuantityRemovedFromAccountValueChanged;
                     return tmp;
-
-                }
-                
-                {
-                    
-                }
             }
             set
             {
-
-
-                
-                {
                     QuantityRemovedFromAccount_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(QuantityRemovedFromAccount));
             }
         }
         // positive int.
-                private bool QuantityRemovedFromAccount_Validation(RamAccess<string> value)//Ready
+                private void QuantityRemovedFromAccountValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                QuantityRemovedFromAccount_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool QuantityRemovedFromAccount_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))

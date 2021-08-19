@@ -399,7 +399,7 @@ namespace Models
             foreach (var nucl in nuclids)
             {
                 var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
-                if (tmp.Count() == 0)
+                if (!tmp.Any())
                     flag = false;
             }
             if (!flag)
@@ -924,7 +924,7 @@ namespace Models
         #endregion
 
         #region Quantity
-        public int? Quantity_DB { get; set; } = 0;
+        public int? Quantity_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Количество, шт.")]
         public RamAccess<int?> Quantity

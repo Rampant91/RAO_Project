@@ -1,5 +1,6 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace Models
@@ -30,35 +31,30 @@ namespace Models
         }
 
         //WasteSourceName property
-#region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
+        #region WasteSourceName 
+        public string WasteSourceName_DB { get; set; } = ""; [NotMapped]
+        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
         public RamAccess<string> WasteSourceName
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(WasteSourceName_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
-                    return tmp;
-                }
-
-                {
-
-                }
+                var tmp = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
+                tmp.PropertyChanged += WasteSourceNameValueChanged;
+                return tmp;
             }
             set
             {
-
-
-                {
-                    WasteSourceName_DB = value.Value;
-                }
+                WasteSourceName_DB = value.Value;
                 OnPropertyChanged(nameof(WasteSourceName));
             }
         }
-
-
+        private void WasteSourceNameValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool WasteSourceName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -73,35 +69,30 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Fo
         #endregion
 
         //RadionuclidName property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Радионуклид")]
+        #region RadionuclidName
+        public string RadionuclidName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Радионуклид")]
         public RamAccess<string> RadionuclidName
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(RadionuclidName_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
+                    tmp.PropertyChanged += RadionuclidNameValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     RadionuclidName_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(RadionuclidName));
             }
         }
         //If change this change validation
-
+        private void RadionuclidNameValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
@@ -116,35 +107,30 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Fo
         #endregion
 
         //AllowedActivity property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
+        #region AllowedActivity
+        public string AllowedActivity_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
         public RamAccess<string> AllowedActivity
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(AllowedActivity_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(AllowedActivity_Validation, AllowedActivity_DB);
+                    tmp.PropertyChanged += AllowedActivityValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     AllowedActivity_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(AllowedActivity));
             }
         }
 
-
+        private void AllowedActivityValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
@@ -213,34 +199,29 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Fo
         ////AllowedActivityNote property
 
         //FactedActivity property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
+        #region FactedActivity
+        public string FactedActivity_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
         public RamAccess<string> FactedActivity
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(FactedActivity_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(FactedActivity_Validation, FactedActivity_DB);
+                    tmp.PropertyChanged += FactedActivityValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     FactedActivity_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(FactedActivity));
             }
         }
-
+        private void FactedActivityValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
 
         private bool FactedActivity_Validation(RamAccess<string> value)//Ready
         {

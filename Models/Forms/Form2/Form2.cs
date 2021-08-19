@@ -6,12 +6,7 @@ namespace Models.Abstracts
     public abstract class Form2 : Form
     {
         [Attributes.Form_Property("Форма")]
-
-        public Form2() : base()
-        {
-
-        }
-        public Form2(string T) : base(T)
+        public Form2()
         {
             Validate_base();
         }
@@ -33,30 +28,25 @@ namespace Models.Abstracts
         {
             get
             {
-
-                {
                     var tmp = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
                     tmp.PropertyChanged += CorrectionNumberValueChanged;
                     return tmp;
-
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     CorrectionNumber_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
 
-        private bool CorrectionNumber_Validation(RamAccess<byte> value)
+        private void CorrectionNumberValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                CorrectionNumber_DB = ((RamAccess<byte>)Value).Value;
+}
+}
+private bool CorrectionNumber_Validation(RamAccess<byte> value)
         {
             value.ClearErrors(); return true;
         }
@@ -72,30 +62,25 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         {
             get
             {
-
-                {
                     var tmp = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
                     tmp.PropertyChanged += NumberInOrderValueChanged;
                     return tmp;
-
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     NumberInOrder_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
 
-        private bool NumberInOrder_Validation(RamAccess<int> value)
+        private void NumberInOrderValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                NumberInOrder_DB = ((RamAccess<int>)Value).Value;
+}
+}
+private bool NumberInOrder_Validation(RamAccess<int> value)
         {
             value.ClearErrors(); return true;
         }

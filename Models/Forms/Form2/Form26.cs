@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace Models
 {
@@ -35,8 +36,8 @@ namespace Models
         }
 
         //SourcesQuantity property
-#region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
+        #region SourcesQuantity
+        public int? SourcesQuantity_DB { get; set; } = null; [NotMapped]
         [Attributes.Form_Property("Количество источников, шт.")]
         public RamAccess<int?> SourcesQuantity
         {
@@ -44,8 +45,8 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
             {
 
                 {
-                    var tmp = new RamAccess<int?>(SourcesQuantity_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<int?>(SourcesQuantity_Validation, SourcesQuantity_DB);
+                    tmp.PropertyChanged += SourcesQuantityValueChanged;
                     return tmp;
                 }
             }
@@ -60,7 +61,14 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
             }
         }
         // positive int.
-        private bool SourcesQuantity_Validation(RamAccess<int?> value)//Ready
+        private void SourcesQuantityValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                SourcesQuantity_DB = ((RamAccess<int?>)Value).Value;
+}
+}
+private bool SourcesQuantity_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -78,20 +86,31 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //ObservedSourceNumber property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
+        #region ObservedSourceNumber
+        public string ObservedSourceNumber_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Номер наблюдательной скважины")]
         public RamAccess<string> ObservedSourceNumber
         {
-            get => new RamAccess<string>(ObservedSourceNumber_Validation, _DB);
-            set
+            get
+{
+var tmp = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
+tmp.PropertyChanged += ObservedSourceNumberValueChanged;
+return tmp;
+}            set
             {
                 ObservedSourceNumber_DB = value.Value;
                 OnPropertyChanged(nameof(ObservedSourceNumber));
             }
         }
         //If change this change validation
-        private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
+        private void ObservedSourceNumberValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                ObservedSourceNumber_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors(); return true;
         }
@@ -99,20 +118,31 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //ControlledAreaName property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
+        #region ControlledAreaName
+        public string ControlledAreaName_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Наименование зоны контроля")]
         public RamAccess<string> ControlledAreaName
         {
-            get => new RamAccess<string>(ControlledAreaName_Validation, _DB);
-            set
+            get
+{
+var tmp = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
+tmp.PropertyChanged += ControlledAreaNameValueChanged;
+return tmp;
+}            set
             {
                 ControlledAreaName_DB = value.Value;
                 OnPropertyChanged(nameof(ControlledAreaName));
             }
         }
         //If change this change validation
-        private bool ControlledAreaName_Validation(RamAccess<string> value)//Ready
+        private void ControlledAreaNameValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                ControlledAreaName_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool ControlledAreaName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -137,20 +167,31 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //SupposedWasteSource property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
+        #region SupposedWasteSource
+        public string SupposedWasteSource_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Предполагаемый источник поступления радиоактивных веществ")]
         public RamAccess<string> SupposedWasteSource
         {
-            get => new RamAccess<string>(SupposedWasteSource_Validation, _DB);
-            set
+            get
+{
+var tmp = new RamAccess<string>(SupposedWasteSource_Validation, SupposedWasteSource_DB);
+tmp.PropertyChanged += SupposedWasteSourceValueChanged;
+return tmp;
+}            set
             {
                 SupposedWasteSource_DB = value.Value;
                 OnPropertyChanged(nameof(SupposedWasteSource));
             }
         }
 
-        private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
+        private void SupposedWasteSourceValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                SupposedWasteSource_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();//done
             return true;
@@ -159,24 +200,31 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //DistanceToWasteSource property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
+        #region DistanceToWasteSource
+        public string DistanceToWasteSource_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м")]
         public RamAccess<string> DistanceToWasteSource
         {
-            get => new RamAccess<string>(DistanceToWasteSource_Validation, _DB);
-            set
+            get
+{
+var tmp = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
+tmp.PropertyChanged += DistanceToWasteSourceValueChanged;
+return tmp;
+}            set
             {
-
-
-                {
                     DistanceToWasteSource_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(DistanceToWasteSource));
             }
         }
 
-        private bool DistanceToWasteSource_Validation(RamAccess<string> value)//Ready
+        private void DistanceToWasteSourceValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                DistanceToWasteSource_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool DistanceToWasteSource_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -207,8 +255,8 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //TestDepth property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
+        #region TestDepth
+        public string TestDepth_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Глубина отбора проб, м")]
         public RamAccess<string> TestDepth
         {
@@ -216,8 +264,8 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
             {
 
                 {
-                    var tmp = new RamAccess<string>(TestDepth_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(TestDepth_Validation, TestDepth_DB);
+                    tmp.PropertyChanged += TestDepthValueChanged;
                     return tmp;
                 }
 
@@ -236,7 +284,14 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
             }
         }
 
-        private bool TestDepth_Validation(RamAccess<string> value)//Ready
+        private void TestDepthValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                TestDepth_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool TestDepth_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -299,23 +354,16 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         ////TestDepthNote property
 
         //RadionuclidName property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
+        #region RadionuclidName
+        public string RadionuclidName_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Радионуклид")]
         public RamAccess<string> RadionuclidName
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(RadionuclidName_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
+                    tmp.PropertyChanged += RadionuclidNameValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
@@ -324,7 +372,14 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
             }
         }
         //If change this change validation
-        private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
+        private void RadionuclidNameValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                RadionuclidName_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -344,36 +399,32 @@ public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //AverageYearConcentration property
-        #region NumberInOrder 
-public int NumberInOrder_DB { get; set; } = 0; [NotMapped]
+        #region AverageYearConcentration 
+        public string AverageYearConcentration_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Среднегодовое содержание радионуклида, Бк/кг")]
         public RamAccess<string> AverageYearConcentration
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(AverageYearConcentration_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
+                    tmp.PropertyChanged += AverageYearConcentrationValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     AverageYearConcentration_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(AverageYearConcentration));
             }
         }
 
-        private bool AverageYearConcentration_Validation(RamAccess<string> value)//TODO
+        private void AverageYearConcentrationValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                AverageYearConcentration_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool AverageYearConcentration_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))

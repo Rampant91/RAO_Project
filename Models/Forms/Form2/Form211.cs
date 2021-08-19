@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Spravochniki;
 using System.Linq;
+using System.ComponentModel;
 
 namespace Models
 {
@@ -36,35 +37,31 @@ namespace Models
         }
 
         //PlotName property
-#region  
-public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Наименование участка")]
+        #region  PlotName
+        public string PlotName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Наименование участка")]
         public RamAccess<string> PlotName
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(PlotName_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(PlotName_Validation, PlotName_DB);
+                    tmp.PropertyChanged += PlotNameValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     PlotName_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(PlotName));
             }
         }
 
-        private bool PlotName_Validation(RamAccess<string> value)//TODO
+       private void PlotNameValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                PlotName_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool PlotName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -78,35 +75,31 @@ public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("
         #endregion
 
         //PlotKadastrNumber property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Кадастровый номер участка")]
+        #region  PlotKadastrNumber
+        public string PlotKadastrNumber_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Кадастровый номер участка")]
         public RamAccess<string> PlotKadastrNumber
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(PlotKadastrNumber_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(PlotKadastrNumber_Validation, PlotKadastrNumber_DB);
+                    tmp.PropertyChanged += PlotKadastrNumberValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     PlotKadastrNumber_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
         }
 
-        private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
+       private void PlotKadastrNumberValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                PlotKadastrNumber_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -120,35 +113,31 @@ public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("
         #endregion
 
         //PlotCode property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Код участка")]
+        #region  PlotCode
+        public string PlotCode_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Код участка")]
         public RamAccess<string> PlotCode
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(PlotCode_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(PlotCode_Validation, PlotCode_DB);
+                    tmp.PropertyChanged += PlotCodeValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     PlotCode_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(PlotCode));
             }
         }
         //6 symbols code
-        private bool PlotCode_Validation(RamAccess<string> value)//TODO
+       private void PlotCodeValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                PlotCode_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -162,35 +151,31 @@ public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("
         #endregion
 
         //InfectedArea property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
+        #region  InfectedArea
+        public int? InfectedArea_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
         public RamAccess<int?> InfectedArea
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<int?>(InfectedArea_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<int?>(InfectedArea_Validation, InfectedArea_DB);
+                    tmp.PropertyChanged += InfectedAreaValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     InfectedArea_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(InfectedArea));
             }
         }
 
-        private bool InfectedArea_Validation(RamAccess<int?> value)//TODO
+       private void InfectedAreaValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                InfectedArea_DB = ((RamAccess<int?>)Value).Value;
+}
+}
+private bool InfectedArea_Validation(RamAccess<int?> value)//TODO
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -204,37 +189,31 @@ public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("
         #endregion
 
         //Radionuclids property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Наименования радионуклидов")]
+        #region  Radionuclids
+        public string Radionuclids_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Наименования радионуклидов")]
         public RamAccess<string> Radionuclids
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(Radionuclids_Validation, _DB);//OK
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);//OK
+                    tmp.PropertyChanged += RadionuclidsValueChanged;
                     return tmp;
-
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-
-                {
                     Radionuclids_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
         //If change this change validation
-        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
+       private void RadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                Radionuclids_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -247,7 +226,7 @@ public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("
             foreach (var nucl in nuclids)
             {
                 var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
-                if (tmp.Count() == 0)
+                if (!tmp.Any())
                     flag = false;
             }
             if (!flag)
@@ -292,35 +271,31 @@ public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("
         ////RadionuclidNameNote property
 
         //SpecificActivityOfPlot property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Удельная активность, Бк/г")]
+        #region  SpecificActivityOfPlot
+        public string SpecificActivityOfPlot_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Удельная активность, Бк/г")]
         public RamAccess<string> SpecificActivityOfPlot
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(SpecificActivityOfPlot_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(SpecificActivityOfPlot_Validation, SpecificActivityOfPlot_DB);
+                    tmp.PropertyChanged += SpecificActivityOfPlotValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     SpecificActivityOfPlot_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(SpecificActivityOfPlot));
             }
         }
 
-        private bool SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
+       private void SpecificActivityOfPlotValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                SpecificActivityOfPlot_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
         {
             return true;
             //value.ClearErrors();
@@ -339,35 +314,31 @@ public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("
         #endregion
 
         //SpecificActivityOfLiquidPart property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]
+        #region  SpecificActivityOfLiquidPart
+        public string SpecificActivityOfLiquidPart_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Удельная активность жидкой части, Бк/г")]
         public RamAccess<string> SpecificActivityOfLiquidPart
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(SpecificActivityOfLiquidPart_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(SpecificActivityOfLiquidPart_Validation, SpecificActivityOfLiquidPart_DB);
+                    tmp.PropertyChanged += SpecificActivityOfLiquidPartValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     SpecificActivityOfLiquidPart_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(SpecificActivityOfLiquidPart));
             }
         }
 
-        private bool SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
+       private void SpecificActivityOfLiquidPartValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                SpecificActivityOfLiquidPart_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
         {
             return true;
             //value.ClearErrors();
@@ -386,23 +357,30 @@ public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("
         #endregion
 
         //SpecificActivityOfDensePart property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]        [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]
+        #region SpecificActivityOfDensePart 
+        public string SpecificActivityOfDensePart_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Удельная активность твердой части, Бк/г")]
         public RamAccess<string> SpecificActivityOfDensePart
         {
-            get => new RamAccess<string>(SpecificActivityOfDensePart_Validation, _DB);
-            set
+            get
+{
+var tmp = new RamAccess<string>(SpecificActivityOfDensePart_Validation, SpecificActivityOfDensePart_DB);
+tmp.PropertyChanged += SpecificActivityOfDensePartValueChanged;
+return tmp;
+}            set
             {
-
-
-                {
                     SpecificActivityOfDensePart_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(SpecificActivityOfDensePart));
             }
         }
 
-        private bool SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
+       private void SpecificActivityOfDensePartValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                SpecificActivityOfDensePart_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
         {
             return true;
             //value.ClearErrors();

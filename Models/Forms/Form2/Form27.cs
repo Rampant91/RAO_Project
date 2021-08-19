@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace Models
 {
@@ -37,12 +38,17 @@ namespace Models
         }
 
         //ObservedSourceNumber property
-#region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  ObservedSourceNumber
+        public string ObservedSourceNumber_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Номер источника выбросов")]
         public RamAccess<string> ObservedSourceNumber
         {
-            get => new RamAccess<string>(ObservedSourceNumber_Validation, _DB);
+            get
+            {
+                var tmp = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
+                tmp.PropertyChanged += ObservedSourceNumberValueChanged;
+                return tmp;
+            }
             set
             {
                 ObservedSourceNumber_DB = value.Value;
@@ -50,7 +56,14 @@ public int _DB { get; set; } = 0; [NotMapped]
             }
         }
         //If change this change validation
-        private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
+        private void ObservedSourceNumberValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ObservedSourceNumber_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -64,36 +77,31 @@ public int _DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //PermissionNumber property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  PermissionNumber
+        public string PermissionNumber_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Номер разрешительного документа")]
         public RamAccess<string> PermissionNumber
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(PermissionNumber_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(PermissionNumber_Validation, PermissionNumber_DB);
+                    tmp.PropertyChanged += PermissionNumberValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     PermissionNumber_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(PermissionNumber));
             }
         }
 
-
+        private void PermissionNumberValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionNumber_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool PermissionNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -103,37 +111,32 @@ public int _DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //PermissionIssueDate property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  PermissionIssueDate
+        public string PermissionIssueDate_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Дата выпуска разрешительного документа")]
         public RamAccess<string> PermissionIssueDate
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(PermissionIssueDate_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(PermissionIssueDate_Validation, PermissionIssueDate_DB);
+                    tmp.PropertyChanged += PermissionIssueDateValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     PermissionIssueDate_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(PermissionIssueDate));
             }
         }
 
-
-        private bool PermissionIssueDate_Validation(RamAccess<string> value)
+        private void PermissionIssueDateValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                PermissionIssueDate_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool PermissionIssueDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
@@ -141,37 +144,33 @@ public int _DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //PermissionDocumentName property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  PermissionDocumentName
+        public string PermissionDocumentName_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Наименование разрешительного документа")]
         public RamAccess<string> PermissionDocumentName
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(PermissionDocumentName_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(PermissionDocumentName_Validation, PermissionDocumentName_DB);
+                    tmp.PropertyChanged += PermissionDocumentNameValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     PermissionDocumentName_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(PermissionDocumentName));
             }
         }
 
 
-        private bool PermissionDocumentName_Validation(RamAccess<string> value)
+        private void PermissionDocumentNameValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                PermissionDocumentName_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool PermissionDocumentName_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
@@ -179,37 +178,33 @@ public int _DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //ValidBegin property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  ValidBegin
+        public string ValidBegin_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Действует с")]
         public RamAccess<string> ValidBegin
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(ValidBegin_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(ValidBegin_Validation, ValidBegin_DB);
+                    tmp.PropertyChanged += ValidBeginValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     ValidBegin_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(ValidBegin));
             }
         }
 
 
-        private bool ValidBegin_Validation(RamAccess<string> value)
+        private void ValidBeginValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                ValidBegin_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool ValidBegin_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
@@ -217,35 +212,33 @@ public int _DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //ValidThru property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  ValidThru
+        public string ValidThru_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Действует по")]
         public RamAccess<string> ValidThru
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(ValidThru_Validation, _DB);
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(ValidThru_Validation, ValidThru_DB);
+                    tmp.PropertyChanged += ValidThruValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
                     ValidThru_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(ValidThru));
             }
         }
 
 
-        private bool ValidThru_Validation(RamAccess<string> value)
+        private void ValidThruValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                ValidThru_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool ValidThru_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
@@ -253,37 +246,33 @@ public int _DB { get; set; } = 0; [NotMapped]
         #endregion
 
         //RadionuclidName property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  RadionuclidName
+        public string RadionuclidName_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Наименование радионуклида")]
         public RamAccess<string> RadionuclidName
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(RadionuclidName_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
+                    tmp.PropertyChanged += RadionuclidNameValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     RadionuclidName_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(RadionuclidName));
             }
         }
 
 
-        private bool RadionuclidName_Validation(RamAccess<string> value)
+        private void RadionuclidNameValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                RadionuclidName_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool RadionuclidName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -331,6 +320,13 @@ public int _DB { get; set; } = 0; [NotMapped]
         //}
 
 
+        //        //private void ValueChanged(object Value, PropertyChangedEventArgs args)
+        //{
+        //if (args.PropertyName == "Value")
+        //{
+        //_DB = ((RamAccess<string>)Value).Value;
+        //}
+        //}
         //private bool RadionuclidNameNote_Validation(RamAccess<string> value)
         //{
         //    value.ClearErrors(); return true;
@@ -338,37 +334,33 @@ public int _DB { get; set; } = 0; [NotMapped]
         ////RadionuclidNameNote property
 
         //AllowedWasteValue property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  AllowedWasteValue
+        public string AllowedWasteValue_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]
         public RamAccess<string> AllowedWasteValue
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(AllowedWasteValue_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(AllowedWasteValue_Validation, AllowedWasteValue_DB);
+                    tmp.PropertyChanged += AllowedWasteValueValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     AllowedWasteValue_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(AllowedWasteValue));
             }
         }
 
 
-        private bool AllowedWasteValue_Validation(RamAccess<string> value)
+        private void AllowedWasteValueValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                AllowedWasteValue_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool AllowedWasteValue_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -434,37 +426,33 @@ public int _DB { get; set; } = 0; [NotMapped]
         ////AllowedWasteValueNote property
 
         //FactedWasteValue property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  FactedWasteValue
+        public string FactedWasteValue_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]
         public RamAccess<string> FactedWasteValue
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(FactedWasteValue_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(FactedWasteValue_Validation, FactedWasteValue_DB);
+                    tmp.PropertyChanged += FactedWasteValueValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     FactedWasteValue_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(FactedWasteValue));
             }
         }
 
 
-        private bool FactedWasteValue_Validation(RamAccess<string> value)
+        private void FactedWasteValueValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                FactedWasteValue_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool FactedWasteValue_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -537,37 +525,33 @@ public int _DB { get; set; } = 0; [NotMapped]
         ////FactedWasteValueNote property
 
         //WasteOutbreakPreviousYear property
-        #region  
-public int _DB { get; set; } = 0; [NotMapped]
+        #region  WasteOutbreakPreviousYear
+        public string WasteOutbreakPreviousYear_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]
         public RamAccess<string> WasteOutbreakPreviousYear
         {
             get
             {
-
-                {
-                    var tmp = new RamAccess<string>(WasteOutbreakPreviousYear_Validation, _DB);
-                    tmp.PropertyChanged += ValueChanged;
+                    var tmp = new RamAccess<string>(WasteOutbreakPreviousYear_Validation, WasteOutbreakPreviousYear_DB);
+                    tmp.PropertyChanged += WasteOutbreakPreviousYearValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     WasteOutbreakPreviousYear_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(WasteOutbreakPreviousYear));
             }
         }
 
 
-        private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
+        private void WasteOutbreakPreviousYearValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                WasteOutbreakPreviousYear_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
