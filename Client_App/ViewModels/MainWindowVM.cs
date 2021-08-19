@@ -147,7 +147,8 @@ namespace Client_App.ViewModels
                 {
                     var rt = new Reports();
                     rt.Master = new Report();
-                    
+                    rt.Master.FormNum.Value = param;
+
                     Local_Reports.Reports_Collection.Add(rt);
                     FormChangeOrCreate frm = new(param, rt.Master);
                     await frm.ShowDialog<Form>(desktop.MainWindow);
