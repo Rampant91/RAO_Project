@@ -134,7 +134,7 @@ namespace Client_App.ViewModels
             switch (Storage.LastAddedForm)
             {
                 case Report.Forms.Form11:
-                    foreach(var item in Storage.Rows11)
+                    foreach (var item in Storage.Rows11)
                         item.NumberInOrder.Value = k++;
                     break;
                 case Report.Forms.Form12:
@@ -217,9 +217,13 @@ namespace Client_App.ViewModels
                     foreach (var item in Storage.Rows212)
                         item.NumberInOrder.Value = k++;
                     break;
+<<<<<<< Updated upstream
                 case Report.Forms.None:
                     throw new System.Exception();
                 default:break;
+=======
+                default: break;
+>>>>>>> Stashed changes
             }
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -232,6 +236,12 @@ namespace Client_App.ViewModels
                         item.Close();
                     }
                 }
+            }
+            switch (Storage.LastAddedForm)
+            {
+                case Report.Forms.Form10:
+                    Storage.OkpoRep = Storage.OkpoRep;
+                    break;
             }
         }
 

@@ -72,9 +72,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             stck.Bind(StackPanel.DataContextProperty, b);
 
-            stck.Children.Add(Get0Row(1, Row, 1, "Master.Value.RegNo", scp, TopName));
-            stck.Children.Add(Get0Row(2, Row, 2, "Master.Value.ShortJurLico", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 3, "Master.Value.Okpo", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 1, "Master.RegNoRep", scp, TopName));
+            stck.Children.Add(Get0Row(2, Row, 2, "Master.ShortJurLicoRep", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 3, "Master.OkpoRep", scp, TopName));
 
             return stck;
         }
