@@ -48,7 +48,7 @@ namespace Spravochniki
         private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsTask = ReadCsvAsync1(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")) + "data\\Spravochniki\\TypeToRadionuclids.csv");
 #else
         private static Task<List<Tuple<string, long, long>>> SprRadionuclidsTask = ReadCsvAsync(Path.GetFullPath(AppContext.BaseDirectory)+"data\\Spravochniki\\RadionuclidsActivities.csv");
-        private static Task<List<Tuple<string, string>>> SprRadionuclidsTask = ReadCsvAsync(Path.GetFullPath(AppContext.BaseDirectory)+"data\\Spravochniki\\TypeToRadionuclids.csv");
+        private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsTask = ReadCsvAsync1(Path.GetFullPath(AppContext.BaseDirectory)+"data\\Spravochniki\\TypeToRadionuclids.csv");
 #endif
 
         private static Task<List<Tuple<string, long, long>>> ReadCsvAsync(string path)
