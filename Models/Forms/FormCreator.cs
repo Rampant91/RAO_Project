@@ -6,10 +6,10 @@
         {
             switch (Param)
             {
-                case "1.0": return new Form10("1");
-                case "1.1": return new Form11("1");
-                case "1.2": return new Form12("1");
-                case "1.3": return new Form13("1");
+                case "1.0": return new Form10();
+                case "1.1": return new Form11();
+                case "1.2": return new Form12();
+                case "1.3": return new Form13();
                 case "1.4": return new Form14();
                 case "1.5": return new Form15();
                 case "1.6": return new Form16();
