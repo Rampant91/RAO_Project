@@ -1252,6 +1252,10 @@ namespace Collections
         //Property Changed
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
+            //if (prop == nameof(Rows10))
+            //{
+            //    OkpoRep = OkpoRep;
+            //}
             if (prop != nameof(IsChanged))
             {
                 IsChanged = true;
