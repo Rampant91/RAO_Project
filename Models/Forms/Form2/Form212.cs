@@ -1,9 +1,10 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using Spravochniki;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Models
@@ -14,24 +15,9 @@ namespace Models
     {
         public Form212() : base()
         {
-            //FormNum.Value = "212";
+            FormNum.Value = "2.12";
             //NumberOfFields.Value = 8;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(Radionuclids), Radionuclids_Validation, null);
-            Radionuclids.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(OperationCode), OperationCode_Validation, null);
-            OperationCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ObjectTypeCode), ObjectTypeCode_Validation, null);
-            ObjectTypeCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Activity), Activity_Validation, null);
-            Activity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ProviderOrRecieverOKPO), ProviderOrRecieverOKPO_Validation, null);
-            ProviderOrRecieverOKPO.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -50,90 +36,97 @@ namespace Models
         }
 
         //OperationCode property
-        public int? OperationCodeId { get; set; }
-        [Attributes.Form_Property("Код")]
-        public virtual RamAccess<string> OperationCode
+        #region  OperationCode
+        public string OperationCode_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Код")]
+        public RamAccess<string> OperationCode
         {
-            get => DataAccess.Get<string>(nameof(OperationCode));
-            set
+            get
+{
+var tmp = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
+tmp.PropertyChanged += OperationCodeValueChanged;
+return tmp;
+}            set
             {
-                DataAccess.Set(nameof(OperationCode), value);
+                OperationCode_DB = value.Value;
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
 
 
-        private bool OperationCode_Validation(RamAccess<string> value)
+       private void OperationCodeValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                OperationCode_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool OperationCode_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //OperationCode property
+        #endregion
 
         //ObjectTypeCode property
-        public int? ObjectTypeCodeId { get; set; }
-        [Attributes.Form_Property("Код типа объектов учета")]
-        public virtual RamAccess<string> ObjectTypeCode
+        #region  
+public string ObjectTypeCode_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Код типа объектов учета")]
+        public RamAccess<string> ObjectTypeCode
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(ObjectTypeCode));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(ObjectTypeCode_Validation, ObjectTypeCode_DB);
+                    tmp.PropertyChanged += ObjectTypeCodeValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(ObjectTypeCode), value);
-                }
+                    ObjectTypeCode_DB = value.Value;
                 OnPropertyChanged(nameof(ObjectTypeCode));
             }
         }
         //2 digit code
 
-        private bool ObjectTypeCode_Validation(RamAccess<string> value)//TODO
+       private void ObjectTypeCodeValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                ObjectTypeCode_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool ObjectTypeCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors(); return true;
         }
         //ObjectTypeCode property
+        #endregion
 
         //Radionuclids property
-        public int? RadionuclidsId { get; set; }
-        [Attributes.Form_Property("Радионуклиды")]
-        public virtual RamAccess<string> Radionuclids
+        #region  Radionuclids
+        public string Radionuclids_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Радионуклиды")]
+        public RamAccess<string> Radionuclids
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(Radionuclids));//OK
-
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);//OK
+                    tmp.PropertyChanged += RadionuclidsValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-
-                {
-                    DataAccess.Set(nameof(Radionuclids), value);
-                }
+                    Radionuclids_DB = value.Value;
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
         //If change this change validation
 
-        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
+       private void RadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                Radionuclids_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -146,7 +139,7 @@ namespace Models
             foreach (var nucl in nuclids)
             {
                 var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
-                if (tmp.Count() == 0)
+                if (!tmp.Any())
                     flag = false;
             }
             if (!flag)
@@ -157,36 +150,35 @@ namespace Models
             return true;
         }
         //Radionuclids property
+        #endregion
 
         //Activity property
-        public int? ActivityId { get; set; }
-        [Attributes.Form_Property("Активность, Бк")]
-        public virtual RamAccess<string> Activity
+        #region  Activity
+        public string Activity_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Активность, Бк")]
+        public RamAccess<string> Activity
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(Activity));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(Activity_Validation, Activity_DB);
+                    tmp.PropertyChanged += ActivityValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(Activity), value);
-                }
+                    Activity_DB = value.Value;
                 OnPropertyChanged(nameof(Activity));
             }
         }
 
 
-        private bool Activity_Validation(RamAccess<string> value)//Ready
+       private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                Activity_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -213,38 +205,35 @@ namespace Models
             return true;
         }
         //Activity property
+        #endregion
 
         //ProviderOrRecieverOKPO property
-        public int? ProviderOrRecieverOKPOId { get; set; }
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]
-        public virtual RamAccess<string> ProviderOrRecieverOKPO
+        #region  ProviderOrRecieverOKPO
+        public string ProviderOrRecieverOKPO_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("ОКПО поставщика/получателя")]
+        public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPO));//OK
-
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);//OK
+                    tmp.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-
-                {
-                    DataAccess.Set(nameof(ProviderOrRecieverOKPO), value);
-                }
+                    ProviderOrRecieverOKPO_DB = value.Value;
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
 
 
-        private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
+       private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                ProviderOrRecieverOKPO_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -264,6 +253,7 @@ namespace Models
             return true;
         }
         //ProviderOrRecieverOKPO property
+        #endregion
 
         protected List<string> OKSM = new List<string>
             {
@@ -291,13 +281,13 @@ namespace Models
             };
 
         ////ProviderOrRecieverOKPONote property
-        //public virtual RamAccess<string> ProviderOrRecieverOKPONote
+        //public RamAccess<string> ProviderOrRecieverOKPONote
         //{
         //    get
         //    {
 
         //        {
-        //            return DataAccess.Get<string>(nameof(ProviderOrRecieverOKPONote));//OK
+        //            var tmp = new RamAccess<string>(ProviderOrRecieverOKPONote_Validation, _DB);//OK
 
         //        }
 
@@ -310,7 +300,7 @@ namespace Models
 
 
         //        {
-        //            DataAccess.Set(nameof(ProviderOrRecieverOKPONote), value);
+        //            ProviderOrRecieverOKPONote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
         //    }

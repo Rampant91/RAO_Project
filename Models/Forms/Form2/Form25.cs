@@ -1,7 +1,8 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 namespace Models
 {
@@ -11,32 +12,9 @@ namespace Models
     {
         public Form25() : base()
         {
-            //FormNum.Value = "25";
+            FormNum.Value = "2.5";
             //NumberOfFields.Value = 12;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(CodeOYAT), CodeOYAT_Validation, null);
-            CodeOYAT.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FcpNumber), FcpNumber_Validation, null);
-            FcpNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
-            StoragePlaceCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
-            StoragePlaceName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(FuelMass), FuelMass_Validation, null);
-            FuelMass.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(CellMass), CellMass_Validation, null);
-            CellMass.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(Quantity), Quantity_Validation, null);
-            Quantity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(BetaGammaActivity), BetaGammaActivity_Validation, null);
-            BetaGammaActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(AlphaActivity), AlphaActivity_Validation, null);
-            AlphaActivity.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -59,33 +37,32 @@ namespace Models
         }
 
         //StoragePlaceName property
-        public int? StoragePlaceNameId { get; set; }
+        #region  StoragePlaceName
+        public string StoragePlaceName_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Наименование ПХ")]
-        public virtual RamAccess<string> StoragePlaceName
+        public RamAccess<string> StoragePlaceName
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(StoragePlaceName));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
+                    tmp.PropertyChanged += StoragePlaceNameValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(StoragePlaceName), value);
-                }
+                    StoragePlaceName_DB = value.Value;
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
         }
         //If change this change validation
-        private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
+        private void StoragePlaceNameValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -95,35 +72,35 @@ namespace Models
             return true;
         }
         //StoragePlaceName property
+        #endregion
 
         //CodeOYAT property
-        public int? CodeOYATId { get; set; }
+        #region  CodeOYAT
+        public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Код ОЯТ")]
-        public virtual RamAccess<string> CodeOYAT
+        public RamAccess<string> CodeOYAT
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(CodeOYAT));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(CodeOYAT_Validation, CodeOYAT_DB);
+                    tmp.PropertyChanged += CodeOYATValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(CodeOYAT), value);
-                }
+                    CodeOYAT_DB = value.Value;
                 OnPropertyChanged(nameof(CodeOYAT));
             }
         }
 
-        private bool CodeOYAT_Validation(RamAccess<string> value)
+        private void CodeOYATValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                CodeOYAT_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -138,15 +115,16 @@ namespace Models
             return true;
         }
         //CodeOYAT property
+        #endregion
 
         ////CodeOYATnote property
-        //public virtual RamAccess<string> CodeOYATnote
+        //public RamAccess<string> CodeOYATnote
         //{
         //    get
         //    {
 
         //        {
-        //            return DataAccess.Get<string>(nameof(CodeOYATnote));
+        //            var tmp = new RamAccess<string>(CodeOYATnote_Validation, _DB);
         //        }
 
         //        {
@@ -158,7 +136,7 @@ namespace Models
 
 
         //        {
-        //            DataAccess.Set(nameof(CodeOYATnote), value);
+        //            CodeOYATnote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(CodeOYATnote));
         //    }
@@ -170,32 +148,31 @@ namespace Models
         ////CodeOYATnote property
 
         //StoragePlaceCode property
-        public int? StoragePlaceCodeId { get; set; }
+        #region  StoragePlaceCode
+        public string StoragePlaceCode_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Код ПХ")]
-        public virtual RamAccess<string> StoragePlaceCode //8 cyfer code or - .
+        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(StoragePlaceCode));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
+                tmp.PropertyChanged += StoragePlaceCodeValueChanged;
+                return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(StoragePlaceCode), value);
-                }
+                    StoragePlaceCode_DB = value.Value;
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }
-        private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
+        private void StoragePlaceCodeValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -220,68 +197,68 @@ namespace Models
             return true;
         }
         //StoragePlaceCode property
+        #endregion
 
         //FcpNumber property
-        public int? FcpNumberId { get; set; }
+        #region  FcpNumber
+        public string FcpNumber_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
-        public virtual RamAccess<string> FcpNumber
+        public RamAccess<string> FcpNumber
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(FcpNumber));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
+                    tmp.PropertyChanged += FcpNumberValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(FcpNumber), value);
-                }
+                    FcpNumber_DB = value.Value;
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
 
-        private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+        private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                FcpNumber_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors(); return true;
         }
         //FcpNumber property
+        #endregion
 
         //FuelMass property
-        public int? FuelMassId { get; set; }
+        #region  FuelMass
+        public string FuelMass_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса топлива, т")]
-        public virtual RamAccess<string> FuelMass
+        public RamAccess<string> FuelMass
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(FuelMass));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(FuelMass_Validation, FuelMass_DB);
+                    tmp.PropertyChanged += FuelMassValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(FuelMass), value);
-                }
+                    FuelMass_DB = value.Value;
                 OnPropertyChanged(nameof(FuelMass));
             }
         }
 
-        private bool FuelMass_Validation(RamAccess<string> value)//TODO
+        private void FuelMassValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                FuelMass_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool FuelMass_Validation(RamAccess<string> value)//TODO
         {
             if (string.IsNullOrEmpty(value.Value))
             {
@@ -313,35 +290,35 @@ namespace Models
             return true;
         }
         //FuelMass property
+        #endregion
 
         //CellMass property
-        public int? CellMassId { get; set; }
+        #region  CellMass
+        public string CellMass_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса ОТВС(ТВЭЛ, выемной части реактора), т")]
-        public virtual RamAccess<string> CellMass
+        public RamAccess<string> CellMass
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(CellMass));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(CellMass_Validation, CellMass_DB);
+                    tmp.PropertyChanged += CellMassValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(CellMass), value);
-                }
+                    CellMass_DB = value.Value;
                 OnPropertyChanged(nameof(CellMass));
             }
         }
 
-        private bool CellMass_Validation(RamAccess<string> value)//TODO
+        private void CellMassValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                CellMass_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool CellMass_Validation(RamAccess<string> value)//TODO
         {
             if (string.IsNullOrEmpty(value.Value))
             {
@@ -373,37 +350,35 @@ namespace Models
             return true;
         }
         //CellMass property
+        #endregion
 
         //Quantity property
-        public int? QuantityId { get; set; }
+        #region  Quantity
+        public int? Quantity_DB { get; set; } = null; [NotMapped]
         [Attributes.Form_Property("Количество, шт.")]
-        public virtual RamAccess<int?> Quantity
+        public RamAccess<int?> Quantity
         {
             get
             {
-
-                {
-                    return DataAccess.Get<int?>(nameof(Quantity));//OK
-
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<int?>(Quantity_Validation, Quantity_DB);//OK
+                    tmp.PropertyChanged += QuantityValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-
-                {
-                    DataAccess.Set(nameof(Quantity), value);
-                }
+                    Quantity_DB = value.Value;
                 OnPropertyChanged(nameof(Quantity));
             }
         }
         // positive int.
-        private bool Quantity_Validation(RamAccess<int?> value)//Ready
+        private void QuantityValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                Quantity_DB = ((RamAccess<int?>)Value).Value;
+}
+}
+private bool Quantity_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -417,35 +392,35 @@ namespace Models
             return true;
         }
         //Quantity property
+        #endregion
 
         //BetaGammaActivity property
-        public int? BetaGammaActivityId { get; set; }
+        #region  BetaGammaActivity
+        public string BetaGammaActivity_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
-        public virtual RamAccess<string> BetaGammaActivity
+        public RamAccess<string> BetaGammaActivity
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(BetaGammaActivity));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
+                    tmp.PropertyChanged += BetaGammaActivityValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(BetaGammaActivity), value);
-                }
+                    BetaGammaActivity_DB = value.Value;
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
         }
 
-        private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
+        private void BetaGammaActivityValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors(); if ((value.Value == null) || value.Value.Equals(""))
             {
@@ -480,35 +455,35 @@ namespace Models
             return true;
         }
         //BetaGammaActivity property
+        #endregion
 
         //AlphaActivity property
-        public int? AlphaActivityId { get; set; }
+        #region  AlphaActivity
+        public string AlphaActivity_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
-        public virtual RamAccess<string> AlphaActivity
+        public RamAccess<string> AlphaActivity
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(AlphaActivity));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(AlphaActivity_Validation, AlphaActivity_DB);
+                    tmp.PropertyChanged += AlphaActivityValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(AlphaActivity), value);
-                }
+                    AlphaActivity_DB = value.Value;
                 OnPropertyChanged(nameof(AlphaActivity));
             }
         }
 
-        private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
+        private void AlphaActivityValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                AlphaActivity_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -544,5 +519,6 @@ namespace Models
             return true;
         }
         //AlphaActivity property
+        #endregion
     }
 }

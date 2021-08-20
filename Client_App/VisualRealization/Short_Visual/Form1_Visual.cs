@@ -120,6 +120,12 @@ namespace Client_App.Short_Visual
             {
                 new MenuItem
                 {
+                    Header = "Экспорт",
+                    [!MenuItem.CommandProperty] = new Binding("ExportForm"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
+                },
+                new MenuItem
+                {
                     Header = "Изменить форму",
                     [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),

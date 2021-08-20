@@ -1,0 +1,18 @@
+//(.*) property
+#region $1
+
+public int\? .* { get; set; \}.*\n.*(\[Attributes.*\]).*\n.*public virtual RamAccess<(.*)> (.*)$
+public $2 $3_DB{get;set;}="";\n[NotMapped]\n$1\npublic RamAccess<$2> $3
+
+get[\s|\{]*\s*return DataAccess.Get<(.*)>\(nameof\((.*)\)\);.*\n\s*}[\{|\}|\s*}]*
+get => DataAccess.Get<(.*)>\(nameof\((.*)\)\);
+get\n{\nvar tmp = new RamAccess<$1>($2_Validation, $2_DB);\ntmp.PropertyChanged += $2ValueChanged;\nreturn tmp;\n}
+
+set[\s|\{]*DataAccess.Set\(nameof\((.*)\), value\);[\s|\}|\{]*OnPropertyChanged\(nameof\((.*)\)\);.*\n\s*}[\{|\}|\s*}]*
+DataAccess.Set\(nameof\((.*)\), value\);
+$1_DB = value.Value;
+set\n{\n$1_DB = value.Value;}}
+
+private bool (.*)_Validation\(RamAccess<(.*)> value\)
+private void $1ValueChanged(object Value, PropertyChangedEventArgs args)\n{\n            if (args.PropertyName == "Value")\n{\n                $1_DB = ((RamAccess<$2>)Value).Value;\n}\n}private bool $1_Validation(RamAccess<$2> value)
+

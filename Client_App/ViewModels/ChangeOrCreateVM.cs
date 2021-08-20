@@ -10,6 +10,8 @@ using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using DBRealization;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Models.Abstracts;
 
 namespace Client_App.ViewModels
 {
@@ -231,12 +233,19 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-            //switch (Storage.LastAddedForm)
-            //{
-            //    case Report.Forms.Form10:
-            //        Storage.OkpoRep = Storage.OkpoRep;
-            //        break;
-            //}
+            switch (Storage.LastAddedForm)
+            {
+                case Report.Forms.Form10:
+                    Storage.OkpoRep = Storage.OkpoRep;
+                    Storage.RegNoRep = Storage.RegNoRep;
+                    Storage.ShortJurLicoRep = Storage.ShortJurLicoRep;
+                    break;
+                case Report.Forms.Form20:
+                    Storage.OkpoRep1 = Storage.OkpoRep1;
+                    Storage.RegNoRep1 = Storage.RegNoRep1;
+                    Storage.ShortJurLicoRep1 = Storage.ShortJurLicoRep1;
+                    break;
+            }
         }
 
         private void _CheckReport()
@@ -254,30 +263,31 @@ namespace Client_App.ViewModels
 
         private void _AddRow()
         {
-            if (FormType == "1.0") { Form10? frm = new Form10(); Storage.Rows10.Add(frm); Storage.LastAddedForm = Report.Forms.Form10; }
-            if (FormType == "1.1") { Form11? frm = new Form11(); Storage.Rows11.Add(frm); Storage.LastAddedForm = Report.Forms.Form11; }
-            if (FormType == "1.2") { Form12? frm = new Form12(); Storage.Rows12.Add(frm); Storage.LastAddedForm = Report.Forms.Form12; }
-            if (FormType == "1.3") { Form13? frm = new Form13(); Storage.Rows13.Add(frm); Storage.LastAddedForm = Report.Forms.Form13; }
-            if (FormType == "1.4") { Form14? frm = new Form14(); Storage.Rows14.Add(frm); Storage.LastAddedForm = Report.Forms.Form14; }
-            if (FormType == "1.5") { Form15? frm = new Form15(); Storage.Rows15.Add(frm); Storage.LastAddedForm = Report.Forms.Form15; }
-            if (FormType == "1.6") { Form16? frm = new Form16(); Storage.Rows16.Add(frm); Storage.LastAddedForm = Report.Forms.Form16; }
-            if (FormType == "1.7") { Form17? frm = new Form17(); Storage.Rows17.Add(frm); Storage.LastAddedForm = Report.Forms.Form17; }
-            if (FormType == "1.8") { Form18? frm = new Form18(); Storage.Rows18.Add(frm); Storage.LastAddedForm = Report.Forms.Form18; }
-            if (FormType == "1.9") { Form19? frm = new Form19(); Storage.Rows19.Add(frm); Storage.LastAddedForm = Report.Forms.Form19; }
+            var frm = FormCreator.Create(FormType);
+            if (FormType == "1.0") { Storage.Rows10.Add((Form10)frm); Storage.LastAddedForm = Report.Forms.Form10; }
+            if (FormType == "1.1") { Storage.Rows11.Add((Form11)frm); Storage.LastAddedForm = Report.Forms.Form11; }
+            if (FormType == "1.2") { Storage.Rows12.Add((Form12)frm); Storage.LastAddedForm = Report.Forms.Form12; }
+            if (FormType == "1.3") { Storage.Rows13.Add((Form13)frm); Storage.LastAddedForm = Report.Forms.Form13; }
+            if (FormType == "1.4") { Storage.Rows14.Add((Form14)frm); Storage.LastAddedForm = Report.Forms.Form14; }
+            if (FormType == "1.5") { Storage.Rows15.Add((Form15)frm); Storage.LastAddedForm = Report.Forms.Form15; }
+            if (FormType == "1.6") { Storage.Rows16.Add((Form16)frm); Storage.LastAddedForm = Report.Forms.Form16; }
+            if (FormType == "1.7") { Storage.Rows17.Add((Form17)frm); Storage.LastAddedForm = Report.Forms.Form17; }
+            if (FormType == "1.8") { Storage.Rows18.Add((Form18)frm); Storage.LastAddedForm = Report.Forms.Form18; }
+            if (FormType == "1.9") { Storage.Rows19.Add((Form19)frm); Storage.LastAddedForm = Report.Forms.Form19; }
 
-            if (FormType == "2.0") { Form20? frm = new Form20(); Storage.Rows20.Add(frm); Storage.LastAddedForm = Report.Forms.Form20; }
-            if (FormType == "2.1") { Form21? frm = new Form21(); Storage.Rows21.Add(frm); Storage.LastAddedForm = Report.Forms.Form11; }
-            if (FormType == "2.2") { Form22? frm = new Form22(); Storage.Rows22.Add(frm); Storage.LastAddedForm = Report.Forms.Form12; }
-            if (FormType == "2.3") { Form23? frm = new Form23(); Storage.Rows23.Add(frm); Storage.LastAddedForm = Report.Forms.Form13; }
-            if (FormType == "2.4") { Form24? frm = new Form24(); Storage.Rows24.Add(frm); Storage.LastAddedForm = Report.Forms.Form14; }
-            if (FormType == "2.5") { Form25? frm = new Form25(); Storage.Rows25.Add(frm); Storage.LastAddedForm = Report.Forms.Form15; }
-            if (FormType == "2.6") { Form26? frm = new Form26(); Storage.Rows26.Add(frm); Storage.LastAddedForm = Report.Forms.Form16; }
-            if (FormType == "2.7") { Form27? frm = new Form27(); Storage.Rows27.Add(frm); Storage.LastAddedForm = Report.Forms.Form17; }
-            if (FormType == "2.8") { Form28? frm = new Form28(); Storage.Rows28.Add(frm); Storage.LastAddedForm = Report.Forms.Form18; }
-            if (FormType == "2.9") { Form29? frm = new Form29(); Storage.Rows29.Add(frm); Storage.LastAddedForm = Report.Forms.Form19; }
-            if (FormType == "2.10") { Form210? frm = new Form210(); Storage.Rows210.Add(frm); Storage.LastAddedForm = Report.Forms.Form210; }
-            if (FormType == "2.11") { Form211? frm = new Form211(); Storage.Rows211.Add(frm); Storage.LastAddedForm = Report.Forms.Form211; }
-            if (FormType == "2.12") { Form212? frm = new Form212(); Storage.Rows212.Add(frm); Storage.LastAddedForm = Report.Forms.Form212; }
+            if (FormType == "2.0") { Storage.Rows20.Add((Form20)frm); Storage.LastAddedForm = Report.Forms.Form20; }
+            if (FormType == "2.1") { Storage.Rows21.Add((Form21)frm); Storage.LastAddedForm = Report.Forms.Form11; }
+            if (FormType == "2.2") { Storage.Rows22.Add((Form22)frm); Storage.LastAddedForm = Report.Forms.Form12; }
+            if (FormType == "2.3") { Storage.Rows23.Add((Form23)frm); Storage.LastAddedForm = Report.Forms.Form13; }
+            if (FormType == "2.4") { Storage.Rows24.Add((Form24)frm); Storage.LastAddedForm = Report.Forms.Form14; }
+            if (FormType == "2.5") { Storage.Rows25.Add((Form25)frm); Storage.LastAddedForm = Report.Forms.Form15; }
+            if (FormType == "2.6") { Storage.Rows26.Add((Form26)frm); Storage.LastAddedForm = Report.Forms.Form16; }
+            if (FormType == "2.7") { Storage.Rows27.Add((Form27)frm); Storage.LastAddedForm = Report.Forms.Form17; }
+            if (FormType == "2.8") { Storage.Rows28.Add((Form28)frm); Storage.LastAddedForm = Report.Forms.Form18; }
+            if (FormType == "2.9") { Storage.Rows29.Add((Form29)frm); Storage.LastAddedForm = Report.Forms.Form19; }
+            if (FormType == "2.10") { Storage.Rows210.Add((Form210)frm); Storage.LastAddedForm = Report.Forms.Form210; }
+            if (FormType == "2.11") { Storage.Rows211.Add((Form211)frm); Storage.LastAddedForm = Report.Forms.Form211; }
+            if (FormType == "2.12") { Storage.Rows212.Add((Form212)frm); Storage.LastAddedForm = Report.Forms.Form212; }
         }
 
         private void _AddNote(string Param)
@@ -352,7 +362,7 @@ namespace Client_App.ViewModels
                 {
                     foreach (Models.Abstracts.Form? item in lt)
                     {
-                        //Storage.Rows.Add(item);
+                        //_AddRow(item);
                     }
                 }
             }

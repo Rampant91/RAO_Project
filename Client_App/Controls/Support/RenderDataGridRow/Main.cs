@@ -188,9 +188,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             stck.Bind(StackPanel.DataContextProperty, b);
 
-            stck.Children.Add(Get2Row(1, Row, 1, "Master.Value.RegNo", scp, TopName));
-            stck.Children.Add(Get2Row(2, Row, 2, "Master.Value.ShortJurLico", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 3, "Master.Value.Okpo", scp, TopName));
+            stck.Children.Add(Get2Row(1, Row, 1, "Master.RegNoRep1", scp, TopName));
+            stck.Children.Add(Get2Row(2, Row, 2, "Master.ShortJurLicoRep1", scp, TopName));
+            stck.Children.Add(Get2Row(1, Row, 3, "Master.OkpoRep1", scp, TopName));
 
             return stck;
         }

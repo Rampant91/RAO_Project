@@ -7,67 +7,40 @@ using Models.DataAccess;
 
 namespace Collections
 {
-    public class Reports : IKey,INotifyPropertyChanged
+    public class Reports : IKey, INotifyPropertyChanged
     {
-        [NotMapped] private bool _isChanged = true;
-
-        public Reports(DataAccessCollection Access)
-        {
-            DataAccess = Access;
-            Init();
-        }
-
         public Reports()
         {
-            DataAccess = new DataAccessCollection();
             Init();
         }
-
-        protected DataAccessCollection DataAccess { get; set; }
         public int? MasterId { get; set; }
 
-        public virtual RamAccess<Report> Master
+        private Report _master = new Report();
+        public virtual Report Master
         {
             get
             {
-                var tmp = DataAccess.Get<Report>(nameof(Master));
-                return tmp;
+                return _master;
             }
             set
             {
-                DataAccess.Set(nameof(Master), value);
+                _master = value;
                 OnPropertyChanged(nameof(Master));
             }
         }
 
-        public int? Report_CollectionId { get; set; }
+        ObservableCollectionWithItemPropertyChanged<Report> Report_Collection_DB;
 
         public virtual ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
         {
             get
             {
-                var tmp = DataAccess
-                    .Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection));
-                return tmp.Value;
+                return Report_Collection_DB;
             }
             set
             {
-                DataAccess.Get<ObservableCollectionWithItemPropertyChanged<Report>>(nameof(Report_Collection)).Value =
-                    value;
+                Report_Collection_DB = value;
                 OnPropertyChanged(nameof(Report_Collection));
-            }
-        }
-
-        public bool IsChanged
-        {
-            get => _isChanged;
-            set
-            {
-                if (_isChanged != value)
-                {
-                    _isChanged = value;
-                    OnPropertyChanged(nameof(IsChanged));
-                }
             }
         }
 
@@ -77,9 +50,8 @@ namespace Collections
 
         private void Init()
         {
-            DataAccess.Init(nameof(Report_Collection), Report_Collection_Validation,
-                new ObservableCollectionWithItemPropertyChanged<Report>());
-            DataAccess.Init(nameof(Master), Master_Validation, new Report());
+
+            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
             Report_Collection.CollectionChanged += CollectionChanged;
         }
 
@@ -101,11 +73,7 @@ namespace Collections
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (prop != nameof(IsChanged))
-            {
-                IsChanged = true;
-                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
-            }
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
         //Property Changed
     }

@@ -1,7 +1,8 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.ComponentModel;
 using Spravochniki;
 
 namespace Models
@@ -12,56 +13,9 @@ namespace Models
     {
         public Form28() : base()
         {
-            //FormNum.Value = "28";
+            FormNum.Value = "2.8";
             //NumberOfFields.Value = 24;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(PermissionNumber2), PermissionNumber2_Validation, null);
-            PermissionNumber2.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PermissionIssueDate2), PermissionIssueDate2_Validation, null);
-            PermissionIssueDate2.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ValidBegin2), ValidBegin2_Validation, null);
-            ValidBegin2.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ValidThru2), ValidThru2_Validation, null);
-            ValidThru2.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PermissionDocumentName2), PermissionDocumentName2_Validation, null);
-            PermissionDocumentName2.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PermissionNumber1), PermissionNumber1_Validation, null);
-            PermissionNumber1.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PermissionIssueDate1), PermissionIssueDate1_Validation, null);
-            PermissionIssueDate1.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ValidBegin1), ValidBegin1_Validation, null);
-            ValidBegin1.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ValidThru1), ValidThru1_Validation, null);
-            ValidThru1.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PermissionDocumentName1), PermissionDocumentName1_Validation, null);
-            PermissionDocumentName1.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PermissionNumber), PermissionNumber_Validation, null);
-            PermissionNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PermissionIssueDate), PermissionIssueDate_Validation, null);
-            PermissionIssueDate.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ValidBegin), ValidBegin_Validation, null);
-            ValidBegin.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ValidThru), ValidThru_Validation, null);
-            ValidThru.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PermissionDocumentName), PermissionDocumentName_Validation, null);
-            PermissionDocumentName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(WasteSourceName), WasteSourceName_Validation, null);
-            WasteSourceName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(WasteRecieverName), WasteRecieverName_Validation, null);
-            WasteRecieverName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(RecieverTypeCode), RecieverTypeCode_Validation, null);
-            RecieverTypeCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(AllowedWasteRemovalVolume), AllowedWasteRemovalVolume_Validation, null);
-            AllowedWasteRemovalVolume.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(RemovedWasteVolume), RemovedWasteVolume_Validation, null);
-            RemovedWasteVolume.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(PoolDistrictName), PoolDistrictName_Validation, null);
-            PoolDistrictName.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -96,462 +50,523 @@ namespace Models
         }
 
         //PermissionNumber property
-        public int? PermissionNumberId { get; set; }
+        #region PermissionNumber 
+        public string PermissionNumber_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Номер разрешительного документа")]
-        public virtual RamAccess<string> PermissionNumber
+        public RamAccess<string> PermissionNumber
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(PermissionNumber));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(PermissionNumber_Validation, PermissionNumber_DB);
+                    tmp.PropertyChanged += PermissionNumberValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(PermissionNumber), value);
-                }
+                    PermissionNumber_DB = value.Value;
                 OnPropertyChanged(nameof(PermissionNumber));
             }
         }
 
-
+        private void PermissionNumberValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool PermissionNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             return true;
         }
         //PermissionNumber property
+        #endregion
 
         //PermissionIssueDate property
-        public int? PermissionIssueDateId { get; set; }
+        #region PermissionIssueDate
+        public string PermissionIssueDate_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public virtual RamAccess<string> PermissionIssueDate
+        public RamAccess<string> PermissionIssueDate
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(PermissionIssueDate));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(PermissionIssueDate_Validation, PermissionIssueDate_DB);
+                    tmp.PropertyChanged += PermissionIssueDateValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(PermissionIssueDate), value);
-                }
+                    PermissionIssueDate_DB = value.Value;
                 OnPropertyChanged(nameof(PermissionIssueDate));
             }
         }
 
-
+        private void PermissionIssueDateValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool PermissionIssueDate_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //PermissionIssueDate property
+        #endregion
 
         //PermissionDocumentName property
-        public int? PermissionDocumentNameId { get; set; }
+        #region PermissionDocumentName 
+        public string PermissionDocumentName_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Наименование разрешительного документа")]
-        public virtual RamAccess<string> PermissionDocumentName
+        public RamAccess<string> PermissionDocumentName
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(PermissionDocumentName));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(PermissionDocumentName_Validation, PermissionDocumentName_DB);
+                    tmp.PropertyChanged += PermissionDocumentNameValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(PermissionDocumentName), value);
-                }
+                    PermissionDocumentName_DB = value.Value;
                 OnPropertyChanged(nameof(PermissionDocumentName));
             }
         }
-
+        private void PermissionDocumentNameValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
 
         private bool PermissionDocumentName_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //PermissionDocumentName property
+        #endregion
 
         //ValidBegin property
-        public int? ValidBeginId { get; set; }
+        #region ValidBegin
+        public string ValidBegin_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Действует с")]
-        public virtual RamAccess<string> ValidBegin
+        public RamAccess<string> ValidBegin
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(ValidBegin));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(ValidBegin_Validation, ValidBegin_DB);
+                    tmp.PropertyChanged += ValidBeginValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(ValidBegin), value);
-                }
+                    ValidBegin_DB = value.Value;
                 OnPropertyChanged(nameof(ValidBegin));
             }
         }
 
-
+        private void ValidBeginValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool ValidBegin_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //ValidBegin property
+        #endregion
 
         //ValidThru property
-        public int? ValidThruId { get; set; }
+        #region ValidThru
+        public string ValidThru_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Действует по")]
-        public virtual RamAccess<string> ValidThru
+        public RamAccess<string> ValidThru
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(ValidThru));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(ValidThru_Validation, ValidThru_DB);
+                    tmp.PropertyChanged += ValidThruValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(ValidThru), value);
-                }
+                    ValidThru_DB = value.Value;
                 OnPropertyChanged(nameof(ValidThru));
             }
         }
 
-
+        private void ValidThruValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool ValidThru_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //ValidThru property
+        #endregion
 
         //PermissionNumber1 property
-        public int? PermissionNumber1Id { get; set; }
+        #region PermissionNumber1 
+        public string PermissionNumber1_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Номер разрешительного документа")]
-        public virtual RamAccess<string> PermissionNumber1
+        public RamAccess<string> PermissionNumber1
         {
-            get => DataAccess.Get<string>(nameof(PermissionNumber1));
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionNumber1_Validation, PermissionNumber1_DB);
+                tmp.PropertyChanged += PermissionNumber1ValueChanged;
+                return tmp;
+            }
             set
             {
-                DataAccess.Set(nameof(PermissionNumber1), value);
+                PermissionNumber1_DB = value.Value;
                 OnPropertyChanged(nameof(PermissionNumber1));
             }
         }
-
+        private void PermissionNumber1ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
 
         private bool PermissionNumber1_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //PermissionNumber1 property
+        #endregion
 
         //PermissionIssueDate1 property
-        public int? PermissionIssueDate1Id { get; set; }
+        #region PermissionIssueDate1 
+        public string PermissionIssueDate1_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public virtual RamAccess<string> PermissionIssueDate1
+        public RamAccess<string> PermissionIssueDate1
         {
             get
             {
-                {
-                    return DataAccess.Get<string>(nameof(PermissionIssueDate1));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(PermissionIssueDate1_Validation, PermissionIssueDate1_DB);
+                    tmp.PropertyChanged += PermissionIssueDate1ValueChanged;
+                    return tmp;
             }
             set
             {
-                DataAccess.Set(nameof(PermissionIssueDate1), value);
+                PermissionIssueDate1_DB = value.Value;
                 OnPropertyChanged(nameof(PermissionIssueDate1));
             }
         }
 
-
+        private void PermissionIssueDate1ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool PermissionIssueDate1_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //PermissionIssueDate1 property
+        #endregion
 
         //PermissionDocumentName1 property
-        public int? PermissionDocumentName1Id { get; set; }
+        #region PermissionDocumentName1
+        public string PermissionDocumentName1_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Наименование разрешительного документа")]
-        public virtual RamAccess<string> PermissionDocumentName1
+        public RamAccess<string> PermissionDocumentName1
         {
             get
             {
-                {
-                    return DataAccess.Get<string>(nameof(PermissionDocumentName1));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(PermissionDocumentName1_Validation, PermissionDocumentName1_DB);
+                    tmp.PropertyChanged += PermissionDocumentName1ValueChanged;
+                    return tmp;
             }
             set
             {
-                DataAccess.Set(nameof(PermissionDocumentName1), value);
+                PermissionDocumentName1_DB = value.Value;
                 OnPropertyChanged(nameof(PermissionDocumentName1));
             }
         }
 
-
+        private void PermissionDocumentName1ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool PermissionDocumentName1_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //PermissionDocumentName1 property
+        #endregion
 
         //ValidBegin1 property
-        public int? ValidBegin1Id { get; set; }
+        #region ValidBegin1
+        public string ValidBegin1_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Действует с")]
-        public virtual RamAccess<string> ValidBegin1
+        public RamAccess<string> ValidBegin1
         {
             get
             {
-                {
-                    return DataAccess.Get<string>(nameof(ValidBegin1));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(ValidBegin1_Validation, ValidBegin1_DB);
+                    tmp.PropertyChanged += ValidBegin1ValueChanged;
+                    return tmp;
             }
             set
             {
-                DataAccess.Set(nameof(ValidBegin1), value);
+                ValidBegin1_DB = value.Value;
                 OnPropertyChanged(nameof(ValidBegin1));
             }
         }
 
-
+        private void ValidBegin1ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool ValidBegin1_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //ValidBegin1 property
+        #endregion
 
         //ValidThru1 property
-        public int? ValidThru1Id { get; set; }
+        #region ValidThru1 
+        public string ValidThru1_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Действует по")]
-        public virtual RamAccess<string> ValidThru1
+        public RamAccess<string> ValidThru1
         {
-            get => DataAccess.Get<string>(nameof(ValidThru1));
+            get
+            {
+                var tmp = new RamAccess<string>(ValidThru1_Validation, ValidThru1_DB);
+                tmp.PropertyChanged += ValidThru1ValueChanged;
+                return tmp;
+            }
             set
             {
-                DataAccess.Set(nameof(ValidThru1), value);
+                ValidThru1_DB = value.Value;
                 OnPropertyChanged(nameof(ValidThru1));
             }
         }
 
-
+        private void ValidThru1ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool ValidThru1_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //ValidThru1 property
+        #endregion
 
         //PermissionNumber2 property
-        public int? PermissionNumber2Id { get; set; }
+        #region PermissionNumber2 
+        public string PermissionNumber2_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Номер разрешительного документа")]
-        public virtual RamAccess<string> PermissionNumber2
+        public RamAccess<string> PermissionNumber2
         {
-            get => DataAccess.Get<string>(nameof(PermissionNumber2));
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionNumber2_Validation, PermissionNumber2_DB);
+                tmp.PropertyChanged += PermissionNumber2ValueChanged;
+                return tmp;
+            }
             set
             {
-                DataAccess.Set(nameof(PermissionNumber2), value);
+                PermissionNumber2_DB = value.Value;
                 OnPropertyChanged(nameof(PermissionNumber2));
             }
         }
 
-
+        private void PermissionNumber2ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool PermissionNumber2_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //PermissionNumber2 property
+        #endregion
 
         //PermissionIssueDate2 property
-        public int? PermissionIssueDate2Id { get; set; }
+        #region PermissionIssueDate2
+        public string PermissionIssueDate2_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Дата выпуска разрешительного документа")]
-        public virtual RamAccess<string> PermissionIssueDate2
+        public RamAccess<string> PermissionIssueDate2
         {
             get
             {
-                {
-                    return DataAccess.Get<string>(nameof(PermissionIssueDate2));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(PermissionIssueDate2_Validation, PermissionIssueDate2_DB);
+                    tmp.PropertyChanged += PermissionIssueDate2ValueChanged;
+                    return tmp;
             }
             set
             {
-                DataAccess.Set(nameof(PermissionIssueDate2), value);
+                PermissionIssueDate2_DB = value.Value;
                 OnPropertyChanged(nameof(PermissionIssueDate2));
             }
         }
 
-
+        private void PermissionIssueDate2ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool PermissionIssueDate2_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //PermissionIssueDate property
+        #endregion
 
         //PermissionDocumentName2 property
-        public int? PermissionDocumentName2Id { get; set; }
-        [Attributes.Form_Property("Наименование разрешительного документа")]
-        public virtual RamAccess<string> PermissionDocumentName2
+        #region PermissionDocumentName2
+        public string PermissionDocumentName2_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Наименование разрешительного документа")]
+        public RamAccess<string> PermissionDocumentName2
         {
             get
             {
-                {
-                    return DataAccess.Get<string>(nameof(PermissionDocumentName2));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(PermissionDocumentName2_Validation, PermissionDocumentName2_DB);
+                    tmp.PropertyChanged += PermissionDocumentName2ValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(PermissionDocumentName2), value);
-                }
+                    PermissionDocumentName2_DB = value.Value;
                 OnPropertyChanged(nameof(PermissionDocumentName2));
             }
         }
 
-
+        private void PermissionDocumentName2ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool PermissionDocumentName2_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //PermissionDocumentName2 property
+        #endregion
 
         //ValidBegin2 property
-        public int? ValidBegin2Id { get; set; }
-        [Attributes.Form_Property("Действует с")]
-        public virtual RamAccess<string> ValidBegin2
+        #region ValidBegin2
+        public string ValidBegin2_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Действует с")]
+        public RamAccess<string> ValidBegin2
         {
-            get => DataAccess.Get<string>(nameof(ValidBegin2));
+            get
+            {
+                var tmp = new RamAccess<string>(ValidBegin2_Validation, ValidBegin2_DB);
+                tmp.PropertyChanged += ValidBegin2ValueChanged;
+                return tmp;
+            }
             set
             {
-                DataAccess.Set(nameof(ValidBegin2), value);
+                ValidBegin2_DB = value.Value;
                 OnPropertyChanged(nameof(ValidBegin2));
             }
         }
 
-
+        private void ValidBegin2ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool ValidBegin2_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //ValidBegin2 property
+        #endregion
 
         //ValidThru2 property
-        public int? ValidThru2Id { get; set; }
-        [Attributes.Form_Property("Действует по")]
-        public virtual RamAccess<string> ValidThru2
+        #region ValidThru2
+        public string ValidThru2_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Действует по")]
+        public RamAccess<string> ValidThru2
         {
             get
             {
-                {
-                    return DataAccess.Get<string>(nameof(ValidThru2));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(ValidThru2_Validation, ValidThru2_DB);
+                    tmp.PropertyChanged += ValidThru2ValueChanged;
+                    return tmp;
             }
             set
             {
-                DataAccess.Set(nameof(ValidThru2), value);
+                ValidThru2_DB = value.Value;
                 OnPropertyChanged(nameof(ValidThru2));
             }
         }
 
-
+        private void ValidThru2ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool ValidThru2_Validation(RamAccess<string> value)
         {
             value.ClearErrors(); return true;
         }
         //ValidThru2 property
+        #endregion
 
         //WasteSourceName property
-        public int? WasteSourceNameId { get; set; }
-        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
-        public virtual RamAccess<string> WasteSourceName
+        #region WasteSourceName
+        public string WasteSourceName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Наименование, номер выпуска сточных вод")]
+        public RamAccess<string> WasteSourceName
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(WasteSourceName));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
+                    tmp.PropertyChanged += WasteSourceNameValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(WasteSourceName), value);
-                }
+                    WasteSourceName_DB = value.Value;
                 OnPropertyChanged(nameof(WasteSourceName));
             }
         }
 
-
+        private void WasteSourceNameValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool WasteSourceName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -563,35 +578,34 @@ namespace Models
             return true;
         }
         //WasteSourceName property
+        #endregion
 
         //WasteRecieverName property
-        public int? WasteRecieverNameId { get; set; }
+        #region WasteRecieverName
+        public string WasteRecieverName_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Наименование приемника отведенных вод")]
-        public virtual RamAccess<string> WasteRecieverName
+        public RamAccess<string> WasteRecieverName
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(WasteRecieverName));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(WasteRecieverName_Validation, WasteRecieverName_DB);
+                    tmp.PropertyChanged += WasteRecieverNameValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(WasteRecieverName), value);
-                }
+                    WasteRecieverName_DB = value.Value;
                 OnPropertyChanged(nameof(WasteRecieverName));
             }
         }
 
-
+        private void WasteRecieverNameValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool WasteRecieverName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -603,35 +617,34 @@ namespace Models
             return true;
         }
         //WasteRecieverName property
+        #endregion
 
         //RecieverTypeCode property
-        public int? RecieverTypeCodeId { get; set; }
+        #region RecieverTypeCode
+        public string RecieverTypeCode_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Код типа приемника отведенных вод")]
-        public virtual RamAccess<string> RecieverTypeCode
+        public RamAccess<string> RecieverTypeCode
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(RecieverTypeCode));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(RecieverTypeCode_Validation, RecieverTypeCode_DB);
+                    tmp.PropertyChanged += RecieverTypeCodeValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(RecieverTypeCode), value);
-                }
+                    RecieverTypeCode_DB = value.Value;
                 OnPropertyChanged(nameof(RecieverTypeCode));
             }
         }
 
-
+        private void RecieverTypeCodeValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool RecieverTypeCode_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -648,35 +661,34 @@ namespace Models
             return false;
         }
         //RecieverTypeCode property
+        #endregion
 
         //PoolDistrictName property
-        public int? PoolDistrictNameId { get; set; }
+        #region PoolDistrictName
+        public string PoolDistrictName_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Наименование бассейнового округа приемника отведенных вод")]
-        public virtual RamAccess<string> PoolDistrictName
+        public RamAccess<string> PoolDistrictName
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(PoolDistrictName));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(PoolDistrictName_Validation, PoolDistrictName_DB);
+                    tmp.PropertyChanged += PoolDistrictNameValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(PoolDistrictName), value);
-                }
+                    PoolDistrictName_DB = value.Value;
                 OnPropertyChanged(nameof(PoolDistrictName));
             }
         }
 
-
+        private void PoolDistrictNameValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool PoolDistrictName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -694,35 +706,34 @@ namespace Models
             return false;
         }
         //PoolDistrictName property
+        #endregion
 
         //AllowedWasteRemovalVolume property
-        public int? AllowedWasteRemovalVolumeId { get; set; }
+        #region AllowedWasteRemovalVolume
+        public string AllowedWasteRemovalVolume_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Допустимый объем водоотведения за год, тыс. куб. м")]
-        public virtual RamAccess<string> AllowedWasteRemovalVolume
+        public RamAccess<string> AllowedWasteRemovalVolume
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(AllowedWasteRemovalVolume));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(AllowedWasteRemovalVolume_Validation, AllowedWasteRemovalVolume_DB);
+                    tmp.PropertyChanged += AllowedWasteRemovalVolumeValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(AllowedWasteRemovalVolume), value);
-                }
+                    AllowedWasteRemovalVolume_DB = value.Value;
                 OnPropertyChanged(nameof(AllowedWasteRemovalVolume));
             }
         }
 
-
+        private void AllowedWasteRemovalVolumeValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -754,35 +765,34 @@ namespace Models
             return true;
         }
         //AllowedWasteRemovalVolume property
+        #endregion
 
         //RemovedWasteVolume property
-        public int? RemovedWasteVolumeId { get; set; }
+        #region RemovedWasteVolume
+        public string RemovedWasteVolume_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Отведено за отчетный период, тыс. куб. м")]
-        public virtual RamAccess<string> RemovedWasteVolume
+        public RamAccess<string> RemovedWasteVolume
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(RemovedWasteVolume));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);
+                    tmp.PropertyChanged += RemovedWasteVolumeValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(RemovedWasteVolume), value);
-                }
+                    RemovedWasteVolume_DB = value.Value;
                 OnPropertyChanged(nameof(RemovedWasteVolume));
             }
         }
 
-
+        private void RemovedWasteVolumeValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
         private bool RemovedWasteVolume_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
@@ -810,15 +820,16 @@ namespace Models
             return true;
         }
         //RemovedWasteVolume property
+        #endregion
 
         ////RemovedWasteVolumeNote property
-        //public virtual RamAccess<double> RemovedWasteVolumeNote
+        //public RamAccess<double> RemovedWasteVolumeNote
         //{
         //    get
         //    {
 
         //        {
-        //            return DataAccess.Get<double>(nameof(RemovedWasteVolumeNote));
+        //            var tmp = new RamAccess<double>(RemovedWasteVolumeNote_Validation, _DB);
         //        }
 
         //        {
@@ -830,7 +841,7 @@ namespace Models
 
 
         //        {
-        //            DataAccess.Set(nameof(RemovedWasteVolumeNote), value);
+        //            RemovedWasteVolumeNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(RemovedWasteVolumeNote));
         //    }

@@ -10,47 +10,56 @@ namespace Models
 {
     public class Note : INotifyPropertyChanged
     {
-        protected DataAccessCollection DataAccess { get; set; }
-        public Note(DataAccessCollection Access)
+        public Note()
         {
-            DataAccess = Access;
+            Init();
         }
         public Note(int rowNumber, int graphNumber, string comment)
         {
-            DataAccess = new DataAccessCollection();
             RowNumber.Value = rowNumber;
             GraphNumber.Value = graphNumber;
             Comment.Value = comment;
+            Init();
         }
         protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             OnPropertyChanged(args.PropertyName);
         }
-        public Note()
+        public void Init()
         {
-            DataAccess = new DataAccessCollection();
-            DataAccess.Init<int?>(nameof(RowNumber), RowNumber_Validation, null);
             RowNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(GraphNumber), GraphNumber_Validation, null);
             GraphNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Comment), Comment_Validation, null);
             Comment.PropertyChanged += InPropertyChanged;
             RowNumber_Validation(RowNumber);
             GraphNumber_Validation(GraphNumber);
             Comment_Validation(Comment);
         }
-        [Key]
-        public int NoteId { get; set; }
 
-        //RowNumber property
+        public int Id { get; set; }
+
+        #region RowNUmber
+        public int? RowNumber_DB { get; set; } = 0;
+        [NotMapped]
         [Attributes.Form_Property("Номер строки")]
         public RamAccess<int?> RowNumber
         {
-            get => DataAccess.Get<int?>(nameof(RowNumber));
+            get
+            {
+                var tmp = new RamAccess<int?>(RowNumber_Validation, RowNumber_DB);
+                tmp.PropertyChanged += RowNumberValueChanged;
+                return tmp;
+            }
             set
             {
-                DataAccess.Set(nameof(RowNumber), value);
+                RowNumber_DB = value.Value;
                 OnPropertyChanged(nameof(RowNumber));
+            }
+        }
+        private void RowNumberValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                RowNumber_DB = ((RamAccess<int?>)Value).Value;
             }
         }
         private bool RowNumber_Validation(RamAccess<int?> value)
@@ -58,17 +67,31 @@ namespace Models
             value.ClearErrors();
             return true;
         }
-        //RowNumber property
+        #endregion
 
-        //GraphNumber property
+        #region GraphNumber
+        public int? GraphNumber_DB { get; set; } = 0;
+        [NotMapped]
         [Attributes.Form_Property("Номер графы")]
         public RamAccess<int?> GraphNumber
         {
-            get => DataAccess.Get<int?>(nameof(GraphNumber));
+            get
+            {
+                var tmp = new RamAccess<int?>(GraphNumber_Validation, GraphNumber_DB);
+                tmp.PropertyChanged += GraphNumberValueChanged;
+                return tmp;
+            }
             set
             {
-                DataAccess.Set(nameof(GraphNumber), value);
+                GraphNumber_DB = value.Value;
                 OnPropertyChanged(nameof(GraphNumber));
+            }
+        }
+        private void GraphNumberValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                GraphNumber_DB = ((RamAccess<int?>)Value).Value;
             }
         }
         private bool GraphNumber_Validation(RamAccess<int?> value)
@@ -76,17 +99,31 @@ namespace Models
             value.ClearErrors();
             return true;
         }
-        //GraphNumber property
+        #endregion
 
-        //Comment property
+        #region Comment
+        public string Comment_DB { get; set; } = "";
+        [NotMapped]
         [Attributes.Form_Property("Примечание")]
         public RamAccess<string> Comment
         {
-            get => DataAccess.Get<string>(nameof(Comment));
+            get
+            {
+                var tmp = new RamAccess<string>(Comment_Validation, Comment_DB);
+                tmp.PropertyChanged += CommentValueChanged;
+                return tmp;
+            }
             set
             {
-                DataAccess.Set(nameof(Comment), value);
+                Comment_DB = value.Value;
                 OnPropertyChanged(nameof(Comment));
+            }
+        }
+        private void CommentValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Comment_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Comment_Validation(RamAccess<string> value)
@@ -94,7 +131,7 @@ namespace Models
             value.ClearErrors();
             return true;
         }
-        //Comment property
+        #endregion
 
         //Для валидации
         public bool Object_Validation()
@@ -103,31 +140,12 @@ namespace Models
         }
         //Для валидации
 
-        [NotMapped]
-        private bool _isChanged = true;
-        public bool IsChanged
-        {
-            get => _isChanged;
-            set
-            {
-                if (_isChanged != value)
-                {
-                    _isChanged = value;
-                    OnPropertyChanged(nameof(IsChanged));
-                }
-            }
-        }
-
         //Property Changed
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (prop != nameof(IsChanged))
+            if (PropertyChanged != null)
             {
-                IsChanged = true;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
-                }
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

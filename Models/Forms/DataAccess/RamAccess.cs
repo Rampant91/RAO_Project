@@ -6,14 +6,15 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Models.Abstracts;
 
 namespace Models.DataAccess
 {
+
     public class RamAccess<T> : INotifyDataErrorInfo, INotifyPropertyChanged, IKey
     {
         [NotMapped]
         public Func<RamAccess<T>, bool> Handler { get; set; }
-
         public int Id { get; set; }
 
         public int? ValueId { get; set; }
@@ -31,21 +32,16 @@ namespace Models.DataAccess
                 }
             }
         }
-
-        [NotMapped]
-        public T ValueWithOutHandler
-        {
-            get => _value;
-            set
-            {
-                _value = value;
-            }
-        }
         public RamAccess(Func<RamAccess<T>, bool> Handler, T Value)
         {
             this.Handler = Handler;
             this._value = Value;
+            if (Handler != null)
+            {
+                Handler(this);
+            }
         }
+
         public RamAccess()
         {
 
@@ -60,6 +56,7 @@ namespace Models.DataAccess
             AddError("Value", error);
         }
 
+        #region Equals
         public override bool Equals(object obj)
         {
             if (obj is RamAccess<T>)
@@ -96,9 +93,9 @@ namespace Models.DataAccess
                 return obj2 as object != null ? true : false;
             }
         }
+        #endregion
 
-
-        //Data Validation
+        #region INotifyDataErrorInfo
         protected readonly List<string> _errorsByPropertyName = new List<string>();
         public bool HasErrors => _errorsByPropertyName.Any();
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
@@ -140,35 +137,18 @@ namespace Models.DataAccess
                 OnErrorsChanged(propertyName);
             }
         }
-        //Data Validation
+        #endregion
 
-        [NotMapped]
-        private bool _isChanged = true;
-        public bool IsChanged
-        {
-            get => _isChanged;
-            set
-            {
-                if (_isChanged != value)
-                {
-                    _isChanged = value;
-                    OnPropertyChanged(nameof(IsChanged));
-                }
-            }
-        }
+        #region INotifyPropertyChanged
 
-        //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (prop != nameof(IsChanged))
+            if (PropertyChanged != null)
             {
-                IsChanged = true;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
-                }
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
     }
 }

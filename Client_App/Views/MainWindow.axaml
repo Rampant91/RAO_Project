@@ -16,13 +16,8 @@
 		<Menu Height="20" DockPanel.Dock="Top">
       <MenuItem Header="_Приложение РАО">
       </MenuItem>
-			<MenuItem Header="_Файл">
-        <MenuItem Header="Открыть" Command="{Binding Load_Local}"/>
-				<MenuItem Header="Сохранить" Command="{Binding Save_Local}"/>
-        <MenuItem Header="Сохранить как..." Command="{Binding Save_ToFile}"/>
-			</MenuItem>
-      <MenuItem Header="_Экспорт">
-        <MenuItem Header="В excel" Command="{Binding Excel_Export}"/>
+            <MenuItem Header="_Импорт">
+        <MenuItem Header="Из RAODB" Command="{Binding ImportForm}"/>
       </MenuItem>
     </Menu>
     <Panel Margin="5,5,5,5" x:Name="MainPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -62,63 +57,6 @@
                 <Panel x:Name="Forms_p2_B" Grid.Column="1"/>
               </Grid>
               <Panel Margin="0,5,0,0" x:Name="Forms_p2_X" Grid.Row="1"/>
-            </Grid>
-          </Panel>
-        </TabItem>
-        <TabItem x:Name="Forms3" Header="Формы 3">
-          <Panel x:Name="Forms_p3">
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="200"></RowDefinition>
-                <RowDefinition></RowDefinition>
-              </Grid.RowDefinitions>
-              <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto"></ColumnDefinition>
-                  <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Panel x:Name="Forms_p3_0" Grid.Column="0"/>
-                <Panel x:Name="Forms_p3_B" Grid.Column="1"/>
-              </Grid>
-              <Panel x:Name="Forms_p3_X" Grid.Row="1"/>
-            </Grid>
-          </Panel>
-        </TabItem>
-        <TabItem x:Name="Forms4" Header="Формы 4">
-          <Panel x:Name="Forms_p4">
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="200"></RowDefinition>
-                <RowDefinition></RowDefinition>
-              </Grid.RowDefinitions>
-              <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto"></ColumnDefinition>
-                  <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Panel x:Name="Forms_p4_0" Grid.Column="0"/>
-                <Panel x:Name="Forms_p4_B" Grid.Column="1"/>
-              </Grid>
-              <Panel x:Name="Forms_p4_X" Grid.Row="1"/>
-            </Grid>
-          </Panel>
-        </TabItem>
-        <TabItem x:Name="Forms5" Header="Формы 5">
-          <Panel x:Name="Forms_p5">
-            <Grid>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="200"></RowDefinition>
-                <RowDefinition></RowDefinition>
-              </Grid.RowDefinitions>
-              <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="Auto"></ColumnDefinition>
-                  <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Panel x:Name="Forms_p5_0" Grid.Column="0"/>
-                <Panel x:Name="Forms_p5_B" Grid.Column="1"/>
-              </Grid>
-              <Panel x:Name="Forms_p5_X" Grid.Row="1"/>
             </Grid>
           </Panel>
         </TabItem>

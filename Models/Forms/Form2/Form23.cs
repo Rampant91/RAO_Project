@@ -1,8 +1,9 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 namespace Models
 {
@@ -12,40 +13,9 @@ namespace Models
     {
         public Form23() : base()
         {
-            //FormNum.Value = "23";
+            FormNum.Value = "2.3";
             //NumberOfFields.Value = 17;
-            Init();
             Validate_all();
-        }
-
-        private void Init()
-        {
-            DataAccess.Init<string>(nameof(StoragePlaceName), StoragePlaceName_Validation, null);
-            StoragePlaceName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(StoragePlaceCode), StoragePlaceCode_Validation, null);
-            StoragePlaceCode.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ProjectVolume), ProjectVolume_Validation, null);
-            ProjectVolume.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(CodeRAO), CodeRAO_Validation, null);
-            CodeRAO.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Volume), Volume_Validation, null);
-            Volume.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(Mass), Mass_Validation, null);
-            Mass.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(SummaryActivity), SummaryActivity_Validation, null);
-            SummaryActivity.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<int?>(nameof(QuantityOZIII), QuantityOZIII_Validation, null);
-            QuantityOZIII.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(DocumentNumber), DocumentNumber_Validation, null);
-            DocumentNumber.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(DocumentNumberRecoded), DocumentNumberRecoded_Validation, null);
-            DocumentNumberRecoded.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(ExpirationDate), ExpirationDate_Validation, null);
-            ExpirationDate.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(DocumentName), DocumentName_Validation, null);
-            DocumentName.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<string>(nameof(DocumentDate), DocumentDate_Validation, null);
-            DocumentDate.PropertyChanged += InPropertyChanged;
         }
 
         private void Validate_all()
@@ -59,7 +29,6 @@ namespace Models
             SummaryActivity_Validation(SummaryActivity);
             QuantityOZIII_Validation(QuantityOZIII);
             DocumentNumber_Validation(DocumentNumber);
-            DocumentNumberRecoded_Validation(DocumentNumberRecoded);
             ExpirationDate_Validation(ExpirationDate);
             DocumentName_Validation(DocumentName);
             DocumentDate_Validation(DocumentDate);
@@ -72,34 +41,32 @@ namespace Models
         }
 
         //StoragePlaceName property
-        public int? StoragePlaceNameId { get; set; }
-        [Attributes.Form_Property("Наименование ПХ")]
-        public virtual RamAccess<string> StoragePlaceName
+        #region  StoragePlaceName
+        public string StoragePlaceName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Наименование ПХ")]
+        public RamAccess<string> StoragePlaceName
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(StoragePlaceName));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
+                    tmp.PropertyChanged += StoragePlaceNameValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(StoragePlaceName), value);
-                }
+                    StoragePlaceName_DB = value.Value;
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
         }
         //If change this change validation
 
-        private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
+        private void StoragePlaceNameValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -116,15 +83,16 @@ namespace Models
             return true;
         }
         //StoragePlaceName property
+        #endregion
 
         ////StoragePlaceNameNote property
-        //public virtual RamAccess<string> StoragePlaceNameNote
+        //public RamAccess<string> StoragePlaceNameNote
         //{
         //    get
         //    {
 
         //        {
-        //            return DataAccess.Get<string>(nameof(StoragePlaceNameNote));
+        //            var tmp = new RamAccess<string>(StoragePlaceNameNote_Validation, _DB);
         //        }
 
         //        {
@@ -136,7 +104,7 @@ namespace Models
 
 
         //        {
-        //            DataAccess.Set(nameof(StoragePlaceNameNote), value);
+        //            StoragePlaceNameNote_DB = value.Value;
         //        }
         //        OnPropertyChanged(nameof(StoragePlaceNameNote));
         //    }
@@ -150,34 +118,32 @@ namespace Models
         ////StoragePlaceNameNote property
 
         //StoragePlaceCode property
-        public int? StoragePlaceCodeId { get; set; }
-        [Attributes.Form_Property("Код ПХ")]
-        public virtual RamAccess<string> StoragePlaceCode //8 cyfer code or - .
+        #region  StoragePlaceCode
+        public string StoragePlaceCode_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Код ПХ")]
+        public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(StoragePlaceCode));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
+                    tmp.PropertyChanged += StoragePlaceCodeValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(StoragePlaceCode), value);
-                }
+                    StoragePlaceCode_DB = value.Value;
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }
         //if change this change validation
 
-        private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
+        private void StoragePlaceCodeValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -198,36 +164,35 @@ namespace Models
             return true;
         }
         //StoragePlaceCode property
+        #endregion
 
         //ProjectVolume property
-        public int? ProjectVolumeId { get; set; }
-        [Attributes.Form_Property("Проектный объем, куб. м")]
-        public virtual RamAccess<string> ProjectVolume
+        #region  ProjectVolume
+        public string ProjectVolume_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Проектный объем, куб. м")]
+        public RamAccess<string> ProjectVolume
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(ProjectVolume));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(ProjectVolume_Validation, ProjectVolume_DB);
+                    tmp.PropertyChanged += ProjectVolumeValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(ProjectVolume), value);
-                }
+                    ProjectVolume_DB = value.Value;
                 OnPropertyChanged(nameof(ProjectVolume));
             }
         }
 
 
-        private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
+        private void ProjectVolumeValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                ProjectVolume_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -257,15 +222,16 @@ namespace Models
             return true;
         }
         //ProjectVolume property
+        #endregion
 
         ////ProjectVolumeNote property
-        //public virtual RamAccess<double> ProjectVolumeNote
+        //public RamAccess<double> ProjectVolumeNote
         //{
         //    get
         //    {
 
         //        {
-        //            return DataAccess.Get<double>(nameof(ProjectVolumeNote));
+        //            var tmp = new RamAccess<double>(ProjectVolumeNote_Validation, _DB);
         //        }
 
         //        {
@@ -274,7 +240,7 @@ namespace Models
         //    }
         //    set
         //    {
-        //        DataAccess.Set(nameof(ProjectVolumeNote), value);
+        //        ProjectVolumeNote_DB = value.Value;
         //        OnPropertyChanged(nameof(ProjectVolumeNote));
         //    }
         //}
@@ -288,31 +254,32 @@ namespace Models
         ////ProjectVolumeNote property
 
         //CodeRAO property
-        public int? CodeRAOId { get; set; }
-        [Attributes.Form_Property("Код РАО")]
-        public virtual RamAccess<string> CodeRAO
+        #region  CodeRAO
+        public string CodeRAO_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Код РАО")]
+        public RamAccess<string> CodeRAO
         {
             get
             {
-                {
-                    return DataAccess.Get<string>(nameof(CodeRAO));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
+                    tmp.PropertyChanged += CodeRAOValueChanged;
+                    return tmp;
             }
             set
             {
-                {
-                    DataAccess.Set(nameof(CodeRAO), value);
-                }
+                    CodeRAO_DB = value.Value;
                 OnPropertyChanged(nameof(CodeRAO));
             }
         }
 
 
-        private bool CodeRAO_Validation(RamAccess<string> value)//TODO
+        private void CodeRAOValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                CodeRAO_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -329,36 +296,35 @@ namespace Models
             return true;
         }
         //CodeRAO property
+        #endregion
 
         //Volume property
-        public int? VolumeId { get; set; }
-        [Attributes.Form_Property("Разрешенный объем, куб. м")]
-        public virtual RamAccess<string> Volume
+        #region  Volume
+        public string Volume_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Разрешенный объем, куб. м")]
+        public RamAccess<string> Volume
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(Volume));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(Volume_Validation, Volume_DB);
+                    tmp.PropertyChanged += VolumeValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(Volume), value);
-                }
+                    Volume_DB = value.Value;
                 OnPropertyChanged(nameof(Volume));
             }
         }
 
 
-        private bool Volume_Validation(RamAccess<string> value)//TODO
+        private void VolumeValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                Volume_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool Volume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -384,36 +350,35 @@ namespace Models
             return true;
         }
         //Volume property
+        #endregion
 
         //Mass Property
-        public int? MassId { get; set; }
-        [Attributes.Form_Property("Разрешенная масса, т")]
-        public virtual RamAccess<string> Mass
+        #region  Mass
+        public string Mass_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Разрешенная масса, т")]
+        public RamAccess<string> Mass
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(Mass));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(Mass_Validation, Mass_DB);
+                    tmp.PropertyChanged += MassValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(Mass), value);
-                }
+                    Mass_DB = value.Value;
                 OnPropertyChanged(nameof(Mass));
             }
         }
 
 
-        private bool Mass_Validation(RamAccess<string> value)//TODO
+        private void MassValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                Mass_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool Mass_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -439,37 +404,35 @@ namespace Models
             return true;
         }
         //Mass Property
+        #endregion
 
         //QuantityOZIII property
-        public int? QuantityOZIIIId { get; set; }
-        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public virtual RamAccess<int?> QuantityOZIII
+        #region  QuantityOZIII
+        public int? QuantityOZIII_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
+        public RamAccess<int?> QuantityOZIII
         {
             get
             {
-
-                {
-                    return DataAccess.Get<int?>(nameof(QuantityOZIII));//OK
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<int?>(QuantityOZIII_Validation, QuantityOZIII_DB);//OK
+                    tmp.PropertyChanged += QuantityOZIIIValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-
-                {
-                    DataAccess.Set(nameof(QuantityOZIII), value);
-                }
+                    QuantityOZIII_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
         }
         // positive int.
 
-        private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
+        private void QuantityOZIIIValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                QuantityOZIII_DB = ((RamAccess<int?>)Value).Value;
+}
+}
+private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -483,36 +446,35 @@ namespace Models
             return true;
         }
         //QuantityOZIII property
+        #endregion
 
         //SummaryActivity property
-        public int? SummaryActivityId { get; set; }
-        [Attributes.Form_Property("Суммарная активность, Бк")]
-        public virtual RamAccess<string> SummaryActivity
+        #region  SummaryActivity
+        public string SummaryActivity_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Суммарная активность, Бк")]
+        public RamAccess<string> SummaryActivity
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(SummaryActivity));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(SummaryActivity_Validation, SummaryActivity_DB);
+                    tmp.PropertyChanged += SummaryActivityValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(SummaryActivity), value);
-                }
+                    SummaryActivity_DB = value.Value;
                 OnPropertyChanged(nameof(SummaryActivity));
             }
         }
 
 
-        private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
+        private void SummaryActivityValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                SummaryActivity_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -538,37 +500,35 @@ namespace Models
             return true;
         }
         //SummaryActivity property
+        #endregion
 
         //DocumentNumber property
-        public int? DocumentNumberId { get; set; }
-        [Attributes.Form_Property("Номер документа")]
-        public virtual RamAccess<string> DocumentNumber
+        #region  DocumentNumber
+        public string DocumentNumber_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Номер документа")]
+        public RamAccess<string> DocumentNumber
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(DocumentNumber));//OK
-
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);//OK
+                    tmp.PropertyChanged += DocumentNumberValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(DocumentNumber), value);
-                }
+                    DocumentNumber_DB = value.Value;
                 OnPropertyChanged(nameof(DocumentNumber));
             }
         }
 
 
-        private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
+        private void DocumentNumberValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                DocumentNumber_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))//ok
@@ -579,65 +539,70 @@ namespace Models
             return true;
         }
         //DocumentNumber property
+        #endregion
 
         //DocumentNumberRecoded property
-        public virtual RamAccess<string> DocumentNumberRecoded
-        {
-            get
-            {
+        //public RamAccess<string> DocumentNumberRecoded
+        //{
+        //    get
+        //    {
 
-                {
-                    return DataAccess.Get<string>(nameof(DocumentNumberRecoded));//OK
+        //        {
+        //            var tmp = new RamAccess<string>(DocumentNumberRecoded_Validation, _DB);//OK
+        //            tmp.PropertyChanged += ValueChanged;
+        //            return tmp;
 
-                }
+        //        }
 
-                {
+        //        {
 
-                }
-            }
-            set
-            {
-
-
-                {
-                    DataAccess.Set(nameof(DocumentNumberRecoded), value);
-                }
-                OnPropertyChanged(nameof(DocumentNumberRecoded));
-            }
-        }
+        //        }
+        //    }
+        //    set
+        //    {
 
 
-        private bool DocumentNumberRecoded_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors(); return true;
-        }
+        //        {
+        //            DocumentNumberRecoded_DB = value.Value;
+        //        }
+        //        OnPropertyChanged(nameof(DocumentNumberRecoded));
+        //    }
+        //}
+
+
+        //private bool DocumentNumberRecoded_Validation(RamAccess<string> value)//Ready
+        //{
+        //    value.ClearErrors(); return true;
+        //}
         //DocumentNumberRecoded property
 
         //DocumentDate property
-        public int? DocumentDateId { get; set; }
-        [Attributes.Form_Property("Дата документа")]
-        public virtual RamAccess<string> DocumentDate
+        #region  
+public string DocumentDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Дата документа")]
+        public RamAccess<string> DocumentDate
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(DocumentDate));//OK
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);//OK
+                    tmp.PropertyChanged += DocumentDateValueChanged;
+                    return tmp;
             }
             set
             {
-                DataAccess.Set(nameof(DocumentDate), value);
+                DocumentDate_DB = value.Value;
                 OnPropertyChanged(nameof(DocumentDate));
             }
         }
         //if change this change validation
 
-        private bool DocumentDate_Validation(RamAccess<string> value)//Ready
+        private void DocumentDateValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                DocumentDate_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool DocumentDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -660,36 +625,35 @@ namespace Models
             return true;
         }
         //DocumentDate property
+        #endregion
 
         //ExpirationDate property
-        public int? ExpirationDateId { get; set; }
-        [Attributes.Form_Property("Срок действия документа")]
-        public virtual RamAccess<string> ExpirationDate
+        #region  ExpirationDate
+        public string ExpirationDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Срок действия документа")]
+        public RamAccess<string> ExpirationDate
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(ExpirationDate));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(ExpirationDate_Validation, ExpirationDate_DB);
+                    tmp.PropertyChanged += ExpirationDateValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(ExpirationDate), value);
-                }
+                    ExpirationDate_DB = value.Value;
                 OnPropertyChanged(nameof(ExpirationDate));
             }
         }
 
 
-        private bool ExpirationDate_Validation(RamAccess<string> value)//TODO
+        private void ExpirationDateValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                ExpirationDate_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool ExpirationDate_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -712,36 +676,35 @@ namespace Models
             return true;
         }
         //ExpirationDate property
+        #endregion
 
         //DocumentName property
-        public int? DocumentNameId { get; set; }
-        [Attributes.Form_Property("Наименование документа")]
-        public virtual RamAccess<string> DocumentName
+        #region  DocumentName
+        public string DocumentName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Наименование документа")]
+        public RamAccess<string> DocumentName
         {
             get
             {
-
-                {
-                    return DataAccess.Get<string>(nameof(DocumentName));
-                }
-
-                {
-
-                }
+                    var tmp = new RamAccess<string>(DocumentName_Validation, DocumentName_DB);
+                    tmp.PropertyChanged += DocumentNameValueChanged;
+                    return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(DocumentName), value);
-                }
+                    DocumentName_DB = value.Value;
                 OnPropertyChanged(nameof(DocumentName));
             }
         }
 
 
-        private bool DocumentName_Validation(RamAccess<string> value)//Ready
+        private void DocumentNameValueChanged(object Value, PropertyChangedEventArgs args)
+{
+if (args.PropertyName == "Value")
+{
+                DocumentName_DB = ((RamAccess<string>)Value).Value;
+}
+}
+private bool DocumentName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -752,5 +715,6 @@ namespace Models
             return true;
         }
         //DocumentName property
+        #endregion
     }
 }

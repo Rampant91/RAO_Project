@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -12,6 +13,7 @@ using Client_App.Controls.Support.RenderDataGridHeader;
 using Client_App.Views;
 using Collections;
 using DBRealization;
+using DynamicData;
 using Models.Abstracts;
 using ReactiveUI;
 using Spravochniki;
@@ -43,6 +45,12 @@ namespace Client_App.ViewModels
 
             AddReport = ReactiveCommand.CreateFromTask<string>(_AddReport);
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
+
+            ImportForm =
+                ReactiveCommand.CreateFromTask(_ImportForm);
+
+            ExportForm =
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_ExportForm);
 
             ChangeForm =
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_ChangeForm);
@@ -91,6 +99,9 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<string, Unit> AddReport { get; }
         public ReactiveCommand<string, Unit> AddForm { get; }
+
+        public ReactiveCommand<Unit, Unit> ImportForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> ExportForm { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> ChangeForm { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> ChangeReport { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> DeleteForm { get; }
@@ -118,6 +129,7 @@ namespace Client_App.ViewModels
             {
                 var t = desktop.MainWindow as MainWindow;
                 var rt = new Report();
+                rt.FormNum.Value = param;
                 if (t.SelectedReports.Count() != 0)
                 {
                     var y = t.SelectedReports.First() as Reports;
@@ -134,12 +146,102 @@ namespace Client_App.ViewModels
                 if (param.Split('.')[1] == "0")
                 {
                     var rt = new Reports();
-                    rt.Master.Value = new Report();
+                    rt.Master = new Report();
+                    rt.Master.FormNum.Value = param;
+
                     Local_Reports.Reports_Collection.Add(rt);
-                    FormChangeOrCreate frm = new(param, rt.Master.Value);
+                    FormChangeOrCreate frm = new(param, rt.Master);
                     await frm.ShowDialog<Form>(desktop.MainWindow);
                 }
             }
+        }
+
+        private async Task _ExportForm(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                if (param != null)
+                {
+                    var obj = param.First();
+                    OpenFolderDialog dial = new OpenFolderDialog();
+                    var res = await dial.ShowAsync(desktop.MainWindow);
+                    if (res != null)
+                    {
+                        if (res != "")
+                        {
+                            var dt = DateTime.Now;
+                            res = res + "\\Report_" + 
+                                  dt.Year+"."+dt.Month+"."+dt.Day+"_"+dt.Hour+"."+dt.Minute+"."+dt.Second + ".raodb";
+                            var rep = (Report) obj;
+                            var findReports = from t in Local_Reports.Reports_Collection
+                                where t.Report_Collection.Contains(rep)
+                                select t;
+                            var rt = findReports.FirstOrDefault();
+                            if (rt != null)
+                            {
+                                using (DBExportModel db = new DBExportModel(res))
+                                {
+                                    try
+                                    {
+                                        db.Database.EnsureCreated();
+                                        db.ReportsCollectionDbSet.Add(findReports.FirstOrDefault());
+                                        db.SaveChanges();
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine(e);
+                                        throw;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+
+        private async Task _ImportForm()
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                OpenFileDialog dial = new OpenFileDialog();
+                var answ = await dial.ShowAsync(desktop.MainWindow);
+                var res = answ==null?null:answ[0];
+                if (res != null)
+                {
+                    if (res != "")
+                    {
+                        using (DBExportModel db = new DBExportModel(res))
+                        {
+                            try
+                            {
+                                db.Database.EnsureCreated();
+                                db.LoadTables();
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e);
+                                throw;
+                            }
+                            foreach (var item in db.ReportsCollectionDbSet)
+                            {
+                                var tb = from t in Local_Reports.Reports_Collection
+                                    where t.Master.Rows10[0].Okpo == item.Master.Rows10[0].Okpo
+                                    select t;
+                                var r = tb.FirstOrDefault();
+                                if (r!=null)
+                                {
+                                    r.Report_Collection.AddRange(item.Report_Collection);
+                                }
+                                else
+                                {
+                                    Local_Reports.Reports_Collection.Add(item);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            StaticConfiguration.DBModel.SaveChanges();
         }
 
         private async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
@@ -166,7 +268,8 @@ namespace Client_App.ViewModels
                     if (obj != null)
                     {
                         var rep = (Reports)obj;
-                        FormChangeOrCreate frm = new FormChangeOrCreate(rep.Master.Value.FormNum.Value, rep.Master.Value);
+
+                        FormChangeOrCreate frm = new FormChangeOrCreate(rep.Master.FormNum.Value, rep.Master);
                         await frm.ShowDialog(desktop.MainWindow);
                     }
                 }

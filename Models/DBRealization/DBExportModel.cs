@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
-using Models.DataAccess;
-using Models;
 
 namespace DBRealization
 {
-    public class DBModel : DbContext
+    public class DBExportModel : DbContext
     {
         public string _path { get; set; }
-        public DBModel(string Path)
+        public DBExportModel(string Path)
         {
             _path = Path;
         }
@@ -25,8 +23,9 @@ namespace DBRealization
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Collections.DBObservable>()
-    .ToTable("DBObservable_DbSet");
+                .ToTable("DBObservable_DbSet");
 
             modelBuilder.Entity<Collections.Reports>()
                 .ToTable("ReportsCollection_DbSet");
@@ -86,8 +85,13 @@ namespace DBRealization
 
         public void LoadTables()
         {
-            accessString.Load();
+            accessReport.Load();
+            accessReports.Load();
+            ReportCollectionDbSet.Load();
+            ReportsCollectionDbSet.Load();
+
             notes.Load();
+
             form_10.Load();
             form_11.Load();
             form_12.Load();
@@ -112,11 +116,6 @@ namespace DBRealization
             form_210.Load();
             form_211.Load();
             form_212.Load();
-
-            ReportCollectionDbSet.Load();
-            ReportsCollectionDbSet.Load();
-            DBObservableDbSet.Load();
-            var t =this;
         }
 
         public void UndoChanges()
@@ -138,10 +137,9 @@ namespace DBRealization
                 }
             }
         }
+        public DbSet<Models.DataAccess.RamAccess<Collections.Report>> accessReport { get; set; }
+        public DbSet<Models.DataAccess.RamAccess<Collections.Reports>> accessReports { get; set; }
 
-        public DbSet<RamAccess<string>> accessString { get; set; }
-
-        public DbSet<Collections.DBObservable> DBObservableDbSet { get; set; }
         public DbSet<Collections.Reports> ReportsCollectionDbSet { get; set; }
         public DbSet<Collections.Report> ReportCollectionDbSet { get; set; }
         public DbSet<Models.Note> notes { get; set; }

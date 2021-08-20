@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using Models.Collections;
@@ -23,6 +24,18 @@ namespace Client_App.Controls.DataGrid
         public int Count
         {
             get { return Cells.Count(); }
+        }
+
+        public void Reorgonize(string LastRow,string NewRow)
+        {
+            SCells.SRow= Convert.ToInt32(NewRow);
+            foreach (var item in Cells)
+            {
+                if (item.Value.CellRow == Convert.ToInt32(LastRow))
+                {
+                    item.Value.CellRow = Convert.ToInt32(NewRow);
+                }
+            }
         }
 
         public Cell this[int Row, int Column]

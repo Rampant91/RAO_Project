@@ -1,4 +1,4 @@
-﻿using Models.DataAccess;
+﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
 
 namespace Models.Abstracts
@@ -6,11 +6,9 @@ namespace Models.Abstracts
     public abstract class Form2 : Form
     {
         [Attributes.Form_Property("Форма")]
-
-        public Form2() : base()
+        public Form2()
         {
-            Init_base();
-            Validate_base();
+
         }
 
         protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
@@ -18,85 +16,82 @@ namespace Models.Abstracts
             OnPropertyChanged(args.PropertyName);
         }
 
-        private void Init_base()
-        {
-            DataAccess.Init<int>(nameof(NumberInOrder), NumberInOrder_Validation, -1);
-            NumberInOrder.PropertyChanged += InPropertyChanged;
-            DataAccess.Init<byte>(nameof(CorrectionNumber), CorrectionNumber_Validation, 255);
-            CorrectionNumber.PropertyChanged += InPropertyChanged;
-            //DataAccess.Init<string>(nameof(), _Validation, null);
-        }
-        protected void Validate_base()
-        {
-            NumberInOrder_Validation(NumberInOrder);
-        }
+        #region CorrectionNumber
 
-        //CorrectionNumber property
-        public int? CorrectionNumberId { get; set; }
+        public byte CorrectionNumber_DB { get; set; } = 0;
+
+        [NotMapped]
         [Attributes.Form_Property("Номер корректировки")]
-        public virtual RamAccess<byte> CorrectionNumber
+        public RamAccess<byte> CorrectionNumber
         {
             get
             {
-
-                {
-                    return DataAccess.Get<byte>(nameof(CorrectionNumber));
-
-                }
-
-                {
-
-                }
+                var tmp = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
+                tmp.PropertyChanged += CorrectionNumberValueChanged;
+                return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(CorrectionNumber), value);
-                }
+                CorrectionNumber_DB = value.Value;
                 OnPropertyChanged(nameof(CorrectionNumber));
+            }
+        }
+
+        private void CorrectionNumberValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                CorrectionNumber_DB = ((RamAccess<byte>) Value).Value;
             }
         }
 
         private bool CorrectionNumber_Validation(RamAccess<byte> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
+
         //CorrectionNumber property
 
-        //NumberInOrder property
-        public int? NumberInOrderId { get; set; }
+        #endregion
+
+        #region NumberInOrder
+
+        public int NumberInOrder_DB { get; set; } = 0;
+
+        [NotMapped]
         [Attributes.Form_Property("№ п/п")]
-        public virtual RamAccess<int> NumberInOrder
+        public RamAccess<int> NumberInOrder
         {
             get
             {
-
-                {
-                    return DataAccess.Get<int>(nameof(NumberInOrder));
-
-                }
-
-                {
-
-                }
+                var tmp = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
+                tmp.PropertyChanged += NumberInOrderValueChanged;
+                return tmp;
             }
             set
             {
-
-
-                {
-                    DataAccess.Set(nameof(NumberInOrder), value);
-                }
+                NumberInOrder_DB = value.Value;
                 OnPropertyChanged(nameof(NumberInOrder));
+            }
+        }
+
+        private void NumberInOrderValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                NumberInOrder_DB = ((RamAccess<int>) Value).Value;
             }
         }
 
         private bool NumberInOrder_Validation(RamAccess<int> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
+
         //NumberInOrder property
+
+        #endregion
     }
 }

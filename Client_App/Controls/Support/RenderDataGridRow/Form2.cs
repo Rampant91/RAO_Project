@@ -3,6 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Media;
 using System;
+using System.Reactive.Linq;
+using Client_App.Controls.DataGrid;
+using Models.DataAccess;
 
 namespace Client_App.Controls.Support.RenderDataGridRow
 {
@@ -84,14 +87,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -132,14 +148,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -156,14 +185,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -180,15 +222,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
 
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
             cell.CellRow = Row;
             cell.CellColumn = Column;
 
@@ -204,14 +258,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -228,14 +295,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -252,14 +332,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -276,14 +369,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -300,14 +406,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -324,14 +443,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -348,14 +480,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -372,14 +517,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 BorderBrush = new SolidColorBrush(border_color1)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
