@@ -664,7 +664,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get3Row(2, Row, 6, "Volume", scp, TopName));
             stck.Children.Add(Get3Row(2, Row, 7, "Mass", scp, TopName));
             stck.Children.Add(Get3Row(2, Row, 8, "QuantityOZIII", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 9, "SummaryActivity", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 9, "SummaryActivity", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 10, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 11, "DocumentDate", scp, TopName));
             stck.Children.Add(Get3Row(2, Row, 12, "ExpirationDate", scp, TopName));

@@ -39,6 +39,22 @@ namespace Client_App.ViewModels
             dbm.SaveChanges();
 
             Local_Reports = dbm.DBObservableDbSet.Local.First();
+            //foreach(var report in Local_Reports.Reports_Collection)
+            //{
+            //    switch (report.Master.FormNum.Value[0])
+            //    {
+            //        case '1':
+            //            report.Master.OkpoRep = report.Master.OkpoRep;
+            //            report.Master.RegNoRep = report.Master.RegNoRep;
+            //            report.Master.ShortJurLicoRep = report.Master.ShortJurLicoRep;
+            //            break;
+            //        case '2':
+            //            report.Master.OkpoRep1 = report.Master.OkpoRep1;
+            //            report.Master.RegNoRep1 = report.Master.RegNoRep1;
+            //            report.Master.ShortJurLicoRep1 = report.Master.ShortJurLicoRep1;
+            //            break;
+            //    }
+            //}
             Local_Reports.PropertyChanged += Local_ReportsChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);

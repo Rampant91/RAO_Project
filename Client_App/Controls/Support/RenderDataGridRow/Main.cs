@@ -129,15 +129,13 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Bind(StackPanel.DataContextProperty, b);
 
 
-            stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 2, "FormNum", scp, TopName));
-
-            string? str = "{0:d}";
-            stck.Children.Add(Get1Row(1, Row, 3, "StartPeriod", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 4, "EndPeriod", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 5, "ExportDate", scp, TopName));
-            stck.Children.Add(Get1Row(2, Row, 6, "IsCorrection", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 7, "Comments", scp, TopName));
+            //stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 1, "FormNum", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 2, "StartPeriod", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 3, "EndPeriod", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 4, "ExportDate", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 5, "IsCorrection", scp, TopName));
+            stck.Children.Add(Get1Row(1, Row, 6, "Comments", scp, TopName));
 
             return stck;
         }
@@ -241,15 +239,13 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Bind(StackPanel.DataContextProperty, b);
 
 
-            stck.Children.Add(Get3Row(1, Row, 1, "NumberInOrder", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 2, "FormNum", scp, TopName));
-
-            string? str = "{0:d}";
-            stck.Children.Add(Get3Row(1, Row, 3, "StartPeriod", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 4, "EndPeriod", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 5, "ExportDate", scp, TopName));
-            stck.Children.Add(Get3Row(2, Row, 6, "IsCorrection", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 7, "Comments", scp, TopName));
+            //stck.Children.Add(Get3Row(1, Row, 1, "NumberInOrder", scp, TopName));
+            stck.Children.Add(Get3Row(1, Row, 1, "FormNum", scp, TopName));
+            stck.Children.Add(Get3Row(1, Row, 2, "StartPeriod", scp, TopName));
+            stck.Children.Add(Get3Row(1, Row, 3, "EndPeriod", scp, TopName));
+            stck.Children.Add(Get3Row(1, Row, 4, "ExportDate", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 5, "IsCorrection", scp, TopName));
+            stck.Children.Add(Get3Row(1, Row, 6, "Comments", scp, TopName));
 
             return stck;
         }

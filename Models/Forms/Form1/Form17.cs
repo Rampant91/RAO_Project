@@ -68,6 +68,7 @@ namespace Models
             set
             {
                 PackName_DB = value.Value;
+                OnPropertyChanged(nameof(PackName));
             }
         }
         private void PackNameValueChanged(object Value, PropertyChangedEventArgs args)
@@ -80,12 +81,12 @@ namespace Models
         private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            List<string> spr = new List<string>();
-            if (!spr.Contains(value.Value))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
+            //List<string> spr = new List<string>();
+            //if (!spr.Contains(value.Value))
+            //{
+            //    value.AddError("Недопустимое значение");
+            //    return false;
+            //}
             return true;
         }
         #endregion
@@ -105,6 +106,7 @@ namespace Models
             set
             {
                 PackType_DB = value.Value;
+                OnPropertyChanged(nameof(PackType));
             }
         }//If change this change validation
 
@@ -136,6 +138,7 @@ namespace Models
             set
             {
                 PackNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PackNumber));
             }
         }//If change this change validation
 
@@ -167,6 +170,7 @@ namespace Models
             set
             {
                 PackFactoryNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PackFactoryNumber));
             }
         }
         private void PackFactoryNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -197,6 +201,7 @@ namespace Models
             set
             {
                 FormingDate_DB = value.Value;
+                OnPropertyChanged(nameof(FormingDate));
             }
         }
         private void FormingDateValueChanged(object Value, PropertyChangedEventArgs args)
@@ -244,6 +249,7 @@ namespace Models
             set
             {
                 Volume_DB = value.Value;
+                OnPropertyChanged(nameof(Volume));
             }
         }
         private void VolumeValueChanged(object Value, PropertyChangedEventArgs args)
@@ -295,6 +301,7 @@ namespace Models
             set
             {
                 Mass_DB = value.Value;
+                OnPropertyChanged(nameof(Mass));
             }
         }
         private void MassValueChanged(object Value, PropertyChangedEventArgs args)
@@ -346,6 +353,7 @@ namespace Models
             set
             {
                 PassportNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PassportNumber));
             }
         }
         private void PassportNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -376,6 +384,7 @@ namespace Models
             set
             {
                 Radionuclids_DB = value.Value;
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }//If change this change validation
 
@@ -426,6 +435,7 @@ namespace Models
             set
             {
                 SpecificActivity_DB = value.Value;
+                OnPropertyChanged(nameof(SpecificActivity));
             }
         }
         private void SpecificActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -477,6 +487,7 @@ namespace Models
             set
             {
                 ProviderOrRecieverOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
         private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -526,6 +537,7 @@ namespace Models
             set
             {
                 TransporterOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
         private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -578,6 +590,7 @@ namespace Models
             set
             {
                 StoragePlaceName_DB = value.Value;
+                OnPropertyChanged(nameof(StoragePlaceName));
             }
         }//If change this change validation
 
@@ -616,6 +629,7 @@ namespace Models
             set
             {
                 StoragePlaceCode_DB = value.Value;
+                OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }//if change this change validation
 
@@ -629,8 +643,15 @@ namespace Models
         private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            List<string> lst = new List<string>();//HERE binds spr
-            if (!lst.Contains(value.Value))
+            //List<string> lst = new List<string>();//HERE binds spr
+            //if (!lst.Contains(value.Value))
+            //{
+            //    value.AddError("Недопустимое значение"); return false;
+            //}
+            //return true;
+            if (value.Value == "-") return true;
+            Regex a = new Regex("^[0-9]{8}$");
+            if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
             }
@@ -653,6 +674,7 @@ namespace Models
             set
             {
                 Subsidy_DB = value.Value;
+                OnPropertyChanged(nameof(Subsidy));
             }
         }
         private void SubsidyValueChanged(object Value, PropertyChangedEventArgs args)
@@ -701,6 +723,7 @@ namespace Models
             set
             {
                 FcpNumber_DB = value.Value;
+                OnPropertyChanged(nameof(FcpNumber));
             }
         }
         private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -731,6 +754,7 @@ namespace Models
             set
             {
                 CodeRAO_DB = value.Value;
+                OnPropertyChanged(nameof(CodeRAO));
             }
         }
         private void CodeRAOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -773,6 +797,7 @@ namespace Models
             set
             {
                 StatusRAO_DB = value.Value;
+                OnPropertyChanged(nameof(StatusRAO));
             }
         }
         private void StatusRAOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -835,6 +860,7 @@ namespace Models
             set
             {
                 VolumeOutOfPack_DB = value.Value;
+                OnPropertyChanged(nameof(VolumeOutOfPack));
             }
         }
         private void VolumeOutOfPackValueChanged(object Value, PropertyChangedEventArgs args)
@@ -886,6 +912,7 @@ namespace Models
             set
             {
                 MassOutOfPack_DB = value.Value;
+                OnPropertyChanged(nameof(MassOutOfPack));
             }
         }
         private void MassOutOfPackValueChanged(object Value, PropertyChangedEventArgs args)
@@ -938,6 +965,7 @@ namespace Models
             set
             {
                 Quantity_DB = value.Value;
+                OnPropertyChanged(nameof(Quantity));
             }
         }// positive int.
 
@@ -975,6 +1003,7 @@ namespace Models
             set
             {
                 TritiumActivity_DB = value.Value;
+                OnPropertyChanged(nameof(TritiumActivity));
             }
         }
         private void TritiumActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -1030,6 +1059,7 @@ namespace Models
             set
             {
                 BetaGammaActivity_DB = value.Value;
+                OnPropertyChanged(nameof(BetaGammaActivity));
             }
         }
         private void BetaGammaActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -1085,6 +1115,7 @@ namespace Models
             set
             {
                 AlphaActivity_DB = value.Value;
+                OnPropertyChanged(nameof(AlphaActivity));
             }
         }
         private void AlphaActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -1140,6 +1171,7 @@ namespace Models
             set
             {
                 TransuraniumActivity_DB = value.Value;
+                OnPropertyChanged(nameof(TransuraniumActivity));
             }
         }
         private void TransuraniumActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -1195,6 +1227,7 @@ namespace Models
             set
             {
                 RefineOrSortRAOCode_DB = value.Value;
+                OnPropertyChanged(nameof(RefineOrSortRAOCode));
             }
         }//If change this change validation
 
@@ -1229,8 +1262,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
-            if (!spr.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1261,28 +1293,7 @@ namespace Models
         protected override bool DocumentVid_Validation(RamAccess<byte?> value)
         {
             value.ClearErrors();
-            List<Tuple<byte?, string>> spr = new List<Tuple<byte?, string>>
-            {
-                new Tuple<byte?, string>(0,""),
-                new Tuple<byte?, string>(1,""),
-                new Tuple<byte?, string>(2,""),
-                new Tuple<byte?, string>(3,""),
-                new Tuple<byte?, string>(4,""),
-                new Tuple<byte?, string>(5,""),
-                new Tuple<byte?, string>(6,""),
-                new Tuple<byte?, string>(7,""),
-                new Tuple<byte?, string>(8,""),
-                new Tuple<byte?, string>(9,""),
-                new Tuple<byte?, string>(10,""),
-                new Tuple<byte?, string>(11,""),
-                new Tuple<byte?, string>(12,""),
-                new Tuple<byte?, string>(13,""),
-                new Tuple<byte?, string>(14,""),
-                new Tuple<byte?, string>(15,""),
-                new Tuple<byte?, string>(19,""),
-                new Tuple<byte?, string>(null,"")
-            };   //HERE BINDS SPRAVOCHNICK
-            foreach (Tuple<byte?, string> item in spr)
+            foreach (Tuple<byte?, string> item in Spravochniks.SprDocumentVidName)
             {
                 return false;
             }

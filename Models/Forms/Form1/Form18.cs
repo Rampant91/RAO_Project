@@ -64,6 +64,7 @@ namespace Models
             set
             {
                 IndividualNumberZHRO_DB = value.Value;
+                OnPropertyChanged(nameof(IndividualNumberZHRO));
             }
         }
         private void IndividualNumberZHROValueChanged(object Value, PropertyChangedEventArgs args)
@@ -94,6 +95,7 @@ namespace Models
             set
             {
                 PassportNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PassportNumber));
             }
         }
         private void PassportNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -137,6 +139,7 @@ namespace Models
             set
             {
                 Volume6_DB = value.Value;
+                OnPropertyChanged(nameof(Volume6));
             }
         }
         private void Volume6ValueChanged(object Value, PropertyChangedEventArgs args)
@@ -188,6 +191,7 @@ namespace Models
             set
             {
                 Mass7_DB = value.Value;
+                OnPropertyChanged(nameof(Mass7));
             }
         }
         private void Mass7ValueChanged(object Value, PropertyChangedEventArgs args)
@@ -225,7 +229,7 @@ namespace Models
         #endregion
 
         #region SaltConcentration
-        public double? SaltConcentration_DB { get; set; } = 0;
+        public double? SaltConcentration_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Солесодержание, г/л")]
         public RamAccess<double?> SaltConcentration
@@ -239,6 +243,7 @@ namespace Models
             set
             {
                 SaltConcentration_DB = value.Value;
+                OnPropertyChanged(nameof(SaltConcentration));
             }
         }
         private void SaltConcentrationValueChanged(object Value, PropertyChangedEventArgs args)
@@ -279,6 +284,7 @@ namespace Models
             set
             {
                 Radionuclids_DB = value.Value;
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }//If change this change validation
 
@@ -329,6 +335,7 @@ namespace Models
             set
             {
                 SpecificActivity_DB = value.Value;
+                OnPropertyChanged(nameof(SpecificActivity));
             }
         }
         private void SpecificActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -381,6 +388,7 @@ namespace Models
             set
             {
                 ProviderOrRecieverOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
         private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -425,6 +433,7 @@ namespace Models
             set
             {
                 TransporterOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
         private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -475,6 +484,7 @@ namespace Models
             set
             {
                 StoragePlaceName_DB = value.Value;
+                OnPropertyChanged(nameof(StoragePlaceName));
             }
         }//If change this change validation
 
@@ -513,6 +523,7 @@ namespace Models
             set
             {
                 StoragePlaceCode_DB = value.Value;
+                OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }//if change this change validation
 
@@ -526,8 +537,15 @@ namespace Models
         private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            List<string> lst = new List<string>();//HERE binds spr
-            if (!lst.Contains(value.Value))
+            //List<string> lst = new List<string>();//HERE binds spr
+            //if (!lst.Contains(value.Value))
+            //{
+            //    value.AddError("Недопустимое значение"); return false;
+            //}
+            //return true;
+            if (value.Value == "-") return true;
+            Regex a = new Regex("^[0-9]{8}$");
+            if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
             }
@@ -550,6 +568,7 @@ namespace Models
             set
             {
                 CodeRAO_DB = value.Value;
+                OnPropertyChanged(nameof(CodeRAO));
             }
         }
         private void CodeRAOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -592,6 +611,7 @@ namespace Models
             set
             {
                 StatusRAO_DB = value.Value;
+                OnPropertyChanged(nameof(StatusRAO));
             }
         }
         private void StatusRAOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -654,6 +674,7 @@ namespace Models
             set
             {
                 Volume20_DB = value.Value;
+                OnPropertyChanged(nameof(Volume20));
             }
         }
         private void Volume20ValueChanged(object Value, PropertyChangedEventArgs args)
@@ -705,6 +726,7 @@ namespace Models
             set
             {
                 Mass21_DB = value.Value;
+                OnPropertyChanged(nameof(Mass21));
             }
         }
         private void Mass21ValueChanged(object Value, PropertyChangedEventArgs args)
@@ -757,6 +779,7 @@ namespace Models
             set
             {
                 TritiumActivity_DB = value.Value;
+                OnPropertyChanged(nameof(TritiumActivity));
             }
         }
         private void TritiumActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -812,6 +835,7 @@ namespace Models
             set
             {
                 BetaGammaActivity_DB = value.Value;
+                OnPropertyChanged(nameof(BetaGammaActivity));
             }
         }
         private void BetaGammaActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -867,6 +891,7 @@ namespace Models
             set
             {
                 AlphaActivity_DB = value.Value;
+                OnPropertyChanged(nameof(AlphaActivity));
             }
         }
         private void AlphaActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -922,6 +947,7 @@ namespace Models
             set
             {
                 TransuraniumActivity_DB = value.Value;
+                OnPropertyChanged(nameof(TransuraniumActivity));
             }
         }
         private void TransuraniumActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -977,6 +1003,7 @@ namespace Models
             set
             {
                 RefineOrSortRAOCode_DB = value.Value;
+                OnPropertyChanged(nameof(RefineOrSortRAOCode));
             }
         }//If change this change validation
 
@@ -1030,6 +1057,7 @@ namespace Models
             set
             {
                 Subsidy_DB = value.Value;
+                OnPropertyChanged(nameof(Subsidy));
             }
         }
         private void SubsidyValueChanged(object Value, PropertyChangedEventArgs args)
@@ -1077,6 +1105,7 @@ namespace Models
             set
             {
                 FcpNumber_DB = value.Value;
+                OnPropertyChanged(nameof(FcpNumber));
             }
         }
         private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -1095,12 +1124,11 @@ namespace Models
         protected override bool OperationCode_Validation(RamAccess<short?> value)//OK
         {
             value.ClearErrors();
-            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
             if (value.Value == null)
             {
                 return true;
             }
-            if (!spr.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1154,28 +1182,7 @@ namespace Models
         protected override bool DocumentVid_Validation(RamAccess<byte?> value)
         {
             value.ClearErrors();
-            List<Tuple<byte?, string>> spr = new List<Tuple<byte?, string>>
-            {
-                new Tuple<byte?, string>(0,""),
-                new Tuple<byte?, string>(1,""),
-                new Tuple<byte?, string>(2,""),
-                new Tuple<byte?, string>(3,""),
-                new Tuple<byte?, string>(4,""),
-                new Tuple<byte?, string>(5,""),
-                new Tuple<byte?, string>(6,""),
-                new Tuple<byte?, string>(7,""),
-                new Tuple<byte?, string>(8,""),
-                new Tuple<byte?, string>(9,""),
-                new Tuple<byte?, string>(10,""),
-                new Tuple<byte?, string>(11,""),
-                new Tuple<byte?, string>(12,""),
-                new Tuple<byte?, string>(13,""),
-                new Tuple<byte?, string>(14,""),
-                new Tuple<byte?, string>(15,""),
-                new Tuple<byte?, string>(19,""),
-                new Tuple<byte?, string>(null,"")
-            };   //HERE BINDS SPRAVOCHNICK
-            foreach (Tuple<byte?, string> item in spr)
+            foreach (Tuple<byte?, string> item in Spravochniks.SprDocumentVidName)
             {
                 if (value.Value == item.Item1)
                 {

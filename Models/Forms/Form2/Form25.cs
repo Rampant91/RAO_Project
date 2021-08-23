@@ -179,15 +179,10 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
             {
                 value.AddError("Поле не заполнено"); return false;
             }
-            if (!(value.Value == "-"))
+            if (value.Value == "-")
             {
-                if (value.Value.Length != 8)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
+                return true;
             }
-
             Regex a = new Regex("^[0-9]{8}$");
             if (!a.IsMatch(value.Value))
             {

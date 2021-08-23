@@ -173,7 +173,7 @@ namespace Models
             foreach (var nucl in nuclids)
             {
                 var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
-                if (tmp.Count() == 0)
+                if (!tmp.Any())
                     flag = false;
             }
             if (!flag)
@@ -389,7 +389,7 @@ namespace Models
         #endregion
 
         #region AggregateState
-        public byte? AggregateState_DB { get; set; } = 0;
+        public byte? AggregateState_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Агрегатное состояние")]
         public RamAccess<byte?> AggregateState//1 2 3
@@ -430,7 +430,7 @@ namespace Models
         #endregion
 
         #region PropertyCode
-        public byte? PropertyCode_DB { get; set; } = 0;
+        public byte? PropertyCode_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Код собственности")]
         public RamAccess<byte?> PropertyCode
@@ -791,8 +791,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
-            if (!spr.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;

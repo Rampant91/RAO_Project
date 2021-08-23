@@ -61,6 +61,7 @@ namespace Models
             set
             {
                 PassportNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PassportNumber));
             }
         }
         private void PassportNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -103,6 +104,7 @@ namespace Models
             set
             {
                 Type_DB = value.Value;
+                OnPropertyChanged(nameof(Type));
             }
         }
         private void TypeValueChanged(object Value, PropertyChangedEventArgs args)
@@ -145,6 +147,7 @@ namespace Models
             set
             {
                 Radionuclids_DB = value.Value;
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }//If change this change validation
 
@@ -200,6 +203,7 @@ namespace Models
             set
             {
                 FactoryNumber_DB = value.Value;
+                OnPropertyChanged(nameof(FactoryNumber));
             }
         }
         private void FactoryNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -222,7 +226,7 @@ namespace Models
         #endregion
 
         #region Quantity
-        public int? Quantity_DB { get; set; } = 0;
+        public int? Quantity_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Количество, шт.")]
         public RamAccess<int?> Quantity
@@ -236,6 +240,7 @@ namespace Models
             set
             {
                 Quantity_DB = value.Value;
+                OnPropertyChanged(nameof(Quantity));
             }
         }// positive int.
 
@@ -278,6 +283,7 @@ namespace Models
             set
             {
                 Activity_DB = value.Value;
+                OnPropertyChanged(nameof(Activity));
             }
         }
         private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -337,6 +343,7 @@ namespace Models
             set
             {
                 CreationDate_DB = value.Value;
+                OnPropertyChanged(nameof(CreationDate));
             }
         }//If change this change validation
 
@@ -386,6 +393,7 @@ namespace Models
             set
             {
                 StatusRAO_DB = value.Value;
+                OnPropertyChanged(nameof(StatusRAO));
             }
         }
         private void StatusRAOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -450,6 +458,7 @@ namespace Models
             set
             {
                 ProviderOrRecieverOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
         private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -509,6 +518,7 @@ namespace Models
             set
             {
                 TransporterOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
         private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -560,6 +570,7 @@ namespace Models
             set
             {
                 PackName_DB = value.Value;
+                OnPropertyChanged(nameof(PackName));
             }
         }
         private void PackNameValueChanged(object Value, PropertyChangedEventArgs args)
@@ -596,6 +607,7 @@ namespace Models
             set
             {
                 PackType_DB = value.Value;
+                OnPropertyChanged(nameof(PackType));
             }
         }//If change this change validation
 
@@ -639,6 +651,7 @@ namespace Models
             set
             {
                 PackNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PackNumber));
             }
         }//If change this change validation
 
@@ -676,6 +689,7 @@ namespace Models
             set
             {
                 StoragePlaceName_DB = value.Value;
+                OnPropertyChanged(nameof(StoragePlaceName));
             }
         }//If change this change validation
 
@@ -694,13 +708,14 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<string> a = new List<string>();//here binds spr
-            if (a.Contains(value.Value))
-            {
-                return true;
-            }
-            value.AddError("Недопустимое значение");
-            return false;
+            //List<string> a = new List<string>();//here binds spr
+            //if (a.Contains(value.Value))
+            //{
+            //    return true;
+            //}
+            //value.AddError("Недопустимое значение");
+            //return false;
+            return true;
         }
         #endregion
 
@@ -719,6 +734,7 @@ namespace Models
             set
             {
                 StoragePlaceCode_DB = value.Value;
+                OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }//if change this change validation
 
@@ -737,6 +753,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value == "-") return true;
             Regex a = new Regex("^[0-9]{8}$");
             if (!a.IsMatch(value.Value))
             {
@@ -762,6 +779,7 @@ namespace Models
             set
             {
                 RefineOrSortRAOCode_DB = value.Value;
+                OnPropertyChanged(nameof(RefineOrSortRAOCode));
             }
         }//If change this change validation
 
@@ -804,6 +822,7 @@ namespace Models
             set
             {
                 Subsidy_DB = value.Value;
+                OnPropertyChanged(nameof(Subsidy));
             }
         }
         private void SubsidyValueChanged(object Value, PropertyChangedEventArgs args)
@@ -848,6 +867,7 @@ namespace Models
             set
             {
                 FcpNumber_DB = value.Value;
+                OnPropertyChanged(nameof(FcpNumber));
             }
         }
         private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -882,13 +902,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>()
-            {
-                1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,
-                46,47,48,49,51,52,53,54,55,56,57,58,59,61,62,63,64,65,66,67,68,71,72,73,74,75,76,81,82,
-                83,84,85,86,87,88,97,98,99
-            };    //HERE BINDS SPRAVOCHNIK
-            if (!spr.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;

@@ -123,7 +123,7 @@ namespace Models
         #endregion
 
         #region Sort
-        public byte? Sort_DB { get; set; } = 0;
+        public byte? Sort_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Вид")]
         public RamAccess<byte?> Sort
@@ -418,7 +418,7 @@ namespace Models
         #endregion
 
         #region AggregateState
-        public byte? AggregateState_DB { get; set; } = 0;
+        public byte? AggregateState_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Агрегатное состояние")]
         public RamAccess<byte?> AggregateState//1 2 3
@@ -459,7 +459,7 @@ namespace Models
         #endregion
 
         #region PropertyCode
-        public byte? PropertyCode_DB { get; set; } = 0;
+        public byte? PropertyCode_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Код собственности")]
         public RamAccess<byte?> PropertyCode
@@ -824,16 +824,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
-            bool flag = false;
-            foreach (short item in spr)
-            {
-                if (item == value.Value)
-                {
-                    flag = true;
-                }
-            }
-            if (!flag)
+            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;

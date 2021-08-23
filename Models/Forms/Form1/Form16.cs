@@ -65,6 +65,7 @@ namespace Models
             set
             {
                 CodeRAO_DB = value.Value;
+                OnPropertyChanged(nameof(CodeRAO));
             }
         }
         private void CodeRAOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -107,6 +108,7 @@ namespace Models
             set
             {
                 StatusRAO_DB = value.Value;
+                OnPropertyChanged(nameof(StatusRAO));
             }
         }
         private void StatusRAOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -171,6 +173,7 @@ namespace Models
             set
             {
                 Volume_DB = value.Value;
+                OnPropertyChanged(nameof(Volume));
             }
         }
         private void VolumeValueChanged(object Value, PropertyChangedEventArgs args)
@@ -227,6 +230,7 @@ namespace Models
             set
             {
                 Mass_DB = value.Value;
+                OnPropertyChanged(nameof(Mass));
             }
         }
         private void MassValueChanged(object Value, PropertyChangedEventArgs args)
@@ -279,6 +283,7 @@ namespace Models
             set
             {
                 MainRadionuclids_DB = value.Value;
+                OnPropertyChanged(nameof(MainRadionuclids));
             }
         }//If change this change validation
 
@@ -329,6 +334,7 @@ namespace Models
             set
             {
                 TritiumActivity_DB = value.Value;
+                OnPropertyChanged(nameof(TritiumActivity));
             }
         }
         private void TritiumActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -392,6 +398,7 @@ namespace Models
             set
             {
                 BetaGammaActivity_DB = value.Value;
+                OnPropertyChanged(nameof(BetaGammaActivity));
             }
         }
         private void BetaGammaActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -455,6 +462,7 @@ namespace Models
             set
             {
                 AlphaActivity_DB = value.Value;
+                OnPropertyChanged(nameof(AlphaActivity));
             }
         }
         private void AlphaActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -518,6 +526,7 @@ namespace Models
             set
             {
                 TransuraniumActivity_DB = value.Value;
+                OnPropertyChanged(nameof(TransuraniumActivity));
             }
         }
         private void TransuraniumActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -582,6 +591,7 @@ namespace Models
             set
             {
                 ActivityMeasurementDate_DB = value.Value;
+                OnPropertyChanged(nameof(ActivityMeasurementDate));
             }
         }//if change this change validation
 
@@ -617,7 +627,7 @@ namespace Models
         #endregion
 
         #region QuantityOZIII
-        public int? QuantityOZIII_DB { get; set; } = 0;
+        public int? QuantityOZIII_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
         public RamAccess<int?> QuantityOZIII
@@ -631,6 +641,7 @@ namespace Models
             set
             {
                 QuantityOZIII_DB = value.Value;
+                OnPropertyChanged(nameof(QuantityOZIII));
             }
         }// positive int.
 
@@ -673,6 +684,7 @@ namespace Models
             set
             {
                 ProviderOrRecieverOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
         private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -731,6 +743,7 @@ namespace Models
             set
             {
                 TransporterOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
         private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -782,6 +795,7 @@ namespace Models
             set
             {
                 PackName_DB = value.Value;
+                OnPropertyChanged(nameof(PackName));
             }
         }
         private void PackNameValueChanged(object Value, PropertyChangedEventArgs args)
@@ -824,6 +838,7 @@ namespace Models
             set
             {
                 PackType_DB = value.Value;
+                OnPropertyChanged(nameof(PackType));
             }
         }//If change this change validation
 
@@ -867,6 +882,7 @@ namespace Models
             set
             {
                 PackNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PackNumber));
             }
         }//If change this change validation
 
@@ -910,6 +926,7 @@ namespace Models
             set
             {
                 StoragePlaceName_DB = value.Value;
+                OnPropertyChanged(nameof(StoragePlaceName));
             }
         }
         private void StoragePlaceNameValueChanged(object Value, PropertyChangedEventArgs args)
@@ -927,11 +944,12 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var a = new List<string>();//here binds spr
-            if (a.Contains(value.Value))
-                return true;
-            value.AddError("Недопустимое значение");
-            return false;
+            //var a = new List<string>();//here binds spr
+            //if (a.Contains(value.Value))
+            //    return true;
+            //value.AddError("Недопустимое значение");
+            //return false;
+            return true;
         }
         #endregion
 
@@ -950,6 +968,7 @@ namespace Models
             set
             {
                 StoragePlaceCode_DB = value.Value;
+                OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }//if change this change validation
 
@@ -968,11 +987,18 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var lst = new List<string>();//HERE binds spr
-            if (!lst.Contains(value.Value))
+            //var lst = new List<string>();//HERE binds spr
+            //if (!lst.Contains(value.Value))
+            //{
+            //    value.AddError("Недопустимое значение");
+            //    return false;
+            //}
+            //return true;
+            if (value.Value == "-") return true;
+            Regex a = new Regex("^[0-9]{8}$");
+            if (!a.IsMatch(value.Value))
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -993,6 +1019,7 @@ namespace Models
             set
             {
                 Subsidy_DB = value.Value;
+                OnPropertyChanged(nameof(Subsidy));
             }
         }
         private void SubsidyValueChanged(object Value, PropertyChangedEventArgs args)
@@ -1037,6 +1064,7 @@ namespace Models
             set
             {
                 FcpNumber_DB = value.Value;
+                OnPropertyChanged(nameof(FcpNumber));
             }
         }
         private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -1067,6 +1095,7 @@ namespace Models
             set
             {
                 RefineOrSortRAOCode_DB = value.Value;
+                OnPropertyChanged(nameof(RefineOrSortRAOCode));
             }
         }//If change this change validation
 
@@ -1113,13 +1142,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
-            bool flag = false;
-            foreach (var item in spr)
-            {
-                if (item == value.Value) flag = true;
-            }
-            if (!flag)
+            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;

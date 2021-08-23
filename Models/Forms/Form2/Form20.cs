@@ -73,8 +73,22 @@ if (args.PropertyName == "Value")
                 RegNo_DB = ((RamAccess<string>)Value).Value;
 }
 }
-private bool RegNo_Validation(RamAccess<string> value)
+        private bool RegNo_Validation(RamAccess<string> value)
         {
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            if (value.Value.Length != 5)
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            Regex mask = new Regex("^[0123456789]{5}$");
+            if (!mask.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
             return true;
         }
         //RegNo property

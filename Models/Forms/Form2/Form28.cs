@@ -1,5 +1,6 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.ComponentModel;
@@ -276,7 +277,24 @@ namespace Models
         }
         private bool PermissionIssueDate1_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //PermissionIssueDate1 property
         #endregion
@@ -342,7 +360,24 @@ namespace Models
         }
         private bool ValidBegin1_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //ValidBegin1 property
         #endregion
@@ -375,7 +410,24 @@ namespace Models
         }
         private bool ValidThru1_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //ValidThru1 property
         #endregion
@@ -441,7 +493,24 @@ namespace Models
         }
         private bool PermissionIssueDate2_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //PermissionIssueDate property
         #endregion
@@ -505,7 +574,24 @@ namespace Models
         }
         private bool ValidBegin2_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //ValidBegin2 property
         #endregion
@@ -537,7 +623,24 @@ namespace Models
         }
         private bool ValidThru2_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //ValidThru2 property
         #endregion

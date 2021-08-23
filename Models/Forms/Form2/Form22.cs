@@ -84,12 +84,12 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
                 value.AddError( "Поле не заполнено");
 return false;
             }
-            var spr = new List<string>();
-            if (!spr.Contains(value.Value))
-            {
-                value.AddError( "Недопустимое значение");
-return false;
-            }
+//            var spr = new List<string>();//here binds spr
+//            if (!spr.Contains(value.Value))
+//            {
+//                value.AddError( "Недопустимое значение");
+//return false;
+//            }
             return true;
         }
         //StoragePlaceName property
@@ -168,11 +168,18 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var spr = new List<string>();
-            if (!spr.Contains(value.Value))
+            //var spr = new List<string>();//here binds spr
+            //if (!spr.Contains(value.Value))
+            //{
+            //    value.AddError("Недопустимое значение");
+            //    return false;
+            //}
+            //return true;
+            if (value.Value == "-") return true;
+            Regex a = new Regex("^[0-9]{8}$");
+            if (!a.IsMatch(value.Value))
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -216,14 +223,14 @@ return false;
             }
             if (value.Equals("без упаковки"))
             {
-return false;
+return true;
             }
-            var spr = new List<string>();
-            if (!spr.Contains(value.Value))
-            {
-                value.AddError( "Недопустимое значение");
-return false;
-            }
+//            var spr = new List<string>(); //here binds spr
+//            if (!spr.Contains(value.Value))
+//            {
+//                value.AddError( "Недопустимое значение");
+//return false;
+//            }
             return true;
         }
         //PackName property

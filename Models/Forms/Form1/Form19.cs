@@ -21,7 +21,7 @@ namespace Models
 
         private void Validate_all()
         {
-            Quantity_Validation(Quantity);
+            //Quantity_Validation(Quantity);
             CodeTypeAccObject_Validation(CodeTypeAccObject);
             Activity_Validation(Activity);
             Radionuclids_Validation(Radionuclids);
@@ -31,50 +31,51 @@ namespace Models
             return false;
         }
 
-        #region Quantity
-        public int? Quantity_DB { get; set; } = 0;
-        [NotMapped]
-        [Attributes.Form_Property("Количество, шт.")]
-        public RamAccess<int?> Quantity
-        {
-            get
-            {
-                var tmp = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
-                tmp.PropertyChanged += QuantityValueChanged;
-                return tmp;
-            }
-            set
-            {
-                Quantity_DB = value.Value;
-            }
-        }// positive int.
+        //#region Quantity
+        //public int? Quantity_DB { get; set; } = null;
+        //[NotMapped]
+        //[Attributes.Form_Property("Количество, шт.")]
+        //public RamAccess<int?> Quantity
+        //{
+        //    get
+        //    {
+        //        var tmp = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
+        //        tmp.PropertyChanged += QuantityValueChanged;
+        //        return tmp;
+        //    }
+        //    set
+        //    {
+        //        Quantity_DB = value.Value;
+        //        OnPropertyChanged(nameof(Quantity));
+        //    }
+        //}// positive int.
 
-        private void QuantityValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                Quantity_DB = ((RamAccess<int?>)Value).Value;
-            }
-        }
-        private bool Quantity_Validation(RamAccess<int?> value)//Ready
-        {
-            value.ClearErrors();
-            if (value.Value == null)
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (value.Value <= 0)
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            return true;
-        }
-        #endregion
+        //private void QuantityValueChanged(object Value, PropertyChangedEventArgs args)
+        //{
+        //    if (args.PropertyName == "Value")
+        //    {
+        //        Quantity_DB = ((RamAccess<int?>)Value).Value;
+        //    }
+        //}
+        //private bool Quantity_Validation(RamAccess<int?> value)//Ready
+        //{
+        //    value.ClearErrors();
+        //    if (value.Value == null)
+        //    {
+        //        value.AddError("Поле не заполнено");
+        //        return false;
+        //    }
+        //    if (value.Value <= 0)
+        //    {
+        //        value.AddError("Недопустимое значение");
+        //        return false;
+        //    }
+        //    return true;
+        //}
+        //#endregion
 
         #region CodeTypeAccObject
-        public short? CodeTypeAccObject_DB { get; set; } = 0;
+        public short? CodeTypeAccObject_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Код типа объектов учета")]
         public RamAccess<short?> CodeTypeAccObject
@@ -88,6 +89,7 @@ namespace Models
             set
             {
                 CodeTypeAccObject_DB = value.Value;
+                OnPropertyChanged(nameof(CodeTypeAccObject));
             }
         }
         private void CodeTypeAccObjectValueChanged(object Value, PropertyChangedEventArgs args)
@@ -130,6 +132,7 @@ namespace Models
             set
             {
                 Radionuclids_DB = value.Value;
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }//If change this change validation
 
@@ -180,6 +183,7 @@ namespace Models
             set
             {
                 Activity_DB = value.Value;
+                OnPropertyChanged(nameof(Activity));
             }
         }
         private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)

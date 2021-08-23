@@ -366,7 +366,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     ((Form_PropertyAttribute)Type.GetType("Models.Form23,Models").
                     GetProperty("Mass").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 8,
+            stck.Children.Add(Get1Header(2, 8,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form23,Models").
                     GetProperty("QuantityOZIII").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
