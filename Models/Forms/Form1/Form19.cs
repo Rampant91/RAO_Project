@@ -16,6 +16,7 @@ namespace Models
         public Form19() : base()
         {
             FormNum.Value = "1.9";
+            OperationCode.Value = 10;
             Validate_all();
         }
 

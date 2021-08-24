@@ -2,6 +2,8 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using Spravochniki;
+using System.Linq;
 
 namespace Models
 {
@@ -99,6 +101,12 @@ namespace Models
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
+                return false;
+            }
+            var tmp = from item in Spravochniks.SprRadionuclids where value.Value == item.Item1 select item.Item1;
+            if (!tmp.Any())
+            {
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;

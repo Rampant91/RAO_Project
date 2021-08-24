@@ -1,9 +1,10 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
-using System.Collections.Generic;
+using System.Globalization;
 using Spravochniki;
 using System.Linq;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace Models
 {
@@ -145,6 +146,12 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            Regex a = new Regex("^[0-9]{7}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
             return true;
         }
         //PlotCode property
@@ -152,12 +159,12 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
 
         //InfectedArea property
         #region  InfectedArea
-        public int? InfectedArea_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public RamAccess<int?> InfectedArea
+        public string InfectedArea_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
+        public RamAccess<string> InfectedArea
         {
             get
             {
-                    var tmp = new RamAccess<int?>(InfectedArea_Validation, InfectedArea_DB);
+                    var tmp = new RamAccess<string>(InfectedArea_Validation, InfectedArea_DB);
                     tmp.PropertyChanged += InfectedAreaValueChanged;
                     return tmp;
             }
@@ -172,15 +179,31 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
 {
 if (args.PropertyName == "Value")
 {
-                InfectedArea_DB = ((RamAccess<int?>)Value).Value;
+                InfectedArea_DB = ((RamAccess<string>)Value).Value;
 }
 }
-private bool InfectedArea_Validation(RamAccess<int?> value)//TODO
+private bool InfectedArea_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;

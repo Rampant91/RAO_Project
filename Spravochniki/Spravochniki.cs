@@ -8,6 +8,10 @@ namespace Spravochniki
 {
     public static class Spravochniks
     {
+        public static List<short> SprAccObjCodes = new List<short>
+        {
+            11,12,13,21,22,23,31,32,33,99
+        };
         public static List<string> SprPlotCodes = new List<string>
         {
 
