@@ -71,10 +71,6 @@ namespace Client_App.Controls.DataGrid
             InitializeComponent();
 
             ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
-
-            AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
-            AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
-            AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
         }
 
         public IEnumerable<INotifyPropertyChanged> Items
@@ -286,12 +282,15 @@ namespace Client_App.Controls.DataGrid
         public int[] FirstPressedItem { get; set; } = new int[2];
         public int[] LastPressedItem { get; set; } = new int[2];
 
-        int[] FindCell(PointerPoint mouse)
+        int[] FindCell(PointerPoint Mainmouse)
         {
+            PointerPoint mouse = Mainmouse;
+            
+
             var h = Rows[1, 1].Height;
             int[] ret = new int[2];
 
-            int t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity);
+            int t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity)+1;
             if (t1 <= Rows.Count&&t1>0)
             {
                 ret[0] = t1;
@@ -313,7 +312,7 @@ namespace Client_App.Controls.DataGrid
 
         public void DataGridPointerDown(object sender, PointerPressedEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((DataGrid)sender);
+            var mouse = args.GetCurrentPoint((ScrollViewer)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
             {
                 if (Rows.Count > 0)
@@ -331,7 +330,7 @@ namespace Client_App.Controls.DataGrid
 
         public void DataGridPointerMoved(object sender, PointerEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((DataGrid)sender);
+            var mouse = args.GetCurrentPoint((ScrollViewer)sender);
             if (DownFlag)
             {
                 if (Rows.Count > 0)
@@ -346,7 +345,7 @@ namespace Client_App.Controls.DataGrid
 
         public void DataGridPointerUp(object sender, PointerReleasedEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((DataGrid)sender);
+            var mouse = args.GetCurrentPoint((ScrollViewer)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 if (Rows.Count > 0)
@@ -493,6 +492,10 @@ namespace Client_App.Controls.DataGrid
             vw.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
             vw.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
             vw.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            vw.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
+            vw.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
+            vw.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
+
             grd.Children.Add(vw);
 
             StackPanel stck = new()
