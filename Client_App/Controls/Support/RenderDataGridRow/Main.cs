@@ -56,7 +56,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             DataGrid.Row stck = new DataGrid.Row
             {
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
-                Width = 4 * Wdth0,
+                Width = 4 * Wdth0 - 3,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Spacing = -1,
                 SRow = Row
@@ -111,7 +111,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         {
             DataGrid.Row stck = new DataGrid.Row
             {
-                Width = 8 * Wdth1,
+                Width = 7 * Wdth1-7,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Spacing = -1,
@@ -170,7 +170,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             DataGrid.Row stck = new DataGrid.Row
             {
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
-                Width = 4 * Wdth0,
+                Width = 4 * Wdth0 - 3,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Spacing = -1,
                 SRow = Row
@@ -221,7 +221,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         {
             DataGrid.Row stck = new DataGrid.Row
             {
-                Width = 8 * Wdth1,
+                Width = 7 * Wdth1-7,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Spacing = -1,
