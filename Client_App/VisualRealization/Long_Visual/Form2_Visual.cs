@@ -153,7 +153,6 @@ namespace Client_App.Long_Visual
             };
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
-
             ContextMenu? cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>
             {
@@ -319,8 +318,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.1*",
+                Name = "Form21Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -337,16 +336,18 @@ namespace Client_App.Long_Visual
                 NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
-
-
+            
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
+            
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
@@ -503,8 +504,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.2*",
+                Name = "Form22Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -521,16 +522,16 @@ namespace Client_App.Long_Visual
                 NameScope = new WeakReference<INameScope>(scp)
             };
             grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
-
-
             ContextMenu? cntx1 = new ContextMenu();
+            var mn = new MenuItem
+            {
+                Header = "Добавить строку",
+                [!MenuItem.CommandProperty] = new Binding("AddNote")
+            };
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.2*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
+                mn,
                 new MenuItem
                 {
                     Header = "Вставить из буфера",
@@ -687,8 +688,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.3*",
+                Name = "Form23Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -713,7 +714,7 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.3*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -873,8 +874,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.4*",
+                Name = "Form24Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -899,7 +900,7 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.4*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -1059,8 +1060,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.5*",
+                Name = "Form25Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -1085,7 +1086,7 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.5*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -1245,8 +1246,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.6*",
+                Name = "Form26Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -1271,7 +1272,7 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.6*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -1431,8 +1432,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.7*",
+                Name = "Form27Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -1457,7 +1458,7 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.7*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -1617,8 +1618,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.8*",
+                Name = "Form28Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -1643,7 +1644,7 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.8*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -1803,8 +1804,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.9*",
+                Name = "Form29Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -1829,7 +1830,7 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.9*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -1990,8 +1991,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.10*",
+                Name = "Form210Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -2016,7 +2017,7 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.10*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -2177,8 +2178,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.11*",
+                Name = "Form211Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -2203,7 +2204,7 @@ namespace Client_App.Long_Visual
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.11*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -2364,8 +2365,8 @@ namespace Client_App.Long_Visual
 
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
-                Type = "1.1*",
-                Name = "Form11Notes_",
+                Type = "2.12*",
+                Name = "Form212Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -2383,14 +2384,13 @@ namespace Client_App.Long_Visual
             };
             grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
 
-
             ContextMenu? cntx1 = new ContextMenu();
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
-            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "2.12*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
