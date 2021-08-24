@@ -502,7 +502,7 @@ if (args.PropertyName == "Value")
 private bool QuantityIn_Validation(RamAccess<string> value1)//Ready
         {
             value1.ClearErrors();
-            if ((value1.Value == null)||value1.Value.Equals("прим."))
+            if (string.IsNullOrEmpty(value1.Value)||value1.Value.Equals("прим."))
             {
                 return true;
             }

@@ -37,12 +37,12 @@ namespace Models
 
         //OperationCode property
         #region  OperationCode
-        public string OperationCode_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Код")]
-        public RamAccess<string> OperationCode
+        public short? OperationCode_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Код")]
+        public RamAccess<short?> OperationCode
         {
             get
 {
-var tmp = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
+var tmp = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
 tmp.PropertyChanged += OperationCodeValueChanged;
 return tmp;
 }            set
@@ -57,24 +57,35 @@ return tmp;
 {
 if (args.PropertyName == "Value")
 {
-                OperationCode_DB = ((RamAccess<string>)Value).Value;
+                OperationCode_DB = ((RamAccess<short?>)Value).Value;
 }
 }
-private bool OperationCode_Validation(RamAccess<string> value)
+private bool OperationCode_Validation(RamAccess<short?> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //OperationCode property
         #endregion
 
         //ObjectTypeCode property
         #region  
-public string ObjectTypeCode_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Код типа объектов учета")]
-        public RamAccess<string> ObjectTypeCode
+public short? ObjectTypeCode_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Код типа объектов учета")]
+        public RamAccess<short?> ObjectTypeCode
         {
             get
             {
-                    var tmp = new RamAccess<string>(ObjectTypeCode_Validation, ObjectTypeCode_DB);
+                    var tmp = new RamAccess<short?>(ObjectTypeCode_Validation, ObjectTypeCode_DB);
                     tmp.PropertyChanged += ObjectTypeCodeValueChanged;
                     return tmp;
             }
@@ -90,12 +101,23 @@ public string ObjectTypeCode_DB { get; set; } = ""; [NotMapped]        [Attribut
 {
 if (args.PropertyName == "Value")
 {
-                ObjectTypeCode_DB = ((RamAccess<string>)Value).Value;
+                ObjectTypeCode_DB = ((RamAccess<short?>)Value).Value;
 }
 }
-private bool ObjectTypeCode_Validation(RamAccess<string> value)//TODO
+private bool ObjectTypeCode_Validation(RamAccess<short?> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!Spravochniks.SprAccObjCodes.Contains((short)value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //ObjectTypeCode property
         #endregion

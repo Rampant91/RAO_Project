@@ -176,7 +176,7 @@ namespace Models
             foreach (var nucl in nuclids)
             {
                 var tmp = from item in Spravochniks.SprRadionuclids where nucl == item.Item1 select item.Item1;
-                if (tmp.Count() == 0)
+                if (!tmp.Any())
                     flag = false;
             }
             if (!flag)
@@ -296,7 +296,7 @@ namespace Models
         private bool Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
