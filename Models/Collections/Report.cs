@@ -937,14 +937,6 @@ namespace Collections
         //Property Changed
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            //if (prop == "Okpo")
-            //{
-            //    try
-            //    {
-            //        OkpoRep = OkpoRep;
-            //    }
-            //    catch { }
-            //}
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }

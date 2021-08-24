@@ -20,23 +20,25 @@ namespace Collections
             Report_Collection.CollectionChanged += CollectionChanged;
         }
 
-        private Report _master = new Report();
-        public virtual Report Master
+        public Report Master_DB { get; set; }
+
+        [NotMapped]
+        public Report Master
         {
             get
             {
-                return _master;
+                return Master_DB;
             }
             set
             {
-                _master = value;
+                Master_DB = value;
                 OnPropertyChanged(nameof(Master));
             }
         }
 
         ObservableCollectionWithItemPropertyChanged<Report> Report_Collection_DB;
 
-        public virtual ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
+        public ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
         {
             get
             {
