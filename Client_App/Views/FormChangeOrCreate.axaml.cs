@@ -39,7 +39,6 @@ namespace Client_App.Views
         {
             var dbm = StaticConfiguration.DBModel;
             dbm.UndoChanges();
-            dbm.SaveChanges();
 
             base.OnClosing(e);
         }

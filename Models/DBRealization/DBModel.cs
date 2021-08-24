@@ -25,8 +25,9 @@ namespace DBRealization
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Collections.DBObservable>()
-    .ToTable("DBObservable_DbSet");
+                .ToTable("DBObservable_DbSet");
 
             modelBuilder.Entity<Collections.Reports>()
                 .ToTable("ReportsCollection_DbSet");
@@ -86,7 +87,6 @@ namespace DBRealization
 
         public void LoadTables()
         {
-            accessString.Load();
             notes.Load();
             form_10.Load();
             form_11.Load();
@@ -137,9 +137,9 @@ namespace DBRealization
                         break;
                 }
             }
-        }
 
-        public DbSet<RamAccess<string>> accessString { get; set; }
+            this.SaveChanges();
+        }
 
         public DbSet<Collections.DBObservable> DBObservableDbSet { get; set; }
         public DbSet<Collections.Reports> ReportsCollectionDbSet { get; set; }

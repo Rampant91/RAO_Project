@@ -13,25 +13,32 @@ namespace Collections
         {
             Init();
         }
-        public int? MasterId { get; set; }
+        private void Init()
+        {
 
-        private Report _master = new Report();
-        public virtual Report Master
+            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
+            Report_Collection.CollectionChanged += CollectionChanged;
+        }
+
+        public Report Master_DB { get; set; }
+
+        [NotMapped]
+        public Report Master
         {
             get
             {
-                return _master;
+                return Master_DB;
             }
             set
             {
-                _master = value;
+                Master_DB = value;
                 OnPropertyChanged(nameof(Master));
             }
         }
 
         ObservableCollectionWithItemPropertyChanged<Report> Report_Collection_DB;
 
-        public virtual ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
+        public ObservableCollectionWithItemPropertyChanged<Report> Report_Collection
         {
             get
             {
@@ -47,13 +54,6 @@ namespace Collections
         public event PropertyChangedEventHandler PropertyChanged;
 
         public int Id { get; set; }
-
-        private void Init()
-        {
-
-            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
-            Report_Collection.CollectionChanged += CollectionChanged;
-        }
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
