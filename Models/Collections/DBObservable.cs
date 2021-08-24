@@ -11,39 +11,25 @@ namespace Collections
     {
         [NotMapped] private bool _isChanged = true;
 
-        private ObservableCollectionWithItemPropertyChanged<Reports> _reports_Collection=new ObservableCollectionWithItemPropertyChanged<Reports>();
-
         public int Id { get; set; }
-
-        public bool IsChanged
-        {
-            get => _isChanged;
-            set
-            {
-                if (_isChanged != value)
-                {
-                    _isChanged = value;
-                    OnPropertyChanged(nameof(IsChanged));
-                }
-            }
-        }
 
         public DBObservable()
         {
+            Reports_Collection_DB = new ObservableCollectionWithItemPropertyChanged<Reports>();
             Reports_Collection.CollectionChanged += CollectionChanged;
         }
 
-        public int? Reports_CollectionId { get; set; }
+        ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection_DB;
 
         public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
         {
             get
             {
-                return _reports_Collection;
+                return Reports_Collection_DB;
             }
             set
             {
-                _reports_Collection = value;
+                Reports_Collection_DB = value;
                 OnPropertyChanged(nameof(Reports_Collection));
             }
         }
@@ -61,11 +47,7 @@ namespace Collections
         //Property Changed
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (prop != nameof(IsChanged))
-            {
-                IsChanged = true;
-                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
-            }
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

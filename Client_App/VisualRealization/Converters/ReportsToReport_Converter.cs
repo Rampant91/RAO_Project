@@ -21,9 +21,12 @@ namespace Client_App.Converters
                 {
                     Reports? rps = (Reports)item;
                     last_item = rps;
-                    foreach (Report? it in rps.Report_Collection)
+                    if (rps != null)
                     {
-                        lst.Add(it);
+                        foreach (Report? it in rps.Report_Collection)
+                        {
+                            lst.Add(it);
+                        }
                     }
                 }
                 return lst;

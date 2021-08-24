@@ -13,7 +13,12 @@ namespace Collections
         {
             Init();
         }
-        public int? MasterId { get; set; }
+        private void Init()
+        {
+
+            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
+            Report_Collection.CollectionChanged += CollectionChanged;
+        }
 
         private Report _master = new Report();
         public virtual Report Master
@@ -47,13 +52,6 @@ namespace Collections
         public event PropertyChangedEventHandler PropertyChanged;
 
         public int Id { get; set; }
-
-        private void Init()
-        {
-
-            Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
-            Report_Collection.CollectionChanged += CollectionChanged;
-        }
 
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
