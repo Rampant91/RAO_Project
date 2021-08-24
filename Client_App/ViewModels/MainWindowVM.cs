@@ -149,9 +149,12 @@ namespace Client_App.ViewModels
                 if (t.SelectedReports.Count() != 0)
                 {
                     var y = t.SelectedReports.First() as Reports;
-                    y.Report_Collection.Add(rt);
-                    FormChangeOrCreate frm = new(param, rt);
-                    await frm.ShowDialog<Form>(desktop.MainWindow);
+                    if (y.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
+                    {
+                        y.Report_Collection.Add(rt);
+                        FormChangeOrCreate frm = new(param, rt);
+                        await frm.ShowDialog<Form>(desktop.MainWindow);
+                    }
                 }
             }
         }

@@ -55,7 +55,7 @@ namespace Client_App.Short_Visual
 
             Binding b = new Binding
             {
-                Path = "DataContext.Local_Reports.Reports_Collection",
+                Path = "DataContext.Local_Reports.Reports_Collection10",
                 ElementName = "MainWindow",
                 NameScope = new WeakReference<INameScope>(scp)
             };
