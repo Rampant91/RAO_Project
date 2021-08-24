@@ -62,14 +62,15 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get0Row(1, Row, 7, "Telephone", scp, TopName));
             stck.Children.Add(Get0Row(1, Row, 8, "Fax", scp, TopName));
             stck.Children.Add(Get0Row(1, Row, 9, "Email", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 10, "Okpo", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 11, "Okved", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 12, "Okogu", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 13, "Oktmo", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 14, "Inn", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 15, "Kpp", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 16, "Okopf", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 17, "Okfs", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 10, "RegNo", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 11, "Okpo", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 12, "Okved", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 13, "Okogu", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 14, "Oktmo", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 15, "Inn", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 16, "Kpp", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 17, "Okopf", scp, TopName));
+            stck.Children.Add(Get0Row(1, Row, 18, "Okfs", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 24, "DocumentNumberRecoded", scp, TopName));
 
             //var bd = "StartPeriod";
@@ -966,8 +967,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get9Row(1, Row, 6, "DocumentDate", scp, TopName));
             stck.Children.Add(Get9Row(1, Row, 7, "CodeTypeAccObject", scp, TopName));
             stck.Children.Add(Get9Row(1, Row, 8, "Radionuclids", scp, TopName));
-            stck.Children.Add(Get9Row(1, Row, 9, "Quantity", scp, TopName));
-            stck.Children.Add(Get9Row(1, Row, 10, "Activity", scp, TopName));
+            //stck.Children.Add(Get9Row(1, Row, 9, "Quantity", scp, TopName));
+            stck.Children.Add(Get9Row(1, Row, 9, "Activity", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 10, "DocumentNumberRecoded", scp, TopName));
 
             //var bd = "StartPeriod";

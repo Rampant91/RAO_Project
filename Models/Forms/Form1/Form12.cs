@@ -318,7 +318,7 @@ namespace Models
         #endregion
 
         #region SignedServicePeriod
-        public float? SignedServicePeriod_DB { get; set; } =0;
+        public float? SignedServicePeriod_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("НСС, мес.")]
         public RamAccess<float?> SignedServicePeriod
@@ -359,7 +359,7 @@ namespace Models
         #endregion
 
         #region PropertyCode
-        public byte? PropertyCode_DB { get; set; } = 0;
+        public byte? PropertyCode_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Код собственности")]
         public RamAccess<byte?> PropertyCode
@@ -722,13 +722,12 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>();    //HERE BINDS SPRAVOCHNIK
-            if (!spr.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            if ((value.Value == 01) || (value.Value == 13) ||
+            if ((value.Value == 1) || (value.Value == 13) ||
             (value.Value == 14) || (value.Value == 16) ||
             (value.Value == 26) || (value.Value == 36) ||
             (value.Value == 44) || (value.Value == 45) ||

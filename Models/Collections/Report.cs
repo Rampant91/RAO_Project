@@ -60,6 +60,151 @@ namespace Collections
         {
             Init();
         }
+        [NotMapped]
+        public string _OkpoRep { get; set; } = "";
+        [NotMapped]
+        public RamAccess<string> OkpoRep
+        {
+            get
+            {
+                var tmp = Rows10.First().Okpo;
+                tmp.PropertyChanged += OkpoRepValueChanged;
+                return tmp;
+            }
+            set
+            {
+                _OkpoRep = value.Value;
+                OnPropertyChanged(nameof(OkpoRep));
+            }
+        }
+        private void OkpoRepValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                _OkpoRep = ((RamAccess<string>)Value).Value;
+            }
+        }
+        [NotMapped]
+        public string _RegNoRep { get; set; } = "";
+        [NotMapped]
+        public RamAccess<string> RegNoRep
+        {
+            get
+            {
+                var tmp = Rows10.First().RegNo;
+                tmp.PropertyChanged += RegNoRepRepValueChanged;
+                return tmp;
+            }
+            set
+            {
+                _RegNoRep = value.Value;
+                OnPropertyChanged(nameof(RegNoRep));
+            }
+        }
+        private void RegNoRepRepValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                _RegNoRep = ((RamAccess<string>)Value).Value;
+            }
+        }
+        [NotMapped]
+        public string _ShortJurLicoRep { get; set; } = "";
+        [NotMapped]
+        public RamAccess<string> ShortJurLicoRep
+        {
+            get
+            {
+                var tmp = Rows10.First().ShortJurLico;
+                tmp.PropertyChanged += ShortJurLicoRepValueChanged;
+                return tmp;
+            }
+            set
+            {
+                _ShortJurLicoRep = value.Value;
+                OnPropertyChanged(nameof(ShortJurLicoRep));
+            }
+        }
+        private void ShortJurLicoRepValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                _ShortJurLicoRep = ((RamAccess<string>)Value).Value;
+            }
+        }
+
+        [NotMapped]
+        public string _OkpoRep1 { get; set; } = "";
+        [NotMapped]
+        public RamAccess<string> OkpoRep1
+        {
+            get
+            {
+                var tmp = Rows20.First().Okpo;
+                tmp.PropertyChanged += OkpoRepValueChanged;
+                return tmp;
+            }
+            set
+            {
+                _OkpoRep1 = value.Value;
+                OnPropertyChanged(nameof(OkpoRep1));
+            }
+        }
+        private void OkpoRepValue1Changed(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                _OkpoRep1 = ((RamAccess<string>)Value).Value;
+            }
+        }
+        [NotMapped]
+        public string _RegNoRep1 { get; set; } = "";
+        [NotMapped]
+        public RamAccess<string> RegNoRep1
+        {
+            get
+            {
+                var tmp = Rows20.First().RegNo;
+                tmp.PropertyChanged += RegNoRepRep1ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                _RegNoRep1 = value.Value;
+                OnPropertyChanged(nameof(RegNoRep1));
+            }
+        }
+        private void RegNoRepRep1ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                _RegNoRep1 = ((RamAccess<string>)Value).Value;
+            }
+        }
+        [NotMapped]
+        public string _ShortJurLicoRep1 { get; set; } = "";
+        [NotMapped]
+        public RamAccess<string> ShortJurLicoRep1
+        {
+            get
+            {
+                var tmp = Rows20.First().ShortJurLico;
+                tmp.PropertyChanged += ShortJurLicoRep1ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                _ShortJurLicoRep1 = value.Value;
+                OnPropertyChanged(nameof(ShortJurLicoRep1));
+            }
+        }
+        private void ShortJurLicoRep1ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                _ShortJurLicoRep1 = ((RamAccess<string>)Value).Value;
+            }
+        }
 
         ObservableCollectionWithItemPropertyChanged<Form10> Rows10_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form10> Rows10
@@ -792,6 +937,14 @@ namespace Collections
         //Property Changed
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
+            //if (prop == "Okpo")
+            //{
+            //    try
+            //    {
+            //        OkpoRep = OkpoRep;
+            //    }
+            //    catch { }
+            //}
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }

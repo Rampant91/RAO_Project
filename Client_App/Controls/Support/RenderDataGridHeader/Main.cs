@@ -97,32 +97,32 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 1,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form1,Models").
-                    GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+            //stck.Children.Add(Get1Header(1, 1,
+            //        ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form1,Models").
+            //        GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //    ));
 
-            stck.Children.Add(Get1Header(1, 2,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form1,Models").
                     GetProperty("FormNum").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 3,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("StartPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get1Header(1, 4,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("EndPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get1Header(1, 5,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("ExportDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get1Header(2, 6,
+            stck.Children.Add(Get1Header(2, 5,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("IsCorrection").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get1Header(1, 7,
+            stck.Children.Add(Get1Header(1, 6,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("Comments").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
@@ -163,32 +163,32 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 1,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form2,Models").
-                    GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+            //stck.Children.Add(Get1Header(1, 1,
+            //        ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form2,Models").
+            //        GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //    ));
 
-            stck.Children.Add(Get1Header(1, 2,
+            stck.Children.Add(Get1Header(1, 1,
                     ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form2,Models").
                     GetProperty("FormNum").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 3,
+            stck.Children.Add(Get1Header(1, 2,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("StartPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get1Header(1, 4,
+            stck.Children.Add(Get1Header(1, 3,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("EndPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get1Header(1, 5,
+            stck.Children.Add(Get1Header(1, 4,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("ExportDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get1Header(2, 6,
+            stck.Children.Add(Get1Header(2, 5,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("IsCorrection").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get1Header(1, 7,
+            stck.Children.Add(Get1Header(1, 6,
                     ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
                     GetProperty("Comments").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));

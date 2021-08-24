@@ -1,6 +1,6 @@
 ﻿using Models.DataAccess;
 using System;
-using System.Collections.Generic;
+using Spravochniki;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -53,7 +53,7 @@ namespace Models.Abstracts
         #endregion
 
         #region OperationCode
-        public short? OperationCode_DB { get; set; } = 0;
+        public short? OperationCode_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Код")]
         public RamAccess<short?> OperationCode
@@ -134,7 +134,7 @@ namespace Models.Abstracts
         #endregion
 
         #region DocumentVid
-        public byte? DocumentVid_DB { get; set; } = 0;
+        public byte? DocumentVid_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Вид документа")]
         public RamAccess<byte?> DocumentVid
@@ -166,27 +166,7 @@ namespace Models.Abstracts
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            List<Tuple<byte, string>> spr = new List<Tuple<byte, string>>
-            {
-                new Tuple<byte, string>(0,""),
-                new Tuple<byte, string>(1,""),
-                new Tuple<byte, string>(2,""),
-                new Tuple<byte, string>(3,""),
-                new Tuple<byte, string>(4,""),
-                new Tuple<byte, string>(5,""),
-                new Tuple<byte, string>(6,""),
-                new Tuple<byte, string>(7,""),
-                new Tuple<byte, string>(8,""),
-                new Tuple<byte, string>(9,""),
-                new Tuple<byte, string>(10,""),
-                new Tuple<byte, string>(11,""),
-                new Tuple<byte, string>(12,""),
-                new Tuple<byte, string>(13,""),
-                new Tuple<byte, string>(14,""),
-                new Tuple<byte, string>(15,""),
-                new Tuple<byte, string>(19,"")
-            };   //HERE BINDS SPRAVOCHNICK
-            foreach (Tuple<byte, string> item in spr)
+            foreach (Tuple<byte?, string> item in Spravochniks.SprDocumentVidName)
             {
                 if (value.Value == item.Item1)
                 {

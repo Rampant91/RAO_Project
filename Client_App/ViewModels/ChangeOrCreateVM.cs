@@ -136,7 +136,7 @@ namespace Client_App.ViewModels
             switch (Storage.LastAddedForm)
             {
                 case Report.Forms.Form11:
-                    foreach(var item in Storage.Rows11)
+                    foreach (var item in Storage.Rows11)
                         item.NumberInOrder.Value = k++;
                     break;
                 case Report.Forms.Form12:
@@ -219,7 +219,7 @@ namespace Client_App.ViewModels
                     foreach (var item in Storage.Rows212)
                         item.NumberInOrder.Value = k++;
                     break;
-                default:break;
+                default: break;
             }
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -232,6 +232,19 @@ namespace Client_App.ViewModels
                         item.Close();
                     }
                 }
+            }
+            switch (Storage.LastAddedForm)
+            {
+                case Report.Forms.Form10:
+                    Storage.OkpoRep = Storage.OkpoRep;
+                    Storage.RegNoRep = Storage.RegNoRep;
+                    Storage.ShortJurLicoRep = Storage.ShortJurLicoRep;
+                    break;
+                case Report.Forms.Form20:
+                    Storage.OkpoRep1 = Storage.OkpoRep1;
+                    Storage.RegNoRep1 = Storage.RegNoRep1;
+                    Storage.ShortJurLicoRep1 = Storage.ShortJurLicoRep1;
+                    break;
             }
         }
 
@@ -260,7 +273,7 @@ namespace Client_App.ViewModels
             if (FormType == "1.6") { Storage.Rows16.Add((Form16)frm); Storage.LastAddedForm = Report.Forms.Form16; }
             if (FormType == "1.7") { Storage.Rows17.Add((Form17)frm); Storage.LastAddedForm = Report.Forms.Form17; }
             if (FormType == "1.8") { Storage.Rows18.Add((Form18)frm); Storage.LastAddedForm = Report.Forms.Form18; }
-            if (FormType == "1.9") { Storage.Rows19.Add((Form19)frm); Storage.LastAddedForm = Report.Forms.Form19; }
+            if (FormType == "1.9") { Form19 form = new Form19(); form.OperationCode.Value = 10; Storage.Rows19.Add(form); Storage.LastAddedForm = Report.Forms.Form19; }
 
             if (FormType == "2.0") { Storage.Rows20.Add((Form20)frm); Storage.LastAddedForm = Report.Forms.Form20; }
             if (FormType == "2.1") { Storage.Rows21.Add((Form21)frm); Storage.LastAddedForm = Report.Forms.Form11; }

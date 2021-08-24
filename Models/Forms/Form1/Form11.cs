@@ -224,7 +224,7 @@ namespace Models
         #endregion
 
         #region Quantity
-        public int? Quantity_DB { get; set; } = 1;
+        public int? Quantity_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Количество, шт.")]
         public RamAccess<int?> Quantity
@@ -268,7 +268,7 @@ namespace Models
         #region Activity
         public string Activity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Дата документа")]
+        [Attributes.Form_Property("Активность, Бк")]
         public RamAccess<string> Activity
         {
             get
@@ -433,7 +433,7 @@ namespace Models
         #endregion
 
         #region Category
-        public short? Category_DB { get; set; }
+        public short? Category_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Категория")]
         public RamAccess<short?> Category
@@ -475,7 +475,7 @@ namespace Models
         #endregion
 
         #region SignedServicePeriod
-        public float? SignedServicePeriod_DB { get; set; }
+        public float? SignedServicePeriod_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("НСС, мес.")]
         public RamAccess<float?> SignedServicePeriod
@@ -517,7 +517,7 @@ namespace Models
         #endregion
 
         #region PropertyCode
-        public byte? PropertyCode_DB { get; set; }
+        public byte? PropertyCode_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Код собственности")]
         public RamAccess<byte?> PropertyCode
@@ -560,7 +560,7 @@ namespace Models
         #region Owner
         public string Owner_DB { get; set; }
         [NotMapped]
-        [Attributes.Form_Property("Владелец")]
+        [Attributes.Form_Property("Правообладатель")]
         public RamAccess<string> Owner
         {
             get
@@ -630,12 +630,13 @@ namespace Models
         }
 
         private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
-{
+        {
             if (args.PropertyName == "Value")
-{
+            {
                 ProviderOrRecieverOKPO_DB = ((RamAccess<string>)Value).Value;
-}
-}private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -653,7 +654,6 @@ namespace Models
             {
                 value.AddError("Недопустимое значение");
                 return false;
-
             }
             Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
@@ -865,19 +865,13 @@ namespace Models
 
         protected override bool OperationCode_Validation(RamAccess<short?> value)//OK
         {
-            value.ClearErrors();
+           value.ClearErrors();
             if (value.Value == null)
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>()
-            {
-                1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,
-                46,47,48,49,51,52,53,54,55,56,57,58,59,61,62,63,64,65,66,67,68,71,72,73,74,75,76,81,82,
-                83,84,85,86,87,88,97,98,99
-            };    //HERE BINDS SPRAVOCHNIK
-            if (!spr.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;

@@ -74,34 +74,38 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     GetProperty("Email").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
             stck.Children.Add(Get1Header(1, 10,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("Okpo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
+                    GetProperty("RegNo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
             stck.Children.Add(Get1Header(1, 11,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("Okved").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                    GetProperty("Okpo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
             stck.Children.Add(Get1Header(1, 12,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("Okogu").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                    GetProperty("Okved").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
             stck.Children.Add(Get1Header(1, 13,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("Oktmo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                    GetProperty("Okogu").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
             stck.Children.Add(Get1Header(1, 14,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("Inn").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                    GetProperty("Oktmo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
             stck.Children.Add(Get1Header(1, 15,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("Kpp").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                    GetProperty("Inn").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
             stck.Children.Add(Get1Header(1, 16,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("Okopf").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                    GetProperty("Kpp").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
             stck.Children.Add(Get1Header(1, 17,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
+                    GetProperty("Okopf").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
+            stck.Children.Add(Get1Header(1, 18,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
                     GetProperty("Okfs").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
@@ -362,7 +366,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     ((Form_PropertyAttribute)Type.GetType("Models.Form23,Models").
                     GetProperty("Mass").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            stck.Children.Add(Get1Header(1, 8,
+            stck.Children.Add(Get1Header(2, 8,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form23,Models").
                     GetProperty("QuantityOZIII").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));

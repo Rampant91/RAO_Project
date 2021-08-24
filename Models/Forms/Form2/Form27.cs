@@ -1,6 +1,8 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Spravochniki;
 using System.Globalization;
 using System.ComponentModel;
 
@@ -138,7 +140,24 @@ if (args.PropertyName == "Value")
 }
 private bool PermissionIssueDate_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //PermissionIssueDate property
         #endregion
@@ -206,7 +225,24 @@ if (args.PropertyName == "Value")
 }
 private bool ValidBegin_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //ValidBegin property
         #endregion
@@ -240,7 +276,24 @@ if (args.PropertyName == "Value")
 }
 private bool ValidThru_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         //ValidThru property
         #endregion
@@ -280,16 +333,13 @@ private bool RadionuclidName_Validation(RamAccess<string> value)
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<Tuple<string, string>> spr = new List<Tuple<string, string>>();
-            foreach (Tuple<string, string> item in spr)
+            var query = from item in Spravochniks.SprRadionuclids where item.Item1 == value.Value select item.Item1;
+            if (!query.Any())
             {
-                if (item.Item1.Equals(value.Value))
-                {
-                    return true;
-                }
+                value.AddError("Недопустимое значение");
+                return false;
             }
-            value.AddError("Недопустимое значение");
-            return false;
+            return true;
         }
         //RadionuclidName property
         #endregion

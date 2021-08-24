@@ -1,5 +1,7 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
+using System.Linq;
+using Spravochniki;
 using System.Collections.Generic;
 using System.Globalization;
 using System.ComponentModel;
@@ -43,20 +45,13 @@ namespace Models
         {
             get
             {
-
-                {
                     var tmp = new RamAccess<int?>(SourcesQuantity_Validation, SourcesQuantity_DB);
                     tmp.PropertyChanged += SourcesQuantityValueChanged;
                     return tmp;
-                }
             }
             set
             {
-
-
-                {
                     SourcesQuantity_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(SourcesQuantity));
             }
         }
@@ -262,24 +257,13 @@ private bool DistanceToWasteSource_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-
-                {
                     var tmp = new RamAccess<string>(TestDepth_Validation, TestDepth_DB);
                     tmp.PropertyChanged += TestDepthValueChanged;
                     return tmp;
-                }
-
-                {
-
-                }
             }
             set
             {
-
-
-                {
                     TestDepth_DB = value.Value;
-                }
                 OnPropertyChanged(nameof(TestDepth));
             }
         }
@@ -387,8 +371,8 @@ private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<string> spr = new List<string>();
-            if (!spr.Contains(value.Value))
+            var query = from item in Spravochniks.SprRadionuclids where item.Item1 == value.Value select item.Item1;
+            if (!query.Any())
             {
                 value.AddError("Недопустимое значение");
                 return false;

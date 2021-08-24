@@ -12,6 +12,12 @@ namespace Spravochniki
         {
 
         };
+        public static List<short> SprOpCodes = new List<short>
+        {
+            1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,
+            46,47,48,49,51,52,53,54,55,56,57,58,59,61,62,63,64,65,66,67,68,71,72,73,74,75,76,81,82,
+            83,84,85,86,87,88,97,98,99
+        };
         public static List<string> SprRecieverTypeCode = new List<string>
         {
             "101","201","211","301","311","401","411","501","601","611","811","821","831","911","921","991","102","202","212","302","312","402","412","502","602","612","812","822","832","912","922","992","109","209","219","309","319","409","419","509","609","619","819","829","839","919","929","999"
@@ -31,7 +37,27 @@ namespace Spravochniki
 
             }
         }
-
+        public static List<Tuple<byte?, string>> SprDocumentVidName = new List<Tuple<byte?, string>>
+            {
+                new Tuple<byte?, string>(0,""),
+                new Tuple<byte?, string>(1,""),
+                new Tuple<byte?, string>(2,""),
+                new Tuple<byte?, string>(3,""),
+                new Tuple<byte?, string>(4,""),
+                new Tuple<byte?, string>(5,""),
+                new Tuple<byte?, string>(6,""),
+                new Tuple<byte?, string>(7,""),
+                new Tuple<byte?, string>(8,""),
+                new Tuple<byte?, string>(9,""),
+                new Tuple<byte?, string>(10,""),
+                new Tuple<byte?, string>(11,""),
+                new Tuple<byte?, string>(12,""),
+                new Tuple<byte?, string>(13,""),
+                new Tuple<byte?, string>(14,""),
+                new Tuple<byte?, string>(15,""),
+                new Tuple<byte?, string>(19,""),
+                new Tuple<byte?, string>(null,"")
+            };
         public static List<Tuple<string, string>> SprTypesToRadionuclids
         {
             get

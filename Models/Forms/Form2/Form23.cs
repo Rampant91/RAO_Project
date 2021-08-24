@@ -74,12 +74,12 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<string> spr = new List<string>();
-            if (!spr.Contains(value.Value))
-            {
-                value.AddError("Недопустиое значение");
-                return false;
-            }
+            //List<string> spr = new List<string>();//here binds spr
+            //if (!spr.Contains(value.Value))
+            //{
+            //    value.AddError("Недопустиое значение");
+            //    return false;
+            //}
             return true;
         }
         //StoragePlaceName property
@@ -155,11 +155,17 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            List<string> spr = new List<string>();
-            if (!spr.Contains(value.Value))
+            //List<string> spr = new List<string>();//here binds spr
+            //if (!spr.Contains(value.Value))
+            //{
+            //    value.AddError("Недопустиое значение");
+            //    return false;
+            //}
+            //return true;
+            Regex a = new Regex("^[0-9]{8}$");
+            if (!a.IsMatch(value.Value))
             {
-                value.AddError("Недопустиое значение");
-                return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
