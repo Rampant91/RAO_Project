@@ -32,7 +32,11 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(Radionuclids.HasErrors||
+            OperationCode.HasErrors||
+            ObjectTypeCode.HasErrors||
+            Activity.HasErrors||
+            ProviderOrRecieverOKPO.HasErrors);
         }
 
         //OperationCode property

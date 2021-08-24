@@ -42,7 +42,23 @@ namespace Models
         }
         public override bool Object_Validation()
         {
-            return false;
+            return !(Activity.HasErrors ||
+            Category.HasErrors ||
+            CreationDate.HasErrors ||
+            CreatorOKPO.HasErrors ||
+            FactoryNumber.HasErrors ||
+            Owner.HasErrors ||
+            PackName.HasErrors ||
+            PackNumber.HasErrors ||
+            PackType.HasErrors ||
+            PassportNumber.HasErrors ||
+            PropertyCode.HasErrors ||
+            ProviderOrRecieverOKPO.HasErrors ||
+            Quantity.HasErrors ||
+            Radionuclids.HasErrors ||
+            SignedServicePeriod.HasErrors ||
+            TransporterOKPO.HasErrors ||
+            Type.HasErrors);
         }
 
 

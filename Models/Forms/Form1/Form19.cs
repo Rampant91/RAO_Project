@@ -29,7 +29,9 @@ namespace Models
         }
         public override bool Object_Validation()
         {
-            return false;
+            return !(CodeTypeAccObject.HasErrors||
+            Activity.HasErrors||
+            Radionuclids.HasErrors);
         }
 
         //#region Quantity

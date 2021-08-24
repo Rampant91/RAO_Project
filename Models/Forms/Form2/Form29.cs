@@ -29,7 +29,10 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(WasteSourceName.HasErrors||
+            RadionuclidName.HasErrors||
+            AllowedActivity.HasErrors||
+            FactedActivity.HasErrors);
         }
 
         //WasteSourceName property

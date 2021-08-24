@@ -40,7 +40,22 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(CodeOYAT.HasErrors||
+            FcpNumber.HasErrors||
+            QuantityFromAnothers.HasErrors||
+            QuantityFromAnothersImported.HasErrors||
+            QuantityCreated.HasErrors||
+            QuantityRemovedFromAccount.HasErrors||
+            MassCreated.HasErrors||
+            MassFromAnothers.HasErrors||
+            MassFromAnothersImported.HasErrors||
+            MassRemovedFromAccount.HasErrors||
+            QuantityTransferredToAnother.HasErrors||
+            MassAnotherReasons.HasErrors||
+            MassTransferredToAnother.HasErrors||
+            QuantityAnotherReasons.HasErrors||
+            QuantityRefined.HasErrors||
+            MassRefined.HasErrors);
         }
 
         //CodeOYAT property

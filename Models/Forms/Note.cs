@@ -38,7 +38,7 @@ namespace Models
         public int Id { get; set; }
 
         #region RowNUmber
-        public int? RowNumber_DB { get; set; } = 0;
+        public int? RowNumber_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Номер строки")]
         public RamAccess<int?> RowNumber
@@ -70,7 +70,7 @@ namespace Models
         #endregion
 
         #region GraphNumber
-        public int? GraphNumber_DB { get; set; } = 0;
+        public int? GraphNumber_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Номер графы")]
         public RamAccess<int?> GraphNumber

@@ -33,7 +33,15 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(CodeOYAT.HasErrors||
+            FcpNumber.HasErrors||
+            StoragePlaceCode.HasErrors||
+            StoragePlaceName.HasErrors||
+            FuelMass.HasErrors||
+            CellMass.HasErrors||
+            Quantity.HasErrors||
+            BetaGammaActivity.HasErrors||
+            AlphaActivity.HasErrors);
         }
 
         //StoragePlaceName property

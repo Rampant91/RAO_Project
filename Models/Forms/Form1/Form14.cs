@@ -40,7 +40,22 @@ namespace Models
         }
         public override bool Object_Validation()
         {
-            return false;
+            return !(Owner.HasErrors ||
+            PackName.HasErrors ||
+            PackNumber.HasErrors ||
+            PackType.HasErrors ||
+            PassportNumber.HasErrors ||
+            PropertyCode.HasErrors ||
+            ProviderOrRecieverOKPO.HasErrors ||
+            TransporterOKPO.HasErrors ||
+            Activity.HasErrors ||
+            Radionuclids.HasErrors ||
+            Name.HasErrors ||
+            Sort.HasErrors ||
+            Volume.HasErrors ||
+            Mass.HasErrors ||
+            ActivityMeasurementDate.HasErrors ||
+            AggregateState.HasErrors);
         }
 
         #region PassportNumber

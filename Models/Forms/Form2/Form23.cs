@@ -37,7 +37,18 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(StoragePlaceName.HasErrors||
+            StoragePlaceCode.HasErrors||
+            ProjectVolume.HasErrors||
+            CodeRAO.HasErrors||
+            Volume.HasErrors||
+            Mass.HasErrors||
+            SummaryActivity.HasErrors||
+            QuantityOZIII.HasErrors||
+            DocumentNumber.HasErrors||
+            ExpirationDate.HasErrors||
+            DocumentName.HasErrors||
+            DocumentDate.HasErrors);
         }
 
         //StoragePlaceName property

@@ -47,7 +47,27 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(CodeRAO.HasErrors||
+            PackName.HasErrors||
+            PackNumber.HasErrors||
+            PackType.HasErrors||
+            Volume.HasErrors||
+            Mass.HasErrors||
+            ActivityMeasurementDate.HasErrors||
+            ProviderOrRecieverOKPO.HasErrors||
+            TransporterOKPO.HasErrors||
+            TritiumActivity.HasErrors||
+            BetaGammaActivity.HasErrors||
+            AlphaActivity.HasErrors||
+            TransuraniumActivity.HasErrors||
+            MainRadionuclids.HasErrors||
+            QuantityOZIII.HasErrors||
+            RefineOrSortRAOCode.HasErrors||
+            Subsidy.HasErrors||
+            FcpNumber.HasErrors||
+            StatusRAO.HasErrors||
+            StoragePlaceName.HasErrors||
+            StoragePlaceCode.HasErrors);
         }
 
         #region CodeRAO

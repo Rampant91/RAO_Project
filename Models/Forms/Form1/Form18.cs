@@ -46,7 +46,28 @@ namespace Models
         }
         public override bool Object_Validation()
         {
-            return false;
+            return !(CodeRAO.HasErrors||
+            IndividualNumberZHRO.HasErrors||
+            SpecificActivity.HasErrors||
+            SaltConcentration.HasErrors||
+            Radionuclids.HasErrors||
+            ProviderOrRecieverOKPO.HasErrors||
+            TransporterOKPO.HasErrors||
+            TritiumActivity.HasErrors||
+            BetaGammaActivity.HasErrors||
+            AlphaActivity.HasErrors||
+            TransuraniumActivity.HasErrors||
+            PassportNumber.HasErrors||
+            RefineOrSortRAOCode.HasErrors||
+            Subsidy.HasErrors||
+            FcpNumber.HasErrors||
+            StatusRAO.HasErrors||
+            Volume6.HasErrors||
+            Mass7.HasErrors||
+            Volume20.HasErrors||
+            Mass21.HasErrors||
+            StoragePlaceName.HasErrors||
+            StoragePlaceCode.HasErrors);
         }
 
         #region IndividualNumberZHRO

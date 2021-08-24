@@ -47,7 +47,27 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(PermissionNumber2.HasErrors||
+            PermissionIssueDate2.HasErrors||
+            ValidBegin2.HasErrors||
+            ValidThru2.HasErrors||
+            PermissionDocumentName2.HasErrors||
+            PermissionNumber.HasErrors||
+            PermissionIssueDate.HasErrors||
+            ValidBegin.HasErrors||
+            ValidThru.HasErrors||
+            PermissionDocumentName.HasErrors||
+            PermissionNumber1.HasErrors||
+            PermissionIssueDate1.HasErrors||
+            ValidBegin1.HasErrors||
+            ValidThru1.HasErrors||
+            PermissionDocumentName1.HasErrors||
+            WasteSourceName.HasErrors||
+            WasteRecieverName.HasErrors||
+            RecieverTypeCode.HasErrors||
+            AllowedWasteRemovalVolume.HasErrors||
+            RemovedWasteVolume.HasErrors||
+            PoolDistrictName.HasErrors);
         }
 
         //PermissionNumber property

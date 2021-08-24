@@ -36,7 +36,16 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(ValidThru.HasErrors||
+            ValidBegin.HasErrors||
+            PermissionNumber.HasErrors||
+            PermissionIssueDate.HasErrors||
+            PermissionDocumentName.HasErrors||
+            ObservedSourceNumber.HasErrors||
+            RadionuclidName.HasErrors||
+            AllowedWasteValue.HasErrors||
+            FactedWasteValue.HasErrors||
+            WasteOutbreakPreviousYear.HasErrors);
         }
 
         //ObservedSourceNumber property

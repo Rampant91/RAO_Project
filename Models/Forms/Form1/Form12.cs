@@ -40,7 +40,20 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(CreationDate.HasErrors ||
+            CreatorOKPO.HasErrors ||
+            Owner.HasErrors ||
+            PackName.HasErrors ||
+            PackNumber.HasErrors ||
+            PackType.HasErrors ||
+            PassportNumber.HasErrors ||
+            PropertyCode.HasErrors ||
+            ProviderOrRecieverOKPO.HasErrors ||
+            SignedServicePeriod.HasErrors ||
+            TransporterOKPO.HasErrors ||
+            FactoryNumber.HasErrors ||
+            Mass.HasErrors ||
+            NameIOU.HasErrors);
         }
 
         #region PassportNumber

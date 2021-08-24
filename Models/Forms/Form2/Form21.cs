@@ -46,7 +46,28 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(MachinePower.HasErrors||
+            MachineCode.HasErrors||
+            RefineMachineName.HasErrors||
+            NumberOfHoursPerYear.HasErrors||
+            CodeRAOIn.HasErrors||
+            StatusRAOIn.HasErrors||
+            VolumeIn.HasErrors||
+            MassIn.HasErrors||
+            QuantityIn.HasErrors||
+            TritiumActivityIn.HasErrors||
+            TritiumActivityOut.HasErrors||
+            BetaGammaActivityIn.HasErrors||
+            BetaGammaActivityOut.HasErrors||
+            TransuraniumActivityIn.HasErrors||
+            TransuraniumActivityOut.HasErrors||
+            AlphaActivityIn.HasErrors||
+            AlphaActivityOut.HasErrors||
+            VolumeOut.HasErrors||
+            MassOut.HasErrors||
+            QuantityOZIIIout.HasErrors||
+            CodeRAOout.HasErrors||
+            StatusRAOout.HasErrors);
         }
 
         //RefineMachineName property

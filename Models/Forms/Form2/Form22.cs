@@ -46,7 +46,25 @@ namespace Models
         [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
-            return false;
+            return !(StoragePlaceName.HasErrors||
+            StoragePlaceCode.HasErrors||
+            PackName.HasErrors||
+            PackType.HasErrors||
+            CodeRAO.HasErrors||
+            StatusRAO.HasErrors||
+            VolumeOutOfPack.HasErrors||
+            MassInPack.HasErrors||
+            QuantityOZIII.HasErrors||
+            TritiumActivity.HasErrors||
+            BetaGammaActivity.HasErrors||
+            TransuraniumActivity.HasErrors||
+            AlphaActivity.HasErrors||
+            VolumeInPack.HasErrors||
+            MassOutOfPack.HasErrors||
+            MainRadionuclids.HasErrors||
+            Subsidy.HasErrors||
+            FcpNumber.HasErrors||
+            PackQuantity.HasErrors);
         }
 
         //StoragePlaceName property

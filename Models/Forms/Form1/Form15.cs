@@ -43,7 +43,24 @@ namespace Models
         }
         public override bool Object_Validation()
         {
-            return false;
+            return !(Type.HasErrors||
+            PackName.HasErrors||
+            PackNumber.HasErrors||
+            PackType.HasErrors||
+            PassportNumber.HasErrors||
+            FactoryNumber.HasErrors||
+            ProviderOrRecieverOKPO.HasErrors||
+            TransporterOKPO.HasErrors||
+            Activity.HasErrors||
+            Radionuclids.HasErrors||
+            Quantity.HasErrors||
+            CreationDate.HasErrors||
+            Subsidy.HasErrors||
+            FcpNumber.HasErrors||
+            StatusRAO.HasErrors||
+            RefineOrSortRAOCode.HasErrors||
+            StoragePlaceName.HasErrors||
+            StoragePlaceCode.HasErrors);
         }
 
         #region PassportNumber

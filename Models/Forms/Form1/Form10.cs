@@ -43,7 +43,25 @@ namespace Models
         }
         public override bool Object_Validation()
         {
-            return false;
+            return !(Okfs.HasErrors ||
+            Okpo.HasErrors ||
+            Okved.HasErrors ||
+            Oktmo.HasErrors ||
+            Okogu.HasErrors ||
+            Okopf.HasErrors ||
+            Inn.HasErrors ||
+            Kpp.HasErrors ||
+            RegNo.HasErrors ||
+            OrganUprav.HasErrors ||
+            SubjectRF.HasErrors ||
+            JurLico.HasErrors ||
+            ShortJurLico.HasErrors ||
+            JurLicoAddress.HasErrors ||
+            JurLicoFactAddress.HasErrors ||
+            GradeFIO.HasErrors ||
+            Telephone.HasErrors ||
+            Fax.HasErrors ||
+            Email.HasErrors);
         }
 
         #region RegNo

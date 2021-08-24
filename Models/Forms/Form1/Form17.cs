@@ -50,7 +50,32 @@ namespace Models
         }
         public override bool Object_Validation()
         {
-            return false;
+            return !(CodeRAO.HasErrors||
+            PackName.HasErrors||
+            PackNumber.HasErrors||
+            PackFactoryNumber.HasErrors||
+            PackType.HasErrors||
+            Volume.HasErrors||
+            Mass.HasErrors||
+            Radionuclids.HasErrors||
+            ProviderOrRecieverOKPO.HasErrors||
+            TransporterOKPO.HasErrors||
+            TritiumActivity.HasErrors||
+            BetaGammaActivity.HasErrors||
+            AlphaActivity.HasErrors||
+            TransuraniumActivity.HasErrors||
+            FormingDate.HasErrors||
+            PassportNumber.HasErrors||
+            RefineOrSortRAOCode.HasErrors||
+            Subsidy.HasErrors||
+            FcpNumber.HasErrors||
+            StatusRAO.HasErrors||
+            VolumeOutOfPack.HasErrors||
+            MassOutOfPack.HasErrors||
+            StoragePlaceName.HasErrors||
+            StoragePlaceCode.HasErrors||
+            SpecificActivity.HasErrors||
+            Quantity.HasErrors);
         }
 
         #region PackName

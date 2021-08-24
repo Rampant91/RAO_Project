@@ -128,6 +128,64 @@ namespace Client_App.ViewModels
         [DependsOn(nameof(IsCanSaveReportEnabled))]
         private bool CanSaveReport(object parameter)
         {
+            //switch (FormType)
+            //{
+            //    case "1.0":
+            //        foreach (var item in Storage.Rows10)
+            //        {
+            //            if (!item.Object_Validation())
+            //            {
+            //                IsCanSaveReportEnabled = false;
+            //                break;
+            //            }
+            //        }
+            //        IsCanSaveReportEnabled = true;
+            //        break;
+            //    case "1.1":
+            //        break;
+            //    case "1.2":
+            //        break;
+            //    case "1.3":
+            //        break;
+            //    case "1.4":
+            //        break;
+            //    case "1.5":
+            //        break;
+            //    case "1.6":
+            //        break;
+            //    case "1.7":
+            //        break;
+            //    case "1.8":
+            //        break;
+            //    case "1.9":
+            //        break;
+            //    case "2.0":
+            //        break;
+            //    case "2.1":
+            //        break;
+            //    case "2.2":
+            //        break;
+            //    case "2.3":
+            //        break;
+            //    case "2.4":
+            //        break;
+            //    case "2.5":
+            //        break;
+            //    case "2.6":
+            //        break;
+            //    case "2.7":
+            //        break;
+            //    case "2.8":
+            //        break;
+            //    case "2.9":
+            //        break;
+            //    case "2.10":
+            //        break;
+            //    case "2.11":
+            //        break;
+            //    case "2.12":
+            //        break;
+            //}
             return _isCanSaveReportEnabled;
         }
         public void SaveReport()
