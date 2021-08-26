@@ -519,12 +519,17 @@ namespace Models
         private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            List<string> spr = new List<string>();
-            if (!spr.Contains(value.Value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
+            //List<string> spr = new List<string>();
+            //if (!spr.Contains(value.Value))
+            //{
+            //    value.AddError("Недопустимое значение");
+            //    return false;
+            //}
             return true;
         }
         #endregion

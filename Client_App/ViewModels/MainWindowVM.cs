@@ -180,6 +180,11 @@ namespace Client_App.ViewModels
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
                 {
+                    foreach (var item in param)
+                    {
+                        var a = DateTime.Now.Date;
+                        ((Report)item).ExportDate.Value = a.Day + "." + a.Month + "." + a.Year;
+                    }
                     var obj = param.First();
                     OpenFolderDialog dial = new OpenFolderDialog();
                     var res = await dial.ShowAsync(desktop.MainWindow);
