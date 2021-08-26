@@ -758,16 +758,17 @@ namespace Collections
             try
             {
                 var start = DateTimeOffset.Parse(value.Value);
-                var end = DateTimeOffset.Parse(EndPeriod_DB);
-                if (start.Date >= end.Date)
-                {
-                    value.AddError("Начало периода должно быть раньше его конца");
-                    return false;
-                }
+                //var end = DateTimeOffset.Parse(EndPeriod_DB);
+                //if (start.Date >= end.Date)
+                //{
+                //    value.AddError("Начало периода должно быть раньше его конца");
+                //    return false;
+                //}
             }
             catch (Exception)
             {
-                value.AddError("Недопустимое значение начала или конца периода");
+                value.AddError("Недопустимое значение");
+                    //+ " начала или конца периода");
                 return false;
             }
             return true;
