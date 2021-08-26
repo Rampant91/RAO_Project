@@ -25,7 +25,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 case "10": return Get10();
                 case "11": return Get11();
                 case "12": return Get12();
-                case "2*": return GetNotes();
+                case "1*": return GetNotes();
             }
             return null;
         }
