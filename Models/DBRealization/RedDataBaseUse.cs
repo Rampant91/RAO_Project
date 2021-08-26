@@ -21,6 +21,7 @@ namespace DBRealization
 #endif
             return new FbConnectionStringBuilder
             {
+                
                 Database = _path,
                 ServerType = FbServerType.Embedded,
                 UserID = "SYSDBA",
