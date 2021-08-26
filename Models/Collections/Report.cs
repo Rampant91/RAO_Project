@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System;
+using System.Text.RegularExpressions;
 using Models;
 using Models.Attributes;
 using Models.DataAccess;
@@ -906,6 +908,32 @@ namespace Collections
         private bool StartPeriod_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try
+            {
+                var start=DateTimeOffset.Parse(value.Value);
+                var end = DateTimeOffset.Parse(EndPeriod.Value);
+                if (start.Date >= end.Date)
+                {
+                    value.AddError("Начало периода должно быть раньше его конца");
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение начала или конца периода");
+                return false;
+            }
             return true;
         }
 
@@ -919,6 +947,32 @@ namespace Collections
         private bool EndPeriod_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try
+            {
+                var end = DateTimeOffset.Parse(value.Value);
+                var start = DateTimeOffset.Parse(StartPeriod.Value);
+                if (start.Date >= end.Date)
+                {
+                    value.AddError("Начало периода должно быть раньше его конца");
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение начала или конца периода");
+                return false;
+            }
             return true;
         }
 
