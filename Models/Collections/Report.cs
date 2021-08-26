@@ -541,6 +541,7 @@ namespace Collections
             }
         }
 
+        #region FormNum
         public string FormNum_DB { get; set; } = "";
         [NotMapped]
         [Form_Property("Форма")]
@@ -558,6 +559,18 @@ namespace Collections
                 OnPropertyChanged(nameof(FormNum));
             }
         }
+        private void FormNumValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                FormNum_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool FormNum_Validation(RamAccess<bool> value)
+        {
+            return true;
+        }
+        #endregion
 
         #region IsCorrection
         public bool IsCorrection_DB { get; set; } = false;
@@ -576,6 +589,17 @@ namespace Collections
                 IsCorrection_DB = value.Value;
                 OnPropertyChanged(nameof(IsCorrection));
             }
+        }
+        private void IsCorrectionValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                IsCorrection_DB = ((RamAccess<bool>)Value).Value;
+            }
+        }
+        private bool IsCorrection_Validation(RamAccess<bool> value)
+        {
+            return true;
         }
         #endregion
 
@@ -597,6 +621,18 @@ namespace Collections
                 OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
+        private void CorrectionNumberValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                CorrectionNumber_DB = ((RamAccess<byte>)Value).Value;
+            }
+        }
+        private bool CorrectionNumber_Validation(RamAccess<byte> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
         #endregion
 
         #region NumberInOrder
@@ -617,6 +653,17 @@ namespace Collections
                 OnPropertyChanged(nameof(NumberInOrder));
             }
         }
+        private void NumberInOrderValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                NumberInOrder_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool NumberInOrder_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
         #endregion
 
         #region Comments
@@ -636,6 +683,17 @@ namespace Collections
                 Comments_DB = value.Value;
                 OnPropertyChanged(nameof(Comments));
             }
+        }
+        private void CommentsValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Comments_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool Comments_Validation(RamAccess<string> value)
+        {
+            return true;
         }
         #endregion
 
@@ -676,6 +734,44 @@ namespace Collections
                 OnPropertyChanged(nameof(StartPeriod));
             }
         }
+        private void StartPeriodValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                StartPeriod_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool StartPeriod_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try
+            {
+                var start = DateTimeOffset.Parse(value.Value);
+                var end = DateTimeOffset.Parse(EndPeriod_DB);
+                if (start.Date >= end.Date)
+                {
+                    value.AddError("Начало периода должно быть раньше его конца");
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение начала или конца периода");
+                return false;
+            }
+            return true;
+        }
         #endregion
 
         #region EndPeriod
@@ -696,9 +792,48 @@ namespace Collections
                 OnPropertyChanged(nameof(EndPeriod));
             }
         }
+        private void EndPeriodValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                EndPeriod_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool EndPeriod_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try
+            {
+                var end = DateTimeOffset.Parse(value.Value);
+                var start = DateTimeOffset.Parse(StartPeriod_DB);
+                if (start.Date >= end.Date)
+                {
+                    value.AddError("Начало периода должно быть раньше его конца");
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение начала или конца периода");
+                return false;
+            }
+            return true;
+        }
         #endregion
 
-        //ExportDate
+        #region ExportDate
+
         public string ExportDate_DB { get; set; } = "";
         [NotMapped]
         [Form_Property("Дата выгрузки")]
@@ -716,6 +851,18 @@ namespace Collections
                 OnPropertyChanged(nameof(ExportDate));
             }
         }
+        private void ExportDateValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ExportDate_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ExportDate_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -795,18 +942,6 @@ namespace Collections
             Notes = new ObservableCollectionWithItemPropertyChanged<Note>();
             Notes.CollectionChanged += CollectionChanged;
         }
-
-        private void FormNumValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                FormNum_DB = ((RamAccess<string>)Value).Value;
-            }
-        }
-        private bool FormNum_Validation(RamAccess<bool> value)
-        {
-            return true;
-        }
         protected void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             OnPropertyChanged(nameof(Notes));
@@ -837,55 +972,6 @@ namespace Collections
             OnPropertyChanged(nameof(Rows212));
         }
 
-        private void IsCorrectionValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                IsCorrection_DB = ((RamAccess<bool>)Value).Value;
-            }
-        }
-        private bool IsCorrection_Validation(RamAccess<bool> value)
-        {
-            return true;
-        }
-
-        private void CorrectionNumberValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                CorrectionNumber_DB = ((RamAccess<byte>)Value).Value;
-            }
-        }
-        private bool CorrectionNumber_Validation(RamAccess<byte> value)
-        {
-            value.ClearErrors();
-            return true;
-        }
-
-        private void NumberInOrderValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                NumberInOrder_DB = ((RamAccess<string>)Value).Value;
-            }
-        }
-        private bool NumberInOrder_Validation(RamAccess<string> value)
-        {
-            return true;
-        }
-
-        private void CommentsValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                Comments_DB = ((RamAccess<string>)Value).Value;
-            }
-        }
-        private bool Comments_Validation(RamAccess<string> value)
-        {
-            return true;
-        }
-
         private void NotesValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")
@@ -898,102 +984,12 @@ namespace Collections
             return true;
         }
 
-        private void StartPeriodValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                StartPeriod_DB = ((RamAccess<string>)Value).Value;
-            }
-        }
-        private bool StartPeriod_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            try
-            {
-                var start=DateTimeOffset.Parse(value.Value);
-                var end = DateTimeOffset.Parse(EndPeriod.Value);
-                if (start.Date >= end.Date)
-                {
-                    value.AddError("Начало периода должно быть раньше его конца");
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-                value.AddError("Недопустимое значение начала или конца периода");
-                return false;
-            }
-            return true;
-        }
-
-        private void EndPeriodValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                EndPeriod_DB = ((RamAccess<string>)Value).Value;
-            }
-        }
-        private bool EndPeriod_Validation(RamAccess<string> value)
-        {
-            value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            try
-            {
-                var end = DateTimeOffset.Parse(value.Value);
-                var start = DateTimeOffset.Parse(StartPeriod.Value);
-                if (start.Date >= end.Date)
-                {
-                    value.AddError("Начало периода должно быть раньше его конца");
-                    return false;
-                }
-            }
-            catch (Exception)
-            {
-                value.AddError("Недопустимое значение начала или конца периода");
-                return false;
-            }
-            return true;
-        }
-
-        private void ExportDateValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                ExportDate_DB = ((RamAccess<string>)Value).Value;
-            }
-        }
-        private bool ExportDate_Validation(RamAccess<string> value)
-        {
-            return true;
-        }
-
-        //Property Changed
+        #region Property Changed
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
-        //Property Changed
+        #endregion
     }
 }

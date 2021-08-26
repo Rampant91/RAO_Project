@@ -19,10 +19,6 @@ namespace Client_App.Controls.DataGrid
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
 
-            //AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
-            //AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
-            //AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
-
             this.Focusable = false;
         }
 
@@ -31,10 +27,6 @@ namespace Client_App.Controls.DataGrid
             this.BindingPath = BindingPath;
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
-
-            //AddHandler(PointerPressedEvent, PanelPointerDown, handledEventsToo: true);
-            //AddHandler(PointerMovedEvent, PanelPointerMoved, handledEventsToo: true);
-            //AddHandler(PointerReleasedEvent, PanelPointerUp, handledEventsToo: true);
 
             this.Focusable = false;
         }

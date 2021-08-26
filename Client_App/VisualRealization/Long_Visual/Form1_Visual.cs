@@ -25,16 +25,16 @@ namespace Client_App.Long_Visual
             };
         }
 
-        public static TextBox CreateTextBox(string thickness, int columnProp, int height, string textProp, double width)
+        public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width)
         {
-            return new TextBox()
+            return new Cell(textProp,false)
             {
                 Height = height,
                 Width = width,
                 Margin = Thickness.Parse(thickness),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!TextBox.TextProperty] = new Binding(textProp, BindingMode.TwoWay),
+                [!Cell.DataContextProperty] = new Binding(textProp, BindingMode.TwoWay),
                 [Grid.ColumnProperty] = columnProp
             };
         }
@@ -467,8 +467,9 @@ namespace Client_App.Long_Visual
             topPnl1.SetValue(Grid.RowProperty, 0);
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата конца периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", 70));
+            topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -505,7 +506,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber.Value", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
