@@ -142,7 +142,6 @@ namespace Client_App.Long_Visual
             ////maingrid.Children.Add(topPnl2);
 
             ////vm._AddRow10();
-
             ////Binding[] bindings = new Binding[17];
             ////for (int k = 0; k < 17; k++)
             ////{
@@ -469,7 +468,7 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата конца периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", double.NaN));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", 70));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
