@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installers", "Installers", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreateBin", "CreateBin\CreateBin.csproj", "{CA8D3817-5E7C-4A79-ABCB-9EE489E5CA36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormExport", "FormExport\FormExport.csproj", "{7B0380BB-3BE1-49F6-BC5B-AAD94C17F67D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FormExport", "FormExport\FormExport.csproj", "{7B0380BB-3BE1-49F6-BC5B-AAD94C17F67D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
