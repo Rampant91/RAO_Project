@@ -510,7 +510,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex ex = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            Regex ex = new Regex(@"^[0-9]{2}\.[0-9]{2}(|\.[0-9]{2})$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение"); return false;
