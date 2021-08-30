@@ -747,8 +747,8 @@ private bool Okopf_Validation(RamAccess<string> value)
         #endregion
 
         //Okfs property
-        #region  
-public string Okfs_DB { get; set; } = ""; [NotMapped]
+        #region   Okfs
+        public string Okfs_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("ОКФС")]
         public RamAccess<string> Okfs
         {
