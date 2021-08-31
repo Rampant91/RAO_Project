@@ -12,7 +12,6 @@ namespace Models
         public Form20() : base()
         {
             FormNum.Value = "2.0";
-            //NumberOfFields.Value = 19;
             Validate_base();
         }
         protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)

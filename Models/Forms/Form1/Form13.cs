@@ -585,7 +585,11 @@ namespace Models
             if (a || b || c || d)
             {
                 //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+<<<<<<< Updated upstream
                 //return false;
+=======
+                return false;
+>>>>>>> Stashed changes
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
