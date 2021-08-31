@@ -504,8 +504,8 @@ namespace Models
                 (tmp == 68) || (tmp == 75) || (tmp == 76);
             if (a || b || c || d || e)
             {
-                ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-                return true;
+                //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+                //return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {

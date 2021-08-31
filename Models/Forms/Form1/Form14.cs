@@ -609,8 +609,8 @@ namespace Models
                 (tmp == 67) || (tmp == 68) || (tmp == 75) || (tmp == 76);
             if (a || b || c || d)
             {
-                ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-                return false;
+                //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+                //return false;
             }
             if (value.Value.Equals("прим."))
             {

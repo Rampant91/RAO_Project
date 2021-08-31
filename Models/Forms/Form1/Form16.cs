@@ -731,8 +731,8 @@ namespace Models
                 (OperationCode.Value == 68) || (OperationCode.Value == 75) || (OperationCode.Value == 76);
             if (a || b || c || d || e)
             {
-                ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-                return false;
+                //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+                //return false;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
