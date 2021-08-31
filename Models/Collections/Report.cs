@@ -818,7 +818,7 @@ namespace Collections
             {
                 var end = DateTimeOffset.Parse(value.Value);
                 var start = DateTimeOffset.Parse(StartPeriod_DB);
-                if (start.Date >= end.Date)
+                if (start.Date > end.Date)
                 {
                     value.AddError("Начало периода должно быть раньше его конца");
                     return false;
