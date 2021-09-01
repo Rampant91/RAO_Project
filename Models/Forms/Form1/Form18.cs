@@ -469,7 +469,11 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                return false;
+                return true;
+            }
+            if (value.Value.Equals("-")||value.Value.Equals("Минобороны"))
+            {
+                return true;
             }
             if (value.Value.Equals("прим."))
             {

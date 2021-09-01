@@ -553,6 +553,10 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value.Equals("Минобороны"))
+            {
+                return true;
+            }
             if (value.Value.Equals("прим."))
             {
                 //if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))

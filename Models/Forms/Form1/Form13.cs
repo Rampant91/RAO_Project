@@ -585,11 +585,8 @@ namespace Models
             if (a || b || c || d)
             {
                 //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-<<<<<<< Updated upstream
-                //return false;
-=======
-                return false;
->>>>>>> Stashed changes
+                //return true;
+                return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
@@ -636,6 +633,10 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            if (value.Value.Equals("-"))
+            {
+                return true;
             }
             if (value.Value.Equals("прим."))
             {
