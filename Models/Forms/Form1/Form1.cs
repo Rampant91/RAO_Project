@@ -252,17 +252,17 @@ namespace Models.Abstracts
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            bool ab = (OperationCode.Value >= 11) && (OperationCode.Value <= 18);
-            bool b = (OperationCode.Value >= 41) && (OperationCode.Value <= 49);
-            bool c = (OperationCode.Value >= 51) && (OperationCode.Value <= 59);
-            bool d = (OperationCode.Value == 65) || (OperationCode.Value == 68);
-            if (ab || b || c || d)
-            {
-                if (!value.Value.Equals(OperationDate))
-                {
-                    value.AddError("Заполните примечание");//to do note handling
-                }
-            }
+            //bool ab = (OperationCode.Value >= 11) && (OperationCode.Value <= 18);
+            //bool b = (OperationCode.Value >= 41) && (OperationCode.Value <= 49);
+            //bool c = (OperationCode.Value >= 51) && (OperationCode.Value <= 59);
+            //bool d = (OperationCode.Value == 65) || (OperationCode.Value == 68);
+            //if (ab || b || c || d)
+            //{
+            //    if (!value.Value.Equals(OperationDate))
+            //    {
+            //        value.AddError("Заполните примечание");//to do note handling
+            //    }
+            //}
             return true;
         }
         #endregion
