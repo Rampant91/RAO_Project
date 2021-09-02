@@ -80,7 +80,7 @@ namespace Client_App.Long_Visual
             return grd;
         }
 
-        public static Grid Form10_Visual(INameScope scp, ChangeOrCreateVM vm)
+        public static Grid Form10_Visual(INameScope scp)
         {
             Grid maingrid = new Grid();
             RowDefinition? row = new RowDefinition
@@ -115,26 +115,6 @@ namespace Client_App.Long_Visual
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 1, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
-
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid()
-            {
-                Type = "1.0",
-                Name = "Form10Data_",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
-                MultilineMode = MultilineMode.Multi,
-                ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
-            };
-            grd.SetValue(Grid.RowProperty, 1);
-
-            Binding b = new Binding
-            {
-                Path = "DataContext.Storage.Rows10",
-                ElementName = "ChangingPanel",
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
             StackPanel pnl = new StackPanel()
             {

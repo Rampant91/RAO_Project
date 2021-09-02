@@ -14,6 +14,7 @@ using Client_App.Views;
 using Collections;
 using DBRealization;
 using DynamicData;
+using Models;
 using Models.Abstracts;
 using ReactiveUI;
 using Spravochniki;
@@ -167,6 +168,16 @@ namespace Client_App.ViewModels
                     var rt = new Reports();
                     rt.Master = new Report();
                     rt.Master.FormNum.Value = param;
+                    if (param.Split('.')[0] == "1")
+                    {
+                        rt.Master.Rows10.Add((Form10)FormCreator.Create(param));
+                        rt.Master.Rows10.Add((Form10)FormCreator.Create(param));
+                    }
+                    if (param.Split('.')[0] == "2")
+                    {
+                        rt.Master.Rows20.Add((Form20)FormCreator.Create(param));
+                        rt.Master.Rows20.Add((Form20)FormCreator.Create(param));
+                    }
 
                     Local_Reports.Reports_Collection.Add(rt);
                     FormChangeOrCreate frm = new(param, rt.Master);

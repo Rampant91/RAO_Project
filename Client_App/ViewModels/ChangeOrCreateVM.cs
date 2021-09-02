@@ -520,7 +520,6 @@ namespace Client_App.ViewModels
         private void _AddRow()
         {
             var frm = FormCreator.Create(FormType);
-            if (FormType == "1.0") { Storage.Rows10.Add((Form10)frm); Storage.LastAddedForm = Report.Forms.Form10; }
             if (FormType == "1.1") { Storage.Rows11.Add((Form11)frm); Storage.LastAddedForm = Report.Forms.Form11; }
             if (FormType == "1.2") { Storage.Rows12.Add((Form12)frm); Storage.LastAddedForm = Report.Forms.Form12; }
             if (FormType == "1.3") { Storage.Rows13.Add((Form13)frm); Storage.LastAddedForm = Report.Forms.Form13; }
@@ -531,7 +530,6 @@ namespace Client_App.ViewModels
             if (FormType == "1.8") { Storage.Rows18.Add((Form18)frm); Storage.LastAddedForm = Report.Forms.Form18; }
             if (FormType == "1.9") { Storage.Rows19.Add((Form19)frm); Storage.LastAddedForm = Report.Forms.Form19; }
 
-            if (FormType == "2.0") { Storage.Rows20.Add((Form20)frm); Storage.LastAddedForm = Report.Forms.Form20; }
             if (FormType == "2.1") { Storage.Rows21.Add((Form21)frm); Storage.LastAddedForm = Report.Forms.Form21; }
             if (FormType == "2.2") { Storage.Rows22.Add((Form22)frm); Storage.LastAddedForm = Report.Forms.Form22; }
             if (FormType == "2.3") { Storage.Rows23.Add((Form23)frm); Storage.LastAddedForm = Report.Forms.Form23; }
@@ -574,7 +572,6 @@ namespace Client_App.ViewModels
             }
             foreach (Models.Abstracts.Form? item in lst)
             {
-                if (item.FormNum.Value == "1.0") { Storage.Rows10.Remove((Form10)item); }
                 if (item.FormNum.Value == "1.1") { Storage.Rows11.Remove((Form11)item); }
                 if (item.FormNum.Value == "1.2") { Storage.Rows12.Remove((Form12)item); }
                 if (item.FormNum.Value == "1.3") { Storage.Rows13.Remove((Form13)item); }
@@ -585,7 +582,6 @@ namespace Client_App.ViewModels
                 if (item.FormNum.Value == "1.8") { Storage.Rows18.Remove((Form18)item); }
                 if (item.FormNum.Value == "1.9") { Storage.Rows19.Remove((Form19)item); }
 
-                if (item.FormNum.Value == "2.0") { Storage.Rows20.Remove((Form20)item); }
                 if (item.FormNum.Value == "2.1") { Storage.Rows21.Remove((Form21)item); }
                 if (item.FormNum.Value == "2.2") { Storage.Rows22.Remove((Form22)item); }
                 if (item.FormNum.Value == "2.3") { Storage.Rows23.Remove((Form23)item); }

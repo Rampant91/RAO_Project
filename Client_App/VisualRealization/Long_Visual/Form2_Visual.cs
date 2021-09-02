@@ -3,8 +3,10 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Client_App.Controls.DataGrid;
 using Avalonia.Media;
+using Models.Attributes;
 
 namespace Client_App.Long_Visual
 {
@@ -51,6 +53,31 @@ namespace Client_App.Long_Visual
             };
         }
 
+        static Grid Create20Row(string Property, string BindingPrefix)
+        {
+            Grid grd = new Grid();
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+
+            grd.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
+                ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+
+            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + Property, 200));
+
+            grd.Children.Add(CreateTextBlock("5,0,0,0", 2, 30,
+                ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+
+            grd.Children.Add(CreateTextBox("5,0,10,0", 3, 30, BindingPrefix + "[1]." + Property, 200));
+
+            return grd;
+        }
+
         public static Grid Form20_Visual(INameScope scp)
         {
             Grid maingrid = new Grid();
@@ -64,34 +91,6 @@ namespace Client_App.Long_Visual
                 Height = new GridLength(0.93, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
-            //row = new RowDefinition
-            //{
-            //    Height = new GridLength(5, GridUnitType.Star)
-            //};
-            //maingrid.RowDefinitions.Add(row);
-
-            //Grid? topPnl1 = new Grid();
-            //ColumnDefinition? column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(0.3, GridUnitType.Star)
-            //};
-            //topPnl1.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1, GridUnitType.Star)
-            //};
-            //topPnl1.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1, GridUnitType.Star)
-            //};
-            //topPnl1.ColumnDefinitions.Add(column);
-            //topPnl1.SetValue(Grid.RowProperty, 0);
-            //topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            //topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            //topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата конца периода:"));
-            //topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod.Value", double.NaN));
-            //maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -104,80 +103,44 @@ namespace Client_App.Long_Visual
                 Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl2.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1, GridUnitType.Star)
-            //};
-            //topPnl2.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1, GridUnitType.Star)
-            //};
-            //topPnl2.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1, GridUnitType.Star)
-            //};
-            //topPnl2.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition();
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl2.SetValue(Grid.RowProperty, 0);
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
-            //topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            //topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber.Value", 70));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 0, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 1, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid()
+            StackPanel pnl = new StackPanel()
             {
-                Type = "2.0",
-                Name = "Form20Data_",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
-                MultilineMode = MultilineMode.Multi,
-                ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                [Grid.ColumnProperty] = 0,
+                [Grid.RowProperty] = 1
             };
-            grd.SetValue(Grid.RowProperty, 1);
+            maingrid.Children.Add(pnl);
 
-            Binding b = new Binding
-            {
-                Path = "DataContext.Storage.Rows20",
-                ElementName = "ChangingPanel",
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            string BindingPrefix = "Storage.Rows20";
 
-            ContextMenu? cntx = new ContextMenu();
-            List<MenuItem> itms = new List<MenuItem>
-            {
-                new MenuItem
-                {
-                    Header = "Добавить строку",
-                    [!MenuItem.CommandProperty] = new Binding("AddRow"),
-                },
-                new MenuItem
-                {
-                    Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
-                },
-                new MenuItem
-                {
-                    Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-                }
-            };
-            cntx.Items = itms;
-
-            grd.ContextMenu = cntx;
-
-            maingrid.Children.Add(grd);
+            pnl.Children.Add(Create20Row("OrganUprav", BindingPrefix));
+            pnl.Children.Add(Create20Row("JurLico", BindingPrefix));
+            pnl.Children.Add(Create20Row("ShortJurLico", BindingPrefix));
+            pnl.Children.Add(Create20Row("JurLicoAddress", BindingPrefix));
+            pnl.Children.Add(Create20Row("JurLicoFactAddress", BindingPrefix));
+            pnl.Children.Add(Create20Row("GradeFIO", BindingPrefix));
+            pnl.Children.Add(Create20Row("Telephone", BindingPrefix));
+            pnl.Children.Add(Create20Row("Fax", BindingPrefix));
+            pnl.Children.Add(Create20Row("Email", BindingPrefix));
+            pnl.Children.Add(Create20Row("RegNo", BindingPrefix));
+            pnl.Children.Add(Create20Row("Okpo", BindingPrefix));
+            pnl.Children.Add(Create20Row("Okved", BindingPrefix));
+            pnl.Children.Add(Create20Row("Okogu", BindingPrefix));
+            pnl.Children.Add(Create20Row("Oktmo", BindingPrefix));
+            pnl.Children.Add(Create20Row("Inn", BindingPrefix));
+            pnl.Children.Add(Create20Row("Kpp", BindingPrefix));
+            pnl.Children.Add(Create20Row("Okopf", BindingPrefix));
+            pnl.Children.Add(Create20Row("Okfs", BindingPrefix));
 
             return maingrid;
         }
