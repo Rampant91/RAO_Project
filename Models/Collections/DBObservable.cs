@@ -20,6 +20,7 @@ namespace Collections
             Reports_Collection.CollectionChanged += CollectionChanged;
         }
 
+        #region Reports_Collection
         ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection_DB;
 
         public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
@@ -34,7 +35,15 @@ namespace Collections
                 OnPropertyChanged(nameof(Reports_Collection));
             }
         }
+        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Reports_Collection));
+            OnPropertyChanged(nameof(Reports_Collection10));
+            OnPropertyChanged(nameof(Reports_Collection20));
+        }
+        #endregion
 
+        #region Reports_Collection10
         [NotMapped]
         public ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection10
         {
@@ -47,11 +56,17 @@ namespace Collections
                     obj.Add(item);
                 }
                 
-                obj.CollectionChanged += CollectionChanged;
+                obj.CollectionChanged += CollectionChanged10;
                 return obj;
             }
         }
+        public void CollectionChanged10(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Reports_Collection10));
+        }
+        #endregion
 
+        #region Reports_Collection20
         [NotMapped]
         public ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection20
         {
@@ -64,17 +79,15 @@ namespace Collections
                     obj.Add(item);
                 }
 
-                obj.CollectionChanged += CollectionChanged;
+                obj.CollectionChanged += CollectionChanged20;
                 return obj;
             }
         }
-
-        public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        public void CollectionChanged20(object sender, NotifyCollectionChangedEventArgs args)
         {
-            OnPropertyChanged(nameof(Reports_Collection));
-            OnPropertyChanged(nameof(Reports_Collection10));
             OnPropertyChanged(nameof(Reports_Collection20));
         }
+#endregion
 
         private bool Reports_Collection_Validation(DbSet<Reports> value)
         {

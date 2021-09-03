@@ -79,10 +79,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get0Row(1, Row, 16, "Kpp", scp, TopName));
             stck.Children.Add(Get0Row(1, Row, 17, "Okopf", scp, TopName));
             stck.Children.Add(Get0Row(1, Row, 18, "Okfs", scp, TopName));
-            //stck.Children.Add(Get1Row(1, Row, 24, "DocumentNumberRecoded", scp, TopName));
-
-            //var bd = "StartPeriod";
-            //bd.StringFormat = "{0:d}";
 
             return stck;
         }

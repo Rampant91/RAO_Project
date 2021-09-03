@@ -452,6 +452,7 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Okpo_DB = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(Okpo));
             }
         }
         private bool Okpo_Validation(RamAccess<string> value)//Ready

@@ -43,7 +43,10 @@ namespace Collections
                 e.Action == NotifyCollectionChangedAction.Replace)
             {
                 foreach (T item in e.NewItems)
-                    item.PropertyChanged += ChildPropertyChanged;
+                    if (item != null)
+                    {
+                        item.PropertyChanged += ChildPropertyChanged;
+                    }
             }
 
             base.OnCollectionChanged(e);
@@ -52,6 +55,7 @@ namespace Collections
         protected void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)
         {
             ItemPropertyChanged?.Invoke(this, e);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         protected void OnItemPropertyChanged(int index, PropertyChangedEventArgs e)

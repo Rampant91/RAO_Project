@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System;
 using System.Text.RegularExpressions;
+using Avalonia.Collections.Pooled;
 using Models;
 using Models.Attributes;
 using Models.DataAccess;
@@ -62,6 +63,8 @@ namespace Collections
         {
             Init();
         }
+
+        #region OkpoRep
         [NotMapped]
         public string _OkpoRep { get; set; } = "";
         [NotMapped]
@@ -69,7 +72,7 @@ namespace Collections
         {
             get
             {
-                var tmp = Rows10.First().Okpo;
+                var tmp = Rows10[0].Okpo;
                 tmp.PropertyChanged += OkpoRepValueChanged;
                 return tmp;
             }
@@ -84,8 +87,12 @@ namespace Collections
             if (args.PropertyName == "Value")
             {
                 _OkpoRep = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(OkpoRep));
             }
         }
+#endregion
+
+        #region RegNoRep
         [NotMapped]
         public string _RegNoRep { get; set; } = "";
         [NotMapped]
@@ -110,6 +117,9 @@ namespace Collections
                 _RegNoRep = ((RamAccess<string>)Value).Value;
             }
         }
+        #endregion
+
+        #region ShortJurLicoRep
         [NotMapped]
         public string _ShortJurLicoRep { get; set; } = "";
         [NotMapped]
@@ -134,7 +144,9 @@ namespace Collections
                 _ShortJurLicoRep = ((RamAccess<string>)Value).Value;
             }
         }
+        #endregion
 
+        #region OkpoRep1
         [NotMapped]
         public string _OkpoRep1 { get; set; } = "";
         [NotMapped]
@@ -159,6 +171,9 @@ namespace Collections
                 _OkpoRep1 = ((RamAccess<string>)Value).Value;
             }
         }
+        #endregion
+
+        #region RegNoRep1
         [NotMapped]
         public string _RegNoRep1 { get; set; } = "";
         [NotMapped]
@@ -183,6 +198,9 @@ namespace Collections
                 _RegNoRep1 = ((RamAccess<string>)Value).Value;
             }
         }
+        #endregion
+
+        #region ShortJurLicoRep1
         [NotMapped]
         public string _ShortJurLicoRep1 { get; set; } = "";
         [NotMapped]
@@ -207,7 +225,9 @@ namespace Collections
                 _ShortJurLicoRep1 = ((RamAccess<string>)Value).Value;
             }
         }
+        #endregion
 
+        #region  Forms10
         ObservableCollectionWithItemPropertyChanged<Form10> Rows10_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form10> Rows10
         {
@@ -222,7 +242,17 @@ namespace Collections
             }
         }
 
+        protected void CollectionChanged10(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(RegNoRep));
+            OnPropertyChanged(nameof(OkpoRep));
+            OnPropertyChanged(nameof(ShortJurLicoRep));
 
+            OnPropertyChanged(nameof(Rows10));
+        }
+        #endregion
+
+        #region Forms11
         ObservableCollectionWithItemPropertyChanged<Form11> Rows11_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form11> Rows11
         {
@@ -237,7 +267,13 @@ namespace Collections
             }
         }
 
+        protected void CollectionChanged11(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows11));
+        }
+        #endregion
 
+        #region Forms12
         ObservableCollectionWithItemPropertyChanged<Form12> Rows12_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form12> Rows12
         {
@@ -251,7 +287,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows12));
             }
         }
+        protected void CollectionChanged12(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows12));
+        }
+        #endregion
 
+        #region Forms13
         ObservableCollectionWithItemPropertyChanged<Form13> Rows13_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form13> Rows13
         {
@@ -265,7 +307,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows13));
             }
         }
+        protected void CollectionChanged13(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows13));
+        }
+        #endregion
 
+        #region Forms14
         ObservableCollectionWithItemPropertyChanged<Form14> Rows14_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form14> Rows14
         {
@@ -279,7 +327,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows14));
             }
         }
+        protected void CollectionChanged14(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows14));
+        }
+        #endregion
 
+        #region Forms15
         ObservableCollectionWithItemPropertyChanged<Form15> Rows15_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form15> Rows15
         {
@@ -293,7 +347,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows15));
             }
         }
+        protected void CollectionChanged15(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows15));
+        }
+        #endregion
 
+        #region Forms16
         ObservableCollectionWithItemPropertyChanged<Form16> Rows16_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form16> Rows16
         {
@@ -307,7 +367,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows16));
             }
         }
+        protected void CollectionChanged16(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows16));
+        }
+        #endregion
 
+        #region Forms17
         ObservableCollectionWithItemPropertyChanged<Form17> Rows17_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form17> Rows17
         {
@@ -321,7 +387,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows17));
             }
         }
+        protected void CollectionChanged17(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows17));
+        }
+        #endregion
 
+        #region Forms18
         ObservableCollectionWithItemPropertyChanged<Form18> Rows18_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form18> Rows18
         {
@@ -335,7 +407,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows18));
             }
         }
+        protected void CollectionChanged18(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows18));
+        }
+        #endregion
 
+        #region Forms19
         ObservableCollectionWithItemPropertyChanged<Form19> Rows19_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form19> Rows19
         {
@@ -349,7 +427,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows19));
             }
         }
+        protected void CollectionChanged19(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows19));
+        }
+        #endregion
 
+        #region Forms20
         ObservableCollectionWithItemPropertyChanged<Form20> Rows20_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form20> Rows20
         {
@@ -363,7 +447,17 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows20));
             }
         }
+        protected void CollectionChanged20(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(RegNoRep1));
+            OnPropertyChanged(nameof(OkpoRep1));
+            OnPropertyChanged(nameof(ShortJurLicoRep1));
 
+            OnPropertyChanged(nameof(Rows20));
+        }
+        #endregion
+
+        #region Forms21
         ObservableCollectionWithItemPropertyChanged<Form21> Rows21_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form21> Rows21
         {
@@ -377,8 +471,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows21));
             }
         }
+        protected void CollectionChanged21(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows21));
+        }
+        #endregion
 
-
+        #region Forms22
         ObservableCollectionWithItemPropertyChanged<Form22> Rows22_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form22> Rows22
         {
@@ -392,8 +491,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows22));
             }
         }
+        protected void CollectionChanged22(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows22));
+        }
+        #endregion
 
-
+        #region Forms23
         ObservableCollectionWithItemPropertyChanged<Form23> Rows23_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form23> Rows23
         {
@@ -407,8 +511,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows23));
             }
         }
+        protected void CollectionChanged23(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows23));
+        }
+        #endregion
 
-
+        #region Forms24
         ObservableCollectionWithItemPropertyChanged<Form24> Rows24_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form24> Rows24
         {
@@ -422,8 +531,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows24));
             }
         }
+        protected void CollectionChanged24(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows24));
+        }
+        #endregion
 
-
+        #region Forms25
         ObservableCollectionWithItemPropertyChanged<Form25> Rows25_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form25> Rows25
         {
@@ -437,7 +551,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows25));
             }
         }
+        protected void CollectionChanged25(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows25));
+        }
+        #endregion
 
+        #region Forms26
         ObservableCollectionWithItemPropertyChanged<Form26> Rows26_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form26> Rows26
         {
@@ -451,7 +571,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows26));
             }
         }
+        protected void CollectionChanged26(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows26));
+        }
+        #endregion
 
+        #region Forms27
         ObservableCollectionWithItemPropertyChanged<Form27> Rows27_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form27> Rows27
         {
@@ -465,8 +591,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows27));
             }
         }
+        protected void CollectionChanged27(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows27));
+        }
+        #endregion
 
-
+        #region Forms28
         ObservableCollectionWithItemPropertyChanged<Form28> Rows28_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form28> Rows28
         {
@@ -480,8 +611,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows28));
             }
         }
+        protected void CollectionChanged28(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows28));
+        }
+        #endregion
 
-
+        #region Forms29
         ObservableCollectionWithItemPropertyChanged<Form29> Rows29_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form29> Rows29
         {
@@ -495,8 +631,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows29));
             }
         }
+        protected void CollectionChanged29(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows29));
+        }
+        #endregion
 
-
+        #region Forms210
         ObservableCollectionWithItemPropertyChanged<Form210> Rows210_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form210> Rows210
         {
@@ -510,8 +651,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows210));
             }
         }
+        protected void CollectionChanged210(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows210));
+        }
+        #endregion
 
-
+        #region Forms211
         ObservableCollectionWithItemPropertyChanged<Form211> Rows211_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form211> Rows211
         {
@@ -525,8 +671,13 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows211));
             }
         }
+        protected void CollectionChanged211(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows211));
+        }
+        #endregion
 
-
+        #region Forms212
         ObservableCollectionWithItemPropertyChanged<Form212> Rows212_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Form212> Rows212
         {
@@ -540,6 +691,11 @@ namespace Collections
                 OnPropertyChanged(nameof(Rows212));
             }
         }
+        protected void CollectionChanged212(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Rows212));
+        }
+#endregion
 
         #region FormNum
         public string FormNum_DB { get; set; } = "";
@@ -714,6 +870,10 @@ namespace Collections
                 OnPropertyChanged(nameof(Notes));
             }
         }
+        protected void CollectionChangedNotes(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            OnPropertyChanged(nameof(Notes));
+        }
         #endregion
 
         #region StartPeriod
@@ -872,105 +1032,76 @@ namespace Collections
         private void Init()
         {
             Rows10 = new ObservableCollectionWithItemPropertyChanged<Form10>();
-            Rows10.CollectionChanged += CollectionChanged;
+            Rows10.CollectionChanged += CollectionChanged10;
 
             Rows11 = new ObservableCollectionWithItemPropertyChanged<Form11>();
-            Rows11.CollectionChanged += CollectionChanged;
+            Rows11.CollectionChanged += CollectionChanged11;
 
             Rows12 = new ObservableCollectionWithItemPropertyChanged<Form12>();
-            Rows12.CollectionChanged += CollectionChanged;
+            Rows12.CollectionChanged += CollectionChanged12;
 
             Rows13 = new ObservableCollectionWithItemPropertyChanged<Form13>();
-            Rows13.CollectionChanged += CollectionChanged;
+            Rows13.CollectionChanged += CollectionChanged13;
 
             Rows14 = new ObservableCollectionWithItemPropertyChanged<Form14>();
-            Rows14.CollectionChanged += CollectionChanged;
+            Rows14.CollectionChanged += CollectionChanged14;
 
             Rows15 = new ObservableCollectionWithItemPropertyChanged<Form15>();
-            Rows15.CollectionChanged += CollectionChanged;
+            Rows15.CollectionChanged += CollectionChanged15;
 
             Rows16 = new ObservableCollectionWithItemPropertyChanged<Form16>();
-            Rows16.CollectionChanged += CollectionChanged;
-
+            Rows16.CollectionChanged += CollectionChanged16;
+            
             Rows17 = new ObservableCollectionWithItemPropertyChanged<Form17>();
-            Rows17.CollectionChanged += CollectionChanged;
+            Rows17.CollectionChanged += CollectionChanged17;
 
             Rows18 = new ObservableCollectionWithItemPropertyChanged<Form18>();
-            Rows18.CollectionChanged += CollectionChanged;
+            Rows18.CollectionChanged += CollectionChanged18;
 
             Rows19 = new ObservableCollectionWithItemPropertyChanged<Form19>();
-            Rows19.CollectionChanged += CollectionChanged;
+            Rows19.CollectionChanged += CollectionChanged19;
 
             Rows20 = new ObservableCollectionWithItemPropertyChanged<Form20>();
-            Rows20.CollectionChanged += CollectionChanged;
+            Rows20.CollectionChanged += CollectionChanged20;
 
             Rows21 = new ObservableCollectionWithItemPropertyChanged<Form21>();
-            Rows21.CollectionChanged += CollectionChanged;
+            Rows21.CollectionChanged += CollectionChanged21;
 
             Rows22 = new ObservableCollectionWithItemPropertyChanged<Form22>();
-            Rows22.CollectionChanged += CollectionChanged;
+            Rows22.CollectionChanged += CollectionChanged22;
 
             Rows23 = new ObservableCollectionWithItemPropertyChanged<Form23>();
-            Rows23.CollectionChanged += CollectionChanged;
+            Rows23.CollectionChanged += CollectionChanged23;
 
             Rows24 = new ObservableCollectionWithItemPropertyChanged<Form24>();
-            Rows24.CollectionChanged += CollectionChanged;
+            Rows24.CollectionChanged += CollectionChanged24;
 
             Rows25 = new ObservableCollectionWithItemPropertyChanged<Form25>();
-            Rows25.CollectionChanged += CollectionChanged;
+            Rows25.CollectionChanged += CollectionChanged25;
 
             Rows26 = new ObservableCollectionWithItemPropertyChanged<Form26>();
-            Rows26.CollectionChanged += CollectionChanged;
+            Rows26.CollectionChanged += CollectionChanged26;
 
             Rows27 = new ObservableCollectionWithItemPropertyChanged<Form27>();
-            Rows27.CollectionChanged += CollectionChanged;
+            Rows27.CollectionChanged += CollectionChanged27;
 
             Rows28 = new ObservableCollectionWithItemPropertyChanged<Form28>();
-            Rows28.CollectionChanged += CollectionChanged;
+            Rows28.CollectionChanged += CollectionChanged28;
 
             Rows29 = new ObservableCollectionWithItemPropertyChanged<Form29>();
-            Rows29.CollectionChanged += CollectionChanged;
+            Rows29.CollectionChanged += CollectionChanged29;
 
             Rows210 = new ObservableCollectionWithItemPropertyChanged<Form210>();
-            Rows210.CollectionChanged += CollectionChanged;
+            Rows210.CollectionChanged += CollectionChanged210;
 
             Rows211 = new ObservableCollectionWithItemPropertyChanged<Form211>();
-            Rows211.CollectionChanged += CollectionChanged;
+            Rows211.CollectionChanged += CollectionChanged211;
 
             Rows212 = new ObservableCollectionWithItemPropertyChanged<Form212>();
-            Rows212.CollectionChanged += CollectionChanged;
+            Rows212.CollectionChanged += CollectionChanged212;
 
             Notes = new ObservableCollectionWithItemPropertyChanged<Note>();
-            Notes.CollectionChanged += CollectionChanged;
-        }
-        protected void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
-        {
-            OnPropertyChanged(nameof(Notes));
-
-            OnPropertyChanged(nameof(Rows10));
-            OnPropertyChanged(nameof(Rows11));
-            OnPropertyChanged(nameof(Rows12));
-            OnPropertyChanged(nameof(Rows13));
-            OnPropertyChanged(nameof(Rows14));
-            OnPropertyChanged(nameof(Rows15));
-            OnPropertyChanged(nameof(Rows16));
-            OnPropertyChanged(nameof(Rows17));
-            OnPropertyChanged(nameof(Rows18));
-            OnPropertyChanged(nameof(Rows19));
-
-            OnPropertyChanged(nameof(Rows20));
-            OnPropertyChanged(nameof(Rows21));
-            OnPropertyChanged(nameof(Rows22));
-            OnPropertyChanged(nameof(Rows23));
-            OnPropertyChanged(nameof(Rows24));
-            OnPropertyChanged(nameof(Rows25));
-            OnPropertyChanged(nameof(Rows26));
-            OnPropertyChanged(nameof(Rows27));
-            OnPropertyChanged(nameof(Rows28));
-            OnPropertyChanged(nameof(Rows29));
-            OnPropertyChanged(nameof(Rows210));
-            OnPropertyChanged(nameof(Rows211));
-            OnPropertyChanged(nameof(Rows212));
+            Notes.CollectionChanged += CollectionChangedNotes;
         }
 
         private void NotesValueChanged(object Value, PropertyChangedEventArgs args)

@@ -107,10 +107,6 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
                     GetProperty("Okfs").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 ));
-            //stck.Children.Add(Get1Header(1, 24,
-            //        ((Form_PropertyAttribute)Type.GetType("Models.Form13,Models").
-            //        GetProperty("DocumentNumberRecoded").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            //    ));
 
             return stck;
         }
