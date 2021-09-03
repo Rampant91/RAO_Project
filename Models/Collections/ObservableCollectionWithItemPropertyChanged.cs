@@ -18,7 +18,8 @@ namespace Collections
         public int Id { get; set; }
 
         public ObservableCollectionWithItemPropertyChanged() : base()
-        { }
+        {
+        }
 
         public ObservableCollectionWithItemPropertyChanged(List<T> list) : base(list)
         {
@@ -79,7 +80,7 @@ namespace Collections
 
         private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            T typedSender = (T)sender;
+            T typedSender = (T) sender;
             int i = Items.IndexOf(typedSender);
 
             if (i < 0)

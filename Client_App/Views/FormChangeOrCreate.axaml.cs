@@ -5,6 +5,7 @@ using Avalonia.ReactiveUI;
 using Collections;
 using System.ComponentModel;
 using DBRealization;
+using ReactiveUI;
 
 namespace Client_App.Views
 {
@@ -155,9 +156,11 @@ namespace Client_App.Views
 
         private void Init()
         {
-            Panel? panel = this.FindControl<Panel>("ChangingPanel");
-            Form1Init(panel);
-            Form2Init(panel);
+            ScrollViewer? panel = this.FindControl<ScrollViewer>("ChangingPanel");
+            var pnl = new Panel();
+            panel.Content = pnl;
+            Form1Init(pnl);
+            Form2Init(pnl);
         }
 
         private void InitializeComponent()

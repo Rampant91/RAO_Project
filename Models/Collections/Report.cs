@@ -751,6 +751,7 @@ namespace Collections
             if (args.PropertyName == "Value")
             {
                 IsCorrection_DB = ((RamAccess<bool>)Value).Value;
+                OnPropertyChanged(nameof(IsCorrection));
             }
         }
         private bool IsCorrection_Validation(RamAccess<bool> value)
@@ -782,6 +783,7 @@ namespace Collections
             if (args.PropertyName == "Value")
             {
                 CorrectionNumber_DB = ((RamAccess<byte>)Value).Value;
+                OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
         private bool CorrectionNumber_Validation(RamAccess<byte> value)
@@ -845,6 +847,7 @@ namespace Collections
             if (args.PropertyName == "Value")
             {
                 Comments_DB = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(Comments));
             }
         }
         private bool Comments_Validation(RamAccess<string> value)
@@ -899,6 +902,7 @@ namespace Collections
             if (args.PropertyName == "Value")
             {
                 StartPeriod_DB = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(StartPeriod));
             }
         }
         private bool StartPeriod_Validation(RamAccess<string> value)
@@ -958,6 +962,7 @@ namespace Collections
             if (args.PropertyName == "Value")
             {
                 EndPeriod_DB = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(EndPeriod));
             }
         }
         private bool EndPeriod_Validation(RamAccess<string> value)
@@ -1017,6 +1022,7 @@ namespace Collections
             if (args.PropertyName == "Value")
             {
                 ExportDate_DB = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(ExportDate));
             }
         }
         private bool ExportDate_Validation(RamAccess<string> value)

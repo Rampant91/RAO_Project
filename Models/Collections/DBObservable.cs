@@ -49,20 +49,10 @@ namespace Collections
         {
             get
             {
-                var obj = new ObservableCollectionWithItemPropertyChanged<Reports>();
                 var sm = from t in Reports_Collection_DB where t.Master.FormNum.Value == "1.0" select t;
-                foreach (var item in sm)
-                {
-                    obj.Add(item);
-                }
-                
-                obj.CollectionChanged += CollectionChanged10;
+                var obj = new ObservableCollectionWithItemPropertyChanged<Reports>(sm);
                 return obj;
             }
-        }
-        public void CollectionChanged10(object sender, NotifyCollectionChangedEventArgs args)
-        {
-            OnPropertyChanged(nameof(Reports_Collection10));
         }
         #endregion
 
@@ -72,22 +62,13 @@ namespace Collections
         {
             get
             {
-                var obj = new ObservableCollectionWithItemPropertyChanged<Reports>();
                 var sm = from t in Reports_Collection_DB where t.Master.FormNum.Value == "2.0" select t;
-                foreach (var item in sm)
-                {
-                    obj.Add(item);
-                }
 
-                obj.CollectionChanged += CollectionChanged20;
+                var obj = new ObservableCollectionWithItemPropertyChanged<Reports>(sm);
                 return obj;
             }
         }
-        public void CollectionChanged20(object sender, NotifyCollectionChangedEventArgs args)
-        {
-            OnPropertyChanged(nameof(Reports_Collection20));
-        }
-#endregion
+        #endregion
 
         private bool Reports_Collection_Validation(DbSet<Reports> value)
         {

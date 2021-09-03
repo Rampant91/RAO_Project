@@ -55,11 +55,18 @@ namespace Client_App.Long_Visual
             };
         }
 
-        static Grid Create10Row(string Property, string BindingPrefix)
+        static StackPanel Create10Row(string Property, string BindingPrefix)
         {
-            Grid grd = new Grid();
-            grd.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(2, GridUnitType.Star)});
-            grd.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star)});
+            StackPanel pnl = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                Spacing = 30
+            };
+
+            Grid grd = new Grid()
+            {
+                Width = 400
+            };
             grd.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(2, GridUnitType.Star)});
             grd.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star)});
 
@@ -70,14 +77,23 @@ namespace Client_App.Long_Visual
 
             grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + Property, 200));
 
-            grd.Children.Add(CreateTextBlock("5,0,0,0", 2, 30,
+            Grid grd2 = new Grid()
+            {
+                Width = 400
+            };
+            grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
+            grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+
+            grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty(Property)
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
-            grd.Children.Add(CreateTextBox("5,0,10,0", 3, 30, BindingPrefix + "[1]." + Property, 200));
+            grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 200));
 
-            return grd;
+            pnl.Children.Add(grd);
+            pnl.Children.Add(grd2);
+            return pnl;
         }
 
         public static Grid Form10_Visual(INameScope scp)
@@ -90,7 +106,12 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(0.93, GridUnitType.Star)
+                Height = new GridLength(0.07, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.86, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -108,18 +129,62 @@ namespace Client_App.Long_Visual
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl2.SetValue(Grid.RowProperty, 0);
-            topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 0, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 1, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
 
+            var topPnl3 = new StackPanel();
+            topPnl3.Orientation = Orientation.Horizontal;
+            topPnl3.Spacing = 30;
+            //ColumnDefinition? column3 = new ColumnDefinition();
+            //topPnl3.ColumnDefinitions.Add(column3);
+            //column3 = new ColumnDefinition();
+            //topPnl3.ColumnDefinitions.Add(column3);
+
+            topPnl3.SetValue(Grid.RowProperty, 1);
+
+            var pnl1 = new Panel();
+            pnl1.Width = 400;
+            pnl1.Children.Add(
+            new TextBlock
+            {
+                Height = 30,
+                Margin = Thickness.Parse("0,0,0,0"),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                TextAlignment = TextAlignment.Center,
+                FontWeight = FontWeight.Bold,
+                FontSize = 16,
+                Text = "Юридическое лицо",
+                //[Grid.ColumnProperty] = 0
+            });
+            topPnl3.Children.Add(pnl1);
+
+            var pnl2 = new Panel();
+            pnl2.Width = 400;
+            pnl2.Children.Add(
+            new TextBlock
+            {
+                Height = 30,
+                Margin = Thickness.Parse("0,0,0,0"),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                TextAlignment = TextAlignment.Center,
+                FontWeight = FontWeight.Bold,
+                FontSize = 16,
+                Text = "Обособленное подразделение",
+                //[Grid.ColumnProperty] = 1
+            });
+            topPnl3.Children.Add(pnl2);
+
+            maingrid.Children.Add(topPnl3);
+
             StackPanel pnl = new StackPanel()
             {
                 [Grid.ColumnProperty] = 0,
-                [Grid.RowProperty] = 1
+                [Grid.RowProperty] = 2
             };
             maingrid.Children.Add(pnl);
 
@@ -191,8 +256,8 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 150));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -379,8 +444,8 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 150));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -566,8 +631,8 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 150));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -752,8 +817,8 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 150));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -939,8 +1004,8 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 150));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -1126,8 +1191,8 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 150));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -1313,8 +1378,8 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 150));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -1500,8 +1565,8 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 150));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -1687,8 +1752,8 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Период:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 70));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 70));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 2, 30, "Storage.EndPeriod", 150));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();

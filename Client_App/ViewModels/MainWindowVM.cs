@@ -207,6 +207,7 @@ namespace Client_App.ViewModels
                             res = res + "\\Report_" + 
                                   dt.Year+"."+dt.Month+"."+dt.Day+"_"+dt.Hour+"."+dt.Minute+"."+dt.Second + ".raodb";
                             var rep = (Report) obj;
+                            rep.ExportDate.Value = dt.Day + "." + dt.Month + "." + dt.Year;
                             var findReports = from t in Local_Reports.Reports_Collection
                                 where t.Report_Collection.Contains(rep)
                                 select t;
@@ -217,9 +218,14 @@ namespace Client_App.ViewModels
                                 {
                                     try
                                     {
+                                        Reports rp = new Reports();
+                                        rp.Master = rt.Master;
+                                        rp.Report_Collection.Add(rep);
                                         db.Database.EnsureCreated();
-                                        db.ReportsCollectionDbSet.Add(findReports.FirstOrDefault());
+                                        db.ReportsCollectionDbSet.Add(rp);
                                         db.SaveChanges();
+
+                                        StaticConfiguration.DBModel.SaveChanges();
                                     }
                                     catch (Exception e)
                                     {
@@ -227,6 +233,7 @@ namespace Client_App.ViewModels
                                         throw;
                                     }
                                 }
+
                             }
                         }
                     }
@@ -239,7 +246,7 @@ namespace Client_App.ViewModels
             {
                 OpenFileDialog dial = new OpenFileDialog();
                 var answ = await dial.ShowAsync(desktop.MainWindow);
-                var res = answ==null?null:answ[0];
+                var res = answ.FirstOrDefault();
                 if (res != null)
                 {
                     if (res != "")

@@ -2,11 +2,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignHeight="400" d:DesignWidth="400"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
+        Width="890"
+        MinHeight="200" MinWidth="200"
         x:Class="Client_App.Views.FormChangeOrCreate"
         xmlns:vm="using:Client_App.ViewModels"
         Title="FormChangeOrCreate">
-  <Panel x:Name="ChangingPanel">
+  <ScrollViewer x:Name="ChangingPanel" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 
-  </Panel>
+  </ScrollViewer>
 </Window>
