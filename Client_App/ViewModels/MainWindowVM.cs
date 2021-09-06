@@ -145,15 +145,13 @@ namespace Client_App.ViewModels
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var t = desktop.MainWindow as MainWindow;
-                var rt = new Report();
-                rt.FormNum.Value = param;
                 if (t.SelectedReports.Count() != 0)
                 {
                     var y = t.SelectedReports.First() as Reports;
                     if (y.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
                     {
-                        y.Report_Collection.Add(rt);
-                        FormChangeOrCreate frm = new(param, rt);
+                        //y.Report_Collection.Add(rt);
+                        FormChangeOrCreate frm = new(param, y);
                         await frm.ShowDialog<Form>(desktop.MainWindow);
                     }
                 }
@@ -165,22 +163,7 @@ namespace Client_App.ViewModels
             {
                 if (param.Split('.')[1] == "0")
                 {
-                    var rt = new Reports();
-                    rt.Master = new Report();
-                    rt.Master.FormNum.Value = param;
-                    if (param.Split('.')[0] == "1")
-                    {
-                        rt.Master.Rows10.Add((Form10)FormCreator.Create(param));
-                        rt.Master.Rows10.Add((Form10)FormCreator.Create(param));
-                    }
-                    if (param.Split('.')[0] == "2")
-                    {
-                        rt.Master.Rows20.Add((Form20)FormCreator.Create(param));
-                        rt.Master.Rows20.Add((Form20)FormCreator.Create(param));
-                    }
-
-                    Local_Reports.Reports_Collection.Add(rt);
-                    FormChangeOrCreate frm = new(param, rt.Master);
+                    FormChangeOrCreate frm = new(param, Local_Reports);
                     await frm.ShowDialog<Form>(desktop.MainWindow);
                 }
             }

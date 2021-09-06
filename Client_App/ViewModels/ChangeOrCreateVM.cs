@@ -132,6 +132,7 @@ namespace Client_App.ViewModels
         }
         public void SaveReport()
         {
+            #region SomeShit
             int k = 1;
             switch (Storage.LastAddedForm)
             {
@@ -221,18 +222,35 @@ namespace Client_App.ViewModels
                     break;
                 default: break;
             }
+#endregion
+
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 foreach (Avalonia.Controls.Window? item in desktop.Windows)
                 {
                     if (item is Views.FormChangeOrCreate)
                     {
+                        var t =item as Views.FormChangeOrCreate;
+                        if (t.Str != null)
+                        {
+                            t.Str.Report_Collection.Add(Storage);
+                        }
+
+                        if (t.DBO != null)
+                        {
+                            var tmp = new Reports();
+                            tmp.Master = Storage;
+                            t.DBO.Reports_Collection.Add(tmp);
+                        }
+
                         var dbm = StaticConfiguration.DBModel;
                         dbm.SaveChanges();
                         item.Close();
                     }
                 }
             }
+
+
             switch (Storage.LastAddedForm)
             {
                 case Report.Forms.Form10:

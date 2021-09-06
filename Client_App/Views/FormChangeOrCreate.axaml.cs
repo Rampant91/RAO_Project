@@ -5,6 +5,7 @@ using Avalonia.ReactiveUI;
 using Collections;
 using System.ComponentModel;
 using DBRealization;
+using Models;
 using ReactiveUI;
 
 namespace Client_App.Views
@@ -12,14 +13,68 @@ namespace Client_App.Views
     public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     {
         private readonly string _param = "";
+        public Reports Str { get; set; }
+        public DBObservable DBO { get; set; }
 
         public FormChangeOrCreate(string param, in Report rep)
         {
             ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
             tmp.Storage = rep;
+            tmp.FormType = rep.FormNum_DB;
+            DataContext = tmp;
+
+            _param = rep.FormNum_DB;
+
+            InitializeComponent();
+#if DEBUG
+            this.AttachDevTools();
+#endif
+            Init();
+        }
+        public FormChangeOrCreate(string param, in Reports reps)
+        {
+            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
+            tmp.Storage = new Report()
+            {
+                FormNum_DB = param
+            };
+
             tmp.FormType = param;
             DataContext = tmp;
+
+            Str = reps;
             _param = param;
+
+            InitializeComponent();
+#if DEBUG
+            this.AttachDevTools();
+#endif
+            Init();
+        }
+        public FormChangeOrCreate(string param, in DBObservable reps)
+        {
+            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
+            tmp.Storage = new Report()
+            {
+                FormNum_DB = param
+            };
+
+            tmp.FormType = param;
+            DataContext = tmp;
+
+            DBO = reps;
+            _param = param;
+
+            if (param.Split('.')[0] == "1")
+            {
+                tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
+                tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
+            }
+            if (param.Split('.')[0] == "2")
+            {
+                tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
+                tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
+            }
 
             InitializeComponent();
 #if DEBUG
@@ -38,6 +93,9 @@ namespace Client_App.Views
 
         protected override void OnClosing(CancelEventArgs e)
         {
+
+            
+
             var dbm = StaticConfiguration.DBModel;
             dbm.UndoChanges();
             dbm.SaveChanges();
