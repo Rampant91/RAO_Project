@@ -93,11 +93,7 @@ namespace Client_App.Views
 
         protected override void OnClosing(CancelEventArgs e)
         {
-
-            
-
             var dbm = StaticConfiguration.DBModel;
-            dbm.UndoChanges();
             dbm.SaveChanges();
 
             base.OnClosing(e);
