@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace DBRealization
@@ -10,7 +11,8 @@ namespace DBRealization
         {
             get
             {
-                var tmp= Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\RAO\\Local.raodb";
+                var tmp= Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) ,"RAO");
+                tmp = Path.Combine(tmp, "Local.raodb");
                 return tmp;
             }
         }

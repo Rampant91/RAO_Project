@@ -74,11 +74,46 @@ namespace Spravochniki
             }
         }
 #if DEBUG
-        private static Task<List<Tuple<string, long, long>>> SprRadionuclidsTask = ReadCsvAsync(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\"))+ "data\\Spravochniki\\RadionuclidsActivities.csv");
-        private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsTask = ReadCsvAsync1(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")) + "data\\Spravochniki\\TypeToRadionuclids.csv");
+        private static Task<List<Tuple<string, long, long>>> SprRadionuclidsTask
+        {
+            get
+            {
+                var tmp = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")),
+                    "data","Spravochniki","RadionuclidsActivities.csv");
+                return ReadCsvAsync(tmp);
+            }
+        }
+        private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsTask
+        {
+            get
+            {
+                var tmp = Path.Combine(
+                    Path.GetFullPath(
+                        Path.Combine(
+                            AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data");
+                tmp = Path.Combine(tmp,"Spravochniki","TypeToRadionuclids.csv");
+                return ReadCsvAsync1(tmp);
+            }
+        }
 #else
-        private static Task<List<Tuple<string, long, long>>> SprRadionuclidsTask = ReadCsvAsync(Path.GetFullPath(AppContext.BaseDirectory)+"data\\Spravochniki\\RadionuclidsActivities.csv");
-        private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsTask = ReadCsvAsync1(Path.GetFullPath(AppContext.BaseDirectory)+"data\\Spravochniki\\TypeToRadionuclids.csv");
+        private static Task<List<Tuple<string, long, long>>> SprRadionuclidsTask
+        {
+            get
+            {
+                var tmp = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),
+                    "data","Spravochniki","RadionuclidsActivities.csv");
+                return ReadCsvAsync(tmp);
+            }
+        }
+        private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsTask
+        {
+            get
+            {
+                var tmp = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),
+                    "data", "Spravochniki", "TypeToRadionuclids.csv");
+                return ReadCsvAsync1(tmp);
+            }
+        }
 #endif
 
         private static Task<List<Tuple<string, long, long>>> ReadCsvAsync(string path)

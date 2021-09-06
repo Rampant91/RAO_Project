@@ -18,7 +18,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         {
             switch (type)
             {
-                case "0": return Get0(Row, scp, TopName);
                 case "1": return Get1(Row, scp, TopName);
                 case "2": return Get2(Row, scp, TopName);
                 case "3": return Get3(Row, scp, TopName);
@@ -29,184 +28,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 case "8": return Get8(Row, scp, TopName);
                 case "9": return Get9(Row, scp, TopName);
                 case "1*": return GetNotes(Row, scp, TopName);
-                case "2*": return GetNotes(Row, scp, TopName);
-                case "3*": return GetNotes(Row, scp, TopName);
-                case "4*": return GetNotes(Row, scp, TopName);
-                case "5*": return GetNotes(Row, scp, TopName);
-                case "6*": return GetNotes(Row, scp, TopName);
-                case "7*": return GetNotes(Row, scp, TopName);
-                case "8*": return GetNotes(Row, scp, TopName);
-                case "9*": return GetNotes(Row, scp, TopName);
             }
             return null;
-        }
-
-        private static Control Get0(int Row, INameScope scp, string TopName)
-        {
-            DataGrid.Row stck = new DataGrid.Row
-            {
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                Orientation = Avalonia.Layout.Orientation.Horizontal,
-                Width = 24 * Wdth1,
-                Spacing = -1,
-                SRow = Row
-            };
-
-            Binding b = new Binding
-            {
-                Path = "Items[" + (Row - 1).ToString() + "]",
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-
-            stck.Bind(StackPanel.DataContextProperty, b);
-
-            stck.Children.Add(Get0Row(2, Row, 1, "OrganUprav", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 2, "JurLico", scp, TopName));
-            stck.Children.Add(Get0Row(2, Row, 3, "ShortJurLico", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 4, "JurLicoAddress", scp, TopName));
-            stck.Children.Add(Get0Row(2, Row, 5, "JurLicoFactAddress", scp, TopName));
-            stck.Children.Add(Get0Row(2, Row, 6, "GradeFIO", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 7, "Telephone", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 8, "Fax", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 9, "Email", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 10, "RegNo", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 11, "Okpo", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 12, "Okved", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 13, "Okogu", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 14, "Oktmo", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 15, "Inn", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 16, "Kpp", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 17, "Okopf", scp, TopName));
-            stck.Children.Add(Get0Row(1, Row, 18, "Okfs", scp, TopName));
-
-            return stck;
-        }
-
-        private static readonly int Wdth1 = 100;
-        private static readonly int RowHeight1 = 30;
-        private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-
-        private static Control Get1Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
-            {
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1),
-                ZIndex = 10000
-            };
-            if (Column != 1)
-            {
-                Binding b = new Binding
-                {
-                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(DataGrid.Cell.DataContextProperty, b);
-
-            }
-            else
-            {
-                var sub=cell.GetSubject(Cell.CellRowProperty);
-
-                cell.Bind(DataGrid.Cell.DataContextProperty,sub.Select(x=>
-                {
-                    var obj= new RamAccess<int>(null,x);
-                    return obj;
-                }));
-            }
-
-            cell.CellRow = Row;
-            cell.CellColumn = Column;
-
-            return cell;
-        }
-
-        private static Control GetRowNotes(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
-            {
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
-            };
-
-            Binding b = new Binding
-            {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
-
-            cell.CellRow = Row;
-            cell.CellColumn = Column;
-
-            return cell;
-        }
-
-        private static Control Get0Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
-            {
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
-            };
-
-            Binding b = new Binding
-            {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
-
-            cell.CellRow = Row;
-            cell.CellColumn = Column;
-
-            return cell;
-        }
-
-        private static Control Get2Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
-            {
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
-            };
-
-            if (Column != 1)
-            {
-                Binding b = new Binding
-                {
-                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(DataGrid.Cell.DataContextProperty, b);
-
-            }
-            else
-            {
-                var sub = cell.GetSubject(Cell.CellRowProperty);
-
-                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
-                {
-                    var obj = new RamAccess<int>(null, x);
-                    return obj;
-                }));
-            }
-
-            cell.CellRow = Row;
-            cell.CellColumn = Column;
-
-            return cell;
         }
 
         private static Control Get3Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
@@ -468,6 +291,48 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return cell;
         }
 
+        #region 1.1
+        private static readonly int Wdth1 = 100;
+        private static readonly int RowHeight1 = 30;
+        private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
+
+        private static Control Get1Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1),
+                ZIndex = 10000
+            };
+            if (Column != 1)
+            {
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
+
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
+
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
+
         private static Control Get1(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -489,91 +354,74 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             stck.Bind(StackPanel.DataContextProperty, b);
 
-            stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 2, "OperationCode", scp, TopName));
+            stck.Children.Add(Get1Row(0.5, Row, 1, "NumberInOrder", scp, TopName));
+            stck.Children.Add(Get1Row(0.5, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 3, "OperationDate", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 4, "PassportNumber", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 5, "Type", scp, TopName));
+            stck.Children.Add(Get1Row(1.5, Row, 4, "PassportNumber", scp, TopName));
+            stck.Children.Add(Get1Row(0.5, Row, 5, "Type", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 6, "Radionuclids", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 7, "FactoryNumber", scp, TopName));
+            stck.Children.Add(Get1Row(1.5, Row, 7, "FactoryNumber", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 8, "Quantity", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 9, "Activity", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 10, "CreatorOKPO", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 11, "CreationDate", scp, TopName));
+            stck.Children.Add(Get1Row(1.5, Row, 10, "CreatorOKPO", scp, TopName));
+            stck.Children.Add(Get1Row(1.5, Row, 11, "CreationDate", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 12, "Category", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 13, "SignedServicePeriod", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 14, "PropertyCode", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 15, "Owner", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 16, "DocumentVid", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 17, "DocumentNumber", scp, TopName));
+            stck.Children.Add(Get1Row(1.5, Row, 14, "PropertyCode", scp, TopName));
+            stck.Children.Add(Get1Row(1.5, Row, 15, "Owner", scp, TopName));
+            stck.Children.Add(Get1Row(1.5, Row, 16, "DocumentVid", scp, TopName));
+            stck.Children.Add(Get1Row(1.5, Row, 17, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 18, "DocumentDate", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 19, "ProviderOrRecieverOKPO", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 20, "TransporterOKPO", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 19, "ProviderOrRecieverOKPO", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 20, "TransporterOKPO", scp, TopName));
             stck.Children.Add(Get1Row(2, Row, 21, "PackName", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 22, "PackType", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 23, "PackNumber", scp, TopName));
-            //stck.Children.Add(Get1Row(1, Row, 24, "DocumentNumberRecoded", scp, TopName));
-
-            //var bd = "StartPeriod";
-            //bd.StringFormat = "{0:d}";
+            stck.Children.Add(Get1Row(1.5, Row, 23, "PackNumber", scp, TopName));
 
             return stck;
         }
+        #endregion
 
-        private static Control GetNotes(int Row, INameScope scp, string TopName)
+        #region 1.2
+        private static readonly int Wdth2 = 100;
+        private static readonly int RowHeight2 = 30;
+        private static readonly Color border_color2 = Color.FromArgb(255, 0, 0, 0);
+        private static Control Get2Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
         {
-            DataGrid.Row stck = new DataGrid.Row
+            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
             {
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                Orientation = Avalonia.Layout.Orientation.Horizontal,
-                Width = 24 * Wdth1,
-                Spacing = -1,
-                SRow = Row
+                Width = starWidth * Wdth2,
+                Height = RowHeight2,
+                BorderBrush = new SolidColorBrush(border_color2)
             };
 
-            Binding b = new Binding
+            if (Column != 1)
             {
-                Path = "Items[" + (Row - 1).ToString() + "]",
-                Mode = BindingMode.OneTime,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
+                Binding b = new Binding
+                {
+                    Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(DataGrid.Cell.DataContextProperty, b);
 
-            stck.Bind(StackPanel.DataContextProperty, b);
+            }
+            else
+            {
+                var sub = cell.GetSubject(Cell.CellRowProperty);
 
-            stck.Children.Add(GetRowNotes(1, Row, 1, "RowNumber", scp, TopName));
-            stck.Children.Add(GetRowNotes(1, Row, 2, "GraphNumber", scp, TopName));
-            stck.Children.Add(GetRowNotes(1, Row, 3, "Comment", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 2, "OperationCode", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 3, "OperationDate", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 4, "PassportNumber", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 5, "Type", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 6, "Radionuclids", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 7, "FactoryNumber", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 8, "Quantity", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 9, "Activity", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 10, "CreatorOKPO", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 11, "CreationDate", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 12, "Category", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 13, "SignedServicePeriod", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 14, "PropertyCode", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 15, "Owner", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 16, "DocumentVid", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 17, "DocumentNumber", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 18, "DocumentDate", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 19, "ProviderOrRecieverOKPO", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 20, "TransporterOKPO", scp, TopName));
-            ////stck.Children.Add(Get1Row(2, Row, 21, "PackName", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 22, "PackType", scp, TopName));
-            ////stck.Children.Add(Get1Row(1, Row, 23, "PackNumber", scp, TopName));
-            //stck.Children.Add(Get1Row(1, Row, 24, "DocumentNumberRecoded", scp, TopName));
+                cell.Bind(DataGrid.Cell.DataContextProperty, sub.Select(x =>
+                {
+                    var obj = new RamAccess<int>(null, x);
+                    return obj;
+                }));
+            }
 
-            //var bd = "StartPeriod";
-            //bd.StringFormat = "{0:d}";
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
 
-            return stck;
+            return cell;
         }
-
         private static Control Get2(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -594,37 +442,30 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             stck.Bind(StackPanel.DataContextProperty, b);
 
-            stck.Children.Add(Get2Row(1, Row, 1, "NumberInOrder", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 2, "OperationCode", scp, TopName));
+            stck.Children.Add(Get2Row(0.5, Row, 1, "NumberInOrder", scp, TopName));
+            stck.Children.Add(Get2Row(0.5, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 3, "OperationDate", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 4, "PassportNumber", scp, TopName));
-            stck.Children.Add(Get2Row(2, Row, 5, "NameIOU", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 6, "FactoryNumber", scp, TopName));
+            stck.Children.Add(Get2Row(1.5, Row, 4, "PassportNumber", scp, TopName));
+            stck.Children.Add(Get2Row(1.5, Row, 5, "NameIOU", scp, TopName));
+            stck.Children.Add(Get2Row(1.5, Row, 6, "FactoryNumber", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 7, "Mass", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 8, "CreatorOKPO", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 9,  "CreationDate", scp, TopName));
+            stck.Children.Add(Get2Row(1.5, Row, 8, "CreatorOKPO", scp, TopName));
+            stck.Children.Add(Get2Row(1.5, Row, 9,  "CreationDate", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 10, "SignedServicePeriod", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 11, "PropertyCode", scp, TopName));
+            stck.Children.Add(Get2Row(1.5, Row, 11, "PropertyCode", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 12, "Owner", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 13, "DocumentVid", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 14, "DocumentNumber", scp, TopName));
+            stck.Children.Add(Get2Row(1.5, Row, 14, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 15, "DocumentDate", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 16, "ProviderOrRecieverOKPO", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 17, "TransporterOKPO", scp, TopName));
+            stck.Children.Add(Get2Row(2, Row, 16, "ProviderOrRecieverOKPO", scp, TopName));
+            stck.Children.Add(Get2Row(1.5, Row, 17, "TransporterOKPO", scp, TopName));
             stck.Children.Add(Get2Row(2, Row, 18, "PackName", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 19, "PackType", scp, TopName));
-            stck.Children.Add(Get2Row(1, Row, 20, "PackNumber", scp, TopName));
-            //stck.Children.Add(Get1Row(1, Row, 21, "DocumentNumberRecoded", scp, TopName));
-            //stck.Children.Add(Get1Row(1, Row, 22, "FactoryNumberRecoded", scp, TopName));
-            //stck.Children.Add(Get1Row(1, Row, 23, "PassportNumberRecoded", scp, TopName));
-            //stck.Children.Add(Get1Row(1, Row, 24, "PackTypeRecoded", scp, TopName));
-            //stck.Children.Add(Get1Row(1, Row, 25, "PackNumberRecoded", scp, TopName));
-
-            //var bd = "StartPeriod";
-            //bd.StringFormat = "{0:d}";
+            stck.Children.Add(Get2Row(1.5, Row, 20, "PackNumber", scp, TopName));
 
             return stck;
         }
+#endregion
 
         private static Control Get3(int Row, INameScope scp, string TopName)
         {
@@ -1001,6 +842,57 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             //var bd = "StartPeriod";
             //bd.StringFormat = "{0:d}";
+
+            return stck;
+        }
+
+        private static Control GetRowNotes(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+
+            Binding b = new Binding
+            {
+                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+
+            cell.Bind(DataGrid.Cell.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
+        private static Control GetNotes(int Row, INameScope scp, string TopName)
+        {
+            DataGrid.Row stck = new DataGrid.Row
+            {
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Width = 24 * Wdth1,
+                Spacing = -1,
+                SRow = Row
+            };
+
+            Binding b = new Binding
+            {
+                Path = "Items[" + (Row - 1).ToString() + "]",
+                Mode = BindingMode.OneTime,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+
+            stck.Bind(StackPanel.DataContextProperty, b);
+
+            stck.Children.Add(GetRowNotes(1, Row, 1, "RowNumber", scp, TopName));
+            stck.Children.Add(GetRowNotes(1, Row, 2, "GraphNumber", scp, TopName));
+            stck.Children.Add(GetRowNotes(1, Row, 3, "Comment", scp, TopName));
 
             return stck;
         }

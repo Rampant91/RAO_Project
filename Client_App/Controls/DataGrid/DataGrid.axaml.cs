@@ -484,8 +484,8 @@ namespace Client_App.Controls.DataGrid
             Panel pnl = new();
             pnl.SetValue(Grid.RowProperty, 0);
             pnl.HorizontalAlignment = HorizontalAlignment.Stretch;
-            grd.Children.Add(pnl);
             Columns = pnl;
+            grd.Children.Add(pnl);
 
             ScrollViewer vw = new();
             vw.SetValue(Grid.RowProperty, 1);
@@ -495,8 +495,6 @@ namespace Client_App.Controls.DataGrid
             vw.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
             vw.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
             vw.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
-
-            grd.Children.Add(vw);
 
             StackPanel stck = new()
             {
@@ -508,7 +506,7 @@ namespace Client_App.Controls.DataGrid
             };
             vw.Content = stck;
             Rows = new RowCollection(stck);
-
+            grd.Children.Add(vw);
             Content = brd;
         }
     }
