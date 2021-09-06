@@ -11,7 +11,9 @@ namespace DBRealization
         {
             get
             {
-                var tmp= Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) ,"RAO");
+                string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                string path = Path.GetPathRoot(system);
+                var tmp= Path.Combine(path ,"RAO");
                 tmp = Path.Combine(tmp, "Local.raodb");
                 return tmp;
             }
