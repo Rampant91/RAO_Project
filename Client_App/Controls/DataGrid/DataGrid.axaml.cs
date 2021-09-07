@@ -1,20 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Collections;
-
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using Avalonia.Input;
-using Avalonia.Interactivity;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -61,9 +57,12 @@ namespace Client_App.Controls.DataGrid
 
         private readonly List<Control> SelectedCells = new();
 
-        private IEnumerable<INotifyPropertyChanged> _items = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+        private IEnumerable<INotifyPropertyChanged> _items =
+            new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
 
-        private IEnumerable<INotifyPropertyChanged> _selecteditems = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+        private IEnumerable<INotifyPropertyChanged> _selecteditems =
+            new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+
         private string _type = "";
 
         public DataGrid()
@@ -126,6 +125,10 @@ namespace Client_App.Controls.DataGrid
 
         public Panel Columns { get; set; }
         private RowCollection Rows { get; set; }
+
+        public bool DownFlag { get; set; }
+        public int[] FirstPressedItem { get; set; } = new int[2];
+        public int[] LastPressedItem { get; set; } = new int[2];
 
         private void SetSelectedControls()
         {
@@ -278,24 +281,20 @@ namespace Client_App.Controls.DataGrid
             SelectedItems = lst;
         }
 
-        public bool DownFlag { get; set; } = false;
-        public int[] FirstPressedItem { get; set; } = new int[2];
-        public int[] LastPressedItem { get; set; } = new int[2];
-
-        int[] FindCell(PointerPoint Mainmouse)
+        private int[] FindCell(PointerPoint Mainmouse)
         {
             PointerPoint mouse = Mainmouse;
-            
+
 
             var h = Rows[1, 1].Height;
             int[] ret = new int[2];
 
-            int t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity)+1;
-            if (t1 <= Rows.Count&&t1>0)
+            var t1 = (int) Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity) + 1;
+            if (t1 <= Rows.Count && t1 > 0)
             {
                 ret[0] = t1;
                 double sum = 0;
-                for (int i = 1; i <= Rows[t1].Count; i++)
+                for (var i = 1; i <= Rows[t1].Count; i++)
                 {
                     var tp = Rows[t1, i];
                     sum += tp.Width;
@@ -312,12 +311,11 @@ namespace Client_App.Controls.DataGrid
 
         public void DataGridPointerDown(object sender, PointerPressedEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((ScrollViewer)sender);
+            var mouse = args.GetCurrentPoint((ScrollViewer) sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
-            {
                 if (Rows.Count > 0)
                 {
-                    var tmp= FindCell(mouse);
+                    var tmp = FindCell(mouse);
                     FirstPressedItem = tmp;
                     LastPressedItem = tmp;
 
@@ -325,12 +323,11 @@ namespace Client_App.Controls.DataGrid
                     SetSelectedControls();
                     SetSelectedItemsWithHandler();
                 }
-            }
         }
 
         public void DataGridPointerMoved(object sender, PointerEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((ScrollViewer)sender);
+            var mouse = args.GetCurrentPoint((ScrollViewer) sender);
             if (DownFlag)
             {
                 if (Rows.Count > 0)
@@ -338,6 +335,7 @@ namespace Client_App.Controls.DataGrid
                     var tmp = FindCell(mouse);
                     LastPressedItem = tmp;
                 }
+
                 SetSelectedControls();
                 SetSelectedItemsWithHandler();
             }
@@ -345,7 +343,7 @@ namespace Client_App.Controls.DataGrid
 
         public void DataGridPointerUp(object sender, PointerReleasedEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((ScrollViewer)sender);
+            var mouse = args.GetCurrentPoint((ScrollViewer) sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 if (Rows.Count > 0)
@@ -353,6 +351,7 @@ namespace Client_App.Controls.DataGrid
                     var tmp = FindCell(mouse);
                     LastPressedItem = tmp;
                 }
+
                 DownFlag = false;
                 SetSelectedControls();
                 SetSelectedItemsWithHandler();
@@ -388,36 +387,32 @@ namespace Client_App.Controls.DataGrid
             }
 
 
-            var Id1 = (from item in Rows select item.Value.SCells.DataContext.GetHashCode());
-            var Id2 = (from item in _items select item.GetHashCode());
+            var Id1 = from item in Rows select item.Value.SCells.DataContext.GetHashCode();
+            var Id2 = from item in _items select item.GetHashCode();
 
             var Outer1 = Id1.Except(Id2).ToArray();
             var Outer2 = Id2.Except(Id1).ToArray();
 
             foreach (var item in Outer1)
+            foreach (var row in Rows)
             {
-                foreach (var row in Rows)
+                var tmp = row.Value.SCells.DataContext.GetHashCode();
+                if (item == tmp)
                 {
-                    var tmp = row.Value.SCells.DataContext.GetHashCode();
-                    if (item == tmp)
-                    {
-                        Rows.Remove(Convert.ToInt32(row.Key));
-                        break;
-                    }
+                    Rows.Remove(Convert.ToInt32(row.Key));
+                    break;
                 }
             }
 
             foreach (var item in Outer2)
+            foreach (var row in _items)
             {
-                foreach (var row in _items)
+                var tmp = row.GetHashCode();
+                if (item == tmp)
                 {
-                    var tmp = row.GetHashCode();
-                    if (item == tmp)
-                    {
-                        var tp = Rows.GetFreeRow();
-                        var t = (Row)Support.RenderDataGridRow.Render.GetControl(Type, tp, scp, Name);
-                        Rows.Add(new CellCollection(t),tp);
-                    }
+                    var tp = Rows.GetFreeRow();
+                    var t = (Row) Support.RenderDataGridRow.Render.GetControl(Type, tp, scp, Name);
+                    Rows.Add(new CellCollection(t), tp);
                 }
             }
 

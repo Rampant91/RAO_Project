@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Models.Collections;
 
@@ -21,22 +20,8 @@ namespace Client_App.Controls.DataGrid
 
         public Row SCells { get; set; }
         private ObservableDictionary<string, Cell> Cells { get; }
-        public int Count
-        {
-            get { return Cells.Count(); }
-        }
 
-        public void Reorgonize(string LastRow,string NewRow)
-        {
-            SCells.SRow= Convert.ToInt32(NewRow);
-            foreach (var item in Cells)
-            {
-                if (item.Value.CellRow == Convert.ToInt32(LastRow))
-                {
-                    item.Value.CellRow = Convert.ToInt32(NewRow);
-                }
-            }
-        }
+        public int Count => Cells.Count();
 
         public Cell this[int Row, int Column]
         {
@@ -47,6 +32,14 @@ namespace Client_App.Controls.DataGrid
                         return item.Value;
                 return null;
             }
+        }
+
+        public void Reorgonize(string LastRow, string NewRow)
+        {
+            SCells.SRow = Convert.ToInt32(NewRow);
+            foreach (var item in Cells)
+                if (item.Value.CellRow == Convert.ToInt32(LastRow))
+                    item.Value.CellRow = Convert.ToInt32(NewRow);
         }
 
         public IEnumerable<Cell> GetIEnumerable()

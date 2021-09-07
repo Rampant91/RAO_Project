@@ -4,7 +4,6 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
 {
     public class Form5
     {
-
         public static Control GetControl(string type)
         {
             switch (type)
@@ -18,6 +17,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 case "6": return Get6();
                 case "7": return Get7();
             }
+
             return null;
         }
 

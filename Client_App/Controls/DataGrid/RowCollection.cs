@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using Avalonia.Controls;
-using System.Collections.Concurrent;
 using System.Linq;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Data;
 using Models.Collections;
-using Avalonia;
-using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid
 {
-    public class RowCollection:IEnumerable<KeyValuePair<string,CellCollection>>
+    public class RowCollection : IEnumerable<KeyValuePair<string, CellCollection>>
     {
         public RowCollection(StackPanel Rows)
         {
@@ -28,26 +25,13 @@ namespace Client_App.Controls.DataGrid
         public StackPanel SRows { get; set; }
         private ObservableDictionary<string, CellCollection> Rows { get; }
 
-        public IEnumerator<KeyValuePair<string, CellCollection>> GetEnumerator()
-        {
-            return Rows.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return Rows.GetEnumerator();
-        }
-
-        public int Count
-        {
-            get { return Rows.Count(); }
-        }
+        public int Count => Rows.Count();
 
         public CellCollection this[int Row]
         {
             get
             {
-                foreach (KeyValuePair<string, CellCollection> item in Rows)
+                foreach (var item in Rows)
                     if (item.Key == Row.ToString())
                         return item.Value;
                 return null;
@@ -64,6 +48,16 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
+        public IEnumerator<KeyValuePair<string, CellCollection>> GetEnumerator()
+        {
+            return Rows.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Rows.GetEnumerator();
+        }
+
         public void Add(CellCollection stck, int Row)
         {
             var str = Row.ToString();
@@ -74,54 +68,38 @@ namespace Client_App.Controls.DataGrid
 
         public int Add(CellCollection stck)
         {
-            int counter = 0;
-            int max = Rows.Max((x)=>Convert.ToInt32(x.Key));
-            for (int i = 1; i < max; i++)
-            {
+            var counter = 0;
+            var max = Rows.Max(x => Convert.ToInt32(x.Key));
+            for (var i = 1; i < max; i++)
                 if (this[i] == null)
-                {
                     counter = i;
-                }
-            }
 
-            if (counter == 0)
-            {
-                counter = max + 1;
-            }
+            if (counter == 0) counter = max + 1;
 
-            this.Add(stck, counter);
+            Add(stck, counter);
 
             return counter;
         }
+
         public int GetFreeRow()
         {
-            int counter = 0;
-            int max = 0;
-            if (Rows.Count() > 0)
-            {
-                max = Rows.Max((x) => Convert.ToInt32(x.Key));
-            }
+            var counter = 0;
+            var max = 0;
+            if (Rows.Count() > 0) max = Rows.Max(x => Convert.ToInt32(x.Key));
 
             ;
-            for (int i = 1; i <= max; i++)
-            {
+            for (var i = 1; i <= max; i++)
                 if (this[i] == null)
-                {
                     counter = i;
-                }
-            }
-            
-            if (counter == 0)
-            {
-                counter = max + 1;
-            }
+
+            if (counter == 0) counter = max + 1;
 
             return counter;
         }
 
         private void AddToSRows(int Row, CellCollection cellCollection)
         {
-            SRows.Children.Insert(Row-1,cellCollection.SCells);
+            SRows.Children.Insert(Row - 1, cellCollection.SCells);
             //SRows.Children.Add(cellCollection.SCells);
             //var t=SRows.Children.IndexOf(cellCollection.SCells);
             //SRows.Children.Move(t,Row-1);
@@ -134,21 +112,22 @@ namespace Client_App.Controls.DataGrid
             {
                 if (item.SRow != count)
                 {
-                    this.Rows.Add(count.ToString(),Rows[item.SRow.ToString()]);
-                    this.Rows.Remove(item.SRow.ToString());
+                    Rows.Add(count.ToString(), Rows[item.SRow.ToString()]);
+                    Rows.Remove(item.SRow.ToString());
 
-                    Binding b = new Binding
+                    Binding b = new()
                     {
-                        Path = "Items[" + (count - 1).ToString() + "]",
+                        Path = "Items[" + (count - 1) + "]",
                         ElementName = topName,
                         NameScope = new WeakReference<INameScope>(scp)
                     };
 
-                    item.Bind(StackPanel.DataContextProperty, b);
+                    item.Bind(StyledElement.DataContextProperty, b);
 
-                    this[count].Reorgonize(item.SRow.ToString(),count.ToString());
+                    this[count].Reorgonize(item.SRow.ToString(), count.ToString());
                     item.SRow = count;
                 }
+
                 count++;
             }
         }
@@ -175,7 +154,7 @@ namespace Client_App.Controls.DataGrid
 
         public void Clear()
         {
-            foreach (string? item in Rows.Keys) Rows.Remove(item);
+            foreach (var item in Rows.Keys) Rows.Remove(item);
             SRows.Children.Clear();
         }
     }

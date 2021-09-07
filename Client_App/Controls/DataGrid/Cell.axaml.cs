@@ -1,17 +1,22 @@
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
-using System.Diagnostics;
-using Avalonia;
-using Avalonia.Data;
 
 namespace Client_App.Controls.DataGrid
 {
     public class Cell : UserControl
     {
+        public static readonly DirectProperty<Cell, int> CellRowProperty =
+            AvaloniaProperty.RegisterDirect<Cell, int>(
+                nameof(CellRow),
+                o => o.CellRow,
+                (o, v) => o.CellRow = v);
+
+        public int cellRow = -1;
+
         public Cell(object DataContext, string BindingPath, bool IsReadOnly)
         {
             this.DataContext = DataContext;
@@ -19,7 +24,7 @@ namespace Client_App.Controls.DataGrid
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
 
-            this.Focusable = false;
+            Focusable = false;
         }
 
         public Cell(string BindingPath, bool IsReadOnly)
@@ -28,7 +33,7 @@ namespace Client_App.Controls.DataGrid
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
 
-            this.Focusable = false;
+            Focusable = false;
         }
 
         public Cell()
@@ -40,24 +45,14 @@ namespace Client_App.Controls.DataGrid
 
         public bool IsReadOnly { get; set; }
 
-        public static readonly DirectProperty<Cell, int> CellRowProperty =
-            AvaloniaProperty.RegisterDirect<Cell, int>(
-                nameof(CellRow),
-                o => o.CellRow,
-                (o, v) => o.CellRow = v);
-
-        public int cellRow = -1;
         public int CellRow
         {
             get => cellRow;
             set
             {
-                if (value != null)
-                {
-                    SetAndRaise(CellRowProperty, ref cellRow, value);
-                }
+                if (value != null) SetAndRaise(CellRowProperty, ref cellRow, value);
             }
-        } 
+        }
 
         public int CellColumn { get; set; } = -1;
 
@@ -76,9 +71,7 @@ namespace Client_App.Controls.DataGrid
         {
             var mouse = args.GetCurrentPoint((Cell) sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
-            {
                 OnPropertyChanged(this, "Down");
-            }
         }
 
         public void PanelPointerMoved(object sender, PointerEventArgs args)
@@ -90,9 +83,7 @@ namespace Client_App.Controls.DataGrid
         {
             var mouse = args.GetCurrentPoint((Cell) sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
-            {
                 OnPropertyChanged(this, "Up");
-            }
         }
 
         //Property Changed

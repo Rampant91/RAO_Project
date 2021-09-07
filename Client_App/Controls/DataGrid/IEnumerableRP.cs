@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Client_App.Controls.DataGrid
 {
-    public interface IEnumerableRP<T>:IEnumerable<T>
+    public interface IEnumerableRP<T> : IEnumerable<T>
     {
-
     }
 }

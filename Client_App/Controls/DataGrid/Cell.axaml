@@ -9,9 +9,7 @@
             <TextBox DataContext="{Binding}"
                      Text="{Binding Value}"
                      Background="Transparent"
-                     TextAlignment="Center"
-                     
-            />
+                     TextAlignment="Center" />
         </Panel>
     </Border>
 </UserControl>

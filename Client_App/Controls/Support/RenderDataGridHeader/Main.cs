@@ -1,13 +1,24 @@
-﻿using Avalonia.Controls;
-using Avalonia.Media;
-using Models.Attributes;
-using System;
+﻿using System;
 using System.Linq;
+using Avalonia.Controls;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Client_App.Controls.DataGrid;
+using Models.Attributes;
+using Models.DataAccess;
 
 namespace Client_App.Controls.Support.RenderDataGridHeader
 {
     public class Main
     {
+        private static readonly int Wdth0 = 100;
+        private static readonly int RowHeight0 = 30;
+        private static readonly Color border_color0 = Color.FromArgb(255, 0, 0, 0);
+
+        private static readonly int Wdth1 = 100;
+        private static readonly int RowHeight1 = 30;
+        private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
+
         public static Control GetControl(string type)
         {
             switch (type)
@@ -19,17 +30,14 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 case "4": return Get4();
                 case "5": return Get5();
             }
+
             return null;
         }
 
-        private static readonly int Wdth0 = 100;
-        private static readonly int RowHeight0 = 30;
-        private static readonly Color border_color0 = Color.FromArgb(255, 0, 0, 0);
-
         private static Control Get0Header(int starWidth, int Column, string Text)
         {
-            Models.DataAccess.RamAccess<string>? ram = new Models.DataAccess.RamAccess<string>(null, Text);
-            DataGrid.Cell? cell = new Controls.DataGrid.Cell(ram, "", true)
+            var ram = new RamAccess<string>(null, Text);
+            var cell = new Cell(ram, "", true)
             {
                 Background = new SolidColorBrush(Color.Parse("LightGray")),
                 Width = starWidth * Wdth0,
@@ -45,37 +53,33 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
 
         private static Control Get0()
         {
-            StackPanel stck = new StackPanel
+            StackPanel stck = new()
             {
-                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Orientation = Orientation.Horizontal,
                 Spacing = -1
             };
 
             stck.Children.Add(Get0Header(1, 1,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
-                    GetProperty("RegNo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+                ((Form_PropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty("RegNo")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
 
             stck.Children.Add(Get0Header(2, 2,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
-                    GetProperty("ShortJurLico").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+                ((Form_PropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty("ShortJurLico")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
             stck.Children.Add(Get0Header(1, 3,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").
-                    GetProperty("Okpo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+                ((Form_PropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty("Okpo")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
 
             return stck;
         }
 
-        private static readonly int Wdth1 = 100;
-        private static readonly int RowHeight1 = 30;
-        private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-
         private static Control Get1Header(int starWidth, int Column, string Text)
         {
-            Models.DataAccess.RamAccess<string>? ram = new Models.DataAccess.RamAccess<string>(null, Text);
-            DataGrid.Cell? cell = new Controls.DataGrid.Cell(ram, "", true)
+            var ram = new RamAccess<string>(null, Text);
+            var cell = new Cell(ram, "", true)
             {
                 Background = new SolidColorBrush(Color.Parse("LightGray")),
                 Width = starWidth * Wdth1,
@@ -91,9 +95,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
 
         private static Control Get1()
         {
-            StackPanel stck = new StackPanel
+            StackPanel stck = new()
             {
-                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Orientation = Orientation.Horizontal,
                 Spacing = -1
             };
 
@@ -103,28 +107,28 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ));
 
             stck.Children.Add(Get1Header(1, 1,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form1,Models").
-                    GetProperty("FormNum").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+                ((Form_PropertyAttribute) Type.GetType("Models.Abstracts.Form1,Models").GetProperty("FormNum")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
             stck.Children.Add(Get1Header(1, 2,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("StartPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("StartPeriod")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Children.Add(Get1Header(1, 3,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("EndPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("EndPeriod")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Children.Add(Get1Header(1, 4,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("ExportDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("ExportDate")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Children.Add(Get1Header(2, 5,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("IsCorrection").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("IsCorrection")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Children.Add(Get1Header(1, 6,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("Comments").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("Comments")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
             return stck;
@@ -132,34 +136,34 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
 
         private static Control Get2()
         {
-            StackPanel stck = new StackPanel
+            StackPanel stck = new()
             {
-                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Orientation = Orientation.Horizontal,
                 Spacing = -1
             };
 
             stck.Children.Add(Get0Header(1, 1,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("RegNo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+                ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty("RegNo")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
 
             stck.Children.Add(Get0Header(2, 2,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("ShortJurLico").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+                ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty("ShortJurLico")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
             stck.Children.Add(Get0Header(1, 3,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").
-                    GetProperty("Okpo").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+                ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty("Okpo")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
 
             return stck;
         }
 
         private static Control Get3()
         {
-            StackPanel stck = new StackPanel
+            StackPanel stck = new()
             {
-                Orientation = Avalonia.Layout.Orientation.Horizontal,
+                Orientation = Orientation.Horizontal,
                 Spacing = -1
             };
 
@@ -169,28 +173,28 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ));
 
             stck.Children.Add(Get1Header(1, 1,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Abstracts.Form2,Models").
-                    GetProperty("FormNum").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+                ((Form_PropertyAttribute) Type.GetType("Models.Abstracts.Form2,Models").GetProperty("FormNum")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
             stck.Children.Add(Get1Header(1, 2,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("StartPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("StartPeriod")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Children.Add(Get1Header(1, 3,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("EndPeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("EndPeriod")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Children.Add(Get1Header(1, 4,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("ExportDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("ExportDate")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Children.Add(Get1Header(2, 5,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("IsCorrection").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("IsCorrection")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Children.Add(Get1Header(1, 6,
-                    ((Form_PropertyAttribute)Type.GetType("Collections.Report,Models").
-                    GetProperty("Comments").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("Comments")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
             return stck;

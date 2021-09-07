@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
-using Collections;
 
 namespace Client_App.Controls.DataGrid
 {
