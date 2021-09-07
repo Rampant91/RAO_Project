@@ -61,6 +61,16 @@ namespace Collections
             OnPropertyChanged(nameof(Report_Collection));
         }
 
+        public void CleanIds()
+        {
+            Id = 0;
+            Master.CleanIds();
+            foreach (var item in Report_Collection)
+            {
+                item.CleanIds();
+            }
+        }
+
         private bool Master_Validation(RamAccess<Report> value)
         {
             return true;

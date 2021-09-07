@@ -13,15 +13,15 @@ namespace Client_App.Views
     public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     {
 
-        public static readonly DirectProperty<MainWindow, IEnumerable<INotifyPropertyChanged>> SelectedReportsProperty =
-            AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<INotifyPropertyChanged>>(
+        public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
+            AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<IKey>>(
                 nameof(SelectedReports),
                 o => o.SelectedReports,
                 (o, v) => o.SelectedReports = v);
 
-        private IEnumerable<INotifyPropertyChanged> _selectedReports = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+        private IEnumerable<IKey> _selectedReports = new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-        public IEnumerable<INotifyPropertyChanged> SelectedReports
+        public IEnumerable<IKey> SelectedReports
         {
             get => _selectedReports;
             set

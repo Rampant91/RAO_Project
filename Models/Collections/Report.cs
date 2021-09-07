@@ -1031,6 +1031,35 @@ namespace Collections
         }
         #endregion
 
+        public void CleanIds()
+        {
+            Id = 0;
+            Rows10.CleanIds();
+            Rows11.CleanIds();
+            Rows12.CleanIds();
+            Rows13.CleanIds();
+            Rows14.CleanIds();
+            Rows15.CleanIds();
+            Rows16.CleanIds();
+            Rows17.CleanIds();
+            Rows18.CleanIds();
+            Rows19.CleanIds();
+
+            Rows20.CleanIds();
+            Rows21.CleanIds();
+            Rows22.CleanIds();
+            Rows23.CleanIds();
+            Rows24.CleanIds();
+            Rows25.CleanIds();
+            Rows26.CleanIds();
+            Rows27.CleanIds();
+            Rows28.CleanIds();
+            Rows29.CleanIds();
+            Rows210.CleanIds();
+            Rows211.CleanIds();
+            Rows212.CleanIds();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public int Id { get; set; }

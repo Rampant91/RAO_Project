@@ -8,7 +8,7 @@ using Collections;
 
 namespace Models
 {
-    public class Note : INotifyPropertyChanged
+    public class Note : IKey
     {
         public Note()
         {

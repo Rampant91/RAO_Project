@@ -58,10 +58,10 @@ namespace Client_App.Controls.DataGrid
         private readonly List<Control> SelectedCells = new();
 
         private IEnumerable<INotifyPropertyChanged> _items =
-            new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+            new ObservableCollectionWithItemPropertyChanged<IKey>();
 
         private IEnumerable<INotifyPropertyChanged> _selecteditems =
-            new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+            new ObservableCollectionWithItemPropertyChanged<IKey>();
 
         private string _type = "";
 
@@ -239,7 +239,7 @@ namespace Client_App.Controls.DataGrid
 
         public void SetSelectedItems()
         {
-            var lst = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+            var lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
             foreach (var item in SelectedCells)
             {
                 if (item is Cell)
@@ -247,13 +247,13 @@ namespace Client_App.Controls.DataGrid
                     var ch = (Border) ((Cell) item).Content;
                     var ch2 = (Panel) ch.Child;
                     var text = (TextBox) ch2.Children[0];
-                    lst.Add((INotifyPropertyChanged) text.DataContext);
+                    lst.Add((IKey) text.DataContext);
                 }
 
                 if (item is StackPanel)
                 {
                     var ch = (Cell) ((StackPanel) item).Children[0];
-                    lst.Add((INotifyPropertyChanged) ch.DataContext);
+                    lst.Add((IKey) ch.DataContext);
                 }
 
                 _selecteditems = lst;
@@ -262,18 +262,18 @@ namespace Client_App.Controls.DataGrid
 
         private void SetSelectedItemsWithHandler()
         {
-            var lst = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+            var lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
             foreach (var item in SelectedCells)
             {
                 if (item is Cell)
                 {
                     var ch = (Row) ((Cell) item).Parent;
-                    lst.Add((INotifyPropertyChanged) ch.DataContext);
+                    lst.Add((IKey) ch.DataContext);
                 }
 
                 if (item is StackPanel)
                 {
-                    var ch = (INotifyPropertyChanged) item.DataContext;
+                    var ch = (IKey) item.DataContext;
                     lst.Add(ch);
                 }
             }

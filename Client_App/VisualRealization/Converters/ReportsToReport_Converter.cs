@@ -16,7 +16,7 @@ namespace Client_App.Converters
             if (Value != null)
             {
                 IEnumerable? rps_coll = (IEnumerable)Value;
-                ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>? lst = new ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>();
+                ObservableCollectionWithItemPropertyChanged<IKey>? lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
                 foreach (object? item in rps_coll)
                 {
                     Reports? rps = (Reports)item;

@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Collections
 {
     public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollection<T>, IKey
-        where T : INotifyPropertyChanged
+        where T : IKey
     {
         /// <summary>
         /// Occurs when a property is changed within an item.
@@ -19,6 +19,14 @@ namespace Collections
 
         public ObservableCollectionWithItemPropertyChanged() : base()
         {
+        }
+
+        public void CleanIds()
+        {
+            foreach (var item in Items)
+            {
+                item.Id = 0;
+            }
         }
 
         public ObservableCollectionWithItemPropertyChanged(List<T> list) : base(list)

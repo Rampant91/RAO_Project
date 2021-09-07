@@ -1,6 +1,8 @@
-﻿namespace Collections
+﻿using System.ComponentModel;
+
+namespace Collections
 {
-    public interface IKey
+    public interface IKey:INotifyPropertyChanged
     {
         int Id { get; set; }
     }

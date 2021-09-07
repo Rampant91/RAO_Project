@@ -67,16 +67,16 @@ namespace Client_App.ViewModels
                 ReactiveCommand.CreateFromTask(_ImportForm);
 
             ExportForm =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_ExportForm);
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ExportForm);
 
             ChangeForm =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_ChangeForm);
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ChangeForm);
             ChangeReport =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_ChangeReport);
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ChangeReport);
             DeleteForm =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_DeleteForm);
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_DeleteForm);
             DeleteReport =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>>(_DeleteReport);
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_DeleteReport);
 
             Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
         }
@@ -118,11 +118,11 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> AddForm { get; }
 
         public ReactiveCommand<Unit, Unit> ImportForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> ExportForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> ChangeForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> ChangeReport { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> DeleteForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged>, Unit> DeleteReport { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ExportForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeReport { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> DeleteForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> DeleteReport { get; }
         public ReactiveCommand<Unit, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -169,7 +169,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _ExportForm(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
+        private async Task _ExportForm(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
@@ -252,6 +252,8 @@ namespace Client_App.ViewModels
                                     where t.Master.Rows10[0].Okpo == item.Master.Rows10[0].Okpo
                                     select t;
                                 var r = tb.FirstOrDefault();
+
+                                item.CleanIds();
                                 if (r!=null)
                                 {
                                     r.Report_Collection.AddRange(item.Report_Collection);
@@ -269,7 +271,7 @@ namespace Client_App.ViewModels
             StaticConfiguration.DBModel.SaveChanges();
         }
 
-        private async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
+        private async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
@@ -284,7 +286,7 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _ChangeReport(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
+        private async Task _ChangeReport(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
@@ -300,7 +302,7 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _DeleteForm(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
+        private async Task _DeleteForm(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -322,7 +324,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DeleteReport(ObservableCollectionWithItemPropertyChanged<INotifyPropertyChanged> param)
+        private async Task _DeleteReport(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
             if (param != null)
                 foreach (var item in param)
