@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reactive;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Client_App.Controls.Support.RenderDataGridHeader;
 using Client_App.Views;
 using Collections;
 using DBRealization;
 using DynamicData;
-using Models;
 using Models.Abstracts;
+using OfficeOpenXml;
 using ReactiveUI;
 using Spravochniki;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Reactive;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Client_App.ViewModels
 {
@@ -78,10 +77,11 @@ namespace Client_App.ViewModels
             DeleteReport =
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_DeleteReport);
 
-            Excel_Export = ReactiveCommand.CreateFromTask(_Excel_Export);
+            Excel_Export =
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_Excel_Export);
         }
 
-        private IEnumerable<Reports> _selectedReports=new ObservableCollectionWithItemPropertyChanged<Reports>();
+        private IEnumerable<Reports> _selectedReports = new ObservableCollectionWithItemPropertyChanged<Reports>();
         public IEnumerable<Reports> SelectedReports
         {
             get => _selectedReports;
@@ -123,7 +123,7 @@ namespace Client_App.ViewModels
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeReport { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> DeleteForm { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> DeleteReport { get; }
-        public ReactiveCommand<Unit, Unit> Excel_Export { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -187,13 +187,13 @@ namespace Client_App.ViewModels
                         if (res != "")
                         {
                             var dt = DateTime.Now;
-                            res = res + "\\Report_" + 
-                                  dt.Year+"."+dt.Month+"."+dt.Day+"_"+dt.Hour+"."+dt.Minute+"."+dt.Second + ".raodb";
-                            var rep = (Report) obj;
+                            res = res + "\\Report_" +
+                                  dt.Year + "." + dt.Month + "." + dt.Day + "_" + dt.Hour + "." + dt.Minute + "." + dt.Second + ".raodb";
+                            var rep = (Report)obj;
                             rep.ExportDate.Value = dt.Day + "." + dt.Month + "." + dt.Year;
                             var findReports = from t in Local_Reports.Reports_Collection
-                                where t.Report_Collection.Contains(rep)
-                                select t;
+                                              where t.Report_Collection.Contains(rep)
+                                              select t;
                             var rt = findReports.FirstOrDefault();
                             if (rt != null)
                             {
@@ -249,12 +249,12 @@ namespace Client_App.ViewModels
                             foreach (var item in db.ReportsCollectionDbSet)
                             {
                                 var tb = from t in Local_Reports.Reports_Collection
-                                    where t.Master.Rows10[0].Okpo == item.Master.Rows10[0].Okpo
-                                    select t;
+                                         where t.Master.Rows10[0].Okpo == item.Master.Rows10[0].Okpo
+                                         select t;
                                 var r = tb.FirstOrDefault();
 
                                 item.CleanIds();
-                                if (r!=null)
+                                if (r != null)
                                 {
                                     r.Report_Collection.AddRange(item.Report_Collection);
                                 }
@@ -279,7 +279,7 @@ namespace Client_App.ViewModels
                     var obj = param.First();
                     if (obj != null)
                     {
-                        var rep = (Report) obj;
+                        var rep = (Report)obj;
                         FormChangeOrCreate frm = new(rep.FormNum.Value, rep);
                         await frm.ShowDialog(desktop.MainWindow);
                     }
@@ -333,7 +333,7 @@ namespace Client_App.ViewModels
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
 
-        private async Task _Excel_Export()
+        private async Task _Excel_Export(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -344,11 +344,63 @@ namespace Client_App.ViewModels
                 };
                 filter.Extensions.Add("*.xlsx");
                 dial.Filters.Add(filter);
-                var res = await dial.ShowAsync(desktop.MainWindow);
-                if (res.Count() != 0)
+                if (param.Count != null)
                 {
-                    //Models.Saving.Excel exp = new Models.Saving.Excel();
-                    //await exp.Save(FormModel_Local.Dictionary,res);
+                    var res = await dial.ShowAsync(desktop.MainWindow);
+                    if(res!=null)
+                    {
+                        if (res.Count() != 0)
+                        {
+                            var path = res;
+                            if (!path.Contains(".xlsx"))
+                            {
+                                path += ".xlsx";
+                            }
+
+                            if (path != null)
+                            {
+                                using (ExcelPackage excelPackage = new ExcelPackage())
+                                {
+                                    //Set some properties of the Excel document
+                                    excelPackage.Workbook.Properties.Author = "RAO_APP";
+                                    excelPackage.Workbook.Properties.Title = "Report";
+                                    excelPackage.Workbook.Properties.Created = DateTime.Now;
+
+                                    var rep = (Report) param.FirstOrDefault();
+                                    //Create the WorkSheet
+                                    ExcelWorksheet worksheetOrg = excelPackage.Workbook.Worksheets.Add("Организация");
+                                    ExcelWorksheet worksheet =
+                                        excelPackage.Workbook.Worksheets.Add("Отчет " + rep.FormNum_DB);
+                                    ExcelWorksheet worksheetPrim =
+                                        excelPackage.Workbook.Worksheets.Add("Примечания" + rep.FormNum_DB);
+
+                                    var findReports = from t in Local_Reports.Reports_Collection
+                                        where t.Report_Collection.Contains(rep)
+                                        select t;
+                                    var reps = findReports.FirstOrDefault();
+                                    if (reps != null)
+                                    {
+                                        Report.ExcelHeader(worksheetOrg, reps.Master.FormNum_DB);
+                                        reps.Master.ExcelRow(worksheetOrg, -1);
+
+                                        if (rep != null)
+                                        {
+                                            Report.ExcelHeader(worksheet, ((Report) rep).FormNum_DB);
+                                            rep.ExcelRow(worksheet, -1);
+
+                                            Report.ExcelHeader(worksheetPrim, "Notes");
+                                            rep.ExcelRow(worksheetPrim, -2);
+                                        }
+
+                                    }
+
+                                    FileInfo fi = new FileInfo(path);
+
+                                    excelPackage.SaveAs(fi);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

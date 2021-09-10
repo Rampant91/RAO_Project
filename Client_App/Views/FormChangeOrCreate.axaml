@@ -8,7 +8,7 @@
         x:Class="Client_App.Views.FormChangeOrCreate"
         xmlns:vm="using:Client_App.ViewModels"
         Title="FormChangeOrCreate">
-  <ScrollViewer x:Name="ChangingPanel" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+  <Panel x:Name="ChangingPanel">
 
-  </ScrollViewer>
+  </Panel>
 </Window>

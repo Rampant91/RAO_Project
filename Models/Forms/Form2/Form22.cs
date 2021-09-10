@@ -6,6 +6,9 @@ using System.Globalization;
 using System.ComponentModel;
 using Spravochniki;
 using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -113,44 +116,6 @@ return false;
         //StoragePlaceName property
         #endregion
 
-        ////StoragePlaceNameNote property
-        //public RamAccess<string> StoragePlaceNameNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(StoragePlaceNameNote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            StoragePlaceNameNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(StoragePlaceNameNote_Validation, _DB);
-        //    }
-        //}
-        ////If change this change validation
-
-        //private void ValueChanged(object Value, PropertyChangedEventArgs args)
-        //{
-        //if (args.PropertyName == "Value")
-        //{
-        //_DB = ((RamAccess<string>)Value).Value;
-        //}
-        //}
-        //private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors(); return true;}
-        ////StoragePlaceNameNote property
-
         //StoragePlaceCode property
         #region StoragePlaceCode
         public string StoragePlaceCode_DB { get; set; } = ""; [NotMapped]
@@ -254,45 +219,7 @@ return true;
         //PackName property
 #endregion
 
-        ////PackNameNote property
-        //public RamAccess<string> PackNameNote
-        //{
-        //    get
-        //    {
-                
-        //        {
-        //            var tmp = new RamAccess<string>(PackNameNote_Validation, _DB);//OK
-        //        }
-                
-        //        {
-                    
-        //        }
-        //    }
-        //    set
-        //    {
-
-                
-        //        {
-        //            PackNameNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(PackNameNote));
-        //    }
-        //}
-
-        
-        //private void ValueChanged(object Value, PropertyChangedEventArgs args)
-//{
-//if (args.PropertyName == "Value")
-//{
-//_DB = ((RamAccess<string>)Value).Value;
-//}
-//}
-//private bool PackNameNote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;}
-        ////PackNameNote property
-
-        //PackType property
+//PackType property
 #region NumberInOrder 
 public string PackType_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Тип упаковки")]
@@ -343,85 +270,6 @@ private bool PackType_Validation(RamAccess<string> value)//Ready
         }
         //PackType property
         #endregion
-
-        //PackTypeRecoded property
-        //public RamAccess<string> PackTypeRecoded
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(PackTypeRecoded_Validation, _DB);//OK
-        //            tmp.PropertyChanged += ValueChanged;
-        //            return tmp;
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            PackTypeRecoded_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(PackTypeRecoded));
-        //    }
-        //}
-
-
-        //private void ValueChanged(object Value, PropertyChangedEventArgs args)
-        //{
-        //if (args.PropertyName == "Value")
-        //{
-        //_DB = ((RamAccess<string>)Value).Value;
-        //}
-        //}
-        //private bool PackTypeRecoded_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        //PackTypeRecoded property
-
-        ////PackTypeNote property
-        //public RamAccess<string> PackTypeNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(PackTypeNote_Validation, _DB);//OK
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            PackTypeNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(PackTypeNote));
-        //    }
-        //}
-
-
-        //        //private void ValueChanged(object Value, PropertyChangedEventArgs args)
-        //{
-        //if (args.PropertyName == "Value")
-        //{
-        //_DB = ((RamAccess<string>)Value).Value;
-        //}
-        //}
-        //private bool PackTypeNote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;}
-        ////PackTypeNote property
 
         //PackQuantity property
         #region PackQuantity
@@ -1274,6 +1122,56 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors(); return true;}
         //FcpNumber property
-#endregion
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = StoragePlaceName_DB;
+            worksheet.Cells[Row, 3].Value = StoragePlaceCode_DB;
+            worksheet.Cells[Row, 4].Value = PackName_DB;
+            worksheet.Cells[Row, 5].Value = PackType_DB;
+            worksheet.Cells[Row, 6].Value = PackQuantity_DB;
+            worksheet.Cells[Row, 7].Value = CodeRAO_DB;
+            worksheet.Cells[Row, 8].Value = StatusRAO_DB;
+            worksheet.Cells[Row, 9].Value = VolumeOutOfPack_DB;
+            worksheet.Cells[Row, 10].Value = VolumeInPack_DB;
+            worksheet.Cells[Row, 11].Value = MassOutOfPack_DB;
+            worksheet.Cells[Row, 12].Value = MassInPack_DB;
+            worksheet.Cells[Row, 13].Value = QuantityOZIII_DB;
+            worksheet.Cells[Row, 14].Value = TritiumActivity_DB;
+            worksheet.Cells[Row, 15].Value = BetaGammaActivity_DB;
+            worksheet.Cells[Row, 16].Value = AlphaActivity_DB;
+            worksheet.Cells[Row, 17].Value = TransuraniumActivity_DB;
+            worksheet.Cells[Row, 18].Value = MainRadionuclids_DB;
+            worksheet.Cells[Row, 19].Value = Subsidy_DB;
+            worksheet.Cells[Row, 20].Value = FcpNumber_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(PackName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(PackType)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(PackQuantity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(StatusRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 9].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(VolumeOutOfPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 10].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(VolumeInPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 11].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(MassOutOfPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 12].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(MassInPack)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 13].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(QuantityOZIII)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 14].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(TritiumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 15].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(BetaGammaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 16].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(AlphaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 17].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(TransuraniumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 18].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(MainRadionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 19].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(Subsidy)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 20].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
+        #endregion
     }
 }

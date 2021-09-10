@@ -4,6 +4,10 @@ using Spravochniki;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models.Abstracts
 {
@@ -253,6 +257,27 @@ namespace Models.Abstracts
                 return false;
             }
             return true;
+        }
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 1].Value = NumberInOrder_DB;
+            worksheet.Cells[Row, 2].Value = OperationCode_DB;
+            worksheet.Cells[Row, 3].Value = OperationDate_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form.ExcelHeader(worksheet);
+            worksheet.Cells[1, 1].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(NumberInOrder))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationCode))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationDate))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
         }
         #endregion
     }

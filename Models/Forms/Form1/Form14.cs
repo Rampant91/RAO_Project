@@ -7,6 +7,9 @@ using System.Globalization;
 using Spravochniki;
 using System.Linq;
 using System.ComponentModel;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -862,5 +865,74 @@ namespace Models
 
             return false;
         }
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 4].Value = PassportNumber_DB;
+            worksheet.Cells[Row, 5].Value = Name_DB;
+            worksheet.Cells[Row, 6].Value = Sort_DB;
+            worksheet.Cells[Row, 7].Value = Radionuclids_DB;
+            worksheet.Cells[Row, 8].Value = Activity_DB;
+            worksheet.Cells[Row, 9].Value = ActivityMeasurementDate_DB;
+            worksheet.Cells[Row, 10].Value = Volume_DB;
+            worksheet.Cells[Row, 11].Value = Mass_DB;
+            worksheet.Cells[Row, 12].Value = AggregateState_DB;
+            worksheet.Cells[Row, 13].Value = PropertyCode_DB;
+            worksheet.Cells[Row, 14].Value = Owner_DB;
+            worksheet.Cells[Row, 15].Value = DocumentVid_DB;
+            worksheet.Cells[Row, 16].Value = DocumentNumber_DB;
+            worksheet.Cells[Row, 17].Value = DocumentDate_DB;
+            worksheet.Cells[Row, 18].Value = ProviderOrRecieverOKPO_DB;
+            worksheet.Cells[Row, 19].Value = TransporterOKPO_DB;
+            worksheet.Cells[Row, 20].Value = PackName_DB;
+            worksheet.Cells[Row, 21].Value = PackType_DB;
+            worksheet.Cells[Row, 22].Value = PackNumber_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form1.ExcelHeader(worksheet);
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(PassportNumber))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(Name))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(Sort))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(Radionuclids))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(Activity))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 9].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(ActivityMeasurementDate))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 10].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(Volume))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 11].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(Mass))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 12].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(AggregateState))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 13].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(PropertyCode))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 14].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(Owner))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 15].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(DocumentVid))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 16].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(DocumentNumber))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 17].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(DocumentDate))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 18].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(ProviderOrRecieverOKPO))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 19].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(TransporterOKPO))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 20].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(PackName))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 21].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(PackType))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 22].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form14,Models").GetProperty(nameof(PackNumber))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
+        #endregion
     }
 }

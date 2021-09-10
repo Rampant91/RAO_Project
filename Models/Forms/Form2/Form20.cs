@@ -1,7 +1,11 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Text.RegularExpressions;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -917,6 +921,63 @@ namespace Models
         }
 
         //Okfs property
+
+        #endregion
+
+        #region IExcel
+
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+
+            worksheet.Cells[2, Row].Value = SubjectRF_DB;
+            worksheet.Cells[3, Row].Value = JurLico_DB;
+            worksheet.Cells[4, Row].Value = ShortJurLico_DB;
+            worksheet.Cells[5, Row].Value = JurLicoAddress_DB;
+            worksheet.Cells[6, Row].Value = JurLicoFactAddress_DB;
+            worksheet.Cells[7, Row].Value = GradeFIO_DB;
+            worksheet.Cells[8, Row].Value = Telephone_DB;
+            worksheet.Cells[9, Row].Value = Fax_DB;
+            worksheet.Cells[10, Row].Value = Email_DB;
+            worksheet.Cells[11, Row].Value = Okpo_DB;
+            worksheet.Cells[12, Row].Value = Okved_DB;
+            worksheet.Cells[13, Row].Value = Okogu_DB;
+            worksheet.Cells[14, Row].Value = Oktmo_DB;
+            worksheet.Cells[15, Row].Value = Inn_DB;
+            worksheet.Cells[16, Row].Value = Kpp_DB;
+            worksheet.Cells[17, Row].Value = Okopf_DB;
+            worksheet.Cells[18, Row].Value = Okfs_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet, int Column)
+        {
+            Form.ExcelHeader(worksheet);
+            if (Column == 1)
+            {
+                worksheet.Cells[1, Column].Value = "Юридическое лицо";
+            }
+            else
+            {
+                worksheet.Cells[1, Column].Value = "Обособленное подраздеение";
+            }
+            worksheet.Cells[2, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(SubjectRF)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[3, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(JurLico)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[4, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(ShortJurLico)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[5, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(JurLicoAddress)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[6, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(JurLicoFactAddress)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[7, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(GradeFIO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[8, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Telephone)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[9, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Fax)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[10, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Email)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[11, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Okpo)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[12, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Okved)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[13, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Okogu)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[14, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Oktmo)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[15, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Inn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[16, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Kpp)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[17, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Okopf)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[18, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(Okfs)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
 
         #endregion
     }

@@ -9,6 +9,7 @@ using Avalonia.Collections.Pooled;
 using Models;
 using Models.Attributes;
 using Models.DataAccess;
+using OfficeOpenXml;
 
 namespace Collections
 {
@@ -1188,6 +1189,353 @@ namespace Collections
         {
             return true;
         }
+
+        #region IExcel
+
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            if (Row != -2)
+            {
+                if (Rows10_DB.Count != 0)
+                {
+                    Rows10_DB[0].ExcelRow(worksheet, 2);
+                    Rows10_DB[1].ExcelRow(worksheet, 5);
+                }
+
+                if (Rows11_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows11_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows12_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows12_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows13_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows13_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows14_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows14_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows15_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows15_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows16_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows16_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows17_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows17_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows18_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows18_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows19_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows19_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows20_DB.Count != 0)
+                {
+                    Rows20_DB[0].ExcelRow(worksheet, 2);
+                    Rows20_DB[1].ExcelRow(worksheet, 5);
+                }
+
+                if (Rows21_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows21_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows22_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows22_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows23_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows23_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows24_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows24_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows25_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows25_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows26_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows26_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows27_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows27_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows28_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows28_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows29_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows29_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows210_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows210_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows211_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows211_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows212_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows212_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+            }
+
+            if (Row==-2)
+            {
+                int count = 2;
+                foreach (var item in Notes_DB)
+                {
+                    item.ExcelRow(worksheet, count);
+                    count++;
+                }
+            }
+        }
+
+
+        public static void ExcelHeader(ExcelWorksheet worksheet, string FormNum)
+        {
+            if (FormNum == "1.0")
+            {
+                Form10.ExcelHeader(worksheet,1);
+                Form10.ExcelHeader(worksheet,4);
+            }
+
+            if (FormNum == "1.1")
+            {
+                Form11.ExcelHeader(worksheet);
+            }
+            if (FormNum == "1.2")
+            {
+                Form12.ExcelHeader(worksheet);
+            }
+            if (FormNum == "1.3")
+            {
+                Form13.ExcelHeader(worksheet);
+            }
+            if (FormNum == "1.4")
+            {
+                Form14.ExcelHeader(worksheet);
+            }
+            if (FormNum == "1.5")
+            {
+                Form15.ExcelHeader(worksheet);
+            }
+            if (FormNum == "1.6")
+            {
+                Form16.ExcelHeader(worksheet);
+            }
+            if (FormNum == "1.7")
+            {
+                Form17.ExcelHeader(worksheet);
+            }
+            if (FormNum == "1.8")
+            {
+                Form18.ExcelHeader(worksheet);
+            }
+            if (FormNum == "1.9")
+            {
+                Form19.ExcelHeader(worksheet);
+            }
+
+            if (FormNum == "2.0")
+            {
+                Form20.ExcelHeader(worksheet, 1);
+                Form20.ExcelHeader(worksheet, 4);
+            }
+            if (FormNum == "2.1")
+            {
+                Form21.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.2")
+            {
+                Form22.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.3")
+            {
+                Form23.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.4")
+            {
+                Form24.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.5")
+            {
+                Form25.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.6")
+            {
+                Form26.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.7")
+            {
+                Form27.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.8")
+            {
+                Form28.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.9")
+            {
+                Form29.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.10")
+            {
+                Form210.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.11")
+            {
+                Form211.ExcelHeader(worksheet);
+            }
+            if (FormNum == "2.12")
+            {
+                Form212.ExcelHeader(worksheet);
+            }
+            if (FormNum == "Notes")
+            {
+                Note.ExcelHeader(worksheet);
+            }
+        }
+
+        #endregion
 
         #region Property Changed
         protected void OnPropertyChanged([CallerMemberName] string prop = "")

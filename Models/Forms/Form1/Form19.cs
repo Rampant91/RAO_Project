@@ -7,6 +7,9 @@ using System.Globalization;
 using Spravochniki;
 using System.Linq;
 using System.ComponentModel;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -33,49 +36,6 @@ namespace Models
             Activity.HasErrors||
             Radionuclids.HasErrors);
         }
-
-        //#region Quantity
-        //public int? Quantity_DB { get; set; } = null;
-        //[NotMapped]
-        //[Attributes.Form_Property("Количество, шт.")]
-        //public RamAccess<int?> Quantity
-        //{
-        //    get
-        //    {
-        //        var tmp = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
-        //        tmp.PropertyChanged += QuantityValueChanged;
-        //        return tmp;
-        //    }
-        //    set
-        //    {
-        //        Quantity_DB = value.Value;
-        //        OnPropertyChanged(nameof(Quantity));
-        //    }
-        //}// positive int.
-
-        //private void QuantityValueChanged(object Value, PropertyChangedEventArgs args)
-        //{
-        //    if (args.PropertyName == "Value")
-        //    {
-        //        Quantity_DB = ((RamAccess<int?>)Value).Value;
-        //    }
-        //}
-        //private bool Quantity_Validation(RamAccess<int?> value)//Ready
-        //{
-        //    value.ClearErrors();
-        //    if (value.Value == null)
-        //    {
-        //        value.AddError("Поле не заполнено");
-        //        return false;
-        //    }
-        //    if (value.Value <= 0)
-        //    {
-        //        value.AddError("Недопустимое значение");
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        //#endregion
 
         #region CodeTypeAccObject
         public short? CodeTypeAccObject_DB { get; set; } = null;
@@ -308,5 +268,28 @@ namespace Models
             }
             return true;
         }
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 4].Value = DocumentVid_DB;
+            worksheet.Cells[Row, 5].Value = DocumentNumber_DB;
+            worksheet.Cells[Row, 6].Value = DocumentDate_DB;
+            worksheet.Cells[Row, 7].Value = CodeTypeAccObject_DB;
+            worksheet.Cells[Row, 8].Value = Radionuclids_DB;
+            worksheet.Cells[Row, 9].Value = Activity_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form1.ExcelHeader(worksheet);
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form19,Models").GetProperty(nameof(DocumentVid)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form19,Models").GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form19,Models").GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form19,Models").GetProperty(nameof(CodeTypeAccObject)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form19,Models").GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 9].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form19,Models").GetProperty(nameof(Activity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
+        #endregion
     }
 }

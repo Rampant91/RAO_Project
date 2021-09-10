@@ -311,7 +311,7 @@ namespace Client_App.Controls.DataGrid
 
         public void DataGridPointerDown(object sender, PointerPressedEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((ScrollViewer) sender);
+            var mouse = args.GetCurrentPoint((Panel)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
                 if (Rows.Count > 0)
                 {
@@ -327,7 +327,7 @@ namespace Client_App.Controls.DataGrid
 
         public void DataGridPointerMoved(object sender, PointerEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((ScrollViewer) sender);
+            var mouse = args.GetCurrentPoint((Panel) sender);
             if (DownFlag)
             {
                 if (Rows.Count > 0)
@@ -343,7 +343,7 @@ namespace Client_App.Controls.DataGrid
 
         public void DataGridPointerUp(object sender, PointerReleasedEventArgs args)
         {
-            var mouse = args.GetCurrentPoint((ScrollViewer) sender);
+            var mouse = args.GetCurrentPoint((Panel)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
             {
                 if (Rows.Count > 0)
@@ -450,22 +450,11 @@ namespace Client_App.Controls.DataGrid
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray"))
             };
 
-            ScrollViewer vwm = new()
-            {
-                //vw.SetValue(Grid.RowProperty, 1);
-                Background = new SolidColorBrush(Color.Parse("WhiteSmoke")),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
-            };
-            brd.Child = vwm;
-
             Panel p = new()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
-            vwm.Content = p;
+            brd.Child = p;
 
             Grid grd = new();
             RowDefinition rd = new()
@@ -485,11 +474,16 @@ namespace Client_App.Controls.DataGrid
             ScrollViewer vw = new();
             vw.SetValue(Grid.RowProperty, 1);
             vw.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
-            vw.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            vw.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            vw.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
-            vw.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
-            vw.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
+            vw.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+            vw.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+
+            Panel pn = new Panel();
+            pn.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pn.VerticalAlignment = VerticalAlignment.Stretch;
+            pn.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
+            pn.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
+            pn.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
+            vw.Content = pn;
 
             StackPanel stck = new()
             {
@@ -499,7 +493,7 @@ namespace Client_App.Controls.DataGrid
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch
             };
-            vw.Content = stck;
+            pn.Children.Add(stck);
             Rows = new RowCollection(stck);
             grd.Children.Add(vw);
             Content = brd;

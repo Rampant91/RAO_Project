@@ -3,6 +3,7 @@ using Models.DataAccess;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
+using OfficeOpenXml;
 
 namespace Models.Abstracts
 {
@@ -88,6 +89,16 @@ namespace Models.Abstracts
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+        }
         #endregion
     }
 }

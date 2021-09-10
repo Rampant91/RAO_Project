@@ -4,6 +4,10 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.ComponentModel;
+using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 using Spravochniki;
 
 namespace Models
@@ -93,7 +97,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionNumber_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionNumber_Validation(RamAccess<string> value)
@@ -127,7 +131,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionIssueDate_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionIssueDate_Validation(RamAccess<string> value)
@@ -159,7 +163,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionDocumentName_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -193,7 +197,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidBegin_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidBegin_Validation(RamAccess<string> value)
@@ -226,7 +230,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidThru_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidThru_Validation(RamAccess<string> value)
@@ -258,7 +262,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionNumber1_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -292,7 +296,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionIssueDate1_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionIssueDate1_Validation(RamAccess<string> value)
@@ -342,7 +346,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionDocumentName1_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionDocumentName1_Validation(RamAccess<string> value)
@@ -375,7 +379,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidBegin1_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidBegin1_Validation(RamAccess<string> value)
@@ -425,7 +429,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidThru1_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidThru1_Validation(RamAccess<string> value)
@@ -475,7 +479,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionNumber2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionNumber2_Validation(RamAccess<string> value)
@@ -508,7 +512,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionIssueDate2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionIssueDate2_Validation(RamAccess<string> value)
@@ -557,7 +561,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionDocumentName2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionDocumentName2_Validation(RamAccess<string> value)
@@ -589,7 +593,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidBegin2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidBegin2_Validation(RamAccess<string> value)
@@ -638,7 +642,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidThru2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidThru2_Validation(RamAccess<string> value)
@@ -726,7 +730,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                WasteRecieverName_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool WasteRecieverName_Validation(RamAccess<string> value)
@@ -765,7 +769,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                RecieverTypeCode_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool RecieverTypeCode_Validation(RamAccess<string> value)
@@ -809,7 +813,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PoolDistrictName_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PoolDistrictName_Validation(RamAccess<string> value)
@@ -854,7 +858,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                AllowedWasteRemovalVolume_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
@@ -913,7 +917,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                RemovedWasteVolume_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool RemovedWasteVolume_Validation(RamAccess<string> value)
@@ -945,36 +949,28 @@ namespace Models
         //RemovedWasteVolume property
         #endregion
 
-        ////RemovedWasteVolumeNote property
-        //public RamAccess<double> RemovedWasteVolumeNote
-        //{
-        //    get
-        //    {
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = WasteSourceName_DB;
+            worksheet.Cells[Row, 3].Value = WasteRecieverName_DB;
+            worksheet.Cells[Row, 4].Value = RecieverTypeCode_DB;
+            worksheet.Cells[Row, 5].Value = PoolDistrictName_DB;
+            worksheet.Cells[Row, 6].Value = AllowedWasteRemovalVolume_DB;
+            worksheet.Cells[Row, 7].Value = RemovedWasteVolume_DB;
+        }
 
-        //        {
-        //            var tmp = new RamAccess<double>(RemovedWasteVolumeNote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            RemovedWasteVolumeNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(RemovedWasteVolumeNote));
-        //    }
-        //}
-
-
-        //private bool RemovedWasteVolumeNote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////RemovedWasteVolumeNote property
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(WasteRecieverName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(RecieverTypeCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(PoolDistrictName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(RemovedWasteVolume)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
+        #endregion
     }
 }
