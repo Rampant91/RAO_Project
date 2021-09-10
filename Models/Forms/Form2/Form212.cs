@@ -313,7 +313,7 @@ private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         public void ExcelRow(ExcelWorksheet worksheet, int Row)
         {
             base.ExcelRow(worksheet, Row);
-            worksheet.Cells[Row, 2].Value = OperationCode;
+            worksheet.Cells[Row, 2].Value = OperationCode_DB;
             worksheet.Cells[Row, 3].Value = ObjectTypeCode_DB;
             worksheet.Cells[Row, 4].Value = Radionuclids_DB;
             worksheet.Cells[Row, 5].Value = Activity_DB;

@@ -210,11 +210,9 @@ namespace Client_App.Views
 
         private void Init()
         {
-            ScrollViewer? panel = this.FindControl<ScrollViewer>("ChangingPanel");
-            var pnl = new Panel();
-            panel.Content = pnl;
-            Form1Init(pnl);
-            Form2Init(pnl);
+            Panel? panel = this.FindControl<Panel>("ChangingPanel");
+            Form1Init(panel);
+            Form2Init(panel);
         }
 
         private void InitializeComponent()

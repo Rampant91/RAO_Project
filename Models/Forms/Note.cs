@@ -3,8 +3,10 @@ using Models.DataAccess;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Collections;
+using Models.Attributes;
 using OfficeOpenXml;
 
 namespace Models
@@ -154,12 +156,16 @@ namespace Models
         #region IExcel
         public void ExcelRow(ExcelWorksheet worksheet, int Row)
         {
-            throw new System.NotImplementedException();
+            worksheet.Cells[Row, 1].Value = RowNumber_DB;
+            worksheet.Cells[Row, 2].Value = GraphNumber_DB;
+            worksheet.Cells[Row, 3].Value = Comment_DB;
         }
 
-        public void ExcelHeader(ExcelWorksheet worksheet)
+        public static void ExcelHeader(ExcelWorksheet worksheet)
         {
-            throw new System.NotImplementedException();
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Note,Models").GetProperty(nameof(RowNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Note,Models").GetProperty(nameof(GraphNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Note,Models").GetProperty(nameof(Comment)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
         }
         #endregion
     }

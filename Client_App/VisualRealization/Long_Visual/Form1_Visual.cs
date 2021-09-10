@@ -99,6 +99,7 @@ namespace Client_App.Long_Visual
         public static Grid Form10_Visual(INameScope scp)
         {
             Grid maingrid = new Grid();
+            
             RowDefinition? row = new RowDefinition
             {
                 Height = new GridLength(0.07, GridUnitType.Star)

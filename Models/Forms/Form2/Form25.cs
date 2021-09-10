@@ -502,7 +502,7 @@ private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         public void ExcelRow(ExcelWorksheet worksheet, int Row)
         {
             base.ExcelRow(worksheet, Row);
-            worksheet.Cells[Row, 2].Value = StoragePlaceName;
+            worksheet.Cells[Row, 2].Value = StoragePlaceName_DB;
             worksheet.Cells[Row, 3].Value = StoragePlaceCode_DB;
             worksheet.Cells[Row, 4].Value = CodeOYAT_DB;
             worksheet.Cells[Row, 5].Value = FcpNumber_DB;

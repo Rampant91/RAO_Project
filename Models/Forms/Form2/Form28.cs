@@ -97,7 +97,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionNumber_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionNumber_Validation(RamAccess<string> value)
@@ -131,7 +131,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionIssueDate_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionIssueDate_Validation(RamAccess<string> value)
@@ -163,7 +163,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionDocumentName_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -197,7 +197,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidBegin_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidBegin_Validation(RamAccess<string> value)
@@ -230,7 +230,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidThru_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidThru_Validation(RamAccess<string> value)
@@ -262,7 +262,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionNumber1_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -296,7 +296,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionIssueDate1_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionIssueDate1_Validation(RamAccess<string> value)
@@ -346,7 +346,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionDocumentName1_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionDocumentName1_Validation(RamAccess<string> value)
@@ -379,7 +379,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidBegin1_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidBegin1_Validation(RamAccess<string> value)
@@ -429,7 +429,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidThru1_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidThru1_Validation(RamAccess<string> value)
@@ -479,7 +479,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionNumber2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionNumber2_Validation(RamAccess<string> value)
@@ -512,7 +512,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionIssueDate2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionIssueDate2_Validation(RamAccess<string> value)
@@ -561,7 +561,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PermissionDocumentName2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PermissionDocumentName2_Validation(RamAccess<string> value)
@@ -593,7 +593,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidBegin2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidBegin2_Validation(RamAccess<string> value)
@@ -642,7 +642,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                ValidThru2_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool ValidThru2_Validation(RamAccess<string> value)
@@ -730,7 +730,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                WasteRecieverName_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool WasteRecieverName_Validation(RamAccess<string> value)
@@ -769,7 +769,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                RecieverTypeCode_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool RecieverTypeCode_Validation(RamAccess<string> value)
@@ -813,7 +813,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                PoolDistrictName_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool PoolDistrictName_Validation(RamAccess<string> value)
@@ -858,7 +858,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                AllowedWasteRemovalVolume_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
@@ -917,7 +917,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                RemovedWasteVolume_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool RemovedWasteVolume_Validation(RamAccess<string> value)

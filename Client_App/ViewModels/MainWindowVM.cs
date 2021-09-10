@@ -347,47 +347,57 @@ namespace Client_App.ViewModels
                 if (param.Count != null)
                 {
                     var res = await dial.ShowAsync(desktop.MainWindow);
-                    if (res.Count() != 0)
+                    if(res!=null)
                     {
-                        var path = res;
-                        if (!path.Contains(".xlsx"))
+                        if (res.Count() != 0)
                         {
-                            path += ".xlsx";
-                        }
-                        if (path != null)
-                        {
-                            using (ExcelPackage excelPackage = new ExcelPackage())
+                            var path = res;
+                            if (!path.Contains(".xlsx"))
                             {
-                                //Set some properties of the Excel document
-                                excelPackage.Workbook.Properties.Author = "RAO_APP";
-                                excelPackage.Workbook.Properties.Title = "Report";
-                                excelPackage.Workbook.Properties.Created = DateTime.Now;
+                                path += ".xlsx";
+                            }
 
-                                //Create the WorkSheet
-                                ExcelWorksheet worksheetOrg = excelPackage.Workbook.Worksheets.Add("Организация");
-                                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Отчет");
-
-                                var rep = (Report)param.FirstOrDefault();
-
-                                var findReports = from t in Local_Reports.Reports_Collection
-                                    where t.Report_Collection.Contains(rep)
-                                    select t;
-                                var reps = findReports.FirstOrDefault();
-                                if (reps != null)
+                            if (path != null)
+                            {
+                                using (ExcelPackage excelPackage = new ExcelPackage())
                                 {
-                                    Report.ExcelHeader(worksheetOrg, reps.Master.FormNum_DB);
-                                    reps.Master.ExcelRow(worksheetOrg,-1);
+                                    //Set some properties of the Excel document
+                                    excelPackage.Workbook.Properties.Author = "RAO_APP";
+                                    excelPackage.Workbook.Properties.Title = "Report";
+                                    excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-                                    if (rep != null)
+                                    var rep = (Report) param.FirstOrDefault();
+                                    //Create the WorkSheet
+                                    ExcelWorksheet worksheetOrg = excelPackage.Workbook.Worksheets.Add("Организация");
+                                    ExcelWorksheet worksheet =
+                                        excelPackage.Workbook.Worksheets.Add("Отчет " + rep.FormNum_DB);
+                                    ExcelWorksheet worksheetPrim =
+                                        excelPackage.Workbook.Worksheets.Add("Примечания" + rep.FormNum_DB);
+
+                                    var findReports = from t in Local_Reports.Reports_Collection
+                                        where t.Report_Collection.Contains(rep)
+                                        select t;
+                                    var reps = findReports.FirstOrDefault();
+                                    if (reps != null)
                                     {
-                                        Report.ExcelHeader(worksheet, ((Report) rep).FormNum_DB);
+                                        Report.ExcelHeader(worksheetOrg, reps.Master.FormNum_DB);
+                                        reps.Master.ExcelRow(worksheetOrg, -1);
 
-                                        rep.ExcelRow(worksheet, -1);
+                                        if (rep != null)
+                                        {
+                                            Report.ExcelHeader(worksheet, ((Report) rep).FormNum_DB);
+                                            rep.ExcelRow(worksheet, -1);
+
+                                            Report.ExcelHeader(worksheetPrim, "Notes");
+                                            rep.ExcelRow(worksheetPrim, -2);
+                                        }
+
                                     }
-                                }
-                                FileInfo fi = new FileInfo(path);
 
-                                excelPackage.SaveAs(fi);
+                                    FileInfo fi = new FileInfo(path);
+
+                                    excelPackage.SaveAs(fi);
+                                }
                             }
                         }
                     }

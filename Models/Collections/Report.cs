@@ -1156,222 +1156,235 @@ namespace Collections
 
         public void ExcelRow(ExcelWorksheet worksheet, int Row)
         {
-            if (Rows10_DB.Count != 0)
+            if (Row != -2)
             {
-                Rows10_DB[0].ExcelRow(worksheet,2);
-                Rows10_DB[1].ExcelRow(worksheet, 5);
-            }
-
-            if (Rows11_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows11_DB)
+                if (Rows10_DB.Count != 0)
                 {
-                    item.ExcelRow(worksheet, count);
-                    count++;
+                    Rows10_DB[0].ExcelRow(worksheet, 2);
+                    Rows10_DB[1].ExcelRow(worksheet, 5);
+                }
+
+                if (Rows11_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows11_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows12_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows12_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows13_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows13_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows14_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows14_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows15_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows15_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows16_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows16_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows17_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows17_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows18_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows18_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows19_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows19_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows20_DB.Count != 0)
+                {
+                    Rows20_DB[0].ExcelRow(worksheet, 2);
+                    Rows20_DB[1].ExcelRow(worksheet, 5);
+                }
+
+                if (Rows21_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows21_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows22_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows22_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows23_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows23_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows24_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows24_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows25_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows25_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows26_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows26_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows27_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows27_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows28_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows28_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows29_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows29_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows210_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows210_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows211_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows211_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
+                }
+
+                if (Rows212_DB.Count != 0)
+                {
+                    int count = 2;
+                    foreach (var item in Rows212_DB)
+                    {
+                        item.ExcelRow(worksheet, count);
+                        count++;
+                    }
                 }
             }
 
-            if (Rows12_DB.Count != 0)
+            if (Row==-2)
             {
                 int count = 2;
-                foreach (var item in Rows12_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows13_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows13_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows14_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows14_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows15_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows15_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows16_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows16_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows17_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows17_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows18_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows18_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows19_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows19_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows20_DB.Count != 0)
-            {
-                Rows20_DB[0].ExcelRow(worksheet, 2);
-                Rows20_DB[1].ExcelRow(worksheet, 5);
-            }
-
-            if (Rows21_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows21_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows22_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows22_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows23_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows23_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows24_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows24_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows25_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows25_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows26_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows26_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows27_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows27_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows28_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows28_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows29_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows29_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows210_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows210_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows211_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows211_DB)
-                {
-                    item.ExcelRow(worksheet, count);
-                    count++;
-                }
-            }
-
-            if (Rows212_DB.Count != 0)
-            {
-                int count = 2;
-                foreach (var item in Rows212_DB)
+                foreach (var item in Notes_DB)
                 {
                     item.ExcelRow(worksheet, count);
                     count++;
@@ -1427,7 +1440,8 @@ namespace Collections
 
             if (FormNum == "2.0")
             {
-                Form20.ExcelHeader(worksheet);
+                Form20.ExcelHeader(worksheet, 1);
+                Form20.ExcelHeader(worksheet, 4);
             }
             if (FormNum == "2.1")
             {
@@ -1476,6 +1490,10 @@ namespace Collections
             if (FormNum == "2.12")
             {
                 Form212.ExcelHeader(worksheet);
+            }
+            if (FormNum == "Notes")
+            {
+                Note.ExcelHeader(worksheet);
             }
         }
 
