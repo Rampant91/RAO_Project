@@ -3,6 +3,10 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System;
 using System.ComponentModel;
+using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -100,36 +104,6 @@ private bool CodeOYAT_Validation(RamAccess<string> value)
         }
         //CodeOYAT property
         #endregion
-
-        //CodeOYATnote property
-        //public RamAccess<string> CodeOYATnote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(CodeOYATnote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            CodeOYATnote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(CodeOYATnote_Validation, _DB);
-        //    }
-        //}
-
-        //        private bool CodeOYATnote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;}
-        //CodeOYATnote property
 
         //FcpNumber property
         #region  FcpNumber
@@ -278,57 +252,6 @@ private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         //QuantityCreated property
         #endregion
 
-        ////QuantityCreatedNote property
-        //public RamAccess<string> QuantityCreatedNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(QuantityCreatedNote_Validation, _DB);//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            QuantityCreatedNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(QuantityCreatedNote));
-        //    }
-        //}
-        //// positive int.
-        //        private bool QuantityCreatedNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors();
-        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-        //    {
-        //        return true;
-        //    }
-        //    try
-        //    {
-        //        int k = int.Parse(value.Value);
-        //        if (k <= 0)
-        //        {
-        //            value.AddError("Недопустимое значение");
-        //            return false;
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        value.AddError("Недопустимое значение");
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        ////QuantityCreatedNote property
-
         //MassFromAnothers Property
         #region  MassFromAnothers
         public string MassFromAnothers_DB { get; set; } = ""; [NotMapped]
@@ -441,53 +364,6 @@ private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         }
         //QuantityFromAnothers property
         #endregion
-
-        ////QuantityFromAnothersNote property
-        //public RamAccess<string> QuantityFromAnothersNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(QuantityFromAnothersNote_Validation, _DB);//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-        //            QuantityFromAnothersNote_DB = value.Value;
-        //        OnPropertyChanged(nameof(QuantityFromAnothersNote));
-        //    }
-        //}
-        //// positive int.
-        //        private bool QuantityFromAnothersNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors();
-        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-        //    {
-        //        return true;
-        //    }
-        //    try
-        //    {
-        //        int k = int.Parse(value.Value);
-        //        if (k <= 0)
-        //        {
-        //            value.AddError("Недопустимое значение");
-        //            return false;
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        value.AddError("Недопустимое значение");
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        ////QuantityFromAnothersNote property
 
         //MassFromAnothersImported Property
         #region  MassFromAnothersImported
@@ -602,57 +478,6 @@ private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//R
         //QuantityFromAnothersImported property
         #endregion
 
-        ////QuantityFromImportedNote property
-        //public RamAccess<string> QuantityFromImportedNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(QuantityFromImportedNote_Validation, _DB);//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            QuantityFromImportedNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(QuantityFromImportedNote));
-        //    }
-        //}
-        //// positive int.
-        //        private bool QuantityFromImportedNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors();
-        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-        //    {
-        //        return true;
-        //    }
-        //    try
-        //    {
-        //        int k = int.Parse(value.Value);
-        //        if (k <= 0)
-        //        {
-        //            value.AddError("Недопустимое значение");
-        //            return false;
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        value.AddError("Недопустимое значение");
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        ////QuantityFromImportedNote property
-
         //MassAnotherReasons Property
         #region  MassAnotherReasons
         public string MassAnotherReasons_DB { get; set; } = ""; [NotMapped]
@@ -765,57 +590,6 @@ private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         }
         //QuantityAnotherReasons property
         #endregion
-
-        ////QuantityAnotherReasonsNote property
-        //public RamAccess<string> QuantityAnotherReasonsNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(QuantityAnotherReasonsNote_Validation, _DB);//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            QuantityAnotherReasonsNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(QuantityAnotherReasonsNote));
-        //    }
-        //}
-        //// positive int.
-        //        private bool QuantityAnotherReasonsNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors();
-        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-        //    {
-        //        return true;
-        //    }
-        //    try
-        //    {
-        //        int k = int.Parse(value.Value);
-        //        if (k <= 0)
-        //        {
-        //            value.AddError("Недопустимое значение");
-        //            return false;
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        value.AddError("Недопустимое значение");
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        ////QuantityAnotherReasonsNote property
 
         //MassTransferredToAnother Property
         #region  MassTransferredToAnother
@@ -930,57 +704,6 @@ private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//R
         //QuantityTransferredToAnother property
         #endregion
 
-        ////QuantityTransferredToNote property
-        //public RamAccess<string> QuantityTransferredToNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(QuantityTransferredToNote_Validation, _DB);//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            QuantityTransferredToNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(QuantityTransferredToNote));
-        //    }
-        //}
-        //// positive int.
-        //        private bool QuantityTransferredToNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors();
-        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-        //    {
-        //        return true;
-        //    }
-        //    try
-        //    {
-        //        int k = int.Parse(value.Value);
-        //        if (k <= 0)
-        //        {
-        //            value.AddError("Недопустимое значение");
-        //            return false;
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        value.AddError("Недопустимое значение");
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        ////QuantityTransferredToNote property
-
         //MassRefined Property
         #region  MassRefined
         public string MassRefined_DB { get; set; } = ""; [NotMapped]
@@ -1093,57 +816,6 @@ private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         }
         //QuantityRefined property
         #endregion
-
-        ////QuantityRefinedNote property
-        //public RamAccess<string> QuantityRefinedNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(QuantityRefinedNote_Validation, _DB);//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            QuantityRefinedNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(QuantityRefinedNote));
-        //    }
-        //}
-        //// positive int.
-        //        private bool QuantityRefinedNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors();
-        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-        //    {
-        //        return true;
-        //    }
-        //    try
-        //    {
-        //        int k = int.Parse(value.Value);
-        //        if (k <= 0)
-        //        {
-        //            value.AddError("Недопустимое значение");
-        //            return false;
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        value.AddError("Недопустимое значение");
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        ////QuantityRefinedNote property
 
         //MassRemovedFromAccount Property
         #region  MassRemovedFromAccount
@@ -1258,55 +930,48 @@ private bool QuantityRemovedFromAccount_Validation(RamAccess<string> value)//Rea
         //QuantityRemovedFromAccount property
         #endregion
 
-        ////QuantityRemovedFromNote property
-        //public RamAccess<string> QuantityRemovedFromNote
-        //{
-        //    get
-        //    {
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = CodeOYAT_DB;
+            worksheet.Cells[Row, 3].Value = FcpNumber_DB;
+            worksheet.Cells[Row, 4].Value = MassCreated_DB;
+            worksheet.Cells[Row, 5].Value = QuantityCreated_DB;
+            worksheet.Cells[Row, 6].Value = MassFromAnothers_DB;
+            worksheet.Cells[Row, 7].Value = QuantityFromAnothers_DB;
+            worksheet.Cells[Row, 8].Value = MassFromAnothersImported_DB;
+            worksheet.Cells[Row, 9].Value = QuantityFromAnothersImported_DB;
+            worksheet.Cells[Row, 10].Value = MassAnotherReasons_DB;
+            worksheet.Cells[Row, 11].Value = QuantityAnotherReasons_DB;
+            worksheet.Cells[Row, 12].Value = MassTransferredToAnother_DB;
+            worksheet.Cells[Row, 13].Value = QuantityTransferredToAnother_DB;
+            worksheet.Cells[Row, 14].Value = MassRefined_DB;
+            worksheet.Cells[Row, 15].Value = QuantityRefined_DB;
+            worksheet.Cells[Row, 16].Value = MassRemovedFromAccount_DB;
+            worksheet.Cells[Row, 17].Value = QuantityRemovedFromAccount_DB;
+        }
 
-        //        {
-        //            var tmp = new RamAccess<string>(QuantityRemovedFromNote_Validation, _DB);//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            QuantityRemovedFromNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(QuantityRemovedFromNote));
-        //    }
-        //}
-        //// positive int.
-        //        private bool QuantityRemovedFromNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors();
-        //    if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
-        //    {
-        //        return true;
-        //    }
-        //    try
-        //    {
-        //        int k = int.Parse(value.Value);
-        //        if (k <= 0)
-        //        {
-        //            value.AddError("Недопустимое значение");
-        //            return false;
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        value.AddError("Недопустимое значение");
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        ////QuantityRemovedFromNote property
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(CodeOYAT)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityCreated)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothers)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 9].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityFromAnothersImported)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 10].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 11].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityAnotherReasons)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 12].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 13].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityTransferredToAnother)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 14].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 15].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRefined)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 16].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(MassRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 17].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form24,Models").GetProperty(nameof(QuantityRemovedFromAccount)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
+        #endregion
     }
 }

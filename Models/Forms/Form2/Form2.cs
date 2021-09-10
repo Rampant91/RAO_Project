@@ -1,5 +1,9 @@
-﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
+using System.Linq;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models.Abstracts
 {
@@ -92,6 +96,21 @@ namespace Models.Abstracts
 
         //NumberInOrder property
 
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 1].Value = NumberInOrder_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form.ExcelHeader(worksheet);
+            worksheet.Cells[1, 1].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form21,Models").GetProperty(nameof(NumberInOrder))
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
         #endregion
     }
 }

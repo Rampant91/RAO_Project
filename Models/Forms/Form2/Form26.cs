@@ -5,6 +5,9 @@ using Spravochniki;
 using System.Collections.Generic;
 using System.Globalization;
 using System.ComponentModel;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -312,38 +315,6 @@ private bool TestDepth_Validation(RamAccess<string> value)//Ready
         //TestDepth property
         #endregion
 
-        ////TestDepthNote property
-        //public RamAccess<string> TestDepthNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(TestDepthNote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            TestDepthNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(TestDepthNote));
-        //    }
-        //}
-
-        //private bool TestDepthNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors();
-        //    return true;
-        //}
-        ////TestDepthNote property
-
         //RadionuclidName property
         #region RadionuclidName
         public string RadionuclidName_DB { get; set; } = ""; [NotMapped]
@@ -442,6 +413,32 @@ private bool AverageYearConcentration_Validation(RamAccess<string> value)//TODO
             return true;
         }
         //AverageYearConcentration property
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = ObservedSourceNumber_DB;
+            worksheet.Cells[Row, 3].Value = ControlledAreaName_DB;
+            worksheet.Cells[Row, 4].Value = SupposedWasteSource_DB;
+            worksheet.Cells[Row, 5].Value = DistanceToWasteSource_DB;
+            worksheet.Cells[Row, 6].Value = TestDepth_DB;
+            worksheet.Cells[Row, 7].Value = RadionuclidName_DB;
+            worksheet.Cells[Row, 8].Value = AverageYearConcentration_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(ObservedSourceNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(ControlledAreaName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(SupposedWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(DistanceToWasteSource)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(TestDepth)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form26,Models").GetProperty(nameof(AverageYearConcentration)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
         #endregion
     }
 }

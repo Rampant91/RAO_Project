@@ -4,6 +4,9 @@ using System.ComponentModel;
 using System.Globalization;
 using Spravochniki;
 using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -177,38 +180,6 @@ namespace Models
         //AllowedActivity property
         #endregion
 
-        ////AllowedActivityNote property
-        //public RamAccess<string> AllowedActivityNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(AllowedActivityNote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            AllowedActivityNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(AllowedActivityNote));
-        //    }
-        //}
-
-
-        //private bool AllowedActivityNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    return true;
-        //}
-        ////AllowedActivityNote property
-
         //FactedActivity property
         #region FactedActivity
         public string FactedActivity_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
@@ -266,36 +237,25 @@ namespace Models
         //FactedActivity property
         #endregion
 
-        ////FactedActivityNote property
-        //public RamAccess<string> FactedActivityNote
-        //{
-        //    get
-        //    {
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = WasteSourceName_DB;
+            worksheet.Cells[Row, 3].Value = RadionuclidName_DB;
+            worksheet.Cells[Row, 4].Value = AllowedActivity_DB;
+            worksheet.Cells[Row, 5].Value = FactedActivity_DB;
+        }
 
-        //        {
-        //            var tmp = new RamAccess<string>(FactedActivityNote_Validation, _DB);
-        //        }
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
 
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            FactedActivityNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(FactedActivityNote));
-        //    }
-        //}
-
-
-        //private bool FactedActivityNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    return true;
-        //}
-        ////FactedActivityNote property
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form29,Models").GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form29,Models").GetProperty(nameof(RadionuclidName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form29,Models").GetProperty(nameof(AllowedActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form29,Models").GetProperty(nameof(FactedActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
+        #endregion
     }
 }

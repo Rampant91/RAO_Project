@@ -6,6 +6,9 @@ using System.Globalization;
 using Spravochniki;
 using System.ComponentModel;
 using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -306,37 +309,26 @@ private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
                 "ВИРГИНСКИЕ ОСТРОВА (США)","БУРКИНА-ФАСО","УРУГВАЙ","УЗБЕКИСТАН","ВЕНЕСУЭЛА (БОЛИВАРИАНСКАЯ РЕСПУБЛИКА)","УОЛЛИС И ФУТУНА","САМОА","ЙЕМЕН","ЗАМБИЯ","АБХАЗИЯ","ЮЖНАЯ ОСЕТИЯ"
             };
 
-        ////ProviderOrRecieverOKPONote property
-        //public RamAccess<string> ProviderOrRecieverOKPONote
-        //{
-        //    get
-        //    {
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = OperationCode;
+            worksheet.Cells[Row, 3].Value = ObjectTypeCode_DB;
+            worksheet.Cells[Row, 4].Value = Radionuclids_DB;
+            worksheet.Cells[Row, 5].Value = Activity_DB;
+            worksheet.Cells[Row, 6].Value = ProviderOrRecieverOKPO_DB;
+        }
 
-        //        {
-        //            var tmp = new RamAccess<string>(ProviderOrRecieverOKPONote_Validation, _DB);//OK
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            ProviderOrRecieverOKPONote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(ProviderOrRecieverOKPONote));
-        //    }
-        //}
-
-
-        //private bool ProviderOrRecieverOKPONote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////ProviderOrRecieverOKPONote property
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form212,Models").GetProperty(nameof(OperationCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form212,Models").GetProperty(nameof(ObjectTypeCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form212,Models").GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form212,Models").GetProperty(nameof(Activity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form212,Models").GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
+        #endregion
     }
 }

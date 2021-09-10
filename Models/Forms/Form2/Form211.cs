@@ -5,6 +5,9 @@ using Spravochniki;
 using System.Linq;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -269,37 +272,6 @@ private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         //Radionuclids property
         #endregion
 
-        ////RadionuclidNameNote property
-        //public RamAccess<string> RadionuclidNameNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(RadionuclidNameNote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            RadionuclidNameNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(RadionuclidNameNote));
-        //    }
-        //}
-
-        //private bool RadionuclidNameNote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////RadionuclidNameNote property
-
         //SpecificActivityOfPlot property
         #region  SpecificActivityOfPlot
         public string SpecificActivityOfPlot_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Удельная активность, Бк/г")]
@@ -426,6 +398,34 @@ private bool SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TO
             //}
         }
         //SpecificActivityOfDensePart property
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = PlotName_DB;
+            worksheet.Cells[Row, 3].Value = PlotKadastrNumber_DB;
+            worksheet.Cells[Row, 4].Value = PlotCode_DB;
+            worksheet.Cells[Row, 5].Value = InfectedArea_DB;
+            worksheet.Cells[Row, 6].Value = Radionuclids_DB;
+            worksheet.Cells[Row, 7].Value = SpecificActivityOfPlot_DB;
+            worksheet.Cells[Row, 8].Value = SpecificActivityOfLiquidPart_DB;
+            worksheet.Cells[Row, 9].Value = SpecificActivityOfDensePart_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form211,Models").GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form211,Models").GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form211,Models").GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form211,Models").GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form211,Models").GetProperty(nameof(Radionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form211,Models").GetProperty(nameof(SpecificActivityOfPlot)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form211,Models").GetProperty(nameof(SpecificActivityOfLiquidPart)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 9].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form211,Models").GetProperty(nameof(SpecificActivityOfDensePart)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
         #endregion
     }
 }

@@ -5,10 +5,11 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using DBRealization;
 using Models.DataAccess;
+using OfficeOpenXml;
 
 namespace Collections
 {
-    public class Reports : IKey, INotifyPropertyChanged
+    public class Reports : IKey
     {
         public Reports()
         {
@@ -87,5 +88,15 @@ namespace Collections
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
         //Property Changed
+
+        public void ExcelRow(ExcelWorksheet worksheet,int Row)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

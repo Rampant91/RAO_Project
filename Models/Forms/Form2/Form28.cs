@@ -4,6 +4,10 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Globalization;
 using System.ComponentModel;
+using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 using Spravochniki;
 
 namespace Models
@@ -945,36 +949,28 @@ namespace Models
         //RemovedWasteVolume property
         #endregion
 
-        ////RemovedWasteVolumeNote property
-        //public RamAccess<double> RemovedWasteVolumeNote
-        //{
-        //    get
-        //    {
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = WasteSourceName_DB;
+            worksheet.Cells[Row, 3].Value = WasteRecieverName_DB;
+            worksheet.Cells[Row, 4].Value = RecieverTypeCode_DB;
+            worksheet.Cells[Row, 5].Value = PoolDistrictName_DB;
+            worksheet.Cells[Row, 6].Value = AllowedWasteRemovalVolume_DB;
+            worksheet.Cells[Row, 7].Value = RemovedWasteVolume_DB;
+        }
 
-        //        {
-        //            var tmp = new RamAccess<double>(RemovedWasteVolumeNote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            RemovedWasteVolumeNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(RemovedWasteVolumeNote));
-        //    }
-        //}
-
-
-        //private bool RemovedWasteVolumeNote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////RemovedWasteVolumeNote property
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(WasteSourceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(WasteRecieverName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(RecieverTypeCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(PoolDistrictName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form28,Models").GetProperty(nameof(RemovedWasteVolume)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
+        #endregion
     }
 }

@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Models.Abstracts;
+using OfficeOpenXml;
 
 namespace Models.DataAccess
 {
@@ -149,6 +150,17 @@ namespace Models.DataAccess
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            throw new System.NotImplementedException();
+        }
         #endregion
     }
 }

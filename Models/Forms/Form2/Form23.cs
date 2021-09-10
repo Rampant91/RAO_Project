@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -95,38 +99,6 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         }
         //StoragePlaceName property
         #endregion
-
-        ////StoragePlaceNameNote property
-        //public RamAccess<string> StoragePlaceNameNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(StoragePlaceNameNote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            StoragePlaceNameNote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(StoragePlaceNameNote));
-        //    }
-        //}
-        ////If change this change validation
-
-        //private bool StoragePlaceNameNote_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////StoragePlaceNameNote property
 
         //StoragePlaceCode property
         #region  StoragePlaceCode
@@ -240,35 +212,6 @@ private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
         }
         //ProjectVolume property
         #endregion
-
-        ////ProjectVolumeNote property
-        //public RamAccess<double> ProjectVolumeNote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<double>(ProjectVolumeNote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-        //        ProjectVolumeNote_DB = value.Value;
-        //        OnPropertyChanged(nameof(ProjectVolumeNote));
-        //    }
-        //}
-
-
-        //private bool ProjectVolumeNote_Validation(RamAccess<double?> value)//TODO
-        //{
-        //    value.ClearErrors();
-        //    return true;
-        //}
-        ////ProjectVolumeNote property
 
         //CodeRAO property
         #region  CodeRAO
@@ -558,44 +501,9 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         //DocumentNumber property
         #endregion
 
-        //DocumentNumberRecoded property
-        //public RamAccess<string> DocumentNumberRecoded
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(DocumentNumberRecoded_Validation, _DB);//OK
-        //            tmp.PropertyChanged += ValueChanged;
-        //            return tmp;
-
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            DocumentNumberRecoded_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(DocumentNumberRecoded));
-        //    }
-        //}
-
-
-        //private bool DocumentNumberRecoded_Validation(RamAccess<string> value)//Ready
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        //DocumentNumberRecoded property
-
         //DocumentDate property
-        #region  
-public string DocumentDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Дата документа")]
+        #region DocumentDate 
+        public string DocumentDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Дата документа")]
         public RamAccess<string> DocumentDate
         {
             get
@@ -732,6 +640,42 @@ private bool DocumentName_Validation(RamAccess<string> value)//Ready
             return true;
         }
         //DocumentName property
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = StoragePlaceName_DB;
+            worksheet.Cells[Row, 3].Value = StoragePlaceCode_DB;
+            worksheet.Cells[Row, 4].Value = ProjectVolume_DB;
+            worksheet.Cells[Row, 5].Value = CodeRAO_DB;
+            worksheet.Cells[Row, 6].Value = Volume_DB;
+            worksheet.Cells[Row, 7].Value = Mass_DB;
+            worksheet.Cells[Row, 8].Value = QuantityOZIII_DB;
+            worksheet.Cells[Row, 9].Value = SummaryActivity_DB;
+            worksheet.Cells[Row, 10].Value = DocumentNumber_DB;
+            worksheet.Cells[Row, 11].Value = DocumentDate_DB;
+            worksheet.Cells[Row, 12].Value = ExpirationDate_DB;
+            worksheet.Cells[Row, 13].Value = DocumentName_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(ProjectVolume)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(CodeRAO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(Volume)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(Mass)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(QuantityOZIII)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 9].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(SummaryActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 10].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(DocumentNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 11].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(DocumentDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 12].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(ExpirationDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 13].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(DocumentName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
         #endregion
     }
 }

@@ -3,6 +3,10 @@ using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -1362,6 +1366,62 @@ private bool TransuraniumActivityOut_Validation(RamAccess<string> value)//TODO
             return true;
         }
         //TransuraniumActivityOut property
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = RefineMachineName_DB;
+            worksheet.Cells[Row, 3].Value = MachineCode_DB;
+            worksheet.Cells[Row, 4].Value = MachinePower_DB;
+            worksheet.Cells[Row, 5].Value = NumberOfHoursPerYear_DB;
+            worksheet.Cells[Row, 6].Value = CodeRAOIn_DB;
+            worksheet.Cells[Row, 7].Value = StatusRAOIn_DB;
+            worksheet.Cells[Row, 8].Value = VolumeIn_DB;
+            worksheet.Cells[Row, 9].Value = MassIn_DB;
+            worksheet.Cells[Row, 10].Value = QuantityIn_DB;
+            worksheet.Cells[Row, 11].Value = TritiumActivityIn_DB;
+            worksheet.Cells[Row, 12].Value = BetaGammaActivityIn_DB;
+            worksheet.Cells[Row, 13].Value = AlphaActivityIn_DB;
+            worksheet.Cells[Row, 14].Value = TritiumActivityIn_DB;
+            worksheet.Cells[Row, 15].Value = CodeRAOout_DB;
+            worksheet.Cells[Row, 16].Value = StatusRAOout_DB;
+            worksheet.Cells[Row, 17].Value = VolumeOut_DB;
+            worksheet.Cells[Row, 18].Value = MassOut_DB;
+            worksheet.Cells[Row, 19].Value = QuantityOZIIIout_DB;
+            worksheet.Cells[Row, 20].Value = TritiumActivityOut_DB;
+            worksheet.Cells[Row, 21].Value = BetaGammaActivityOut_DB;
+            worksheet.Cells[Row, 22].Value = AlphaActivityOut_DB;
+            worksheet.Cells[Row, 23].Value = TritiumActivityOut_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(RefineMachineName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(MachineCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(MachinePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(NumberOfHoursPerYear)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 9].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(MassIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 10].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 11].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 12].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 13].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 14].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityIn)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 15].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(CodeRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 16].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(StatusRAOout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 17].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(VolumeOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 18].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(MassOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 19].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(QuantityOZIIIout)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 20].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 21].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(BetaGammaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 22].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(AlphaActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 23].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form21,Models").GetProperty(nameof(TritiumActivityOut)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
         #endregion
     }
 }

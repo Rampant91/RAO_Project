@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using OfficeOpenXml;
 
 namespace Collections
 {
@@ -96,6 +97,18 @@ namespace Collections
 
             OnItemPropertyChanged(i, e);
         }
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            throw new System.NotImplementedException();
+        }
+        #endregion
     }
 
     /// <summary>

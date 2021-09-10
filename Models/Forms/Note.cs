@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 using Collections;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -150,5 +151,16 @@ namespace Models
         }
         public event PropertyChangedEventHandler PropertyChanged;
         //Property Changed
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            throw new System.NotImplementedException();
+        }
+        #endregion
     }
 }

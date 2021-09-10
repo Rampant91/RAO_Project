@@ -3,6 +3,10 @@ using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -124,36 +128,6 @@ private bool CodeOYAT_Validation(RamAccess<string> value)
         }
         //CodeOYAT property
         #endregion
-
-        ////CodeOYATnote property
-        //public RamAccess<string> CodeOYATnote
-        //{
-        //    get
-        //    {
-
-        //        {
-        //            var tmp = new RamAccess<string>(CodeOYATnote_Validation, _DB);
-        //        }
-
-        //        {
-
-        //        }
-        //    }
-        //    set
-        //    {
-
-
-        //        {
-        //            CodeOYATnote_DB = value.Value;
-        //        }
-        //        OnPropertyChanged(nameof(CodeOYATnote));
-        //    }
-        //}
-        //private bool CodeOYATnote_Validation(RamAccess<string> value)
-        //{
-        //    value.ClearErrors(); return true;
-        //}
-        ////CodeOYATnote property
 
         //StoragePlaceCode property
         #region  StoragePlaceCode
@@ -522,6 +496,36 @@ private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
             return true;
         }
         //AlphaActivity property
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = StoragePlaceName;
+            worksheet.Cells[Row, 3].Value = StoragePlaceCode_DB;
+            worksheet.Cells[Row, 4].Value = CodeOYAT_DB;
+            worksheet.Cells[Row, 5].Value = FcpNumber_DB;
+            worksheet.Cells[Row, 6].Value = FuelMass_DB;
+            worksheet.Cells[Row, 7].Value = CellMass_DB;
+            worksheet.Cells[Row, 8].Value = Quantity_DB;
+            worksheet.Cells[Row, 9].Value = AlphaActivity_DB;
+            worksheet.Cells[Row, 10].Value = BetaGammaActivity_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form25,Models").GetProperty(nameof(StoragePlaceName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form25,Models").GetProperty(nameof(StoragePlaceCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form25,Models").GetProperty(nameof(CodeOYAT)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form25,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form25,Models").GetProperty(nameof(FuelMass)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form25,Models").GetProperty(nameof(CellMass)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form25,Models").GetProperty(nameof(Quantity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 9].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form25,Models").GetProperty(nameof(AlphaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 10].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form25,Models").GetProperty(nameof(BetaGammaActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+        }
         #endregion
     }
 }

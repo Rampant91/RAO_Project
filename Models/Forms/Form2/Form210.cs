@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
+using Models.Abstracts;
+using Models.Attributes;
+using OfficeOpenXml;
 
 namespace Models
 {
@@ -305,8 +309,8 @@ private bool AvgGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
         #endregion
 
         //MaxGammaRaysDosePower property
-        #region  
-public double? MaxGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
+        #region  MaxGammaRaysDosePower
+        public double? MaxGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
         public RamAccess<double?> MaxGammaRaysDosePower
         {
             get
@@ -448,6 +452,39 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
             value.ClearErrors(); return true;
         }
         //FcpNumber property
+        #endregion
+
+        #region IExcel
+        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        {
+            base.ExcelRow(worksheet, Row);
+            worksheet.Cells[Row, 2].Value = IndicatorName_DB;
+            worksheet.Cells[Row, 3].Value = PlotName_DB;
+            worksheet.Cells[Row, 4].Value = PlotKadastrNumber_DB;
+            worksheet.Cells[Row, 5].Value = PlotCode_DB;
+            worksheet.Cells[Row, 6].Value = InfectedArea_DB;
+            worksheet.Cells[Row, 7].Value = AvgGammaRaysDosePower_DB;
+            worksheet.Cells[Row, 8].Value = MaxGammaRaysDosePower_DB;
+            worksheet.Cells[Row, 9].Value =WasteDensityAlpha_DB;
+            worksheet.Cells[Row, 10].Value = WasteDensityBeta_DB;
+            worksheet.Cells[Row, 11].Value = FcpNumber_DB;
+        }
+
+        public static void ExcelHeader(ExcelWorksheet worksheet)
+        {
+            Form2.ExcelHeader(worksheet);
+            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(IndicatorName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(PlotName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 4].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(PlotKadastrNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 5].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(PlotCode)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(InfectedArea)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(AvgGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(MaxGammaRaysDosePower)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 9].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(WasteDensityAlpha)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 10].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(WasteDensityBeta)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[1, 11].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form210,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+
+        }
         #endregion
     }
 }
