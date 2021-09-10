@@ -914,6 +914,11 @@ namespace Collections
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if ((value.Value < 2010) || (value.Value > 2060))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
             return true;
         }
         #endregion
