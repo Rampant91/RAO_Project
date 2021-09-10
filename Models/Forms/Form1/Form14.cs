@@ -382,7 +382,7 @@ namespace Models
         #endregion
 
         #region Mass
-        public string Mass_DB { get; set; } = "";
+        public string Mass_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Масса, кг")]
         public RamAccess<string> Mass

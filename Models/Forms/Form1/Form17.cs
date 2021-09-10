@@ -287,7 +287,7 @@ namespace Models
         private bool Volume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (string.IsNullOrEmpty(value.Value)||(value.Value=="-"))
             {
                 return true;
             }
@@ -339,7 +339,7 @@ namespace Models
         private bool Mass_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (string.IsNullOrEmpty(value.Value) || (value.Value == "-"))
             {
                 return true;
             }
@@ -903,7 +903,7 @@ namespace Models
         private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -955,7 +955,7 @@ namespace Models
         private bool MassOutOfPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;

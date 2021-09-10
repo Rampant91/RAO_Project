@@ -879,6 +879,44 @@ namespace Collections
         }
         #endregion
 
+        #region Year
+        public int? Year_DB { get; set; } = null;
+        [NotMapped]
+        [Form_Property("Отчетный год:")]
+        public RamAccess<int?> Year
+        {
+            get
+            {
+                var tmp = new RamAccess<int?>(Year_Validation, Year_DB);
+                tmp.PropertyChanged += YearValueChanged;
+                return tmp;
+            }
+            set
+            {
+                Year_DB = value.Value;
+                OnPropertyChanged(nameof(Year));
+            }
+        }
+        private void YearValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Year_DB = ((RamAccess<int?>)Value).Value;
+                OnPropertyChanged(nameof(Year));
+            }
+        }
+        private bool Year_Validation(RamAccess<int?> value)
+        {
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
         #region StartPeriod
         public string StartPeriod_DB { get; set; } = "";
         [NotMapped]

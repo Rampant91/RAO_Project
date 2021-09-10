@@ -717,12 +717,12 @@ namespace Models
         private bool Volume20_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!((value.Value.Contains('e') || value.Value.Contains('E'))))
+            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
                 value.AddError("Недопустимое значение");
                 return false;

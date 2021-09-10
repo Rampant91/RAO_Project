@@ -381,11 +381,12 @@ private bool StatusRAOIn_Validation(RamAccess<string> value)//TODO
         public RamAccess<string> VolumeIn//SUMMARIZABLE
         {
             get
-{
-var tmp = new RamAccess<string>(VolumeIn_Validation, VolumeIn_DB);
-tmp.PropertyChanged += VolumeInValueChanged;
-return tmp;
-}            set
+            {
+                var tmp = new RamAccess<string>(VolumeIn_Validation, VolumeIn_DB);
+                tmp.PropertyChanged += VolumeInValueChanged;
+                return tmp;
+            }
+            set
             {
                 VolumeIn_DB = value.Value;
                 OnPropertyChanged(nameof(VolumeIn));
