@@ -456,6 +456,13 @@ namespace Client_App.Controls.DataGrid
             };
             brd.Child = p;
 
+            ScrollViewer vw = new();
+            vw.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
+            vw.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+            vw.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+
+            p.Children.Add(vw);
+
             Grid grd = new();
             RowDefinition rd = new()
             {
@@ -463,7 +470,7 @@ namespace Client_App.Controls.DataGrid
             };
             grd.RowDefinitions.Add(rd);
             grd.RowDefinitions.Add(new RowDefinition());
-            p.Children.Add(grd);
+            vw.Content=grd;
 
             Panel pnl = new();
             pnl.SetValue(Grid.RowProperty, 0);
@@ -471,19 +478,14 @@ namespace Client_App.Controls.DataGrid
             Columns = pnl;
             grd.Children.Add(pnl);
 
-            ScrollViewer vw = new();
-            vw.SetValue(Grid.RowProperty, 1);
-            vw.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
-            vw.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
-            vw.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-
             Panel pn = new Panel();
             pn.HorizontalAlignment = HorizontalAlignment.Stretch;
             pn.VerticalAlignment = VerticalAlignment.Stretch;
+            pn.SetValue(Grid.RowProperty, 1);
             pn.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
             pn.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
             pn.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
-            vw.Content = pn;
+            grd.Children.Add(pn);
 
             StackPanel stck = new()
             {
@@ -495,7 +497,6 @@ namespace Client_App.Controls.DataGrid
             };
             pn.Children.Add(stck);
             Rows = new RowCollection(stck);
-            grd.Children.Add(vw);
             Content = brd;
         }
     }

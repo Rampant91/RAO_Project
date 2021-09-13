@@ -119,28 +119,6 @@ namespace DBRealization
             var t =this;
         }
 
-        public void UndoChanges()
-        {
-            var coll = ChangeTracker.Entries().ToList();
-            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry in coll)
-            {
-                switch (entry.State)
-                {
-                    case EntityState.Modified:
-                        entry.State = EntityState.Unchanged;
-                        break;
-                    case EntityState.Deleted:
-                        entry.Reload();
-                        break;
-                    case EntityState.Added:
-                        entry.State = EntityState.Detached;
-                        break;
-                }
-            }
-
-            this.SaveChanges();
-        }
-
         public DbSet<Collections.DBObservable> DBObservableDbSet { get; set; }
         public DbSet<Collections.Reports> ReportsCollectionDbSet { get; set; }
         public DbSet<Collections.Report> ReportCollectionDbSet { get; set; }

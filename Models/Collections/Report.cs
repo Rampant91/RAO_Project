@@ -459,8 +459,8 @@ namespace Collections
         #endregion
 
         #region Forms21
-        ObservableCollectionWithItemPropertyChanged<Form21> Rows21_DB;
-        public virtual ObservableCollectionWithItemPropertyChanged<Form21> Rows21
+        ObservableCollectionWithItemPropertyChangedWithSum<Form21> Rows21_DB;
+        public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form21> Rows21
         {
             get
             {
@@ -1143,7 +1143,7 @@ namespace Collections
             Rows20 = new ObservableCollectionWithItemPropertyChanged<Form20>();
             Rows20.CollectionChanged += CollectionChanged20;
 
-            Rows21 = new ObservableCollectionWithItemPropertyChanged<Form21>();
+            Rows21 = new ObservableCollectionWithItemPropertyChangedWithSum<Form21>();
             Rows21.CollectionChanged += CollectionChanged21;
 
             Rows22 = new ObservableCollectionWithItemPropertyChanged<Form22>();

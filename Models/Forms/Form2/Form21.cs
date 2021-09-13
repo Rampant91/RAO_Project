@@ -74,64 +74,120 @@ namespace Models
             StatusRAOout.HasErrors);
         }
 
+        [NotMapped] public bool Sum { get; set; } = false;
+
         //RefineMachineName property
         #region  RefineMachineName
-        public string RefineMachineName_DB { get; set; } = ""; [NotMapped]
+        public string RefineMachineName_DB { get; set; } = "";
+        public bool RefineMachineName_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool RefineMachineName_Hidden
+        {
+            get => RefineMachineName_Hidden_Priv;
+            set
+            {
+                RefineMachineName_Hidden_Priv = value;
+            }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("Наименование установки переработки")]
         public RamAccess<string> RefineMachineName
         {
             get
-{
-var tmp = new RamAccess<string>(RefineMachineName_Validation, RefineMachineName_DB);
-tmp.PropertyChanged += RefineMachineNameValueChanged;
-return tmp;
-}            set
             {
-                RefineMachineName_DB = value.Value;
-                OnPropertyChanged(nameof(RefineMachineName));
+                if (!RefineMachineName_Hidden)
+                {
+                    var tmp = new RamAccess<string>(RefineMachineName_Validation, RefineMachineName_DB);
+                    tmp.PropertyChanged += RefineMachineNameValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
+            }
+            set
+            {
+                if (!RefineMachineName_Hidden)
+                {
+                    RefineMachineName_DB = value.Value;
+                    OnPropertyChanged(nameof(RefineMachineName));
+                }
             }
         }
 
         private void RefineMachineNameValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                RefineMachineName_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool RefineMachineName_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            if (args.PropertyName == "Value")
+            {
+                RefineMachineName_DB = ((RamAccess<string>) Value).Value;
+                OnPropertyChanged(nameof(RefineMachineName));
+            }
         }
+
+        private bool RefineMachineName_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+
         //RefineMachineName property
         #endregion
 
         //MachineCode property
         #region MachineCode 
-        public byte? MachineCode_DB { get; set; } = null; [NotMapped]
+        public byte? MachineCode_DB { get; set; } = null;
+        public bool MachineCode_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool MachineCode_Hidden
+        {
+            get => MachineCode_Hidden_Priv;
+            set
+            {
+                MachineCode_Hidden_Priv = value;
+            }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("Код установки переработки")]
         public RamAccess<byte?> MachineCode
         {
             get
-{
-var tmp = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB);
-tmp.PropertyChanged += MachineCodeValueChanged;
-return tmp;
-}            set
             {
-                MachineCode_DB = value.Value;
-                OnPropertyChanged(nameof(MachineCode));
+                if (!MachineCode_Hidden)
+                {
+                    var tmp = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB);
+                    tmp.PropertyChanged += MachineCodeValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<byte?>(null, null);
+                    return tmp;
+                }
+            }
+            set
+            {
+                if (!MachineCode_Hidden)
+                {
+                    MachineCode_DB = value.Value;
+                    OnPropertyChanged(nameof(MachineCode));
+                }
             }
         }
 
         private void MachineCodeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MachineCode_DB = ((RamAccess<byte?>)Value).Value;
-}
-}
-private bool MachineCode_Validation(RamAccess<byte?> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                MachineCode_DB = ((RamAccess<byte?>) Value).Value;
+                OnPropertyChanged(nameof(MachineCode));
+            }
+        }
+
+        private bool MachineCode_Validation(RamAccess<byte?> value) //TODO
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -139,6 +195,7 @@ private bool MachineCode_Validation(RamAccess<byte?> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
+
             bool a = (value.Value >= 11) && (value.Value <= 17);
             bool b = (value.Value >= 21) && (value.Value <= 24);
             bool c = (value.Value >= 31) && (value.Value <= 32);
@@ -146,52 +203,84 @@ private bool MachineCode_Validation(RamAccess<byte?> value)//TODO
             bool e = (value.Value >= 51) && (value.Value <= 56);
             bool f = (value.Value >= 61) && (value.Value <= 63);
             bool g = (value.Value >= 71) && (value.Value <= 73);
-            bool h = (value.Value == 19) || (value.Value == 29) || (value.Value == 39) || (value.Value == 49) || (value.Value == 99) || (value.Value == 79);
+            bool h = (value.Value == 19) || (value.Value == 29) || (value.Value == 39) || (value.Value == 49) ||
+                     (value.Value == 99) || (value.Value == 79);
             if (!(a || b || c || d || e || f || g || h))
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
+
             return true;
         }
+
         //MachineCode property
         #endregion
 
         //MachinePower property
         #region  MachinePower
-        public string MachinePower_DB { get; set; } = ""; [NotMapped]
+        public string MachinePower_DB { get; set; } = "";
+        public bool MachinePower_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool MachinePower_Hidden
+        {
+            get => MachinePower_Hidden_Priv;
+            set
+            {
+                MachinePower_Hidden_Priv = value;
+            }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("Мощность, куб. м/год")]
         public RamAccess<string> MachinePower
         {
             get
-{
-var tmp = new RamAccess<string>(MachinePower_Validation, MachinePower_DB);
-tmp.PropertyChanged += MachinePowerValueChanged;
-return tmp;
-}            set
             {
-                MachinePower_DB = value.Value;
-                OnPropertyChanged(nameof(MachinePower));
+                if (!MachinePower_Hidden)
+                {
+                    var tmp = new RamAccess<string>(MachinePower_Validation, MachinePower_DB);
+                    tmp.PropertyChanged += MachinePowerValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
+            }
+            set
+            {
+                if (!MachinePower_Hidden)
+                {
+                    MachinePower_DB = value.Value;
+                    OnPropertyChanged(nameof(MachinePower));
+                }
             }
         }
 
         private void MachinePowerValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MachinePower_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MachinePower_Validation(RamAccess<string> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                MachinePower_DB = ((RamAccess<string>) Value).Value;
+                OnPropertyChanged(nameof(MachinePower));
+            }
+        }
+
+        private bool MachinePower_Validation(RamAccess<string> value) //TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
                 return false;
             }
+
             if (value.Value.Equals("прим."))
             {
                 return true;
             }
+
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -199,56 +288,93 @@ private bool MachinePower_Validation(RamAccess<string> value)//TODO
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                                  NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                {
+                    value.AddError("Число должно быть больше нуля");
+                    return false;
+                }
             }
             catch
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
+
             return true;
         }
+
         //MachinePower property
         #endregion
 
         //NumberOfHoursPerYear property
         #region  NumberOfHoursPerYear
-        public string NumberOfHoursPerYear_DB { get; set; } = ""; [NotMapped]
+        public string NumberOfHoursPerYear_DB { get; set; } = "";
+        public bool NumberOfHoursPerYear_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool NumberOfHoursPerYear_Hidden
+        {
+            get => NumberOfHoursPerYear_Hidden_Priv;
+            set
+            {
+                NumberOfHoursPerYear_Hidden_Priv = value;
+            }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("Количество часов работы за год")]
         public RamAccess<string> NumberOfHoursPerYear
         {
             get
-{
-var tmp = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB);
-tmp.PropertyChanged += NumberOfHoursPerYearValueChanged;
-return tmp;
-}            set
             {
-                NumberOfHoursPerYear_DB = value.Value;
-                OnPropertyChanged(nameof(NumberOfHoursPerYear));
+                if (!NumberOfHoursPerYear_Hidden)
+                {
+                    var tmp = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB);
+                    tmp.PropertyChanged += NumberOfHoursPerYearValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
+            }
+            set
+            {
+                if (!NumberOfHoursPerYear_Hidden)
+                {
+                    NumberOfHoursPerYear_DB = value.Value;
+                    OnPropertyChanged(nameof(NumberOfHoursPerYear));
+                }
             }
         }
 
         private void NumberOfHoursPerYearValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                NumberOfHoursPerYear_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool NumberOfHoursPerYear_Validation(RamAccess<string> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                NumberOfHoursPerYear_DB = ((RamAccess<string>) Value).Value;
+                OnPropertyChanged(nameof(NumberOfHoursPerYear));
+            }
+        }
+
+        private bool NumberOfHoursPerYear_Validation(RamAccess<string> value) //TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
                 return false;
             }
+
             if (value.Value.Equals("прим.") || value.Value.Equals("0"))
             {
 
             }
+
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -256,17 +382,26 @@ private bool NumberOfHoursPerYear_Validation(RamAccess<string> value)//TODO
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
+
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+                                  NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                {
+                    value.AddError("Число должно быть больше нуля");
+                    return false;
+                }
             }
             catch
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
+
             return true;
         }
+
         //NumberOfHoursPerYear property
         #endregion
 
@@ -404,7 +539,8 @@ if (args.PropertyName == "Value")
                 VolumeIn_DB = ((RamAccess<string>)Value).Value;
 }
 }
-private bool VolumeIn_Validation(RamAccess<string> value)//TODO
+
+        private bool VolumeIn_Validation(RamAccess<string> value) //TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -412,11 +548,13 @@ private bool VolumeIn_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
+
             if (!(value.Value.Contains('e') || value.Value.Contains('E')))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
+
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -424,18 +562,26 @@ private bool VolumeIn_Validation(RamAccess<string> value)//TODO
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
+
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
+                                  NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                {
+                    value.AddError("Число должно быть больше нуля");
+                    return false;
+                }
             }
             catch
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
+
             return true;
         }
+
         //VolumeIn property
         #endregion
 
