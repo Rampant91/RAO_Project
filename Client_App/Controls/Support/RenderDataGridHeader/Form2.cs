@@ -613,10 +613,6 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form26,Models").GetProperty("AverageYearConcentration")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get6Header(2, 9,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form26,Models").GetProperty("SourcesQuantity")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
 
             return stck;
         }
@@ -676,26 +672,6 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             ));
             stck.Children.Add(Get7Header(4, 6,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty("WasteOutbreakPreviousYear")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get7Header(3, 7,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty("PermissionNumber")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get7Header(3, 8,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty("PermissionIssueDate")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get7Header(3, 9,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty("PermissionDocumentName")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get7Header(1, 10,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty("ValidBegin")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get7Header(1, 11,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form27,Models").GetProperty("ValidThru")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
@@ -761,66 +737,6 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             ));
             stck.Children.Add(Get8Header(2, 7,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("RemovedWasteVolume")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(3, 8,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PermissionNumber")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(3, 9,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PermissionDocumentName")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(3, 10,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PermissionIssueDate")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(1, 11,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("ValidBegin")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(1, 12,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("ValidThru")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(3, 13,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PermissionNumber1")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(3, 14,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PermissionDocumentName1")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(3, 15,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PermissionIssueDate1")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(1, 16,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("ValidBegin1")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(1, 17,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("ValidThru1")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(3, 18,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PermissionNumber2")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(3, 19,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PermissionDocumentName2")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(3, 20,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PermissionIssueDate2")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(1, 21,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("ValidBegin2")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get8Header(1, 22,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("ValidThru2")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 

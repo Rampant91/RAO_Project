@@ -866,7 +866,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get6Row(1, Row, 6, "TestDepth", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 7, "RadionuclidName", scp, TopName));
             stck.Children.Add(Get6Row(2, Row, 8, "AverageYearConcentration", scp, TopName));
-            stck.Children.Add(Get6Row(2, Row, 9, "SourcesQuantity", scp, TopName));
 
             return stck;
         }
@@ -897,11 +896,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get7Row(2, Row, 4, "AllowedWasteValue", scp, TopName));
             stck.Children.Add(Get7Row(4, Row, 5, "FactedWasteValue", scp, TopName));
             stck.Children.Add(Get7Row(4, Row, 6, "WasteOutbreakPreviousYear", scp, TopName));
-            stck.Children.Add(Get7Row(3, Row, 7, "PermissionNumber", scp, TopName));
-            stck.Children.Add(Get7Row(3, Row, 8, "PermissionIssueDate", scp, TopName));
-            stck.Children.Add(Get7Row(3, Row, 9, "PermissionDocumentName", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 10, "ValidBegin", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 11, "ValidThru", scp, TopName));
 
             return stck;
         }
@@ -933,21 +927,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get8Row(2, Row, 5, "PoolDistrictName", scp, TopName));
             stck.Children.Add(Get8Row(2, Row, 6, "AllowedWasteRemovalVolume", scp, TopName));
             stck.Children.Add(Get8Row(2, Row, 7, "RemovedWasteVolume", scp, TopName));
-            stck.Children.Add(Get8Row(3, Row, 8, "PermissionNumber", scp, TopName));
-            stck.Children.Add(Get8Row(3, Row, 9, "PermissionDocumentName", scp, TopName));
-            stck.Children.Add(Get8Row(3, Row, 10, "PermissionIssueDate", scp, TopName));
-            stck.Children.Add(Get8Row(1, Row, 11, "ValidBegin", scp, TopName));
-            stck.Children.Add(Get8Row(1, Row, 12, "ValidThru", scp, TopName));
-            stck.Children.Add(Get8Row(3, Row, 13, "PermissionNumber1", scp, TopName));
-            stck.Children.Add(Get8Row(3, Row, 14, "PermissionDocumentName1", scp, TopName));
-            stck.Children.Add(Get8Row(3, Row, 15, "PermissionIssueDate1", scp, TopName));
-            stck.Children.Add(Get8Row(1, Row, 16, "ValidBegin1", scp, TopName));
-            stck.Children.Add(Get8Row(1, Row, 17, "ValidThru1", scp, TopName));
-            stck.Children.Add(Get8Row(3, Row, 18, "PermissionNumber2", scp, TopName));
-            stck.Children.Add(Get8Row(3, Row, 19, "PermissionDocumentName2", scp, TopName));
-            stck.Children.Add(Get8Row(3, Row, 20, "PermissionIssueDate2", scp, TopName));
-            stck.Children.Add(Get8Row(1, Row, 21, "ValidBegin2", scp, TopName));
-            stck.Children.Add(Get8Row(1, Row, 22, "ValidThru2", scp, TopName));
 
             return stck;
         }

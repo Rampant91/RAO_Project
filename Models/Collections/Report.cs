@@ -880,6 +880,826 @@ namespace Collections
         }
         #endregion
 
+        #region PermissionNumber_28 
+        public string PermissionNumber_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Номер разрешительного документа")]
+        public RamAccess<string> PermissionNumber_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionNumber_28_Validation, PermissionNumber_28_DB);
+                tmp.PropertyChanged += PermissionNumber_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                PermissionNumber_28_DB = value.Value;
+                OnPropertyChanged(nameof(PermissionNumber_28));
+            }
+        }
+
+        private void PermissionNumber_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionNumber_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool PermissionNumber_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
+        #region PermissionIssueDate_28
+        public string PermissionIssueDate_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Дата выпуска разрешительного документа")]
+        public RamAccess<string> PermissionIssueDate_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionIssueDate_28_Validation, PermissionIssueDate_28_DB);
+                tmp.PropertyChanged += PermissionIssueDate_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                PermissionIssueDate_28_DB = value.Value;
+                OnPropertyChanged(nameof(PermissionIssueDate_28));
+            }
+        }
+
+        private void PermissionIssueDate_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionIssueDate_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool PermissionIssueDate_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors(); return true;
+        }
+        #endregion
+
+        #region PermissionDocumentName_28 
+        public string PermissionDocumentName_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Наименование разрешительного документа")]
+        public RamAccess<string> PermissionDocumentName_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionDocumentName_28_Validation, PermissionDocumentName_28_DB);
+                tmp.PropertyChanged += PermissionDocumentName_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                PermissionDocumentName_28_DB = value.Value;
+                OnPropertyChanged(nameof(PermissionDocumentName_28));
+            }
+        }
+        private void PermissionDocumentName_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionDocumentName_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+
+        private bool PermissionDocumentName_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors(); return true;
+        }
+        #endregion
+
+        #region ValidBegin_28
+        public string ValidBegin_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Действует с")]
+        public RamAccess<string> ValidBegin_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ValidBegin_28_Validation, ValidBegin_28_DB);
+                tmp.PropertyChanged += ValidBegin_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ValidBegin_28_DB = value.Value;
+                OnPropertyChanged(nameof(ValidBegin_28));
+            }
+        }
+
+        private void ValidBegin_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ValidBegin_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ValidBegin_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors(); return true;
+        }
+        #endregion
+
+        #region ValidThru_28
+        public string ValidThru_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Действует по")]
+        public RamAccess<string> ValidThru_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ValidThru_28_Validation, ValidThru_28_DB);
+                tmp.PropertyChanged += ValidThru_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ValidThru_28_DB = value.Value;
+                OnPropertyChanged(nameof(ValidThru_28));
+            }
+        }
+
+        private void ValidThru_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ValidThru_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ValidThru_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors(); return true;
+        }
+        #endregion
+
+        #region PermissionNumber1_28 
+        public string PermissionNumber1_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Номер разрешительного документа")]
+        public RamAccess<string> PermissionNumber1_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionNumber1_28_Validation, PermissionNumber1_28_DB);
+                tmp.PropertyChanged += PermissionNumber1_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                PermissionNumber1_28_DB = value.Value;
+                OnPropertyChanged(nameof(PermissionNumber1_28));
+            }
+        }
+        private void PermissionNumber1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionNumber1_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+
+        private bool PermissionNumber1_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors(); return true;
+        }
+        #endregion
+
+        #region PermissionIssueDate1_28 
+        public string PermissionIssueDate1_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Дата выпуска разрешительного документа")]
+        public RamAccess<string> PermissionIssueDate1_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionIssueDate1_28_Validation, PermissionIssueDate1_28_DB);
+                tmp.PropertyChanged += PermissionIssueDate1_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                PermissionIssueDate1_28_DB = value.Value;
+                OnPropertyChanged(nameof(PermissionIssueDate1_28));
+            }
+        }
+
+        private void PermissionIssueDate1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionIssueDate1_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool PermissionIssueDate1_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region PermissionDocumentName1_28
+        public string PermissionDocumentName1_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Наименование разрешительного документа")]
+        public RamAccess<string> PermissionDocumentName1_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionDocumentName1_28_Validation, PermissionDocumentName1_28_DB);
+                tmp.PropertyChanged += PermissionDocumentName1_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                PermissionDocumentName1_28_DB = value.Value;
+                OnPropertyChanged(nameof(PermissionDocumentName1_28));
+            }
+        }
+
+        private void PermissionDocumentName1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionDocumentName1_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool PermissionDocumentName1_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors(); return true;
+        }
+        #endregion
+
+        #region ValidBegin1_28
+        public string ValidBegin1_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Действует с")]
+        public RamAccess<string> ValidBegin1_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ValidBegin1_28_Validation, ValidBegin1_28_DB);
+                tmp.PropertyChanged += ValidBegin1_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ValidBegin1_28_DB = value.Value;
+                OnPropertyChanged(nameof(ValidBegin1_28));
+            }
+        }
+
+        private void ValidBegin1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ValidBegin1_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ValidBegin1_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region ValidThru1_28 
+        public string ValidThru1_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Действует по")]
+        public RamAccess<string> ValidThru1_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ValidThru1_28_Validation, ValidThru1_28_DB);
+                tmp.PropertyChanged += ValidThru1_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ValidThru1_28_DB = value.Value;
+                OnPropertyChanged(nameof(ValidThru1_28));
+            }
+        }
+
+        private void ValidThru1_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ValidThru1_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ValidThru1_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region ContractNumber_28 
+        public string ContractNumber_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Номер договора на передачу сточных вод")]
+        public RamAccess<string> ContractNumber_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ContractNumber_28_Validation, ContractNumber_28_DB);
+                tmp.PropertyChanged += ContractNumber_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ContractNumber_28_DB = value.Value;
+                OnPropertyChanged(nameof(ContractNumber_28));
+            }
+        }
+
+        private void ContractNumber_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ContractNumber_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ContractNumber_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors(); return true;
+        }
+        #endregion
+
+        #region ContractIssueDate2_28
+        public string ContractIssueDate2_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Дата выпуска разрешительного документа")]
+        public RamAccess<string> ContractIssueDate2_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ContractIssueDate2_28_Validation, ContractIssueDate2_28_DB);
+                tmp.PropertyChanged += ContractIssueDate2_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ContractIssueDate2_28_DB = value.Value;
+                OnPropertyChanged(nameof(ContractIssueDate2_28));
+            }
+        }
+
+        private void ContractIssueDate2_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ContractIssueDate2_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ContractIssueDate2_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region OrganisationReciever_28
+        public string OrganisationReciever_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Организация, осуществляющая прием сточных вод")]
+        public RamAccess<string> OrganisationReciever_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(OrganisationReciever_28_Validation, OrganisationReciever_28_DB);
+                tmp.PropertyChanged += OrganisationReciever_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                OrganisationReciever_28_DB = value.Value;
+                OnPropertyChanged(nameof(OrganisationReciever_28));
+            }
+        }
+
+        private void OrganisationReciever_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                OrganisationReciever_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool OrganisationReciever_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors(); return true;
+        }
+        #endregion
+
+        #region ValidBegin2_28
+        public string ValidBegin2_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Действует с")]
+        public RamAccess<string> ValidBegin2_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ValidBegin2_28_Validation, ValidBegin2_28_DB);
+                tmp.PropertyChanged += ValidBegin2_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ValidBegin2_28_DB = value.Value;
+                OnPropertyChanged(nameof(ValidBegin2_28));
+            }
+        }
+
+        private void ValidBegin2_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ValidBegin2_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ValidBegin2_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region ValidThru2_28
+        public string ValidThru2_28_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Действует по")]
+        public RamAccess<string> ValidThru2_28
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ValidThru2_28_Validation, ValidThru2_28_DB);
+                tmp.PropertyChanged += ValidThru2_28ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ValidThru2_28_DB = value.Value;
+                OnPropertyChanged(nameof(ValidThru2_28));
+            }
+        }
+
+        private void ValidThru2_28ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ValidThru2_28_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ValidThru2_28_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region  PermissionNumber27
+        public string PermissionNumber27_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Номер разрешительного документа")]
+        public RamAccess<string> PermissionNumber27
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionNumber27_Validation, PermissionNumber27_DB);
+                tmp.PropertyChanged += PermissionNumber27ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                PermissionNumber27_DB = value.Value;
+                OnPropertyChanged(nameof(PermissionNumber27));
+            }
+        }
+
+        private void PermissionNumber27ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionNumber27_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool PermissionNumber27_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
+        #region  PermissionIssueDate27
+        public string PermissionIssueDate27_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Дата выпуска разрешительного документа")]
+        public RamAccess<string> PermissionIssueDate27
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionIssueDate27_Validation, PermissionIssueDate27_DB);
+                tmp.PropertyChanged += PermissionIssueDate27ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                PermissionIssueDate27_DB = value.Value;
+                OnPropertyChanged(nameof(PermissionIssueDate27));
+            }
+        }
+
+        private void PermissionIssueDate27ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionIssueDate27_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool PermissionIssueDate27_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region  PermissionDocumentName27
+        public string PermissionDocumentName27_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Наименование разрешительного документа")]
+        public RamAccess<string> PermissionDocumentName27
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(PermissionDocumentName27_Validation, PermissionDocumentName27_DB);
+                tmp.PropertyChanged += PermissionDocumentName27ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                PermissionDocumentName27_DB = value.Value;
+                OnPropertyChanged(nameof(PermissionDocumentName27));
+            }
+        }
+
+
+        private void PermissionDocumentName27ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                PermissionDocumentName27_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool PermissionDocumentName27_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors(); return true;
+        }
+        #endregion
+
+        #region  ValidBegin27
+        public string ValidBegin27_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Действует с")]
+        public RamAccess<string> ValidBegin27
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ValidBegin27_Validation, ValidBegin27_DB);
+                tmp.PropertyChanged += ValidBegin27ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ValidBegin27_DB = value.Value;
+                OnPropertyChanged(nameof(ValidBegin27));
+            }
+        }
+
+
+        private void ValidBegin27ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ValidBegin27_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ValidBegin27_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region  ValidThru27
+        public string ValidThru27_DB { get; set; } = "";[NotMapped]
+        [Form_Property("Действует по")]
+        public RamAccess<string> ValidThru27
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ValidThru27_Validation, ValidThru27_DB);
+                tmp.PropertyChanged += ValidThru27ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ValidThru27_DB = value.Value;
+                OnPropertyChanged(nameof(ValidThru27));
+            }
+        }
+
+
+        private void ValidThru27ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ValidThru27_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool ValidThru27_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if ((value.Value == null) || value.Value.Equals(""))
+            {
+                return true;
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(value.Value); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+        #endregion
+
+        #region SourcesQuantity26
+        public int? SourcesQuantity26_DB { get; set; } = null;
+        [NotMapped]
+        [Form_Property("Количество источников, шт.")]
+        public RamAccess<int?> SourcesQuantity26
+        {
+            get
+            {
+                var tmp = new RamAccess<int?>(SourcesQuantity26_Validation, SourcesQuantity26_DB);
+                tmp.PropertyChanged += SourcesQuantity26ValueChanged;
+                return tmp;
+            }
+            set
+            {
+                SourcesQuantity26_DB = value.Value;
+                OnPropertyChanged(nameof(SourcesQuantity26));
+            }
+        }
+        // positive int.
+        private void SourcesQuantity26ValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                SourcesQuantity26_DB = ((RamAccess<int?>)Value).Value;
+            }
+        }
+        private bool SourcesQuantity26_Validation(RamAccess<int?> value)//Ready
+        {
+            value.ClearErrors();
+            if (value.Value == null)
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value <= 0)
+            {
+                value.AddError("Недопустимое значение"); return false;
+            }
+            return true;
+        }
+        #endregion
+
         #region Year
         public int? Year_DB { get; set; } = null;
         [NotMapped]
