@@ -31,7 +31,6 @@ namespace Models
             TestDepth_Validation(TestDepth);
             RadionuclidName_Validation(RadionuclidName);
             AverageYearConcentration_Validation(AverageYearConcentration);
-            SourcesQuantity_Validation(SourcesQuantity);
         }
 
         [Attributes.Form_Property("Форма")]
@@ -43,52 +42,8 @@ namespace Models
             DistanceToWasteSource.HasErrors||
             TestDepth.HasErrors||
             RadionuclidName.HasErrors||
-            AverageYearConcentration.HasErrors||
-            SourcesQuantity.HasErrors);
+            AverageYearConcentration.HasErrors);
         }
-
-        //SourcesQuantity property
-        #region SourcesQuantity
-        public int? SourcesQuantity_DB { get; set; } = null; [NotMapped]
-        [Attributes.Form_Property("Количество источников, шт.")]
-        public RamAccess<int?> SourcesQuantity
-        {
-            get
-            {
-                    var tmp = new RamAccess<int?>(SourcesQuantity_Validation, SourcesQuantity_DB);
-                    tmp.PropertyChanged += SourcesQuantityValueChanged;
-                    return tmp;
-            }
-            set
-            {
-                    SourcesQuantity_DB = value.Value;
-                OnPropertyChanged(nameof(SourcesQuantity));
-            }
-        }
-        // positive int.
-        private void SourcesQuantityValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                SourcesQuantity_DB = ((RamAccess<int?>)Value).Value;
-}
-}
-private bool SourcesQuantity_Validation(RamAccess<int?> value)//Ready
-        {
-            value.ClearErrors();
-            if (value.Value == null)
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (value.Value <= 0)
-            {
-                value.AddError("Недопустимое значение"); return false;
-            }
-            return true;
-        }
-        //SourcesQuantity property
-        #endregion
 
         //ObservedSourceNumber property
         #region ObservedSourceNumber
