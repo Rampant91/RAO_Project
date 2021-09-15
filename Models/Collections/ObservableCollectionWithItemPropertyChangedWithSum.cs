@@ -209,7 +209,7 @@ namespace Collections
 
                         sumRow.VolumeIn_DB = volumeInSum.ToString("E2");
                         sumRow.MassIn_DB = massInSum.ToString("E2");
-                        sumRow.QuantityIn_DB = quantityInSum.ToString("E2");
+                        sumRow.QuantityIn_DB = quantityInSum.ToString("F0");
                         sumRow.AlphaActivityIn_DB = alphaInSum.ToString("E2");
                         sumRow.BetaGammaActivityIn_DB = betaInSum.ToString("E2");
                         sumRow.TritiumActivityIn_DB = tritInSum.ToString("E2");
@@ -217,7 +217,7 @@ namespace Collections
 
                         sumRow.VolumeOut_DB = volumeOutSum.ToString("E2");
                         sumRow.MassOut_DB = massOutSum.ToString("E2");
-                        sumRow.QuantityOZIIIout_DB = quantityOutSum.ToString("E2");
+                        sumRow.QuantityOZIIIout_DB = quantityOutSum.ToString("F0");
                         sumRow.AlphaActivityOut_DB = alphaOutSum.ToString("E2");
                         sumRow.BetaGammaActivityOut_DB = betaOutSum.ToString("E2");
                         sumRow.TritiumActivityOut_DB = tritOutSum.ToString("E2");

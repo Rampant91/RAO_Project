@@ -297,7 +297,11 @@ namespace Client_App.Controls.DataGrid
                 for (var i = 1; i <= Rows[t1].Count; i++)
                 {
                     var tp = Rows[t1, i];
-                    sum += tp.Width;
+                    if (tp != null)
+                    {
+                        sum += tp.Width;
+                    }
+
                     if (mouse.Position.X <= sum)
                     {
                         ret[1] = i;
