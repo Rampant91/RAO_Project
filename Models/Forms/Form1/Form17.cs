@@ -294,11 +294,6 @@ namespace Models
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -345,11 +340,6 @@ namespace Models
             if (string.IsNullOrEmpty(value.Value) || (value.Value == "-"))
             {
                 return true;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -449,14 +439,14 @@ namespace Models
         #endregion
 
         #region SpecificActivity
-        public string SpecificActivity_DB { get; set; } = "";
+        public double? SpecificActivity_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Удельная активность, Бк/г")]
-        public RamAccess<string> SpecificActivity
+        public RamAccess<double?> SpecificActivity
         {
             get
             {
-                var tmp = new RamAccess<string>(SpecificActivity_Validation, SpecificActivity_DB);
+                var tmp = new RamAccess<double?>(SpecificActivity_Validation, SpecificActivity_DB);
                 tmp.PropertyChanged += SpecificActivityValueChanged;
                 return tmp;
             }
@@ -470,29 +460,18 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                SpecificActivity_DB = ((RamAccess<string>)Value).Value;
+                SpecificActivity_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool SpecificActivity_Validation(RamAccess<string> value)//TODO
+        private bool SpecificActivity_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (value.Value==null)
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение"); return false;
             }
@@ -879,14 +858,14 @@ namespace Models
         #endregion
 
         #region VolumeOutOfPack
-        public string VolumeOutOfPack_DB { get; set; } = "";
+        public double? VolumeOutOfPack_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Объем без упаковки, куб. м")]
-        public RamAccess<string> VolumeOutOfPack
+        public RamAccess<double?> VolumeOutOfPack
         {
             get
             {
-                var tmp = new RamAccess<string>(VolumeOutOfPack_Validation, VolumeOutOfPack_DB);
+                var tmp = new RamAccess<double?>(VolumeOutOfPack_Validation, VolumeOutOfPack_DB);
                 tmp.PropertyChanged += VolumeOutOfPackValueChanged;
                 return tmp;
             }
@@ -900,29 +879,18 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                VolumeOutOfPack_DB = ((RamAccess<string>)Value).Value;
+                VolumeOutOfPack_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
+        private bool VolumeOutOfPack_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (value.Value==null)
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение"); return false;
             }
@@ -931,14 +899,14 @@ namespace Models
         #endregion
 
         #region MassOutOfPack
-        public string MassOutOfPack_DB { get; set; } = "";
+        public double? MassOutOfPack_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Масса без упаковки, т")]
-        public RamAccess<string> MassOutOfPack
+        public RamAccess<double?> MassOutOfPack
         {
             get
             {
-                var tmp = new RamAccess<string>(MassOutOfPack_Validation, MassOutOfPack_DB);
+                var tmp = new RamAccess<double?>(MassOutOfPack_Validation, MassOutOfPack_DB);
                 tmp.PropertyChanged += MassOutOfPackValueChanged;
                 return tmp;
             }
@@ -952,29 +920,18 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                MassOutOfPack_DB = ((RamAccess<string>)Value).Value;
+                MassOutOfPack_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool MassOutOfPack_Validation(RamAccess<string> value)//TODO
+        private bool MassOutOfPack_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (value.Value==null)
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1058,11 +1015,6 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -1112,11 +1064,6 @@ namespace Models
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
                 return false;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -1170,11 +1117,6 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -1224,11 +1166,6 @@ namespace Models
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
                 return false;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |

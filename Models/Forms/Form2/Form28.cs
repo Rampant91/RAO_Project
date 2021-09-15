@@ -248,11 +248,6 @@ namespace Models
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -271,13 +266,13 @@ namespace Models
 
         //RemovedWasteVolume property
         #region RemovedWasteVolume
-        public string RemovedWasteVolume_DB { get; set; } = ""; [NotMapped]
+        public double? RemovedWasteVolume_DB { get; set; } = null; [NotMapped]
         [Attributes.Form_Property("Отведено за отчетный период, тыс. куб. м")]
-        public RamAccess<string> RemovedWasteVolume
+        public RamAccess<double?> RemovedWasteVolume
         {
             get
             {
-                    var tmp = new RamAccess<string>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);
+                    var tmp = new RamAccess<double?>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);
                     tmp.PropertyChanged += RemovedWasteVolumeValueChanged;
                     return tmp;
             }
@@ -292,29 +287,18 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                RemovedWasteVolume_DB = ((RamAccess<string>)Value).Value;
+                RemovedWasteVolume_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool RemovedWasteVolume_Validation(RamAccess<string> value)
+        private bool RemovedWasteVolume_Validation(RamAccess<double?> value)
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (value.Value==null)
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение");
                 return false;

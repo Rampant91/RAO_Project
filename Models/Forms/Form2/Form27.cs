@@ -165,11 +165,6 @@ private bool AllowedWasteValue_Validation(RamAccess<string> value)
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -224,11 +219,6 @@ private bool FactedWasteValue_Validation(RamAccess<string> value)
             if (value.Value.Equals("-"))
             {
                 return true;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -291,11 +281,6 @@ private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
             if (value.Value.Equals("-"))
             {
                 return true;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;

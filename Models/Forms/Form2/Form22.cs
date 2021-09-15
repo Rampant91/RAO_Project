@@ -459,12 +459,7 @@ private bool VolumeInPack_Validation(RamAccess<string> value)//TODO
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-return true;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError( "Недопустимое значение");
-return false;
+                return true;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -507,25 +502,20 @@ return false;
             }
         }
 
-        
+
         private void MassInPackValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 MassInPack_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MassInPack_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool MassInPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError( "Недопустимое значение");
-return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -542,10 +532,10 @@ return false;
                 {
                     value.AddError("Число должно быть больше нуля"); return false;
                 }
-                }
+            }
             catch
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -579,18 +569,13 @@ if (args.PropertyName == "Value")
                 VolumeOutOfPack_DB = ((RamAccess<string>)Value).Value;
 }
 }
-private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
+        private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError( "Поле не заполнено");
-return false;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError( "Недопустимое значение");
-return false;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -603,11 +588,11 @@ return false;
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -647,11 +632,6 @@ private bool MassOutOfPack_Validation(RamAccess<string> value)//TODO
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
                 return false;
             }
             string tmp = value.Value;
@@ -762,11 +742,6 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -826,11 +801,6 @@ private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
             if ((value.Value == null) || value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
                 return false;
             }
             string tmp = value.Value;
@@ -894,11 +864,6 @@ private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -958,11 +923,6 @@ private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
             if ((value.Value == null) || value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
                 return false;
             }
             string tmp = value.Value;

@@ -318,11 +318,6 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!((value.Value.Contains('e') || value.Value.Contains('E'))))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             if (value.Value.Equals("прим."))
             {
                 //if ((Activity.Value == null) || (ActivityNote.Value == ""))

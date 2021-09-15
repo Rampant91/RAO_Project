@@ -172,11 +172,6 @@ private bool MassCreated_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -284,11 +279,6 @@ private bool MassFromAnothers_Validation(RamAccess<string> value)//TODO
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -398,11 +388,6 @@ private bool MassFromAnothersImported_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -510,11 +495,6 @@ private bool MassAnotherReasons_Validation(RamAccess<string> value)//TODO
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -624,11 +604,6 @@ private bool MassTransferredToAnother_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -737,11 +712,6 @@ private bool MassRefined_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -849,11 +819,6 @@ private bool MassRemovedFromAccount_Validation(RamAccess<string> value)//TODO
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;

@@ -149,14 +149,14 @@ namespace Models
         #endregion
 
         #region Volume6
-        public string Volume6_DB { get; set; } = "";
+        public double? Volume6_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Объем, куб. м")]
-        public RamAccess<string> Volume6
+        public RamAccess<double?> Volume6
         {
             get
             {
-                var tmp = new RamAccess<string>(Volume6_Validation, Volume6_DB);
+                var tmp = new RamAccess<double?>(Volume6_Validation, Volume6_DB);
                 tmp.PropertyChanged += Volume6ValueChanged;
                 return tmp;
             }
@@ -170,28 +170,17 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Volume6_DB = ((RamAccess<string>)Value).Value;
+                Volume6_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool Volume6_Validation(RamAccess<string> value)//TODO
+        private bool Volume6_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (value.Value==null)
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch (Exception)
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -201,14 +190,14 @@ namespace Models
         #endregion
 
         #region Mass7
-        public string Mass7_DB { get; set; } = "";
+        public double? Mass7_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Масса, т")]
-        public RamAccess<string> Mass7
+        public RamAccess<double?> Mass7
         {
             get
             {
-                var tmp = new RamAccess<string>(Mass7_Validation, Mass7_DB);
+                var tmp = new RamAccess<double?>(Mass7_Validation, Mass7_DB);
                 tmp.PropertyChanged += Mass7ValueChanged;
                 return tmp;
             }
@@ -222,28 +211,17 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Mass7_DB = ((RamAccess<string>)Value).Value;
+                Mass7_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool Mass7_Validation(RamAccess<string> value)//TODO
+        private bool Mass7_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (value.Value==null)
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch (Exception)
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -345,14 +323,14 @@ namespace Models
         #endregion
 
         #region SpecificActivity
-        public string SpecificActivity_DB { get; set; } = "";
+        public double? SpecificActivity_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Удельная активность, Бк/г")]
-        public RamAccess<string> SpecificActivity
+        public RamAccess<double?> SpecificActivity
         {
             get
             {
-                var tmp = new RamAccess<string>(SpecificActivity_Validation, SpecificActivity_DB);
+                var tmp = new RamAccess<double?>(SpecificActivity_Validation, SpecificActivity_DB);
                 tmp.PropertyChanged += SpecificActivityValueChanged;
                 return tmp;
             }
@@ -366,29 +344,18 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                SpecificActivity_DB = ((RamAccess<string>)Value).Value;
+                SpecificActivity_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool SpecificActivity_Validation(RamAccess<string> value)//TODO
+        private bool SpecificActivity_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (value.Value == null)
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -693,14 +660,14 @@ namespace Models
         #endregion
 
         #region Volume20
-        public string Volume20_DB { get; set; } = "";
+        public double? Volume20_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Объем, куб. м")]
-        public RamAccess<string> Volume20
+        public RamAccess<double?> Volume20
         {
             get
             {
-                var tmp = new RamAccess<string>(Volume20_Validation, Volume20_DB);
+                var tmp = new RamAccess<double?>(Volume20_Validation, Volume20_DB);
                 tmp.PropertyChanged += Volume20ValueChanged;
                 return tmp;
             }
@@ -714,29 +681,18 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Volume20_DB = ((RamAccess<string>)Value).Value;
+                Volume20_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool Volume20_Validation(RamAccess<string> value)//TODO
+        private bool Volume20_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (value.Value==null)
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение"); return false;
             }
@@ -745,14 +701,14 @@ namespace Models
         #endregion
 
         #region Mass21
-        public string Mass21_DB { get; set; } = "";
+        public double? Mass21_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Масса, т")]
-        public RamAccess<string> Mass21
+        public RamAccess<double?> Mass21
         {
             get
             {
-                var tmp = new RamAccess<string>(Mass21_Validation, Mass21_DB);
+                var tmp = new RamAccess<double?>(Mass21_Validation, Mass21_DB);
                 tmp.PropertyChanged += Mass21ValueChanged;
                 return tmp;
             }
@@ -766,10 +722,10 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Mass21_DB = ((RamAccess<string>)Value).Value;
+                Mass21_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool Mass21_Validation(RamAccess<string> value)//TODO
+        private bool Mass21_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
             if ((value.Value == null) || value.Value.Equals(""))
@@ -777,18 +733,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!((value.Value.Contains('e') || value.Value.Contains('E'))))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -832,11 +777,6 @@ namespace Models
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
                 return false;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -890,11 +830,6 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -946,11 +881,6 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -1000,11 +930,6 @@ namespace Models
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
                 return false;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |

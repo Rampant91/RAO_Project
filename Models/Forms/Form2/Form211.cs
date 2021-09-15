@@ -169,12 +169,12 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
 
         //InfectedArea property
         #region  InfectedArea
-        public string InfectedArea_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
-        public RamAccess<string> InfectedArea
+        public double? InfectedArea_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Площадь загрязненной территории, кв. м")]
+        public RamAccess<double?> InfectedArea
         {
             get
             {
-                    var tmp = new RamAccess<string>(InfectedArea_Validation, InfectedArea_DB);
+                    var tmp = new RamAccess<double?>(InfectedArea_Validation, InfectedArea_DB);
                     tmp.PropertyChanged += InfectedAreaValueChanged;
                     return tmp;
             }
@@ -185,33 +185,22 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
             }
         }
 
-       private void InfectedAreaValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                InfectedArea_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool InfectedArea_Validation(RamAccess<string> value)//TODO
+        private void InfectedAreaValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                InfectedArea_DB = ((RamAccess<double?>)Value).Value;
+            }
+        }
+private bool InfectedArea_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
+            if (value.Value==null)
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение");
                 return false;

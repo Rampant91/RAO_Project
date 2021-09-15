@@ -270,17 +270,11 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-
             if (value.Value.Equals("прим."))
             {
                 //if ((ActivityNote == null) || ActivityNote.Equals(""))
                 //    value.AddError( "Заполните примечание");
                 return true;
-            }
-            if (!((value.Value.Contains('e')) || (value.Value.Contains('E'))))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;

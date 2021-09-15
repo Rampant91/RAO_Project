@@ -241,11 +241,6 @@ private bool FuelMass_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -300,11 +295,6 @@ private bool CellMass_Validation(RamAccess<string> value)//TODO
             if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
             }
             string tmp = value.Value;
             int len = tmp.Length;
@@ -404,11 +394,6 @@ private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -466,11 +451,6 @@ private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (!(value.Value.Contains('e')))
-            {
-                value.AddError("Недопустимое значение");
                 return false;
             }
             string tmp = value.Value;

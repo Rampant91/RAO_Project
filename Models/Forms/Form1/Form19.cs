@@ -132,14 +132,14 @@ namespace Models
         #endregion
 
         #region Activity
-        public string Activity_DB { get; set; } = "";
+        public double? Activity_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Активность, Бк")]
-        public RamAccess<string> Activity
+        public RamAccess<double?> Activity
         {
             get
             {
-                var tmp = new RamAccess<string>(Activity_Validation, Activity_DB);
+                var tmp = new RamAccess<double?>(Activity_Validation, Activity_DB);
                 tmp.PropertyChanged += ActivityValueChanged;
                 return tmp;
             }
@@ -153,29 +153,18 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Activity_DB = ((RamAccess<string>)Value).Value;
+                Activity_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-        private bool Activity_Validation(RamAccess<string> value)//Ready
+        private bool Activity_Validation(RamAccess<double?> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if (value.Value == null)
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
-            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-               NumberStyles.AllowExponent;
-            try
-            {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
-            }
-            catch
+            if(value.Value<=0)
             {
                 value.AddError("Недопустимое значение"); return false;
             }
