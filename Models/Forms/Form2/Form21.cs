@@ -74,7 +74,39 @@ namespace Models
             StatusRAOout.HasErrors);
         }
 
-        [NotMapped] public bool Sum { get; set; } = false;
+        #region  Sum
+        public bool Sum_DB { get; set; } = false;
+
+        [NotMapped]
+        public RamAccess<bool> Sum
+        {
+            get
+            {
+                var tmp = new RamAccess<bool>(Sum_Validation, Sum_DB);
+                    tmp.PropertyChanged += SumValueChanged;
+                    return tmp;
+                }
+            set
+            {
+                Sum_DB = value.Value;
+                OnPropertyChanged(nameof(Sum));
+            }
+        }
+
+        private void SumValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Sum_DB = ((RamAccess<bool>)Value).Value;
+            }
+        }
+
+        private bool Sum_Validation(RamAccess<bool> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+#endregion
 
         //RefineMachineName property
         #region  RefineMachineName

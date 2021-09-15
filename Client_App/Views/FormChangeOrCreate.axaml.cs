@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using Collections;
 using System.ComponentModel;
+using System.Linq;
 using DBRealization;
 using Models;
 using ReactiveUI;
@@ -19,6 +20,22 @@ namespace Client_App.Views
         public FormChangeOrCreate(string param, in Report rep)
         {
             ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
+            if (rep.FormNum_DB == "1.7")
+            {
+                //rep.Rows17.Sum();
+            }
+            if (rep.FormNum_DB == "1.8")
+            {
+                //rep.Rows18.Sum();
+            }
+            if (rep.FormNum_DB == "2.1")
+            {
+                rep.Rows21.Sum();
+            }
+            if (rep.FormNum_DB == "2.2")
+            {
+                rep.Rows22.Sum();
+            }
             tmp.Storage = rep;
             tmp.FormType = rep.FormNum_DB;
             DataContext = tmp;
