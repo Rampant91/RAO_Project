@@ -618,11 +618,6 @@ private bool MassIn_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
             string tmp = value.Value;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1166,11 +1161,6 @@ private bool MassOut_Validation(RamAccess<string> value)//TODO
             if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
-                return false;
-            }
-            if (!(value.Value.Contains('e') || value.Value.Contains('E')))
-            {
-                value.AddError("Недопустимое значение");
                 return false;
             }
             string tmp = value.Value;
