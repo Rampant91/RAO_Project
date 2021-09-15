@@ -926,7 +926,7 @@ private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -987,7 +987,7 @@ private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1048,7 +1048,7 @@ private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if ((value.Value == null) || value.Equals(""))
+            if ((value.Value == null) || value.Value.Equals(""))
             {
                 value.AddError("Поле не заполнено");
                 return false;
