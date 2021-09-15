@@ -197,6 +197,7 @@ namespace Collections
                     sumRow.AlphaActivityIn.Value = alphaInSum.ToString("E2");
                     sumRow.BetaGammaActivityIn.Value = betaInSum.ToString("E2");
 
+
                     sumRow.VolumeOut.Value = volumeOutSum.ToString("E2");
                     sumRow.MassOut.Value = massOutSum.ToString("E2");
                     sumRow.QuantityOZIIIout.Value = quantityOutSum.ToString("E2");
