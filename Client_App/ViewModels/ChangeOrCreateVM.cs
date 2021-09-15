@@ -528,7 +528,7 @@ namespace Client_App.ViewModels
             //Storage.Rows17.Sum();
             //Storage.Rows18.Sum();
             Storage.Rows21.Sum();
-            //Storage.Rows22.Sum();
+            Storage.Rows22.Sum();
         }
         public void _AddRow10()
         {
@@ -705,7 +705,7 @@ namespace Client_App.ViewModels
             //Storage.Rows17.Sum();
             //Storage.Rows18.Sum();
             Storage.Rows21.Sum();
-            //Storage.Rows22.Sum();
+            Storage.Rows22.Sum();
         }
 
         private void _AddSort(string param)

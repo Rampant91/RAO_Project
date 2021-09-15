@@ -479,8 +479,8 @@ namespace Collections
         #endregion
 
         #region Forms22
-        ObservableCollectionWithItemPropertyChanged<Form22> Rows22_DB;
-        public virtual ObservableCollectionWithItemPropertyChanged<Form22> Rows22
+        ObservableCollectionWithItemPropertyChangedWithSum<Form22> Rows22_DB;
+        public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form22> Rows22
         {
             get
             {
@@ -1703,7 +1703,7 @@ namespace Collections
         #region Year
         public int? Year_DB { get; set; } = null;
         [NotMapped]
-        [Form_Property("Отчетный год:")]
+        [Form_Property("Отчетный год")]
         public RamAccess<int?> Year
         {
             get
@@ -1966,7 +1966,7 @@ namespace Collections
             Rows21 = new ObservableCollectionWithItemPropertyChangedWithSum<Form21>();
             Rows21.CollectionChanged += CollectionChanged21;
 
-            Rows22 = new ObservableCollectionWithItemPropertyChanged<Form22>();
+            Rows22 = new ObservableCollectionWithItemPropertyChangedWithSum<Form22>();
             Rows22.CollectionChanged += CollectionChanged22;
 
             Rows23 = new ObservableCollectionWithItemPropertyChanged<Form23>();

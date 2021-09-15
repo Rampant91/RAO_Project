@@ -176,12 +176,8 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Abstracts.Form2,Models").GetProperty("FormNum")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Children.Add(Get1Header(1, 2,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("StartPeriod")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 3,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("EndPeriod")
+            stck.Children.Add(Get1Header(2, 2,
+                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("Year")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Children.Add(Get1Header(1, 4,
