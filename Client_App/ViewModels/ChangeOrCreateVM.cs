@@ -525,8 +525,8 @@ namespace Client_App.ViewModels
             //        IsCanSaveReportEnabled = true;
             //        return;
             //}
-            //Storage.Rows17.Sum();
-            //Storage.Rows18.Sum();
+            Storage.Rows17.Sum();
+            Storage.Rows18.Sum();
             Storage.Rows21.Sum();
             Storage.Rows22.Sum();
         }
@@ -702,8 +702,8 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-            //Storage.Rows17.Sum();
-            //Storage.Rows18.Sum();
+            Storage.Rows17.Sum();
+            Storage.Rows18.Sum();
             Storage.Rows21.Sum();
             Storage.Rows22.Sum();
         }

@@ -46,8 +46,6 @@ namespace Models
             CodeRAOout_Validation(CodeRAOout);
             StatusRAOout_Validation(StatusRAOout);
         }
-
-        [Attributes.Form_Property("Форма")]
         public override bool Object_Validation()
         {
             return !(MachinePower.HasErrors||

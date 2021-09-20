@@ -96,11 +96,337 @@ namespace Collections
 
         private void Form17()
         {
+            var tItems = Items.GroupBy(x => (x as Form17).OperationCode_DB +
+                                          (x as Form17).OperationDate_DB +
+                                          (x as Form17).PackName_DB +
+                                          (x as Form17).PackType_DB+
+                                          (x as Form17).PackFactoryNumber_DB +
+                                          (x as Form17).PackNumber_DB +
+                                          (x as Form17).FormingDate_DB +
+                                          (x as Form17).PassportNumber_DB +
+                                          (x as Form17).Volume_DB +
+                                          (x as Form17).Mass_DB +
+                                          (x as Form17).DocumentVid_DB +
+                                          (x as Form17).DocumentNumber_DB +
+                                          (x as Form17).DocumentDate_DB+
+                                          (x as Form17).ProviderOrRecieverOKPO_DB +
+                                          (x as Form17).TransporterOKPO_DB +
+                                          (x as Form17).StoragePlaceName_DB +
+                                          (x as Form17).StoragePlaceCode_DB).ToList();
+            int rowCount = 1;
+            var y = tItems.ToList();
 
+            var ito = new Dictionary<string, List<T>>();
+            foreach (var item in y)
+            {
+                ito.Add(item.Key, new List<T>());
+            }
+
+            foreach (var item in y)
+            {
+                if (item.Key == "")
+                {
+                    foreach (var t in item)
+                    {
+                        (t as Form17).NumberInOrder_DB = rowCount;
+                        ito[item.Key].Add(t);
+                        rowCount++;
+                    }
+                    tItems.Remove(item);
+                }
+            }
+            List<Thread> lsth = new List<Thread>();
+            foreach (var itemT in tItems)
+            {
+                var tr = new Thread(x =>
+                {
+                    var ty = x as IGrouping<string, T>;
+                    var sums = ty.Where(x => (x as Form17).Sum_DB == true).FirstOrDefault();
+
+                    Form17 sumRow = sums as Form17;
+                    if ((itemT.Count() > 1 && sumRow == null) || (itemT.Count() > 2 && sumRow != null))
+                    {
+                        if (sumRow == null)
+                        {
+                            var first = ty.FirstOrDefault() as Form17;
+                            sumRow = (Form17)FormCreator.Create("1.7");
+                            sumRow.OperationCode_DB = first.OperationCode_DB;
+                            sumRow.OperationDate_DB = first.OperationDate_DB;
+                            sumRow.PackName_DB = first.PackName_DB;
+                            sumRow.PackType_DB = first.PackType_DB;
+                            sumRow.PackFactoryNumber_DB = first.PackFactoryNumber_DB;
+                            sumRow.PackNumber_DB = first.PackNumber_DB;
+                            sumRow.FormingDate_DB = first.FormingDate_DB;
+                            sumRow.PassportNumber_DB = first.PassportNumber_DB;
+                            sumRow.Volume_DB = first.Volume_DB;
+                            sumRow.Mass_DB = first.Mass_DB;
+                            sumRow.DocumentVid_DB = first.DocumentVid_DB;
+                            sumRow.DocumentNumber_DB = first.DocumentNumber_DB;
+                            sumRow.DocumentDate_DB = first.DocumentDate_DB;
+                            sumRow.ProviderOrRecieverOKPO_DB = first.ProviderOrRecieverOKPO_DB;
+                            sumRow.TransporterOKPO_DB = first.TransporterOKPO_DB;
+                            sumRow.StoragePlaceName_DB = first.StoragePlaceName_DB;
+                            sumRow.StoragePlaceCode_DB = first.StoragePlaceCode_DB;
+
+                            sumRow.Sum_DB = true;
+                        }
+
+                        sumRow.NumberInOrder_DB = rowCount;
+                        rowCount++;
+
+                        List<T> lst = new List<T>();
+                        foreach (var itemThread in ty)
+                        {
+                            var item = itemThread;
+                            var form = item as Form17;
+                            if (form.Sum_DB != true)
+                            {
+                                form.OperationCode_Hidden=true; 
+                                form.OperationDate_Hidden=true; 
+                                form.PackName_Hidden=true; 
+                                form.PackType_Hidden=true; 
+                                form.PackFactoryNumber_Hidden=true; 
+                                form.PackNumber_Hidden=true; 
+                                form.FormingDate_Hidden=true; 
+                                form.PassportNumber_Hidden=true; 
+                                form.Volume_Hidden=true; 
+                                form.Mass_Hidden=true; 
+                                form.DocumentVid_Hidden=true; 
+                                form.DocumentNumber_Hidden=true; 
+                                form.DocumentDate_Hidden=true; 
+                                form.ProviderOrRecieverOKPO_Hidden=true;
+                                form.TransporterOKPO_Hidden=true; 
+                                form.StoragePlaceName_Hidden=true; 
+                                form.StoragePlaceCode_Hidden=true; 
+
+                                form.NumberInOrder_DB = rowCount;
+
+                                lst.Add(form as T);
+                                rowCount++;
+                            }
+                        }
+
+                        lock (ito)
+                        {
+                            ito[itemT.Key].Add(sumRow as T);
+                            foreach (var r in lst)
+                            {
+                                ito[itemT.Key].Add(r);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lock (ito)
+                        {
+                            foreach (var t in ty)
+                            {
+                                if ((t as Form17).Sum_DB != true)
+                                {
+                                    var form = (t as Form17);
+
+                                    form.OperationCode_Hidden = false;
+                                    form.OperationDate_Hidden = false;
+                                    form.PackName_Hidden = false;
+                                    form.PackType_Hidden = false;
+                                    form.PackFactoryNumber_Hidden = false;
+                                    form.PackNumber_Hidden = false;
+                                    form.FormingDate_Hidden = false;
+                                    form.PassportNumber_Hidden = false;
+                                    form.Volume_Hidden = false;
+                                    form.Mass_Hidden = false;
+                                    form.DocumentVid_Hidden = false;
+                                    form.DocumentNumber_Hidden = false;
+                                    form.DocumentDate_Hidden = false;
+                                    form.ProviderOrRecieverOKPO_Hidden = false;
+                                    form.TransporterOKPO_Hidden = false;
+                                    form.StoragePlaceName_Hidden = false;
+                                    form.StoragePlaceCode_Hidden = false;
+
+                                    form.NumberInOrder_DB = rowCount;
+                                    ito[itemT.Key].Add(t);
+                                    rowCount++;
+                                }
+                            }
+                        }
+                    }
+                });
+                tr.Start(itemT);
+                lsth.Add(tr);
+            }
+
+            foreach (var item in lsth)
+            {
+                item.Join();
+            }
+
+            this.ClearItems();
+            var yu = ito.OrderBy(x => x.Key);
+            foreach (var item in yu)
+            {
+                this.AddRange(item.Value);
+            }
         }
         private void Form18()
         {
+            var tItems = Items.GroupBy(x => (x as Form18).OperationCode_DB +
+                              (x as Form18).OperationDate_DB +
+                              (x as Form18).IndividualNumberZHRO_DB +
+                              (x as Form18).PassportNumber_DB+
+                              (x as Form18).Volume6_DB +
+                              (x as Form18).Mass7_DB +
+                              (x as Form18).SaltConcentration_DB +
+                              (x as Form18).DocumentVid_DB +
+                              (x as Form18).DocumentNumber_DB +
+                              (x as Form18).DocumentDate_DB +
+                              (x as Form18).ProviderOrRecieverOKPO_DB +
+                              (x as Form18).TransporterOKPO_DB +
+                              (x as Form18).StoragePlaceName_DB +
+                              (x as Form18).StoragePlaceCode_DB).ToList();
+            int rowCount = 1;
+            var y = tItems.ToList();
 
+            var ito = new Dictionary<string, List<T>>();
+            foreach (var item in y)
+            {
+                ito.Add(item.Key, new List<T>());
+            }
+
+            foreach (var item in y)
+            {
+                if (item.Key == "")
+                {
+                    foreach (var t in item)
+                    {
+                        (t as Form18).NumberInOrder_DB = rowCount;
+                        ito[item.Key].Add(t);
+                        rowCount++;
+                    }
+                    tItems.Remove(item);
+                }
+            }
+            List<Thread> lsth = new List<Thread>();
+            foreach (var itemT in tItems)
+            {
+                var tr = new Thread(x =>
+                {
+                    var ty = x as IGrouping<string, T>;
+                    var sums = ty.Where(x => (x as Form18).Sum_DB == true).FirstOrDefault();
+
+                    Form18 sumRow = sums as Form18;
+                    if ((itemT.Count() > 1 && sumRow == null) || (itemT.Count() > 2 && sumRow != null))
+                    {
+                        if (sumRow == null)
+                        {
+                            var first = ty.FirstOrDefault() as Form18;
+                            sumRow = (Form18)FormCreator.Create("1.8");
+                            sumRow.OperationCode_DB = first.OperationCode_DB;
+                            sumRow.OperationDate_DB = first.OperationDate_DB;
+                            sumRow.IndividualNumberZHRO_DB = first.IndividualNumberZHRO_DB;
+                            sumRow.PassportNumber_DB = first.PassportNumber_DB;
+                            sumRow.SaltConcentration_DB = first.SaltConcentration_DB;
+                            sumRow.Volume6_DB = first.Volume6_DB;
+                            sumRow.Mass7_DB = first.Mass7_DB;
+                            sumRow.DocumentVid_DB = first.DocumentVid_DB;
+                            sumRow.DocumentNumber_DB = first.DocumentNumber_DB;
+                            sumRow.DocumentDate_DB = first.DocumentDate_DB;
+                            sumRow.ProviderOrRecieverOKPO_DB = first.ProviderOrRecieverOKPO_DB;
+                            sumRow.TransporterOKPO_DB = first.TransporterOKPO_DB;
+                            sumRow.StoragePlaceName_DB = first.StoragePlaceName_DB;
+                            sumRow.StoragePlaceCode_DB = first.StoragePlaceCode_DB;
+
+                            sumRow.Sum_DB = true;
+                        }
+
+                        sumRow.NumberInOrder_DB = rowCount;
+                        rowCount++;
+
+                        List<T> lst = new List<T>();
+                        foreach (var itemThread in ty)
+                        {
+                            var item = itemThread;
+                            var form = item as Form18;
+                            if (form.Sum_DB != true)
+                            {
+                                form.OperationCode_Hidden = true;
+                                form.OperationDate_Hidden = true;
+                                form.IndividualNumberZHRO_Hidden = true;
+                                form.PassportNumber_Hidden = true;
+                                form.SaltConcentration_Hidden = true;
+                                form.Volume6_Hidden = true;
+                                form.Mass7_Hidden = true;
+                                form.DocumentVid_Hidden = true;
+                                form.DocumentNumber_Hidden = true;
+                                form.DocumentDate_Hidden = true;
+                                form.ProviderOrRecieverOKPO_Hidden = true;
+                                form.TransporterOKPO_Hidden = true;
+                                form.StoragePlaceName_Hidden = true;
+                                form.StoragePlaceCode_Hidden = true;
+
+                                form.NumberInOrder_DB = rowCount;
+
+                                lst.Add(form as T);
+                                rowCount++;
+                            }
+                        }
+
+                        lock (ito)
+                        {
+                            ito[itemT.Key].Add(sumRow as T);
+                            foreach (var r in lst)
+                            {
+                                ito[itemT.Key].Add(r);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lock (ito)
+                        {
+                            foreach (var t in ty)
+                            {
+                                if ((t as Form18).Sum_DB != true)
+                                {
+                                    var form = (t as Form18);
+
+                                    form.OperationCode_Hidden = false;
+                                    form.OperationDate_Hidden = false;
+                                    form.IndividualNumberZHRO_Hidden = false;
+                                    form.PassportNumber_Hidden = false;
+                                    form.SaltConcentration_Hidden = false;
+                                    form.Volume6_Hidden = false;
+                                    form.Mass7_Hidden = false;
+                                    form.DocumentVid_Hidden = false;
+                                    form.DocumentNumber_Hidden = false;
+                                    form.DocumentDate_Hidden = false;
+                                    form.ProviderOrRecieverOKPO_Hidden = false;
+                                    form.TransporterOKPO_Hidden = false;
+                                    form.StoragePlaceName_Hidden = false;
+                                    form.StoragePlaceCode_Hidden = false;
+
+                                    form.NumberInOrder_DB = rowCount;
+                                    ito[itemT.Key].Add(t);
+                                    rowCount++;
+                                }
+                            }
+                        }
+                    }
+                });
+                tr.Start(itemT);
+                lsth.Add(tr);
+            }
+
+            foreach (var item in lsth)
+            {
+                item.Join();
+            }
+
+            this.ClearItems();
+            var yu = ito.OrderBy(x => x.Key);
+            foreach (var item in yu)
+            {
+                this.AddRange(item.Value);
+            }
         }
 
         private void Form21()
@@ -285,6 +611,8 @@ namespace Collections
                     }
                 }
 
+                tmp = tmp.Replace(",", ".");
+
                 NumberStyles styles = NumberStyles.Any;
                 try
                 {
@@ -369,9 +697,6 @@ namespace Collections
                             var form = item as Form22;
                             if (form.Sum_DB != true)
                             {
-                                form.CodeRAO_Hidden = true;
-                                form.StatusRAO_Hidden = true;
-                                form.MainRadionuclids_Hidden = true;
                                 form.NumberInOrder_DB = rowCount;
 
                                 volumeSum += StringToNumber(form.VolumeOutOfPack_DB);
@@ -387,6 +712,10 @@ namespace Collections
                                 rowCount++;
                             }
                         }
+
+                        sumRow.CodeRAO_Hidden = true;
+                        sumRow.StatusRAO_Hidden = true;
+                        sumRow.MainRadionuclids_Hidden = true;
 
                         sumRow.VolumeOutOfPack_DB = volumeSum.ToString("E2");
                         sumRow.MassOutOfPack_DB = massSum.ToString("E2");
@@ -414,9 +743,6 @@ namespace Collections
                                 if ((t as Form22).Sum_DB != true)
                                 {
                                     var form = (t as Form22);
-                                    form.CodeRAO_Hidden = false;
-                                    form.StatusRAO_Hidden = false;
-                                    form.MainRadionuclids_Hidden = false;
                                     form.NumberInOrder_DB = rowCount;
                                     ito[itemT.Key].Add(t);
                                     rowCount++;
