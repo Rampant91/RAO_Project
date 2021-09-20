@@ -38,22 +38,80 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
         private static readonly int Wdth1 = 100;
         private static readonly int RowHeight1 = 30;
         private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-
-        private static Control Get1Header(int starWidth, int Column, string Text)
+        private static Control Get1Header(int[] starWidth, int Column, string[] Text, bool OneToMany)
         {
-            var ram = new RamAccess<string>(null, Text);
-            var cell = new Cell(ram, "", true)
+            if (!OneToMany)
             {
-                Background = new SolidColorBrush(Color.Parse("LightGray")),
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1),
-                CellRow = 0,
-                CellColumn = Column
-            };
+                var ram0 = new RamAccess<string>(null, "");
+                var cell0 = new Cell(ram0, "", true)
+                {
+                    Background = new SolidColorBrush(Color.Parse("LightGray")),
+                    Width = starWidth[0] * Wdth1,
+                    Height = RowHeight1,
+                    BorderBrush = new SolidColorBrush(border_color1),
+                    CellRow = 0,
+                    CellColumn = Column
+                };
 
-
-            return cell;
+                var ram = new RamAccess<string>(null, Text[0]);
+                var cell = new Cell(ram, "", true)
+                {
+                    Background = new SolidColorBrush(Color.Parse("LightGray")),
+                    Width = starWidth[0] * Wdth1,
+                    Height = RowHeight1,
+                    BorderBrush = new SolidColorBrush(border_color1),
+                    CellRow = 0,
+                    CellColumn = Column
+                };
+                var stckPnl = new StackPanel
+                {
+                    Orientation = Orientation.Vertical
+                };
+                stckPnl.Children.Add(cell0);
+                stckPnl.Children.Add(cell);
+                return stckPnl;
+            }
+            else
+            {
+                int len = Text.Length;
+                var headers = new RamAccess<string>[len];
+                var cells = new Cell[len];
+                var stckPnl = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal
+                };
+                for (int k = 0; k < len - 1; k++)
+                {
+                    headers[k] = new RamAccess<string>(null, Text[k]);
+                    cells[k] = new Cell(headers[k], "", true)
+                    {
+                        Background = new SolidColorBrush(Color.Parse("LightGray")),
+                        Width = starWidth[k] * Wdth1,
+                        Height = RowHeight1,
+                        BorderBrush = new SolidColorBrush(border_color1),
+                        CellRow = 0,
+                        CellColumn = Column
+                    };
+                    stckPnl.Children.Add(cells[k]);
+                }
+                var stckPnl1 = new StackPanel
+                {
+                    Orientation = Orientation.Vertical
+                };
+                var ram0 = new RamAccess<string>(null, Text[len - 1]);
+                var cell0 = new Cell(ram0, "", true)
+                {
+                    Background = new SolidColorBrush(Color.Parse("LightGray")),
+                    Width = starWidth[len - 1] * Wdth1,
+                    Height = RowHeight1,
+                    BorderBrush = new SolidColorBrush(border_color1),
+                    CellRow = 0,
+                    CellColumn = Column
+                };
+                stckPnl1.Children.Add(cell0);
+                stckPnl1.Children.Add(stckPnl);
+                return stckPnl1;
+            }
         }
 
         private static Control Get1()
@@ -64,98 +122,98 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get1Header(1, 1,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("NumberInOrder")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 2,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("RefineMachineName")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 3,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("MachineCode")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 4,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("MachinePower")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 5,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("NumberOfHoursPerYear")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 6,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("CodeRAOIn")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 7,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("StatusRAOIn")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 8,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("VolumeIn")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 9,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("MassIn")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 10,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("QuantityIn")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 11,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TritiumActivityIn")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 12,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("BetaGammaActivityIn")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 13,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("AlphaActivityIn")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 14,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TransuraniumActivityIn")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 15,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("CodeRAOout")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 16,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("StatusRAOout")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 17,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("VolumeOut")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 18,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("MassOut")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(1, 19,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("QuantityOZIIIout")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 20,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TritiumActivityOut")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 21,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("BetaGammaActivityOut")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 22,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("AlphaActivityOut")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get1Header(2, 23,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TransuraniumActivityOut")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
+            //stck.Children.Add(Get1Header(1, 1,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("NumberInOrder")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 2,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("RefineMachineName")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 3,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("MachineCode")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 4,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("MachinePower")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 5,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("NumberOfHoursPerYear")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 6,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("CodeRAOIn")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 7,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("StatusRAOIn")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 8,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("VolumeIn")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 9,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("MassIn")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 10,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("QuantityIn")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 11,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TritiumActivityIn")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 12,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("BetaGammaActivityIn")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 13,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("AlphaActivityIn")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 14,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TransuraniumActivityIn")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 15,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("CodeRAOout")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 16,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("StatusRAOout")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 17,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("VolumeOut")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 18,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("MassOut")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(1, 19,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("QuantityOZIIIout")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 20,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TritiumActivityOut")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 21,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("BetaGammaActivityOut")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 22,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("AlphaActivityOut")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get1Header(2, 23,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TransuraniumActivityOut")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
 
             return stck;
         }
@@ -374,21 +432,80 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
         private static readonly int RowHeight4 = 30;
         private static readonly Color border_color4 = Color.FromArgb(255, 0, 0, 0);
 
-        private static Control Get4Header(int starWidth, int Column, string Text)
+        private static Control Get4Header(int[] starWidth, int Column, string[] Text, bool OneToMany)
         {
-            var ram = new RamAccess<string>(null, Text);
-            var cell = new Cell(ram, "", true)
+            if (!OneToMany)
             {
-                Background = new SolidColorBrush(Color.Parse("LightGray")),
-                Width = starWidth * Wdth4,
-                Height = RowHeight4,
-                BorderBrush = new SolidColorBrush(border_color4),
-                CellRow = 0,
-                CellColumn = Column
-            };
+                var ram0 = new RamAccess<string>(null, "");
+                var cell0 = new Cell(ram0, "", true)
+                {
+                    Background = new SolidColorBrush(Color.Parse("LightGray")),
+                    Width = starWidth[0] * Wdth1,
+                    Height = RowHeight1,
+                    BorderBrush = new SolidColorBrush(border_color1),
+                    CellRow = 0,
+                    CellColumn = Column
+                };
 
-
-            return cell;
+                var ram = new RamAccess<string>(null, Text[0]);
+                var cell = new Cell(ram, "", true)
+                {
+                    Background = new SolidColorBrush(Color.Parse("LightGray")),
+                    Width = starWidth[0] * Wdth1,
+                    Height = RowHeight1,
+                    BorderBrush = new SolidColorBrush(border_color1),
+                    CellRow = 0,
+                    CellColumn = Column
+                };
+                var stckPnl = new StackPanel
+                {
+                    Orientation = Orientation.Vertical
+                };
+                stckPnl.Children.Add(cell0);
+                stckPnl.Children.Add(cell);
+                return stckPnl;
+            }
+            else
+            {
+                int len = Text.Length;
+                var headers = new RamAccess<string>[len];
+                var cells = new Cell[len];
+                var stckPnl = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal
+                };
+                for (int k = 0; k < len-1; k++)
+                {
+                    headers[k] = new RamAccess<string>(null, Text[k]);
+                    cells[k] = new Cell(headers[k], "", true)
+                    {
+                        Background = new SolidColorBrush(Color.Parse("LightGray")),
+                        Width = starWidth[k] * Wdth1,
+                        Height = RowHeight1,
+                        BorderBrush = new SolidColorBrush(border_color1),
+                        CellRow = 0,
+                        CellColumn = Column
+                    };
+                    stckPnl.Children.Add(cells[k]);
+                }
+                var stckPnl1 = new StackPanel
+                {
+                    Orientation = Orientation.Vertical
+                };
+                var ram0 = new RamAccess<string>(null, Text[len-1]);
+                var cell0 = new Cell(ram0, "", true)
+                {
+                    Background = new SolidColorBrush(Color.Parse("LightGray")),
+                    Width = starWidth[len-1] * Wdth1,
+                    Height = RowHeight1,
+                    BorderBrush = new SolidColorBrush(border_color1),
+                    CellRow = 0,
+                    CellColumn = Column
+                };
+                stckPnl1.Children.Add(cell0);
+                stckPnl1.Children.Add(stckPnl);
+                return stckPnl1;
+            }
         }
 
         private static Control Get4()
@@ -399,76 +516,118 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 Spacing = -1
             };
 
-            stck.Children.Add(Get4Header(1, 1,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("NumberInOrder")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(1, 2,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("CodeOYAT")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 3,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("FcpNumber")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 4,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassCreated")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 5,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityCreated")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 6,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassFromAnothers")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 7,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityFromAnothers")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 8,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassFromAnothersImported")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 9,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models")
-                    .GetProperty("QuantityFromAnothersImported")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 10,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassAnotherReasons")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 11,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityAnotherReasons")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 12,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassTransferredToAnother")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 13,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models")
-                    .GetProperty("QuantityTransferredToAnother")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 14,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassRefined")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 15,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityRefined")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 16,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassRemovedFromAccount")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            stck.Children.Add(Get4Header(2, 17,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityRemovedFromAccount")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
+            //stck.Children.Add(Get4Header(1, 1,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("NumberInOrder")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            stck.Children.Add(Get4Header(new int[1] { 1 }, 1, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("NumberInOrder")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
+
+            //stck.Children.Add(Get4Header(1, 2,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("CodeOYAT")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            stck.Children.Add(Get4Header(new int[1] { 1 }, 2, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("CodeOYAT")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
+
+            //stck.Children.Add(Get4Header(2, 3,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("FcpNumber")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            stck.Children.Add(Get4Header(new int[1] { 2 }, 3, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("FcpNumber")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
+
+            //stck.Children.Add(Get4Header(2, 4,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassCreated")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 5,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityCreated")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 6,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassFromAnothers")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 7,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityFromAnothers")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 8,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassFromAnothersImported")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 9,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models")
+            //        .GetProperty("QuantityFromAnothersImported")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 10,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassAnotherReasons")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 11,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityAnotherReasons")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            stck.Children.Add(Get4Header(new int[9] { 2,2,2,2,2,2,2,2,16 }, 4, new string[9] {
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassCreated")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityCreated")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassFromAnothers")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityFromAnothers")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassFromAnothersImported")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityFromAnothersImported")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassAnotherReasons")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityAnotherReasons")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            "Поставлено на учет в организации"}, true));
+
+            //stck.Children.Add(Get4Header(2, 12,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassTransferredToAnother")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 13,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models")
+            //        .GetProperty("QuantityTransferredToAnother")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 14,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassRefined")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 15,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityRefined")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 16,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassRemovedFromAccount")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            //stck.Children.Add(Get4Header(2, 17,
+            //    ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityRemovedFromAccount")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //));
+            stck.Children.Add(Get4Header(new int[7] { 2, 2, 2, 2, 2, 2, 12 }, 5, new string[7] {
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassTransferredToAnother")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityTransferredToAnother")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassRefined")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityRefined")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("MassRemovedFromAccount")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            ((Form_PropertyAttribute) Type.GetType("Models.Form24,Models").GetProperty("QuantityRemovedFromAccount")
+                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+            "Снято с учета в организации"}, true));
             return stck;
         }
 
