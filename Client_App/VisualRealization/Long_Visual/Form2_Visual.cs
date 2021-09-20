@@ -1374,17 +1374,7 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
+                Height = new GridLength(0.25, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
@@ -1461,98 +1451,40 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl1);
 
-            Grid? topPnl2 = new Grid();
-            column = new ColumnDefinition
+            StackPanel a = new StackPanel
             {
-                Width = new GridLength(1, GridUnitType.Star)
+                Orientation = Orientation.Vertical,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Spacing = -1
             };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
+            a.SetValue(Grid.RowProperty, 2);
+            StackPanel b2 = new StackPanel
             {
-                Width = new GridLength(1, GridUnitType.Star)
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
             };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на допустимые выбросы радионуклидов в атмосферу №"));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionNumber27", 100));
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.PermissionIssueDate27", 100));
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, ". Срок действия с"));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ValidBegin27", 100));
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru27", 100));
+            a.Children.Add(b2);
+            StackPanel b4 = new StackPanel
             {
-                Width = new GridLength(1, GridUnitType.Star)
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
             };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl2.SetValue(Grid.RowProperty, 2);
-            topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            b4.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Наименование разрешительного документа на допустимые выбросы радионуклидов в атмосферу:"));
+            b4.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName27", 100));
 
-            topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на допустимые выбросы радионуклидов в атмосферу №"));
-            topPnl2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionNumber27", 100));
-            topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
-            topPnl2.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.PermissionIssueDate27", 100));
-
-            maingrid.Children.Add(topPnl2);
-
-            Grid? topPnl3 = new Grid();
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl3.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl3.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl3.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl3.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl3.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl3.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl3.SetValue(Grid.RowProperty, 3);
-            topPnl3.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl3.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-
-            topPnl3.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Срок действия с"));
-            topPnl3.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ValidBegin27", 100));
-            topPnl3.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
-            topPnl3.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru27", 100));
-
-            maingrid.Children.Add(topPnl3);
-
-            Grid? topPnl4 = new Grid();
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl4.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl4.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl4.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl4.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl4.SetValue(Grid.RowProperty, 4);
-            topPnl4.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl4.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-
-            topPnl4.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Наименование разрешительного документа на допустимые выбросы радионуклидов в атмосферу:"));
-            topPnl4.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName27", 100));
-
-            maingrid.Children.Add(topPnl4);
+            a.Children.Add(b4);
+            maingrid.Children.Add(a);
 
             Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
             {
@@ -1564,7 +1496,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd.SetValue(Grid.RowProperty, 5);
+            grd.SetValue(Grid.RowProperty, 3);
 
             Binding b = new Binding
             {
@@ -1612,7 +1544,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 6);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -1663,52 +1595,12 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(0.1, GridUnitType.Star)
+                Height = new GridLength(0.13, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.1, GridUnitType.Star)
+                Height = new GridLength(0.55, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
@@ -1721,7 +1613,6 @@ namespace Client_App.Long_Visual
                 Height = new GridLength(0.8, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
-
             Grid? topPnl0 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
             {
@@ -1785,283 +1676,80 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl1);
 
-            Grid? topPnl2 = new Grid();
-            column = new ColumnDefinition
+            StackPanel a = new StackPanel
             {
-                Width = new GridLength(1, GridUnitType.Star)
+                Orientation = Orientation.Vertical,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Spacing = -1
             };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
+            a.SetValue(Grid.RowProperty, 2);
+            StackPanel b2 = new StackPanel
             {
-                Width = new GridLength(1, GridUnitType.Star)
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
             };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl2.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl2.SetValue(Grid.RowProperty, 2);
-            topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
-            topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на сброс радионуклидов в водные объекты №"));
-            topPnl2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionNumber_28", 100));
-            topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
-            topPnl2.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.PermissionIssueDate_28", 100));
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на сброс радионуклидов в водные объекты №"));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionNumber_28", 100));
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.PermissionIssueDate_28", 100));
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, ". Срок действия с"));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ValidBegin_28", 100));
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru_28", 100));
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, ". Наименование разрешительного документа на сброс:"));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName_28", 100));
+            a.Children.Add(b2);
 
-            maingrid.Children.Add(topPnl2);
+            StackPanel b5 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
 
-            Grid? topPnl3 = new Grid();
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl3.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl3.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl3.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl3.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl3.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl3.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl3.SetValue(Grid.RowProperty, 3);
-            topPnl3.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl3.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            b5.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на сброс радионуклидов на рельеф местности №"));
+            b5.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionNumber1_28", 100));
+            b5.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
+            b5.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.PermissionIssueDate1_28", 100));
+            b5.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, ". Срок действия с"));
+            b5.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ValidBegin1_28", 100));
+            b5.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
+            b5.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru1_28", 100));
+            b5.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, ". Наименование разрешительного документа на сброс:"));
+            b5.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName1_28", 100));
+            a.Children.Add(b5);
 
-            topPnl3.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Срок действия с"));
-            topPnl3.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ValidBegin_28", 100));
-            topPnl3.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
-            topPnl3.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru_28", 100));
+            StackPanel b8 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
 
-            maingrid.Children.Add(topPnl3);
+            b8.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Договор на передачу сточных вод в сети канализации №"));
+            b8.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ContractNumber_28", 100));
+            b8.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
+            b8.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ContractIssueDate2_28", 100));
+            b8.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, ". Срок действия с"));
+            b8.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ValidBegin2_28", 100));
+            b8.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
+            b8.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru2_28", 100));
+            a.Children.Add(b8);
 
-            Grid? topPnl4 = new Grid();
-            column = new ColumnDefinition
+            StackPanel b10 = new StackPanel
             {
-                Width = new GridLength(1, GridUnitType.Star)
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
             };
-            topPnl4.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl4.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl4.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl4.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl4.SetValue(Grid.RowProperty, 4);
-            topPnl4.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl4.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
-            topPnl4.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Наименование разрешительного документа на сброс:"));
-            topPnl4.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName_28", 100));
-            maingrid.Children.Add(topPnl4);
-
-            Grid? topPnl5 = new Grid();
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl5.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl5.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl5.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl5.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl5.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl5.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl5.SetValue(Grid.RowProperty, 5);
-            topPnl5.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl5.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-
-            topPnl5.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на сброс радионуклидов на рельеф местности №"));
-            topPnl5.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionNumber1_28", 100));
-            topPnl5.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
-            topPnl5.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.PermissionIssueDate1_28", 100));
-
-            maingrid.Children.Add(topPnl5);
-
-            Grid? topPnl6 = new Grid();
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl6.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl6.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl6.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl6.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl6.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl6.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl6.SetValue(Grid.RowProperty, 6);
-            topPnl6.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl6.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-
-            topPnl6.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Срок действия с"));
-            topPnl6.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ValidBegin1_28", 100));
-            topPnl6.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
-            topPnl6.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru1_28", 100));
-
-            maingrid.Children.Add(topPnl6);
-
-            Grid? topPnl7 = new Grid();
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl7.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl7.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl7.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl7.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl7.SetValue(Grid.RowProperty, 7);
-            topPnl7.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl7.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-
-            topPnl7.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Наименование разрешительного документа на сброс:"));
-            topPnl7.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName1_28", 100));
-
-            maingrid.Children.Add(topPnl7);
-
-            Grid? topPnl8 = new Grid();
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl8.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl8.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl8.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl8.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl8.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl8.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl8.SetValue(Grid.RowProperty, 8);
-            topPnl8.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl8.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-
-            topPnl8.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Договор на передачу сточных вод в сети канализации №"));
-            topPnl8.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ContractNumber_28", 100));
-            topPnl8.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
-            topPnl8.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ContractIssueDate2_28", 100));
-
-            maingrid.Children.Add(topPnl8);
-
-            Grid? topPnl9 = new Grid();
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl9.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl9.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl9.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl9.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl9.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl9.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl9.SetValue(Grid.RowProperty, 9);
-            topPnl9.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl9.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-
-            topPnl9.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Срок действия с"));
-            topPnl9.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ValidBegin2_28", 100));
-            topPnl9.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
-            topPnl9.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru2_28", 100));
-
-            maingrid.Children.Add(topPnl9);
-
-            Grid? topPnl10 = new Grid();
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl10.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition
-            {
-                Width = new GridLength(1, GridUnitType.Star)
-            };
-            topPnl10.ColumnDefinitions.Add(column);
-            column = new ColumnDefinition();
-            topPnl10.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl10.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            topPnl10.SetValue(Grid.RowProperty, 10);
-            topPnl10.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            topPnl10.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-
-            topPnl10.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Организация, осуществляющая прием сточных вод:"));
-            topPnl10.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.OrganisationReciever_28", 100));
-
-            maingrid.Children.Add(topPnl10);
+            b10.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Организация, осуществляющая прием сточных вод:"));
+            b10.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.OrganisationReciever_28", 100));
+            a.Children.Add(b10);
+            maingrid.Children.Add(a);
 
             Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
             {
@@ -2073,7 +1761,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd.SetValue(Grid.RowProperty, 11);
+            grd.SetValue(Grid.RowProperty, 3);
 
             Binding b = new Binding
             {
@@ -2121,7 +1809,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 12);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
