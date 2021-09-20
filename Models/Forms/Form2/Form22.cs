@@ -106,8 +106,6 @@ namespace Models
 
         #endregion
 
-        //StoragePlaceName property
-
         #region StoragePlaceNameNumberInOrder
 
         public string StoragePlaceName_DB { get; set; } = "";
@@ -159,8 +157,6 @@ namespace Models
         //StoragePlaceName property
 
         #endregion
-
-        //StoragePlaceCode property
 
         #region StoragePlaceCode
 
@@ -223,8 +219,6 @@ namespace Models
 
         #endregion
 
-        //PackName property
-
         #region PackName
 
         public string PackName_DB { get; set; } = "";
@@ -282,9 +276,7 @@ namespace Models
 
         #endregion
 
-//PackType property
-
-        #region NumberInOrder
+        #region PackType
 
         public string PackType_DB { get; set; } = "";
 
@@ -330,12 +322,12 @@ namespace Models
                 return true;
             }
 
-            var spr = new List<string>();
-            if (!spr.Contains(value.Value))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
+            //var spr = new List<string>();
+            //if (!spr.Contains(value.Value))
+            //{
+            //    value.AddError("Недопустимое значение");
+            //    return false;
+            //}
 
             return true;
         }
@@ -343,8 +335,6 @@ namespace Models
         //PackType property
 
         #endregion
-
-        //PackQuantity property
 
         #region PackQuantity
 
@@ -397,8 +387,6 @@ namespace Models
         //PackQuantity property
 
         #endregion
-
-        //CodeRAO property
 
         #region CodeRAO
 
@@ -467,7 +455,6 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         //CodeRAO property
         #endregion
 
-        //StatusRAO property
         #region StatusRAO
         public string StatusRAO_DB { get; set; } = "";
         public bool StatusRAO_Hidden_Priv { get; set; } = false;
@@ -555,7 +542,6 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         //StatusRAO property
         #endregion
 
-        //VolumeInPack property
         #region VolumeInPack
         public string VolumeInPack_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Объем с упаковкой, куб. м")]
@@ -611,7 +597,6 @@ private bool VolumeInPack_Validation(RamAccess<string> value)//TODO
         //VolumeInPack property
         #endregion
 
-        //MassInPack Property
         #region MassInPack
         public string MassInPack_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса с упаковкой, т")]
@@ -670,7 +655,6 @@ private bool VolumeInPack_Validation(RamAccess<string> value)//TODO
         //MassInPack Property
         #endregion
 
-        //VolumeOutOfPack property
         #region VolumeOutOfPack 
         public string VolumeOutOfPack_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Объем без упаковки, куб. м")]
@@ -727,7 +711,6 @@ if (args.PropertyName == "Value")
         //VolumeOutOfPack property
         #endregion
 
-        //MassOutOfPack Property
         #region MassOutOfPack
         public string MassOutOfPack_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Масса без упаковки, т")]
@@ -788,7 +771,6 @@ private bool MassOutOfPack_Validation(RamAccess<string> value)//TODO
         //MassOutOfPack Property
         #endregion
 
-        //QuantityOZIII property
         #region QuantityOZIII_DB
         public int? QuantityOZIII_DB { get; set; } = null; [NotMapped]
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
@@ -831,7 +813,6 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         //QuantityOZIII property
         #endregion
 
-        //TritiumActivity property
         #region TritiumActivity
         public string TritiumActivity_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Активность трития, Бк")]
@@ -892,7 +873,6 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         //TritiumActivity property
         #endregion
 
-        //BetaGammaActivity property
         #region BetaGammaActivity
         public string BetaGammaActivity_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
@@ -913,12 +893,12 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
 
 
         private void BetaGammaActivityValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 BetaGammaActivity_DB = ((RamAccess<string>)Value).Value;
-}
-}
+            }
+        }
 private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
@@ -951,36 +931,35 @@ private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
             return true;
         }
         //BetaGammaActivity property
-#endregion
+        #endregion
 
-        //AlphaActivity property
-#region NumberInOrder 
-public string AlphaActivity_DB { get; set; } = ""; [NotMapped]
+        #region AlphaActivity 
+        public string AlphaActivity_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
         public RamAccess<string> AlphaActivity//SUMMARIZABLE
         {
             get
             {
-                    var tmp = new RamAccess<string>(AlphaActivity_Validation, AlphaActivity_DB);
-                    tmp.PropertyChanged += AlphaActivityValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(AlphaActivity_Validation, AlphaActivity_DB);
+                tmp.PropertyChanged += AlphaActivityValueChanged;
+                return tmp;
             }
             set
             {
-                    AlphaActivity_DB = value.Value;
+                AlphaActivity_DB = value.Value;
                 OnPropertyChanged(nameof(AlphaActivity));
             }
         }
 
 
         private void AlphaActivityValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 AlphaActivity_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (value.Value == "-")
@@ -1011,10 +990,8 @@ private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
             }
             return true;
         }
-        //AlphaActivity property
         #endregion
 
-        //TransuraniumActivity property
         #region TransuraniumActivity 
         public string TransuraniumActivity_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Активность трансурановых, Бк")]
@@ -1035,13 +1012,13 @@ private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
 
 
         private void TransuraniumActivityValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 TransuraniumActivity_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (value.Value == "-")
@@ -1075,7 +1052,6 @@ private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
         //TransuraniumActivity property
         #endregion
 
-        //MainRadionuclids property
         #region MainRadionuclids 
         public string MainRadionuclids_DB { get; set; } = "";
         public bool MainRadionuclids_Hidden_Priv { get; set; } = false;
@@ -1149,7 +1125,6 @@ private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
         //MainRadionuclids property
         #endregion
 
-        //Subsidy property
         #region Subsidy
         public string Subsidy_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Субсидия, %")]
@@ -1200,7 +1175,6 @@ private bool Subsidy_Validation(RamAccess<string> value)//Ready
         //Subsidy property
         #endregion
 
-        //FcpNumber property
         #region FcpNumber
         public string FcpNumber_DB { get; set; } = ""; [NotMapped]
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
