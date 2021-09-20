@@ -81,22 +81,77 @@ namespace Models
             Quantity.HasErrors);
         }
 
+        #region  Sum
+        public bool Sum_DB { get; set; } = false;
+
+        [NotMapped]
+        public RamAccess<bool> Sum
+        {
+            get
+            {
+                var tmp = new RamAccess<bool>(Sum_Validation, Sum_DB);
+                tmp.PropertyChanged += SumValueChanged;
+                return tmp;
+            }
+            set
+            {
+                Sum_DB = value.Value;
+                OnPropertyChanged(nameof(Sum));
+            }
+        }
+
+        private void SumValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Sum_DB = ((RamAccess<bool>)Value).Value;
+            }
+        }
+
+        private bool Sum_Validation(RamAccess<bool> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
         #region PackName
         public string PackName_DB { get; set; } = "";
+        public bool PackName_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool PackName_Hidden
+        {
+            get => PackName_Hidden_Priv;
+            set
+            {
+                PackName_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Наименование упаковки")]
         public RamAccess<string> PackName
         {
             get
             {
-                var tmp = new RamAccess<string>(PackName_Validation, PackName_DB);
-                tmp.PropertyChanged += PackNameValueChanged;
-                return tmp;
+                if (!PackName_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(PackName_Validation, PackName_DB);
+                    tmp.PropertyChanged += PackNameValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                PackName_DB = value.Value;
-                OnPropertyChanged(nameof(PackName));
+                if (!PackName_Hidden_Priv)
+                {
+                    PackName_DB = value.Value;
+                    OnPropertyChanged(nameof(PackName));
+                }
             }
         }
         private void PackNameValueChanged(object Value, PropertyChangedEventArgs args)
@@ -121,22 +176,43 @@ namespace Models
 
         #region PackType
         public string PackType_DB { get; set; } = "";
+        public bool PackType_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool PackType_Hidden
+        {
+            get => PackType_Hidden_Priv;
+            set
+            {
+                PackType_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Тип упаковки")]
         public RamAccess<string> PackType
         {
             get
             {
-                var tmp = new RamAccess<string>(PackType_Validation, PackType_DB);
-                tmp.PropertyChanged += PackTypeValueChanged;
-                return tmp;
+                if (!PackType_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(PackType_Validation, PackType_DB);
+                    tmp.PropertyChanged += PackTypeValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                PackType_DB = value.Value;
-                OnPropertyChanged(nameof(PackType));
+                if (!PackType_Hidden_Priv)
+                {
+                    PackType_DB = value.Value;
+                    OnPropertyChanged(nameof(PackType));
+                }
             }
-        }//If change this change validation
+        }
 
         private void PackTypeValueChanged(object Value, PropertyChangedEventArgs args)
         {
@@ -153,22 +229,43 @@ namespace Models
 
         #region PackNumber
         public string PackNumber_DB { get; set; } = "";
+        public bool PackNumber_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool PackNumber_Hidden
+        {
+            get => PackNumber_Hidden_Priv;
+            set
+            {
+                PackNumber_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Номер упаковки")]
         public RamAccess<string> PackNumber
         {
             get
             {
-                var tmp = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);
-                tmp.PropertyChanged += PackNumberValueChanged;
-                return tmp;
+                if (!PackNumber_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);
+                    tmp.PropertyChanged += PackNumberValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                PackNumber_DB = value.Value;
-                OnPropertyChanged(nameof(PackNumber));
+                if (!PackNumber_Hidden_Priv)
+                {
+                    PackNumber_DB = value.Value;
+                    OnPropertyChanged(nameof(PackNumber));
+                }
             }
-        }//If change this change validation
+        }
 
         private void PackNumberValueChanged(object Value, PropertyChangedEventArgs args)
         {
@@ -185,20 +282,41 @@ namespace Models
 
         #region PackFactoryNumber
         public string PackFactoryNumber_DB { get; set; } = "";
+        public bool PackFactoryNumber_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool PackFactoryNumber_Hidden
+        {
+            get => PackFactoryNumber_Hidden_Priv;
+            set
+            {
+                PackFactoryNumber_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Заводской номер упаковки")]
         public RamAccess<string> PackFactoryNumber
         {
             get
             {
-                var tmp = new RamAccess<string>(PackFactoryNumber_Validation, PackFactoryNumber_DB);
-                tmp.PropertyChanged += PackFactoryNumberValueChanged;
-                return tmp;
+                if (!PackFactoryNumber_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(PackFactoryNumber_Validation, PackFactoryNumber_DB);
+                    tmp.PropertyChanged += PackFactoryNumberValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                PackFactoryNumber_DB = value.Value;
-                OnPropertyChanged(nameof(PackFactoryNumber));
+                if (!PackFactoryNumber_Hidden_Priv)
+                {
+                    PackFactoryNumber_DB = value.Value;
+                    OnPropertyChanged(nameof(PackFactoryNumber));
+                }
             }
         }
         private void PackFactoryNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -216,20 +334,41 @@ namespace Models
 
         #region FormingDate
         public string FormingDate_DB { get; set; } = "";
+        public bool FormingDate_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool FormingDate_Hidden
+        {
+            get => FormingDate_Hidden_Priv;
+            set
+            {
+                FormingDate_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Дата формирования")]
         public RamAccess<string> FormingDate
         {
             get
             {
-                var tmp = new RamAccess<string>(FormingDate_Validation, FormingDate_DB);
-                tmp.PropertyChanged += FormingDateValueChanged;
-                return tmp;
+                if (!FormingDate_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(FormingDate_Validation, FormingDate_DB);
+                    tmp.PropertyChanged += FormingDateValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                FormingDate_DB = value.Value;
-                OnPropertyChanged(nameof(FormingDate));
+                if (!FormingDate_Hidden_Priv)
+                {
+                    FormingDate_DB = value.Value;
+                    OnPropertyChanged(nameof(FormingDate));
+                }
             }
         }
         private void FormingDateValueChanged(object Value, PropertyChangedEventArgs args)
@@ -264,20 +403,41 @@ namespace Models
 
         #region Volume
         public string Volume_DB { get; set; } = "";
+        public bool Volume_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool Volume_Hidden
+        {
+            get => Volume_Hidden_Priv;
+            set
+            {
+                Volume_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Объем, куб. м")]
         public RamAccess<string> Volume
         {
             get
             {
-                var tmp = new RamAccess<string>(Volume_Validation, Volume_DB);
-                tmp.PropertyChanged += VolumeValueChanged;
-                return tmp;
+                if (!Volume_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(Volume_Validation, Volume_DB);
+                    tmp.PropertyChanged += VolumeValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                Volume_DB = value.Value;
-                OnPropertyChanged(nameof(Volume));
+                if (!Volume_Hidden_Priv)
+                {
+                    Volume_DB = value.Value;
+                    OnPropertyChanged(nameof(Volume));
+                }
             }
         }
         private void VolumeValueChanged(object Value, PropertyChangedEventArgs args)
@@ -311,20 +471,41 @@ namespace Models
 
         #region Mass
         public string Mass_DB { get; set; } = "";
+        public bool Mass_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool Mass_Hidden
+        {
+            get => Mass_Hidden_Priv;
+            set
+            {
+                Mass_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Масса брутто, т")]
         public RamAccess<string> Mass
         {
             get
             {
-                var tmp = new RamAccess<string>(Mass_Validation, Mass_DB);
-                tmp.PropertyChanged += MassValueChanged;
-                return tmp;
+                if (!Mass_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(Mass_Validation, Mass_DB);
+                    tmp.PropertyChanged += MassValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                Mass_DB = value.Value;
-                OnPropertyChanged(nameof(Mass));
+                if (!Mass_Hidden_Priv)
+                {
+                    Mass_DB = value.Value;
+                    OnPropertyChanged(nameof(Mass));
+                }
             }
         }
         private void MassValueChanged(object Value, PropertyChangedEventArgs args)
@@ -358,20 +539,41 @@ namespace Models
 
         #region PassportNumber
         public string PassportNumber_DB { get; set; } = "";
+        public bool PassportNumber_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool PassportNumber_Hidden
+        {
+            get => PassportNumber_Hidden_Priv;
+            set
+            {
+                PassportNumber_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Номер паспорта")]
         public RamAccess<string> PassportNumber
         {
             get
             {
-                var tmp = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
-                tmp.PropertyChanged += PassportNumberValueChanged;
-                return tmp;
+                if (!PassportNumber_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
+                    tmp.PropertyChanged += PassportNumberValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                PassportNumber_DB = value.Value;
-                OnPropertyChanged(nameof(PassportNumber));
+                if (!PassportNumber_Hidden_Priv)
+                {
+                    PassportNumber_DB = value.Value;
+                    OnPropertyChanged(nameof(PassportNumber));
+                }
             }
         }
         private void PassportNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -481,20 +683,41 @@ namespace Models
 
         #region ProviderOrRecieverOKPO
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
+        public bool ProviderOrRecieverOKPO_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool ProviderOrRecieverOKPO_Hidden
+        {
+            get => ProviderOrRecieverOKPO_Hidden_Priv;
+            set
+            {
+                ProviderOrRecieverOKPO_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("ОКПО поставщика/получателя")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
             {
-                var tmp = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
-                tmp.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
-                return tmp;
+                if (!ProviderOrRecieverOKPO_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
+                    tmp.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                ProviderOrRecieverOKPO_DB = value.Value;
-                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
+                if (!ProviderOrRecieverOKPO_Hidden_Priv)
+                {
+                    ProviderOrRecieverOKPO_DB = value.Value;
+                    OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
+                }
             }
         }
         private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -531,20 +754,41 @@ namespace Models
 
         #region TransporterOKPO
         public string TransporterOKPO_DB { get; set; } = "";
+        public bool TransporterOKPO_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool TransporterOKPO_Hidden
+        {
+            get => TransporterOKPO_Hidden_Priv;
+            set
+            {
+                TransporterOKPO_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("ОКПО перевозчика")]
         public RamAccess<string> TransporterOKPO
         {
             get
             {
-                var tmp = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
-                tmp.PropertyChanged += TransporterOKPOValueChanged;
-                return tmp;
+                if (!TransporterOKPO_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
+                    tmp.PropertyChanged += TransporterOKPOValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                TransporterOKPO_DB = value.Value;
-                OnPropertyChanged(nameof(TransporterOKPO));
+                if (!TransporterOKPO_Hidden_Priv)
+                {
+                    TransporterOKPO_DB = value.Value;
+                    OnPropertyChanged(nameof(TransporterOKPO));
+                }
             }
         }
         private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -584,22 +828,43 @@ namespace Models
 
         #region StoragePlaceName
         public string StoragePlaceName_DB { get; set; } = "";
+        public bool StoragePlaceName_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool StoragePlaceName_Hidden
+        {
+            get => StoragePlaceName_Hidden_Priv;
+            set
+            {
+                StoragePlaceName_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Наименование ПХ")]
         public RamAccess<string> StoragePlaceName
         {
             get
             {
-                var tmp = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
-                tmp.PropertyChanged += StoragePlaceNameValueChanged;
-                return tmp;
+                if (!StoragePlaceName_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
+                    tmp.PropertyChanged += StoragePlaceNameValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                StoragePlaceName_DB = value.Value;
-                OnPropertyChanged(nameof(StoragePlaceName));
+                if (!StoragePlaceName_Hidden_Priv)
+                {
+                    StoragePlaceName_DB = value.Value;
+                    OnPropertyChanged(nameof(StoragePlaceName));
+                }
             }
-        }//If change this change validation
+        }
 
         private void StoragePlaceNameValueChanged(object Value, PropertyChangedEventArgs args)
         {
@@ -628,22 +893,43 @@ namespace Models
 
         #region StoragePlaceCode
         public string StoragePlaceCode_DB { get; set; } = "";
+        public bool StoragePlaceCode_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool StoragePlaceCode_Hidden
+        {
+            get => StoragePlaceCode_Hidden_Priv;
+            set
+            {
+                StoragePlaceCode_Hidden_Priv = value;
+            }
+        }
         [NotMapped]
         [Attributes.Form_Property("Код ПХ")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
             {
-                var tmp = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
-                tmp.PropertyChanged += StoragePlaceCodeValueChanged;
-                return tmp;
+                if (!StoragePlaceCode_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
+                    tmp.PropertyChanged += StoragePlaceCodeValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                StoragePlaceCode_DB = value.Value;
-                OnPropertyChanged(nameof(StoragePlaceCode));
+                if (!StoragePlaceCode_Hidden_Priv)
+                {
+                    StoragePlaceCode_DB = value.Value;
+                    OnPropertyChanged(nameof(StoragePlaceCode));
+                }
             }
-        }//if change this change validation
+        }
 
         private void StoragePlaceCodeValueChanged(object Value, PropertyChangedEventArgs args)
         {

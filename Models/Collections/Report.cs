@@ -375,8 +375,8 @@ namespace Collections
         #endregion
 
         #region Forms17
-        ObservableCollectionWithItemPropertyChanged<Form17> Rows17_DB;
-        public virtual ObservableCollectionWithItemPropertyChanged<Form17> Rows17
+        ObservableCollectionWithItemPropertyChangedWithSum<Form17> Rows17_DB;
+        public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form17> Rows17
         {
             get
             {
@@ -395,8 +395,8 @@ namespace Collections
         #endregion
 
         #region Forms18
-        ObservableCollectionWithItemPropertyChanged<Form18> Rows18_DB;
-        public virtual ObservableCollectionWithItemPropertyChanged<Form18> Rows18
+        ObservableCollectionWithItemPropertyChangedWithSum<Form18> Rows18_DB;
+        public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form18> Rows18
         {
             get
             {
@@ -1951,10 +1951,10 @@ namespace Collections
             Rows16 = new ObservableCollectionWithItemPropertyChanged<Form16>();
             Rows16.CollectionChanged += CollectionChanged16;
             
-            Rows17 = new ObservableCollectionWithItemPropertyChanged<Form17>();
+            Rows17 = new ObservableCollectionWithItemPropertyChangedWithSum<Form17>();
             Rows17.CollectionChanged += CollectionChanged17;
 
-            Rows18 = new ObservableCollectionWithItemPropertyChanged<Form18>();
+            Rows18 = new ObservableCollectionWithItemPropertyChangedWithSum<Form18>();
             Rows18.CollectionChanged += CollectionChanged18;
 
             Rows19 = new ObservableCollectionWithItemPropertyChanged<Form19>();

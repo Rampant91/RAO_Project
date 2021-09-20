@@ -58,20 +58,42 @@ namespace Models.Abstracts
 
         #region OperationCode
         public short? OperationCode_DB { get; set; } = null;
+        public bool OperationCode_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool OperationCode_Hidden
+        {
+            get => OperationCode_Hidden_Priv;
+            set
+            {
+                OperationCode_Hidden_Priv = value;
+            }
+        }
+
         [NotMapped]
         [Attributes.Form_Property("Код")]
         public RamAccess<short?> OperationCode
         {
             get
             {
-                var tmp = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
-                tmp.PropertyChanged += OperationCodeValueChanged;
-                return tmp;
+                if (!OperationCode_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
+                    tmp.PropertyChanged += OperationCodeValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<short?>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                OperationCode_DB = value.Value;
-                OnPropertyChanged(nameof(OperationCode));
+                if (!OperationCode_Hidden_Priv)
+                {
+                    OperationCode_DB = value.Value;
+                    OnPropertyChanged(nameof(OperationCode));
+                }
             }
         }
         private void OperationCodeValueChanged(object Value, PropertyChangedEventArgs args)
@@ -90,20 +112,42 @@ namespace Models.Abstracts
 
         #region OperationDate
         public string OperationDate_DB { get; set; } = "";
+        public bool OperationDate_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool OperationDate_Hidden
+        {
+            get => OperationDate_Hidden_Priv;
+            set
+            {
+                OperationDate_Hidden_Priv = value;
+            }
+        }
+
         [NotMapped]
         [Attributes.Form_Property("Дата операции")]
         public RamAccess<string> OperationDate
         {
             get
             {
-                var tmp = new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
-                tmp.PropertyChanged += OperationDateValueChanged;
-                return tmp;
+                if (!OperationDate_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
+                    tmp.PropertyChanged += OperationDateValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                OperationDate_DB = value.Value;
-                OnPropertyChanged(nameof(OperationDate));
+                if (!OperationDate_Hidden_Priv)
+                {
+                    OperationDate_DB = value.Value;
+                    OnPropertyChanged(nameof(OperationDate));
+                }
             }
         }
         private void OperationDateValueChanged(object Value, PropertyChangedEventArgs args)
@@ -138,16 +182,36 @@ namespace Models.Abstracts
         #endregion
 
         #region DocumentVid
+        
         public byte? DocumentVid_DB { get; set; } = null;
+        public bool DocumentVid_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool DocumentVid_Hidden
+        {
+            get => DocumentVid_Hidden_Priv;
+            set
+            {
+                DocumentVid_Hidden_Priv = value;
+            }
+        }
+
         [NotMapped]
         [Attributes.Form_Property("Вид документа")]
         public RamAccess<byte?> DocumentVid
         {
             get
             {
-                var tmp = new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
-                tmp.PropertyChanged += DocumentVidValueChanged;
-                return tmp;
+                if (!DocumentVid_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
+                    tmp.PropertyChanged += DocumentVidValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<byte?>(null, null);
+                    return tmp;
+                }
             }
             set
             {
@@ -155,6 +219,7 @@ namespace Models.Abstracts
                 OnPropertyChanged(nameof(DocumentVid));
             }
         }
+
         private void DocumentVidValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")
@@ -184,20 +249,42 @@ namespace Models.Abstracts
 
         #region DocumentNumber
         public string DocumentNumber_DB { get; set; } = "";
+        public bool DocumentNumber_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool DocumentNumber_Hidden
+        {
+            get => DocumentNumber_Hidden_Priv;
+            set
+            {
+                DocumentNumber_Hidden_Priv = value;
+            }
+        }
+
         [NotMapped]
         [Attributes.Form_Property("Номер документа")]
         public RamAccess<string> DocumentNumber
         {
             get
             {
-                var tmp = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
-                tmp.PropertyChanged += DocumentNumberValueChanged;
-                return tmp;
+                if (!DocumentNumber_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
+                    tmp.PropertyChanged += DocumentNumberValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                DocumentNumber_DB = value.Value;
-                OnPropertyChanged(nameof(DocumentNumber));
+                if (!DocumentNumber_Hidden_Priv)
+                {
+                    DocumentNumber_DB = value.Value;
+                    OnPropertyChanged(nameof(DocumentNumber));
+                }
             }
         }
         private void DocumentNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -213,20 +300,42 @@ namespace Models.Abstracts
 
         #region DocumentDate
         public string DocumentDate_DB { get; set; } = "";
+        public bool DocumentDate_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool DocumentDate_Hidden
+        {
+            get => DocumentDate_Hidden_Priv;
+            set
+            {
+                DocumentDate_Hidden_Priv = value;
+            }
+        }
+
         [NotMapped]
         [Attributes.Form_Property("Дата документа")]
         public RamAccess<string> DocumentDate
         {
             get
             {
-                var tmp = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
-                tmp.PropertyChanged += DocumentDateValueChanged;
-                return tmp;
+                if (!DocumentDate_Hidden_Priv)
+                {
+                    var tmp = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
+                    tmp.PropertyChanged += DocumentDateValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                DocumentDate_DB = value.Value;
-                OnPropertyChanged(nameof(DocumentDate));
+                if (!DocumentDate_Hidden_Priv)
+                {
+                    DocumentDate_DB = value.Value;
+                    OnPropertyChanged(nameof(DocumentDate));
+                }
             }
         }
         private void DocumentDateValueChanged(object Value, PropertyChangedEventArgs args)
