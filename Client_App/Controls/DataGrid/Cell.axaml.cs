@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -32,7 +33,6 @@ namespace Client_App.Controls.DataGrid
             this.BindingPath = BindingPath;
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
-
             Focusable = false;
         }
 
@@ -64,6 +64,7 @@ namespace Client_App.Controls.DataGrid
 
             var t = (TextBox) ((Panel) ((Border) Content).Child).Children[0];
             t.IsEnabled = !IsReadOnly;
+            
         }
 
         public void PanelPointerDown(object sender, PointerPressedEventArgs args)

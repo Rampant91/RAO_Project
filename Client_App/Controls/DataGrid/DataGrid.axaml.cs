@@ -40,6 +40,12 @@ namespace Client_App.Controls.DataGrid
                 o => o.SelectedItems,
                 (o, v) => o.SelectedItems = v);
 
+        public static readonly DirectProperty<DataGrid, IList<INotifyPropertyChanged>> SelectedCellsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IList<INotifyPropertyChanged>>(
+                nameof(SelectedCells),
+                o => o.SelectedCells,
+                (o, v) => o.SelectedCells = v);
+
         public static readonly DirectProperty<DataGrid, string> TypeProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, string>(
                 nameof(Type),
@@ -55,7 +61,8 @@ namespace Client_App.Controls.DataGrid
         public static readonly StyledProperty<Brush> ChooseColorProperty =
             AvaloniaProperty.Register<DataGrid, Brush>(nameof(ChooseColor));
 
-        private readonly List<Control> SelectedCells = new();
+        private IList<INotifyPropertyChanged> _selectedCells = 
+            new List<INotifyPropertyChanged>();
 
         private IEnumerable<INotifyPropertyChanged> _items =
             new ObservableCollectionWithItemPropertyChanged<IKey>();
@@ -91,6 +98,14 @@ namespace Client_App.Controls.DataGrid
             set
             {
                 if (value != null) SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
+            }
+        }
+        public IList<INotifyPropertyChanged> SelectedCells
+        {
+            get => _selectedCells;
+            set
+            {
+                if (value != null) SetAndRaise(SelectedCellsProperty, ref _selectedCells, value);
             }
         }
 
@@ -153,9 +168,9 @@ namespace Client_App.Controls.DataGrid
                 if (item.SRow != Row)
                 {
                     item.Background = Background;
-                    SelectedCells.Remove(item);
                 }
 
+            SelectedCells.Clear();
             if (!SelectedCells.Contains(Rows[Row] == null ? null : Rows[Row].SCells))
                 if (Rows[Row] != null)
                 {
@@ -173,9 +188,9 @@ namespace Client_App.Controls.DataGrid
                 if (item.CellRow != Row && item.CellColumn != Column)
                 {
                     item.Background = Background;
-                    SelectedCells.Remove(item);
                 }
 
+            SelectedCells.Clear();
             if (!SelectedCells.Contains(Rows[Row, Column]))
                 if (Rows[Row, Column] != null)
                 {
@@ -189,13 +204,14 @@ namespace Client_App.Controls.DataGrid
             var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
             var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
             var sel = SelectedCells.ToArray();
+
             foreach (Row item in sel)
                 if (!(item.SRow >= minRow && item.SRow <= maxRow))
                 {
                     item.Background = Background;
-                    SelectedCells.Remove(item);
                 }
 
+            SelectedCells.Clear();
             for (var i = minRow; i <= maxRow; i++)
                 if (!SelectedCells.Contains(Rows[i].SCells))
                     if (Rows[i] != null)
@@ -217,24 +233,25 @@ namespace Client_App.Controls.DataGrid
                 if (!(item.CellRow >= minRow && item.CellRow <= maxRow))
                 {
                     item.Background = Background;
-                    SelectedCells.Remove(item);
                 }
 
                 if (!(item.CellColumn >= minColumn && item.CellColumn <= maxColumn))
                 {
                     item.Background = Background;
-                    SelectedCells.Remove(item);
                 }
             }
-
+            SelectedCells.Clear();
             for (var i = minRow; i <= maxRow; i++)
-            for (var j = minColumn; j <= maxColumn; j++)
-                if (!SelectedCells.Contains(Rows[i, j]))
+            {
+                for (var j = minColumn; j <= maxColumn; j++)
+                {
                     if (Rows[i, j] != null)
                     {
                         Rows[i, j].Background = ChooseColor;
                         SelectedCells.Add(Rows[i, j]);
                     }
+                }
+            }
         }
 
         public void SetSelectedItems()
@@ -273,7 +290,7 @@ namespace Client_App.Controls.DataGrid
 
                 if (item is StackPanel)
                 {
-                    var ch = (IKey) item.DataContext;
+                    var ch = (IKey) (item as StackPanel).DataContext;
                     lst.Add(ch);
                 }
             }

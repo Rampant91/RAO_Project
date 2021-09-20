@@ -330,8 +330,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -516,8 +523,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -705,8 +719,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -891,8 +912,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -1077,8 +1105,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -1291,8 +1326,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -1585,8 +1627,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -2094,8 +2143,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -2280,8 +2336,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -2467,8 +2530,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -2654,8 +2724,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
@@ -2841,8 +2918,15 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Вставить из буфера",
+                    Header = "Копировать",
+                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
+                },
+                new MenuItem
+                {
+                    Header = "Вставить",
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {

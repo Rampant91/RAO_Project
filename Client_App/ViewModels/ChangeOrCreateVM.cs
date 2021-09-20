@@ -6,12 +6,17 @@ using ReactiveUI;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.LogicalTree;
+using Client_App.Controls.DataGrid;
 using DBRealization;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Models.Abstracts;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 
 namespace Client_App.ViewModels
 {
@@ -92,7 +97,9 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> AddNote { get; }
         public ReactiveCommand<Unit, Unit> AddRow { get; }
         public ReactiveCommand<IList, Unit> DeleteRow { get; }
-        public ReactiveCommand<Unit, Unit> PasteRows { get; }
+
+        public ReactiveCommand<IList, Unit> CopyRows { get; }
+        public ReactiveCommand<IList, Unit> PasteRows { get; }
         public ReactiveCommand<IList, Unit> DeleteNote { get; }
         public ReactiveCommand<Unit, Unit> PasteNotes { get; }
         public ChangeOrCreateVM()
@@ -101,7 +108,8 @@ namespace Client_App.ViewModels
             AddRow = ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
-            PasteRows = ReactiveCommand.CreateFromTask(_PasteRows);
+            PasteRows = ReactiveCommand.CreateFromTask<IList>(_PasteRows);
+            CopyRows = ReactiveCommand.CreateFromTask<IList>(_CopyRows);
             AddNote = ReactiveCommand.Create<string>(_AddNote);
             DeleteNote = ReactiveCommand.Create<IList>(_DeleteNote);
             //PasteNotes = ReactiveCommand.CreateFromTask(_PasteNotes);
@@ -713,21 +721,128 @@ namespace Client_App.ViewModels
             //Storage.Filters.SortPath = param;
         }
 
-        private async Task _PasteRows()
+        private async Task _PasteRows(IEnumerable param)
         {
             PasteRealization.Excel ex = new PasteRealization.Excel();
 
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
                 string? text = await clip.GetTextAsync();
-                List<Models.Abstracts.Form>? lt = ex.Convert(text, FormType);
-                if (lt != null)
+                Cell cl = null;
+                foreach (var item in param)
                 {
-                    foreach (Models.Abstracts.Form? item in lt)
+                    cl = (Cell) item;
+                    break;
+                }
+
+                if (cl != null)
+                {
+                    int Row = cl.CellRow;
+                    int Column = cl.CellColumn;
+                    
+                    if (text != null && text != "")
                     {
-                        //_AddRow(item);
+                        string rt = "";
+                        foreach (var item in text)
+                        {
+                            if (item == '\n')
+                            {
+                                foreach (var it in param)
+                                {
+                                    var cell = (Cell)it;
+                                    if (cell.CellColumn == Column && cell.CellRow == Row)
+                                    {
+                                        var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                        if (child != null)
+                                        {
+                                            var panel = (Panel)child.Child;
+                                            var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                            textbox.Text = rt;
+                                        }
+                                        break;
+                                    }
+                                }
+                                rt = "";
+                                Row++;
+                                Column = cl.CellColumn;
+                            }
+                            else
+                            {
+                                if (item == '\t')
+                                {
+                                    foreach (var it in param)
+                                    {
+                                        var cell = (Cell)it;
+                                        if (cell.CellColumn == Column && cell.CellRow == Row)
+                                        {
+                                            var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                            if (child != null)
+                                            {
+                                                var panel = (Panel)child.Child;
+                                                var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                                textbox.Text = rt;
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    rt = "";
+                                    Column++;
+                                }
+                                else
+                                {
+                                    rt += item;
+                                }
+                            }
+                        }
                     }
                 }
+            }
+        }
+
+        private async Task _CopyRows(IEnumerable param)
+        {
+            PasteRealization.Excel ex = new PasteRealization.Excel();
+
+            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+            {
+                string txt = "";
+
+                var Column = 1;
+                var Row = 1;
+
+                bool flag = true;
+                foreach (var item in param)
+                {
+                    var cell = (Cell)item;
+                    if (flag)
+                    {
+                        Column = cell.CellColumn;
+                        Row = cell.CellRow;
+                        flag = false;
+                    }
+                    var child=(Border)cell.GetLogicalChildren().FirstOrDefault();
+                    if (child != null)
+                    {
+                        var panel = (Panel)child.Child;
+                        var textbox = (TextBox)panel.Children.FirstOrDefault();
+                        if (Row != cell.CellRow)
+                        {
+                            txt += "\n";
+                            Row = cell.CellRow;
+                            Column = cell.CellColumn;
+                        }
+                        if (Column != cell.CellColumn)
+                        {
+                            txt += "\t";
+                            Column = cell.CellColumn;
+                        }
+                        txt += textbox.Text;
+                    }
+                }
+
+                txt += "\t";
+                await clip.ClearAsync();
+                await clip.SetTextAsync(txt);
             }
         }
     }
