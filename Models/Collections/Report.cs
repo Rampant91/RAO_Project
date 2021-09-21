@@ -1922,6 +1922,8 @@ namespace Collections
             Rows210.CleanIds();
             Rows211.CleanIds();
             Rows212.CleanIds();
+
+            Notes.CleanIds();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
