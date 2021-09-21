@@ -32,7 +32,7 @@ namespace Client_App.ViewModels
             string path = Path.GetPathRoot(system);
             var tmp = Path.Combine(path, "RAO");
             tmp = Path.Combine(tmp, "temp");
-
+            Directory.CreateDirectory(tmp);
             var fl=Directory.GetFiles(tmp);
             foreach (var file in fl)
             {   
