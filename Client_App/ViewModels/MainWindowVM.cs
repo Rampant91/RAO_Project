@@ -13,9 +13,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Enumeration;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client_App.ViewModels
@@ -26,6 +28,17 @@ namespace Client_App.ViewModels
 
         public MainWindowVM()
         {
+            string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+            string path = Path.GetPathRoot(system);
+            var tmp = Path.Combine(path, "RAO");
+            tmp = Path.Combine(tmp, "temp");
+
+            var fl=Directory.GetFiles(tmp);
+            foreach (var file in fl)
+            {   
+                File.Delete(file);
+            }
+
             var a = Spravochniks.SprRadionuclids;
             var b = Spravochniks.SprTypesToRadionuclids;
 
@@ -187,8 +200,10 @@ namespace Client_App.ViewModels
                         if (res != "")
                         {
                             var dt = DateTime.Now;
-                            res = res + "\\Report_" +
-                                  dt.Year + "." + dt.Month + "." + dt.Day + "_" + dt.Hour + "." + dt.Minute + "." + dt.Second + ".raodb";
+                            var filename = "Report_" +
+                                           dt.Year + "." + dt.Month + "." + dt.Day + "_" + dt.Hour + "." + dt.Minute +
+                                           "." + dt.Second;
+                            res = Path.Combine(res,filename+ ".raodb");
                             var rep = (Report)obj;
                             rep.ExportDate.Value = dt.Day + "." + dt.Month + "." + dt.Year;
                             var findReports = from t in Local_Reports.Reports_Collection
@@ -197,7 +212,14 @@ namespace Client_App.ViewModels
                             var rt = findReports.FirstOrDefault();
                             if (rt != null)
                             {
-                                using (DBExportModel db = new DBExportModel(res))
+                                string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                                string path = Path.GetPathRoot(system);
+                                var tmp = Path.Combine(path, "RAO");
+                                tmp = Path.Combine(tmp, "temp");
+                                Directory.CreateDirectory(tmp);
+                                tmp = Path.Combine(tmp, filename+"_exp"+".raodb");
+
+                                using (DBExportModel db = new DBExportModel(tmp))
                                 {
                                     try
                                     {
@@ -217,6 +239,24 @@ namespace Client_App.ViewModels
                                     }
                                 }
 
+                                var thr = new Thread(() =>
+                                {
+                                    while (true)
+                                    {
+                                        try
+                                        {
+                                            File.Copy(tmp, res);
+                                            break;
+                                        }
+                                        catch
+                                        {
+                                            Thread.Sleep(1000);
+                                        }
+                                    }
+                                });
+                                thr.Start();
+
+                                thr.Join();
                             }
                         }
                     }
@@ -234,7 +274,31 @@ namespace Client_App.ViewModels
                 {
                     if (res != "")
                     {
-                        using (DBExportModel db = new DBExportModel(res))
+                        string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                        string path = Path.GetPathRoot(system);
+                        var tmp = Path.Combine(path, "RAO");
+                        tmp = Path.Combine(tmp, "temp");
+                        tmp = Path.Combine(tmp, Path.GetFileName(res).Split('.')[0])+"_imp"+".raodb";
+
+                        var thr = new Thread(() =>
+                        {
+                            while (true)
+                            {
+                                try
+                                {
+                                    File.Copy(res, tmp,true);
+                                    break;
+                                }
+                                catch(Exception e)
+                                {
+                                    Thread.Sleep(1000);
+                                }
+                            }
+                        });
+                        thr.Start();
+
+                        thr.Join();
+                        using (DBExportModel db = new DBExportModel(tmp))
                         {
                             try
                             {
@@ -246,21 +310,87 @@ namespace Client_App.ViewModels
                                 Console.WriteLine(e);
                                 throw;
                             }
+
                             foreach (var item in db.ReportsCollectionDbSet)
                             {
-                                var tb = from t in Local_Reports.Reports_Collection
-                                         where t.Master.Rows10[0].Okpo == item.Master.Rows10[0].Okpo
-                                         select t;
-                                var r = tb.FirstOrDefault();
+                                var tb11 = from t in Local_Reports.Reports_Collection
+                                    where t.Master.Rows10[0].Okpo == item.Master.Rows10[0].Okpo
+                                    select t;
+                                var tb21 = from t in Local_Reports.Reports_Collection
+                                    where t.Master.Rows20[0].Okpo == item.Master.Rows20[0].Okpo
+                                    select t;
+                                var tb12 = from t in Local_Reports.Reports_Collection
+                                    where t.Master.Rows10[1].Okpo == item.Master.Rows10[1].Okpo
+                                    select t;
+                                var tb22 = from t in Local_Reports.Reports_Collection
+                                    where t.Master.Rows20[1].Okpo == item.Master.Rows20[1].Okpo
+                                    select t;
+
+                                Reports first11 = null;
+                                Reports first12 = null;
+                                Reports first21 = null;
+                                Reports first22 = null;
+                                try
+                                {
+                                    first11 = tb11.FirstOrDefault();
+                                }
+                                catch
+                                {
+                                }
+
+                                try
+                                {
+                                    first12 = tb12.FirstOrDefault();
+                                }
+                                catch
+                                {
+                                }
+
+                                try
+                                {
+                                    first21 = tb21.FirstOrDefault();
+                                }
+                                catch
+                                {
+                                }
+
+                                try
+                                {
+                                    first22 = tb22.FirstOrDefault();
+                                }
+                                catch
+                                {
+                                }
 
                                 item.CleanIds();
-                                if (r != null)
+                                if (first11 != null)
                                 {
-                                    r.Report_Collection.AddRange(item.Report_Collection);
+                                    first11.Report_Collection.AddRange(item.Report_Collection);
                                 }
                                 else
                                 {
-                                    Local_Reports.Reports_Collection.Add(item);
+                                    if (first12 != null)
+                                    {
+                                        first12.Report_Collection.AddRange(item.Report_Collection);
+                                    }
+                                    else
+                                    {
+                                        if (first21 != null)
+                                        {
+                                            first21.Report_Collection.AddRange(item.Report_Collection);
+                                        }
+                                        else
+                                        {
+                                            if (first22 != null)
+                                            {
+                                                first22.Report_Collection.AddRange(item.Report_Collection);
+                                            }
+                                            else
+                                            {
+                                                Local_Reports.Reports_Collection.Add(item);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

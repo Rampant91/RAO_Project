@@ -24,9 +24,6 @@ namespace DBRealization
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Collections.DBObservable>()
-                .ToTable("DBObservable_DbSet");
-
             modelBuilder.Entity<Collections.Reports>()
                 .ToTable("ReportsCollection_DbSet");
             modelBuilder.Entity<Collections.Report>()
@@ -85,13 +82,7 @@ namespace DBRealization
 
         public void LoadTables()
         {
-            accessReport.Load();
-            accessReports.Load();
-            ReportCollectionDbSet.Load();
-            ReportsCollectionDbSet.Load();
-
             notes.Load();
-
             form_10.Load();
             form_11.Load();
             form_12.Load();
@@ -116,29 +107,10 @@ namespace DBRealization
             form_210.Load();
             form_211.Load();
             form_212.Load();
-        }
 
-        public void UndoChanges()
-        {
-            var coll = ChangeTracker.Entries().ToList();
-            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry entry in coll)
-            {
-                switch (entry.State)
-                {
-                    case EntityState.Modified:
-                        entry.State = EntityState.Unchanged;
-                        break;
-                    case EntityState.Deleted:
-                        entry.Reload();
-                        break;
-                    case EntityState.Added:
-                        entry.State = EntityState.Detached;
-                        break;
-                }
-            }
+            ReportCollectionDbSet.Load();
+            ReportsCollectionDbSet.Load();
         }
-        public DbSet<Models.DataAccess.RamAccess<Collections.Report>> accessReport { get; set; }
-        public DbSet<Models.DataAccess.RamAccess<Collections.Reports>> accessReports { get; set; }
 
         public DbSet<Collections.Reports> ReportsCollectionDbSet { get; set; }
         public DbSet<Collections.Report> ReportCollectionDbSet { get; set; }

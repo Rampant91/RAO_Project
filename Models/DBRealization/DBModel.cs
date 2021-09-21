@@ -116,7 +116,6 @@ namespace DBRealization
             ReportCollectionDbSet.Load();
             ReportsCollectionDbSet.Load();
             DBObservableDbSet.Load();
-            var t =this;
         }
 
         public DbSet<Collections.DBObservable> DBObservableDbSet { get; set; }
