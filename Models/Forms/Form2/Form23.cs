@@ -255,7 +255,7 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
 
         //Volume property
         #region  Volume
-        public double? Volume_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Разрешенный объем, куб. м")]
+        public double? Volume_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Объем, куб. м")]
         public RamAccess<double?> Volume
         {
             get
@@ -298,7 +298,7 @@ private bool Volume_Validation(RamAccess<double?> value)//TODO
 
         //Mass Property
         #region  Mass
-        public double? Mass_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Разрешенная масса, т")]
+        public double? Mass_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Масса, т")]
         public RamAccess<double?> Mass
         {
             get
