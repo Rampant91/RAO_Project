@@ -119,14 +119,14 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             //stck.Children.Add(Get1Header(1, 1,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("NumberInOrder")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[1] { 1 }, 1, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("NumberInOrder")
+            stck.Children.Add(Get1Header(new int[1] { 1 }, 1, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("NumberInOrder")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
 
             //stck.Children.Add(Get1Header(2, 2,
@@ -145,7 +145,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("NumberOfHoursPerYear")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[5] { 2,2,2,2,8 }, 2, new string[5] {
+            stck.Children.Add(Get1Header(new int[5] { 2,2,2,2,8 }, 2, new string[5] {
             ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("RefineMachineName")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
             ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("MachineCode")
@@ -193,7 +193,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TransuraniumActivityIn")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[10] { 1, 1, 1, 1, 1, 2, 2, 2, 2, 13 }, 3, new string[10] {
+            stck.Children.Add(Get1Header(new int[10] { 1, 1, 1, 1, 1, 2, 2, 2, 2, 13 }, 3, new string[10] {
             ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("CodeRAOIn")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
             ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("StatusRAOIn")
@@ -251,7 +251,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TransuraniumActivityOut")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[10] { 1, 1, 1, 1, 1, 2, 2, 2, 2, 13 }, 3, new string[10] {
+            stck.Children.Add(Get1Header(new int[10] { 1, 1, 1, 1, 1, 2, 2, 2, 2, 13 }, 3, new string[10] {
             ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("CodeRAOout")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
             ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("StatusRAOout")
@@ -291,9 +291,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell0 = new Cell(ram0, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[0] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[0] * Wdth2,
+                    Height = RowHeight2,
+                    BorderBrush = new SolidColorBrush(border_color2),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -302,9 +302,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell = new Cell(ram, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[0] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[0] * Wdth2,
+                    Height = RowHeight2,
+                    BorderBrush = new SolidColorBrush(border_color2),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -331,9 +331,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     cells[k] = new Cell(headers[k], "", true)
                     {
                         Background = new SolidColorBrush(Color.Parse("LightGray")),
-                        Width = starWidth[k] * Wdth1,
-                        Height = RowHeight1,
-                        BorderBrush = new SolidColorBrush(border_color1),
+                        Width = starWidth[k] * Wdth2,
+                        Height = RowHeight2,
+                        BorderBrush = new SolidColorBrush(border_color2),
                         CellRow = 0,
                         CellColumn = Column
                     };
@@ -347,9 +347,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell0 = new Cell(ram0, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[len - 1] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[len - 1] * Wdth2,
+                    Height = RowHeight2,
+                    BorderBrush = new SolidColorBrush(border_color2),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -364,14 +364,14 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             //stck.Children.Add(Get2Header(1, 1,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("NumberInOrder")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[1] { 1 }, 1, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("NumberInOrder")
+            stck.Children.Add(Get2Header(new int[1] { 1 }, 1, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("NumberInOrder")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
 
             //stck.Children.Add(Get2Header(2, 2,
@@ -382,7 +382,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("StoragePlaceCode")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[3] { 2,1,3 }, 2, new string[3] {
+            stck.Children.Add(Get2Header(new int[3] { 2,1,3 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("StoragePlaceName")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("StoragePlaceCode")
@@ -402,7 +402,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("PackQuantity")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[4] { 2, 1, 2,5 }, 3, new string[4] {
+            stck.Children.Add(Get2Header(new int[4] { 2, 1, 2,5 }, 3, new string[4] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("PackName")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("PackType")
@@ -416,14 +416,14 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("CodeRAO")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[1] { 1 }, 4, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("CodeRAO")
+            stck.Children.Add(Get2Header(new int[1] { 1 }, 4, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("CodeRAO")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
 
             //stck.Children.Add(Get2Header(1, 8,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("StatusRAO")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[1] { 1 }, 5, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("StatusRAO")
+            stck.Children.Add(Get2Header(new int[1] { 1 }, 5, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("StatusRAO")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
 
             //stck.Children.Add(Get2Header(2, 9,
@@ -434,7 +434,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("VolumeInPack")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[3] { 2, 2, 4 }, 6, new string[3] {
+            stck.Children.Add(Get2Header(new int[3] { 2, 2, 4 }, 6, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("VolumeOutOfPack")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("VolumeInPack")
@@ -450,7 +450,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("MassInPack")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[3] { 2, 2, 4 }, 7, new string[3] {
+            stck.Children.Add(Get2Header(new int[3] { 2, 2, 4 }, 7, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("MassOutOfPack")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("MassInPack")
@@ -462,7 +462,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("QuantityOZIII")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[1] { 1 }, 8, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("QuantityOZIII")
+            stck.Children.Add(Get2Header(new int[1] { 1 }, 8, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("QuantityOZIII")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
 
             //stck.Children.Add(Get2Header(2, 14,
@@ -481,7 +481,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("TransuraniumActivity")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[5] { 2, 2, 2, 2,8 }, 9, new string[5] {
+            stck.Children.Add(Get2Header(new int[5] { 2, 2, 2, 2,8 }, 9, new string[5] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("TritiumActivity")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("BetaGammaActivity")
@@ -497,21 +497,21 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("MainRadionuclids")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[1] { 1 }, 10, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("MainRadionuclids")
+            stck.Children.Add(Get2Header(new int[1] { 1 }, 10, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("MainRadionuclids")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
 
             //stck.Children.Add(Get2Header(1, 19,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("Subsidy")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[1] { 1 }, 11, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("Subsidy")
+            stck.Children.Add(Get2Header(new int[1] { 1 }, 11, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("Subsidy")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
 
             //stck.Children.Add(Get2Header(2, 20,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("FcpNumber")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get4Header(new int[1] { 1 }, 12, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("FcpNumber")
+            stck.Children.Add(Get2Header(new int[1] { 1 }, 12, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("FcpNumber")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
             return stck;
         }
@@ -532,9 +532,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell0 = new Cell(ram0, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[0] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[0] * Wdth3,
+                    Height = RowHeight3,
+                    BorderBrush = new SolidColorBrush(border_color3),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -543,9 +543,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell = new Cell(ram, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[0] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[0] * Wdth3,
+                    Height = RowHeight3,
+                    BorderBrush = new SolidColorBrush(border_color3),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -572,9 +572,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     cells[k] = new Cell(headers[k], "", true)
                     {
                         Background = new SolidColorBrush(Color.Parse("LightGray")),
-                        Width = starWidth[k] * Wdth1,
-                        Height = RowHeight1,
-                        BorderBrush = new SolidColorBrush(border_color1),
+                        Width = starWidth[k] * Wdth3,
+                        Height = RowHeight3,
+                        BorderBrush = new SolidColorBrush(border_color3),
                         CellRow = 0,
                         CellColumn = Column
                     };
@@ -588,9 +588,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell0 = new Cell(ram0, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[len - 1] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[len - 1] * Wdth3,
+                    Height = RowHeight3,
+                    BorderBrush = new SolidColorBrush(border_color3),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -605,7 +605,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 StackPanel stck = new()
                 {
                     Orientation = Orientation.Horizontal,
-                    Spacing = -1
+                    Spacing = 0
                 };
 
                 //stck.Children.Add(Get3Header(1, 1,
@@ -705,9 +705,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell0 = new Cell(ram0, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[0] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[0] * Wdth4,
+                    Height = RowHeight4,
+                    BorderBrush = new SolidColorBrush(border_color4),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -716,9 +716,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell = new Cell(ram, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[0] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[0] * Wdth4,
+                    Height = RowHeight4,
+                    BorderBrush = new SolidColorBrush(border_color4),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -745,9 +745,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     cells[k] = new Cell(headers[k], "", true)
                     {
                         Background = new SolidColorBrush(Color.Parse("LightGray")),
-                        Width = starWidth[k] * Wdth1,
-                        Height = RowHeight1,
-                        BorderBrush = new SolidColorBrush(border_color1),
+                        Width = starWidth[k] * Wdth4,
+                        Height = RowHeight4,
+                        BorderBrush = new SolidColorBrush(border_color4),
                         CellRow = 0,
                         CellColumn = Column
                     };
@@ -761,9 +761,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell0 = new Cell(ram0, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[len-1] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[len-1] * Wdth4,
+                    Height = RowHeight4,
+                    BorderBrush = new SolidColorBrush(border_color4),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -778,7 +778,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             //stck.Children.Add(Get4Header(1, 1,
@@ -912,9 +912,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell0 = new Cell(ram0, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[0] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[0] * Wdth5,
+                    Height = RowHeight5,
+                    BorderBrush = new SolidColorBrush(border_color5),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -923,9 +923,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell = new Cell(ram, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[0] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[0] * Wdth5,
+                    Height = RowHeight5,
+                    BorderBrush = new SolidColorBrush(border_color5),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -952,9 +952,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     cells[k] = new Cell(headers[k], "", true)
                     {
                         Background = new SolidColorBrush(Color.Parse("LightGray")),
-                        Width = starWidth[k] * Wdth1,
-                        Height = RowHeight1,
-                        BorderBrush = new SolidColorBrush(border_color1),
+                        Width = starWidth[k] * Wdth5,
+                        Height = RowHeight5,
+                        BorderBrush = new SolidColorBrush(border_color5),
                         CellRow = 0,
                         CellColumn = Column
                     };
@@ -968,9 +968,9 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 var cell0 = new Cell(ram0, "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
-                    Width = starWidth[len - 1] * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1),
+                    Width = starWidth[len - 1] * Wdth5,
+                    Height = RowHeight5,
+                    BorderBrush = new SolidColorBrush(border_color5),
                     CellRow = 0,
                     CellColumn = Column
                 };
@@ -985,14 +985,14 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             //stck.Children.Add(Get5Header(1, 1,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form25,Models").GetProperty("NumberInOrder")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get3Header(new int[1] { 1 }, 1, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form25,Models").GetProperty("NumberInOrder")
+            stck.Children.Add(Get5Header(new int[1] { 1 }, 1, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form25,Models").GetProperty("NumberInOrder")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false));
 
             //stck.Children.Add(Get5Header(2, 2,
@@ -1003,7 +1003,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form25,Models").GetProperty("StoragePlaceCode")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get3Header(new int[3] { 2, 1, 3}, 2, new string[3] {
+            stck.Children.Add(Get5Header(new int[3] { 2, 1, 3}, 2, new string[3] {
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").GetProperty("StoragePlaceName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").GetProperty("StoragePlaceCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                     "Пункт хранения ОЯТ"
@@ -1037,7 +1037,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form25,Models").GetProperty("BetaGammaActivity")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Children.Add(Get3Header(new int[8] { 1, 2, 1, 1, 1, 2,2,10 }, 3, new string[8] {
+            stck.Children.Add(Get5Header(new int[8] { 1, 2, 1, 1, 1, 2,2,10 }, 3, new string[8] {
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").GetProperty("CodeOYAT").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").GetProperty("FcpNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form25,Models").GetProperty("FuelMass").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -1081,7 +1081,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get6Header(1, 1,
@@ -1150,7 +1150,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get7Header(1, 1,
@@ -1211,7 +1211,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get8Header(1, 1,
@@ -1276,7 +1276,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get9Header(1, 1,
@@ -1333,7 +1333,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get10Header(1, 1,
@@ -1414,7 +1414,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get11Header(1, 1,
@@ -1489,7 +1489,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get12Header(1, 1,
@@ -1551,7 +1551,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(GetNotesHeader(1, 1,

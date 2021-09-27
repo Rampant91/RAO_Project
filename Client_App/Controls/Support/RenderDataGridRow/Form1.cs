@@ -297,7 +297,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -342,7 +342,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -395,7 +395,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -452,7 +452,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -509,7 +509,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -571,7 +571,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -629,7 +629,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -692,7 +692,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -763,7 +763,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -856,7 +856,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Orientation = Orientation.Horizontal,
                 Width = 24 * Wdth1,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 

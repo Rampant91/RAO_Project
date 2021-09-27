@@ -58,7 +58,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get1Header(0.5, 1,
@@ -188,7 +188,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get2Header(0.5, 1,
@@ -306,7 +306,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get3Header(1, 1,
@@ -428,7 +428,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get4Header(1, 1,
@@ -554,7 +554,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get5Header(1, 1,
@@ -687,7 +687,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get6Header(1, 1,
@@ -833,7 +833,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get7Header(1, 1,
@@ -999,7 +999,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get8Header(1, 1,
@@ -1149,7 +1149,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(Get9Header(1, 1,
@@ -1223,7 +1223,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             StackPanel stck = new()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = -1
+                Spacing = 0
             };
 
             stck.Children.Add(GetNotesHeader(1, 1,
