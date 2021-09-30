@@ -109,7 +109,7 @@ namespace Models
         public string OrganUprav_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Орган управления")]
+        [Attributes.Form_Property("Орган управления использованием атомной энергии")]
         public RamAccess<string> OrganUprav
         {
             get
@@ -185,7 +185,7 @@ namespace Models
         public string JurLico_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Юр. лицо")]
+        [Attributes.Form_Property("Наименование юр. лица")]
         public RamAccess<string> JurLico
         {
             get
@@ -223,7 +223,7 @@ namespace Models
         public string ShortJurLico_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Краткое наименование юр. лица")]
+        [Attributes.Form_Property("Сокращенное наименование юр. лица")]
         public RamAccess<string> ShortJurLico
         {
             get
@@ -337,7 +337,7 @@ namespace Models
         public string GradeFIO_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("ФИО, должность")]
+        [Attributes.Form_Property("ФИО, должность руководителя")]
         public RamAccess<string> GradeFIO
         {
             get
@@ -375,7 +375,7 @@ namespace Models
         public string Telephone_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Телефон")]
+        [Attributes.Form_Property("Телефон руководителя")]
         public RamAccess<string> Telephone
         {
             get
@@ -413,7 +413,7 @@ namespace Models
         public string Fax_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Факс")]
+        [Attributes.Form_Property("Факс руководителя")]
         public RamAccess<string> Fax
         {
             get
@@ -451,7 +451,7 @@ namespace Models
         public string Email_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Эл. почта")]
+        [Attributes.Form_Property("Эл. почта руководителя")]
         public RamAccess<string> Email
         {
             get
@@ -580,7 +580,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex(@"^[0-9]{2}\.[0-9]{2}(|\.[0-9]{2})$");
+            Regex ex = new Regex(@"^[0-9]{2}\.[0-9]{2}(|\.[0-9]{1,2})$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");

@@ -666,8 +666,7 @@ namespace Models
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             if (value.Value <= 0)
             {

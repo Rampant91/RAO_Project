@@ -31,7 +31,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return null;
         }
 
-        private static Control Get3Row(int starWidth, int Row, int Column, string Binding, INameScope scp,
+        private static Control Get3Row(double starWidth, int Row, int Column, string Binding, INameScope scp,
             string TopName)
         {
             var cell = new Cell(Binding, false)
@@ -68,7 +68,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return cell;
         }
 
-        private static Control Get4Row(int starWidth, int Row, int Column, string Binding, INameScope scp,
+        private static Control Get4Row(double starWidth, int Row, int Column, string Binding, INameScope scp,
             string TopName)
         {
             var cell = new Cell(Binding, false)
@@ -105,7 +105,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return cell;
         }
 
-        private static Control Get5Row(int starWidth, int Row, int Column, string Binding, INameScope scp,
+        private static Control Get5Row(double starWidth, int Row, int Column, string Binding, INameScope scp,
             string TopName)
         {
             var cell = new Cell(Binding, false)
@@ -142,7 +142,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return cell;
         }
 
-        private static Control Get6Row(int starWidth, int Row, int Column, string Binding, INameScope scp,
+        private static Control Get6Row(double starWidth, int Row, int Column, string Binding, INameScope scp,
             string TopName)
         {
             var cell = new Cell(Binding, false)
@@ -179,7 +179,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return cell;
         }
 
-        private static Control Get7Row(int starWidth, int Row, int Column, string Binding, INameScope scp,
+        private static Control Get7Row(double starWidth, int Row, int Column, string Binding, INameScope scp,
             string TopName)
         {
             var cell = new Cell(Binding, false)
@@ -216,7 +216,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return cell;
         }
 
-        private static Control Get8Row(int starWidth, int Row, int Column, string Binding, INameScope scp,
+        private static Control Get8Row(double starWidth, int Row, int Column, string Binding, INameScope scp,
             string TopName)
         {
             var cell = new Cell(Binding, false)
@@ -253,7 +253,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return cell;
         }
 
-        private static Control Get9Row(int starWidth, int Row, int Column, string Binding, INameScope scp,
+        private static Control Get9Row(double starWidth, int Row, int Column, string Binding, INameScope scp,
             string TopName)
         {
             var cell = new Cell(Binding, false)
@@ -313,24 +313,24 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get3Row(1, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get3Row(2, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 3, "OperationDate", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 4, "PassportNumber", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 4, "PassportNumber", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 5, "Type", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 6, "Radionuclids", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 7, "FactoryNumber", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 7, "FactoryNumber", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 8, "Activity", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 9, "CreatorOKPO", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 10, "CreationDate", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 11, "AggregateState", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 12, "PropertyCode", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 9, "CreatorOKPO", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 10, "CreationDate", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 11, "AggregateState", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 12, "PropertyCode", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 13, "Owner", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 14, "DocumentVid", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 15, "DocumentNumber", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 15, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 16, "DocumentDate", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 17, "ProviderOrRecieverOKPO", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 18, "TransporterOKPO", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 19, "PackName", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 17, "ProviderOrRecieverOKPO", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 18, "TransporterOKPO", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 19, "PackName", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 20, "PackType", scp, TopName));
-            stck.Children.Add(Get3Row(1, Row, 21, "PackNumber", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 21, "PackNumber", scp, TopName));
 
             return stck;
         }
@@ -358,25 +358,25 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get4Row(1, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get4Row(2, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 3, "OperationDate", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 4, "PassportNumber", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 4, "PassportNumber", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 5, "Name", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 6, "Sort", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 7, "Radionuclids", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 7, "Radionuclids", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 8, "Activity", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 9, "ActivityMeasurementDate", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 9, "ActivityMeasurementDate", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 10, "Volume", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 11, "Mass", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 12, "AggregateState", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 13, "PropertyCode", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 12, "AggregateState", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 13, "PropertyCode", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 14, "Owner", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 15, "DocumentVid", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 16, "DocumentNumber", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 16, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 17, "DocumentDate", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 18, "ProviderOrRecieverOKPO", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 19, "TransporterOKPO", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 20, "PackName", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 18, "ProviderOrRecieverOKPO", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 19, "TransporterOKPO", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 20, "PackName", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 21, "PackType", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 22, "PackNumber", scp, TopName));
+            stck.Children.Add(Get4Row(2, Row, 22, "PackNumber", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 23, "PassportNumberRecoded", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 24, "PackTypeRecoded", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 25, "PackNumberRecoded", scp, TopName));
@@ -411,27 +411,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get5Row(1, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get5Row(2, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 3, "OperationDate", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 4, "PassportNumber", scp, TopName));
+            stck.Children.Add(Get5Row(2, Row, 4, "PassportNumber", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 5, "Type", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 6, "Radionuclids", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 7, "FactoryNumber", scp, TopName));
+            stck.Children.Add(Get5Row(2, Row, 7, "FactoryNumber", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 8, "Quantity", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 9, "Activity", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 10, "CreationDate", scp, TopName));
+            stck.Children.Add(Get5Row(2, Row, 10, "CreationDate", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 11, "StatusRAO", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 12, "DocumentVid", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 13, "DocumentNumber", scp, TopName));
+            stck.Children.Add(Get5Row(2, Row, 13, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 14, "DocumentDate", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 15, "ProviderOrRecieverOKPO", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 16, "TransporterOKPO", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 17, "PackName", scp, TopName));
+            stck.Children.Add(Get5Row(2, Row, 15, "ProviderOrRecieverOKPO", scp, TopName));
+            stck.Children.Add(Get5Row(2, Row, 16, "TransporterOKPO", scp, TopName));
+            stck.Children.Add(Get5Row(2, Row, 17, "PackName", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 18, "PackType", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 19, "PackNumber", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 20, "StoragePlaceName", scp, TopName));
+            stck.Children.Add(Get5Row(2, Row, 19, "PackNumber", scp, TopName));
+            stck.Children.Add(Get5Row(1.2, Row, 20, "StoragePlaceName", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 21, "StoragePlaceCode", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 22, "RefineOrSortRAOCode", scp, TopName));
+            stck.Children.Add(Get5Row(2.1, Row, 22, "RefineOrSortRAOCode", scp, TopName));
             stck.Children.Add(Get5Row(1, Row, 23, "Subsidy", scp, TopName));
-            stck.Children.Add(Get5Row(1, Row, 24, "FcpNumber", scp, TopName));
+            stck.Children.Add(Get5Row(2, Row, 24, "FcpNumber", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 25, "PassportNumberRecoded", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 26, "TypeRecoded", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 27, "FactoryNumberRecoded", scp, TopName));
@@ -472,26 +472,26 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get6Row(1, Row, 5, "StatusRAO", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 6, "Volume", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 7, "Mass", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 8, "QuantityOZIII", scp, TopName));
+            stck.Children.Add(Get6Row(1.5, Row, 8, "QuantityOZIII", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 9, "MainRadionuclids", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 10, "TritiumActivity", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 11, "BetaGammaActivity", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 12, "AlphaActivity", scp, TopName));
+            stck.Children.Add(Get6Row(3.5, Row, 11, "BetaGammaActivity", scp, TopName));
+            stck.Children.Add(Get6Row(3.5, Row, 12, "AlphaActivity", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 13, "TransuraniumActivity", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 14, "ActivityMeasurementDate", scp, TopName));
+            stck.Children.Add(Get6Row(2, Row, 14, "ActivityMeasurementDate", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 15, "DocumentVid", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 16, "DocumentNumber", scp, TopName));
+            stck.Children.Add(Get6Row(2, Row, 16, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 17, "DocumentDate", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 18, "ProviderOrRecieverOKPO", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 19, "TransporterOKPO", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 20, "StoragePlaceName", scp, TopName));
+            stck.Children.Add(Get6Row(2, Row, 18, "ProviderOrRecieverOKPO", scp, TopName));
+            stck.Children.Add(Get6Row(2, Row, 19, "TransporterOKPO", scp, TopName));
+            stck.Children.Add(Get6Row(1.2, Row, 20, "StoragePlaceName", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 21, "StoragePlaceCode", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 22, "RefineOrSortRAOCode", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 23, "PackName", scp, TopName));
+            stck.Children.Add(Get6Row(2.1, Row, 22, "RefineOrSortRAOCode", scp, TopName));
+            stck.Children.Add(Get6Row(2, Row, 23, "PackName", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 24, "PackType", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 25, "PackNumber", scp, TopName));
+            stck.Children.Add(Get6Row(2, Row, 25, "PackNumber", scp, TopName));
             stck.Children.Add(Get6Row(1, Row, 26, "Subsidy", scp, TopName));
-            stck.Children.Add(Get6Row(1, Row, 27, "FcpNumber", scp, TopName));
+            stck.Children.Add(Get6Row(2, Row, 27, "FcpNumber", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 28, "PackTypeRecoded", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 29, "PackNumberRecoded", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 30, "DocumentNumberRecoded", scp, TopName));
@@ -525,35 +525,35 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get7Row(1, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get7Row(2, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 3, "OperationDate", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 4, "PackName", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 4, "PackName", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 5, "PackType", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 6, "PackFactoryNumber", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 7, "PackNumber", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 8, "FormingDate", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 9, "PassportNumber", scp, TopName));
+            stck.Children.Add(Get7Row(3, Row, 6, "PackFactoryNumber", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 7, "PackNumber", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 8, "FormingDate", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 9, "PassportNumber", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 10, "Volume", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 11, "Mass", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 12, "Radionuclids", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 13, "SpecificActivity", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 14, "DocumentVid", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 15, "DocumentNumber", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 12, "Radionuclids", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 13, "SpecificActivity", scp, TopName));
+            stck.Children.Add(Get7Row(1.2, Row, 14, "DocumentVid", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 15, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 16, "DocumentDate", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 17, "ProviderOrRecieverOKPO", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 18, "TransporterOKPO", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 19, "StoragePlaceName", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 17, "ProviderOrRecieverOKPO", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 18, "TransporterOKPO", scp, TopName));
+            stck.Children.Add(Get7Row(1.2, Row, 19, "StoragePlaceName", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 20, "StoragePlaceCode", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 21, "CodeRAO", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 22, "StatusRAO", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 23, "VolumeOutOfPack", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 24, "MassOutOfPack", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 23, "VolumeOutOfPack", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 24, "MassOutOfPack", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 25, "Quantity", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 26, "TritiumActivity", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 27, "BetaGammaActivity", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 28, "AlphaActivity", scp, TopName));
+            stck.Children.Add(Get7Row(3.5, Row, 27, "BetaGammaActivity", scp, TopName));
+            stck.Children.Add(Get7Row(3.5, Row, 28, "AlphaActivity", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 29, "TransuraniumActivity", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 30, "RefineOrSortRAOCode", scp, TopName));
+            stck.Children.Add(Get7Row(2.1, Row, 30, "RefineOrSortRAOCode", scp, TopName));
             stck.Children.Add(Get7Row(1, Row, 31, "Subsidy", scp, TopName));
-            stck.Children.Add(Get7Row(1, Row, 32, "FcpNumber", scp, TopName));
+            stck.Children.Add(Get7Row(2, Row, 32, "FcpNumber", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 33, "PackTypeRecoded", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 34, "PackNumberRecoded", scp, TopName));
             //stck.Children.Add(Get1Row(1, Row, 35, "DocumentNumberRecoded", scp, TopName));
@@ -606,8 +606,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get8Row(1, Row, 20, "Volume20", scp, TopName));
             stck.Children.Add(Get8Row(1, Row, 21, "Mass21", scp, TopName));
             stck.Children.Add(Get8Row(1, Row, 22, "TritiumActivity", scp, TopName));
-            stck.Children.Add(Get8Row(1, Row, 23, "BetaGammaActivity", scp, TopName));
-            stck.Children.Add(Get8Row(1, Row, 24, "AlphaActivity", scp, TopName));
+            stck.Children.Add(Get8Row(3.5, Row, 23, "BetaGammaActivity", scp, TopName));
+            stck.Children.Add(Get8Row(3.5, Row, 24, "AlphaActivity", scp, TopName));
             stck.Children.Add(Get8Row(1, Row, 26, "RefineOrSortRAOCode", scp, TopName));
             stck.Children.Add(Get8Row(1, Row, 25, "TransuraniumActivity", scp, TopName));
             stck.Children.Add(Get8Row(1, Row, 27, "Subsidy", scp, TopName));
@@ -660,7 +660,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return stck;
         }
 
-        private static Control GetRowNotes(int starWidth, int Row, int Column, string Binding, INameScope scp,
+        private static Control GetRowNotes(double starWidth, int Row, int Column, string Binding, INameScope scp,
             string TopName)
         {
             var cell = new Cell(Binding, false)

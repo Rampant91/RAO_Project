@@ -1746,7 +1746,7 @@ namespace Collections
         #region StartPeriod
         public string StartPeriod_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Начало")]
+        [Form_Property("Дата начала периода")]
         public RamAccess<string> StartPeriod
         {
             get
@@ -1806,7 +1806,7 @@ namespace Collections
         #region EndPeriod
         public string EndPeriod_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Конец")]
+        [Form_Property("Дата конца периода")]
         public RamAccess<string> EndPeriod
         {
             get
