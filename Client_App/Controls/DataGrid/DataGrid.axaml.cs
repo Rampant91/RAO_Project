@@ -407,7 +407,6 @@ namespace Client_App.Controls.DataGrid
                 return;
             }
 
-
             var Id1 = from item in Rows select item.Value.SCells.DataContext.GetHashCode();
             var Id2 = from item in _items select item.GetHashCode();
 

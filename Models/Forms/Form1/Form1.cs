@@ -70,7 +70,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Код")]
+        [Attributes.Form_Property("Код операции")]
         public RamAccess<short?> OperationCode
         {
             get
