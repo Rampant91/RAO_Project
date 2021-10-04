@@ -236,6 +236,11 @@ namespace Client_App.Long_Visual
                 Height = new GridLength(2, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -406,6 +411,16 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd1);
 
+            var pnl1 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                [Grid.RowProperty] = 4,
+                Spacing = 0
+            };
+            pnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "ФИО исполнителя:"));
+            pnl1.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.FIOexecutor", 400));
+            maingrid.Children.Add(pnl1);
+
             return maingrid;
         }
         public static Grid Form12_Visual(INameScope scp)
@@ -429,6 +444,11 @@ namespace Client_App.Long_Visual
             row = new RowDefinition
             {
                 Height = new GridLength(2, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -600,6 +620,16 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd1);
 
+            var pnl1 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                [Grid.RowProperty] = 4,
+                Spacing = 0
+            };
+            pnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "ФИО исполнителя:"));
+            pnl1.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.FIOexecutor", 400));
+            maingrid.Children.Add(pnl1);
+
             return maingrid;
         }
         public static Grid Form13_Visual(INameScope scp)
@@ -623,6 +653,11 @@ namespace Client_App.Long_Visual
             row = new RowDefinition
             {
                 Height = new GridLength(2, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -793,6 +828,16 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd1);
 
+            var pnl1 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                [Grid.RowProperty] = 4,
+                Spacing = 0
+            };
+            pnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "ФИО исполнителя:"));
+            pnl1.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.FIOexecutor", 400));
+            maingrid.Children.Add(pnl1);
+
             return maingrid;
         }
         public static Grid Form14_Visual(INameScope scp)
@@ -816,6 +861,11 @@ namespace Client_App.Long_Visual
             row = new RowDefinition
             {
                 Height = new GridLength(2, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -987,6 +1037,16 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd1);
 
+            var pnl1 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                [Grid.RowProperty] = 4,
+                Spacing = 0
+            };
+            pnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "ФИО исполнителя:"));
+            pnl1.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.FIOexecutor", 400));
+            maingrid.Children.Add(pnl1);
+
             return maingrid;
         }
         public static Grid Form15_Visual(INameScope scp)
@@ -1010,6 +1070,11 @@ namespace Client_App.Long_Visual
             row = new RowDefinition
             {
                 Height = new GridLength(2, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -1181,6 +1246,16 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd1);
 
+            var pnl1 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                [Grid.RowProperty] = 4,
+                Spacing = 0
+            };
+            pnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "ФИО исполнителя:"));
+            pnl1.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.FIOexecutor", 400));
+            maingrid.Children.Add(pnl1);
+
             return maingrid;
         }
         public static Grid Form16_Visual(INameScope scp)
@@ -1204,6 +1279,11 @@ namespace Client_App.Long_Visual
             row = new RowDefinition
             {
                 Height = new GridLength(2, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -1375,6 +1455,16 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd1);
 
+            var pnl1 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                [Grid.RowProperty] = 4,
+                Spacing = 0
+            };
+            pnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "ФИО исполнителя:"));
+            pnl1.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.FIOexecutor", 400));
+            maingrid.Children.Add(pnl1);
+
             return maingrid;
         }
         public static Grid Form17_Visual(INameScope scp)
@@ -1398,6 +1488,11 @@ namespace Client_App.Long_Visual
             row = new RowDefinition
             {
                 Height = new GridLength(2, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -1569,6 +1664,16 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd1);
 
+            var pnl1 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                [Grid.RowProperty] = 4,
+                Spacing = 0
+            };
+            pnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "ФИО исполнителя:"));
+            pnl1.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.FIOexecutor", 400));
+            maingrid.Children.Add(pnl1);
+
             return maingrid;
         }
         public static Grid Form18_Visual(INameScope scp)
@@ -1592,6 +1697,11 @@ namespace Client_App.Long_Visual
             row = new RowDefinition
             {
                 Height = new GridLength(2, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -1763,6 +1873,16 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(grd1);
 
+            var pnl1 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                [Grid.RowProperty] = 4,
+                Spacing = 0
+            };
+            pnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "ФИО исполнителя:"));
+            pnl1.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.FIOexecutor", 400));
+            maingrid.Children.Add(pnl1);
+
             return maingrid;
         }
         public static Grid Form19_Visual(INameScope scp)
@@ -1786,6 +1906,11 @@ namespace Client_App.Long_Visual
             row = new RowDefinition
             {
                 Height = new GridLength(2, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -1956,6 +2081,16 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
+
+            var pnl1 = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                [Grid.RowProperty] = 4,
+                Spacing = 0
+            };
+            pnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "ФИО исполнителя:"));
+            pnl1.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.FIOexecutor", 400));
+            maingrid.Children.Add(pnl1);
 
             return maingrid;
         }

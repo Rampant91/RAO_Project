@@ -794,6 +794,39 @@ namespace Collections
         }
         #endregion
 
+        #region FIOexecutor
+        public string FIOexecutor_DB { get; set; } = "";
+        [NotMapped]
+        [Form_Property("Номер корректировки")]
+        public RamAccess<string> FIOexecutor
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(FIOexecutor_Validation, FIOexecutor_DB);
+                tmp.PropertyChanged += FIOexecutorValueChanged;
+                return tmp;
+            }
+            set
+            {
+                FIOexecutor_DB = value.Value;
+                OnPropertyChanged(nameof(FIOexecutor));
+            }
+        }
+        private void FIOexecutorValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                FIOexecutor_DB = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(FIOexecutor));
+            }
+        }
+        private bool FIOexecutor_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
         #region NumberInOrder
         public string NumberInOrder_DB { get; set; } = "";
         [NotMapped]
