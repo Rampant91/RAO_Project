@@ -210,12 +210,12 @@ namespace Models
         private bool Volume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -270,12 +270,12 @@ namespace Models
         private bool Mass_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -378,15 +378,15 @@ namespace Models
         private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             string tmp = value1;
             int len = tmp.Length;
@@ -438,15 +438,15 @@ namespace Models
         private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             string tmp = value1;
             int len = tmp.Length;
@@ -498,15 +498,15 @@ namespace Models
         private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             string tmp = value1;
             int len = tmp.Length;
@@ -558,15 +558,15 @@ namespace Models
         private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             string tmp = value1;
             int len = tmp.Length;

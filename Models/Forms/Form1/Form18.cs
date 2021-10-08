@@ -273,11 +273,11 @@ namespace Models
         private bool Volume6_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value==null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -342,11 +342,11 @@ namespace Models
         private bool Mass7_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value==null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -503,12 +503,12 @@ namespace Models
         private bool SpecificActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -928,15 +928,15 @@ namespace Models
                 Volume20_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
             }
         }
-        private bool Volume20_Validation(RamAccess<string> value)//TODO
+        private bool Volume20_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -979,12 +979,12 @@ namespace Models
         private bool Mass21_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value==null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -1028,15 +1028,15 @@ namespace Models
         private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -1080,15 +1080,15 @@ namespace Models
         private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -1132,15 +1132,15 @@ namespace Models
         private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -1184,15 +1184,15 @@ namespace Models
         private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;

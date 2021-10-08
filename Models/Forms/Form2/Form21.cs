@@ -301,12 +301,11 @@ namespace Models
         private bool MachinePower_Validation(RamAccess<string> value) //TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 return false;
             }
-
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value.Equals("прим."))
             {
                 return true;
@@ -396,17 +395,15 @@ namespace Models
         private bool NumberOfHoursPerYear_Validation(RamAccess<string> value) //TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 return false;
             }
-
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value.Equals("прим.") || value.Value.Equals("0"))
             {
-
+                //TODO
             }
-
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -574,12 +571,12 @@ namespace Models
         private bool VolumeIn_Validation(RamAccess<string> value) //TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -637,12 +634,12 @@ namespace Models
         private bool MassIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -742,25 +739,25 @@ namespace Models
         }
 
         private void TritiumActivityInValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 TritiumActivityIn_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
             }
-}
-private bool TritiumActivityIn_Validation(RamAccess<string> value)//TODO
+        }
+        private bool TritiumActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value == "-")
+            {
+                return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -803,24 +800,24 @@ private bool TritiumActivityIn_Validation(RamAccess<string> value)//TODO
         }
 
         private void BetaGammaActivityInValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 BetaGammaActivityIn_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
             }
-}
-private bool BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
+        }
+        private bool BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             string tmp = value1;
             int len = tmp.Length;
@@ -873,15 +870,15 @@ private bool BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
         private bool AlphaActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             string tmp = value1;
             int len = tmp.Length;
@@ -934,15 +931,15 @@ private bool BetaGammaActivityIn_Validation(RamAccess<string> value)//TODO
         private bool TransuraniumActivityIn_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             string tmp = value1;
             int len = tmp.Length;
@@ -1105,12 +1102,12 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         private bool VolumeOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1162,12 +1159,12 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         private bool MassOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1278,16 +1275,16 @@ private bool QuantityOZIIIout_Validation(RamAccess<string> value1)//Ready
         private bool TritiumActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value == "-")
+            {
+                return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1339,16 +1336,16 @@ if (args.PropertyName == "Value")
 private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value == "-")
+            {
+                return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -1400,15 +1397,15 @@ private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
         private bool AlphaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             string tmp = value1;
             int len = tmp.Length;
@@ -1461,15 +1458,15 @@ private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
         private bool TransuraniumActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == "-")
-            {
-                return true;
-            }
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            if (value.Value == "-")
+            {
+                return true;
             }
             string tmp = value1;
             int len = tmp.Length;

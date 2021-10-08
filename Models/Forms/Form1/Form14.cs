@@ -259,12 +259,12 @@ namespace Models
         private bool Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -356,12 +356,12 @@ namespace Models
         private bool Volume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
