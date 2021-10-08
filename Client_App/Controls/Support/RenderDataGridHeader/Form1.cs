@@ -506,7 +506,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("PassportNumber")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,3
             ));
-            stck.Children.Add(Get4Header(1, 5,
+            stck.Children.Add(Get4Header(1.5, 5,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("Name")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,4
             ));

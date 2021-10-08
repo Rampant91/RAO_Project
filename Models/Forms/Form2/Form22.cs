@@ -431,13 +431,13 @@ namespace Models
 
 
         private void CodeRAOValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 CodeRAO_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool CodeRAO_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -906,7 +906,7 @@ private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -966,7 +966,7 @@ private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1025,7 +1025,7 @@ private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;

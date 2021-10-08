@@ -592,7 +592,7 @@ namespace Models
                 return false;
             }
 
-            Regex ex = new Regex(@"^[0-9]{2}\.[0-9]{2}(|\.[0-9]{1,2})$");
+            Regex ex = new Regex(@"^[0-9]{2}(|\.[0-9]{1,2})(|\.[0-9]{1,2})$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");

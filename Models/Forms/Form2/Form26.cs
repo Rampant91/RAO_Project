@@ -234,13 +234,13 @@ private bool DistanceToWasteSource_Validation(RamAccess<string> value)//Ready
         }
 
         private void TestDepthValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 TestDepth_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool TestDepth_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool TestDepth_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -253,7 +253,7 @@ private bool TestDepth_Validation(RamAccess<string> value)//Ready
             }
             try
             {
-                int k = int.Parse(value.Value);
+                double k = double.Parse(value.Value);
                 if (k <= 0)
                 {
                     value.AddError("Недопустимое значение");
