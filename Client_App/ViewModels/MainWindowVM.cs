@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.IO.Enumeration;
 using System.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
@@ -201,8 +200,8 @@ namespace Client_App.ViewModels
                         {
                             var dt = DateTime.Now;
                             var filename = "Report_" +
-                                           dt.Year + "." + dt.Month + "." + dt.Day + "_" + dt.Hour + "." + dt.Minute +
-                                           "." + dt.Second;
+                                           dt.Year + "_" + dt.Month + "_" + dt.Day + "_" + dt.Hour + "_" + dt.Minute +
+                                           "_" + dt.Second;
                             res = Path.Combine(res,filename+ ".raodb");
                             var rep = (Report)obj;
                             rep.ExportDate.Value = dt.Day + "." + dt.Month + "." + dt.Year;
@@ -268,110 +267,105 @@ namespace Client_App.ViewModels
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 OpenFileDialog dial = new OpenFileDialog();
+                dial.AllowMultiple = true;
                 var answ = await dial.ShowAsync(desktop.MainWindow);
-                var res = answ.FirstOrDefault();
-                if (res != null)
+                foreach (var res in answ)
                 {
-                    if (res != "")
+                    if (res != null)
                     {
-                        string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
-                        string path = Path.GetPathRoot(system);
-                        var tmp = Path.Combine(path, "RAO");
-                        tmp = Path.Combine(tmp, "temp");
-                        tmp = Path.Combine(tmp, Path.GetFileName(res).Split('.')[0])+"_imp"+".raodb";
-
-                        var thr = new Thread(() =>
+                        if (res != "")
                         {
+                            string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                            string path = Path.GetPathRoot(system);
+                            var tmp = Path.Combine(path, "RAO");
+                            tmp = Path.Combine(tmp, "temp");
+                            Directory.CreateDirectory(tmp);
+                            tmp = Path.Combine(tmp, Path.GetFileNameWithoutExtension(res)) + "_imp_1" + ".raodb";
+
                             while (true)
                             {
-                                try
+                                if (File.Exists(tmp))
                                 {
-                                    File.Copy(res, tmp,true);
-                                    break;
-                                }
-                                catch(Exception e)
-                                {
-                                    Thread.Sleep(1000);
-                                }
-                            }
-                        });
-                        thr.Start();
-
-                        thr.Join();
-                        using (DBExportModel db = new DBExportModel(tmp))
-                        {
-                            try
-                            {
-                                db.Database.EnsureCreated();
-                                db.LoadTables();
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
-                                throw;
-                            }
-
-                            foreach (var item in db.ReportsCollectionDbSet)
-                            {
-                                var tb11 = from t in Local_Reports.Reports_Collection
-                                    where t.Master.Rows10[0].Okpo == item.Master.Rows10[0].Okpo
-                                    select t;
-                                var tb21 = from t in Local_Reports.Reports_Collection
-                                    where t.Master.Rows20[0].Okpo == item.Master.Rows20[0].Okpo
-                                    select t;
-                                var tb12 = from t in Local_Reports.Reports_Collection
-                                    where t.Master.Rows10[1].Okpo == item.Master.Rows10[1].Okpo
-                                    select t;
-                                var tb22 = from t in Local_Reports.Reports_Collection
-                                    where t.Master.Rows20[1].Okpo == item.Master.Rows20[1].Okpo
-                                    select t;
-
-                                Reports first11 = null;
-                                Reports first12 = null;
-                                Reports first21 = null;
-                                Reports first22 = null;
-                                try
-                                {
-                                    first11 = tb11.FirstOrDefault();
-                                }
-                                catch
-                                {
-                                }
-
-                                try
-                                {
-                                    first12 = tb12.FirstOrDefault();
-                                }
-                                catch
-                                {
-                                }
-
-                                try
-                                {
-                                    first21 = tb21.FirstOrDefault();
-                                }
-                                catch
-                                {
-                                }
-
-                                try
-                                {
-                                    first22 = tb22.FirstOrDefault();
-                                }
-                                catch
-                                {
-                                }
-
-                                item.CleanIds();
-                                if (first11 != null)
-                                {
-                                    first11.Report_Collection.AddRange(item.Report_Collection);
+                                    var rt = Path.GetFileNameWithoutExtension(tmp).Split('_');
+                                    var num = Convert.ToInt32(rt.Last());
+                                    tmp = "";
+                                    tmp = Path.Combine(path, "RAO");
+                                    tmp = Path.Combine(tmp, "temp");
+                                    tmp = Path.Combine(tmp, Path.GetFileNameWithoutExtension(res) + "_imp_" + (num + 1) + ".raodb");
                                 }
                                 else
                                 {
-                                    if (first12 != null)
+                                    break;
+                                }
+                            }
+                            var thr = new Thread(() =>
+                            {
+                                while (true)
+                                {
+                                    try
                                     {
-                                        first12.Report_Collection.AddRange(item.Report_Collection);
+                                        File.Copy(res, tmp, true);
+                                        break;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Thread.Sleep(1000);
+                                    }
+                                }
+                            });
+                            thr.Start();
+
+                            thr.Join();
+                            using (DBExportModel db = new DBExportModel(tmp))
+                            {
+                                try
+                                {
+                                    db.Database.EnsureCreated();
+                                    db.LoadTables();
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                    throw;
+                                }
+
+                                foreach (var item in db.ReportsCollectionDbSet)
+                                {
+                                    var tb11 = from t in Local_Reports.Reports_Collection10
+                                               where (item.Master.Rows10[0].Okpo_DB != "") &&
+                                               (t.Master.Rows10[0].Okpo_DB != "") &&
+                                               (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB)&&
+                                               (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB)
+                                               select t;
+                                    var tb21 = from t in Local_Reports.Reports_Collection20
+                                               where (item.Master.Rows20[0].Okpo_DB != "") &&
+                                               (t.Master.Rows20[0].Okpo_DB != "") &&
+                                               (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB)&&
+                                               (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB)
+                                               select t;
+
+                                    Reports first11 = null;
+                                    Reports first21 = null;
+                                    try
+                                    {
+                                        first11 = tb11.FirstOrDefault();
+                                    }
+                                    catch
+                                    {
+                                    }
+
+                                    try
+                                    {
+                                        first21 = tb21.FirstOrDefault();
+                                    }
+                                    catch
+                                    {
+                                    }
+
+                                    item.CleanIds();
+                                    if (first11 != null)
+                                    {
+                                        first11.Report_Collection.AddRange(item.Report_Collection);
                                     }
                                     else
                                     {
@@ -381,14 +375,7 @@ namespace Client_App.ViewModels
                                         }
                                         else
                                         {
-                                            if (first22 != null)
-                                            {
-                                                first22.Report_Collection.AddRange(item.Report_Collection);
-                                            }
-                                            else
-                                            {
-                                                Local_Reports.Reports_Collection.Add(item);
-                                            }
+                                            Local_Reports.Reports_Collection.Add(item);
                                         }
                                     }
                                 }
@@ -397,7 +384,6 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-
             StaticConfiguration.DBModel.SaveChanges();
         }
 

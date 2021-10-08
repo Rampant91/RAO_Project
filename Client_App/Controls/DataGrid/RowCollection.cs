@@ -110,24 +110,22 @@ namespace Client_App.Controls.DataGrid
             var count = 1;
             foreach (Row item in SRows.Children)
             {
-                if (item.SRow != count)
-                {
-                    Rows.Add(count.ToString(), Rows[item.SRow.ToString()]);
-                    Rows.Remove(item.SRow.ToString());
+                var rw = Rows[item.SRow.ToString()];
 
-                    Binding b = new()
-                    {
-                        Path = "Items[" + (count - 1) + "]",
-                        ElementName = topName,
-                        NameScope = new WeakReference<INameScope>(scp)
-                    };
+                Rows.Remove(item.SRow.ToString());
+                Rows.Add(count.ToString(), rw);
 
-                    item.Bind(StyledElement.DataContextProperty, b);
+                //Binding b = new()
+                //{
+                //    Path = "Items[" + (count - 1) + "]",
+                //    ElementName = topName,
+                //    NameScope = new WeakReference<INameScope>(scp)
+                //};
 
-                    this[count].Reorgonize(item.SRow.ToString(), count.ToString());
-                    item.SRow = count;
-                }
+                //item.Bind(StyledElement.DataContextProperty, b);
 
+                this[count].Reorgonize(item.SRow.ToString(), count.ToString());
+                item.SRow = count;
                 count++;
             }
         }
@@ -154,8 +152,8 @@ namespace Client_App.Controls.DataGrid
 
         public void Clear()
         {
-            foreach (var item in Rows.Keys) Rows.Remove(item);
-            SRows.Children.Clear();
+            foreach (var item in Rows.Keys) 
+                this.Remove(Convert.ToInt32(item));
         }
     }
 }

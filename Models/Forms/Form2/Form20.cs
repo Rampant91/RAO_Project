@@ -930,7 +930,7 @@ namespace Models
         {
             base.ExcelRow(worksheet, Row);
 
-            worksheet.Cells[2, Row].Value = SubjectRF_DB;
+            worksheet.Cells[2, Row].Value = OrganUprav_DB;
             worksheet.Cells[3, Row].Value = JurLico_DB;
             worksheet.Cells[4, Row].Value = ShortJurLico_DB;
             worksheet.Cells[5, Row].Value = JurLicoAddress_DB;
@@ -958,9 +958,9 @@ namespace Models
             }
             else
             {
-                worksheet.Cells[1, Column].Value = "Обособленное подраздеение";
+                worksheet.Cells[1, Column].Value = "Обособленное подразделение";
             }
-            worksheet.Cells[2, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(SubjectRF)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[2, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(OrganUprav)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             worksheet.Cells[3, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(JurLico)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             worksheet.Cells[4, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(ShortJurLico)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             worksheet.Cells[5, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form20,Models").GetProperty(nameof(JurLicoAddress)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;

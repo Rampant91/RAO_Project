@@ -28,8 +28,14 @@ namespace Client_App.Controls.DataGrid
             if (obj.NewValue.Value != null)
                 if (Handler != null)
                     if (Handler.Target != null)
-                        if (((Control) obj.Sender).Name == ((Control) Handler.Target).Name)
-                            Handler(obj.NewValue.Value, null);
+                        if (((Control)obj.Sender).Name == ((Control)Handler.Target).Name)
+                        {
+                            var rt = new List<INotifyPropertyChanged>(obj.NewValue.Value);
+                            if (rt.Count > 0)
+                            {
+                                Handler(rt, null);
+                            }
+                        }
         }
     }
 }
