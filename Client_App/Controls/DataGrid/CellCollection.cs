@@ -37,9 +37,13 @@ namespace Client_App.Controls.DataGrid
         public void Reorgonize(string LastRow, string NewRow)
         {
             SCells.SRow = Convert.ToInt32(NewRow);
-            foreach (var item in Cells)
-                if (item.Value.CellRow == Convert.ToInt32(LastRow))
-                    item.Value.CellRow = Convert.ToInt32(NewRow);
+            foreach (Cell item in SCells.Children)
+                if (item.CellRow == Convert.ToInt32(LastRow))
+                {
+                    Cells.Remove(item.CellRow + ";" + item.CellColumn);
+                    item.CellRow = Convert.ToInt32(NewRow);
+                    Cells.Add(item.CellRow + ";" + item.CellColumn,item);
+                }
         }
 
         public IEnumerable<Cell> GetIEnumerable()

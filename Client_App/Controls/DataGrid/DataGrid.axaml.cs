@@ -87,7 +87,7 @@ namespace Client_App.Controls.DataGrid
                 if (value != null)
                 {
                     SetAndRaise(ItemsProperty, ref _items, value);
-                    UpdateCells();
+                    ItemsChanged(null,null);
                 }
             }
         }
@@ -333,7 +333,8 @@ namespace Client_App.Controls.DataGrid
         public void DataGridPointerDown(object sender, PointerPressedEventArgs args)
         {
             var mouse = args.GetCurrentPoint((Panel)sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed||
+                mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
                 if (Rows.Count > 0)
                 {
                     var tmp = FindCell(mouse);
@@ -365,7 +366,8 @@ namespace Client_App.Controls.DataGrid
         public void DataGridPointerUp(object sender, PointerReleasedEventArgs args)
         {
             var mouse = args.GetCurrentPoint((Panel)sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased||
+                mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
             {
                 if (Rows.Count > 0)
                 {
@@ -436,7 +438,10 @@ namespace Client_App.Controls.DataGrid
                 }
             }
 
-            Rows.Reorgonize(scp, Name);
+            if (Outer1.Length != 0 || Outer2.Length != 0)
+            {
+                Rows.Reorgonize(scp, Name);
+            }
 
             SetSelectedControls();
             SetSelectedItemsWithHandler();

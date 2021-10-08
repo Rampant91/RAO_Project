@@ -78,7 +78,9 @@ namespace Models
 
         //RadionuclidName property
         #region RadionuclidName
-        public string RadionuclidName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Радионуклид")]
+        public string RadionuclidName_DB { get; set; } = ""; 
+        [NotMapped]        
+        [Attributes.Form_Property("Радионуклид")]
         public RamAccess<string> RadionuclidName
         {
             get
@@ -98,7 +100,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                RadionuclidName_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
@@ -142,7 +144,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<string>)Value).Value;
+                AllowedActivity_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
@@ -197,7 +199,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteSourceName_DB = ((RamAccess<double?>)Value).Value.ToString();
+                FactedActivity_DB = ((RamAccess<double?>)Value).Value;
             }
         }
 

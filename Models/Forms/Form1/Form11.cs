@@ -916,7 +916,7 @@ namespace Models
             worksheet.Cells[Row, 4].Value = PassportNumber_DB;
             worksheet.Cells[Row, 5].Value = Type_DB;
             worksheet.Cells[Row, 6].Value = Radionuclids_DB;
-            worksheet.Cells[Row, 7].Value = PackNumber_DB;
+            worksheet.Cells[Row, 7].Value = FactoryNumber_DB;
             worksheet.Cells[Row, 8].Value = Quantity_DB;
             worksheet.Cells[Row, 9].Value = Activity_DB;
             worksheet.Cells[Row, 10].Value = CreatorOKPO_DB;
@@ -944,7 +944,7 @@ namespace Models
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             worksheet.Cells[1, 6].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty(nameof(Radionuclids))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty(nameof(PackNumber))
+            worksheet.Cells[1, 7].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty(nameof(FactoryNumber))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             worksheet.Cells[1, 8].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty(nameof(Quantity))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;

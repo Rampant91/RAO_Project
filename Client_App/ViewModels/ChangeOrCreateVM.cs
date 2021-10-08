@@ -723,8 +723,6 @@ namespace Client_App.ViewModels
 
         private async Task _PasteRows(IEnumerable param)
         {
-            PasteRealization.Excel ex = new PasteRealization.Excel();
-
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
                 string? text = await clip.GetTextAsync();
@@ -801,8 +799,6 @@ namespace Client_App.ViewModels
 
         private async Task _CopyRows(IEnumerable param)
         {
-            PasteRealization.Excel ex = new PasteRealization.Excel();
-
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
                 string txt = "";
