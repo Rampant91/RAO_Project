@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Models.Collections;
+using Avalonia.Controls;
 
 namespace Client_App.Controls.DataGrid
 {

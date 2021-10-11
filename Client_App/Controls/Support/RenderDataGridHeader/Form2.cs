@@ -92,35 +92,12 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             else
             {
                 int len = Text.Length;
-                var headers = new RamAccess<string>[len];
-                var cells = new Cell[len];
-                var stckPnl = new StackPanel()
-                {
-                    Orientation = Orientation.Horizontal
-                };
-                for (int k = 0; k < len-1; k++)
-                {
-                    stckPnl.Children.Add(new Cell(new RamAccess<string>(null,Text[k]), "", true)
-                    {
-                        Background = new SolidColorBrush(Color.Parse("LightGray")),
-                        Width = starWidth[k] * Wdth1,
-                        Height = RowHeight1,
-                        BorderBrush = new SolidColorBrush(border_color1),
-                        CellRow = Column,
-                        CellColumn = 1
-                    });
-                }
-                //var stckPnl1 = new StackPanel
-                //{
-                //    Orientation = Orientation.Vertical
-                //};
-                var stckPnl1 = new Row
+                var stckPnl = new Row
                 {
                     Orientation = Orientation.Vertical
                 };
 
-                var ram0 = new RamAccess<string>(null, Text[len - 1]);
-                var cell0 = new Cell(ram0, "", true)
+                var cell0 = new Cell(new RamAccess<string>(null, Text[len - 1]), "", true)
                 {
                     Background = new SolidColorBrush(Color.Parse("LightGray")),
                     Width = starWidth[len - 1] * Wdth1,
@@ -129,28 +106,58 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     CellRow = Column,
                     CellColumn = 0
                 };
-                var stckPnl2 = new StackPanel
+                stckPnl.Children.Add(cell0);
+
+                var stck = new StackPanel()
                 {
                     Orientation = Orientation.Horizontal
                 };
-                for (int i = 0; i < len - 1; i++)
+
+                //var stck2 = new StackPanel()
+                //{
+                //    Orientation = Orientation.Horizontal
+                //};
+                //stckPnl.Children.Add(stck2);
+
+                for (int k = 0; k < len-1; k++)
                 {
-                    headers[i] = new RamAccess<string>(null, (offset + i + 1).ToString());
-                    cells[i] = new Cell(headers[i], "", true)
+                    stck.Children.Add(new Cell(new RamAccess<string>(null,Text[k]), "", true)
                     {
                         Background = new SolidColorBrush(Color.Parse("LightGray")),
-                        Width = starWidth[i] * Wdth1,
+                        Width = starWidth[k] * Wdth1,
                         Height = RowHeight1,
                         BorderBrush = new SolidColorBrush(border_color1),
-                        CellRow = Column,
-                        CellColumn = 2
-                    };
-                    stckPnl2.Children.Add(cells[i]);
+                    });
                 }
-                stckPnl1.Children.Add(cell0);
-                stckPnl1.Children.Add(stckPnl);
-                stckPnl1.Children.Add(stckPnl2);
-                return stckPnl1;
+                var cell1 = new CustomCell(stck, null, "", true)
+                {
+                    Background = new SolidColorBrush(Color.Parse("LightGray")),
+                    Width = starWidth[len - 1] * Wdth1,
+                    Height = RowHeight1,
+                    BorderBrush = new SolidColorBrush(border_color1),
+                    CellRow = Column,
+                    CellColumn = 1
+                };
+                stckPnl.Children.Add(cell1);
+
+                //for (int i = 0; i < len - 1; i++)
+                //{
+                //    headers[i] = new RamAccess<string>(null, (offset + i + 1).ToString());
+                //    cells[i] = new Cell(headers[i], "", true)
+                //    {
+                //        Background = new SolidColorBrush(Color.Parse("LightGray")),
+                //        Width = starWidth[i] * Wdth1,
+                //        Height = RowHeight1,
+                //        BorderBrush = new SolidColorBrush(border_color1),
+                //        CellRow = Column,
+                //        CellColumn = 2
+                //    };
+                //    stckPnl2.Children.Add(cells[i]);
+                //}
+                //stckPnl1.Children.Add(cell0);
+                //stckPnl1.Children.Add(stckPnl);
+                //stckPnl1.Children.Add(stckPnl2);
+                return stckPnl;
             }
             //private static Control Get1Header(double[] starWidth, int Column, string[] Text, bool OneToMany, int offset)
             //{
