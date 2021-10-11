@@ -11,6 +11,7 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Collections;
+using Avalonia.Interactivity;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -85,7 +86,7 @@ o => o.Pagination,
             set
             {
                 SetAndRaise(PaginationProperty, ref _pagination, value);
-                ItemsChanged(null, null);
+                UpdateAllCells();
             }
         }
         public static readonly DirectProperty<DataGrid, int> PageSizeProperty =
@@ -94,14 +95,14 @@ o => o.Pagination,
         o => o.PageSize,
         (o, v) => o.PageSize = v);
 
-        private int _pageSize = 10;
+        private int _pageSize = 20;
         public int PageSize
         {
             get => _pageSize;
             set
             {
                 SetAndRaise(PageSizeProperty, ref _pageSize, value);
-                ItemsChanged(null, null);
+                UpdateAllCells();
             }
         }
         public static readonly DirectProperty<DataGrid, string> NowPageProperty =
@@ -122,19 +123,32 @@ o => o.Pagination,
                     if (val != null)
                     {
                         int maxpage = (Items.Count() / PageSize) + 1;
-                        if (val == 0)
+                        if (val.ToString() != _nowPage)
                         {
-                            val = 1;
-                        }
-                        if (val > maxpage)
-                        {
-                            SetAndRaise(NowPageProperty, ref _nowPage, maxpage.ToString());
-                            ItemsChanged(null, null);
-                        }
-                        else
-                        {
-                            SetAndRaise(NowPageProperty, ref _nowPage, value);
-                            ItemsChanged(null, null);
+                            if (val <= maxpage && val >= 1)
+                            {
+                                SetAndRaise(NowPageProperty, ref _nowPage, value);
+                                UpdateAllCells();
+                            }
+                            else
+                            {
+                                if (val > maxpage)
+                                {
+                                    if (_nowPage != maxpage.ToString())
+                                    {
+                                        SetAndRaise(NowPageProperty, ref _nowPage, maxpage.ToString());
+                                        UpdateAllCells();
+                                    }
+                                }
+                                if (val < 1)
+                                {
+                                    if (_nowPage != "1")
+                                    {
+                                        SetAndRaise(NowPageProperty, ref _nowPage, "1");
+                                        UpdateAllCells();
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -420,7 +434,7 @@ o => o.Pagination,
             int[] ret = new int[2];
 
             var t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity) + 1+offset;
-            if (t1 <= Rows.Count && t1 > 0)
+            if (t1 <= Rows.Count+offset && t1 > offset)
             {
                 ret[0] = t1;
                 double sum = 0;
@@ -628,7 +642,7 @@ o => o.Pagination,
             ScrollViewer vw = new();
             vw.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
             vw.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            vw.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+            vw.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             pan1.Children.Add(vw);
 
             Grid grd = new();
@@ -669,7 +683,8 @@ o => o.Pagination,
 
             ScrollViewer vw2 = new();
             vw2.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
-            vw2.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            vw2.Offset= new Vector(-100, 0);
+            vw2.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             vw2.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
             pan.Children.Add(vw2);
 
@@ -701,16 +716,49 @@ o => o.Pagination,
             pnle.Background = new SolidColorBrush(Color.Parse("LightGray"));
             grde.Children.Add(pnle);
 
+            StackPanel s = new StackPanel()
+            {
+                Margin = Thickness.Parse("5,0,0,0"),
+                Orientation = Orientation.Horizontal,
+                Spacing = 5
+            };
+            pnle.Children.Add(s);
+
+            Button btnDown = new Button { 
+                Content="<",
+                Width=30,
+                Height=30
+            };
+            btnDown.Click += NowPageDown;
+            s.Children.Add(btnDown);
+
             TextBox box = new TextBox()
             {
-                [!TextBox.TextProperty] = this[!DataGrid.NowPageProperty]
+                [!TextBox.TextProperty] = this[!DataGrid.NowPageProperty],
+                TextAlignment=TextAlignment.Center
             };
             box.Width = 30;
             box.Height = 30;
-            pnle.Children.Add(box);
+            s.Children.Add(box);
 
+            Button btnUp = new Button
+            {
+                Content = ">",
+                Width = 30,
+                Height = 30
+            };
+            btnUp.Click += NowPageUp;
+            s.Children.Add(btnUp);
 
             Content = brd;
+        }
+        public void NowPageDown(object sender,RoutedEventArgs args)
+        {
+            NowPage = (Convert.ToInt32(NowPage) - 1).ToString();
+        }
+        public void NowPageUp(object sender, RoutedEventArgs args)
+        {
+            NowPage = (Convert.ToInt32(NowPage) + 1).ToString();
         }
     }
 }
