@@ -273,13 +273,13 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
 
 
         private void VolumeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 Volume_DB = ((RamAccess<double?>)Value).Value;
-}
-}
-private bool Volume_Validation(RamAccess<double?> value)//TODO
+            }
+        }
+        private bool Volume_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
             if (value.Value==null)
@@ -492,7 +492,7 @@ if (args.PropertyName == "Value")
 private bool DocumentDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -543,7 +543,7 @@ if (args.PropertyName == "Value")
 private bool ExpirationDate_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;

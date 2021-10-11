@@ -88,7 +88,7 @@ namespace Models
         protected bool PassportNumber_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -107,7 +107,7 @@ namespace Models
         #region Name
         public string Name_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наименование")]
+        [Attributes.Form_Property("Наименование ОРИ")]
         public RamAccess<string> Name
         {
             get
@@ -131,7 +131,7 @@ namespace Models
         private bool Name_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -143,7 +143,7 @@ namespace Models
         #region Sort
         public byte? Sort_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Вид")]
+        [Attributes.Form_Property("Вид ОРИ")]
         public RamAccess<byte?> Sort
         {
             get
@@ -233,14 +233,14 @@ namespace Models
         #endregion
 
         #region Activity
-        public double? Activity_DB { get; set; } = null;
+        public string Activity_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Активность, Бк")]
-        public RamAccess<double?> Activity
+        public RamAccess<string> Activity
         {
             get
             {
-                var tmp = new RamAccess<double?>(Activity_Validation, Activity_DB);
+                var tmp = new RamAccess<string>(Activity_Validation, Activity_DB);
                 tmp.PropertyChanged += ActivityValueChanged;
                 return tmp;
             }
@@ -253,18 +253,25 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Activity_DB = ((RamAccess<double?>)Value).Value;
+                Activity_DB = ((RamAccess<string>)Value).Value;
             }
         }
-        private bool Activity_Validation(RamAccess<double?> value)//Ready
+        private bool Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if(value.Value<=0)
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -301,7 +308,7 @@ namespace Models
         private bool ActivityMeasurementDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -323,14 +330,14 @@ namespace Models
         #endregion
 
         #region Volume
-        public double? Volume_DB { get; set; } = null;
+        public string Volume_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Объем, куб. м")]
-        public RamAccess<double?> Volume
+        public RamAccess<string> Volume
         {
             get
             {
-                var tmp = new RamAccess<double?>(Volume_Validation, Volume_DB);
+                var tmp = new RamAccess<string>(Volume_Validation, Volume_DB);
                 tmp.PropertyChanged += VolumeValueChanged;
                 return tmp;
             }
@@ -343,18 +350,25 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Volume_DB = ((RamAccess<double?>)Value).Value;
+                Volume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
             }
         }
-        private bool Volume_Validation(RamAccess<double?> value)//TODO
+        private bool Volume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if(value.Value<=0)
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
             {
                 value.AddError("Недопустимое значение"); return false;
             }

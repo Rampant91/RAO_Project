@@ -192,7 +192,7 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 InfectedArea_DB = ((RamAccess<double?>)Value).Value;
             }
         }
-private bool InfectedArea_Validation(RamAccess<double?> value)//TODO
+        private bool InfectedArea_Validation(RamAccess<double?> value)//TODO
         {
             value.ClearErrors();
             if (value.Value==null)
@@ -228,16 +228,17 @@ private bool InfectedArea_Validation(RamAccess<double?> value)//TODO
             }
         }
         //If change this change validation
-       private void RadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void RadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 Radionuclids_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool Radionuclids_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            value.Value.Replace(" ", "");
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");

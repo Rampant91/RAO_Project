@@ -389,7 +389,7 @@ if (args.PropertyName == "Value")
 }
 private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); if ((value.Value == null) || value.Value.Equals(""))
+            value.ClearErrors(); if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -448,7 +448,7 @@ if (args.PropertyName == "Value")
 private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;

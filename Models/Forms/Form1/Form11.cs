@@ -306,7 +306,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Activity_DB = ((RamAccess<string>)Value).Value;
+                Activity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
             }
         }
 
@@ -318,6 +318,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value.Equals("прим."))
             {
                 //if ((Activity.Value == null) || (ActivityNote.Value == ""))
@@ -328,7 +329,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {

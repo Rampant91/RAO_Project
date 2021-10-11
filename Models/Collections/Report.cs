@@ -1128,7 +1128,7 @@ namespace Collections
         private bool PermissionIssueDate1_28_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -1207,7 +1207,7 @@ namespace Collections
         private bool ValidBegin1_28_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -1255,7 +1255,7 @@ namespace Collections
         private bool ValidThru1_28_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -1334,7 +1334,7 @@ namespace Collections
         private bool ContractIssueDate2_28_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -1413,7 +1413,7 @@ namespace Collections
         private bool ValidBegin2_28_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -1461,7 +1461,7 @@ namespace Collections
         private bool ValidThru2_28_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -1541,7 +1541,7 @@ namespace Collections
         private bool PermissionIssueDate27_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -1622,7 +1622,7 @@ namespace Collections
         private bool ValidBegin27_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -1671,7 +1671,7 @@ namespace Collections
         private bool ValidThru27_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
@@ -1805,7 +1805,7 @@ namespace Collections
         private bool StartPeriod_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1865,7 +1865,7 @@ namespace Collections
         private bool EndPeriod_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
-            if ((value.Value == null) || value.Value.Equals(""))
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;

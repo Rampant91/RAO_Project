@@ -191,13 +191,13 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         }
         //6 symbols code
         private void PlotCodeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 PlotCode_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool PlotCode_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -205,7 +205,7 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex a = new Regex("^[0-9]{6}$");
+            Regex a = new Regex("^[0-9]{7}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");

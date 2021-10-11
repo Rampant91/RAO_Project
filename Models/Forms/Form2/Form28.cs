@@ -199,13 +199,14 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<string> spr = new List<string>();
-            if (spr.Contains(value.Value))
-            {
-                return true;
-            }
-            value.AddError("Недопустимое значение");
-            return false;
+            return true;
+            //List<string> spr = new List<string>();
+            //if (spr.Contains(value.Value))
+            //{
+            //    return true;
+            //}
+            //value.AddError("Недопустимое значение");
+            //return false;
         }
         //PoolDistrictName property
         #endregion

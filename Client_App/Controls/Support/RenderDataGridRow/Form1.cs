@@ -359,7 +359,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get4Row(1, Row, 2, "OperationCode", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 3, "OperationDate", scp, TopName));
             stck.Children.Add(Get4Row(1.1, Row, 4, "PassportNumber", scp, TopName));
-            stck.Children.Add(Get4Row(1, Row, 5, "Name", scp, TopName));
+            stck.Children.Add(Get4Row(1.5, Row, 5, "Name", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 6, "Sort", scp, TopName));
             stck.Children.Add(Get4Row(2, Row, 7, "Radionuclids", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 8, "Activity", scp, TopName));
