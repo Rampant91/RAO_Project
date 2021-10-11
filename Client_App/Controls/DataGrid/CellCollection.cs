@@ -19,7 +19,7 @@ namespace Client_App.Controls.DataGrid
         }
 
         public Row SCells { get; set; }
-        private ObservableDictionary<string, Cell> Cells { get; }
+        public ObservableDictionary<string, Cell> Cells { get; }
 
         public int Count => Cells.Count();
 

@@ -89,44 +89,98 @@ namespace Client_App.Controls.DataGrid
         {
             var counter = 0;
             var max = 0;
-            if (Rows.Count() > 0) max = Rows.Max(x => Convert.ToInt32(x.Key));
-
-            ;
-            for (var i = 1; i <= max; i++)
+            int offset = 0;
+            int maxKey = 0;
+            foreach (var key in Rows.Keys)
+            {
+                var num = Convert.ToInt32(key);
+                if (maxKey < num)
+                {
+                    maxKey = num;
+                }
+            }
+            for (int i = 1; i < maxKey; i++)
+            {
                 if (this[i] == null)
+                {
+                    offset++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (Rows.Count() > 0) max = Rows.Max(x => Convert.ToInt32(x.Key));
+            for (var i = offset+1; i <= max; i++)
+                if (this[i] == null)
+                {
                     counter = i;
+                    break;
+                }
+
 
             if (counter == 0) counter = max + 1;
 
-            return counter;
+            return counter-offset;
         }
 
         private void AddToSRows(int Row, CellCollection cellCollection)
         {
-            SRows.Children.Insert(Row - 1, cellCollection.SCells);
-            //SRows.Children.Add(cellCollection.SCells);
-            //var t=SRows.Children.IndexOf(cellCollection.SCells);
-            //SRows.Children.Move(t,Row-1);
+            int offset = 0;
+            int maxKey = 0;
+            foreach(var key in Rows.Keys)
+            {
+                var num = Convert.ToInt32(key);
+                if(maxKey<num)
+                {
+                    maxKey = num;
+                }
+            }
+            for(int i=1;i<maxKey;i++)
+            {
+                if(this[i]==null)
+                {
+                    offset++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            SRows.Children.Insert(Row - 1-offset, cellCollection.SCells);
         }
 
         public void Reorgonize(NameScope scp, string topName)
         {
-            var count = 1;
+            int offset = 0;
+            int maxKey = 0;
+            foreach (var key in Rows.Keys)
+            {
+                var num = Convert.ToInt32(key);
+                if (maxKey < num)
+                {
+                    maxKey = num;
+                }
+            }
+            for (int i = 1; i < maxKey; i++)
+            {
+                if (this[i] == null)
+                {
+                    offset++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            var count = offset+1;
             foreach (Row item in SRows.Children)
             {
                 var rw = Rows[item.SRow.ToString()];
 
                 Rows.Remove(item.SRow.ToString());
                 Rows.Add(count.ToString(), rw);
-
-                //Binding b = new()
-                //{
-                //    Path = "Items[" + (count - 1) + "]",
-                //    ElementName = topName,
-                //    NameScope = new WeakReference<INameScope>(scp)
-                //};
-
-                //item.Bind(StyledElement.DataContextProperty, b);
 
                 this[count].Reorgonize(item.SRow.ToString(), count.ToString());
                 item.SRow = count;
