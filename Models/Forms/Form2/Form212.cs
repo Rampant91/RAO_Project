@@ -86,8 +86,8 @@ private bool OperationCode_Validation(RamAccess<short?> value)
         #endregion
 
         //ObjectTypeCode property
-        #region  
-public short? ObjectTypeCode_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Код типа объектов учета")]
+        #region 
+        public short? ObjectTypeCode_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Код типа объектов учета")]
         public RamAccess<short?> ObjectTypeCode
         {
             get
@@ -104,14 +104,14 @@ public short? ObjectTypeCode_DB { get; set; } = null; [NotMapped]        [Attrib
         }
         //2 digit code
 
-       private void ObjectTypeCodeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void ObjectTypeCodeValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 ObjectTypeCode_DB = ((RamAccess<short?>)Value).Value;
-}
-}
-private bool ObjectTypeCode_Validation(RamAccess<short?> value)//TODO
+            }
+        }
+        private bool ObjectTypeCode_Validation(RamAccess<short?> value)//TODO
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -183,12 +183,12 @@ private bool Radionuclids_Validation(RamAccess<string> value)//TODO
 
         //Activity property
         #region  Activity
-        public double? Activity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Активность, Бк")]
-        public RamAccess<double?> Activity
+        public string Activity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Активность, Бк")]
+        public RamAccess<string> Activity
         {
             get
             {
-                    var tmp = new RamAccess<double?>(Activity_Validation, Activity_DB);
+                    var tmp = new RamAccess<string>(Activity_Validation, Activity_DB);
                     tmp.PropertyChanged += ActivityValueChanged;
                     return tmp;
             }
@@ -200,14 +200,14 @@ private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         }
 
 
-       private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                Activity_DB = ((RamAccess<double?>)Value).Value;
-}
-}
-private bool Activity_Validation(RamAccess<double?> value)//Ready
+        private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Activity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool Activity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (value.Value==null)
@@ -215,7 +215,14 @@ private bool Activity_Validation(RamAccess<double?> value)//Ready
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if(value.Value<=0)
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
             {
                 value.AddError("Недопустимое значение");
                 return false;

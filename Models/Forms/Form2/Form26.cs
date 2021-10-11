@@ -317,13 +317,13 @@ private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
 
         //AverageYearConcentration property
         #region AverageYearConcentration 
-        public double? AverageYearConcentration_DB { get; set; } = null; [NotMapped]
+        public string AverageYearConcentration_DB { get; set; } = null; [NotMapped]
         [Attributes.Form_Property("Среднегодовое содержание радионуклида, Бк/кг")]
-        public RamAccess<double?> AverageYearConcentration
+        public RamAccess<string> AverageYearConcentration
         {
             get
             {
-                    var tmp = new RamAccess<double?>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
+                    var tmp = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
                     tmp.PropertyChanged += AverageYearConcentrationValueChanged;
                     return tmp;
             }
@@ -338,18 +338,25 @@ private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                AverageYearConcentration_DB = ((RamAccess<double?>)Value).Value;
+                AverageYearConcentration_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
             }
         }
-private bool AverageYearConcentration_Validation(RamAccess<double?> value)//TODO
+        private bool AverageYearConcentration_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value==null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if(value.Value<=0)
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
             {
                 value.AddError("Недопустимое значение");
                 return false;

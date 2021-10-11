@@ -158,21 +158,22 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
             }
         }
 
-                private void MassCreatedValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MassCreated_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MassCreated_Validation(RamAccess<string> value)//TODO
+        private void MassCreatedValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                MassCreated_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool MassCreated_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -266,21 +267,22 @@ private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
             }
         }
 
-                private void MassFromAnothersValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MassFromAnothers_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MassFromAnothers_Validation(RamAccess<string> value)//TODO
+        private void MassFromAnothersValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                MassFromAnothers_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool MassFromAnothers_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -374,21 +376,22 @@ private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
             }
         }
 
-                private void MassFromAnothersImportedValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MassFromAnothersImported_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MassFromAnothersImported_Validation(RamAccess<string> value)//TODO
+        private void MassFromAnothersImportedValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                MassFromAnothersImported_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool MassFromAnothersImported_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -482,21 +485,22 @@ private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//R
             }
         }
 
-                private void MassAnotherReasonsValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MassAnotherReasons_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MassAnotherReasons_Validation(RamAccess<string> value)//TODO
+        private void MassAnotherReasonsValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                MassAnotherReasons_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool MassAnotherReasons_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -590,21 +594,22 @@ private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
             }
         }
 
-                private void MassTransferredToAnotherValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MassTransferredToAnother_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MassTransferredToAnother_Validation(RamAccess<string> value)//TODO
+        private void MassTransferredToAnotherValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                MassTransferredToAnother_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool MassTransferredToAnother_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -698,21 +703,22 @@ private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//R
             }
         }
 
-                private void MassRefinedValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MassRefined_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MassRefined_Validation(RamAccess<string> value)//TODO
+        private void MassRefinedValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                MassRefined_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool MassRefined_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -806,21 +812,22 @@ private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
             }
         }
 
-                private void MassRemovedFromAccountValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MassRemovedFromAccount_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MassRemovedFromAccount_Validation(RamAccess<string> value)//TODO
+        private void MassRemovedFromAccountValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                MassRemovedFromAccount_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool MassRemovedFromAccount_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
             {
                 return true;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
