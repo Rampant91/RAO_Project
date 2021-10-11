@@ -138,8 +138,9 @@ namespace Client_App.Controls.DataGrid
         }
 
 
-        public Panel Columns { get; set; }
+        private RowCollection Columns { get; set; }
         private RowCollection Rows { get; set; }
+        private Grid MainGrid { get; set; }
 
         public bool DownFlag { get; set; }
         public int[] FirstPressedItem { get; set; } = new int[2];
@@ -457,8 +458,17 @@ namespace Client_App.Controls.DataGrid
 
         public void MakeHeader()
         {
-            Columns.Children.Clear();
-            Columns.Children.Add(Support.RenderDataGridHeader.Render.GetControl(Type));
+            Columns.Clear();
+
+            var lst = Support.RenderDataGridHeader.Render.GetControl(Type);
+            if (lst != null)
+            {
+                foreach (var item in lst)
+                {
+                    Columns.Add(new CellCollection(item));
+                }
+                MainGrid.RowDefinitions[0].Height = GridLength.Parse((lst.First().Children.Count*30).ToString());
+            }
         }
 
         private void InitializeComponent()
@@ -491,17 +501,28 @@ namespace Client_App.Controls.DataGrid
             Grid grd = new();
             RowDefinition rd = new()
             {
-                Height = GridLength.Parse("30")
+                Height = GridLength.Parse("0")
             };
             grd.RowDefinitions.Add(rd);
             grd.RowDefinitions.Add(new RowDefinition());
+            MainGrid = grd;
             vw.Content=grd;
 
             Panel pnl = new();
             pnl.SetValue(Grid.RowProperty, 0);
             pnl.HorizontalAlignment = HorizontalAlignment.Stretch;
-            Columns = pnl;
             grd.Children.Add(pnl);
+
+            StackPanel stckC = new()
+            {
+                Margin = Thickness.Parse("0,0,0,0"),
+                Spacing = 0,
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            pnl.Children.Add(stckC);
+            Columns = new RowCollection(stckC);
 
             Panel pn = new Panel();
             pn.HorizontalAlignment = HorizontalAlignment.Stretch;

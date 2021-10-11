@@ -16,8 +16,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 case "1": return Get1(Row, scp, TopName);
                 case "2": return Get2(Row, scp, TopName);
                 case "3": return Get3(Row, scp, TopName);
-                case "4": return Get4();
-                case "5": return Get5();
             }
             return null;
         }
@@ -58,7 +56,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 4 * Wdth0 - 3,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -114,7 +112,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Width = 7 * Wdth1-7,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -172,7 +170,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
                 Width = 4 * Wdth0 - 3,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -224,7 +222,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Width = 7 * Wdth1-7,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Orientation = Avalonia.Layout.Orientation.Horizontal,
-                Spacing = -1,
+                Spacing = 0,
                 SRow = Row
             };
 
@@ -247,16 +245,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get3Row(1, Row, 6, "Comments", scp, TopName));
 
             return stck;
-        }
-
-        private static Control Get4()
-        {
-            return null;
-        }
-
-        private static Control Get5()
-        {
-            return null;
         }
     }
 }

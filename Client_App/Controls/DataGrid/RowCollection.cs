@@ -69,7 +69,11 @@ namespace Client_App.Controls.DataGrid
         public int Add(CellCollection stck)
         {
             var counter = 0;
-            var max = Rows.Max(x => Convert.ToInt32(x.Key));
+            var max = 0;
+            if (Rows.Count() != 0)
+            {
+                max = Rows.Max(x => Convert.ToInt32(x.Key));
+            }
             for (var i = 1; i < max; i++)
                 if (this[i] == null)
                     counter = i;
