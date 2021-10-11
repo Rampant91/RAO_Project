@@ -96,13 +96,13 @@ return tmp;
         }
         //If change this change validation
         private void ControlledAreaNameValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 ControlledAreaName_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool ControlledAreaName_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool ControlledAreaName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
