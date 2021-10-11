@@ -98,6 +98,12 @@ namespace Client_App.ViewModels
         public ReactiveCommand<Unit, Unit> AddRow { get; }
         public ReactiveCommand<IList, Unit> DeleteRow { get; }
 
+        public ReactiveCommand<IList, Unit> DuplicateRowsx1 { get; }
+        public ReactiveCommand<IList, Unit> DuplicateRowsx10 { get; }
+        public ReactiveCommand<IList, Unit> DuplicateRowsx100 { get; }
+        public ReactiveCommand<IList, Unit> DuplicateRowsx1000 { get; }
+        public ReactiveCommand<IList, Unit> DuplicateRowsx10_000 { get; }
+        public ReactiveCommand<IList, Unit> DuplicateRowsx100_000 { get; }
         public ReactiveCommand<IList, Unit> CopyRows { get; }
         public ReactiveCommand<IList, Unit> PasteRows { get; }
         public ReactiveCommand<IList, Unit> DeleteNote { get; }
@@ -109,6 +115,12 @@ namespace Client_App.ViewModels
             DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             PasteRows = ReactiveCommand.CreateFromTask<IList>(_PasteRows);
+            DuplicateRowsx1 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx1);
+            DuplicateRowsx10 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx10);
+            DuplicateRowsx100 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx100);
+            DuplicateRowsx1000 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx1000);
+            DuplicateRowsx10_000 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx10_000);
+            DuplicateRowsx100_000 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx100_000);
             CopyRows = ReactiveCommand.CreateFromTask<IList>(_CopyRows);
             AddNote = ReactiveCommand.Create<string>(_AddNote);
             DeleteNote = ReactiveCommand.Create<IList>(_DeleteNote);
@@ -797,6 +809,71 @@ namespace Client_App.ViewModels
             }
         }
 
+        private async Task _DuplicateRowsx1(IEnumerable param)
+        {
+            var frm = FormCreator.Create(FormType);
+            foreach (var it in param)
+            {
+                var item = frm;
+                if (FormType == "1.1") { Storage.Rows11.Add((Form11)item); Storage.LastAddedForm = Report.Forms.Form11;}
+                if (FormType == "1.2") { Storage.Rows12.Add((Form12)item); Storage.LastAddedForm = Report.Forms.Form12;}
+                if (FormType == "1.3") { Storage.Rows13.Add((Form13)item); Storage.LastAddedForm = Report.Forms.Form13;}
+                if (FormType == "1.4") { Storage.Rows14.Add((Form14)item); Storage.LastAddedForm = Report.Forms.Form14;}
+                if (FormType == "1.5") { Storage.Rows15.Add((Form15)item); Storage.LastAddedForm = Report.Forms.Form15;}
+                if (FormType == "1.6") { Storage.Rows16.Add((Form16)item); Storage.LastAddedForm = Report.Forms.Form16;}
+                if (FormType == "1.7") { Storage.Rows17.Add((Form17)item); Storage.LastAddedForm = Report.Forms.Form17;}
+                if (FormType == "1.8") { Storage.Rows18.Add((Form18)item); Storage.LastAddedForm = Report.Forms.Form18;}
+                if (FormType == "1.9") { Storage.Rows19.Add((Form19)item); Storage.LastAddedForm = Report.Forms.Form19;}
+
+                if (FormType == "2.1") { Storage.Rows21.Add((Form21)item); Storage.LastAddedForm = Report.Forms.Form21;}
+                if (FormType == "2.2") { Storage.Rows22.Add((Form22)item); Storage.LastAddedForm = Report.Forms.Form22;}
+                if (FormType == "2.3") { Storage.Rows23.Add((Form23)item); Storage.LastAddedForm = Report.Forms.Form23;}
+                if (FormType == "2.4") { Storage.Rows24.Add((Form24)item); Storage.LastAddedForm = Report.Forms.Form24;}
+                if (FormType == "2.5") { Storage.Rows25.Add((Form25)item); Storage.LastAddedForm = Report.Forms.Form25;}
+                if (FormType == "2.6") { Storage.Rows26.Add((Form26)item); Storage.LastAddedForm = Report.Forms.Form26;}
+                if (FormType == "2.7") { Storage.Rows27.Add((Form27)item); Storage.LastAddedForm = Report.Forms.Form27;}
+                if (FormType == "2.8") { Storage.Rows28.Add((Form28)item); Storage.LastAddedForm = Report.Forms.Form28;}
+                if (FormType == "2.9") { Storage.Rows29.Add((Form29)item); Storage.LastAddedForm = Report.Forms.Form29;}
+                if (FormType == "2.10") { Storage.Rows210.Add((Form210)item); Storage.LastAddedForm = Report.Forms.Form210; }
+                if (FormType == "2.11") { Storage.Rows211.Add((Form211)item); Storage.LastAddedForm = Report.Forms.Form211; }
+                if (FormType == "2.12") { Storage.Rows212.Add((Form212)item); Storage.LastAddedForm = Report.Forms.Form212; }
+            }
+        }
+        private async Task _DuplicateRowsx10(IEnumerable param)
+        {
+            for(int i=0;i<10;i++)
+            {
+                _DuplicateRowsx1(param);
+            }
+        }
+        private async Task _DuplicateRowsx100(IEnumerable param)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                _DuplicateRowsx1(param);
+            }
+        }
+        private async Task _DuplicateRowsx1000(IEnumerable param)
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                _DuplicateRowsx1(param);
+            }
+        }
+        private async Task _DuplicateRowsx10_000(IEnumerable param)
+        {
+            for (int i = 0; i < 10000; i++)
+            {
+                _DuplicateRowsx1(param);
+            }
+        }
+        private async Task _DuplicateRowsx100_000(IEnumerable param)
+        {
+            for (int i = 0; i < 100000; i++)
+            {
+                _DuplicateRowsx1(param);
+            }
+        }
         private async Task _CopyRows(IEnumerable param)
         {
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
