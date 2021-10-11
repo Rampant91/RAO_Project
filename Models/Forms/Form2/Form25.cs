@@ -229,19 +229,21 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         }
 
         private void FuelMassValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                FuelMass_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool FuelMass_Validation(RamAccess<string> value)//TODO
         {
+            if (args.PropertyName == "Value")
+            {
+                FuelMass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool FuelMass_Validation(RamAccess<string> value)//TODO
+        {
+            value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -284,19 +286,20 @@ private bool FuelMass_Validation(RamAccess<string> value)//TODO
         }
 
         private void CellMassValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                CellMass_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool CellMass_Validation(RamAccess<string> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                CellMass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool CellMass_Validation(RamAccess<string> value)//TODO
         {
             if (string.IsNullOrEmpty(value.Value))
             {
                 return true;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -381,20 +384,22 @@ private bool Quantity_Validation(RamAccess<int?> value)//Ready
         }
 
         private void BetaGammaActivityValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); if(string.IsNullOrEmpty(value.Value))
+            if (args.PropertyName == "Value")
+            {
+                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
+        {
+            value.ClearErrors();
+            if(string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -439,21 +444,22 @@ private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         }
 
         private void AlphaActivityValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                AlphaActivity_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                AlphaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if(string.IsNullOrEmpty(value.Value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {

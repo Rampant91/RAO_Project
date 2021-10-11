@@ -147,13 +147,13 @@ private bool RadionuclidName_Validation(RamAccess<string> value)
 
 
         private void AllowedWasteValueValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                AllowedWasteValue_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool AllowedWasteValue_Validation(RamAccess<string> value)
+        {
+            if (args.PropertyName == "Value")
+            {
+                AllowedWasteValue_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool AllowedWasteValue_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -161,6 +161,7 @@ private bool AllowedWasteValue_Validation(RamAccess<string> value)
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value.Equals("прим."))
             {
                 return true;
@@ -169,7 +170,7 @@ private bool AllowedWasteValue_Validation(RamAccess<string> value)
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
@@ -202,13 +203,13 @@ private bool AllowedWasteValue_Validation(RamAccess<string> value)
 
 
         private void FactedWasteValueValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                FactedWasteValue_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool FactedWasteValue_Validation(RamAccess<string> value)
+        {
+            if (args.PropertyName == "Value")
+            {
+                FactedWasteValue_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool FactedWasteValue_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -216,11 +217,12 @@ private bool FactedWasteValue_Validation(RamAccess<string> value)
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value.Equals("-"))
             {
                 return true;
             }
-            string tmp = value.Value;
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -264,13 +266,13 @@ private bool FactedWasteValue_Validation(RamAccess<string> value)
 
 
         private void WasteOutbreakPreviousYearValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                WasteOutbreakPreviousYear_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteOutbreakPreviousYear_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+            }
+        }
+        private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -278,11 +280,12 @@ private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value.Equals("-"))
             {
                 return true;
             }
-            string tmp = value.Value;
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {

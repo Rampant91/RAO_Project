@@ -144,7 +144,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                AllowedActivity_DB = ((RamAccess<string>)Value).Value;
+                AllowedActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
             }
         }
         private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
@@ -155,6 +155,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value == "прим.")
             {
                 return true;
@@ -163,7 +164,7 @@ namespace Models
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                 {
                     value.AddError("Число должно быть больше нуля"); return false;
                 }
@@ -180,12 +181,12 @@ namespace Models
 
         //FactedActivity property
         #region FactedActivity
-        public double? FactedActivity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
-        public RamAccess<double?> FactedActivity
+        public string FactedActivity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
+        public RamAccess<string> FactedActivity
         {
             get
             {
-                    var tmp = new RamAccess<double?>(FactedActivity_Validation, FactedActivity_DB);
+                    var tmp = new RamAccess<string>(FactedActivity_Validation, FactedActivity_DB);
                     tmp.PropertyChanged += FactedActivityValueChanged;
                     return tmp;
             }
@@ -199,11 +200,11 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                FactedActivity_DB = ((RamAccess<double?>)Value).Value;
+                FactedActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
             }
         }
 
-        private bool FactedActivity_Validation(RamAccess<double?> value)//Ready
+        private bool FactedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -211,7 +212,17 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if(value.Value<=0)
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                {
+                    value.AddError("Число должно быть больше нуля"); return false;
+                }
+            }
+            catch
             {
                 value.AddError("Недопустимое значение");
                 return false;
