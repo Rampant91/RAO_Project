@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using Avalonia;
@@ -12,6 +13,19 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Collections;
 using Avalonia.Interactivity;
+using System.Threading.Tasks;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Metadata;
+using Models;
+using ReactiveUI;
+using System.Reactive;
+using System.Runtime.CompilerServices;
+using Avalonia.LogicalTree;
+using Client_App.Controls.DataGrid;
+using DBRealization;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Models.Abstracts;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -470,6 +484,27 @@ o => o.Pagination,
 
                     DownFlag = true;
                     SetSelectedControls();
+                    var item = SelectedCells.FirstOrDefault();
+                    if (item != null)
+                    {
+                        if (item is (Cell))
+                        {
+                            var bd = (Cell)item;
+                            if ((!bd.IsReadOnly))
+                            {
+                                var t = ((TextBox)((Panel)((Border)bd
+                                    .GetLogicalChildren().First())
+                                    .Child)
+                                    .Children[0]);
+                                t.Focus();
+                            }
+                        }
+                        else
+                        {
+                            var bd = (Row)item;
+                            bd.Focus();
+                        }
+                    }
                     SetSelectedItemsWithHandler();
                 }
         }
@@ -483,10 +518,10 @@ o => o.Pagination,
                 {
                     var tmp = FindCell(mouse);
                     LastPressedItem = tmp;
-                }
 
-                SetSelectedControls();
-                SetSelectedItemsWithHandler();
+                    SetSelectedControls();
+                    SetSelectedItemsWithHandler();
+                }
             }
         }
 
@@ -500,11 +535,12 @@ o => o.Pagination,
                 {
                     var tmp = FindCell(mouse);
                     LastPressedItem = tmp;
-                }
 
-                DownFlag = false;
-                SetSelectedControls();
-                SetSelectedItemsWithHandler();
+                    DownFlag = false;
+
+                    SetSelectedControls();
+                    SetSelectedItemsWithHandler();
+                }
             }
         }
 
@@ -608,6 +644,189 @@ o => o.Pagination,
         {
             AvaloniaXamlLoader.Load(this);
             Init();
+
+            this.AddHandler(KeyDownEvent, KeyDownEventHandler, handledEventsToo: true);
+            this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
+        }
+
+        bool ctrlFlag { get; set; } = false;
+        bool shiftFlag { get; set; } = false;
+
+        private void ChangeSelectedCellsByKeys(Key PressedKey)
+        {
+            if(shiftFlag)
+            {
+                ChangeSelectedCellsByKeyWithShift(PressedKey);
+            }
+            else
+            {
+                ChangeSelectedCellsByKey(PressedKey);
+            }
+
+            SetSelectedControls();
+            SetSelectedItemsWithHandler();
+        }
+        private void ChangeSelectedCellsByKey(Key PressedKey)
+        {
+            var num = Convert.ToInt32(_nowPage);
+            if (PressedKey == Key.Left)
+            {
+                var n = FirstPressedItem[1]-1;
+                if (n <= 1)
+                    n = 1;
+                FirstPressedItem[1]=n;
+                LastPressedItem[0] = FirstPressedItem[0];
+                LastPressedItem[1] = FirstPressedItem[1];
+            }
+            if (PressedKey == Key.Right|| PressedKey == Key.Tab)
+            {
+                var n = FirstPressedItem[1]+1;
+                var maxn = Columns.Count;
+                if (n >= maxn)
+                    n = maxn;
+                FirstPressedItem[1] = n;
+                LastPressedItem[0] = FirstPressedItem[0];
+                LastPressedItem[1] = FirstPressedItem[1];
+            }
+            if (PressedKey == Key.Up)
+            {
+                var n = FirstPressedItem[0]-1;
+                var minn = PageSize * (num-1)+1;
+                if (n <= minn)
+                    n = minn;
+                FirstPressedItem[0] = n;
+                LastPressedItem[0] = FirstPressedItem[0];
+                LastPressedItem[1] = FirstPressedItem[1];
+            }
+            if (PressedKey == Key.Down)
+            {
+                var n = FirstPressedItem[0]+1;
+                var maxn = Math.Min(PageSize*num,Items.Count());
+                if (n >= maxn)
+                    n = maxn;
+                FirstPressedItem[0] = n;
+                LastPressedItem[0] = FirstPressedItem[0];
+                LastPressedItem[1] = FirstPressedItem[1];
+            }
+            if (PressedKey != Key.Tab)
+            {
+                var bd = (Cell)Rows[FirstPressedItem[0], FirstPressedItem[1]];
+                bd.Focus();
+                if (!bd.IsReadOnly)
+                {
+                    var t = ((TextBox)((Panel)((Border)bd
+                        .GetLogicalChildren().First())
+                        .Child)
+                        .Children[0]);
+                    t.Focus();
+                    if (t.Text != null)
+                    {
+                        t.SelectionStart = 0;
+                        t.SelectionEnd = t.Text.Length;
+                    }
+                }
+            }
+        }
+        private void ChangeSelectedCellsByKeyWithShift(Key PressedKey)
+        {
+            var num = Convert.ToInt32(_nowPage);
+            int[] tmp = null;
+            tmp = LastPressedItem;
+            if (PressedKey == Key.Left)
+            {
+                var n = tmp[1] - 1;
+                if (n <= 1)
+                    n = 1;
+                tmp[1] = n;
+            }
+            if (PressedKey == Key.Right)
+            {
+                var n = tmp[1] + 1;
+                var maxn = Columns.Count;
+                if (n >= maxn)
+                    n = maxn;
+                tmp[1] = n;
+            }
+            if (PressedKey == Key.Up)
+            {
+                var n = tmp[0] - 1;
+                var minn = PageSize * (num - 1) + 1;
+                if (n <= minn)
+                    n = minn;
+                tmp[0] = n;
+            }
+            if (PressedKey == Key.Down)
+            {
+                var n = tmp[0] + 1;
+                var maxn = Math.Min(PageSize * num, Items.Count());
+                if (n >= maxn)
+                    n = maxn;
+                tmp[0] = n;
+            }
+        }
+        private void KeyDownEventHandler(object sender,KeyEventArgs args)
+        {
+            if(args.Key==Key.LeftCtrl)
+            {
+                ctrlFlag = true;
+            }
+            if (args.Key == Key.LeftShift)
+            {
+                shiftFlag = true;
+            }
+
+            if (args.Key == Key.Left)
+                ChangeSelectedCellsByKeys(Key.Left);
+            if (args.Key == Key.Right)
+                ChangeSelectedCellsByKeys(Key.Right);
+            if (args.Key == Key.Tab)
+                ChangeSelectedCellsByKeys(Key.Tab);
+            if (args.Key == Key.Up)
+                ChangeSelectedCellsByKeys(Key.Up);
+            if (args.Key == Key.Down || args.Key == Key.Enter)
+                ChangeSelectedCellsByKeys(Key.Down);
+
+            if (ctrlFlag==true)
+            {
+                if (args.Key == Key.C)
+                {
+                    _CopyRows(SelectedCells);
+                }
+                if (args.Key == Key.V)
+                {
+                    _PasteRows(SelectedCells);
+                }
+            }
+
+            if (args.Key == Key.Back)
+            {
+                foreach (var item in SelectedCells)
+                {
+                    if (item is Cell)
+                    {
+                        var bd = (Cell)item;
+                        if (!bd.IsReadOnly)
+                        {
+                            var t = ((TextBox)((Panel)((Border)bd
+                                .GetLogicalChildren().First())
+                                .Child)
+                                .Children[0]);
+                            t.Text = "";
+                        }
+                    }
+                }
+            }
+        }
+        private void KeyUpEventHandler(object sender, KeyEventArgs args)
+        {
+            if (args.Key == Key.LeftCtrl)
+            {
+                ctrlFlag = false;
+            }
+            if (args.Key == Key.LeftShift)
+            {
+                shiftFlag = false;
+            }
         }
 
         private void Init()
@@ -759,6 +978,127 @@ o => o.Pagination,
         public void NowPageUp(object sender, RoutedEventArgs args)
         {
             NowPage = (Convert.ToInt32(NowPage) + 1).ToString();
+        }
+
+        private async Task _PasteRows(IEnumerable param)
+        {
+            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+            {
+                string? text = await clip.GetTextAsync();
+                Cell cl = null;
+                foreach (var item in param)
+                {
+                    cl = (Cell)item;
+                    break;
+                }
+
+                if (cl != null)
+                {
+                    int Row = cl.CellRow;
+                    int Column = cl.CellColumn;
+
+                    if (text != null && text != "")
+                    {
+                        string rt = "";
+                        foreach (var item in text)
+                        {
+                            if (item == '\n')
+                            {
+                                foreach (var it in param)
+                                {
+                                    var cell = (Cell)it;
+                                    if (cell.CellColumn == Column && cell.CellRow == Row)
+                                    {
+                                        var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                        if (child != null)
+                                        {
+                                            var panel = (Panel)child.Child;
+                                            var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                            textbox.Text = rt;
+                                        }
+                                        break;
+                                    }
+                                }
+                                rt = "";
+                                Row++;
+                                Column = cl.CellColumn;
+                            }
+                            else
+                            {
+                                if (item == '\t')
+                                {
+                                    foreach (var it in param)
+                                    {
+                                        var cell = (Cell)it;
+                                        if (cell.CellColumn == Column && cell.CellRow == Row)
+                                        {
+                                            var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                            if (child != null)
+                                            {
+                                                var panel = (Panel)child.Child;
+                                                var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                                textbox.Text = rt;
+                                            }
+                                            break;
+                                        }
+                                    }
+                                    rt = "";
+                                    Column++;
+                                }
+                                else
+                                {
+                                    rt += item;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private async Task _CopyRows(IEnumerable param)
+        {
+            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+            {
+                string txt = "";
+
+                var Column = 1;
+                var Row = 1;
+
+                bool flag = true;
+                foreach (var item in param)
+                {
+                    var cell = (Cell)item;
+                    if (flag)
+                    {
+                        Column = cell.CellColumn;
+                        Row = cell.CellRow;
+                        flag = false;
+                    }
+                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                    if (child != null)
+                    {
+                        var panel = (Panel)child.Child;
+                        var textbox = (TextBox)panel.Children.FirstOrDefault();
+                        if (Row != cell.CellRow)
+                        {
+                            txt += "\n";
+                            Row = cell.CellRow;
+                            Column = cell.CellColumn;
+                        }
+                        if (Column != cell.CellColumn)
+                        {
+                            txt += "\t";
+                            Column = cell.CellColumn;
+                        }
+                        txt += textbox.Text;
+                    }
+                }
+
+                txt += "\t";
+                await clip.ClearAsync();
+                await clip.SetTextAsync(txt);
+            }
         }
     }
 }

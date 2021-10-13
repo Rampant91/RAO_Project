@@ -37,7 +37,6 @@ namespace Client_App.Controls.DataGrid
 
         public Control Control { get; set; }
         public string BindingPath { get; set; } = "";
-
         public bool IsReadOnly { get; set; }
 
         public int CellRow

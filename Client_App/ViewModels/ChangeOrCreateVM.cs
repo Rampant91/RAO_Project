@@ -809,6 +809,51 @@ namespace Client_App.ViewModels
             }
         }
 
+        private async Task _CopyRows(IEnumerable param)
+        {
+            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
+            {
+                string txt = "";
+
+                var Column = 1;
+                var Row = 1;
+
+                bool flag = true;
+                foreach (var item in param)
+                {
+                    var cell = (Cell)item;
+                    if (flag)
+                    {
+                        Column = cell.CellColumn;
+                        Row = cell.CellRow;
+                        flag = false;
+                    }
+                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                    if (child != null)
+                    {
+                        var panel = (Panel)child.Child;
+                        var textbox = (TextBox)panel.Children.FirstOrDefault();
+                        if (Row != cell.CellRow)
+                        {
+                            txt += "\n";
+                            Row = cell.CellRow;
+                            Column = cell.CellColumn;
+                        }
+                        if (Column != cell.CellColumn)
+                        {
+                            txt += "\t";
+                            Column = cell.CellColumn;
+                        }
+                        txt += textbox.Text;
+                    }
+                }
+
+                txt += "\t";
+                await clip.ClearAsync();
+                await clip.SetTextAsync(txt);
+            }
+        }
+
         private async Task _DuplicateRowsx1(IEnumerable param)
         {
             var frm = FormCreator.Create(FormType);
@@ -872,50 +917,6 @@ namespace Client_App.ViewModels
             for (int i = 0; i < 100000; i++)
             {
                 _DuplicateRowsx1(param);
-            }
-        }
-        private async Task _CopyRows(IEnumerable param)
-        {
-            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
-            {
-                string txt = "";
-
-                var Column = 1;
-                var Row = 1;
-
-                bool flag = true;
-                foreach (var item in param)
-                {
-                    var cell = (Cell)item;
-                    if (flag)
-                    {
-                        Column = cell.CellColumn;
-                        Row = cell.CellRow;
-                        flag = false;
-                    }
-                    var child=(Border)cell.GetLogicalChildren().FirstOrDefault();
-                    if (child != null)
-                    {
-                        var panel = (Panel)child.Child;
-                        var textbox = (TextBox)panel.Children.FirstOrDefault();
-                        if (Row != cell.CellRow)
-                        {
-                            txt += "\n";
-                            Row = cell.CellRow;
-                            Column = cell.CellColumn;
-                        }
-                        if (Column != cell.CellColumn)
-                        {
-                            txt += "\t";
-                            Column = cell.CellColumn;
-                        }
-                        txt += textbox.Text;
-                    }
-                }
-
-                txt += "\t";
-                await clip.ClearAsync();
-                await clip.SetTextAsync(txt);
             }
         }
     }
