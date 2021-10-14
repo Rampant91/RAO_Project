@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Client_App.Controls.DataGrid;
 using Models.DataAccess;

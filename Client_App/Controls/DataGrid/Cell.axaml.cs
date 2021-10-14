@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
 
@@ -56,41 +57,28 @@ namespace Client_App.Controls.DataGrid
 
         public int CellColumn { get; set; } = -1;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
 
             var t = (TextBox) ((Panel) ((Border) Content).Child).Children[0];
             t.IsEnabled = !IsReadOnly;
-            
+            t.AddHandler(PointerPressedEvent, InputElement_OnPointerPressed,handledEventsToo:true);
         }
 
-        public void PanelPointerDown(object sender, PointerPressedEventArgs args)
+        private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
         {
-            var mouse = args.GetCurrentPoint((Cell) sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed)
-                OnPropertyChanged(this, "Down");
-        }
+            if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
+            {
+                var pnl = (Panel)(((StackPanel)((Row)this.Parent).Parent).Parent);
+                var pnl2=(Panel)(((ScrollViewer)pnl.Parent).Parent);
+                var pnl3 = (Panel)(((Grid)pnl2.Parent).Parent);
+                var pnl4 = (Panel)(((ScrollViewer)pnl3.Parent).Parent);
+                var pnl5 = (Panel)(((Grid)pnl4.Parent).Parent);
 
-        public void PanelPointerMoved(object sender, PointerEventArgs args)
-        {
-            OnPropertyChanged(this, "Move");
+                var dataGrid = (Client_App.Controls.DataGrid.DataGrid)(((Border)pnl5.Parent).Parent);
+                dataGrid.ContextMenu.Open();
+            }
         }
-
-        public void PanelPointerUp(object sender, PointerReleasedEventArgs args)
-        {
-            var mouse = args.GetCurrentPoint((Cell) sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
-                OnPropertyChanged(this, "Up");
-        }
-
-        //Property Changed
-        protected void OnPropertyChanged(object obj, [CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null) PropertyChanged(obj, new PropertyChangedEventArgs(prop));
-        }
-        //Property Changed
     }
 }

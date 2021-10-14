@@ -327,8 +327,11 @@ o => o.Pagination,
             if (!SelectedCells.Contains(Rows[Row, Column]))
                 if (Rows[Row, Column] != null)
                 {
-                    Rows[Row, Column].Background = ChooseColor;
-                    SelectedCells.Add(Rows[Row, Column]);
+                    if (Column >= 2)
+                    {
+                        Rows[Row, Column].Background = ChooseColor;
+                        SelectedCells.Add(Rows[Row, Column]);
+                    }
                 }
         }
 
@@ -387,8 +390,11 @@ o => o.Pagination,
                 {
                     if (Rows[i, j] != null)
                     {
-                        Rows[i, j].Background = ChooseColor;
-                        SelectedCells.Add(Rows[i, j]);
+                        if (j >= 2)
+                        {
+                            Rows[i, j].Background = ChooseColor;
+                            SelectedCells.Add(Rows[i, j]);
+                        }
                     }
                 }
             }
@@ -444,11 +450,11 @@ o => o.Pagination,
 
             var num = Convert.ToInt32(_nowPage);
             var offset = (num - 1) * PageSize;
-            var h = Rows[1+offset, 1].Height;
+            var h = Rows[1 + offset, 1].Height;
             int[] ret = new int[2];
 
-            var t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity) + 1+offset;
-            if (t1 <= Rows.Count+offset && t1 > offset)
+            var t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity) + 1 + offset;
+            if (t1 <= Rows.Count + offset && t1 > offset)
             {
                 ret[0] = t1;
                 double sum = 0;
@@ -798,7 +804,7 @@ o => o.Pagination,
                 }
             }
 
-            if (args.Key == Key.Back)
+            if (args.Key == Key.Delete)
             {
                 foreach (var item in SelectedCells)
                 {

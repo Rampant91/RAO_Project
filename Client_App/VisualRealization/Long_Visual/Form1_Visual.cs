@@ -338,12 +338,6 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
-                    Header = "Дублировать строку",
-                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx100"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-                },
-                new MenuItem
-                {
                     Header = "Копировать",
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
@@ -399,11 +393,6 @@ namespace Client_App.Long_Visual
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
-                new MenuItem
-                {
-                    Header = "Вставить из буфера",
-                    [!MenuItem.CommandProperty] = new Binding("PasteNotes"),
-                },
                 new MenuItem
                 {
                     Header = "Удалить строки",
