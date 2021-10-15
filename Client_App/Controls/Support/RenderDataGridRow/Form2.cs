@@ -776,8 +776,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get1Row(1, Row, 18, "MassOut", scp, TopName));
             stck.Children.Add(Get1Row(1.5, Row, 19, "QuantityOZIIIout", scp, TopName));
             stck.Children.Add(Get1Row(2, Row, 20, "TritiumActivityOut", scp, TopName));
-            stck.Children.Add(Get1Row(2, Row, 21, "BetaGammaActivityOut", scp, TopName));
-            stck.Children.Add(Get1Row(2, Row, 22, "AlphaActivityOut", scp, TopName));
+            stck.Children.Add(Get1Row(3.5, Row, 21, "BetaGammaActivityOut", scp, TopName));
+            stck.Children.Add(Get1Row(3.5, Row, 22, "AlphaActivityOut", scp, TopName));
             stck.Children.Add(Get1Row(2, Row, 23, "TransuraniumActivityOut", scp, TopName));
 
             return stck;

@@ -84,11 +84,12 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         public RamAccess<string> ControlledAreaName
         {
             get
-{
-var tmp = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
-tmp.PropertyChanged += ControlledAreaNameValueChanged;
-return tmp;
-}            set
+            {
+                var tmp = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
+                tmp.PropertyChanged += ControlledAreaNameValueChanged;
+                return tmp;
+            }
+            set
             {
                 ControlledAreaName_DB = value.Value;
                 OnPropertyChanged(nameof(ControlledAreaName));
@@ -106,6 +107,11 @@ return tmp;
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
             {
                 return true;
             }
@@ -178,16 +184,21 @@ return tmp;
         }
 
         private void DistanceToWasteSourceValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 DistanceToWasteSource_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool DistanceToWasteSource_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool DistanceToWasteSource_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
             {
                 return true;
             }

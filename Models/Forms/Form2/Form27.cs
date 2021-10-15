@@ -67,7 +67,7 @@ namespace Models
                 ObservedSourceNumber_DB = ((RamAccess<string>)Value).Value;
             }
         }
-private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
+        private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -101,13 +101,13 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
 
 
         private void RadionuclidNameValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 RadionuclidName_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool RadionuclidName_Validation(RamAccess<string> value)
+            }
+        }
+        private bool RadionuclidName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))

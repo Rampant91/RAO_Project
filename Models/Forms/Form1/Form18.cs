@@ -210,6 +210,11 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
+            {
                 return true;
             }
             if (value.Value.Equals("прим."))
@@ -274,6 +279,11 @@ namespace Models
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
             {
                 return true;
             }
@@ -343,6 +353,11 @@ namespace Models
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
             {
                 return true;
             }
@@ -575,6 +590,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
+                value.AddError("Поле не заполнено");
                 return false;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -641,7 +657,8 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                return true;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             if (value.Value.Equals("-")||value.Value.Equals("Минобороны"))
             {
@@ -1237,13 +1254,17 @@ namespace Models
         private bool RefineOrSortRAOCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if(value.Value == "-")
+            {
+                return true;
+            }
             if (OperationCode.Value == 55)
             {
-                if (string.IsNullOrEmpty(value.Value))
-                {
-                    value.AddError("Поле не заполнено");
-                    return false;
-                }
                 if (!Spravochniks.SprRifineOrSortCodes.Contains(value.Value))
                 {
                     value.AddError("Недопустимое значение");
@@ -1252,11 +1273,8 @@ namespace Models
             }
             else
             {
-                if (!string.IsNullOrEmpty(value.Value))
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
+                value.AddError("Не указан код операции");
+                return false;
             }
             return true;
         }
@@ -1291,6 +1309,11 @@ namespace Models
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
             {
                 return true;
             }
@@ -1377,6 +1400,7 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
+                value.AddError("Поле не заполнено");
                 return false;
             }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
@@ -1418,6 +1442,7 @@ namespace Models
             value.ClearErrors();
             if(string.IsNullOrEmpty(value.Value))
             {
+                value.AddError("Поле не заполнено");
                 return false;
             }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
