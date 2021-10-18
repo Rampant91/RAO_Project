@@ -24,7 +24,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         private static readonly int RowHeight0 = 30;
         private static readonly Color border_color0 = Color.FromArgb(255, 0, 0, 0);
 
-        private static Control Get0Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        private static Control Get0Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
         {
             DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, true)
             {
@@ -71,7 +71,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Bind(StackPanel.DataContextProperty, b);
 
             stck.Children.Add(Get0Row(1, Row, 1, "Master.RegNoRep", scp, TopName));
-            stck.Children.Add(Get0Row(2, Row, 2, "Master.ShortJurLicoRep", scp, TopName));
+            stck.Children.Add(Get0Row(2.5, Row, 2, "Master.ShortJurLicoRep", scp, TopName));
             stck.Children.Add(Get0Row(1, Row, 3, "Master.OkpoRep", scp, TopName));
 
             return stck;
@@ -81,7 +81,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         private static readonly int RowHeight1 = 30;
         private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
 
-        private static Control Get1Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        private static Control Get1Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
         {
             DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, true)
             {
@@ -129,8 +129,8 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             //stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 1, "FormNum", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 2, "StartPeriod", scp, TopName));
-            stck.Children.Add(Get1Row(1, Row, 3, "EndPeriod", scp, TopName));
+            stck.Children.Add(Get1Row(1.6, Row, 2, "StartPeriod", scp, TopName));
+            stck.Children.Add(Get1Row(1.6, Row, 3, "EndPeriod", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 4, "ExportDate", scp, TopName));
             stck.Children.Add(Get1Row(2, Row, 5, "IsCorrection", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 6, "Comments", scp, TopName));

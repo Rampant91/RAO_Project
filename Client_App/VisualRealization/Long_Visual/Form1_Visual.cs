@@ -65,7 +65,7 @@ namespace Client_App.Long_Visual
 
             Grid grd = new Grid()
             {
-                Width = 400
+                Width = 500
             };
             grd.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(2, GridUnitType.Star)});
             grd.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star)});
@@ -79,7 +79,7 @@ namespace Client_App.Long_Visual
 
             Grid grd2 = new Grid()
             {
-                Width = 400
+                Width = 500
             };
             grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
             grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
@@ -99,7 +99,7 @@ namespace Client_App.Long_Visual
         public static Grid Form10_Visual(INameScope scp)
         {
             Grid maingrid = new Grid();
-            
+
             RowDefinition? row = new RowDefinition
             {
                 Height = new GridLength(0.07, GridUnitType.Star)

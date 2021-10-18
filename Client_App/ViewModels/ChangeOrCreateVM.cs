@@ -14,6 +14,7 @@ using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Client_App.Controls.DataGrid;
 using DBRealization;
+using System;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Models.Abstracts;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
@@ -288,7 +289,25 @@ namespace Client_App.ViewModels
 
         private void _CheckReport()
         {
-            IsCanSaveReportEnabled = true;
+            var k = Storage.Rows10.Any() ? Storage.Rows10 : null;
+            var n = Storage.Rows20.Any() ? Storage.Rows20 : null;
+            if ((k == null) == (n == null)) throw new InvalidOperationException();
+            bool a = false;
+            if (k != null)
+            {
+                foreach (var item in k)
+                {
+                    a = a || (item.RegNo_DB != "-");
+                }
+            }
+            if (n != null)
+            {
+                foreach (var item in n)
+                {
+                    a = a || (item.RegNo_DB != "-");
+                }
+            }
+            IsCanSaveReportEnabled = a && true;
             //switch (FormType)
             //{
             //    case "1.0":

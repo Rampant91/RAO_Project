@@ -15,6 +15,8 @@ namespace Models.Abstracts
     {
         [Attributes.Form_Property("Форма")]
 
+        [NotMapped]
+        public bool flag = false;
         public Form1():base()
         {
 

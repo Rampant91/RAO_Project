@@ -22,7 +22,6 @@ namespace Models
         {
             OnPropertyChanged(args.PropertyName);
         }
-
         public override bool Object_Validation()
         {
             return !(Okfs.HasErrors ||
@@ -81,9 +80,13 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
+            {
                 return true;
             }
-
             if (value.Value.Length != 5)
             {
                 value.AddError("Недопустимое значение");

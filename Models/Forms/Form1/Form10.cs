@@ -83,9 +83,13 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
+            {
                 return true;
             }
-
             if (value.Value.Length != 5)
             {
                 value.AddError("Недопустимое значение");
@@ -579,14 +583,12 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-
             Regex ex = new Regex(@"^[0-9]{2}(|\.[0-9]{1,2})(|\.[0-9]{1,2})$");
             if (!ex.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-
             return true;
         }
 

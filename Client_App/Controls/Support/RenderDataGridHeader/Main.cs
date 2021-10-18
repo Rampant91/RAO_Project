@@ -30,7 +30,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
         private static readonly int RowHeight0 = 30;
         private static readonly Color border_color0 = Color.FromArgb(255, 0, 0, 0);
 
-        private static Row Get0Header(int starWidth, int Column, string Text)
+        private static Row Get0Header(double starWidth, int Column, string Text)
         {
             var ram = new RamAccess<string>(null, Text);
             var cell = new Cell(ram, "", true)
@@ -60,7 +60,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
-            stck.Add(Get0Header(2, 2,
+            stck.Add(Get0Header(2.5, 2,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty("ShortJurLico")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
@@ -78,7 +78,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
         private static readonly int RowHeight1 = 30;
         private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
 
-        private static Row Get1Header(int starWidth, int Column, string Text)
+        private static Row Get1Header(double starWidth, int Column, string Text)
         {
             var ram = new RamAccess<string>(null, Text);
             var cell = new Cell(ram, "", true)
@@ -107,11 +107,11 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Abstracts.Form1,Models").GetProperty("FormNum")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Add(Get1Header(1, 2,
+            stck.Add(Get1Header(1.6, 2,
                 ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("StartPeriod")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Add(Get1Header(1, 3,
+            stck.Add(Get1Header(1.6, 3,
                 ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("EndPeriod")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
