@@ -29,12 +29,15 @@ namespace Client_App.Controls.DataGrid
             Focusable = false;
         }
 
-        public Cell(string BindingPath, bool IsReadOnly)
+        public bool RightHandler { get; set; } = true;
+
+        public Cell(string BindingPath, bool IsReadOnly,bool RightHandler=true)
         {
             this.BindingPath = BindingPath;
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
             Focusable = false;
+            this.RightHandler = RightHandler;
         }
 
         public Cell()
@@ -63,7 +66,10 @@ namespace Client_App.Controls.DataGrid
 
             var t = (TextBox) ((Panel) ((Border) Content).Child).Children[0];
             t.IsEnabled = !IsReadOnly;
-            t.AddHandler(PointerPressedEvent, InputElement_OnPointerPressed,handledEventsToo:true);
+            if (this.RightHandler)
+            {
+                t.AddHandler(PointerPressedEvent, InputElement_OnPointerPressed, handledEventsToo: true);
+            }
         }
 
         private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -71,12 +77,13 @@ namespace Client_App.Controls.DataGrid
             if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
             {
                 var pnl = (Panel)(((StackPanel)((Row)this.Parent).Parent).Parent);
-                var pnl2=(Panel)(((ScrollViewer)pnl.Parent).Parent);
+                var pnl2 = (Panel)(((ScrollViewer)pnl.Parent).Parent);
                 var pnl3 = (Panel)(((Grid)pnl2.Parent).Parent);
                 var pnl4 = (Panel)(((ScrollViewer)pnl3.Parent).Parent);
                 var pnl5 = (Panel)(((Grid)pnl4.Parent).Parent);
 
                 var dataGrid = (Client_App.Controls.DataGrid.DataGrid)(((Border)pnl5.Parent).Parent);
+
                 dataGrid.ContextMenu.Open();
             }
         }
