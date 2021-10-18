@@ -29,7 +29,7 @@ namespace Client_App.Controls.DataGrid
             Focusable = false;
         }
 
-        public bool RightHandler { get; set; }=true
+        public bool RightHandler { get; set; } = true;
 
         public Cell(string BindingPath, bool IsReadOnly,bool RightHandler=true)
         {
