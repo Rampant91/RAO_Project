@@ -506,6 +506,11 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
+            {
                 return true;
             }
             if (value.Value.Length == 1)
@@ -690,7 +695,12 @@ namespace Models
         private bool QuantityIn_Validation(RamAccess<string> value1)//Ready
         {
             value1.ClearErrors();
-            if (string.IsNullOrEmpty(value1.Value)||value1.Value.Equals("прим.")||value1.Value.Equals("-"))
+            if (string.IsNullOrEmpty(value1.Value))
+            {
+                value1.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value1.Value.Equals("прим.")||value1.Value.Equals("-"))
             {
                 return true;
             }
@@ -983,13 +993,13 @@ namespace Models
         }
 
         private void CodeRAOoutValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 CodeRAOout_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool CodeRAOout_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool CodeRAOout_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -1208,16 +1218,25 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         }
         // positive int.
         private void QuantityOZIIIoutValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 QuantityOZIIIout_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool QuantityOZIIIout_Validation(RamAccess<string> value1)//Ready
+            }
+        }
+        private bool QuantityOZIIIout_Validation(RamAccess<string> value1)//Ready
         {
             value1.ClearErrors();
-            if (value1.Equals("прим.") || string.IsNullOrEmpty(value1.Value))
+            if (string.IsNullOrEmpty(value1.Value))
+            {
+                value1.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value1.Value == "-")
+            {
+                return true;
+            }
+            if (value1.Equals("прим."))
             {
                 return true;
             }
@@ -1325,15 +1344,14 @@ private bool QuantityOZIIIout_Validation(RamAccess<string> value1)//Ready
                 OnPropertyChanged(nameof(BetaGammaActivityOut));
             }
         }
-
         private void BetaGammaActivityOutValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 BetaGammaActivityOut_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
             }
-}
-private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
+        }
+        private bool BetaGammaActivityOut_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))

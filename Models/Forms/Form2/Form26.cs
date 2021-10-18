@@ -172,11 +172,12 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         public RamAccess<string> DistanceToWasteSource
         {
             get
-{
-var tmp = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
-tmp.PropertyChanged += DistanceToWasteSourceValueChanged;
-return tmp;
-}            set
+            {
+                var tmp = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
+                tmp.PropertyChanged += DistanceToWasteSourceValueChanged;
+                return tmp;
+            }
+            set
             {
                     DistanceToWasteSource_DB = value.Value;
                 OnPropertyChanged(nameof(DistanceToWasteSource));
@@ -256,6 +257,11 @@ return tmp;
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
+            {
                 return true;
             }
             if (value.Value.Equals("прим."))
@@ -301,13 +307,13 @@ return tmp;
         }
         //If change this change validation
         private void RadionuclidNameValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 RadionuclidName_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool RadionuclidName_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
