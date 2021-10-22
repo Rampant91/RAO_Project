@@ -291,7 +291,6 @@ namespace Client_App.ViewModels
         {
             var k = Storage.Rows10.Any() ? Storage.Rows10 : null;
             var n = Storage.Rows20.Any() ? Storage.Rows20 : null;
-            if ((k == null) == (n == null)) throw new InvalidOperationException();
             bool a = false;
             if (k != null)
             {
