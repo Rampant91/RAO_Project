@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Avalonia;
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
@@ -76,7 +77,15 @@ namespace Client_App.Controls.DataGrid
         {
             if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
             {
-                var pnl = (Panel)(((StackPanel)((Row)this.Parent).Parent).Parent);
+                var pnl = new Panel();
+                try
+                {
+                    pnl = (Panel)(((StackPanel)((Row)this.Parent).Parent).Parent);
+                }
+                catch (Exception)
+                {
+                    return;
+                }
                 var pnl2 = (Panel)(((ScrollViewer)pnl.Parent).Parent);
                 var pnl3 = (Panel)(((Grid)pnl2.Parent).Parent);
                 var pnl4 = (Panel)(((ScrollViewer)pnl3.Parent).Parent);

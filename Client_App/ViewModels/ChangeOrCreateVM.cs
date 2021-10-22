@@ -289,292 +289,304 @@ namespace Client_App.ViewModels
 
         private void _CheckReport()
         {
-            var k = Storage.Rows10.Any() ? Storage.Rows10 : null;
-            var n = Storage.Rows20.Any() ? Storage.Rows20 : null;
-            bool a = false;
-            if (k != null)
+            switch (Storage.LastAddedForm)
             {
-                foreach (var item in k)
-                {
-                    a = a || (item.RegNo_DB != "-");
-                }
+                case Report.Forms.Form10:
+                    var k = Storage.Rows10.Any() ? Storage.Rows10 : null;
+                    bool a = false;
+                    if (k != null)
+                    {
+                        foreach (var item in k)
+                        {
+                            a = a || (item.RegNo_DB != "-");
+                        }
+                    }
+                    IsCanSaveReportEnabled = a;
+                    break;
+                case Report.Forms.Form20:
+                    var n = Storage.Rows20.Any() ? Storage.Rows20 : null;
+                    bool b = false;
+                    if (n != null)
+                    {
+                        foreach (var item in n)
+                        {
+                            b = b || (item.RegNo_DB != "-");
+                        }
+                    }
+                    IsCanSaveReportEnabled = b;
+                    break;
+                default:
+                    IsCanSaveReportEnabled = true;
+                    //switch (FormType)
+                    //{
+                    //    case "1.0":
+                    //        foreach (var item in Storage.Rows10)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "1.1":
+                    //        foreach (var item in Storage.Rows11)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "1.2":
+                    //        foreach (var item in Storage.Rows12)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "1.3":
+                    //        foreach (var item in Storage.Rows13)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "1.4":
+                    //        foreach (var item in Storage.Rows14)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "1.5":
+                    //        foreach (var item in Storage.Rows15)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "1.6":
+                    //        foreach (var item in Storage.Rows16)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "1.7":
+                    //        foreach (var item in Storage.Rows17)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "1.8":
+                    //        foreach (var item in Storage.Rows18)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "1.9":
+                    //        foreach (var item in Storage.Rows19)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.0":
+                    //        foreach (var item in Storage.Rows20)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.1":
+                    //        foreach (var item in Storage.Rows21)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.2":
+                    //        foreach (var item in Storage.Rows22)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.3":
+                    //        foreach (var item in Storage.Rows23)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.4":
+                    //        foreach (var item in Storage.Rows24)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.5":
+                    //        foreach (var item in Storage.Rows25)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.6":
+                    //        foreach (var item in Storage.Rows26)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.7":
+                    //        foreach (var item in Storage.Rows27)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.8":
+                    //        foreach (var item in Storage.Rows28)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.9":
+                    //        foreach (var item in Storage.Rows29)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.10":
+                    //        foreach (var item in Storage.Rows210)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.11":
+                    //        foreach (var item in Storage.Rows211)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //    case "2.12":
+                    //        foreach (var item in Storage.Rows212)
+                    //        {
+                    //            if (!item.Object_Validation())
+                    //            {
+                    //                IsCanSaveReportEnabled = false;
+                    //                return;
+                    //            }
+                    //        }
+                    //        IsCanSaveReportEnabled = true;
+                    //        return;
+                    //}
+                    Storage.Rows17.Sum();
+                    Storage.Rows18.Sum();
+                    Storage.Rows21.Sum();
+                    Storage.Rows22.Sum();
+                    break;
             }
-            if (n != null)
-            {
-                foreach (var item in n)
-                {
-                    a = a || (item.RegNo_DB != "-");
-                }
-            }
-            IsCanSaveReportEnabled = a && true;
-            //switch (FormType)
-            //{
-            //    case "1.0":
-            //        foreach (var item in Storage.Rows10)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "1.1":
-            //        foreach (var item in Storage.Rows11)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "1.2":
-            //        foreach (var item in Storage.Rows12)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "1.3":
-            //        foreach (var item in Storage.Rows13)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "1.4":
-            //        foreach (var item in Storage.Rows14)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "1.5":
-            //        foreach (var item in Storage.Rows15)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "1.6":
-            //        foreach (var item in Storage.Rows16)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "1.7":
-            //        foreach (var item in Storage.Rows17)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "1.8":
-            //        foreach (var item in Storage.Rows18)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "1.9":
-            //        foreach (var item in Storage.Rows19)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.0":
-            //        foreach (var item in Storage.Rows20)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.1":
-            //        foreach (var item in Storage.Rows21)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.2":
-            //        foreach (var item in Storage.Rows22)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.3":
-            //        foreach (var item in Storage.Rows23)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.4":
-            //        foreach (var item in Storage.Rows24)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.5":
-            //        foreach (var item in Storage.Rows25)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.6":
-            //        foreach (var item in Storage.Rows26)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.7":
-            //        foreach (var item in Storage.Rows27)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.8":
-            //        foreach (var item in Storage.Rows28)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.9":
-            //        foreach (var item in Storage.Rows29)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.10":
-            //        foreach (var item in Storage.Rows210)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.11":
-            //        foreach (var item in Storage.Rows211)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //    case "2.12":
-            //        foreach (var item in Storage.Rows212)
-            //        {
-            //            if (!item.Object_Validation())
-            //            {
-            //                IsCanSaveReportEnabled = false;
-            //                return;
-            //            }
-            //        }
-            //        IsCanSaveReportEnabled = true;
-            //        return;
-            //}
-            Storage.Rows17.Sum();
-            Storage.Rows18.Sum();
-            Storage.Rows21.Sum();
-            Storage.Rows22.Sum();
         }
         public void _AddRow10()
         {
-            Form10? frm = new Form10(); Storage.Rows10.Add(frm);
+            Form10? frm = new Form10(); Storage.Rows10.Add(frm); Storage.LastAddedForm = Report.Forms.Form10;
         }
         public void _AddRow20()
         {
-            Form20? frm = new Form20(); Storage.Rows20.Add(frm);
+            Form20? frm = new Form20(); Storage.Rows20.Add(frm); Storage.LastAddedForm = Report.Forms.Form20;
         }
 
         private void _AddRow()
