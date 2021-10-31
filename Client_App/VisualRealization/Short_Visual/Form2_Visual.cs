@@ -32,7 +32,6 @@ namespace Client_App.Short_Visual
             };
             v.Bind(MainWindow.SelectedReportsProperty, bd);
 
-
             Panel? grd3 = FormB_Visual();
             pnlb.Children.Add(grd3);
         }

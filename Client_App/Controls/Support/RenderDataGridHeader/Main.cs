@@ -137,7 +137,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
         private static readonly int RowHeight2 = 30;
         private static readonly Color border_color2 = Color.FromArgb(255, 0, 0, 0);
 
-        private static Row Get2Header(int starWidth, int Column, string Text)
+        private static Row Get2Header(double starWidth, int Column, string Text)
         {
             var ram = new RamAccess<string>(null, Text);
             var cell = new Cell(ram, "", true)
@@ -167,7 +167,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
-            stck.Add(Get2Header(2, 2,
+            stck.Add(Get2Header(2.5, 2,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form20,Models").GetProperty("ShortJurLico")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
