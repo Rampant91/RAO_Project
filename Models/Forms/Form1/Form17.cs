@@ -703,7 +703,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]
+        [Attributes.Form_Property("поставщика или получателя")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -774,7 +774,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("ОКПО перевозчика")]
+        [Attributes.Form_Property("перевозчика")]
         public RamAccess<string> TransporterOKPO
         {
             get

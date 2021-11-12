@@ -686,7 +686,7 @@ namespace Models
         #region ProviderOrRecieverOKPO
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]
+        [Attributes.Form_Property("поставщика или получателя")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -745,7 +745,7 @@ namespace Models
         #region TransporterOKPO
         public string TransporterOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("ОКПО перевозчика")]
+        [Attributes.Form_Property("перевозчика")]
         public RamAccess<string> TransporterOKPO
         {
             get

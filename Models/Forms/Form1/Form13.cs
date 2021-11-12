@@ -444,7 +444,7 @@ namespace Models
         #region PropertyCode
         public byte? PropertyCode_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Код собственности")]
+        [Attributes.Form_Property("Код формы собственности")]
         public RamAccess<byte?> PropertyCode
         {
             get
@@ -485,7 +485,7 @@ namespace Models
         #region Owner
         public string Owner_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Владелец")]
+        [Attributes.Form_Property("Правообладатель")]
         public RamAccess<string> Owner
         {
             get
@@ -538,7 +538,7 @@ namespace Models
         #region ProviderOrRecieverOKPO
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("ОКПО поставщика/получателя")]
+        [Attributes.Form_Property("поставщика или получателя")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -603,7 +603,7 @@ namespace Models
         #region TransporterOKPO
         public string TransporterOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("ОКПО перевозчика")]
+        [Attributes.Form_Property("перевозчика")]
         public RamAccess<string> TransporterOKPO
         {
             get

@@ -168,7 +168,7 @@ namespace Models
 
 //        //ProviderOrRecieverOKPO property
 //        public int? ProviderOrRecieverOKPOId { get; set; }
-//        [Attributes.Form_Property("ОКПО поставщика/получателя")]
+//        [Attributes.Form_Property("поставщика или получателя")]
 //        public virtual RamAccess<string> ProviderOrRecieverOKPO
 //        {
 //            get

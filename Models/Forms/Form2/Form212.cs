@@ -234,7 +234,7 @@ private bool Radionuclids_Validation(RamAccess<string> value)//TODO
 
         //ProviderOrRecieverOKPO property
         #region  ProviderOrRecieverOKPO
-        public string ProviderOrRecieverOKPO_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("ОКПО поставщика/получателя")]
+        public string ProviderOrRecieverOKPO_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("поставщика или получателя")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
