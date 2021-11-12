@@ -37,6 +37,35 @@ namespace Client_App.Controls.DataGrid
                 return null;
             }
         }
+        public int Offset
+        {
+            get
+            {
+                int offset = 0;
+                int maxKey = 0;
+                foreach (var key in Rows.Keys)
+                {
+                    var num = Convert.ToInt32(key);
+                    if (maxKey < num)
+                    {
+                        maxKey = num;
+                    }
+                }
+                for (int i = 1; i < maxKey; i++)
+                {
+                    if (this[i] == null)
+                    {
+                        offset++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                return offset;
+            }
+        }
 
         public Cell this[int Row, int Column]
         {
@@ -174,7 +203,8 @@ namespace Client_App.Controls.DataGrid
                     break;
                 }
             }
-            var count = offset+1;
+
+            int count = offset + 1;
             foreach (Row item in SRows.Children)
             {
                 var rw = Rows[item.SRow.ToString()];

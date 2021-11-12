@@ -212,7 +212,14 @@ o => o.Pagination,
                 if (value != null)
                 {
                     SetAndRaise(ItemsProperty, ref _items, value);
-                    ItemsChanged(null, null);
+                    if (Name == "Form1AllDataGrid_" || Name == "Form2AllDataGrid_")
+                    {
+                        UpdateAllCells();
+                    }
+                    else
+                    {
+                        ItemsChanged(null, null);
+                    }
                 }
             }
         }
@@ -449,8 +456,10 @@ o => o.Pagination,
             PointerPoint mouse = Mainmouse;
 
             var num = Convert.ToInt32(_nowPage);
-            var offset = (num - 1) * PageSize;
-            var h = Rows[1 + offset, 1].Height;
+            var offset = Rows.Offset;
+            var Rws = Rows[1 + offset, 1];
+            double h = 0;
+            h = Rws.Height;
             int[] ret = new int[2];
 
             var t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity) + 1 + offset;

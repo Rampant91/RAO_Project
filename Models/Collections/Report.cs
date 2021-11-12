@@ -2038,6 +2038,34 @@ namespace Collections
             Notes.CollectionChanged += CollectionChangedNotes;
         }
 
+        ~Report()
+        {
+            Rows10.CollectionChanged -= CollectionChanged10;
+            Rows11.CollectionChanged -= CollectionChanged11;
+            Rows12.CollectionChanged -= CollectionChanged12;
+            Rows13.CollectionChanged -= CollectionChanged13;
+            Rows14.CollectionChanged -= CollectionChanged14;
+            Rows15.CollectionChanged -= CollectionChanged15;
+            Rows16.CollectionChanged -= CollectionChanged16;
+            Rows17.CollectionChanged -= CollectionChanged17;
+            Rows18.CollectionChanged -= CollectionChanged18;
+            Rows19.CollectionChanged -= CollectionChanged19;
+            Rows20.CollectionChanged -= CollectionChanged20;
+            Rows21.CollectionChanged -= CollectionChanged21;
+            Rows22.CollectionChanged -= CollectionChanged22;
+            Rows23.CollectionChanged -= CollectionChanged23;
+            Rows24.CollectionChanged -= CollectionChanged24;
+            Rows25.CollectionChanged -= CollectionChanged25;
+            Rows26.CollectionChanged -= CollectionChanged26;
+            Rows27.CollectionChanged -= CollectionChanged27;
+            Rows28.CollectionChanged -= CollectionChanged28;
+            Rows29.CollectionChanged -= CollectionChanged29;
+            Rows210.CollectionChanged -= CollectionChanged210;
+            Rows211.CollectionChanged -= CollectionChanged211;
+            Rows212.CollectionChanged -= CollectionChanged212;
+            Notes.CollectionChanged -= CollectionChangedNotes;
+        }
+
         private void NotesValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")

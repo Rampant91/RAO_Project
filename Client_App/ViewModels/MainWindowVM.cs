@@ -18,6 +18,7 @@ using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Client_App.ViewModels
 {
@@ -25,8 +26,17 @@ namespace Client_App.ViewModels
     {
         private DBObservable _local_Reports = new();
 
+        System.Timers.Timer tm = new System.Timers.Timer(5000);
+
         public MainWindowVM()
         {
+            tm.Elapsed += (x, y) =>
+            {
+                GC.Collect(1000,GCCollectionMode.Forced);
+            };
+            tm.AutoReset = true;
+            tm.Start();
+
             string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
             string path = Path.GetPathRoot(system);
             var tmp = Path.Combine(path, "RAO");
@@ -163,8 +173,13 @@ namespace Client_App.ViewModels
                     if (y.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
                     {
                         //y.Report_Collection.Add(rt);
+                        var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+
                         FormChangeOrCreate frm = new(param, y);
                         await frm.ShowDialog<Form>(desktop.MainWindow);
+                        frm.Close();
+
+                        t.SelectedReports = tmp;
                     }
                 }
             }
@@ -175,8 +190,14 @@ namespace Client_App.ViewModels
             {
                 if (param.Split('.')[1] == "0")
                 {
+                    var t = desktop.MainWindow as MainWindow;
+                    var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+
                     FormChangeOrCreate frm = new(param, Local_Reports);
                     await frm.ShowDialog<Form>(desktop.MainWindow);
+                    frm.Close();
+
+                    t.SelectedReports = tmp;
                 }
             }
         }
@@ -395,9 +416,14 @@ namespace Client_App.ViewModels
                     var obj = param.First();
                     if (obj != null)
                     {
+                        var t = desktop.MainWindow as MainWindow;
+                        var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+
                         var rep = (Report)obj;
                         FormChangeOrCreate frm = new(rep.FormNum.Value, rep);
                         await frm.ShowDialog(desktop.MainWindow);
+
+                        t.SelectedReports = tmp;
                     }
                 }
         }
@@ -410,10 +436,16 @@ namespace Client_App.ViewModels
                     var obj = param.First();
                     if (obj != null)
                     {
+
+                        var t = desktop.MainWindow as MainWindow;
+                        var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+
                         var rep = (Reports)obj;
 
                         FormChangeOrCreate frm = new FormChangeOrCreate(rep.Master.FormNum.Value, rep.Master);
                         await frm.ShowDialog(desktop.MainWindow);
+
+                        t.SelectedReports = tmp;
                     }
                 }
         }
@@ -425,7 +457,7 @@ namespace Client_App.ViewModels
                 var t = desktop.MainWindow as MainWindow;
                 if (t.SelectedReports.Count() != 0)
                 {
-
+                    var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
                     var y = t.SelectedReports.First() as Reports;
                     if (param != null)
                     {
@@ -434,6 +466,8 @@ namespace Client_App.ViewModels
                             y.Report_Collection.Remove((Report)item);
                         }
                     }
+                    t.SelectedReports = tmp;
+                    
                 }
 
                 await StaticConfiguration.DBModel.SaveChangesAsync();
@@ -443,9 +477,8 @@ namespace Client_App.ViewModels
         private async Task _DeleteReport(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
             if (param != null)
-                foreach (var item in param)
-                    Local_Reports.Reports_Collection.Remove((Reports)item);
-
+                    foreach (var item in param)
+                        Local_Reports.Reports_Collection.Remove((Reports) item);
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
 

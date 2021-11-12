@@ -31,8 +31,8 @@
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
+                  <ColumnDefinition MaxWidth="452"></ColumnDefinition>
                   <ColumnDefinition></ColumnDefinition>
-                  <ColumnDefinition MaxWidth="450"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Panel x:Name="Forms_p1_0" Grid.Column="0"/>
                 <Panel x:Name="Forms_p1_B" Grid.Column="1"/>
@@ -50,8 +50,8 @@
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
+                  <ColumnDefinition MaxWidth="452"></ColumnDefinition>
                   <ColumnDefinition></ColumnDefinition>
-                  <ColumnDefinition MaxWidth="450"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Panel x:Name="Forms_p2_0" Grid.Column="0"/>
                 <Panel x:Name="Forms_p2_B" Grid.Column="1"/>
