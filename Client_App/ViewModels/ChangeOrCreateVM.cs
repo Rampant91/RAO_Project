@@ -270,8 +270,6 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-
-
             switch (Storage.LastAddedForm)
             {
                 case Report.Forms.Form10:

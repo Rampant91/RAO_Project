@@ -32,20 +32,15 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Height = RowHeight0,
                 BorderBrush = new SolidColorBrush(border_color0)
             };
-
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
                 ElementName = TopName,
                 NameScope = new WeakReference<INameScope>(scp)
             };
-
             cell.Bind(DataGrid.Cell.DataContextProperty, b);
-
             cell.CellRow = Row;
             cell.CellColumn = Column;
-
-
             return cell;
         }
 
@@ -59,7 +54,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Spacing = 0,
                 SRow = Row
             };
-
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]",
@@ -67,13 +61,10 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 ElementName = TopName,
                 NameScope = new WeakReference<INameScope>(scp)
             };
-
             stck.Bind(StackPanel.DataContextProperty, b);
-
             stck.Children.Add(Get0Row(1, Row, 1, "Master.RegNoRep", scp, TopName));
             stck.Children.Add(Get0Row(2.5, Row, 2, "Master.ShortJurLicoRep", scp, TopName));
             stck.Children.Add(Get0Row(1, Row, 3, "Master.OkpoRep", scp, TopName));
-
             return stck;
         }
 
@@ -89,19 +80,15 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Height = RowHeight1,
                 BorderBrush = new SolidColorBrush(border_color1)
             };
-
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
                 ElementName = TopName,
                 NameScope = new WeakReference<INameScope>(scp)
             };
-
             cell.Bind(DataGrid.Cell.DataContextProperty, b);
-
             cell.CellRow = Row;
             cell.CellColumn = Column;
-
             return cell;
         }
 
@@ -115,7 +102,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Spacing = 0,
                 SRow = Row
             };
-
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]",
@@ -123,10 +109,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Mode = BindingMode.OneTime,
                 NameScope = new WeakReference<INameScope>(scp)
             };
-
             stck.Bind(StackPanel.DataContextProperty, b);
-
-
             //stck.Children.Add(Get1Row(1, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 1, "FormNum", scp, TopName));
             stck.Children.Add(Get1Row(1.6, Row, 2, "StartPeriod", scp, TopName));
@@ -134,11 +117,10 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get1Row(1, Row, 4, "ExportDate", scp, TopName));
             stck.Children.Add(Get1Row(2, Row, 5, "IsCorrection", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 6, "Comments", scp, TopName));
-
             return stck;
         }
 
-        private static Control Get2Row(int starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        private static Control Get2Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
         {
             DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, true)
             {
@@ -146,20 +128,15 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Height = RowHeight0,
                 BorderBrush = new SolidColorBrush(border_color0)
             };
-
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
                 ElementName = TopName,
                 NameScope = new WeakReference<INameScope>(scp)
             };
-
             cell.Bind(DataGrid.Cell.DataContextProperty, b);
-
             cell.CellRow = Row;
             cell.CellColumn = Column;
-
-
             return cell;
         }
 
@@ -173,7 +150,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Spacing = 0,
                 SRow = Row
             };
-
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]",
@@ -181,13 +157,10 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 ElementName = TopName,
                 NameScope = new WeakReference<INameScope>(scp)
             };
-
             stck.Bind(StackPanel.DataContextProperty, b);
-
             stck.Children.Add(Get2Row(1, Row, 1, "Master.RegNoRep1", scp, TopName));
-            stck.Children.Add(Get2Row(2, Row, 2, "Master.ShortJurLicoRep1", scp, TopName));
+            stck.Children.Add(Get2Row(2.5, Row, 2, "Master.ShortJurLicoRep1", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 3, "Master.OkpoRep1", scp, TopName));
-
             return stck;
         }
 
@@ -199,19 +172,15 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Height = RowHeight1,
                 BorderBrush = new SolidColorBrush(border_color1)
             };
-
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
                 ElementName = TopName,
                 NameScope = new WeakReference<INameScope>(scp)
             };
-
             cell.Bind(DataGrid.Cell.DataContextProperty, b);
-
             cell.CellRow = Row;
             cell.CellColumn = Column;
-
             return cell;
         }
 
@@ -225,7 +194,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Spacing = 0,
                 SRow = Row
             };
-
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]",
@@ -233,17 +201,13 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Mode = BindingMode.OneTime,
                 NameScope = new WeakReference<INameScope>(scp)
             };
-
             stck.Bind(StackPanel.DataContextProperty, b);
-
-
             //stck.Children.Add(Get3Row(1, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 1, "FormNum", scp, TopName));
             stck.Children.Add(Get3Row(2, Row, 2, "Year", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 4, "ExportDate", scp, TopName));
             stck.Children.Add(Get3Row(2, Row, 5, "IsCorrection", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 6, "Comments", scp, TopName));
-
             return stck;
         }
     }
