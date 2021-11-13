@@ -57,7 +57,7 @@ namespace Models
 
         //StoragePlaceName property
         #region  StoragePlaceName
-        public string StoragePlaceName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Наименование ПХ")]
+        public string StoragePlaceName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("наименование")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -102,7 +102,7 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
 
         //StoragePlaceCode property
         #region  StoragePlaceCode
-        public string StoragePlaceCode_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Код ПХ")]
+        public string StoragePlaceCode_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("код")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -157,7 +157,7 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
 
         //ProjectVolume property
         #region  ProjectVolume
-        public string ProjectVolume_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Проектный объем, куб. м")]
+        public string ProjectVolume_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("проектный объем, куб. м")]
         public RamAccess<string> ProjectVolume
         {
             get
@@ -210,7 +210,7 @@ private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
 
         //CodeRAO property
         #region  CodeRAO
-        public string CodeRAO_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Код РАО")]
+        public string CodeRAO_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("код РАО")]
         public RamAccess<string> CodeRAO
         {
             get
@@ -255,7 +255,7 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
 
         //Volume property
         #region  Volume
-        public string Volume_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Объем, куб. м")]
+        public string Volume_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("объем, куб. м")]
         public RamAccess<string> Volume
         {
             get
@@ -305,7 +305,7 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
 
         //Mass Property
         #region  Mass
-        public string Mass_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Масса, т")]
+        public string Mass_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("масса, т")]
         public RamAccess<string> Mass
         {
             get
@@ -355,7 +355,7 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
 
         //QuantityOZIII property
         #region  QuantityOZIII
-        public int? QuantityOZIII_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
+        public int? QuantityOZIII_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("количество ОЗИИИ, шт.")]
         public RamAccess<int?> QuantityOZIII
         {
             get
@@ -397,7 +397,7 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
 
         //SummaryActivity property
         #region  SummaryActivity
-        public string SummaryActivity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Суммарная активность, Бк")]
+        public string SummaryActivity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("суммарная активность, Бк")]
         public RamAccess<string> SummaryActivity
         {
             get
@@ -447,7 +447,7 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
 
         //DocumentNumber property
         #region  DocumentNumber
-        public string DocumentNumber_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Номер документа")]
+        public string DocumentNumber_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("номер")]
         public RamAccess<string> DocumentNumber
         {
             get
@@ -486,7 +486,7 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
 
         //DocumentDate property
         #region DocumentDate 
-        public string DocumentDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Дата документа")]
+        public string DocumentDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("дата")]
         public RamAccess<string> DocumentDate
         {
             get
@@ -537,7 +537,7 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
 
         //ExpirationDate property
         #region  ExpirationDate
-        public string ExpirationDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Срок действия документа")]
+        public string ExpirationDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("срок действия")]
         public RamAccess<string> ExpirationDate
         {
             get
@@ -588,7 +588,7 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
 
         //DocumentName property
         #region  DocumentName
-        public string DocumentName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Наименование документа")]
+        public string DocumentName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("наименование документа")]
         public RamAccess<string> DocumentName
         {
             get

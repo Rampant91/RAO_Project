@@ -142,7 +142,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         //MassCreated Property
         #region  MassCreated
         public string MassCreated_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса образованного, т")]
+        [Attributes.Form_Property("масса, т")]
         public RamAccess<string> MassCreated
         {
             get
@@ -199,7 +199,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         //QuantityCreated property
         #region  QuantityCreated
         public string QuantityCreated_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Количество образованного, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<string> QuantityCreated
         {
             get
@@ -251,7 +251,7 @@ private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         //MassFromAnothers Property
         #region  MassFromAnothers
         public string MassFromAnothers_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса поступившего от сторонних, т")]
+        [Attributes.Form_Property("масса, т")]
         public RamAccess<string> MassFromAnothers
         {
             get
@@ -308,7 +308,7 @@ private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         //QuantityFromAnothers property
         #region  QuantityFromAnothers
         public string QuantityFromAnothers_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Количество поступившего от сторонних, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<string> QuantityFromAnothers
         {
             get
@@ -360,7 +360,7 @@ private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         //MassFromAnothersImported Property
         #region  MassFromAnothersImported
         public string MassFromAnothersImported_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса импортированного от сторонних, т")]
+        [Attributes.Form_Property("масса, т")]
         public RamAccess<string> MassFromAnothersImported
         {
             get
@@ -417,7 +417,7 @@ private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         //QuantityFromAnothersImported property
         #region  QuantityFromAnothersImported
         public string QuantityFromAnothersImported_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Количество импортированного от сторонних, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<string> QuantityFromAnothersImported
         {
             get
@@ -469,7 +469,7 @@ private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//R
         //MassAnotherReasons Property
         #region  MassAnotherReasons
         public string MassAnotherReasons_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса поставленного на учет по другим причинам, т")]
+        [Attributes.Form_Property("масса, т")]
         public RamAccess<string> MassAnotherReasons
         {
             get
@@ -526,7 +526,7 @@ private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//R
         //QuantityAnotherReasons property
         #region  QuantityAnotherReasons
         public string QuantityAnotherReasons_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Количество поступившего на учет по другим причинам, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<string> QuantityAnotherReasons
         {
             get
@@ -578,7 +578,7 @@ private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         //MassTransferredToAnother Property
         #region  MassTransferredToAnother
         public string MassTransferredToAnother_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса переданного сторонним, т")]
+        [Attributes.Form_Property("масса, т")]
         public RamAccess<string> MassTransferredToAnother
         {
             get
@@ -635,7 +635,7 @@ private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         //QuantityTransferredToAnother property
         #region  QuantityTransferredToAnother
         public string QuantityTransferredToAnother_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Количество переданного сторонним, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<string> QuantityTransferredToAnother
         {
             get
@@ -687,7 +687,7 @@ private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//R
         //MassRefined Property
         #region  MassRefined
         public string MassRefined_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса переработанного, т")]
+        [Attributes.Form_Property("масса, т")]
         public RamAccess<string> MassRefined
         {
             get
@@ -744,7 +744,7 @@ private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//R
         //QuantityRefined property
         #region  QuantityRefined
         public string QuantityRefined_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Количество переработанного, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<string> QuantityRefined
         {
             get
@@ -796,7 +796,7 @@ private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         //MassRemovedFromAccount Property
         #region  MassRemovedFromAccount
         public string MassRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса снятого с учета, т")]
+        [Attributes.Form_Property("масса, т")]
         public RamAccess<string> MassRemovedFromAccount
         {
             get
@@ -853,7 +853,7 @@ private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         //QuantityRemovedFromAccount property
         #region  QuantityRemovedFromAccount
         public string QuantityRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Количество снятого с учета, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<string> QuantityRemovedFromAccount
         {
             get

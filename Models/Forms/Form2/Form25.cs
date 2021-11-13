@@ -51,7 +51,7 @@ namespace Models
         //StoragePlaceName property
         #region  StoragePlaceName
         public string StoragePlaceName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Наименование ПХ")]
+        [Attributes.Form_Property("наименование, номер")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -89,7 +89,7 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         //CodeOYAT property
         #region  CodeOYAT
         public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Код ОЯТ")]
+        [Attributes.Form_Property("код ОЯТ")]
         public RamAccess<string> CodeOYAT
         {
             get
@@ -132,7 +132,7 @@ private bool CodeOYAT_Validation(RamAccess<string> value)
         //StoragePlaceCode property
         #region  StoragePlaceCode
         public string StoragePlaceCode_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Код ПХ")]
+        [Attributes.Form_Property("код")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -179,7 +179,7 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         //FcpNumber property
         #region  FcpNumber
         public string FcpNumber_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]
+        [Attributes.Form_Property("номер мероприятия ФЦП")]
         public RamAccess<string> FcpNumber
         {
             get
@@ -212,7 +212,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         //FuelMass property
         #region  FuelMass
         public string FuelMass_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса топлива, т")]
+        [Attributes.Form_Property("топлива (нетто)")]
         public RamAccess<string> FuelMass
         {
             get
@@ -269,7 +269,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         //CellMass property
         #region  CellMass
         public string CellMass_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса ОТВС(ТВЭЛ, выемной части реактора), т")]
+        [Attributes.Form_Property("ОТВС(ТВЭЛ, выемной части реактора) брутто")]
         public RamAccess<string> CellMass
         {
             get
@@ -325,7 +325,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         //Quantity property
         #region  Quantity
         public int? Quantity_DB { get; set; } = null; [NotMapped]
-        [Attributes.Form_Property("Количество, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<int?> Quantity
         {
             get
@@ -367,7 +367,7 @@ private bool Quantity_Validation(RamAccess<int?> value)//Ready
         //BetaGammaActivity property
         #region  BetaGammaActivity
         public string BetaGammaActivity_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
+        [Attributes.Form_Property("бета-, гамма-излучающих нуклидов")]
         public RamAccess<string> BetaGammaActivity
         {
             get
@@ -427,7 +427,7 @@ private bool Quantity_Validation(RamAccess<int?> value)//Ready
         //AlphaActivity property
         #region  AlphaActivity
         public string AlphaActivity_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
+        [Attributes.Form_Property("альфа-излучающих нуклидов")]
         public RamAccess<string> AlphaActivity
         {
             get

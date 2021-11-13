@@ -124,7 +124,7 @@ namespace Models
 
         //AllowedActivity property
         #region AllowedActivity
-        public string AllowedActivity_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Допустимая активность радионуклида, Бк")]
+        public string AllowedActivity_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("допустимая")]
         public RamAccess<string> AllowedActivity
         {
             get
@@ -181,7 +181,7 @@ namespace Models
 
         //FactedActivity property
         #region FactedActivity
-        public string FactedActivity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Фактическая активность радионуклида, Бк")]
+        public string FactedActivity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("фактическая")]
         public RamAccess<string> FactedActivity
         {
             get

@@ -85,7 +85,7 @@ namespace Models
         //WasteRecieverName property
         #region WasteRecieverName
         public string WasteRecieverName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Наименование приемника отведенных вод")]
+        [Attributes.Form_Property("наименование")]
         public RamAccess<string> WasteRecieverName
         {
             get
@@ -124,7 +124,7 @@ namespace Models
         //RecieverTypeCode property
         #region RecieverTypeCode
         public string RecieverTypeCode_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Код типа приемника отведенных вод")]
+        [Attributes.Form_Property("код типа приемника")]
         public RamAccess<string> RecieverTypeCode
         {
             get
@@ -168,7 +168,7 @@ namespace Models
         //PoolDistrictName property
         #region PoolDistrictName
         public string PoolDistrictName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Наименование бассейнового округа приемника отведенных вод")]
+        [Attributes.Form_Property("наименование бассейнового округа")]
         public RamAccess<string> PoolDistrictName
         {
             get

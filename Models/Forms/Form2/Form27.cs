@@ -44,7 +44,7 @@ namespace Models
         //ObservedSourceNumber property
         #region  ObservedSourceNumber
         public string ObservedSourceNumber_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Номер источника выбросов")]
+        [Attributes.Form_Property("Наименование, номер источника выбросов")]
         public RamAccess<string> ObservedSourceNumber
         {
             get
@@ -129,7 +129,7 @@ namespace Models
         //AllowedWasteValue property
         #region  AllowedWasteValue
         public string AllowedWasteValue_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Разрешенный выброс радионуклида в атмосферу за отчетный год, Бк")]
+        [Attributes.Form_Property("разрешенный")]
         public RamAccess<string> AllowedWasteValue
         {
             get
@@ -185,7 +185,7 @@ namespace Models
         //FactedWasteValue property
         #region  FactedWasteValue
         public string FactedWasteValue_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за отчетный год, Бк")]
+        [Attributes.Form_Property("фактический")]
         public RamAccess<string> FactedWasteValue
         {
             get
@@ -248,7 +248,7 @@ namespace Models
         //WasteOutbreakPreviousYear property
         #region  WasteOutbreakPreviousYear
         public string WasteOutbreakPreviousYear_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Фактический выброс радионуклида в атмосферу за предыдущий год, Бк")]
+        [Attributes.Form_Property("фактический")]
         public RamAccess<string> WasteOutbreakPreviousYear
         {
             get

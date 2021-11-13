@@ -268,7 +268,7 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
 
         //AvgGammaRaysDosePower property
         #region  AvgGammaRaysDosePower
-        public double? AvgGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Средняя мощность дозы гамма-излучения, мкЗв/час")]
+        public double? AvgGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("средняя")]
         public RamAccess<double?> AvgGammaRaysDosePower
         {
             get
@@ -306,7 +306,7 @@ private bool AvgGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
 
         //MaxGammaRaysDosePower property
         #region  MaxGammaRaysDosePower
-        public double? MaxGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Максимальная мощность дозы гамма-излучения, мкЗв/час")]
+        public double? MaxGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("максимальная")]
         public RamAccess<double?> MaxGammaRaysDosePower
         {
             get
@@ -344,7 +344,7 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
 
         //WasteDensityAlpha property
         #region  WasteDensityAlpha
-        public double? WasteDensityAlpha_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Плотность загрязнения альфа-излучающими радионуклидами (средняя), Бк/кв. м")]
+        public double? WasteDensityAlpha_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("альфа-излучающие радионуклиды")]
         public RamAccess<double?> WasteDensityAlpha
         {
             get
@@ -382,7 +382,7 @@ private bool WasteDensityAlpha_Validation(RamAccess<double?> value)//TODO
 
         //WasteDensityBeta property
         #region  WasteDensityBeta
-        public double? WasteDensityBeta_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Плотность загрязнения бета-излучающими радионуклидами (средняя), Бк/кв. м")]
+        public double? WasteDensityBeta_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("бета-излучающие радионуклиды")]
         public RamAccess<double?> WasteDensityBeta
         {
             get

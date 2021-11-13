@@ -44,7 +44,7 @@ namespace Models
 
         //OperationCode property
         #region  OperationCode
-        public short? OperationCode_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Код")]
+        public short? OperationCode_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Код операции")]
         public RamAccess<short?> OperationCode
         {
             get
@@ -131,7 +131,7 @@ private bool OperationCode_Validation(RamAccess<short?> value)
 
         //Radionuclids property
         #region  Radionuclids
-        public string Radionuclids_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("Радионуклиды")]
+        public string Radionuclids_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("радионуклиды")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -183,7 +183,7 @@ private bool Radionuclids_Validation(RamAccess<string> value)//TODO
 
         //Activity property
         #region  Activity
-        public string Activity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("Активность, Бк")]
+        public string Activity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("активность, Бк")]
         public RamAccess<string> Activity
         {
             get
@@ -234,7 +234,7 @@ private bool Radionuclids_Validation(RamAccess<string> value)//TODO
 
         //ProviderOrRecieverOKPO property
         #region  ProviderOrRecieverOKPO
-        public string ProviderOrRecieverOKPO_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("поставщика или получателя")]
+        public string ProviderOrRecieverOKPO_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("ОКПО поставщика/получателя")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
