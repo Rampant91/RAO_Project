@@ -21,7 +21,7 @@ namespace Models
 
     //    //PackName property
     //    public int? PackNameid { get; set; }
-    //    [Attributes.Form_Property("Наименование упаковки")]
+    //    [Attributes.Form_Property("наименование")]
     //    public virtual RamAccess<string> PackName
     //    {
     //        get
@@ -63,7 +63,7 @@ namespace Models
 
     //    //PackType property
     //    public int? PackTypeid { get; set; }
-    //    [Attributes.Form_Property("Тип упаковки")]
+    //    [Attributes.Form_Property("тип")]
     //    public virtual RamAccess<string> PackType
     //    {
     //        get

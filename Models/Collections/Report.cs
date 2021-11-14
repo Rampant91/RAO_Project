@@ -827,6 +827,105 @@ namespace Collections
         }
         #endregion
 
+        #region GradeExecutor
+        public string GradeExecutor_DB { get; set; } = "";
+        [NotMapped]
+        [Form_Property("Номер корректировки")]
+        public RamAccess<string> GradeExecutor
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(GradeExecutor_Validation, GradeExecutor_DB);
+                tmp.PropertyChanged += GradeExecutorValueChanged;
+                return tmp;
+            }
+            set
+            {
+                GradeExecutor_DB = value.Value;
+                OnPropertyChanged(nameof(GradeExecutor));
+            }
+        }
+        private void GradeExecutorValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                GradeExecutor_DB = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(GradeExecutor));
+            }
+        }
+        private bool GradeExecutor_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
+        #region ExecPhone
+        public string ExecPhone_DB { get; set; } = "";
+        [NotMapped]
+        [Form_Property("Номер корректировки")]
+        public RamAccess<string> ExecPhone
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ExecPhone_Validation, ExecPhone_DB);
+                tmp.PropertyChanged += ExecPhoneValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ExecPhone_DB = value.Value;
+                OnPropertyChanged(nameof(ExecPhone));
+            }
+        }
+        private void ExecPhoneValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ExecPhone_DB = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(ExecPhone));
+            }
+        }
+        private bool ExecPhone_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
+        #region ExecEmail
+        public string ExecEmail_DB { get; set; } = "";
+        [NotMapped]
+        [Form_Property("Номер корректировки")]
+        public RamAccess<string> ExecEmail
+        {
+            get
+            {
+                var tmp = new RamAccess<string>(ExecEmail_Validation, ExecEmail_DB);
+                tmp.PropertyChanged += ExecEmailValueChanged;
+                return tmp;
+            }
+            set
+            {
+                ExecEmail_DB = value.Value;
+                OnPropertyChanged(nameof(ExecEmail));
+            }
+        }
+        private void ExecEmailValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ExecEmail_DB = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(ExecEmail));
+            }
+        }
+        private bool ExecEmail_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
         #region NumberInOrder
         public string NumberInOrder_DB { get; set; } = "";
         [NotMapped]

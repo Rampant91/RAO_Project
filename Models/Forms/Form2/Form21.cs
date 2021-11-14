@@ -793,7 +793,7 @@ namespace Models
         //BetaGammaActivityIn property
         #region  BetaGammaActivityIn
         public string BetaGammaActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("бета-, гамма-излучающие (исключая тритий)")]
+        [Attributes.Form_Property("бета-, гамма-излучающие радионуклиды (исключая тритий)")]
         public RamAccess<string> BetaGammaActivityIn//SUMMARIZABLE
         {
             get
@@ -854,7 +854,7 @@ namespace Models
         //AlphaActivityIn property
         #region  AlphaActivityIn
         public string AlphaActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("альфа-излучающие (исключая трансурановые)")]
+        [Attributes.Form_Property("альфа-излучающие радионуклиды (исключая трансурановые)")]
         public RamAccess<string> AlphaActivityIn//SUMMARIZABLE
         {
             get
@@ -1389,7 +1389,7 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         //AlphaActivityOut property
         #region  AlphaActivityOut
         public string AlphaActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
+        [Attributes.Form_Property("альфа-излучающие радионуклиды (исключая трансурановые)")]
         public RamAccess<string> AlphaActivityOut//SUMMARIZABLE
         {
             get

@@ -79,7 +79,7 @@ namespace Models
 
 //        //Quantity property
 //        public int? QuantityId { get; set; }
-//        [Attributes.Form_Property("Количество, шт.")]
+//        [Attributes.Form_Property("количество, шт.")]
 //        public virtual RamAccess<int> Quantity
 //        {
 //            get

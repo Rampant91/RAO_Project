@@ -232,7 +232,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(2, GridUnitType.Star)
+                Height = new GridLength(0.4, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(3, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -352,7 +362,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 3);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -364,7 +387,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 3);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -402,7 +425,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 5);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
         public static Grid Form22_Visual(INameScope scp)
@@ -425,7 +502,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(2, GridUnitType.Star)
+                Height = new GridLength(0.4, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(3, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -545,7 +632,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 3);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -557,7 +657,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 3);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -593,7 +693,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 5);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
         public static Grid Form23_Visual(INameScope scp)
@@ -616,7 +770,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(2, GridUnitType.Star)
+                Height = new GridLength(0.4, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(3, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -741,7 +905,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 3);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -753,7 +930,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 3);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -791,7 +968,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 5);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
         public static Grid Form24_Visual(INameScope scp)
@@ -814,7 +1045,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(2, GridUnitType.Star)
+                Height = new GridLength(0.4, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(3, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -934,7 +1175,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 3);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -946,7 +1200,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 3);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -984,7 +1238,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 5);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
         public static Grid Form25_Visual(INameScope scp)
@@ -1007,7 +1315,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(2, GridUnitType.Star)
+                Height = new GridLength(0.4, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(3, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -1127,7 +1445,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 3);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -1139,7 +1470,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 3);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -1177,7 +1508,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 5);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
         public static Grid Form26_Visual(INameScope scp)
@@ -1205,7 +1590,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
+                Height = new GridLength(0.1, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
                 Height = new GridLength(0.8, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.15, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -1348,7 +1743,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 4);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -1360,7 +1768,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 4);
+            grd1.SetValue(Grid.RowProperty, 5);
 
             Binding b1 = new Binding
             {
@@ -1398,7 +1806,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 6);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
         public static Grid Form27_Visual(INameScope scp)
@@ -1426,7 +1888,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
+                Height = new GridLength(0.1, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
                 Height = new GridLength(0.8, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.15, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -1581,7 +2053,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 4);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -1593,7 +2078,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 4);
+            grd1.SetValue(Grid.RowProperty, 5);
 
             Binding b1 = new Binding
             {
@@ -1631,7 +2116,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 6);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
         public static Grid Form28_Visual(INameScope scp)
@@ -1659,7 +2198,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
+                Height = new GridLength(0.1, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
                 Height = new GridLength(0.8, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.15, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
             Grid? topPnl0 = new Grid();
@@ -1853,7 +2402,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 4);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -1865,7 +2427,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 4);
+            grd1.SetValue(Grid.RowProperty, 5);
 
             Binding b1 = new Binding
             {
@@ -1903,7 +2465,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 6);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
         public static Grid Form29_Visual(INameScope scp)
@@ -1926,7 +2542,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(2, GridUnitType.Star)
+                Height = new GridLength(0.4, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(3, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -2046,7 +2672,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 3);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -2058,7 +2697,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 3);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -2096,7 +2735,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 5);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
 
@@ -2120,7 +2813,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(2, GridUnitType.Star)
+                Height = new GridLength(0.4, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(3, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -2240,7 +2943,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 3);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -2252,7 +2968,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 3);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -2290,7 +3006,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 5);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
 
@@ -2314,7 +3084,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(2, GridUnitType.Star)
+                Height = new GridLength(0.4, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(3, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -2434,7 +3214,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 3);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -2446,7 +3239,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 3);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -2484,7 +3277,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 5);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
 
@@ -2508,7 +3355,17 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(2, GridUnitType.Star)
+                Height = new GridLength(0.4, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(3, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.7, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -2628,7 +3485,20 @@ namespace Client_App.Long_Visual
             grd.ContextMenu = cntx;
 
             maingrid.Children.Add(grd);
+            Grid? topPnl22 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl22.ColumnDefinitions.Add(column);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl22.SetValue(Grid.RowProperty, 3);
+            topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
+            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
+            maingrid.Children.Add(topPnl22);
             Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
             {
                 Type = "2.1*",
@@ -2640,7 +3510,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd1.SetValue(Grid.RowProperty, 3);
+            grd1.SetValue(Grid.RowProperty, 4);
 
             Binding b1 = new Binding
             {
@@ -2677,7 +3547,61 @@ namespace Client_App.Long_Visual
             grd1.ContextMenu = cntx1;
 
             maingrid.Children.Add(grd1);
-
+            Grid? topPnl23 = new Grid();
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(2, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.5, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1.4, GridUnitType.Star)
+            };
+            topPnl23.ColumnDefinitions.Add(column);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.SetValue(Grid.RowProperty, 5);
+            topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+            topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            maingrid.Children.Add(topPnl23);
             return maingrid;
         }
     }

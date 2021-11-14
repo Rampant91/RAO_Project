@@ -19,7 +19,7 @@ namespace Client_App.Views
 
         public FormChangeOrCreate(string param, in Report rep)
         {
-            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
+            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM(param);
             if (rep.FormNum_DB == "1.7")
             {
                 rep.Rows17.Sum();
@@ -50,7 +50,7 @@ namespace Client_App.Views
         }
         public FormChangeOrCreate(string param, in Reports reps)
         {
-            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
+            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM(param);
             tmp.Storage = new Report()
             {
                 FormNum_DB = param
@@ -70,7 +70,7 @@ namespace Client_App.Views
         }
         public FormChangeOrCreate(string param, in DBObservable reps)
         {
-            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM();
+            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM(param);
             tmp.Storage = new Report()
             {
                 FormNum_DB = param

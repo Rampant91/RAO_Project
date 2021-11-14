@@ -64,7 +64,7 @@ namespace Models
         #region PassportNumber
         public string PassportNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Номер паспорта")]
+        [Attributes.Form_Property("номер паспорта")]
         public RamAccess<string> PassportNumber
         {
             get
@@ -107,7 +107,7 @@ namespace Models
         #region Name
         public string Name_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наименование ОРИ")]
+        [Attributes.Form_Property("наименование")]
         public RamAccess<string> Name
         {
             get
@@ -143,7 +143,7 @@ namespace Models
         #region Sort
         public byte? Sort_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Вид ОРИ")]
+        [Attributes.Form_Property("вид")]
         public RamAccess<byte?> Sort
         {
             get
@@ -185,7 +185,7 @@ namespace Models
         #region Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Радионуклиды")]
+        [Attributes.Form_Property("радионуклиды")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -235,7 +235,7 @@ namespace Models
         #region Activity
         public string Activity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Активность, Бк")]
+        [Attributes.Form_Property("активность, Бк")]
         public RamAccess<string> Activity
         {
             get
@@ -283,7 +283,7 @@ namespace Models
         #region ActivityMeasurementDate
         public string ActivityMeasurementDate_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Дата измерения активности")]
+        [Attributes.Form_Property("дата измерения активности")]
         public RamAccess<string> ActivityMeasurementDate
         {
             get
@@ -332,7 +332,7 @@ namespace Models
         #region Volume
         public string Volume_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Объем, куб. м")]
+        [Attributes.Form_Property("объем, куб. м")]
         public RamAccess<string> Volume
         {
             get
@@ -379,7 +379,7 @@ namespace Models
         #region Mass
         public double? Mass_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Масса, кг")]
+        [Attributes.Form_Property("масса, кг")]
         public RamAccess<double?> Mass
         {
             get
@@ -419,7 +419,7 @@ namespace Models
         #region AggregateState
         public byte? AggregateState_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Агрегатное состояние")]
+        [Attributes.Form_Property("агрегатное состояние")]
         public RamAccess<byte?> AggregateState//1 2 3
         {
             get
@@ -460,7 +460,7 @@ namespace Models
         #region PropertyCode
         public byte? PropertyCode_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Код формы собственности")]
+        [Attributes.Form_Property("код формы собственности")]
         public RamAccess<byte?> PropertyCode
         {
             get
@@ -501,7 +501,7 @@ namespace Models
         #region Owner
         public string Owner_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Правообладатель")]
+        [Attributes.Form_Property("правообладатель")]
         public RamAccess<string> Owner
         {
             get
@@ -677,7 +677,7 @@ namespace Models
         #region PackName
         public string PackName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наименование упаковки")]
+        [Attributes.Form_Property("наименование")]
         public RamAccess<string> PackName
         {
             get
@@ -720,7 +720,7 @@ namespace Models
         #region PackType
         public string PackType_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Тип упаковки")]
+        [Attributes.Form_Property("тип")]
         public RamAccess<string> PackType
         {
             get
@@ -763,7 +763,7 @@ namespace Models
         #region PackNumber
         public string PackNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Номер упаковки")]
+        [Attributes.Form_Property("номер упаковки")]
         public RamAccess<string> PackNumber
         {
             get

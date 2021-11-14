@@ -7,7 +7,7 @@
         MinHeight="200" MinWidth="200"
         x:Class="Client_App.Views.FormChangeOrCreate"
         xmlns:vm="using:Client_App.ViewModels"
-        Title="FormChangeOrCreate">
+        Title="{Binding WindowHeader}">
   <Panel x:Name="ChangingPanel">
 
   </Panel>

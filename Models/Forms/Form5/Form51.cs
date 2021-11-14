@@ -57,7 +57,7 @@ namespace Models
 
     //    public int? RadionuclidsId { get; set; }
     //    //Radionuclids property
-    //    [Attributes.Form_Property("Радионуклиды")]
+    //    [Attributes.Form_Property("радионуклиды")]
     //    public RamAccess<string> Radionuclids
     //    {
     //        get
@@ -141,7 +141,7 @@ namespace Models
     //    //Kategory property
     //    public int? Id { get; set; }
     //    //Activity property
-    //    [Attributes.Form_Property("Активность, Бк")]
+    //    [Attributes.Form_Property("активность, Бк")]
     //    public RamAccess<string> Activity
     //    {
     //        get
@@ -196,7 +196,7 @@ namespace Models
     //    //Activity property
     //    public int? QuantityId { get; set; }
     //    //Quantity property
-    //    [Attributes.Form_Property("Количество, шт.")]
+    //    [Attributes.Form_Property("количество, шт.")]
     //    public RamAccess<int> Quantity
     //    {
     //        get

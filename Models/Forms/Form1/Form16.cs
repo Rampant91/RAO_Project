@@ -185,7 +185,7 @@ namespace Models
         #region Volume
         public string Volume_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Объем, куб. м")]
+        [Attributes.Form_Property("объем, куб. м")]
         public RamAccess<string> Volume
         {
             get
@@ -245,7 +245,7 @@ namespace Models
         #region Mass
         public string Mass_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Масса, кг")]
+        [Attributes.Form_Property("масса, кг")]
         public RamAccess<string> Mass
         {
             get
@@ -302,7 +302,7 @@ namespace Models
         #region MainRadionuclids
         public string MainRadionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Радионуклиды")]
+        [Attributes.Form_Property("Основные радионуклиды")]
         public RamAccess<string> MainRadionuclids
         {
             get
@@ -353,7 +353,7 @@ namespace Models
         #region TritiumActivity
         public string TritiumActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Активность трития, Бк")]
+        [Attributes.Form_Property("тритий")]
         public RamAccess<string> TritiumActivity
         {
             get
@@ -413,7 +413,7 @@ namespace Models
         #region BetaGammaActivity
         public string BetaGammaActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
+        [Attributes.Form_Property("бета-, гамма-излучающие радионуклиды (исключая тритий)")]
         public RamAccess<string> BetaGammaActivity
         {
             get
@@ -473,7 +473,7 @@ namespace Models
         #region AlphaActivity
         public string AlphaActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
+        [Attributes.Form_Property("альфа-излучающие радионуклиды (исключая трансурановые)")]
         public RamAccess<string> AlphaActivity
         {
             get
@@ -533,7 +533,7 @@ namespace Models
         #region TransuraniumActivity
         public string TransuraniumActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Активность трансурановых, Бк")]
+        [Attributes.Form_Property("трансурановые радионуклиды")]
         public RamAccess<string> TransuraniumActivity
         {
             get
@@ -801,7 +801,7 @@ namespace Models
         #region PackName
         public string PackName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наименование упаковки")]
+        [Attributes.Form_Property("наименование")]
         public RamAccess<string> PackName
         {
             get
@@ -844,7 +844,7 @@ namespace Models
         #region PackType
         public string PackType_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Тип упаковки")]
+        [Attributes.Form_Property("тип")]
         public RamAccess<string> PackType
         {
             get
@@ -888,7 +888,7 @@ namespace Models
         #region PackNumber
         public string PackNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Номер упаковки")]
+        [Attributes.Form_Property("номер упаковки")]
         public RamAccess<string> PackNumber
         {
             get
@@ -932,7 +932,7 @@ namespace Models
         #region StoragePlaceName
         public string StoragePlaceName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наименование ПХ")]
+        [Attributes.Form_Property("наименование")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -974,7 +974,7 @@ namespace Models
         #region StoragePlaceCode
         public string StoragePlaceCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Код ПХ")]
+        [Attributes.Form_Property("код")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get

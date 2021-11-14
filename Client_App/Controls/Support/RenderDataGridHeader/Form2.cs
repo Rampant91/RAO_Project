@@ -353,7 +353,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TransuraniumActivityIn")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Add(Get1HeaderTripleLevel(new double[10] { 1, 1, 1, 1, 1, 2, 3.5, 3.5, 2, 16 }, new double[5] { 1, 1, 3, 11, 16 }, 3, new string[9]
+            stck.Add(Get1HeaderTripleLevel(new double[10] { 1, 1, 1, 1, 1, 2, 3.5, 3.6, 2, 16.1 }, new double[5] { 1, 1, 3, 11.1, 16.1 }, 3, new string[9]
             {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("CodeRAOIn")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -411,7 +411,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("TransuraniumActivityOut")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Add(Get1HeaderTripleLevel(new double[10] { 1, 1, 1, 1, 1, 2, 3.5, 3.5, 2, 16 }, new double[5] { 1, 1, 3, 11, 16 }, 4, new string[9]
+            stck.Add(Get1HeaderTripleLevel(new double[10] { 1, 1, 1, 1, 1, 2, 3.5, 3.6, 2, 16.1 }, new double[5] { 1, 1, 3, 11.1, 16.1 }, 4, new string[9]
             {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form21,Models").GetProperty("CodeRAOout")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -683,7 +683,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("TransuraniumActivity")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Add(Get2Header(new double[5] { 2, 3.5, 3.5, 2,11 }, 9, new string[5] {
+            stck.Add(Get2Header(new double[5] { 2, 3.5, 3.6, 2,11.1 }, 9, new string[5] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("TritiumActivity")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("BetaGammaActivity")
@@ -699,7 +699,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("MainRadionuclids")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //));
-            stck.Add(Get2Header(new double[1] { 1 }, 10, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("MainRadionuclids")
+            stck.Add(Get2Header(new double[1] { 1.6 }, 10, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form22,Models").GetProperty("MainRadionuclids")
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false,17));
 
             //stck.Children.Add(Get2Header(1, 19,
@@ -1942,7 +1942,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form26,Models").GetProperty("TestDepth")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,5
             ));
-            stck.Add(Get6Header(1, 7,
+            stck.Add(Get6Header(2, 7,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form26,Models").GetProperty("RadionuclidName")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,6
             ));
@@ -2290,7 +2290,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form28,Models").GetProperty("PoolDistrictName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,4
             //));
-            stck.Add(Get5Header(new double[4] { 3, 2.5, 4, 9.5 }, 3, new string[4] {
+            stck.Add(Get8Header(new double[4] { 3, 2.5, 4, 9.5 }, 3, new string[4] {
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").GetProperty("WasteRecieverName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").GetProperty("RecieverTypeCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                     ((Form_PropertyAttribute)Type.GetType("Models.Form28,Models").GetProperty("PoolDistrictName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -2462,7 +2462,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form29,Models").GetProperty("RadionuclidName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,2
             //));
-            stck.Add(Get9Header(new double[1] { 1 }, 3, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form29,Models").GetProperty("RadionuclidName")
+            stck.Add(Get9Header(new double[1] { 2 }, 3, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form29,Models").GetProperty("RadionuclidName")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 2));
             //stck.Add(Get9Header(3, 4,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form29,Models").GetProperty("AllowedActivity")

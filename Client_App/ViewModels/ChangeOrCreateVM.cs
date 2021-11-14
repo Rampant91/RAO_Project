@@ -15,6 +15,7 @@ using Avalonia.LogicalTree;
 using Client_App.Controls.DataGrid;
 using DBRealization;
 using System;
+using Models.Attributes;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Models.Abstracts;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
@@ -23,6 +24,7 @@ namespace Client_App.ViewModels
 {
     public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     {
+        public string WindowHeader { get; set; } = "default";
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
@@ -109,8 +111,10 @@ namespace Client_App.ViewModels
         public ReactiveCommand<IList, Unit> PasteRows { get; }
         public ReactiveCommand<IList, Unit> DeleteNote { get; }
         public ReactiveCommand<Unit, Unit> PasteNotes { get; }
-        public ChangeOrCreateVM()
+        public ChangeOrCreateVM(string FormNum)
         {
+            string a = FormNum.Replace(".", "");
+            WindowHeader= ((Form_ClassAttribute)Type.GetType("Models.Form"+a+",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow = ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);

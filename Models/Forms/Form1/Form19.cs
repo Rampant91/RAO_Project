@@ -83,7 +83,7 @@ namespace Models
         #region Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Радионуклиды")]
+        [Attributes.Form_Property("радионуклиды")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -134,7 +134,7 @@ namespace Models
         #region Activity
         public string Activity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Активность, Бк")]
+        [Attributes.Form_Property("активность, Бк")]
         public RamAccess<string> Activity
         {
             get

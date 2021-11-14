@@ -111,7 +111,7 @@ namespace Models
         public string StoragePlaceName_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Наименование ПХ")]
+        [Attributes.Form_Property("наименование")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -163,7 +163,7 @@ namespace Models
         public string StoragePlaceCode_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Код ПХ")]
+        [Attributes.Form_Property("код")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -224,7 +224,7 @@ namespace Models
         public string PackName_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Наименование упаковки")]
+        [Attributes.Form_Property("наименование")]
         public RamAccess<string> PackName
         {
             get
@@ -281,7 +281,7 @@ namespace Models
         public string PackType_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Тип упаковки")]
+        [Attributes.Form_Property("тип")]
         public RamAccess<string> PackType
         {
             get
@@ -341,7 +341,7 @@ namespace Models
         public int? PackQuantity_DB { get; set; } = null;
 
         [NotMapped]
-        [Attributes.Form_Property("Количество упаковок, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<int?> PackQuantity
         {
             get
@@ -544,7 +544,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
 
         #region VolumeInPack
         public string VolumeInPack_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Объем с упаковкой, куб. м")]
+        [Attributes.Form_Property("РАО с упаковкой")]
         public RamAccess<string> VolumeInPack
         {
             get
@@ -600,7 +600,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
 
         #region MassInPack
         public string MassInPack_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса с упаковкой, т")]
+        [Attributes.Form_Property("РАО с упаковкой (брутто)")]
         public RamAccess<string> MassInPack
         {
             get
@@ -659,7 +659,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
 
         #region VolumeOutOfPack 
         public string VolumeOutOfPack_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Объем без упаковки, куб. м")]
+        [Attributes.Form_Property("РАО без упаковки")]
         public RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
         {
             get
@@ -716,7 +716,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
 
         #region MassOutOfPack
         public string MassOutOfPack_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Масса без упаковки, т")]
+        [Attributes.Form_Property("РАО без упаковки (нетто)")]
         public RamAccess<string> MassOutOfPack//SUMMARIZABLE
         {
             get
@@ -819,7 +819,7 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
 
         #region TritiumActivity
         public string TritiumActivity_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Активность трития, Бк")]
+        [Attributes.Form_Property("тритий")]
         public RamAccess<string> TritiumActivity//SUMMARIZABLE
         {
             get
@@ -879,7 +879,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
 
         #region BetaGammaActivity
         public string BetaGammaActivity_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Активность бета-, гамма-излучающих, кроме трития, Бк")]
+        [Attributes.Form_Property("бета-, гамма-излучающие радионуклиды (исключая тритий)")]
         public RamAccess<string> BetaGammaActivity//SUMMARIZABLE
         {
             get
@@ -940,7 +940,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
 
         #region AlphaActivity 
         public string AlphaActivity_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Активность альфа-излучающих, кроме трансурановых, Бк")]
+        [Attributes.Form_Property("альфа-излучающие радионуклиды (исключая трансурановые)")]
         public RamAccess<string> AlphaActivity//SUMMARIZABLE
         {
             get
@@ -1000,7 +1000,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
 
         #region TransuraniumActivity 
         public string TransuraniumActivity_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Активность трансурановых, Бк")]
+        [Attributes.Form_Property("трансурановые радионуклиды")]
         public RamAccess<string> TransuraniumActivity//SUMMARIZABLE
         {
             get
@@ -1071,7 +1071,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Радионуклиды")]
+        [Attributes.Form_Property("Основные радионуклиды")]
         public RamAccess<string> MainRadionuclids
         {
             get

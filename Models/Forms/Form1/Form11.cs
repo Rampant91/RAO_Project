@@ -68,7 +68,7 @@ namespace Models
         #region PassportNumber
         public string PassportNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Номер паспорта")]
+        [Attributes.Form_Property("номер паспорта")]
         public RamAccess<string> PassportNumber
         {
             get
@@ -109,7 +109,7 @@ namespace Models
         #region Type
         public string Type_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Тип")]
+        [Attributes.Form_Property("тип")]
         public RamAccess<string> Type
         {
             get
@@ -152,7 +152,7 @@ namespace Models
         #region Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Радионуклиды")]
+        [Attributes.Form_Property("радионуклиды")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -207,7 +207,7 @@ namespace Models
         #region FactoryNumber
         public string FactoryNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Заводской номер")]
+        [Attributes.Form_Property("номер")]
         public RamAccess<string> FactoryNumber
         {
             get
@@ -245,7 +245,7 @@ namespace Models
         #region Quantity
         public int? Quantity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Количество, шт.")]
+        [Attributes.Form_Property("количество, шт.")]
         public RamAccess<int?> Quantity
         {
             get
@@ -287,7 +287,7 @@ namespace Models
         #region Activity
         public string Activity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Активность, Бк")]
+        [Attributes.Form_Property("активность, Бк")]
         public RamAccess<string> Activity
         {
             get
@@ -343,7 +343,7 @@ namespace Models
         #region CreationDate
         public string CreationDate_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Дата изготовления")]
+        [Attributes.Form_Property("дата выпуска")]
         public RamAccess<string> CreationDate
         {
             get
@@ -450,7 +450,7 @@ namespace Models
         #region Category
         public short? Category_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Категория")]
+        [Attributes.Form_Property("категория")]
         public RamAccess<short?> Category
         {
             get
@@ -534,7 +534,7 @@ namespace Models
         #region PropertyCode
         public byte? PropertyCode_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Код формы собственности")]
+        [Attributes.Form_Property("код формы собственности")]
         public RamAccess<byte?> PropertyCode
         {
             get
@@ -575,7 +575,7 @@ namespace Models
         #region Owner
         public string Owner_DB { get; set; }
         [NotMapped]
-        [Attributes.Form_Property("Правообладатель")]
+        [Attributes.Form_Property("правообладатель")]
         public RamAccess<string> Owner
         {
             get
@@ -739,7 +739,7 @@ namespace Models
         #region PackName
         public string PackName_DB { get; set; }
         [NotMapped]
-        [Attributes.Form_Property("Наименование упаковки")]
+        [Attributes.Form_Property("наименование")]
         public RamAccess<string> PackName
         {
             get
@@ -782,7 +782,7 @@ namespace Models
         #region PackType
         public string PackType_DB { get; set; }
         [NotMapped]
-        [Attributes.Form_Property("Тип упаковки")]
+        [Attributes.Form_Property("тип")]
         public RamAccess<string> PackType
         {
             get
@@ -825,7 +825,7 @@ namespace Models
         #region PackNumber
         public string PackNumber_DB { get; set; }
         [NotMapped]
-        [Attributes.Form_Property("Номер упаковки")]
+        [Attributes.Form_Property("номер")]
         public RamAccess<string> PackNumber
         {
             get

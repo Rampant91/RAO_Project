@@ -26,7 +26,7 @@ namespace Models
 
 //        //PassportNumber property
 //        public int? PassportNumberId { get; set; }
-//        [Attributes.Form_Property("Номер паспорта")]
+//        [Attributes.Form_Property("номер паспорта")]
 //        public virtual RamAccess<string> PassportNumber
 //        {
 //            get
@@ -183,7 +183,7 @@ namespace Models
 
 ////Type property
 //        public int? TypeId { get; set; }
-//        [Attributes.Form_Property("Тип")]
+//        [Attributes.Form_Property("тип")]
 //        public virtual RamAccess<string> Type
 //        {
 //            get
@@ -249,7 +249,7 @@ namespace Models
 
 //        //Radionuclids property
 //        public int? RadionuclidsId { get; set; }
-//        [Attributes.Form_Property("Радионуклиды")]
+//        [Attributes.Form_Property("радионуклиды")]
 //        public virtual RamAccess<string> Radionuclids
 //        {
 //            get
@@ -303,7 +303,7 @@ namespace Models
 
 //        //FactoryNumber property
 //        public int? FactoryNumberId { get; set; }
-//        [Attributes.Form_Property("Заводской номер")]
+//        [Attributes.Form_Property("номер")]
 //        public virtual RamAccess<string> FactoryNumber
 //        {
 //            get
@@ -424,7 +424,7 @@ namespace Models
 
 //        //CreationDate property
 //        public int? CreationDateId { get; set; }
-//        [Attributes.Form_Property("Дата изготовления")]
+//        [Attributes.Form_Property("дата выпуска")]
 //        public virtual RamAccess<string> CreationDate
 //        {
 //            get

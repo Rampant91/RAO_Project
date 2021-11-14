@@ -72,7 +72,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Код операции")]
+        [Attributes.Form_Property("код")]
         public RamAccess<short?> OperationCode
         {
             get
@@ -126,7 +126,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Дата операции")]
+        [Attributes.Form_Property("дата")]
         public RamAccess<string> OperationDate
         {
             get
@@ -198,7 +198,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Вид документа")]
+        [Attributes.Form_Property("вид")]
         public RamAccess<byte?> DocumentVid
         {
             get
@@ -263,7 +263,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Номер документа")]
+        [Attributes.Form_Property("номер")]
         public RamAccess<string> DocumentNumber
         {
             get
@@ -314,7 +314,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Дата документа")]
+        [Attributes.Form_Property("дата")]
         public RamAccess<string> DocumentDate
         {
             get

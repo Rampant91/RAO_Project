@@ -290,7 +290,7 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         //RadionuclidName property
         #region RadionuclidName
         public string RadionuclidName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Радионуклид")]
+        [Attributes.Form_Property("Наименование радионуклида")]
         public RamAccess<string> RadionuclidName
         {
             get
