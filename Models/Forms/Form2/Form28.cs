@@ -234,7 +234,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                AllowedWasteRemovalVolume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                AllowedWasteRemovalVolume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool AllowedWasteRemovalVolume_Validation(RamAccess<string> value)
@@ -245,7 +245,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value.Equals("прим."))
             {
                 return true;
@@ -289,7 +289,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                RemovedWasteVolume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                RemovedWasteVolume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool RemovedWasteVolume_Validation(RamAccess<string> value)
@@ -300,7 +300,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try

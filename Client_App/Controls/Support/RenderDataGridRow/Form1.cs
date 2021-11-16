@@ -773,7 +773,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             stck.Children.Add(GetRowNotes(1, Row, 1, "RowNumber", scp, TopName));
             stck.Children.Add(GetRowNotes(1, Row, 2, "GraphNumber", scp, TopName));
-            stck.Children.Add(GetRowNotes(1, Row, 3, "Comment", scp, TopName));
+            stck.Children.Add(GetRowNotes(6, Row, 3, "Comment", scp, TopName));
 
             return stck;
         }

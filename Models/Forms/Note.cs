@@ -17,7 +17,7 @@ namespace Models
         {
             Init();
         }
-        public Note(int rowNumber, int graphNumber, string comment)
+        public Note(string rowNumber, string graphNumber, string comment)
         {
             RowNumber.Value = rowNumber;
             GraphNumber.Value = graphNumber;
@@ -41,14 +41,14 @@ namespace Models
         public int Id { get; set; }
 
         #region RowNUmber
-        public int? RowNumber_DB { get; set; } = null;
+        public string? RowNumber_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("№ строки")]
-        public RamAccess<int?> RowNumber
+        public RamAccess<string?> RowNumber
         {
             get
             {
-                var tmp = new RamAccess<int?>(RowNumber_Validation, RowNumber_DB);
+                var tmp = new RamAccess<string?>(RowNumber_Validation, RowNumber_DB);
                 tmp.PropertyChanged += RowNumberValueChanged;
                 return tmp;
             }
@@ -62,10 +62,10 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                RowNumber_DB = ((RamAccess<int?>)Value).Value;
+                RowNumber_DB = ((RamAccess<string?>)Value).Value;
             }
         }
-        private bool RowNumber_Validation(RamAccess<int?> value)
+        private bool RowNumber_Validation(RamAccess<string?> value)
         {
             value.ClearErrors();
             return true;
@@ -73,14 +73,14 @@ namespace Models
         #endregion
 
         #region GraphNumber
-        public int? GraphNumber_DB { get; set; } = null;
+        public string? GraphNumber_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("№ графы")]
-        public RamAccess<int?> GraphNumber
+        public RamAccess<string?> GraphNumber
         {
             get
             {
-                var tmp = new RamAccess<int?>(GraphNumber_Validation, GraphNumber_DB);
+                var tmp = new RamAccess<string?>(GraphNumber_Validation, GraphNumber_DB);
                 tmp.PropertyChanged += GraphNumberValueChanged;
                 return tmp;
             }
@@ -94,10 +94,10 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                GraphNumber_DB = ((RamAccess<int?>)Value).Value;
+                GraphNumber_DB = ((RamAccess<string?>)Value).Value;
             }
         }
-        private bool GraphNumber_Validation(RamAccess<int?> value)
+        private bool GraphNumber_Validation(RamAccess<string?> value)
         {
             value.ClearErrors();
             return true;

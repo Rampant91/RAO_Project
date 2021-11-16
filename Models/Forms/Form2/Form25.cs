@@ -232,7 +232,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                FuelMass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                FuelMass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool FuelMass_Validation(RamAccess<string> value)//TODO
@@ -242,7 +242,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -289,7 +289,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                CellMass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                CellMass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool CellMass_Validation(RamAccess<string> value)//TODO
@@ -298,7 +298,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -387,7 +387,7 @@ private bool Quantity_Validation(RamAccess<int?> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
@@ -398,7 +398,7 @@ private bool Quantity_Validation(RamAccess<int?> value)//Ready
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -447,7 +447,7 @@ private bool Quantity_Validation(RamAccess<int?> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                AlphaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                AlphaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
@@ -458,7 +458,7 @@ private bool Quantity_Validation(RamAccess<int?> value)//Ready
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))

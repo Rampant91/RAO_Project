@@ -162,7 +162,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                MassCreated_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassCreated_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassCreated_Validation(RamAccess<string> value)//TODO
@@ -172,7 +172,7 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -271,7 +271,7 @@ private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                MassFromAnothers_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassFromAnothers_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassFromAnothers_Validation(RamAccess<string> value)//TODO
@@ -281,7 +281,7 @@ private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -380,7 +380,7 @@ private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                MassFromAnothersImported_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassFromAnothersImported_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassFromAnothersImported_Validation(RamAccess<string> value)//TODO
@@ -390,7 +390,7 @@ private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -489,7 +489,7 @@ private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//R
         {
             if (args.PropertyName == "Value")
             {
-                MassAnotherReasons_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassAnotherReasons_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassAnotherReasons_Validation(RamAccess<string> value)//TODO
@@ -499,7 +499,7 @@ private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//R
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -598,7 +598,7 @@ private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                MassTransferredToAnother_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassTransferredToAnother_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassTransferredToAnother_Validation(RamAccess<string> value)//TODO
@@ -608,7 +608,7 @@ private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -707,7 +707,7 @@ private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//R
         {
             if (args.PropertyName == "Value")
             {
-                MassRefined_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassRefined_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassRefined_Validation(RamAccess<string> value)//TODO
@@ -717,7 +717,7 @@ private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//R
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -816,7 +816,7 @@ private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                MassRemovedFromAccount_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassRemovedFromAccount_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassRemovedFromAccount_Validation(RamAccess<string> value)//TODO
@@ -826,7 +826,7 @@ private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))

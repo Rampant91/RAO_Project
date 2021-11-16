@@ -115,7 +115,8 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var query = from item in Spravochniks.SprRadionuclids where item.Item1 == value.Value select item.Item1;
+            var tmpstr = value.Value.ToLower().Replace(" ", "");
+            var query = from item in Spravochniks.SprRadionuclids where item.Item1 == tmpstr select item.Item1;
             if (!query.Any())
             {
                 value.AddError("Недопустимое значение");
@@ -150,7 +151,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                AllowedWasteValue_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                AllowedWasteValue_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool AllowedWasteValue_Validation(RamAccess<string> value)
@@ -161,7 +162,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value.Equals("прим."))
             {
                 return true;
@@ -206,7 +207,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                FactedWasteValue_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                FactedWasteValue_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool FactedWasteValue_Validation(RamAccess<string> value)
@@ -217,7 +218,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value.Equals("-"))
             {
                 return true;
@@ -269,7 +270,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteOutbreakPreviousYear_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                WasteOutbreakPreviousYear_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
@@ -280,7 +281,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value.Equals("-"))
             {
                 return true;

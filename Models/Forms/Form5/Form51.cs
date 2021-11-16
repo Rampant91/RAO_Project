@@ -90,7 +90,7 @@ namespace Models
     //            value.AddError("Поле не заполнено");
     //            return false;
     //        }
-    //        string[] nuclids = value.Value.Split("; ");
+    //        string[] nuclids = value.Value.Split(";");
     //        bool flag = true;
     //        foreach (var nucl in nuclids)
     //        {

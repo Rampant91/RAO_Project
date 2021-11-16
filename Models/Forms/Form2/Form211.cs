@@ -142,12 +142,12 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         }
         //6 symbols code
        private void PlotCodeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+       {
+            if (args.PropertyName == "Value")
+            {
                 PlotCode_DB = ((RamAccess<string>)Value).Value;
-}
-}
+            }
+        }
 private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
@@ -156,7 +156,7 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex a = new Regex("^[0-9]{7}$");
+            Regex a = new Regex("^[0-9]{6}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -189,7 +189,7 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                InfectedArea_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                InfectedArea_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool InfectedArea_Validation(RamAccess<string> value)//TODO
@@ -200,7 +200,7 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try

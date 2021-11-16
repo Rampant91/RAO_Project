@@ -444,7 +444,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Volume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                Volume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool Volume_Validation(RamAccess<string> value)//TODO
@@ -454,7 +454,7 @@ namespace Models
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -513,7 +513,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Mass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                Mass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool Mass_Validation(RamAccess<string> value)//TODO
@@ -523,7 +523,7 @@ namespace Models
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -625,7 +625,11 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            string[] nuclids = value.Value.Split("; ");
+            string[] nuclids = value.Value.Split(";");
+            for (int k = 0; k < nuclids.Length; k++)
+            {
+                nuclids[k] = nuclids[k].ToLower().Replace(" ", "");
+            }
             bool flag = true;
             foreach (var nucl in nuclids)
             {
@@ -664,7 +668,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                SpecificActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                SpecificActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool SpecificActivity_Validation(RamAccess<string> value)//TODO
@@ -675,7 +679,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -1178,7 +1182,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                VolumeOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                VolumeOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
@@ -1189,7 +1193,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -1226,7 +1230,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                MassOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassOutOfPack_Validation(RamAccess<string> value)//TODO
@@ -1237,7 +1241,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -1313,7 +1317,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                TritiumActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                TritiumActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
@@ -1324,7 +1328,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value == "-")
             {
                 return true;
@@ -1365,7 +1369,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
@@ -1376,7 +1380,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value == "-")
             {
                 return true;
@@ -1417,7 +1421,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                AlphaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                AlphaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
@@ -1428,7 +1432,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value == "-")
             {
                 return true;
@@ -1469,7 +1473,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                TransuraniumActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                TransuraniumActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
@@ -1480,7 +1484,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value == "-")
             {
                 return true;

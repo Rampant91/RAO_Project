@@ -276,7 +276,7 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                Volume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                Volume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool Volume_Validation(RamAccess<string> value)//TODO
@@ -286,7 +286,7 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -326,7 +326,7 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                Mass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                Mass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool Mass_Validation(RamAccess<string> value)//TODO
@@ -336,7 +336,7 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -418,7 +418,7 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                SummaryActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                SummaryActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
@@ -428,7 +428,7 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try

@@ -205,7 +205,7 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex a = new Regex("^[0-9]{7}$");
+            Regex a = new Regex("^[0-9]{6}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -238,7 +238,7 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                InfectedArea_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                InfectedArea_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool InfectedArea_Validation(RamAccess<string> value)//TODO
@@ -249,7 +249,7 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -344,12 +344,12 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
 
         //WasteDensityAlpha property
         #region  WasteDensityAlpha
-        public double? WasteDensityAlpha_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("альфа-излучающие радионуклиды")]
-        public RamAccess<double?> WasteDensityAlpha
+        public string WasteDensityAlpha_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("альфа-излучающие радионуклиды")]
+        public RamAccess<string> WasteDensityAlpha
         {
             get
             {
-                    var tmp = new RamAccess<double?>(WasteDensityAlpha_Validation, WasteDensityAlpha_DB);
+                    var tmp = new RamAccess<string>(WasteDensityAlpha_Validation, WasteDensityAlpha_DB);
                     tmp.PropertyChanged += WasteDensityAlphaValueChanged;
                     return tmp;
             }
@@ -361,18 +361,30 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
         }
 
         private void WasteDensityAlphaValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                WasteDensityAlpha_DB = ((RamAccess<double?>)Value).Value;
-}
-}
-private bool WasteDensityAlpha_Validation(RamAccess<double?> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteDensityAlpha_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            }
+        }
+        private bool WasteDensityAlpha_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
+                return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -382,12 +394,12 @@ private bool WasteDensityAlpha_Validation(RamAccess<double?> value)//TODO
 
         //WasteDensityBeta property
         #region  WasteDensityBeta
-        public double? WasteDensityBeta_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("бета-излучающие радионуклиды")]
-        public RamAccess<double?> WasteDensityBeta
+        public string WasteDensityBeta_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("бета-излучающие радионуклиды")]
+        public RamAccess<string> WasteDensityBeta
         {
             get
             {
-                    var tmp = new RamAccess<double?>(WasteDensityBeta_Validation, WasteDensityBeta_DB);
+                    var tmp = new RamAccess<string>(WasteDensityBeta_Validation, WasteDensityBeta_DB);
                     tmp.PropertyChanged += WasteDensityBetaValueChanged;
                     return tmp;
             }
@@ -397,20 +409,31 @@ private bool WasteDensityAlpha_Validation(RamAccess<double?> value)//TODO
                 OnPropertyChanged(nameof(WasteDensityBeta));
             }
         }
-
         private void WasteDensityBetaValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                WasteDensityBeta_DB = ((RamAccess<double?>)Value).Value;
-}
-}
-private bool WasteDensityBeta_Validation(RamAccess<double?> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                WasteDensityBeta_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            }
+        }
+        private bool WasteDensityBeta_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
+                return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;

@@ -565,7 +565,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                VolumeInPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                VolumeInPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool VolumeInPack_Validation(RamAccess<string> value)//TODO
@@ -575,7 +575,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -621,7 +621,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                MassInPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassInPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassInPack_Validation(RamAccess<string> value)//TODO
@@ -631,7 +631,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -680,7 +680,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                VolumeOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                VolumeOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
@@ -691,7 +691,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -737,7 +737,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                MassOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                MassOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool MassOutOfPack_Validation(RamAccess<string> value)//TODO
@@ -748,7 +748,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -837,12 +837,12 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
 
 
         private void TritiumActivityValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                TritiumActivity_DB = ((RamAccess<string>)Value).Value;
-}
-}
+        {
+            if (args.PropertyName == "Value")
+            {
+                TritiumActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            }
+        }
 private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
@@ -856,6 +856,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
                 return false;
             }
             string tmp = value.Value;
+            tmp = tmp.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -900,7 +901,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
@@ -911,7 +912,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value == "-")
             {
                 return true;
@@ -961,7 +962,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                AlphaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                AlphaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
@@ -972,7 +973,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value == "-")
             {
                 return true;
@@ -1021,7 +1022,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                TransuraniumActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                TransuraniumActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
@@ -1032,7 +1033,7 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value == "-")
             {
                 return true;
@@ -1114,7 +1115,11 @@ private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            string[] nuclids = value.Value.Split("; ");
+            string[] nuclids = value.Value.Split(";");
+            for (int k = 0; k < nuclids.Length; k++)
+            {
+                nuclids[k] = nuclids[k].ToLower().Replace(" ", "");
+            }
             bool flag = true;
             foreach (var nucl in nuclids)
             {

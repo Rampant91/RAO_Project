@@ -191,7 +191,11 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            string[] nuclids = value.Value.Split("; ");
+            string[] nuclids = value.Value.Split(";");
+            for (int k = 0; k < nuclids.Length; k++)
+            {
+                nuclids[k] = nuclids[k].ToLower().Replace(" ", "");
+            }
             bool flag = true;
             foreach (var nucl in nuclids)
             {
@@ -310,7 +314,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Activity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                Activity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             }
         }
         private bool Activity_Validation(RamAccess<string> value)//Ready
@@ -321,7 +325,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -560,6 +564,10 @@ namespace Models
             {
                 //if ((TransporterOKPONote == null) || TransporterOKPONote.Equals(""))
                 //    value.AddError( "Заполните примечание");
+                return true;
+            }
+            if (value.Value.Equals("-"))
+            {
                 return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
