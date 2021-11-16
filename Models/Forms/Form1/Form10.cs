@@ -227,7 +227,7 @@ namespace Models
         public string ShortJurLico_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Сокращенное наименование юридического лица")]
+        [Attributes.Form_Property("Сокращенное наименование юр. лица")]
         public RamAccess<string> ShortJurLico
         {
             get
