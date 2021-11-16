@@ -372,8 +372,7 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -421,8 +420,7 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
@@ -460,15 +458,16 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
         }
 
         private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                FcpNumber_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            if (args.PropertyName == "Value")
+            {
+                FcpNumber_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+        {
+            value.ClearErrors();
+            return true;
         }
         //FcpNumber property
         #endregion

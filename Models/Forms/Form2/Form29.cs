@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Threading;
+using System.Threading.Tasks;
 using Spravochniki;
 using System.Linq;
 using Models.Abstracts;
@@ -157,6 +157,7 @@ namespace Models
         private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
+            bool flag = false;
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
@@ -170,7 +171,7 @@ namespace Models
             if ((!value1.Contains('e'))&& (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
-                value.Value = value1;
+                flag = true;
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
