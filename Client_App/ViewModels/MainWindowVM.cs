@@ -19,6 +19,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.ViewModels
 {
@@ -53,6 +54,8 @@ namespace Client_App.ViewModels
 
             Local_Reports = new DBObservable();
             var dbm = StaticConfiguration.DBModel;
+
+            dbm.Database.Migrate();
             var t = dbm.Database.EnsureCreated();
             
             dbm.LoadTables();
@@ -364,6 +367,7 @@ namespace Client_App.ViewModels
                                 {
                                     try
                                     {
+                                        db.Database.Migrate();
                                         db.Database.EnsureCreated();
                                         db.LoadTables();
                                     }
