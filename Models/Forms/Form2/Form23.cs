@@ -175,13 +175,18 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
 
 
         private void ProjectVolumeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                ProjectVolume_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                ProjectVolume_DB = value1;
+            }
+        }
+        private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -193,11 +198,16 @@ private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
@@ -228,13 +238,15 @@ private bool ProjectVolume_Validation(RamAccess<string> value)//TODO
 
 
         private void CodeRAOValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                CodeRAO_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool CodeRAO_Validation(RamAccess<string> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                var tmp = ((RamAccess<string>)Value).Value.ToLower();
+                tmp = tmp.Replace("х", "x");
+                CodeRAO_DB = tmp;
+            }
+        }
+        private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -242,8 +254,10 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex a = new Regex("^[0-9X]{11}$");
-            if (!a.IsMatch(value.Value))
+            var tmp = value.Value.ToLower();
+            tmp = tmp.Replace("х", "x");
+            Regex a = new Regex("^[0-9x+]{11}$");
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -276,7 +290,12 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                Volume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                Volume_DB = value1;
             }
         }
         private bool Volume_Validation(RamAccess<string> value)//TODO
@@ -286,7 +305,11 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -326,7 +349,12 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                Mass_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                Mass_DB = value1;
             }
         }
         private bool Mass_Validation(RamAccess<string> value)//TODO
@@ -336,7 +364,11 @@ private bool CodeRAO_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -418,7 +450,12 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                SummaryActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                SummaryActivity_DB = value1;
             }
         }
         private bool SummaryActivity_Validation(RamAccess<string> value)//Ready
@@ -428,7 +465,11 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -507,7 +548,13 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                DocumentDate_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b1 = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b1.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                DocumentDate_DB = tmp;
             }
         }
         private bool DocumentDate_Validation(RamAccess<string> value)//Ready
@@ -518,13 +565,19 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var tmp = value.Value;
+            Regex b1 = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b1.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -558,7 +611,13 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                ExpirationDate_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b1 = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b1.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ExpirationDate_DB = tmp;
             }
         }
         private bool ExpirationDate_Validation(RamAccess<string> value)//TODO
@@ -569,13 +628,19 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var tmp = value.Value;
+            Regex b1 = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b1.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");

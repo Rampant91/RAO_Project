@@ -190,15 +190,19 @@ namespace Models
                 Mass_DB = value.Value; OnPropertyChanged(nameof(Mass));
             }
         }
-
-
         private void MassValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")
             {
-                Mass_DB = ((RamAccess<string>)Value).Value;
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                Mass_DB = value1;
             }
-        } private bool Mass_Validation(RamAccess<string> value)//TODO
+        }
+        private bool Mass_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -206,18 +210,25 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            string tmp = value.Value;
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
                 tmp = tmp.Remove(len - 1, 1);
                 tmp = tmp.Remove(0, 1);
             }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
-            catch (Exception)
+            catch
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -301,9 +312,16 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                CreationDate_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                CreationDate_DB = tmp;
             }
-        } private bool CreationDate_Validation(RamAccess<string> value)//Ready
+        }
+        private bool CreationDate_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -317,13 +335,19 @@ namespace Models
                 //        value.AddError( "Заполните примечание");
                 return true;
             }
-            var a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");

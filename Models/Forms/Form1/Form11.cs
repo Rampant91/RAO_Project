@@ -310,7 +310,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Activity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                Activity_DB = value1;
             }
         }
 
@@ -322,12 +327,14 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value.Equals("прим."))
             {
-                //if ((Activity.Value == null) || (ActivityNote.Value == ""))
-                //    value.AddError("Заполните примечание");
                 return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -366,7 +373,13 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                CreationDate_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                CreationDate_DB = tmp;
             }
         }
         private bool CreationDate_Validation(RamAccess<string> value)//Ready
@@ -383,13 +396,19 @@ namespace Models
                 //    value.AddError("Заполните примечание");
                 return false;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");

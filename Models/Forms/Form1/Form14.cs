@@ -257,7 +257,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Activity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                Activity_DB = value1;
             }
         }
         private bool Activity_Validation(RamAccess<string> value)//Ready
@@ -268,7 +273,11 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -306,7 +315,13 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                ActivityMeasurementDate_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ActivityMeasurementDate_DB = tmp;
             }
         }
         private bool ActivityMeasurementDate_Validation(RamAccess<string> value)//Ready
@@ -317,13 +332,19 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -354,7 +375,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Volume_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                Volume_DB = value1;
             }
         }
         private bool Volume_Validation(RamAccess<string> value)//TODO
@@ -365,7 +391,11 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -381,14 +411,14 @@ namespace Models
         #endregion
 
         #region Mass
-        public double? Mass_DB { get; set; } = null;
+        public string Mass_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("масса, кг")]
-        public RamAccess<double?> Mass
+        public RamAccess<string> Mass
         {
             get
             {
-                var tmp = new RamAccess<double?>(Mass_Validation, Mass_DB);
+                var tmp = new RamAccess<string>(Mass_Validation, Mass_DB);
                 tmp.PropertyChanged += MassValueChanged;
                 return tmp;
             }
@@ -401,20 +431,40 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Mass_DB = ((RamAccess<double?>)Value).Value;
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                Mass_DB = value1;
             }
         }
-        private bool Mass_Validation(RamAccess<double?> value)//TODO
+        private bool Mass_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if(value.Value<=0)
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
-                value.AddError("Недопустимое значение"); return false;
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                {
+                    value.AddError("Число должно быть больше нуля"); return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }

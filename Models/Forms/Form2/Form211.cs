@@ -189,7 +189,12 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                InfectedArea_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                InfectedArea_DB = value1;
             }
         }
         private bool InfectedArea_Validation(RamAccess<string> value)//TODO
@@ -200,7 +205,11 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -291,7 +300,12 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                SpecificActivityOfPlot_DB = ((RamAccess<string>)Value).Value;
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                SpecificActivityOfPlot_DB = value1;
             }
         }
         private bool SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
@@ -302,6 +316,10 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -340,7 +358,12 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                SpecificActivityOfLiquidPart_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                SpecificActivityOfLiquidPart_DB = value1;
             }
         }
         private bool SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
@@ -351,6 +374,10 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -389,7 +416,12 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                SpecificActivityOfDensePart_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                SpecificActivityOfDensePart_DB = value1;
             }
         }
         private bool SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
@@ -400,6 +432,10 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try

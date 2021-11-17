@@ -238,7 +238,12 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                InfectedArea_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                InfectedArea_DB = value1;
             }
         }
         private bool InfectedArea_Validation(RamAccess<string> value)//TODO
@@ -249,7 +254,11 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -268,12 +277,12 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
 
         //AvgGammaRaysDosePower property
         #region  AvgGammaRaysDosePower
-        public double? AvgGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("средняя")]
-        public RamAccess<double?> AvgGammaRaysDosePower
+        public string AvgGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("средняя")]
+        public RamAccess<string> AvgGammaRaysDosePower
         {
             get
             {
-                    var tmp = new RamAccess<double?>(AvgGammaRaysDosePower_Validation, AvgGammaRaysDosePower_DB);
+                    var tmp = new RamAccess<string>(AvgGammaRaysDosePower_Validation, AvgGammaRaysDosePower_DB);
                     tmp.PropertyChanged += AvgGammaRaysDosePowerValueChanged;
                     return tmp;
             }
@@ -285,18 +294,42 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         }
 
         private void AvgGammaRaysDosePowerValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                AvgGammaRaysDosePower_DB = ((RamAccess<double?>)Value).Value;
-}
-}
-private bool AvgGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                AvgGammaRaysDosePower_DB = value1;
+            }
+        }
+        private bool AvgGammaRaysDosePower_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
+                return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                {
+                    value.AddError("Число должно быть больше нуля"); return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -306,35 +339,59 @@ private bool AvgGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
 
         //MaxGammaRaysDosePower property
         #region  MaxGammaRaysDosePower
-        public double? MaxGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("максимальная")]
-        public RamAccess<double?> MaxGammaRaysDosePower
+        public string MaxGammaRaysDosePower_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("максимальная")]
+        public RamAccess<string> MaxGammaRaysDosePower
         {
             get
             {
-                    var tmp = new RamAccess<double?>(MaxGammaRaysDosePower_Validation, MaxGammaRaysDosePower_DB);
-                    tmp.PropertyChanged += MaxGammaRaysDosePowerValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(MaxGammaRaysDosePower_Validation, MaxGammaRaysDosePower_DB);
+                tmp.PropertyChanged += MaxGammaRaysDosePowerValueChanged;
+                return tmp;
             }
             set
             {
-                    MaxGammaRaysDosePower_DB = value.Value;
+                MaxGammaRaysDosePower_DB = value.Value;
                 OnPropertyChanged(nameof(MaxGammaRaysDosePower));
             }
         }
 
         private void MaxGammaRaysDosePowerValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                MaxGammaRaysDosePower_DB = ((RamAccess<double?>)Value).Value;
-}
-}
-private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
+        {
+            if (args.PropertyName == "Value")
+            {
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                MaxGammaRaysDosePower_DB = value1;
+            }
+        }
+        private bool MaxGammaRaysDosePower_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
+                return false;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                {
+                    value.AddError("Число должно быть больше нуля"); return false;
+                }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
                 return false;
             }
             return true;
@@ -364,7 +421,12 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                WasteDensityAlpha_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                WasteDensityAlpha_DB = value1;
             }
         }
         private bool WasteDensityAlpha_Validation(RamAccess<string> value)//TODO
@@ -375,6 +437,10 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -412,7 +478,12 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                WasteDensityBeta_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                WasteDensityBeta_DB = value1;
             }
         }
         private bool WasteDensityBeta_Validation(RamAccess<string> value)//TODO
@@ -423,6 +494,10 @@ private bool MaxGammaRaysDosePower_Validation(RamAccess<double?> value)//TODO
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try

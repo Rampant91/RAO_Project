@@ -1066,12 +1066,41 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                PermissionIssueDate_28_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                PermissionIssueDate_28_DB = tmp;
             }
         }
         private bool PermissionIssueDate_28_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(tmp))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(tmp); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         #endregion
 
@@ -1128,12 +1157,41 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                ValidBegin_28_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ValidBegin_28_DB = tmp;
             }
         }
         private bool ValidBegin_28_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(tmp))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(tmp); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         #endregion
 
@@ -1159,12 +1217,41 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                ValidThru_28_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ValidThru_28_DB = tmp;
             }
         }
         private bool ValidThru_28_Validation(RamAccess<string> value)
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
+            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            if (!a.IsMatch(tmp))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            try { DateTimeOffset.Parse(tmp); }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
         }
         #endregion
 
@@ -1221,7 +1308,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                PermissionIssueDate1_28_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                PermissionIssueDate1_28_DB = tmp;
             }
         }
         private bool PermissionIssueDate1_28_Validation(RamAccess<string> value)
@@ -1231,13 +1324,19 @@ namespace Collections
             {
                 return true;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -1300,7 +1399,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                ValidBegin1_28_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ValidBegin1_28_DB = tmp;
             }
         }
         private bool ValidBegin1_28_Validation(RamAccess<string> value)
@@ -1310,13 +1415,19 @@ namespace Collections
             {
                 return true;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -1348,7 +1459,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                ValidThru1_28_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ValidThru1_28_DB = tmp;
             }
         }
         private bool ValidThru1_28_Validation(RamAccess<string> value)
@@ -1358,13 +1475,19 @@ namespace Collections
             {
                 return true;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -1427,7 +1550,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                ContractIssueDate2_28_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ContractIssueDate2_28_DB = tmp;
             }
         }
         private bool ContractIssueDate2_28_Validation(RamAccess<string> value)
@@ -1437,13 +1566,19 @@ namespace Collections
             {
                 return true;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -1506,7 +1641,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                ValidBegin2_28_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ValidBegin2_28_DB = tmp;
             }
         }
         private bool ValidBegin2_28_Validation(RamAccess<string> value)
@@ -1516,13 +1657,19 @@ namespace Collections
             {
                 return true;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -1554,7 +1701,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                ValidThru2_28_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ValidThru2_28_DB = tmp;
             }
         }
         private bool ValidThru2_28_Validation(RamAccess<string> value)
@@ -1564,13 +1717,19 @@ namespace Collections
             {
                 return true;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -1634,7 +1793,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                PermissionIssueDate27_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                PermissionIssueDate27_DB = tmp;
             }
         }
         private bool PermissionIssueDate27_Validation(RamAccess<string> value)
@@ -1644,13 +1809,19 @@ namespace Collections
             {
                 return true;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -1715,7 +1886,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                ValidBegin27_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ValidBegin27_DB = tmp;
             }
         }
         private bool ValidBegin27_Validation(RamAccess<string> value)
@@ -1725,13 +1902,19 @@ namespace Collections
             {
                 return true;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -1764,7 +1947,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                ValidThru27_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                ValidThru27_DB = tmp;
             }
         }
         private bool ValidThru27_Validation(RamAccess<string> value)
@@ -1774,13 +1963,19 @@ namespace Collections
             {
                 return true;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -1854,7 +2049,9 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                Year_DB = ((RamAccess<int?>)Value).Value;
+                int k = (int)((RamAccess<int?>)Value).Value;
+                if ((k >= 0) && (k < 100)) k += 2000;
+                Year_DB = k;
                 OnPropertyChanged(nameof(Year));
             }
         }
@@ -1866,7 +2063,9 @@ namespace Collections
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if ((value.Value < 2010) || (value.Value > 2060))
+            int k = (int)value.Value;
+            if ((k >= 0) && (k < 100)) k += 2000;
+            if ((k < 2010) || (k > 2060))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -1897,7 +2096,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                StartPeriod_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                StartPeriod_DB = tmp;
                 OnPropertyChanged(nameof(StartPeriod));
             }
         }
@@ -1909,26 +2114,22 @@ namespace Collections
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try
-            {
-                var start = DateTimeOffset.Parse(value.Value);
-                //var end = DateTimeOffset.Parse(EndPeriod_DB);
-                //if (start.Date >= end.Date)
-                //{
-                //    value.AddError("Начало периода должно быть раньше его конца");
-                //    return false;
-                //}
-            }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
-                    //+ " начала или конца периода");
                 return false;
             }
             return true;
@@ -1957,7 +2158,13 @@ namespace Collections
         {
             if (args.PropertyName == "Value")
             {
-                EndPeriod_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                EndPeriod_DB = tmp;
                 OnPropertyChanged(nameof(EndPeriod));
             }
         }
@@ -1969,15 +2176,21 @@ namespace Collections
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
             try
             {
-                var end = DateTimeOffset.Parse(value.Value);
+                var end = DateTimeOffset.Parse(tmp);
                 var start = DateTimeOffset.Parse(StartPeriod_DB);
                 if (start.Date > end.Date)
                 {

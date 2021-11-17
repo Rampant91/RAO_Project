@@ -156,7 +156,13 @@ namespace Models.Abstracts
         {
             if (args.PropertyName == "Value")
             {
-                OperationDate_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                OperationDate_DB = tmp;
             }
         }
         protected virtual bool OperationDate_Validation(RamAccess<string> value)//Ready
@@ -167,13 +173,19 @@ namespace Models.Abstracts
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");
@@ -344,7 +356,13 @@ namespace Models.Abstracts
         {
             if (args.PropertyName == "Value")
             {
-                DocumentDate_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value;
+                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                if (b.IsMatch(tmp))
+                {
+                    tmp = tmp.Insert(6, "20");
+                }
+                DocumentDate_DB = tmp;
             }
         }
         protected virtual bool DocumentDate_Validation(RamAccess<string> value)//Ready
@@ -355,13 +373,19 @@ namespace Models.Abstracts
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            var tmp = value.Value;
+            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            if (b.IsMatch(tmp))
+            {
+                tmp = tmp.Insert(6, "20");
+            }
             Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(value.Value))
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            try { DateTimeOffset.Parse(value.Value); }
+            try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
                 value.AddError("Недопустимое значение");

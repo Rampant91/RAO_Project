@@ -428,13 +428,13 @@ namespace Models
                 }
             }
         }
-
-
         private void CodeRAOValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")
             {
-                CodeRAO_DB = ((RamAccess<string>)Value).Value;
+                var tmp = ((RamAccess<string>)Value).Value.ToLower();
+                tmp = tmp.Replace("х", "x");
+                CodeRAO_DB = tmp;
             }
         }
         private bool CodeRAO_Validation(RamAccess<string> value)//TODO
@@ -444,8 +444,10 @@ namespace Models
             {
                 return true;
             }
-            var a = new Regex("^[0-9]{11}$");
-            if (!a.IsMatch(value.Value))
+            var tmp = value.Value.ToLower();
+            tmp = tmp.Replace("х", "x");
+            Regex a = new Regex("^[0-9x+]{11}$");
+            if (!a.IsMatch(tmp))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -565,7 +567,12 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                VolumeInPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                VolumeInPack_DB = value1;
             }
         }
         private bool VolumeInPack_Validation(RamAccess<string> value)//TODO
@@ -575,7 +582,11 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -621,7 +632,12 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                MassInPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                MassInPack_DB = value1;
             }
         }
         private bool MassInPack_Validation(RamAccess<string> value)//TODO
@@ -631,7 +647,11 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
             {
                 return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -680,7 +700,12 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                VolumeOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                VolumeOutOfPack_DB = value1;
             }
         }
         private bool VolumeOutOfPack_Validation(RamAccess<string> value)//TODO
@@ -691,7 +716,11 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -737,7 +766,12 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                MassOutOfPack_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                MassOutOfPack_DB = value1;
             }
         }
         private bool MassOutOfPack_Validation(RamAccess<string> value)//TODO
@@ -748,7 +782,11 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             string tmp = value1;
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
@@ -840,10 +878,15 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                TritiumActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                TritiumActivity_DB = value1;
             }
         }
-private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
+        private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (value.Value == "-")
@@ -857,6 +900,10 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
             }
             string tmp = value.Value;
             tmp = tmp.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!tmp.Contains('e')) && (tmp.Contains('+') ^ tmp.Contains('-')))
+            {
+                tmp = tmp.Replace("+", "e+").Replace("-", "e-");
+            }
             int len = tmp.Length;
             if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
             {
@@ -901,7 +948,12 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                BetaGammaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                BetaGammaActivity_DB = value1;
             }
         }
         private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
@@ -912,7 +964,11 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             if (value.Value == "-")
             {
                 return true;
@@ -962,7 +1018,12 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                AlphaActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                AlphaActivity_DB = value1;
             }
         }
         private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
@@ -973,7 +1034,11 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             if (value.Value == "-")
             {
                 return true;
@@ -1022,7 +1087,12 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                TransuraniumActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                TransuraniumActivity_DB = value1;
             }
         }
         private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
@@ -1033,10 +1103,14 @@ private bool TritiumActivity_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E','e');
             if (value.Value == "-")
             {
                 return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
             string tmp = value1;
             int len = tmp.Length;

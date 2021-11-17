@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
+using System.Globalization;
 using Avalonia.Media;
 using System;
 using System.Reactive.Linq;
@@ -487,7 +489,23 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 return cell;
             }
         }
+        public class MyConverter:IValueConverter
+        {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                var value1 = (RamAccess<string>)value;
+                if ((!value1.Value.Contains('e')) && (value1.Value.Contains('+') ^ value1.Value.Contains('-')))
+                {
+                    return new RamAccess<string>(value1.Handler,value1.Value.Replace("+", "e+").Replace("-", "e-"));
+                }
+                return value1;
+            }
 
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            {
+                return value;
+            }
+        }
         private static Control Get9Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
         {
             if (Column != 1)
@@ -498,13 +516,27 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                     Height = RowHeight1,
                     BorderBrush = new SolidColorBrush(border_color1)
                 };
-                Binding b = new()
+                if (Binding.Equals("AllowedActivity"))
                 {
-                    Path = "Items[" + (Row - 1) + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(StyledElement.DataContextProperty, b);
+                    Binding b = new()
+                    {
+                        Path = "Items[" + (Row - 1) + "]." + Binding,
+                        ElementName = TopName,
+                        //Converter = new MyConverter(),
+                        NameScope = new WeakReference<INameScope>(scp)
+                    };
+                    cell.Bind(StyledElement.DataContextProperty, b);
+                }
+                else
+                {
+                    Binding b = new()
+                    {
+                        Path = "Items[" + (Row - 1) + "]." + Binding,
+                        ElementName = TopName,
+                        NameScope = new WeakReference<INameScope>(scp)
+                    };
+                    cell.Bind(StyledElement.DataContextProperty, b);
+                }
 
                 cell.CellRow = Row;
                 cell.CellColumn = Column;

@@ -2636,7 +2636,6 @@ namespace Client_App.Long_Visual
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
-
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows29",
@@ -2644,7 +2643,6 @@ namespace Client_App.Long_Visual
                 NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
-
 
             ContextMenu? cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>
