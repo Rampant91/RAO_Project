@@ -212,7 +212,7 @@ o => o.Pagination,
                 if (value != null)
                 {
                     SetAndRaise(ItemsProperty, ref _items, value);
-                    if (Name == "Form1AllDataGrid_" || Name == "Form2AllDataGrid_")
+                    if (Name == "Form1AllDataGrid_" || Name == "Form2AllDataGrid_"|| Name == "Form20AllDataGrid_"||Name == "Form10AllDataGrid_")
                     {
                         UpdateAllCells();
                     }
@@ -397,10 +397,29 @@ o => o.Pagination,
                 {
                     if (Rows[i, j] != null)
                     {
-                        if (j >= 2)
+                        if (j == 1)
                         {
-                            Rows[i, j].Background = ChooseColor;
-                            SelectedCells.Add(Rows[i, j]);
+                            if (!Name.Contains("Note"))
+                            {
+                                foreach (var item in Rows[i].Cells)
+                                {
+                                    item.Value.Background = ChooseColor;
+                                    SelectedCells.Add(item.Value);
+                                }
+                            }
+                            else
+                            {
+                                Rows[i, j].Background = ChooseColor;
+                                SelectedCells.Add(Rows[i, j]);
+                            }
+                        }
+                        else
+                        {
+                            if (j >= 2)
+                            {
+                                Rows[i, j].Background = ChooseColor;
+                                SelectedCells.Add(Rows[i, j]);
+                            }
                         }
                     }
                 }
@@ -491,6 +510,10 @@ o => o.Pagination,
             var mouse = args.GetCurrentPoint((StackPanel)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed ||
                 mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
+                if(mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
+                {
+                    this.ContextMenu.Open(this);
+                }
                 if (Rows.Count > 0)
                 {
                     var tmp = FindCell(mouse);

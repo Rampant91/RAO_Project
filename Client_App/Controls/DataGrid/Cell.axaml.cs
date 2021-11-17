@@ -77,23 +77,22 @@ namespace Client_App.Controls.DataGrid
         {
             if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
             {
-                var pnl = new Panel();
-                try
-                {
-                    pnl = (Panel)(((StackPanel)((Row)this.Parent).Parent).Parent);
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-                var pnl2 = (Panel)(((ScrollViewer)pnl.Parent).Parent);
-                var pnl3 = (Panel)(((Grid)pnl2.Parent).Parent);
-                var pnl4 = (Panel)(((ScrollViewer)pnl3.Parent).Parent);
-                var pnl5 = (Panel)(((Grid)pnl4.Parent).Parent);
+                //try
+                //{
+                //    var pnl = (Panel)(((StackPanel)((Row)this.Parent).Parent).Parent);
+                //    var pnl2 = (Panel)(((ScrollViewer)pnl.Parent).Parent);
+                //    var pnl3 = (Panel)(((Grid)pnl2.Parent).Parent);
+                //    var pnl4 = (Panel)(((ScrollViewer)pnl3.Parent).Parent);
+                //    var pnl5 = (Panel)(((Grid)pnl4.Parent).Parent);
 
-                var dataGrid = (Client_App.Controls.DataGrid.DataGrid)(((Border)pnl5.Parent).Parent);
+                //    var dataGrid = (Client_App.Controls.DataGrid.DataGrid)(((Border)pnl5.Parent).Parent);
 
-                dataGrid.ContextMenu.Open();
+                //    dataGrid.ContextMenu.Open();
+                //}
+                //catch (Exception)
+                //{
+                //    return;
+                //}
             }
         }
     }
