@@ -191,7 +191,6 @@ namespace Client_App.Long_Visual
             string BindingPrefix = "Storage.Rows20";
 
             pnl.Children.Add(Create20Row("OrganUprav", BindingPrefix));
-            pnl.Children.Add(Create20Row("SubjectRF", BindingPrefix));
             pnl.Children.Add(Create20Row("JurLico", BindingPrefix));
             pnl.Children.Add(Create20Row("ShortJurLico", BindingPrefix));
             pnl.Children.Add(Create20Row("JurLicoAddress", BindingPrefix));
