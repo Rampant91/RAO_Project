@@ -18,7 +18,7 @@ namespace DBRealization
                 string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
                 string path = System.IO.Path.GetPathRoot(system);
                 var tmp = System.IO.Path.Combine(path, "RAO");
-                tmp = System.IO.Path.Combine(tmp, "Local_temp_exp.raodb");
+                tmp = System.IO.Path.Combine(tmp, "Local_temp.raodb");
                 _path = tmp;
             }
             else
