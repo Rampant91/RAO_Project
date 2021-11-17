@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System;
 using System.Text.RegularExpressions;
-using Avalonia.Collections.Pooled;
 using Models;
 using Models.Attributes;
 using Models.DataAccess;
