@@ -1,6 +1,6 @@
 ﻿using Avalonia.Collections;
 using Avalonia.Data.Converters;
-using Collections;
+using Models.Collections;
 using System;
 using System.Collections;
 using System.ComponentModel;

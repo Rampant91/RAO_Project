@@ -4,9 +4,9 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using Models.DataAccess;
-using Models;
+using Models.Collections;
 
-namespace DBRealization
+namespace Models.DBRealization
 {
     public class DataContext:DbContext
     {
@@ -99,7 +99,7 @@ namespace DBRealization
         public void LoadTables()
         {
             notes.Load();
-            form_10.Load();
+           form_10.Load();
             form_11.Load();
             form_12.Load();
             form_13.Load();
@@ -129,7 +129,7 @@ namespace DBRealization
             DBObservableDbSet.Load();
         }
 
-        public DbSet<Collections.DBObservable> DBObservableDbSet { get; set; }
+        public DbSet<DBObservable> DBObservableDbSet { get; set; }
         public DbSet<Collections.Reports> ReportsCollectionDbSet { get; set; }
         public DbSet<Collections.Report> ReportCollectionDbSet { get; set; }
         public DbSet<Models.Note> notes { get; set; }

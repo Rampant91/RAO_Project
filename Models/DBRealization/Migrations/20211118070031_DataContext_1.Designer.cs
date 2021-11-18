@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Models.DBRealization.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211117123348_Initial")]
-    partial class Initial
+    [Migration("20211118070031_DataContext_1")]
+    partial class DataContext_1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -592,8 +592,8 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<double?>("Mass_DB")
-                        .HasColumnType("DOUBLE PRECISION");
+                    b.Property<string>("Mass_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("Name_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1151,8 +1151,8 @@ namespace Models.DBRealization.Migrations
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<double?>("SaltConcentration_DB")
-                        .HasColumnType("DOUBLE PRECISION");
+                    b.Property<string>("SaltConcentration_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<bool>("SaltConcentration_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -1467,8 +1467,8 @@ namespace Models.DBRealization.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<double?>("AvgGammaRaysDosePower_DB")
-                        .HasColumnType("DOUBLE PRECISION");
+                    b.Property<string>("AvgGammaRaysDosePower_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<short>("CorrectionNumber_DB")
                         .HasColumnType("SMALLINT");
@@ -1485,8 +1485,8 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("InfectedArea_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<double?>("MaxGammaRaysDosePower_DB")
-                        .HasColumnType("DOUBLE PRECISION");
+                    b.Property<string>("MaxGammaRaysDosePower_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<int>("NumberInOrder_DB")
                         .HasColumnType("INTEGER");

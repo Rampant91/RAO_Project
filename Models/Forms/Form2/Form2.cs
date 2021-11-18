@@ -59,45 +59,6 @@ namespace Models.Abstracts
 
         #endregion
 
-        #region NumberInOrder
-
-        public int NumberInOrder_DB { get; set; } = 0;
-
-        [NotMapped]
-        [Attributes.Form_Property("№ п/п")]
-        public RamAccess<int> NumberInOrder
-        {
-            get
-            {
-                var tmp = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
-                tmp.PropertyChanged += NumberInOrderValueChanged;
-                return tmp;
-            }
-            set
-            {
-                NumberInOrder_DB = value.Value;
-                OnPropertyChanged(nameof(NumberInOrder));
-            }
-        }
-
-        private void NumberInOrderValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                NumberInOrder_DB = ((RamAccess<int>) Value).Value;
-            }
-        }
-
-        private bool NumberInOrder_Validation(RamAccess<int> value)
-        {
-            value.ClearErrors();
-            return true;
-        }
-
-        //NumberInOrder property
-
-        #endregion
-
         #region IExcel
         public void ExcelRow(ExcelWorksheet worksheet, int Row)
         {

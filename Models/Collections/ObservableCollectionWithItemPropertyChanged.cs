@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Models.Collections;
 using OfficeOpenXml;
 
-namespace Collections
+namespace Models.Collections
 {
     public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollection<T>, IKey
         where T : IKey

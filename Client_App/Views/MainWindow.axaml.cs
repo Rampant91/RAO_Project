@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia.Data;
-using Collections;
+using Models.Collections;
 
 namespace Client_App.Views
 {

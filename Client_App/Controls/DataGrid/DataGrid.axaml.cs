@@ -11,7 +11,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using Collections;
+using Models.Collections;
 using Avalonia.Interactivity;
 using System.Threading.Tasks;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -22,7 +22,7 @@ using System.Reactive;
 using System.Runtime.CompilerServices;
 using Avalonia.LogicalTree;
 using Client_App.Controls.DataGrid;
-using DBRealization;
+using Models.DBRealization;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Models.Abstracts;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
@@ -510,40 +510,117 @@ o => o.Pagination,
             var mouse = args.GetCurrentPoint((StackPanel)sender);
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed ||
                 mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
-                if(mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
+                if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
                 {
                     this.ContextMenu.Open(this);
-                }
-                if (Rows.Count > 0)
-                {
-                    var tmp = FindCell(mouse);
-                    FirstPressedItem = tmp;
-                    LastPressedItem = tmp;
-
-                    DownFlag = true;
-                    SetSelectedControls();
-                    var item = SelectedCells.FirstOrDefault();
-                    if (item != null)
+                    if (Rows.Count > 0)
                     {
-                        if (item is (Cell))
+                        var tmp = FindCell(mouse);
+
+                        var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
+                        var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
+                        var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                        var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+
+                        if (!(maxColumn == 1 && minColumn == 1))
                         {
-                            var bd = (Cell)item;
-                            if ((!bd.IsReadOnly))
+                            if ((!(tmp[0] >= minRow && tmp[0] <= maxRow)) || (!(tmp[1] >= minColumn && tmp[1] <= maxColumn)))
                             {
-                                var t = ((TextBox)((Panel)((Border)bd
-                                    .GetLogicalChildren().First())
-                                    .Child)
-                                    .Children[0]);
-                                t.Focus();
+                                FirstPressedItem = tmp;
+                                LastPressedItem = tmp;
+                                DownFlag = true;
+                                SetSelectedControls();
+                                var item = SelectedCells.FirstOrDefault();
+                                if (item != null)
+                                {
+                                    if (item is (Cell))
+                                    {
+                                        var bd = (Cell)item;
+                                        if ((!bd.IsReadOnly))
+                                        {
+                                            var t = ((TextBox)((Panel)((Border)bd
+                                                .GetLogicalChildren().First())
+                                                .Child)
+                                                .Children[0]);
+                                            t.Focus();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var bd = (Row)item;
+                                        bd.Focus();
+                                    }
+                                }
+                                SetSelectedItemsWithHandler();
                             }
                         }
                         else
                         {
-                            var bd = (Row)item;
-                            bd.Focus();
+                            if ((!(tmp[0] >= minRow && tmp[0] <= maxRow)))
+                            {
+                                FirstPressedItem = tmp;
+                                LastPressedItem = tmp;
+                                DownFlag = true;
+                                SetSelectedControls();
+                                var item = SelectedCells.FirstOrDefault();
+                                if (item != null)
+                                {
+                                    if (item is (Cell))
+                                    {
+                                        var bd = (Cell)item;
+                                        if ((!bd.IsReadOnly))
+                                        {
+                                            var t = ((TextBox)((Panel)((Border)bd
+                                                .GetLogicalChildren().First())
+                                                .Child)
+                                                .Children[0]);
+                                            t.Focus();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var bd = (Row)item;
+                                        bd.Focus();
+                                    }
+                                }
+                                SetSelectedItemsWithHandler();
+                            }
                         }
                     }
-                    SetSelectedItemsWithHandler();
+                }
+                else
+                {
+                    if (Rows.Count > 0)
+                    {
+                        var tmp = FindCell(mouse);
+                        FirstPressedItem = tmp;
+                        LastPressedItem = tmp;
+
+                        DownFlag = true;
+                        SetSelectedControls();
+                        var item = SelectedCells.FirstOrDefault();
+                        if (item != null)
+                        {
+                            if (item is (Cell))
+                            {
+                                var bd = (Cell)item;
+                                if ((!bd.IsReadOnly))
+                                {
+                                    var t = ((TextBox)((Panel)((Border)bd
+                                        .GetLogicalChildren().First())
+                                        .Child)
+                                        .Children[0]);
+                                    t.Focus();
+                                }
+                            }
+                            else
+                            {
+                                var bd = (Row)item;
+                                bd.Focus();
+                            }
+                        }
+                        SetSelectedItemsWithHandler();
+                    }
                 }
         }
 
@@ -569,15 +646,52 @@ o => o.Pagination,
             if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased ||
                 mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
             {
-                if (Rows.Count > 0)
+                if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
                 {
-                    var tmp = FindCell(mouse);
-                    LastPressedItem = tmp;
+                    this.ContextMenu.Open(this);
+                    if (Rows.Count > 0)
+                    {
+                        var tmp = FindCell(mouse);
 
-                    DownFlag = false;
+                        var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
+                        var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
+                        var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                        var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
 
-                    SetSelectedControls();
-                    SetSelectedItemsWithHandler();
+                        if (!(maxColumn ==1&&minColumn == 1))
+                        {
+                            if ((!(tmp[0] >= minRow && tmp[0] <= maxRow)) || (!(tmp[1] >= minColumn && tmp[1] <= maxColumn)))
+                            {
+                                LastPressedItem = tmp;
+                                DownFlag = false;
+                                SetSelectedControls();
+                                SetSelectedItemsWithHandler();
+                            }
+                        }
+                        else
+                        {
+                            if((!(tmp[0] >= minRow && tmp[0] <= maxRow)))
+                            {
+                                LastPressedItem = tmp;
+                                DownFlag = false;
+                                SetSelectedControls();
+                                SetSelectedItemsWithHandler();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (Rows.Count > 0)
+                    {
+                        var tmp = FindCell(mouse);
+                        LastPressedItem = tmp;
+
+                        DownFlag = false;
+
+                        SetSelectedControls();
+                        SetSelectedItemsWithHandler();
+                    }
                 }
             }
         }

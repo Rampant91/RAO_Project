@@ -5,12 +5,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System;
 using System.Text.RegularExpressions;
-using Models;
+using Models.DBRealization;
 using Models.Attributes;
 using Models.DataAccess;
 using OfficeOpenXml;
 
-namespace Collections
+namespace Models.Collections
 {
     public class Report : IKey, INotifyPropertyChanged
     {

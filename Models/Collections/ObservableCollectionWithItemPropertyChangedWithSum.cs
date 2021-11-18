@@ -12,7 +12,7 @@ using Models;
 using Models.Collections;
 using OfficeOpenXml;
 
-namespace Collections
+namespace Models.Collections
 {
     public class ObservableCollectionWithItemPropertyChangedWithSum<T> : ObservableCollection<T>, IKey
         where T : class, IKey

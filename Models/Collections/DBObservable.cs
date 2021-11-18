@@ -3,10 +3,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DBRealization;
+using Models.DBRealization;
 using Microsoft.EntityFrameworkCore;
 
-namespace Collections
+namespace Models.Collections
 {
     public class DBObservable:INotifyPropertyChanged
     {

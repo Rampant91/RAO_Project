@@ -2,8 +2,8 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Views;
-using Collections;
-using DBRealization;
+using Models.Collections;
+using Models.DBRealization;
 using DynamicData;
 using Models.Abstracts;
 using OfficeOpenXml;
@@ -55,8 +55,15 @@ namespace Client_App.ViewModels
             Local_Reports = new DBObservable();
             var dbm = StaticConfiguration.DBModel;
 
-            dbm.Database.Migrate();
-            var t = dbm.Database.EnsureCreated();
+            if(File.Exists(StaticConfiguration.DBPath))
+            {
+                var t = dbm.Database.GetMigrations();
+                dbm.Database.Migrate();
+           }
+            else
+            {
+                dbm.Database.EnsureCreated();
+            }
             
             dbm.LoadTables();
             if (dbm.DBObservableDbSet.Local.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
@@ -64,22 +71,7 @@ namespace Client_App.ViewModels
             dbm.SaveChanges();
 
             Local_Reports = dbm.DBObservableDbSet.Local.First();
-            //foreach(var report in Local_Reports.Reports_Collection)
-            //{
-            //    switch (report.Master.FormNum.Value[0])
-            //    {
-            //        case '1':
-            //            report.Master.OkpoRep = report.Master.OkpoRep;
-            //            report.Master.RegNoRep = report.Master.RegNoRep;
-            //            report.Master.ShortJurLicoRep = report.Master.ShortJurLicoRep;
-            //            break;
-            //        case '2':
-            //            report.Master.OkpoRep1 = report.Master.OkpoRep1;
-            //            report.Master.RegNoRep1 = report.Master.RegNoRep1;
-            //            report.Master.ShortJurLicoRep1 = report.Master.ShortJurLicoRep1;
-            //            break;
-            //    }
-            //}
+
             Local_Reports.PropertyChanged += Local_ReportsChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
@@ -248,7 +240,14 @@ namespace Client_App.ViewModels
                                         Reports rp = new Reports();
                                         rp.Master = rt.Master;
                                         rp.Report_Collection.Add(rep);
-                                        db.Database.EnsureCreated();
+                                        if (File.Exists(tmp))
+                                        {
+                                            db.Database.Migrate();
+                                        }
+                                        else
+                                        {
+                                            db.Database.EnsureCreated();
+                                        }
                                         db.ReportsCollectionDbSet.Add(rp);
                                         db.SaveChanges();
 
@@ -367,8 +366,14 @@ namespace Client_App.ViewModels
                                 {
                                     try
                                     {
-                                        db.Database.Migrate();
-                                        db.Database.EnsureCreated();
+                                        if (File.Exists(tmp))
+                                        {
+                                            db.Database.Migrate();
+                                        }
+                                        else
+                                        {
+                                            db.Database.EnsureCreated();
+                                        }
                                         db.LoadTables();
                                     }
                                     catch (Exception e)
@@ -413,13 +418,19 @@ namespace Client_App.ViewModels
                                         item.CleanIds();
                                         if (first11 != null)
                                         {
-                                            first11.Report_Collection.AddRange(item.Report_Collection);
+                                            foreach (var it in item.Report_Collection.OrderBy(x => x.NumberInOrder_DB))
+                                            {
+                                                first11.Report_Collection.Add(it);
+                                            }
                                         }
                                         else
                                         {
                                             if (first21 != null)
                                             {
-                                                first21.Report_Collection.AddRange(item.Report_Collection);
+                                                foreach (var it in item.Report_Collection.OrderBy(x => x.NumberInOrder_DB))
+                                                {
+                                                    first11.Report_Collection.Add(it);
+                                                }
                                             }
                                             else
                                             {

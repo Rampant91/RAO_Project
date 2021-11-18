@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Models.DataAccess;
 using Models;
 
-namespace DBRealization
+namespace Models.DBRealization
 {
     public class DBModel : DataContext
     {

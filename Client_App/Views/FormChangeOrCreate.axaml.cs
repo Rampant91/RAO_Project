@@ -2,10 +2,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
-using Collections;
+using Models.Collections;
 using System.ComponentModel;
 using System.Linq;
-using DBRealization;
+using Models.DBRealization;
 using Models;
 using ReactiveUI;
 

@@ -5,7 +5,7 @@ using System;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace DBRealization
+namespace Models.DBRealization
 {
     public class DBExportModel : DataContext
     {

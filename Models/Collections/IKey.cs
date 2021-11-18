@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Models.Collections;
 
-namespace Collections
+namespace Models.Collections
 {
     public interface IKey:INotifyPropertyChanged,IExcel
     {
