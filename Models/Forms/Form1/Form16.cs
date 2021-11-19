@@ -121,7 +121,7 @@ namespace Models
         }
         #endregion
 
-            #region StatusRAO
+        #region StatusRAO
         public string StatusRAO_DB { get; set; } = "";
         [NotMapped]
         [Attributes.Form_Property("Статус РАО")]
@@ -209,6 +209,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    Volume_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -278,6 +283,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    Mass_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -399,6 +409,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    TritiumActivity_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -468,6 +483,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    BetaGammaActivity_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -537,6 +557,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    AlphaActivity_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -606,6 +631,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    TransuraniumActivity_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -716,14 +746,14 @@ namespace Models
         #endregion
 
         #region QuantityOZIII
-        public int? QuantityOZIII_DB { get; set; } = null;
+        public string QuantityOZIII_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public RamAccess<int?> QuantityOZIII
+        public RamAccess<string> QuantityOZIII
         {
             get
             {
-                var tmp = new RamAccess<int?>(QuantityOZIII_Validation, QuantityOZIII_DB);
+                var tmp = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
                 tmp.PropertyChanged += QuantityOZIIIValueChanged;
                 return tmp;
             }
@@ -738,17 +768,30 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                QuantityOZIII_DB = ((RamAccess<int?>)Value).Value;
+                QuantityOZIII_DB = ((RamAccess<string>)Value).Value;
             }
         }
-        private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
+        private bool QuantityOZIII_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value.Equals("-"))
             {
                 return true;
             }
-            if (value.Value <= 0)
+            try
+            {
+                if (int.Parse(value.Value) <= 0)
+                {
+                    value.AddError("Число должно быть больше нуля");
+                    return false;
+                }
+            }
+            catch (Exception)
             {
                 value.AddError("Недопустимое значение");
                 return false;

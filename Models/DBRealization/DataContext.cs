@@ -99,7 +99,7 @@ namespace Models.DBRealization
         public void LoadTables()
         {
             notes.Load();
-           form_10.Load();
+            form_10.Load();
             form_11.Load();
             form_12.Load();
             form_13.Load();

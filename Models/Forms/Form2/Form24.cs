@@ -163,6 +163,11 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MassCreated_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -281,6 +286,11 @@ private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MassFromAnothers_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -399,6 +409,11 @@ private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MassFromAnothersImported_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -517,6 +532,11 @@ private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//R
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MassAnotherReasons_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -635,6 +655,11 @@ private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MassTransferredToAnother_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -753,6 +778,11 @@ private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//R
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MassRefined_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -871,6 +901,11 @@ private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MassRemovedFromAccount_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");

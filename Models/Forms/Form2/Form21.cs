@@ -294,6 +294,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MachinePower_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -396,6 +401,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    NumberOfHoursPerYear_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -591,6 +601,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    VolumeIn_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -664,6 +679,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MassIn_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -791,6 +811,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    TritiumActivityIn_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -860,6 +885,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    BetaGammaActivityIn_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -929,6 +959,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    AlphaActivityIn_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -998,6 +1033,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    TransuraniumActivityIn_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -1181,6 +1221,11 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    VolumeOut_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -1247,6 +1292,11 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    MassOut_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -1381,6 +1431,11 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    TritiumActivityOut_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -1450,6 +1505,11 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    BetaGammaActivityOut_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -1520,6 +1580,11 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    AlphaActivityOut_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -1590,6 +1655,11 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    TransuraniumActivityOut_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");

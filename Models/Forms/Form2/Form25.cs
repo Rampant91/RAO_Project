@@ -233,6 +233,11 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    FuelMass_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -299,6 +304,11 @@ private bool FcpNumber_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    CellMass_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -410,6 +420,11 @@ private bool Quantity_Validation(RamAccess<int?> value)//Ready
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    BetaGammaActivity_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -479,6 +494,11 @@ private bool Quantity_Validation(RamAccess<int?> value)//Ready
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if (value1.Equals("-"))
+                {
+                    AlphaActivity_DB = value1;
+                    return;
+                }
                 if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
