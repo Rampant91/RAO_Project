@@ -15,10 +15,11 @@ namespace Models.DBRealization
                 Directory.CreateDirectory(direct);
             }
 #if DEBUG
-            string pth = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\"));
+            string pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")),"data"),"REDDB"), "fbclient.dll");
 #else
-            string pth = Path.GetFullPath(AppContext.BaseDirectory);
+            string pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),"data"),"REDDB"), "fbclient.dll");
 #endif
+            
             return new FbConnectionStringBuilder
             {
                 
@@ -27,7 +28,7 @@ namespace Models.DBRealization
                 UserID = "SYSDBA",
                 Password = "masterkey",
                 Role = "ADMIN",
-                ClientLibrary = pth + "data\\REDDB\\fbclient.dll"
+                ClientLibrary = Path.GetFullPath(pth)
             }.ToString();
         }
         public static void CreateDB(string _path)
