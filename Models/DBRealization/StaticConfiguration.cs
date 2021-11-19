@@ -15,6 +15,7 @@ namespace Models.DBRealization
                 string path = Path.GetPathRoot(system);
                 var tmp= Path.Combine(path ,"RAO");
                 tmp = Path.Combine(tmp, "Local.raodb");
+
                 return tmp;
             }
         }
