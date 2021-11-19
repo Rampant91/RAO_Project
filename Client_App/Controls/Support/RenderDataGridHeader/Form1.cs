@@ -178,7 +178,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get1Header(new double[3] { 1,1,2 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Операция" }, true, 1));
+                "Сведения об операции" }, true, 1));
             //stck.Add(Get1Header(1.5, 4,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PassportNumber")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,3
@@ -219,7 +219,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("SignedServicePeriod")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,12
             //));
-            stck.Add(Get1Header(new double[11] { 1.5, 0.5, 1,1.5,1,1,1.5,1.5,1,1,11.5}, 3, new string[11] {
+            stck.Add(Get1Header(new double[11] { 2.5, 0.5, 1,1.5,1,1,1.7,1.5,1,1,12.7}, 3, new string[11] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -230,7 +230,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("CreationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("Category").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("SignedServicePeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Закрытый радионуклидный источник" }, true, 3));
+                "Сведения из паспорта (сертификата) на закрытый радионуклидный источник" }, true, 3));
             //stck.Add(Get1Header(2, 14,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PropertyCode")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,13
@@ -239,7 +239,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("Owner")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,14
             //));
-            stck.Add(Get1Header(new double[3] { 2, 1.5, 3.5 }, 4, new string[3] {
+            stck.Add(Get1Header(new double[3] { 2, 2.5, 4.5 }, 4, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 "Право собственности на ЗРИ" }, true, 13));
@@ -267,7 +267,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get1Header(new double[3] { 2, 2, 4 }, 6, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "ОКПО" }, true, 18));
+                "Код ОКПО" }, true, 18));
             //stck.Add(Get1Header(2, 21,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PackName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,20
@@ -284,7 +284,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PackNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Прибор (установка), УКТ или иная упаковка" }, true, 15));
+                "Прибор (установка), УКТ или иная упаковка" }, true, 20));
             return stck;
         }
 
@@ -439,7 +439,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get1Header(new double[3] { 1, 1, 2 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Операция" }, true, 1));
+                "Сведения об операции" }, true, 1));
             //stck.Add(Get2Header(1.5, 4,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("PassportNumber")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,3
@@ -468,7 +468,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("SignedServicePeriod")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,9
             //));
-            stck.Add(Get1Header(new double[8] { 1.5, 1.5, 1.5, 1, 1.5, 1.5, 1, 9.5 }, 3, new string[8] {
+            stck.Add(Get1Header(new double[8] { 1.5, 1.5, 1.5, 2.5, 1.7, 1.5, 1, 11.2 }, 3, new string[8] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("NameIOU").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("FactoryNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -476,7 +476,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("CreatorOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("CreationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("SignedServicePeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Изделие из обедненного урана" }, true, 3));
+                "Сведения из паспорта на изделие из обедненного урана" }, true, 3));
             //stck.Add(Get2Header(1.5, 11,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("PropertyCode")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,10
@@ -485,7 +485,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("Owner")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,11
             //));
-            stck.Add(Get1Header(new double[3] { 2, 1.5, 3.5 }, 4, new string[3] {
+            stck.Add(Get1Header(new double[3] { 2, 1.7, 3.7 }, 4, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 "Право собственности на ИОУ" }, true, 10));
@@ -517,7 +517,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get1Header(new double[3] { 2, 1.5, 3.5 }, 6, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "ОКПО" }, true, 15));
+                "Код ОКПО" }, true, 15));
             //stck.Add(Get2Header(2, 18,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form12,Models").GetProperty("PackName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,17
@@ -690,7 +690,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get3Header(new double[3] { 1, 1, 2 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Операция" }, true, 1));
+                "Сведения об операции" }, true, 1));
             //stck.Add(Get3Header(1.1, 4,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("PassportNumber")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,3
@@ -723,7 +723,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("AggregateState")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,10
             //));
-            stck.Add(Get3Header(new double[9] { 1.1, 1, 1, 2, 1, 2, 2, 2, 12.1 }, 3, new string[9] {
+            stck.Add(Get3Header(new double[9] { 1.5, 1, 1, 2, 1, 2, 2, 2, 12.5 }, 3, new string[9] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -732,7 +732,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("CreatorOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("CreationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("AggregateState").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Открытый радионуклидный источник" }, true, 3));
+                "Сведения из паспорта на открытый радионуклидный источник" }, true, 3));
             //stck.Add(Get2Header(1.5, 11,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("PropertyCode")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,10
@@ -741,10 +741,10 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("Owner")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,11
             //));
-            stck.Add(Get3Header(new double[3] { 2, 1.5, 3.5 }, 4, new string[3] {
+            stck.Add(Get3Header(new double[3] { 2, 1.7, 3.7 }, 4, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Право собственности на ИОУ" }, true, 11));
+                "Право собственности на ОРИ" }, true, 11));
             //stck.Add(Get2Header(1, 13,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("DocumentVid")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,12
@@ -773,7 +773,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get3Header(new double[3] { 2, 1.5, 3.5 }, 6, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "ОКПО" }, true, 16));
+                "Код ОКПО" }, true, 16));
             //stck.Add(Get2Header(2, 18,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("PackName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,17
@@ -946,7 +946,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get4Header(new double[3] { 1, 1, 2 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Операция" }, true, 1));
+                "Сведения об операции" }, true, 1));
             //stck.Add(Get4Header(1.1, 4,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("PassportNumber")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,3
@@ -993,7 +993,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("Volume").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("Mass").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("AggregateState").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Открытый радионуклидный источник" }, true, 3));
+                "Сведения из паспорта на открытый радионуклидный источник" }, true, 3));
             //stck.Add(Get2Header(1.5, 11,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("PropertyCode")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,10
@@ -1002,10 +1002,10 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("Owner")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,11
             //));
-            stck.Add(Get4Header(new double[3] { 2, 1.5, 3.5 }, 4, new string[3] {
+            stck.Add(Get4Header(new double[3] { 2, 1.7, 3.7 }, 4, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Право собственности на ИОУ" }, true, 12));
+                "Право собственности на ОРИ" }, true, 12));
             //stck.Add(Get2Header(1, 13,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("DocumentVid")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,12
@@ -1034,7 +1034,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get4Header(new double[3] { 2, 1.5, 3.5 }, 6, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "ОКПО" }, true, 17));
+                "Код ОКПО" }, true, 17));
             //stck.Add(Get2Header(2, 18,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form14,Models").GetProperty("PackName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,17
@@ -1207,7 +1207,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get5Header(new double[3] { 1, 1, 2 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Операция" }, true, 1));
+                "Сведения об операции" }, true, 1));
             //stck.Add(Get4Header(1.1, 4,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("PassportNumber")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,3
@@ -1236,7 +1236,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("CreationDate")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,9
             //));
-            stck.Add(Get5Header(new double[8] { 1.3, 1, 1, 2, 1, 1, 2, 9.3 }, 3, new string[8] {
+            stck.Add(Get5Header(new double[8] { 4.5, 1, 1, 2, 1, 1, 2, 12.5 }, 3, new string[8] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -1279,7 +1279,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get5Header(new double[3] { 2, 1.5, 3.5 }, 7, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "ОКПО" }, true, 14));
+                "Код ОКПО" }, true, 14));
             //stck.Add(Get2Header(2, 18,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form15,Models").GetProperty("PackName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,17
@@ -1480,7 +1480,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get6Header(new double[3] { 1, 1, 2 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Операция" }, true, 1));
+                "Сведения об операции" }, true, 1));
             //stck.Add(Get6Header(1, 4,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("CodeRAO")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,3
@@ -1492,7 +1492,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,4
             //));
             stck.Add(Get6Header(new double[1] { 1 }, 4, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("StatusRAO")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 11));
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 4));
             //stck.Add(Get6Header(1, 6,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("Volume")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,5
@@ -1501,22 +1501,22 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("Mass")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,6
             //));
-            stck.Add(Get6Header(new double[3] { 1, 1, 2 }, 5, new string[3] {
+            stck.Add(Get6Header(new double[3] { 1.8, 1.8, 3.6 }, 5, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("Volume").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("Mass").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Количество" }, true, 12));
+                "Количество" }, true, 5));
             //stck.Add(Get6Header(1.5, 8,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("QuantityOZIII")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,7
             //));
             stck.Add(Get6Header(new double[1] { 1.5 }, 6, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("QuantityOZIII")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 14));
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 7));
             //stck.Add(Get6Header(1.7, 9,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("MainRadionuclids")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,8
             //));
             stck.Add(Get6Header(new double[1] { 1.7 }, 7, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("MainRadionuclids")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 15));
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 8));
             //stck.Add(Get6Header(2, 10,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("TritiumActivity")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,9
@@ -1538,13 +1538,13 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("BetaGammaActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("AlphaActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("TransuraniumActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Суммарная активность, Бк" }, true, 16));
+                "Суммарная активность, Бк" }, true, 9));
             //stck.Add(Get6Header(2, 14,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("ActivityMeasurementDate")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,13
             //));
             stck.Add(Get6Header(new double[1] { 2 }, 9, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("ActivityMeasurementDate")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 19));
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 13));
             //stck.Add(Get6Header(1, 15,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("DocumentVid")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,14
@@ -1561,7 +1561,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("DocumentVid").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("DocumentNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("DocumentDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Документ" }, true, 20));
+                "Документ" }, true, 14));
             //stck.Add(Get6Header(2, 18,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("ProviderOrRecieverOKPO")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,17
@@ -1573,7 +1573,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get6Header(new double[3] { 2, 2, 4 }, 11, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "ОКПО" }, true, 23));
+                "ОКПО" }, true, 17));
             //stck.Add(Get6Header(1.2, 20,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("StoragePlaceName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,19
@@ -1585,13 +1585,13 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get6Header(new double[3] { 1.2, 1, 2.2 }, 12, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("StoragePlaceName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("StoragePlaceCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Пункт хранения" }, true, 25));
+                "Пункт хранения" }, true, 19));
             //stck.Add(Get6Header(2.1, 22,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("RefineOrSortRAOCode")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,21
             //));
             stck.Add(Get6Header(new double[1] { 2.1 }, 13, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("RefineOrSortRAOCode")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 27));
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 21));
             //stck.Add(Get6Header(2, 23,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("PackName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,22
@@ -1608,19 +1608,19 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("PackNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "УКТ, упаковка или иная учетная единица" }, true, 28));
+                "УКТ, упаковка или иная учетная единица" }, true, 22));
             //stck.Add(Get6Header(1, 26,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("Subsidy")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,25
             //));
             stck.Add(Get6Header(new double[1] { 1 }, 15, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("Subsidy")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 31));
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 25));
             //stck.Add(Get6Header(2, 27,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("FcpNumber")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,26
             //));
             stck.Add(Get6Header(new double[1] { 2 }, 16, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("FcpNumber")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 32));
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 26));
 
             return stck;
         }
@@ -1892,7 +1892,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get7Header(new double[3] { 1, 1, 2 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Операция" }, true, 1));
+                "Сведения об операции" }, true, 1));
             //stck.Add(Get7Header(2, 4,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("PackName")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,3
@@ -1933,7 +1933,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("SpecificActivity")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,12
             //));
-            stck.Add(Get7HeaderTripleLevel(new double[11] { 2, 1, 3, 2,2,2,1,1,2,2,18 },new double[10] { 2,1,3,2,2,2,1,1,4,18}, 3, new string[10] {
+            stck.Add(Get7HeaderTripleLevel(new double[11] { 2, 1, 3, 2.6,2,2,1,1,2,2,18.6 },new double[10] { 2,1,3,2.6,2,2,1,1,4,18.6}, 3, new string[10] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("PackFactoryNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -2039,14 +2039,6 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("TransuraniumActivity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("RefineOrSortRAOCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name},
                 new string[8] {"","","","","","суммарная активность, Бк","" ,"Сведения о РАО"}, 20));
-            //stck.Add(Get7Header(1, 31,
-            //    ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("Subsidy")
-            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,30
-            //));
-            //stck.Add(Get7Header(2, 32,
-            //    ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("FcpNumber")
-            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,31
-            //));
             //stck.Add(Get6Header(1, 26,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("Subsidy")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,25
@@ -2058,7 +2050,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,26
             //));
             stck.Add(Get7Header(new double[1] { 2 }, 9, new string[1] { ((Form_PropertyAttribute) Type.GetType("Models.Form17,Models").GetProperty("FcpNumber")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 33));
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name }, false, 31));
 
             return stck;
         }
@@ -2330,7 +2322,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get8Header(new double[3] { 1, 1, 2 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form18,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form18,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Операция" }, true, 1));
+                "Сведения об операции" }, true, 1));
             //stck.Add(Get8Header(2, 4,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form18,Models").GetProperty("IndividualNumberZHRO")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,3
@@ -2359,7 +2351,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form18,Models").GetProperty("SpecificActivity")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,9
             //));
-            stck.Add(Get8HeaderTripleLevel(new double[8] { 2.5, 1.1, 1, 1, 1.5, 2, 2, 11.1 },new double[7] { 2.5,1.1,1,1,1.5,4,11.1}, 3, new string[7] {
+            stck.Add(Get8HeaderTripleLevel(new double[8] { 4.2, 1.1, 1, 1, 1.5, 2, 2, 12.8 },new double[7] { 4.2,1.1,1,1,1.5,4,12.8}, 3, new string[7] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form18,Models").GetProperty("IndividualNumberZHRO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form18,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form18,Models").GetProperty("Volume6").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -2622,7 +2614,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             stck.Add(Get9Header(new double[3] { 1, 1, 2 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form19,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form19,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
-                "Операция" }, true, 1));
+                "Сведения об операции" }, true, 1));
             //stck.Add(Get6Header(1, 15,
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form16,Models").GetProperty("DocumentVid")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,14
@@ -2654,7 +2646,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form19,Models").GetProperty("Activity")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,8
             //));
-            stck.Add(Get9Header(new double[3] { 1, 1, 2 }, 5, new string[3] {
+            stck.Add(Get9Header(new double[3] { 1.5, 1.5, 3 }, 5, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form19,Models").GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form19,Models").GetProperty("Activity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 "Сведения о радиоактивных веществах" }, true, 7));

@@ -185,7 +185,7 @@ namespace Models
         #region Volume
         public string Volume_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("объем, куб. м")]
+        [Attributes.Form_Property("объем без упаковки, куб. м")]
         public RamAccess<string> Volume
         {
             get
@@ -245,7 +245,7 @@ namespace Models
         #region Mass
         public string Mass_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("масса, кг")]
+        [Attributes.Form_Property("масса без упаковки (нетто), т")]
         public RamAccess<string> Mass
         {
             get

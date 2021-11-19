@@ -240,7 +240,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("номер упаковки")]
+        [Attributes.Form_Property("номер упаковки (идентификационный код)")]
         public RamAccess<string> PackNumber
         {
             get

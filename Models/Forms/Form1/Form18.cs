@@ -120,7 +120,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("индивидуальный номер партии ЖРО")]
+        [Attributes.Form_Property("индивидуальный номер (идентификационный код) партии ЖРО")]
         public RamAccess<string> IndividualNumberZHRO
         {
             get

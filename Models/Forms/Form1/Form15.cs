@@ -69,7 +69,7 @@ namespace Models
         #region PassportNumber
         public string PassportNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("номер паспорта ЗРИ")]
+        [Attributes.Form_Property("номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ")]
         public RamAccess<string> PassportNumber
         {
             get
@@ -659,7 +659,7 @@ namespace Models
         #region PackNumber
         public string PackNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("номер")]
+        [Attributes.Form_Property("заводской номер")]
         public RamAccess<string> PackNumber
         {
             get

@@ -177,7 +177,7 @@ namespace Models
         #region Mass
         public string Mass_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("масса, кг")]
+        [Attributes.Form_Property("масса обедненного урана, кг")]
         public RamAccess<string> Mass
         {
             get

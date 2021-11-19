@@ -65,7 +65,7 @@ namespace Models
         #region PassportNumber
         public string PassportNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("номер паспорта")]
+        [Attributes.Form_Property("номер паспорта (сертификата)")]
         public RamAccess<string> PassportNumber
         {
             get
@@ -350,7 +350,7 @@ namespace Models
         #region CreatorOKPO
         public string CreatorOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("ОКПО изготовителя")]
+        [Attributes.Form_Property("код ОКПО изготовителя")]
         public RamAccess<string> CreatorOKPO
         {
             get
@@ -485,7 +485,7 @@ namespace Models
         #region Owner
         public string Owner_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("правообладатель")]
+        [Attributes.Form_Property("код ОКПО правообладателя")]
         public RamAccess<string> Owner
         {
             get

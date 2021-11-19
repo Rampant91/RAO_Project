@@ -501,7 +501,7 @@ namespace Models
         #region Owner
         public string Owner_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("правообладатель")]
+        [Attributes.Form_Property("код ОКПО правообладателя")]
         public RamAccess<string> Owner
         {
             get
