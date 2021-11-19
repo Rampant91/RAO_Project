@@ -151,7 +151,7 @@ namespace Models
         public string SubjectRF_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Субъект РФ")]
+        [Attributes.Form_Property("Субъект Российской Федерации")]
         public RamAccess<string> SubjectRF
         {
             get
@@ -190,7 +190,7 @@ namespace Models
         public string JurLico_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Наименование юр. лица")]
+        [Attributes.Form_Property("Наименование юридического лица")]
         public RamAccess<string> JurLico
         {
             get
@@ -229,7 +229,7 @@ namespace Models
         public string ShortJurLico_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Сокращенное наименование юр. лица")]
+        [Attributes.Form_Property("Сокращенное наименование юридического лица")]
         public RamAccess<string> ShortJurLico
         {
             get
@@ -268,7 +268,7 @@ namespace Models
         public string JurLicoAddress_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Адрес юр. лица")]
+        [Attributes.Form_Property("Адрес места нахождения юридического лица")]
         public RamAccess<string> JurLicoAddress
         {
             get

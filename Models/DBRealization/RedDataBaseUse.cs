@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace DBRealization
+namespace Models.DBRealization
 {
     public class RedDataBaseCreation
     {

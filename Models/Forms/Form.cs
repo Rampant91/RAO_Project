@@ -1,4 +1,4 @@
-﻿using Collections;
+﻿using Models.Collections;
 using Models.DataAccess;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -37,6 +37,39 @@ namespace Models.Abstracts
             }
         }
         private bool FormNum_Validation(RamAccess<string> value)//Ready
+        {
+            value.ClearErrors();
+            return true;
+        }
+        #endregion
+
+        #region NumberInOrder
+        public int NumberInOrder_DB { get; set; } = 0;
+
+        [NotMapped]
+        [Attributes.Form_Property("№ п/п")]
+        public RamAccess<int> NumberInOrder
+        {
+            get
+            {
+                var tmp = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
+                tmp.PropertyChanged += NumberInOrderValueChanged;
+                return tmp;
+            }
+            set
+            {
+                NumberInOrder_DB = value.Value;
+                OnPropertyChanged(nameof(NumberInOrder));
+            }
+        }
+        private void NumberInOrderValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                NumberInOrder_DB = ((RamAccess<int>)Value).Value;
+            }
+        }
+        private bool NumberInOrder_Validation(RamAccess<int> value)//Ready
         {
             value.ClearErrors();
             return true;

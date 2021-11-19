@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Threading.Tasks;
 using Spravochniki;
 using System.Linq;
 using Models.Abstracts;
@@ -111,7 +112,8 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var tmp = from item in Spravochniks.SprRadionuclids where value.Value == item.Item1 select item.Item1;
+            var tmpstr = value.Value.ToLower().Replace(" ", "");
+            var tmp = from item in Spravochniks.SprRadionuclids where tmpstr == item.Item1 select item.Item1;
             if (!tmp.Any())
             {
                 value.AddError("Недопустимое значение");
@@ -144,7 +146,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                AllowedActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                var value1=((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                AllowedActivity_DB = value1;
             }
         }
         private bool AllowedActivity_Validation(RamAccess<string> value)//Ready
@@ -155,10 +162,14 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value == "прим.")
             {
                 return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e'))&& (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -178,7 +189,6 @@ namespace Models
         }
         //AllowedActivity property
         #endregion
-
         //FactedActivity property
         #region FactedActivity
         public string FactedActivity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("фактическая")]
@@ -200,7 +210,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                FactedActivity_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                FactedActivity_DB = value1;
             }
         }
 
@@ -212,7 +227,11 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try

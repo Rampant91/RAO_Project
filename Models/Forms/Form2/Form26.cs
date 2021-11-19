@@ -188,7 +188,12 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                DistanceToWasteSource_DB = ((RamAccess<string>)Value).Value;
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                DistanceToWasteSource_DB = value1;
             }
         }
         private bool DistanceToWasteSource_Validation(RamAccess<string> value)//Ready
@@ -207,14 +212,16 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
             {
                 return true;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
             try
             {
-                int k = int.Parse(value.Value);
-                if (k <= 0)
-                {
-                    value.AddError("Недопустимое значение");
-                    return false;
-                }
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
@@ -249,7 +256,12 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                TestDepth_DB = ((RamAccess<string>)Value).Value;
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                TestDepth_DB = value1;
             }
         }
         private bool TestDepth_Validation(RamAccess<string> value)//Ready
@@ -268,13 +280,18 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
             {
                 return true;
             }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
             try
             {
-                double k = double.Parse(value.Value);
-                if (k <= 0)
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                 {
-                    value.AddError("Недопустимое значение");
-                    return false;
+                    value.AddError("Число должно быть больше нуля"); return false;
                 }
             }
             catch
@@ -321,7 +338,8 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var query = from item in Spravochniks.SprRadionuclids where item.Item1 == value.Value select item.Item1;
+            var tmpstr = value.Value.ToLower().Replace(" ", "");
+            var query = from item in Spravochniks.SprRadionuclids where item.Item1 == tmpstr select item.Item1;
             if (!query.Any())
             {
                 value.AddError("Недопустимое значение");
@@ -355,7 +373,12 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                AverageYearConcentration_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                AverageYearConcentration_DB = value1;
             }
         }
         private bool AverageYearConcentration_Validation(RamAccess<string> value)//TODO
@@ -363,10 +386,13 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try

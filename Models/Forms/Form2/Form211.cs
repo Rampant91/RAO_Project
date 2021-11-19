@@ -142,12 +142,12 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         }
         //6 symbols code
        private void PlotCodeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+       {
+            if (args.PropertyName == "Value")
+            {
                 PlotCode_DB = ((RamAccess<string>)Value).Value;
-}
-}
+            }
+        }
 private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
@@ -156,7 +156,7 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            Regex a = new Regex("^[0-9]{7}$");
+            Regex a = new Regex("^[0-9]{6}$");
             if (!a.IsMatch(value.Value))
             {
                 value.AddError("Недопустимое значение");
@@ -189,7 +189,12 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                InfectedArea_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                InfectedArea_DB = value1;
             }
         }
         private bool InfectedArea_Validation(RamAccess<string> value)//TODO
@@ -200,7 +205,11 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
@@ -287,27 +296,42 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
             }
         }
 
-       private void SpecificActivityOfPlotValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                SpecificActivityOfPlot_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
+        private void SpecificActivityOfPlotValueChanged(object Value, PropertyChangedEventArgs args)
         {
+            if (args.PropertyName == "Value")
+            {
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                SpecificActivityOfPlot_DB = value1;
+            }
+        }
+        private bool SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
+        {
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
             return true;
-            //value.ClearErrors();
-            //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-            //   NumberStyles.AllowExponent;
-            //try
-            //{
-            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
-            //}
-            //catch
-            //{
-            //    value.AddError( "Недопустимое значение");
-            //}
         }
         //SpecificActivityOfPlot property
         #endregion
@@ -330,27 +354,42 @@ private bool SpecificActivityOfPlot_Validation(RamAccess<string> value)//TODO
             }
         }
 
-       private void SpecificActivityOfLiquidPartValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                SpecificActivityOfLiquidPart_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
+        private void SpecificActivityOfLiquidPartValueChanged(object Value, PropertyChangedEventArgs args)
         {
+            if (args.PropertyName == "Value")
+            {
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                SpecificActivityOfLiquidPart_DB = value1;
+            }
+        }
+        private bool SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//TODO
+        {
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
             return true;
-            //value.ClearErrors();
-            //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-            //   NumberStyles.AllowExponent;
-            //try
-            //{
-            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
-            //}
-            //catch
-            //{
-            //    value.AddError( "Недопустимое значение");
-            //}
         }
         //SpecificActivityOfLiquidPart property
         #endregion
@@ -361,38 +400,54 @@ private bool SpecificActivityOfLiquidPart_Validation(RamAccess<string> value)//T
         public RamAccess<string> SpecificActivityOfDensePart
         {
             get
-{
-var tmp = new RamAccess<string>(SpecificActivityOfDensePart_Validation, SpecificActivityOfDensePart_DB);
-tmp.PropertyChanged += SpecificActivityOfDensePartValueChanged;
-return tmp;
-}            set
             {
-                    SpecificActivityOfDensePart_DB = value.Value;
+                var tmp = new RamAccess<string>(SpecificActivityOfDensePart_Validation, SpecificActivityOfDensePart_DB);
+                tmp.PropertyChanged += SpecificActivityOfDensePartValueChanged;
+                return tmp;
+            }
+            set
+            {
+                SpecificActivityOfDensePart_DB = value.Value;
                 OnPropertyChanged(nameof(SpecificActivityOfDensePart));
             }
         }
 
-       private void SpecificActivityOfDensePartValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                SpecificActivityOfDensePart_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
+        private void SpecificActivityOfDensePartValueChanged(object Value, PropertyChangedEventArgs args)
         {
+            if (args.PropertyName == "Value")
+            {
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                SpecificActivityOfDensePart_DB = value1;
+            }
+        }
+        private bool SpecificActivityOfDensePart_Validation(RamAccess<string> value)//TODO
+        {
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
+            }
+            NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
+               NumberStyles.AllowExponent;
+            try
+            {
+                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+            }
+            catch
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
             return true;
-            //value.ClearErrors();
-            //var styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
-            //   NumberStyles.AllowExponent;
-            //try
-            //{
-            //    if (!(double.Parse(value.Value, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
-            //}
-            //catch
-            //{
-            //    value.AddError( "Недопустимое значение");
-            //}
         }
         //SpecificActivityOfDensePart property
         #endregion

@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Metadata;
-using Collections;
+using Models.Collections;
 using Models;
 using ReactiveUI;
 using System.Collections;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Client_App.Controls.DataGrid;
-using DBRealization;
+using Models.DBRealization;
 using System;
 using Models.Attributes;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -319,262 +319,8 @@ namespace Client_App.ViewModels
                     break;
                 default:
                     IsCanSaveReportEnabled = true;
-                    //switch (FormType)
-                    //{
-                    //    case "1.0":
-                    //        foreach (var item in Storage.Rows10)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "1.1":
-                    //        foreach (var item in Storage.Rows11)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "1.2":
-                    //        foreach (var item in Storage.Rows12)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "1.3":
-                    //        foreach (var item in Storage.Rows13)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "1.4":
-                    //        foreach (var item in Storage.Rows14)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "1.5":
-                    //        foreach (var item in Storage.Rows15)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "1.6":
-                    //        foreach (var item in Storage.Rows16)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "1.7":
-                    //        foreach (var item in Storage.Rows17)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "1.8":
-                    //        foreach (var item in Storage.Rows18)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "1.9":
-                    //        foreach (var item in Storage.Rows19)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.0":
-                    //        foreach (var item in Storage.Rows20)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.1":
-                    //        foreach (var item in Storage.Rows21)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.2":
-                    //        foreach (var item in Storage.Rows22)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.3":
-                    //        foreach (var item in Storage.Rows23)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.4":
-                    //        foreach (var item in Storage.Rows24)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.5":
-                    //        foreach (var item in Storage.Rows25)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.6":
-                    //        foreach (var item in Storage.Rows26)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.7":
-                    //        foreach (var item in Storage.Rows27)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.8":
-                    //        foreach (var item in Storage.Rows28)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.9":
-                    //        foreach (var item in Storage.Rows29)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.10":
-                    //        foreach (var item in Storage.Rows210)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.11":
-                    //        foreach (var item in Storage.Rows211)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //    case "2.12":
-                    //        foreach (var item in Storage.Rows212)
-                    //        {
-                    //            if (!item.Object_Validation())
-                    //            {
-                    //                IsCanSaveReportEnabled = false;
-                    //                return;
-                    //            }
-                    //        }
-                    //        IsCanSaveReportEnabled = true;
-                    //        return;
-                    //}
+                    
+
                     Storage.Rows17.Sum();
                     Storage.Rows18.Sum();
                     Storage.Rows21.Sum();
@@ -591,31 +337,47 @@ namespace Client_App.ViewModels
             Form20? frm = new Form20(); Storage.Rows20.Add(frm); Storage.LastAddedForm = Report.Forms.Form20;
         }
 
+        int GetNumberInOrder(IEnumerable lst)
+        {
+            int maxNum = 1;
+
+            foreach (var item in lst)
+            {
+                var frm = (Form)item;
+                if(frm.NumberInOrder_DB>maxNum)
+                {
+                    maxNum = frm.NumberInOrder_DB;
+                }
+            }
+
+            return maxNum;
+        }
+
         private void _AddRow()
         {
             var frm = FormCreator.Create(FormType);
-            if (FormType == "1.1") { Storage.Rows11.Add((Form11)frm); Storage.LastAddedForm = Report.Forms.Form11; }
-            if (FormType == "1.2") { Storage.Rows12.Add((Form12)frm); Storage.LastAddedForm = Report.Forms.Form12; }
-            if (FormType == "1.3") { Storage.Rows13.Add((Form13)frm); Storage.LastAddedForm = Report.Forms.Form13; }
-            if (FormType == "1.4") { Storage.Rows14.Add((Form14)frm); Storage.LastAddedForm = Report.Forms.Form14; }
-            if (FormType == "1.5") { Storage.Rows15.Add((Form15)frm); Storage.LastAddedForm = Report.Forms.Form15; }
-            if (FormType == "1.6") { Storage.Rows16.Add((Form16)frm); Storage.LastAddedForm = Report.Forms.Form16; }
-            if (FormType == "1.7") { Storage.Rows17.Add((Form17)frm); Storage.LastAddedForm = Report.Forms.Form17; }
-            if (FormType == "1.8") { Storage.Rows18.Add((Form18)frm); Storage.LastAddedForm = Report.Forms.Form18; }
-            if (FormType == "1.9") { Storage.Rows19.Add((Form19)frm); Storage.LastAddedForm = Report.Forms.Form19; }
+            if (FormType == "1.1") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows11); Storage.Rows11.Add((Form11)frm); Storage.LastAddedForm = Report.Forms.Form11; }
+            if (FormType == "1.2") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows12); Storage.Rows12.Add((Form12)frm); Storage.LastAddedForm = Report.Forms.Form12; }
+            if (FormType == "1.3") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows13); Storage.Rows13.Add((Form13)frm); Storage.LastAddedForm = Report.Forms.Form13; }
+            if (FormType == "1.4") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows14); Storage.Rows14.Add((Form14)frm); Storage.LastAddedForm = Report.Forms.Form14; }
+            if (FormType == "1.5") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows15); Storage.Rows15.Add((Form15)frm); Storage.LastAddedForm = Report.Forms.Form15; }
+            if (FormType == "1.6") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows16); Storage.Rows16.Add((Form16)frm); Storage.LastAddedForm = Report.Forms.Form16; }
+            if (FormType == "1.7") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows16); Storage.Rows17.Add((Form17)frm); Storage.LastAddedForm = Report.Forms.Form17; }
+            if (FormType == "1.8") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows17); Storage.Rows18.Add((Form18)frm); Storage.LastAddedForm = Report.Forms.Form18; }
+            if (FormType == "1.9") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows17); Storage.Rows19.Add((Form19)frm); Storage.LastAddedForm = Report.Forms.Form19; }
 
-            if (FormType == "2.1") { Storage.Rows21.Add((Form21)frm); Storage.LastAddedForm = Report.Forms.Form21; }
-            if (FormType == "2.2") { Storage.Rows22.Add((Form22)frm); Storage.LastAddedForm = Report.Forms.Form22; }
-            if (FormType == "2.3") { Storage.Rows23.Add((Form23)frm); Storage.LastAddedForm = Report.Forms.Form23; }
-            if (FormType == "2.4") { Storage.Rows24.Add((Form24)frm); Storage.LastAddedForm = Report.Forms.Form24; }
-            if (FormType == "2.5") { Storage.Rows25.Add((Form25)frm); Storage.LastAddedForm = Report.Forms.Form25; }
-            if (FormType == "2.6") { Storage.Rows26.Add((Form26)frm); Storage.LastAddedForm = Report.Forms.Form26; }
-            if (FormType == "2.7") { Storage.Rows27.Add((Form27)frm); Storage.LastAddedForm = Report.Forms.Form27; }
-            if (FormType == "2.8") { Storage.Rows28.Add((Form28)frm); Storage.LastAddedForm = Report.Forms.Form28; }
-            if (FormType == "2.9") { Storage.Rows29.Add((Form29)frm); Storage.LastAddedForm = Report.Forms.Form29; }
-            if (FormType == "2.10") { Storage.Rows210.Add((Form210)frm); Storage.LastAddedForm = Report.Forms.Form210; }
-            if (FormType == "2.11") { Storage.Rows211.Add((Form211)frm); Storage.LastAddedForm = Report.Forms.Form211; }
-            if (FormType == "2.12") { Storage.Rows212.Add((Form212)frm); Storage.LastAddedForm = Report.Forms.Form212; }
+            if (FormType == "2.1") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows21); Storage.Rows21.Add((Form21)frm); Storage.LastAddedForm = Report.Forms.Form21; }
+            if (FormType == "2.2") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows22); Storage.Rows22.Add((Form22)frm); Storage.LastAddedForm = Report.Forms.Form22; }
+            if (FormType == "2.3") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows23); Storage.Rows23.Add((Form23)frm); Storage.LastAddedForm = Report.Forms.Form23; }
+            if (FormType == "2.4") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows24); Storage.Rows24.Add((Form24)frm); Storage.LastAddedForm = Report.Forms.Form24; }
+            if (FormType == "2.5") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows25); Storage.Rows25.Add((Form25)frm); Storage.LastAddedForm = Report.Forms.Form25; }
+            if (FormType == "2.6") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows26); Storage.Rows26.Add((Form26)frm); Storage.LastAddedForm = Report.Forms.Form26; }
+            if (FormType == "2.7") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows27); Storage.Rows27.Add((Form27)frm); Storage.LastAddedForm = Report.Forms.Form27; }
+            if (FormType == "2.8") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows28); Storage.Rows28.Add((Form28)frm); Storage.LastAddedForm = Report.Forms.Form28; }
+            if (FormType == "2.9") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows29); Storage.Rows29.Add((Form29)frm); Storage.LastAddedForm = Report.Forms.Form29; }
+            if (FormType == "2.10") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows210); Storage.Rows210.Add((Form210)frm); Storage.LastAddedForm = Report.Forms.Form210; }
+            if (FormType == "2.11") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows211); Storage.Rows211.Add((Form211)frm); Storage.LastAddedForm = Report.Forms.Form211; }
+            if (FormType == "2.12") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows212); Storage.Rows212.Add((Form212)frm); Storage.LastAddedForm = Report.Forms.Form212; }
         }
 
         private void _AddNote(string Param)
@@ -651,6 +413,14 @@ namespace Client_App.ViewModels
                     if (item.FormNum.Value == "1.1")
                     {
                         Storage.Rows11.Remove((Form11) item);
+                        foreach (var it in Storage.Rows11)
+                        {
+                            var frm = (Form)item;
+                            if (frm.NumberInOrder_DB > item.NumberInOrder_DB)
+                            {
+                                it.NumberInOrder.Value = it.NumberInOrder_DB - 1;
+                            }
+                        }
                     }
 
                     if (item.FormNum.Value == "1.2")

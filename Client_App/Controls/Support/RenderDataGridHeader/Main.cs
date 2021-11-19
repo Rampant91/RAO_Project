@@ -108,23 +108,23 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get1Header(1.6, 2,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("StartPeriod")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("StartPeriod")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get1Header(1.6, 3,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("EndPeriod")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("EndPeriod")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get1Header(1, 4,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("ExportDate")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("ExportDate")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get1Header(2, 5,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("IsCorrection")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("IsCorrection")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get1Header(1, 6,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("Comments")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("Comments")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
@@ -214,19 +214,19 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get3Header(2, 2,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("Year")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("Year")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get3Header(1, 4,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("ExportDate")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("ExportDate")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get3Header(2, 5,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("IsCorrection")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("IsCorrection")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get1Header(1, 6,
-                ((Form_PropertyAttribute) Type.GetType("Collections.Report,Models").GetProperty("Comments")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("Comments")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 

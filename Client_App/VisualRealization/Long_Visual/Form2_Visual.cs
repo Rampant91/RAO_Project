@@ -1995,7 +1995,7 @@ namespace Client_App.Long_Visual
                 HorizontalAlignment = HorizontalAlignment.Left
             };
             b4.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Наименование разрешительного документа на допустимые выбросы радионуклидов в атмосферу:"));
-            b4.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName27", 100));
+            b4.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName27", 600));
 
             a.Children.Add(b4);
             maingrid.Children.Add(a);
@@ -2298,9 +2298,14 @@ namespace Client_App.Long_Visual
             b2.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
             b2.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru_28", 100));
             b2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, ". Наименование разрешительного документа на сброс:"));
-            b2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName_28", 100));
+            b2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName_28", 600));
             a.Children.Add(b2);
-
+            StackPanel b2a = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
             StackPanel b5 = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
@@ -2317,7 +2322,7 @@ namespace Client_App.Long_Visual
             b5.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "по"));
             b5.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ValidThru1_28", 100));
             b5.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, ". Наименование разрешительного документа на сброс:"));
-            b5.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName1_28", 100));
+            b5.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionDocumentName1_28", 600));
             a.Children.Add(b5);
 
             StackPanel b8 = new StackPanel
@@ -2630,7 +2635,6 @@ namespace Client_App.Long_Visual
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.SetValue(Grid.RowProperty, 2);
-
             Binding b = new Binding
             {
                 Path = "DataContext.Storage.Rows29",
@@ -2638,7 +2642,6 @@ namespace Client_App.Long_Visual
                 NameScope = new WeakReference<INameScope>(scp)
             };
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
-
 
             ContextMenu? cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>

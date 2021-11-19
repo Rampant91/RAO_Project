@@ -115,7 +115,8 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var query = from item in Spravochniks.SprRadionuclids where item.Item1 == value.Value select item.Item1;
+            var tmpstr = value.Value.ToLower().Replace(" ", "");
+            var query = from item in Spravochniks.SprRadionuclids where item.Item1 == tmpstr select item.Item1;
             if (!query.Any())
             {
                 value.AddError("Недопустимое значение");
@@ -150,7 +151,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                AllowedWasteValue_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                AllowedWasteValue_DB = value1;
             }
         }
         private bool AllowedWasteValue_Validation(RamAccess<string> value)
@@ -161,10 +167,14 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value.Equals("прим."))
             {
                 return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
@@ -206,7 +216,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                FactedWasteValue_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                FactedWasteValue_DB = value1;
             }
         }
         private bool FactedWasteValue_Validation(RamAccess<string> value)
@@ -217,10 +232,14 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value.Equals("-"))
             {
                 return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
             string tmp = value1;
             int len = tmp.Length;
@@ -269,7 +288,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                WasteOutbreakPreviousYear_DB = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'E');
+                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                {
+                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                }
+                WasteOutbreakPreviousYear_DB = value1;
             }
         }
         private bool WasteOutbreakPreviousYear_Validation(RamAccess<string> value)
@@ -280,10 +304,14 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'E');
             if (value.Value.Equals("-"))
             {
                 return true;
+            }
+            var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+            {
+                value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
             string tmp = value1;
             int len = tmp.Length;

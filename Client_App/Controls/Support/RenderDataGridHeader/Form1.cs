@@ -2695,7 +2695,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                 ((Form_PropertyAttribute) Type.GetType("Models.Note,Models").GetProperty("GraphNumber")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
-            stck.Add(GetNotesHeader(1, 3,
+            stck.Add(GetNotesHeader(6, 3,
                 ((Form_PropertyAttribute) Type.GetType("Models.Note,Models").GetProperty("Comment")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));

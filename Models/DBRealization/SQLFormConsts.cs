@@ -1,4 +1,4 @@
-﻿namespace DBRealization
+﻿namespace Models.DBRealization
 {
     public class SQLFormConsts
     {
