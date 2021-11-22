@@ -379,7 +379,7 @@ namespace Models
         public string Telephone_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Телефон руководителя")]
+        [Attributes.Form_Property("Телефон")]
         public RamAccess<string> Telephone
         {
             get
@@ -417,7 +417,7 @@ namespace Models
         public string Fax_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Факс руководителя")]
+        [Attributes.Form_Property("Факс")]
         public RamAccess<string> Fax
         {
             get
@@ -455,7 +455,7 @@ namespace Models
         public string Email_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property("Эл. почта руководителя")]
+        [Attributes.Form_Property("Эл. почта")]
         public RamAccess<string> Email
         {
             get
