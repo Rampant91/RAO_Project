@@ -451,7 +451,7 @@ namespace Models
         #region Owner
         public string Owner_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("правообладатель")]
+        [Attributes.Form_Property("код ОКПО правообладателя")]
         public RamAccess<string> Owner
         {
             get
@@ -516,15 +516,16 @@ namespace Models
                 ProviderOrRecieverOKPO_DB = value.Value; OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
-
-
         private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")
             {
-                ProviderOrRecieverOKPO_DB = ((RamAccess<string>)Value).Value;
+                var value1 = ((RamAccess<string>)Value).Value;
+                value1 = value1.ToUpper();
+                ProviderOrRecieverOKPO_DB = value1;
             }
-        } private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
+        }
+        private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -538,7 +539,7 @@ namespace Models
                 //    value.AddError( "Заполните примечания");
                 return true;
             }
-            if (OKSM.Contains(value.Value))
+            if (OKSM.Contains(value.Value.ToUpper()))
             {
                 return true;
             }

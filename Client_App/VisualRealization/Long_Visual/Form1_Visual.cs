@@ -75,7 +75,7 @@ namespace Client_App.Long_Visual
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
-            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + Property, 200));
+            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + Property, 400));
 
             Grid grd2 = new Grid()
             {
@@ -89,7 +89,7 @@ namespace Client_App.Long_Visual
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
-            grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 200));
+            grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
 
             pnl.Children.Add(grd);
             pnl.Children.Add(grd2);
@@ -190,8 +190,19 @@ namespace Client_App.Long_Visual
             maingrid.Children.Add(pnl);
 
             string BindingPrefix = "Storage.Rows10";
+            Grid grd = new Grid()
+            {
+                Width = 500
+            };
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
-            pnl.Children.Add(Create10Row("OrganUprav", BindingPrefix));
+            grd.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
+                ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty("OrganUprav")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + "OrganUprav", 400));
+            pnl.Children.Add(grd);
             pnl.Children.Add(Create10Row("SubjectRF", BindingPrefix));
             pnl.Children.Add(Create10Row("JurLico", BindingPrefix));
             pnl.Children.Add(Create10Row("ShortJurLico", BindingPrefix));

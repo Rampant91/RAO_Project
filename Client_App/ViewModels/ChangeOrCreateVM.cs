@@ -157,98 +157,6 @@ namespace Client_App.ViewModels
         }
         public void SaveReport()
         {
-            #region SomeShit
-            int k = 1;
-            switch (Storage.LastAddedForm)
-            {
-                case Report.Forms.Form11:
-                    foreach (var item in Storage.Rows11)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form12:
-                    foreach (var item in Storage.Rows12)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form13:
-                    foreach (var item in Storage.Rows13)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form14:
-                    foreach (var item in Storage.Rows14)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form15:
-                    foreach (var item in Storage.Rows15)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form16:
-                    foreach (var item in Storage.Rows16)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form17:
-                    foreach (var item in Storage.Rows17)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form18:
-                    foreach (var item in Storage.Rows18)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form19:
-                    foreach (var item in Storage.Rows19)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form21:
-                    foreach (var item in Storage.Rows21)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form22:
-                    foreach (var item in Storage.Rows22)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form23:
-                    foreach (var item in Storage.Rows23)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form24:
-                    foreach (var item in Storage.Rows24)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form25:
-                    foreach (var item in Storage.Rows25)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form26:
-                    foreach (var item in Storage.Rows26)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form27:
-                    foreach (var item in Storage.Rows27)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form28:
-                    foreach (var item in Storage.Rows28)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form29:
-                    foreach (var item in Storage.Rows29)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form210:
-                    foreach (var item in Storage.Rows210)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form211:
-                    foreach (var item in Storage.Rows211)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                case Report.Forms.Form212:
-                    foreach (var item in Storage.Rows212)
-                        item.NumberInOrder.Value = k++;
-                    break;
-                default: break;
-            }
-#endregion
-
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 foreach (Avalonia.Controls.Window? item in desktop.Windows)
@@ -265,27 +173,19 @@ namespace Client_App.ViewModels
                         {
                             var tmp = new Reports();
                             tmp.Master = Storage;
+                            if(tmp.Master.Rows10!=null)
+                                tmp.Master.Rows10[1].OrganUprav = tmp.Master.Rows10[0].OrganUprav;
+                            if(tmp.Master.Rows20!=null)
+                                tmp.Master.Rows20[1].OrganUprav = tmp.Master.Rows20[0].OrganUprav;
                             t.DBO.Reports_Collection.Add(tmp);
                         }
 
                         var dbm = StaticConfiguration.DBModel;
                         dbm.SaveChanges();
                         item.Close();
+                        break;
                     }
                 }
-            }
-            switch (Storage.LastAddedForm)
-            {
-                case Report.Forms.Form10:
-                    Storage.OkpoRep = Storage.OkpoRep;
-                    Storage.RegNoRep = Storage.RegNoRep;
-                    Storage.ShortJurLicoRep = Storage.ShortJurLicoRep;
-                    break;
-                case Report.Forms.Form20:
-                    Storage.OkpoRep1 = Storage.OkpoRep1;
-                    Storage.RegNoRep1 = Storage.RegNoRep1;
-                    Storage.ShortJurLicoRep1 = Storage.ShortJurLicoRep1;
-                    break;
             }
         }
 

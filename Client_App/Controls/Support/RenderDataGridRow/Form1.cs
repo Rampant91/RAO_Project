@@ -940,7 +940,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get2Row(1.5, Row, 9, "CreationDate", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 10, "SignedServicePeriod", scp, TopName));
             stck.Children.Add(Get2Row(2, Row, 11, "PropertyCode", scp, TopName));
-            stck.Children.Add(Get2Row(1.5, Row, 12, "Owner", scp, TopName));
+            stck.Children.Add(Get2Row(1.7, Row, 12, "Owner", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 13, "DocumentVid", scp, TopName));
             stck.Children.Add(Get2Row(1.5, Row, 14, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get2Row(1, Row, 15, "DocumentDate", scp, TopName));

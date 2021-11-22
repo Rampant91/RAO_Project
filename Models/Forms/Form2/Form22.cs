@@ -834,13 +834,13 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region QuantityOZIII_DB
-        public int? QuantityOZIII_DB { get; set; } = null; [NotMapped]
+        public string QuantityOZIII_DB { get; set; } = null; [NotMapped]
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
-        public RamAccess<int?> QuantityOZIII//SUMMARIZABLE
+        public RamAccess<string> QuantityOZIII//SUMMARIZABLE
         {
             get
             {
-                    var tmp = new RamAccess<int?>(QuantityOZIII_Validation, QuantityOZIII_DB);//OK
+                    var tmp = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);//OK
                     tmp.PropertyChanged += QuantityOZIIIValueChanged;
                     return tmp;
             }
@@ -853,22 +853,36 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         // positive int.
 
         private void QuantityOZIIIValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                QuantityOZIII_DB = ((RamAccess<int?>)Value).Value;
-}
-}
-private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
+        {
+            if (args.PropertyName == "Value")
+            {
+                QuantityOZIII_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool QuantityOZIII_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value.Equals("-"))
             {
                 return true;
             }
-            if ((int)value.Value <= 0)
+            try
             {
-                value.AddError("Недопустимое значение"); return false;
+                if (int.Parse(value.Value) <= 0)
+                {
+                    value.AddError("Число должно быть больше нуля");
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
