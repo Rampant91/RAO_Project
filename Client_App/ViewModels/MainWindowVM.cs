@@ -57,8 +57,18 @@ namespace Client_App.ViewModels
 
             if(File.Exists(StaticConfiguration.DBPath))
             {
-                var t = dbm.Database.GetMigrations();
-                dbm.Database.Migrate();
+                try
+                {
+                    dbm.Database.Migrate();
+                }
+                catch (Exception e)
+                {
+                    StaticConfiguration.DBPath = Path.Combine(Path.GetDirectoryName(StaticConfiguration.DBPath),Path.GetFileNameWithoutExtension(StaticConfiguration.DBPath) + "_2.raodb");
+                    StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
+                    
+                    dbm = StaticConfiguration.DBModel;
+                    dbm.Database.EnsureCreated();
+                }
            }
             else
             {

@@ -401,10 +401,12 @@ o => o.Pagination,
                         {
                             if (!Name.Contains("Note"))
                             {
-                                foreach (var item in Rows[i].Cells)
+                                var lst = Rows[i].Cells;
+                                var cnt = lst.Count();
+                                for (int n =2;n<cnt;n++)
                                 {
-                                    item.Value.Background = ChooseColor;
-                                    SelectedCells.Add(item.Value);
+                                    Rows[i,n].Background = ChooseColor;
+                                    SelectedCells.Add(Rows[i,n]);
                                 }
                             }
                             else
@@ -952,7 +954,8 @@ o => o.Pagination,
 
             if (args.Key == Key.Delete)
             {
-                foreach (var item in SelectedCells)
+                var lst = SelectedCells.ToList();
+                foreach (var item in lst)
                 {
                     if (item is Cell)
                     {
