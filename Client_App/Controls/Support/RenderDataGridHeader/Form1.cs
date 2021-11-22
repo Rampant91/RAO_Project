@@ -175,7 +175,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("OperationDate")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,2
             //));
-            stck.Add(Get1Header(new double[3] { 1,1,2 }, 2, new string[3] {
+            stck.Add(Get1Header(new double[3] { 0.9,0.9,1.8 }, 2, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 "Сведения об операции" }, true, 1));
@@ -219,7 +219,8 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("SignedServicePeriod")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,12
             //));
-            stck.Add(Get1Header(new double[11] { 2.5, 0.5, 1,1.5,1,1,1.7,1.5,1,1,12.7}, 3, new string[11] {
+            //stck.Add(Get1Header(new double[11] { 2.5, 0.5, 1,1.5,1,1,1.7,1.5,1,1,12.7}, 3, new string[11] {
+            stck.Add(Get1Header(new double[11] { 2.5, 1.5, 1,1.5,1,1,1.53,1.35,0.9,0.9,13.18}, 3, new string[11] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -239,7 +240,8 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("Owner")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,14
             //));
-            stck.Add(Get1Header(new double[3] { 2, 2.5, 4.5 }, 4, new string[3] {
+            //stck.Add(Get1Header(new double[3] { 2, 2.5, 4.5 }, 4, new string[3] {
+            stck.Add(Get1Header(new double[3] { 1.8, 2.5, 4.3 }, 4, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 "Право собственности на ЗРИ" }, true, 13));
@@ -251,7 +253,8 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("DocumentDate")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,17
             //));
-            stck.Add(Get1Header(new double[4] { 1, 1.5, 1, 3.5 }, 5, new string[4] {
+            //stck.Add(Get1Header(new double[4] { 1, 1.5, 1, 3.5 }, 5, new string[4] {
+            stck.Add(Get1Header(new double[4] { 0.9, 1.5, 0.9, 3.3 }, 5, new string[4] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("DocumentVid").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("DocumentNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("DocumentDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -264,7 +267,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("TransporterOKPO")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,19
             //));
-            stck.Add(Get1Header(new double[3] { 2, 2, 4 }, 6, new string[3] {
+            stck.Add(Get1Header(new double[3] { 1.8, 1.8, 3.6 }, 6, new string[3] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form11,Models").GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 "Код ОКПО" }, true, 18));
