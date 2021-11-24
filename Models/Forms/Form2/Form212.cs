@@ -270,19 +270,25 @@ private bool Radionuclids_Validation(RamAccess<string> value)//TODO
 
 
        private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                ProviderOrRecieverOKPO_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
+       {
+            if (args.PropertyName == "Value")
+            {
+                var value1 = ((RamAccess<string>)Value).Value;
+                value1 = value1.ToUpper();
+                ProviderOrRecieverOKPO_DB = value1;
+            }
+       }
+        private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            if (OKSM.Contains(value.Value.ToUpper()))
+            {
+                return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {

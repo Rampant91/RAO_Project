@@ -173,10 +173,16 @@ namespace Client_App.ViewModels
                         {
                             var tmp = new Reports();
                             tmp.Master = Storage;
-                            if(tmp.Master.Rows10!=null)
+                            if (tmp.Master.Rows10 != null)
+                            {
                                 tmp.Master.Rows10[1].OrganUprav = tmp.Master.Rows10[0].OrganUprav;
-                            if(tmp.Master.Rows20!=null)
+                                tmp.Master.Rows10[1].RegNo = tmp.Master.Rows10[0].RegNo;
+                            }
+                            if (tmp.Master.Rows20 != null)
+                            {
                                 tmp.Master.Rows20[1].OrganUprav = tmp.Master.Rows20[0].OrganUprav;
+                                tmp.Master.Rows20[1].RegNo = tmp.Master.Rows20[0].RegNo;
+                            }
                             t.DBO.Reports_Collection.Add(tmp);
                         }
 
