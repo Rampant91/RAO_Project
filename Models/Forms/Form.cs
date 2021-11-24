@@ -125,12 +125,14 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
-        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true)
         {
+            return 0;
         }
 
-        public static void ExcelHeader(ExcelWorksheet worksheet)
+        public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
+            return 0;
         }
         #endregion
     }

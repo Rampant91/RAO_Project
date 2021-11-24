@@ -60,17 +60,19 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
-        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
-            base.ExcelRow(worksheet, Row);
-            worksheet.Cells[Row, 1].Value = NumberInOrder_DB;
+            worksheet.Cells[Row, Column].Value = NumberInOrder_DB;
+
+            return 1;
         }
 
-        public static void ExcelHeader(ExcelWorksheet worksheet)
+        public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column,bool Transpon=true)
         {
-            Form.ExcelHeader(worksheet);
-            worksheet.Cells[1, 1].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form21,Models").GetProperty(nameof(NumberInOrder))
+            worksheet.Cells[Row, Column].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form21,Models").GetProperty(nameof(NumberInOrder))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+
+            return 1;
         }
         #endregion
     }

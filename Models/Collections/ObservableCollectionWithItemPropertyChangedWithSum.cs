@@ -813,12 +813,12 @@ namespace Models.Collections
         }
 
         #region IExcel
-        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true)
         {
             throw new System.NotImplementedException();
         }
 
-        public void ExcelHeader(ExcelWorksheet worksheet)
+        public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             throw new System.NotImplementedException();
         }

@@ -155,6 +155,7 @@ namespace Client_App.ViewModels
         {
             return _isCanSaveReportEnabled;
         }
+
         public void SaveReport()
         {
             #region SomeShit

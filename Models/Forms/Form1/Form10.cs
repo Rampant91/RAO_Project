@@ -902,75 +902,73 @@ namespace Models
 
         #region IExcel
 
-        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
-            base.ExcelRow(worksheet, Row);
+            base.ExcelRow(worksheet,Row,Column,Transpon);
 
-            worksheet.Cells[2, Row].Value = OrganUprav_DB;
-            worksheet.Cells[3, Row].Value = JurLico_DB;
-            worksheet.Cells[4, Row].Value = ShortJurLico_DB;
-            worksheet.Cells[5, Row].Value = JurLicoAddress_DB;
-            worksheet.Cells[6, Row].Value = JurLicoFactAddress_DB;
-            worksheet.Cells[7, Row].Value = GradeFIO_DB;
-            worksheet.Cells[8, Row].Value = Telephone_DB;
-            worksheet.Cells[9, Row].Value = Fax_DB;
-            worksheet.Cells[10, Row].Value = Email_DB;
-            worksheet.Cells[11, Row].Value = Okpo_DB;
-            worksheet.Cells[12, Row].Value = Okved_DB;
-            worksheet.Cells[13, Row].Value = Okogu_DB;
-            worksheet.Cells[14, Row].Value = Oktmo_DB;
-            worksheet.Cells[15, Row].Value = Inn_DB;
-            worksheet.Cells[16, Row].Value = Kpp_DB;
-            worksheet.Cells[17, Row].Value = Okopf_DB;
-            worksheet.Cells[18, Row].Value = Okfs_DB;
+            worksheet.Cells[Row, Column].Value = OrganUprav_DB;
+            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = JurLico_DB;
+            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ShortJurLico_DB;
+            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = JurLicoAddress_DB;
+            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = JurLicoFactAddress_DB;
+            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = GradeFIO_DB;
+            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = Telephone_DB;
+            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = Fax_DB;
+            worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = Email_DB;
+            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = Okpo_DB;
+            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = Okved_DB;
+            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = Okogu_DB;
+            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = Oktmo_DB;
+            worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = Inn_DB;
+            worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = Kpp_DB;
+            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = Okopf_DB;
+            worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = Okfs_DB;
+
+            return 17;
         }
 
-        public static void ExcelHeader(ExcelWorksheet worksheet,int Column)
+        public static int ExcelHeader(ExcelWorksheet worksheet,int Row, int Column, bool Transpon = true)
         {
-            Form.ExcelHeader(worksheet);
-            if (Column == 1)
-            {
-                worksheet.Cells[1, Column].Value = "Юридическое лицо";
-            }
-            else
-            {
-                worksheet.Cells[1, Column].Value = "Обособленное подразделение";
-            }
+            var cnt = Form.ExcelHeader(worksheet,Row,Column,Transpon);
+            Column = Column + (Transpon == true ? cnt : 0);
+            Row = Row+(Transpon == false ? cnt : 0);
 
-            worksheet.Cells[2, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(OrganUprav))
+            worksheet.Cells[Row, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(OrganUprav))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[3, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(JurLico))
+            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(JurLico))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[4, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(ShortJurLico))
+            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(ShortJurLico))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[5, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(JurLicoAddress))
+            worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(JurLicoAddress))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[6, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(JurLicoFactAddress))
+            worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(JurLicoFactAddress))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[7, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(GradeFIO))
+            worksheet.Cells[Row + (Transpon == false ? 5 : 0), Column + (Transpon == true ? 5 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(GradeFIO))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[8, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Telephone))
+            worksheet.Cells[Row + (Transpon == false ? 6 : 0), Column + (Transpon == true ? 6 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Telephone))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[9, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Fax))
+            worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Fax))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[10, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Email))
+            worksheet.Cells[Row + (Transpon == false ? 8 : 0), Column + (Transpon == true ? 8 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Email))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[11, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okpo))
+            worksheet.Cells[Row + (Transpon == false ? 9 : 0), Column + (Transpon == true ? 9 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okpo))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[12, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okved))
+            worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okved))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[13, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okogu))
+            worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okogu))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[14, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Oktmo))
+            worksheet.Cells[Row + (Transpon == false ? 12 : 0), Column + (Transpon == true ? 12 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Oktmo))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[15, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Inn))
+            worksheet.Cells[Row + (Transpon == false ? 13 : 0), Column + (Transpon == true ? 13 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Inn))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[16, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Kpp))
+            worksheet.Cells[Row + (Transpon == false ? 14 : 0), Column + (Transpon == true ? 14 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Kpp))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[17, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okopf))
+            worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okopf))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[18, Column].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okfs))
+            worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okfs))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+
+            return 17;
         }
 
         #endregion

@@ -364,23 +364,25 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
-        public void ExcelRow(ExcelWorksheet worksheet, int Row)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
-            base.ExcelRow(worksheet, Row);
-            worksheet.Cells[Row, 1].Value = NumberInOrder_DB;
-            worksheet.Cells[Row, 2].Value = OperationCode_DB;
-            worksheet.Cells[Row, 3].Value = OperationDate_DB;
+            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = NumberInOrder_DB;
+            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = OperationCode_DB;
+            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = OperationDate_DB;
+
+            return 3;
         }
 
-        public static void ExcelHeader(ExcelWorksheet worksheet)
+        public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
-            Form.ExcelHeader(worksheet);
-            worksheet.Cells[1, 1].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(NumberInOrder))
+            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(NumberInOrder))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[1, 2].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationCode))
+            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationCode))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[1, 3].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationDate))
+            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationDate))
                 .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+
+            return 3;
         }
         #endregion
     }

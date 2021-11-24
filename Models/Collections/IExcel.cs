@@ -9,6 +9,6 @@ namespace Models.Collections
 {
     public interface IExcel
     {
-        void ExcelRow(ExcelWorksheet worksheet,int Row);
+        int ExcelRow(ExcelWorksheet worksheet,int Row,int Column,bool Tranpon=true);
     }
 }
