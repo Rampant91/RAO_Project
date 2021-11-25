@@ -1672,8 +1672,8 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("PackType_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("QuantityOZIII_DB")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("QuantityOZIII_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
