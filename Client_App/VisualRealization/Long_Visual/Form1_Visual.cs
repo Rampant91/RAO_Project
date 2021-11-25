@@ -29,6 +29,7 @@ namespace Client_App.Long_Visual
 
         public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width)
         {
+            return new Cell(textProp, false)
             {
                 Height = height,
                 Width = width,
@@ -42,7 +43,19 @@ namespace Client_App.Long_Visual
 
         public static TextBlock CreateTextBlock(string margin, int columnProp, int height, string text)
         {
+            if (width != 0)
             {
+                return new TextBlock
+                {
+                    Width = width,
+                    Height = height,
+                    Margin = Thickness.Parse(margin),
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                    Text = text,
+                    [Grid.ColumnProperty] = columnProp
+                };
+            }
             return new TextBlock
             {
                 Height = height,
