@@ -558,7 +558,6 @@ namespace Models
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
                 value.AddError("Недопустимое значение"); return false;
-
             }
             var mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))

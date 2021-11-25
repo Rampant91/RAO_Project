@@ -268,12 +268,12 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            DateTimeOffset date = DateTimeOffset.Parse(tmp);
-            if (date.Date > DateTimeOffset.Now.Date)
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
+            //DateTimeOffset date = DateTimeOffset.Parse(tmp);
+            //if (date.Date > DateTimeOffset.Now.Date)
+            //{
+            //    value.AddError("Недопустимое значение");
+            //    return false;
+            //}
             return true;
         }
         protected override bool DocumentNumber_Validation(RamAccess<string> value)
