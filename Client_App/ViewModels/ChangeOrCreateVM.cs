@@ -248,7 +248,7 @@ namespace Client_App.ViewModels
                     break;
                 default: break;
             }
-#endregion
+            #endregion
 
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -256,7 +256,7 @@ namespace Client_App.ViewModels
                 {
                     if (item is Views.FormChangeOrCreate)
                     {
-                        var t =item as Views.FormChangeOrCreate;
+                        var t = item as Views.FormChangeOrCreate;
                         if (t.Str != null)
                         {
                             t.Str.Report_Collection.Add(Storage);
@@ -275,59 +275,16 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-            switch (Storage.LastAddedForm)
-            {
-                case Report.Forms.Form10:
-                    Storage.OkpoRep = Storage.OkpoRep;
-                    Storage.RegNoRep = Storage.RegNoRep;
-                    Storage.ShortJurLicoRep = Storage.ShortJurLicoRep;
-                    break;
-                case Report.Forms.Form20:
-                    Storage.OkpoRep1 = Storage.OkpoRep1;
-                    Storage.RegNoRep1 = Storage.RegNoRep1;
-                    Storage.ShortJurLicoRep1 = Storage.ShortJurLicoRep1;
-                    break;
-            }
         }
 
         private void _CheckReport()
         {
-            switch (Storage.LastAddedForm)
-            {
-                case Report.Forms.Form10:
-                    var k = Storage.Rows10.Any() ? Storage.Rows10 : null;
-                    bool a = false;
-                    if (k != null)
-                    {
-                        foreach (var item in k)
-                        {
-                            a = a || (item.RegNo_DB != "-");
-                        }
-                    }
-                    IsCanSaveReportEnabled = a;
-                    break;
-                case Report.Forms.Form20:
-                    var n = Storage.Rows20.Any() ? Storage.Rows20 : null;
-                    bool b = false;
-                    if (n != null)
-                    {
-                        foreach (var item in n)
-                        {
-                            b = b || (item.RegNo_DB != "-");
-                        }
-                    }
-                    IsCanSaveReportEnabled = b;
-                    break;
-                default:
-                    IsCanSaveReportEnabled = true;
-                    
 
-                    Storage.Rows17.Sum();
-                    Storage.Rows18.Sum();
-                    Storage.Rows21.Sum();
-                    Storage.Rows22.Sum();
-                    break;
-            }
+            Storage.Rows17.Sum();
+            Storage.Rows18.Sum();
+            Storage.Rows21.Sum();
+            Storage.Rows22.Sum();
+            IsCanSaveReportEnabled = true;
         }
         public void _AddRow10()
         {
@@ -407,21 +364,13 @@ namespace Client_App.ViewModels
             {
                 lst.Add((Models.Abstracts.Form)item);
             }
-            foreach (Models.Abstracts.Form? item in lst)
+            foreach (Models.Abstracts.Form item in lst)
             {
                 if (item != null)
                 {
                     if (item.FormNum.Value == "1.1")
                     {
                         Storage.Rows11.Remove((Form11) item);
-                        foreach (var it in Storage.Rows11)
-                        {
-                            var frm = (Form)item;
-                            if (frm.NumberInOrder_DB > item.NumberInOrder_DB)
-                            {
-                                it.NumberInOrder.Value = it.NumberInOrder_DB - 1;
-                            }
-                        }
                     }
 
                     if (item.FormNum.Value == "1.2")
@@ -522,6 +471,13 @@ namespace Client_App.ViewModels
                     if (item.FormNum.Value == "2.12")
                     {
                         Storage.Rows212.Remove((Form212) item);
+                    }
+                    foreach (Form it in Storage[item.FormNum_DB])
+                    {
+                        if (it.NumberInOrder_DB > item.NumberInOrder_DB)
+                        {
+                            it.NumberInOrder.Value = it.NumberInOrder_DB - 1;
+                        }
                     }
                 }
             }

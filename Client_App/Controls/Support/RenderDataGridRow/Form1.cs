@@ -764,47 +764,24 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         private static Control Get1Row(double starWidth, int Row, int Column, string Binding, INameScope scp,
             string TopName)
         {
-            if (Column != 1)
+            var cell = new Cell(Binding, false)
             {
-                var cell = new Cell(Binding, false)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                Binding b = new()
-                {
-                    Path = "Items[" + (Row - 1) + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(StyledElement.DataContextProperty, b);
-
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
-
-                return cell;
-            }
-            else
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
             {
-                var cell = new Cell(Binding, true)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                var sub = cell.GetSubject(Cell.CellRowProperty);
-                cell.Bind(StyledElement.DataContextProperty, sub.Select(x =>
-                {
-                    var obj = new RamAccess<int>(null, x);
-                    return obj;
-                }));
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
 
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
 
-                return cell;
-            }
+            return cell;
         }
 
         private static Control Get1(int Row, INameScope scp, string TopName)

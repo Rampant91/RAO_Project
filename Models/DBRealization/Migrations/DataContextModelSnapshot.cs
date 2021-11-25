@@ -235,9 +235,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RegNo_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("ShortJurLico_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -248,8 +245,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_10");
                 });
@@ -341,9 +336,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("Radionuclids_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<float?>("SignedServicePeriod_DB")
                         .HasColumnType("FLOAT");
 
@@ -354,8 +346,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_11");
                 });
@@ -441,9 +431,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("ProviderOrRecieverOKPO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<float?>("SignedServicePeriod_DB")
                         .HasColumnType("FLOAT");
 
@@ -451,8 +438,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_12");
                 });
@@ -541,9 +526,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("Radionuclids_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("TransporterOKPO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -551,8 +533,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_13");
                 });
@@ -641,9 +621,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("Radionuclids_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<short?>("Sort_DB")
                         .HasColumnType("SMALLINT");
 
@@ -654,8 +631,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_14");
                 });
@@ -741,9 +716,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RefineOrSortRAOCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("StatusRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -763,8 +735,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_15");
                 });
@@ -853,9 +823,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RefineOrSortRAOCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("StatusRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -881,8 +848,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_16");
                 });
@@ -1004,9 +969,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RefineOrSortRAOCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("SpecificActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1053,8 +1015,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BOOLEAN");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_17");
                 });
@@ -1149,9 +1109,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RefineOrSortRAOCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("SaltConcentration_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1204,8 +1161,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BOOLEAN");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_18");
                 });
@@ -1264,12 +1219,7 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("Radionuclids_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_19");
                 });
@@ -1337,9 +1287,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RegNo_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("ShortJurLico_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1350,8 +1297,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_20");
                 });
@@ -1428,9 +1373,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<bool>("RefineMachineName_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("StatusRAOIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1459,8 +1401,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_21");
                 });
@@ -1507,9 +1447,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("PlotName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("WasteDensityAlpha_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1517,8 +1454,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_210");
                 });
@@ -1556,9 +1491,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("Radionuclids_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("SpecificActivityOfDensePart_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1569,8 +1501,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_211");
                 });
@@ -1608,12 +1538,7 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("Radionuclids_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_212");
                 });
@@ -1675,9 +1600,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<int?>("QuantityOZIII_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("StatusRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1709,8 +1631,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_22");
                 });
@@ -1757,9 +1677,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<int?>("QuantityOZIII_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("StoragePlaceCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1773,8 +1690,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_23");
                 });
@@ -1845,12 +1760,7 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("QuantityTransferredToAnother_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_24");
                 });
@@ -1894,9 +1804,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<int?>("Quantity_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("StoragePlaceCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1904,8 +1811,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_25");
                 });
@@ -1943,9 +1848,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RadionuclidName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("SupposedWasteSource_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1953,8 +1855,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_26");
                 });
@@ -1989,15 +1889,10 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RadionuclidName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("WasteOutbreakPreviousYear_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_27");
                 });
@@ -2032,9 +1927,6 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RemovedWasteVolume_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("WasteRecieverName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -2042,8 +1934,6 @@ namespace Models.DBRealization.Migrations
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_28");
                 });
@@ -2075,15 +1965,10 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("RadionuclidName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("WasteSourceName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
 
                     b.ToTable("form_29");
                 });
@@ -2133,167 +2018,6 @@ namespace Models.DBRealization.Migrations
                     b.Navigation("Master_DB");
                 });
 
-            modelBuilder.Entity("Models.Form10", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows10")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form11", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows11")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form12", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows12")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form13", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows13")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form14", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows14")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form15", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows15")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form16", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows16")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form17", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows17")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form18", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows18")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form19", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows19")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form20", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows20")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form21", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows21")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form210", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows210")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form211", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows211")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form212", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows212")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form22", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows22")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form23", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows23")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form24", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows24")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form25", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows25")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form26", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows26")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form27", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows27")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form28", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows28")
-                        .HasForeignKey("ReportId");
-                });
-
-            modelBuilder.Entity("Models.Form29", b =>
-                {
-                    b.HasOne("Models.Collections.Report", null)
-                        .WithMany("Rows29")
-                        .HasForeignKey("ReportId");
-                });
-
             modelBuilder.Entity("Models.Note", b =>
                 {
                     b.HasOne("Models.Collections.Report", null)
@@ -2309,52 +2033,6 @@ namespace Models.DBRealization.Migrations
             modelBuilder.Entity("Models.Collections.Report", b =>
                 {
                     b.Navigation("Notes");
-
-                    b.Navigation("Rows10");
-
-                    b.Navigation("Rows11");
-
-                    b.Navigation("Rows12");
-
-                    b.Navigation("Rows13");
-
-                    b.Navigation("Rows14");
-
-                    b.Navigation("Rows15");
-
-                    b.Navigation("Rows16");
-
-                    b.Navigation("Rows17");
-
-                    b.Navigation("Rows18");
-
-                    b.Navigation("Rows19");
-
-                    b.Navigation("Rows20");
-
-                    b.Navigation("Rows21");
-
-                    b.Navigation("Rows210");
-
-                    b.Navigation("Rows211");
-
-                    b.Navigation("Rows212");
-
-                    b.Navigation("Rows22");
-
-                    b.Navigation("Rows23");
-
-                    b.Navigation("Rows24");
-
-                    b.Navigation("Rows25");
-
-                    b.Navigation("Rows26");
-
-                    b.Navigation("Rows27");
-
-                    b.Navigation("Rows28");
-
-                    b.Navigation("Rows29");
                 });
 
             modelBuilder.Entity("Models.Collections.Reports", b =>

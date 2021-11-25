@@ -230,7 +230,8 @@ namespace Models.Collections
 
         #region  Forms10
         ObservableCollectionWithItemPropertyChanged<Form10> Rows10_DB;
-        public virtual ObservableCollectionWithItemPropertyChanged<Form10> Rows10
+        [NotMapped]
+        public  ObservableCollectionWithItemPropertyChanged<Form10> Rows10
         {
             get
             {

@@ -42,6 +42,23 @@ namespace Client_App.Views
 
             _param = rep.FormNum_DB;
 
+            if (param == "1.0")
+            {
+                if (rep.Rows10.Count == 0)
+                {
+                    tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
+                    tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
+                }
+            }
+            if (param == "2.0")
+            {
+                if (rep.Rows20.Count == 0)
+                {
+                    tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
+                    tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
+                }
+            }
+
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
@@ -58,6 +75,23 @@ namespace Client_App.Views
 
             tmp.FormType = param;
             DataContext = tmp;
+
+            if (param == "1.0")
+            {
+                if (reps.Master.Rows10.Count == 0)
+                {
+                    tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
+                    tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
+                }
+            }
+            if (param == "2.0")
+            {
+                if (reps.Master.Rows20.Count == 0)
+                {
+                    tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
+                    tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
+                }
+            }
 
             Str = reps;
             _param = param;

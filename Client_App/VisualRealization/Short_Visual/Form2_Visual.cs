@@ -114,13 +114,28 @@ namespace Client_App.Short_Visual
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
             ContextMenu? cntx = new ContextMenu();
+            List<MenuItem> excelitems = new List<MenuItem>
+            {
+                new MenuItem
+                {
+                    Header = "Для печати",
+                    [!MenuItem.CommandProperty] = new Binding("Print_Excel_Export"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[3].SelectedItems"),
+                },
+                new MenuItem
+                {
+                    Header = "Для выгрузки",
+                    [!MenuItem.CommandProperty] = new Binding("Excel_Export"),
+                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[3].SelectedItems"),
+                }
+            };
+
             List<MenuItem> itms = new List<MenuItem>
             {
                 new MenuItem
                 {
+                    Items=excelitems,
                     Header = "Экспорт Excel",
-                    [!MenuItem.CommandProperty] = new Binding("Excel_Export"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 },
                 new MenuItem
                 {
