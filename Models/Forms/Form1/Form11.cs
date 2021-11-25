@@ -445,7 +445,9 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                CreatorOKPO_DB = ((RamAccess<string>)Value).Value;
+                var value1 = ((RamAccess<string>)Value).Value;
+                value1 = value1.ToUpper();
+                CreatorOKPO_DB = value1;
             }
         }
         private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
@@ -462,7 +464,7 @@ namespace Models
                 //    value.AddError("Заполните примечание");
                 return false;
             }
-            if (OKSM.Contains(value.Value))
+            if (OKSM.Contains(value.Value.ToUpper()))
             {
                 return true;
             }
@@ -703,7 +705,9 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                ProviderOrRecieverOKPO_DB = ((RamAccess<string>)Value).Value;
+                var value1 = ((RamAccess<string>)Value).Value;
+                value1 = value1.ToUpper();
+                ProviderOrRecieverOKPO_DB = value1;
             }
         }
         private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
@@ -718,6 +722,10 @@ namespace Models
             {
                 //if ((ProviderOrRecieverOKPONote == null) || ProviderOrRecieverOKPONote.Equals(""))
                 //    value.AddError("Заполните примечание");
+                return true;
+            }
+            if (OKSM.Contains(value.Value.ToUpper()))
+            {
                 return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -758,7 +766,9 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                TransporterOKPO_DB = ((RamAccess<string>)Value).Value;
+                var value1 = ((RamAccess<string>)Value).Value;
+                value1 = value1.ToUpper();
+                TransporterOKPO_DB = value1;
             }
         }
         private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
@@ -779,7 +789,7 @@ namespace Models
                 //    value.AddError("Заполните примечание");
                 return true;
             }
-            if (OKSM.Contains(value.Value))
+            if (OKSM.Contains(value.Value.ToUpper()))
             {
                 return true;
             }

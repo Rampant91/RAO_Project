@@ -174,12 +174,23 @@ namespace Client_App.ViewModels
                         {
                             var tmp = new Reports();
                             tmp.Master = Storage;
+                            if (tmp.Master.Rows10.Count() != 0)
+                            {
+                                tmp.Master.Rows10[1].OrganUprav = tmp.Master.Rows10[0].OrganUprav;
+                                tmp.Master.Rows10[1].RegNo = tmp.Master.Rows10[0].RegNo;
+                            }
+                            if (tmp.Master.Rows20.Count() != 0)
+                            {
+                                tmp.Master.Rows20[1].OrganUprav = tmp.Master.Rows20[0].OrganUprav;
+                                tmp.Master.Rows20[1].RegNo = tmp.Master.Rows20[0].RegNo;
+                            }
                             t.DBO.Reports_Collection.Add(tmp);
                         }
 
                         var dbm = StaticConfiguration.DBModel;
                         dbm.SaveChanges();
                         item.Close();
+                        break;
                     }
                 }
             }

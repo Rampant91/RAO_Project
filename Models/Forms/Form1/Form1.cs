@@ -214,7 +214,7 @@ namespace Models.Abstracts
             value.ClearErrors();
             if (value.Value == null)
             {
-                value.AddError("Недопустимое значение");
+                value.AddError("Поле не заполнено");
                 return false;
             }
             foreach (Tuple<byte?, string> item in Spravochniks.SprDocumentVidName)

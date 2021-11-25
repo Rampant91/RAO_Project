@@ -64,31 +64,56 @@ namespace Client_App.Long_Visual
 
             Grid grd = new Grid()
             {
-                Width = 500
+                Width = 700
             };
-            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
-            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
 
             grd.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
                 ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
-            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + Property, 200));
+            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + Property, 400));
 
             Grid grd2 = new Grid()
             {
-                Width = 500
+                Width = 700
             };
-            grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
-            grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-
-            grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
-                ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-
-            grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 200));
+            grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
+            grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
+            if (Property == "JurLico")
+            {
+                grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30, "Наименование обособленного подразделения"
+                ));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+            }
+            else if (Property == "ShortJurLico")
+            {
+                grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30, "Краткое наименование об. подразделения"
+                ));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+            }
+            else if (Property == "JurLicoAddress")
+            {
+                grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30, "Адрес обособленного подразделения"
+                ));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+            }
+            else if (Property == "JurLicoFactAddress")
+            {
+                grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30, "Фактический адрес об. подразделения"
+                ));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+            }
+            else
+            {
+                grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
+                    ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty(Property)
+                        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                ));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+            }
 
             pnl.Children.Add(grd);
             pnl.Children.Add(grd2);
@@ -136,7 +161,8 @@ namespace Client_App.Long_Visual
 
             var topPnl3 = new StackPanel();
             topPnl3.Orientation = Orientation.Horizontal;
-            topPnl3.Spacing = 30;
+            topPnl3.Spacing = 300;
+            topPnl3.HorizontalAlignment = HorizontalAlignment.Center;
             //ColumnDefinition? column3 = new ColumnDefinition();
             //topPnl3.ColumnDefinitions.Add(column3);
             //column3 = new ColumnDefinition();
@@ -187,10 +213,34 @@ namespace Client_App.Long_Visual
             };
             maingrid.Children.Add(pnl);
 
-
             string BindingPrefix = "Storage.Rows20";
+            Grid grd = new Grid()
+            {
+                Width = 700
+            };
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
+            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
 
-            pnl.Children.Add(Create20Row("OrganUprav", BindingPrefix));
+            grd.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
+                ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty("OrganUprav")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + "OrganUprav", 400));
+            pnl.Children.Add(grd);
+            Grid grd1 = new Grid()
+            {
+                Width = 700
+            };
+            grd1.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
+            grd1.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
+
+            grd1.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
+                ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty("RegNo")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            ));
+            grd1.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + "RegNo", 400));
+            pnl.Children.Add(grd1);
+            pnl.Children.Add(Create20Row("SubjectRF", BindingPrefix));
             pnl.Children.Add(Create20Row("JurLico", BindingPrefix));
             pnl.Children.Add(Create20Row("ShortJurLico", BindingPrefix));
             pnl.Children.Add(Create20Row("JurLicoAddress", BindingPrefix));
@@ -199,7 +249,6 @@ namespace Client_App.Long_Visual
             pnl.Children.Add(Create20Row("Telephone", BindingPrefix));
             pnl.Children.Add(Create20Row("Fax", BindingPrefix));
             pnl.Children.Add(Create20Row("Email", BindingPrefix));
-            pnl.Children.Add(Create20Row("RegNo", BindingPrefix));
             pnl.Children.Add(Create20Row("Okpo", BindingPrefix));
             pnl.Children.Add(Create20Row("Okved", BindingPrefix));
             pnl.Children.Add(Create20Row("Okogu", BindingPrefix));
