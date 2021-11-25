@@ -145,6 +145,7 @@ namespace Client_App.Views
         protected override void OnClosing(CancelEventArgs e)
         {
             var dbm = StaticConfiguration.DBModel;
+            dbm.Restore();
             dbm.SaveChanges();
 
             base.OnClosing(e);

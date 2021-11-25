@@ -198,9 +198,6 @@ namespace Client_App.ViewModels
 
         private void _CheckReport()
         {
-
-            Storage.Rows17.Sum();
-            Storage.Rows18.Sum();
             Storage.Rows21.Sum();
             Storage.Rows22.Sum();
             IsCanSaveReportEnabled = true;
@@ -402,8 +399,6 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-            Storage.Rows17.Sum();
-            Storage.Rows18.Sum();
             Storage.Rows21.Sum();
             Storage.Rows22.Sum();
         }

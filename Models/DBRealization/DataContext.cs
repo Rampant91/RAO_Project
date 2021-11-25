@@ -129,6 +129,29 @@ namespace Models.DBRealization
             DBObservableDbSet.Load();
         }
 
+        public void Restore()
+        {
+            var changedEntries = this.ChangeTracker.Entries()
+                .Where(x => x.State != EntityState.Unchanged).ToList();
+
+            foreach (var entry in changedEntries)
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        entry.CurrentValues.SetValues(entry.OriginalValues);
+                        entry.State = EntityState.Unchanged;
+                        break;
+                    case EntityState.Added:
+                        entry.State = EntityState.Detached;
+                        break;
+                    case EntityState.Deleted:
+                        entry.State = EntityState.Unchanged;
+                        break;
+                }
+            }
+        }
+
         public DbSet<DBObservable> DBObservableDbSet { get; set; }
         public DbSet<Collections.Reports> ReportsCollectionDbSet { get; set; }
         public DbSet<Collections.Report> ReportCollectionDbSet { get; set; }
