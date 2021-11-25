@@ -197,13 +197,27 @@ namespace Models.Collections
                         if (sumRow == null)
                         {
                             var first = ty.FirstOrDefault() as Form21;
-                            sumRow = (Form21) FormCreator.Create("2.1");
+                            sumRow = (Form21)FormCreator.Create("2.1");
                             sumRow.RefineMachineName_DB = first.RefineMachineName_DB;
                             sumRow.MachineCode_DB = first.MachineCode_DB;
                             sumRow.MachinePower_DB = first.MachinePower_DB;
                             sumRow.NumberOfHoursPerYear_DB = first.NumberOfHoursPerYear_DB;
+                            sumRow.RefineMachineName_Hidden = true;
+                            sumRow.MachineCode_Hidden = true;
+                            sumRow.MachinePower_Hidden = true;
+                            sumRow.NumberOfHoursPerYear_Hidden = true;
+                            sumRow.RefineMachineName_Hidden2 = true;
+                            sumRow.MachineCode_Hidden2 = true;
+                            sumRow.MachinePower_Hidden2 = true;
+                            sumRow.NumberOfHoursPerYear_Hidden2 = true;
                             sumRow.CodeRAOIn.Value = "";
-                            sumRow.CodeRAOIn_Hidden = false;
+                            sumRow.CodeRAOIn_Hidden = true;
+                            sumRow.StatusRAOIn.Value = "";
+                            sumRow.StatusRAOIn_Hidden = true;
+                            sumRow.CodeRAOout.Value = "";
+                            sumRow.CodeRAOout_Hidden = true;
+                            sumRow.StatusRAOout.Value = "";
+                            sumRow.StatusRAOout_Hidden = true;
 
                             sumRow.Sum_DB = true;
                         }
@@ -261,21 +275,21 @@ namespace Models.Collections
                             }
                         }
 
-                        sumRow.VolumeIn_DB = volumeInSum.ToString("E2");
-                        sumRow.MassIn_DB = massInSum.ToString("E2");
-                        sumRow.QuantityIn_DB = quantityInSum.ToString("F0");
-                        sumRow.AlphaActivityIn_DB = alphaInSum.ToString("E2");
-                        sumRow.BetaGammaActivityIn_DB = betaInSum.ToString("E2");
-                        sumRow.TritiumActivityIn_DB = tritInSum.ToString("E2");
-                        sumRow.TransuraniumActivityIn_DB = transInSum.ToString("E2");
+                        sumRow.VolumeIn_DB = volumeInSum >=double.Epsilon ? volumeInSum.ToString("E2") : "-";
+                        sumRow.MassIn_DB = massInSum >= double.Epsilon ? sumRow.MassIn_DB = massInSum.ToString("E2") : "-";
+                        sumRow.QuantityIn_DB = quantityInSum >= double.Epsilon ? sumRow.QuantityIn_DB = quantityInSum.ToString("F0") : "-";
+                        sumRow.AlphaActivityIn_DB = alphaInSum >= double.Epsilon ? sumRow.AlphaActivityIn_DB = alphaInSum.ToString("E2") : "-";
+                        sumRow.BetaGammaActivityIn_DB = betaInSum >= double.Epsilon ? sumRow.BetaGammaActivityIn_DB = betaInSum.ToString("E2") : "-";
+                        sumRow.TritiumActivityIn_DB = tritInSum >= double.Epsilon ? sumRow.TritiumActivityIn_DB = tritInSum.ToString("E2") : "-";
+                        sumRow.TransuraniumActivityIn_DB = transInSum >= double.Epsilon ? sumRow.TransuraniumActivityIn_DB = transInSum.ToString("E2") : "-";
 
-                        sumRow.VolumeOut_DB = volumeOutSum.ToString("E2");
-                        sumRow.MassOut_DB = massOutSum.ToString("E2");
-                        sumRow.QuantityOZIIIout_DB = quantityOutSum.ToString("F0");
-                        sumRow.AlphaActivityOut_DB = alphaOutSum.ToString("E2");
-                        sumRow.BetaGammaActivityOut_DB = betaOutSum.ToString("E2");
-                        sumRow.TritiumActivityOut_DB = tritOutSum.ToString("E2");
-                        sumRow.TransuraniumActivityOut_DB = transOutSum.ToString("E2");
+                        sumRow.VolumeOut_DB = volumeOutSum >= double.Epsilon ? sumRow.VolumeOut_DB = volumeOutSum.ToString("E2") : "-";
+                        sumRow.MassOut_DB = massOutSum >= double.Epsilon ? sumRow.MassOut_DB = massOutSum.ToString("E2") : "-";
+                        sumRow.QuantityOZIIIout_DB = quantityOutSum >= double.Epsilon ? sumRow.QuantityOZIIIout_DB = quantityOutSum.ToString("F0") : "-";
+                        sumRow.AlphaActivityOut_DB = alphaOutSum >= double.Epsilon ? sumRow.AlphaActivityOut_DB = alphaOutSum.ToString("E2") : "-";
+                        sumRow.BetaGammaActivityOut_DB = betaOutSum >= double.Epsilon ? sumRow.BetaGammaActivityOut_DB = betaOutSum.ToString("E2") : "-";
+                        sumRow.TritiumActivityOut_DB = tritOutSum >= double.Epsilon ? sumRow.TritiumActivityOut_DB = tritOutSum.ToString("E2") : "-";
+                        sumRow.TransuraniumActivityOut_DB = transOutSum >= double.Epsilon ? sumRow.TransuraniumActivityOut_DB = transOutSum.ToString("E2") : "-";
 
                         lock (ito)
                         {
@@ -299,7 +313,7 @@ namespace Models.Collections
                                     form.MachineCode_Hidden = false;
                                     form.MachinePower_Hidden = false;
                                     form.NumberOfHoursPerYear_Hidden = false;
-                                    form.NumberInOrder_DB = rowCount;
+                                    form.NumberInOrder.Value = rowCount;
                                     ito[itemT.Key].Add(t);
                                     rowCount++;
                                 }
@@ -327,6 +341,7 @@ namespace Models.Collections
         double StringToNumber(string Num)
         {
             string tmp = Num;
+            tmp.Replace(" ","");
             int len = tmp.Length;
             if (len >= 1)
             {
@@ -338,9 +353,12 @@ namespace Models.Collections
                         tmp = tmp.Remove(0, 1);
                     }
                 }
+                if(len==1)
+                {
+                    tmp = tmp.Replace("-", "0");
+                }
 
                 tmp = tmp.Replace(",", ".");
-
                 NumberStyles styles = NumberStyles.Any;
                 try
                 {

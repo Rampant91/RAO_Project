@@ -1383,6 +1383,9 @@ namespace Models.DBRealization.Migrations.DataExportModel
                     b.Property<string>("CodeRAOout_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("CodeRAOout_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<short>("CorrectionNumber_DB")
                         .HasColumnType("SMALLINT");
 
@@ -1395,10 +1398,16 @@ namespace Models.DBRealization.Migrations.DataExportModel
                     b.Property<bool>("MachineCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
+                    b.Property<bool>("MachineCode_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("MachinePower_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<bool>("MachinePower_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("MachinePower_Hidden_Priv2")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<string>("MassIn_DB")
@@ -1419,6 +1428,10 @@ namespace Models.DBRealization.Migrations.DataExportModel
                     b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
+                    b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN")
+                        .HasColumnName("NumberOfHoursPerYear_Hidden_P~1");
+
                     b.Property<string>("QuantityIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1431,14 +1444,23 @@ namespace Models.DBRealization.Migrations.DataExportModel
                     b.Property<bool>("RefineMachineName_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
+                    b.Property<bool>("RefineMachineName_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("StatusRAOIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("StatusRAOIn_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("StatusRAOout_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<bool>("StatusRAOout_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
 
                     b.Property<bool>("Sum_DB")
                         .HasColumnType("BOOLEAN");

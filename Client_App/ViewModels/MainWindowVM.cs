@@ -60,8 +60,8 @@ namespace Client_App.ViewModels
             {
                 try
                 {
-                    var app = dbm.Database.GetAppliedMigrations();
-                    var app2 = dbm.Database.GetPendingMigrations();
+                    var r = dbm.Database.GetAppliedMigrations();
+                    var y = dbm.Database.GetPendingMigrations();
                     dbm.Database.Migrate();
                 }
                 catch (Exception e)
@@ -94,7 +94,7 @@ namespace Client_App.ViewModels
             }
             else
             {
-                dbm.Database.EnsureCreated();
+                dbm.Database.Migrate();
             }
 
             dbm.LoadTables();
@@ -308,7 +308,7 @@ namespace Client_App.ViewModels
                                         }
                                         else
                                         {
-                                            db.Database.EnsureCreated();
+                                            db.Database.Migrate();
                                         }
                                         db.ReportsCollectionDbSet.Add(rp);
                                         db.SaveChanges();
@@ -434,7 +434,7 @@ namespace Client_App.ViewModels
                                         }
                                         else
                                         {
-                                            db.Database.EnsureCreated();
+                                            db.Database.Migrate();
                                         }
                                         db.LoadTables();
                                     }

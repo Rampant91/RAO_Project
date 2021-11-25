@@ -1,4 +1,4 @@
-﻿Add-Migration DataModel_<номер> -Context DBModel -OutputDir DBRealization\Migrations\DataModel
-Add-Migration DataExportModel_<номер> -Context DBExportModel -OutputDir DBRealization\Migrations\DataExportModel
+﻿Add-Migration DataModel_3 -Context DBModel -OutputDir DBRealization\Migrations\DataModel
+Add-Migration DataExportModel_3 -Context DBExportModel -OutputDir DBRealization\Migrations\DataExportModel
 
 Update-Database -Context DataContext

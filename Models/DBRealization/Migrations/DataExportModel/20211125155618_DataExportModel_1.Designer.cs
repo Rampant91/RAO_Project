@@ -3,15 +3,17 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
-namespace Models.DBRealization.Migrations.DataModel
+namespace Models.DBRealization.Migrations.DataExportModel
 {
-    [DbContext(typeof(DBModel))]
-    partial class DBModelModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DBExportModel))]
+    [Migration("20211125155618_DataExportModel_1")]
+    partial class DataExportModel_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1398,16 +1400,10 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<bool>("MachineCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
-                    b.Property<bool>("MachineCode_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
-
                     b.Property<string>("MachinePower_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<bool>("MachinePower_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("MachinePower_Hidden_Priv2")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<string>("MassIn_DB")
@@ -1428,10 +1424,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
-                    b.Property<bool>("NumberOfHoursPerYear_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN")
-                        .HasColumnName("NumberOfHoursPerYear_Hidden_P~1");
-
                     b.Property<string>("QuantityIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1442,9 +1434,6 @@ namespace Models.DBRealization.Migrations.DataModel
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<bool>("RefineMachineName_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("RefineMachineName_Hidden_Priv2")
                         .HasColumnType("BOOLEAN");
 
                     b.Property<int?>("ReportId")

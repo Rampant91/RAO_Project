@@ -117,6 +117,18 @@ namespace Models
             set
             {
                 RefineMachineName_Hidden_Priv = value;
+                OnPropertyChanged(nameof(RefineMachineName));
+            }
+        }
+        public bool RefineMachineName_Hidden_Priv2 { get; set; } = false;
+        [NotMapped]
+        public bool RefineMachineName_Hidden2
+        {
+            get => RefineMachineName_Hidden_Priv2;
+            set
+            {
+                RefineMachineName_Hidden_Priv2 = value;
+                OnPropertyChanged(nameof(RefineMachineName));
             }
         }
 
@@ -126,11 +138,20 @@ namespace Models
         {
             get
             {
-                if (!RefineMachineName_Hidden)
+                if (!RefineMachineName_Hidden|| RefineMachineName_Hidden2)
                 {
-                    var tmp = new RamAccess<string>(RefineMachineName_Validation, RefineMachineName_DB);
-                    tmp.PropertyChanged += RefineMachineNameValueChanged;
-                    return tmp;
+                    if(RefineMachineName_Hidden2)
+                    {
+                        var tmp = new RamAccess<string>(null, RefineMachineName_DB);
+                        tmp.PropertyChanged += RefineMachineNameValueChanged;
+                        return tmp;
+                    }
+                    else
+                    {
+                        var tmp = new RamAccess<string>(RefineMachineName_Validation, RefineMachineName_DB);
+                        tmp.PropertyChanged += RefineMachineNameValueChanged;
+                        return tmp;
+                    }
                 }
                 else
                 {
@@ -177,6 +198,18 @@ namespace Models
             set
             {
                 MachineCode_Hidden_Priv = value;
+                OnPropertyChanged(nameof(MachineCode));
+            }
+        }
+        public bool MachineCode_Hidden_Priv2 { get; set; } = false;
+        [NotMapped]
+        public bool MachineCode_Hidden2
+        {
+            get => MachineCode_Hidden_Priv2;
+            set
+            {
+                MachineCode_Hidden_Priv2 = value;
+                OnPropertyChanged(nameof(MachineCode));
             }
         }
 
@@ -186,11 +219,20 @@ namespace Models
         {
             get
             {
-                if (!MachineCode_Hidden)
+                if (!MachineCode_Hidden|| MachineCode_Hidden2)
                 {
-                    var tmp = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB);
-                    tmp.PropertyChanged += MachineCodeValueChanged;
-                    return tmp;
+                    if (MachineCode_Hidden2)
+                    {
+                        var tmp = new RamAccess<byte?>(null, MachineCode_DB);
+                        tmp.PropertyChanged += MachineCodeValueChanged;
+                        return tmp;
+                    }
+                    else
+                    {
+                        var tmp = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB);
+                        tmp.PropertyChanged += MachineCodeValueChanged;
+                        return tmp;
+                    }
                 }
                 else
                 {
@@ -258,6 +300,18 @@ namespace Models
             set
             {
                 MachinePower_Hidden_Priv = value;
+                OnPropertyChanged(nameof(MachinePower));
+            }
+        }
+        public bool MachinePower_Hidden_Priv2 { get; set; } = false;
+        [NotMapped]
+        public bool MachinePower_Hidden2
+        {
+            get => MachinePower_Hidden_Priv2;
+            set
+            {
+                MachinePower_Hidden_Priv2 = value;
+                OnPropertyChanged(nameof(MachinePower));
             }
         }
 
@@ -267,11 +321,20 @@ namespace Models
         {
             get
             {
-                if (!MachinePower_Hidden)
+                if (!MachinePower_Hidden|| MachinePower_Hidden2)
                 {
-                    var tmp = new RamAccess<string>(MachinePower_Validation, MachinePower_DB);
-                    tmp.PropertyChanged += MachinePowerValueChanged;
-                    return tmp;
+                    if (MachinePower_Hidden2)
+                    {
+                        var tmp = new RamAccess<string>(null, MachinePower_DB);
+                        tmp.PropertyChanged += MachinePowerValueChanged;
+                        return tmp;
+                    }
+                    else
+                    {
+                        var tmp = new RamAccess<string>(MachinePower_Validation, MachinePower_DB);
+                        tmp.PropertyChanged += MachinePowerValueChanged;
+                        return tmp;
+                    }
                 }
                 else
                 {
@@ -365,6 +428,19 @@ namespace Models
             set
             {
                 NumberOfHoursPerYear_Hidden_Priv = value;
+                OnPropertyChanged(nameof(NumberOfHoursPerYear));
+            }
+        }
+
+        public bool NumberOfHoursPerYear_Hidden_Priv2 { get; set; } = false;
+        [NotMapped]
+        public bool NumberOfHoursPerYear_Hidden2
+        {
+            get => NumberOfHoursPerYear_Hidden_Priv2;
+            set
+            {
+                NumberOfHoursPerYear_Hidden_Priv2 = value;
+                OnPropertyChanged(nameof(NumberOfHoursPerYear));
             }
         }
 
@@ -374,11 +450,20 @@ namespace Models
         {
             get
             {
-                if (!NumberOfHoursPerYear_Hidden)
+                if (!NumberOfHoursPerYear_Hidden|| NumberOfHoursPerYear_Hidden2)
                 {
-                    var tmp = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB);
-                    tmp.PropertyChanged += NumberOfHoursPerYearValueChanged;
-                    return tmp;
+                    if (NumberOfHoursPerYear_Hidden2)
+                    {
+                        var tmp = new RamAccess<string>(null, NumberOfHoursPerYear_DB);
+                        tmp.PropertyChanged += NumberOfHoursPerYearValueChanged;
+                        return tmp;
+                    }
+                    else
+                    {
+                        var tmp = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB);
+                        tmp.PropertyChanged += NumberOfHoursPerYearValueChanged;
+                        return tmp;
+                    }
                 }
                 else
                 {
@@ -533,19 +618,42 @@ namespace Models
 
         //StatusRAOIn property
         #region  StatusRAOIn
-        public string StatusRAOIn_DB { get; set; } = "";[NotMapped]
+        public string StatusRAOIn_DB { get; set; } = "";
+        public bool StatusRAOIn_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool StatusRAOIn_Hidden
+        {
+            get => StatusRAOIn_Hidden_Priv;
+            set
+            {
+                StatusRAOIn_Hidden_Priv = value;
+            }
+        }
+        [NotMapped]
         [Attributes.Form_Property("статус РАО")]
         public RamAccess<string> StatusRAOIn  //1 cyfer or OKPO.
         {
             get
             {
-                var tmp = new RamAccess<string>(StatusRAOIn_Validation, StatusRAOIn_DB);
-                tmp.PropertyChanged += StatusRAOInValueChanged;
-                return tmp;
-            } set
+                if (!StatusRAOIn_Hidden)
+                {
+                    var tmp = new RamAccess<string>(StatusRAOIn_Validation, StatusRAOIn_DB);
+                    tmp.PropertyChanged += StatusRAOInValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
+            }
+            set
             {
-                StatusRAOIn_DB = value.Value;
-                OnPropertyChanged(nameof(StatusRAOIn));
+                if (!StatusRAOIn_Hidden)
+                {
+                    StatusRAOIn_DB = value.Value;
+                    OnPropertyChanged(nameof(StatusRAOIn));
+                }
             }
         }
 
@@ -1109,20 +1217,43 @@ namespace Models
 
         //CodeRAOout property
         #region  CodeRAOout
-        public string CodeRAOout_DB { get; set; } = ""; [NotMapped]
+        public string CodeRAOout_DB { get; set; } = "";
+        public bool CodeRAOout_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool CodeRAOout_Hidden
+    {
+            get => CodeRAOout_Hidden_Priv;
+            set
+            {
+                CodeRAOout_Hidden_Priv = value;
+            }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("код РАО")]
         public RamAccess<string> CodeRAOout
         {
             get
             {
+                if (!CodeRAOout_Hidden)
+                {
                     var tmp = new RamAccess<string>(CodeRAOout_Validation, CodeRAOout_DB);
                     tmp.PropertyChanged += CodeRAOoutValueChanged;
                     return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
+                if (!CodeRAOout_Hidden)
+                {
                     CodeRAOout_DB = value.Value;
-                OnPropertyChanged(nameof(CodeRAOout));
+                    OnPropertyChanged(nameof(CodeRAOout));
+                }
             }
         }
 
@@ -1157,20 +1288,43 @@ namespace Models
 
         //StatusRAOout property
         #region  StatusRAOout
-        public string StatusRAOout_DB { get; set; } = ""; [NotMapped]
+        public string StatusRAOout_DB { get; set; } = "";
+        public bool StatusRAOout_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool StatusRAOout_Hidden
+        {
+            get => StatusRAOout_Hidden_Priv;
+            set
+            {
+                StatusRAOout_Hidden_Priv = value;
+            }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("статус РАО")]
         public RamAccess<string> StatusRAOout  //1 cyfer or OKPO.
         {
             get
             {
+                if (!StatusRAOout_Hidden)
+                {
                     var tmp = new RamAccess<string>(StatusRAOout_Validation, StatusRAOout_DB);
                     tmp.PropertyChanged += StatusRAOoutValueChanged;
                     return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
+                if (!StatusRAOout_Hidden)
+                {
                     StatusRAOout_DB = value.Value;
-                OnPropertyChanged(nameof(StatusRAOout));
+                    OnPropertyChanged(nameof(StatusRAOout));
+                }
             }
         }
 
