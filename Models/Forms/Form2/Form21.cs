@@ -462,19 +462,43 @@ namespace Models
 
         //CodeRAOIn property
         #region  CodeRAOIn
-        public string CodeRAOIn_DB { get; set; } = "";[NotMapped]
+        public string CodeRAOIn_DB { get; set; } = ""; 
+        public bool CodeRAOIn_Hidden_Priv { get; set; } = false;
+        [NotMapped]
+        public bool CodeRAOIn_Hidden
+        {
+            get => CodeRAOIn_Hidden_Priv;
+            set
+            {
+                CodeRAOIn_Hidden_Priv = value;
+            }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("код РАО")]
         public RamAccess<string> CodeRAOIn
         {
             get
             {
-                var tmp = new RamAccess<string>(CodeRAOIn_Validation, CodeRAOIn_DB);
-                tmp.PropertyChanged += CodeRAOInValueChanged;
-                return tmp;
-            } set
+                if (!CodeRAOIn_Hidden)
+                {
+                    var tmp = new RamAccess<string>(CodeRAOIn_Validation, CodeRAOIn_DB);
+                    tmp.PropertyChanged += CodeRAOInValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
+            }
+            set
             {
-                CodeRAOIn_DB = value.Value;
-                OnPropertyChanged(nameof(CodeRAOIn));
+                if (!CodeRAOIn_Hidden)
+                {
+                    CodeRAOIn_DB = value.Value;
+                    OnPropertyChanged(nameof(CodeRAOIn));
+                }
             }
         }
 

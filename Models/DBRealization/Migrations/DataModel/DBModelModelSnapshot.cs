@@ -3,17 +3,15 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
-namespace Models.DBRealization.Migrations
+namespace Models.DBRealization.Migrations.DataModel
 {
-    [DbContext(typeof(DataContext))]
-    [Migration("20211125090040_DataContext_3")]
-    partial class DataContext_3
+    [DbContext(typeof(DBModel))]
+    partial class DBModelModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1379,6 +1377,9 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("CodeRAOIn_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("CodeRAOIn_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("CodeRAOout_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1674,8 +1675,8 @@ namespace Models.DBRealization.Migrations
                     b.Property<string>("PackType_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int?>("QuantityOZIII_DB")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("QuantityOZIII_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");

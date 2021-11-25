@@ -1,9 +1,9 @@
 ﻿using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Models.DBRealization.Migrations
+namespace Models.DBRealization.Migrations.DataExportModel
 {
-    public partial class Initial : Migration
+    public partial class DataExportModel_0 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -120,6 +120,7 @@ namespace Models.DBRealization.Migrations
                     Okfs_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -158,8 +159,8 @@ namespace Models.DBRealization.Migrations
                     PackNumber_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     OperationDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -204,8 +205,8 @@ namespace Models.DBRealization.Migrations
                     PackNumber_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     OperationDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -251,8 +252,8 @@ namespace Models.DBRealization.Migrations
                     PackNumber_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     OperationDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -288,7 +289,7 @@ namespace Models.DBRealization.Migrations
                     Activity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ActivityMeasurementDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     Volume_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    Mass_DB = table.Column<double>(type: "DOUBLE PRECISION", nullable: true),
+                    Mass_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     AggregateState_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     PropertyCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     Owner_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -299,8 +300,8 @@ namespace Models.DBRealization.Migrations
                     PackNumber_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     OperationDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -349,8 +350,8 @@ namespace Models.DBRealization.Migrations
                     FcpNumber_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     OperationDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -389,7 +390,7 @@ namespace Models.DBRealization.Migrations
                     AlphaActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     TransuraniumActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ActivityMeasurementDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    QuantityOZIII_DB = table.Column<int>(type: "INTEGER", nullable: true),
+                    QuantityOZIII_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ProviderOrRecieverOKPO_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     TransporterOKPO_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     PackName_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -402,8 +403,8 @@ namespace Models.DBRealization.Migrations
                     RefineOrSortRAOCode_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     OperationDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -473,8 +474,8 @@ namespace Models.DBRealization.Migrations
                     RefineOrSortRAOCode_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     OperationDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -512,7 +513,7 @@ namespace Models.DBRealization.Migrations
                     Volume6_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     Mass7_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     Mass7_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
-                    SaltConcentration_DB = table.Column<double>(type: "DOUBLE PRECISION", nullable: true),
+                    SaltConcentration_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     SaltConcentration_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     Radionuclids_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     SpecificActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -537,8 +538,8 @@ namespace Models.DBRealization.Migrations
                     FcpNumber_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     OperationDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -572,8 +573,8 @@ namespace Models.DBRealization.Migrations
                     Activity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
+                    NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     OperationCode_DB = table.Column<short>(type: "SMALLINT", nullable: true),
                     OperationCode_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     OperationDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -623,6 +624,7 @@ namespace Models.DBRealization.Migrations
                     Okfs_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -652,6 +654,7 @@ namespace Models.DBRealization.Migrations
                     NumberOfHoursPerYear_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     NumberOfHoursPerYear_Hidden_Pr = table.Column<bool>(name: "NumberOfHoursPerYear_Hidden_Pr~", type: "BOOLEAN", nullable: false),
                     CodeRAOIn_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    CodeRAOIn_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     StatusRAOIn_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     VolumeIn_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     MassIn_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -671,9 +674,9 @@ namespace Models.DBRealization.Migrations
                     TransuraniumActivityOut_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -697,16 +700,16 @@ namespace Models.DBRealization.Migrations
                     PlotKadastrNumber_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     PlotCode_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     InfectedArea_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    AvgGammaRaysDosePower_DB = table.Column<double>(type: "DOUBLE PRECISION", nullable: true),
-                    MaxGammaRaysDosePower_DB = table.Column<double>(type: "DOUBLE PRECISION", nullable: true),
+                    AvgGammaRaysDosePower_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    MaxGammaRaysDosePower_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     WasteDensityAlpha_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     WasteDensityBeta_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     FcpNumber_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -735,9 +738,9 @@ namespace Models.DBRealization.Migrations
                     SpecificActivityOfDensePart_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -763,9 +766,9 @@ namespace Models.DBRealization.Migrations
                     ProviderOrRecieverOKPO_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -798,7 +801,7 @@ namespace Models.DBRealization.Migrations
                     MassInPack_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     VolumeOutOfPack_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     MassOutOfPack_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    QuantityOZIII_DB = table.Column<int>(type: "INTEGER", nullable: true),
+                    QuantityOZIII_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     TritiumActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     BetaGammaActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     AlphaActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -809,9 +812,9 @@ namespace Models.DBRealization.Migrations
                     FcpNumber_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -844,9 +847,9 @@ namespace Models.DBRealization.Migrations
                     DocumentName_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -883,9 +886,9 @@ namespace Models.DBRealization.Migrations
                     QuantityRemovedFromAccount_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -915,9 +918,9 @@ namespace Models.DBRealization.Migrations
                     AlphaActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -945,9 +948,9 @@ namespace Models.DBRealization.Migrations
                     AverageYearConcentration_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -973,9 +976,9 @@ namespace Models.DBRealization.Migrations
                     WasteOutbreakPreviousYear_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1002,9 +1005,9 @@ namespace Models.DBRealization.Migrations
                     RemovedWasteVolume_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1029,9 +1032,9 @@ namespace Models.DBRealization.Migrations
                     FactedActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ReportId = table.Column<int>(type: "INTEGER", nullable: true),
                     FormNum_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false),
                     NumberOfFields_DB = table.Column<int>(type: "INTEGER", nullable: false),
-                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false),
-                    NumberInOrder_DB = table.Column<int>(type: "INTEGER", nullable: false)
+                    CorrectionNumber_DB = table.Column<short>(type: "SMALLINT", nullable: false)
                 },
                 constraints: table =>
                 {

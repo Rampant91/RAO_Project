@@ -60,6 +60,8 @@ namespace Client_App.ViewModels
             {
                 try
                 {
+                    var app = dbm.Database.GetAppliedMigrations();
+                    var app2 = dbm.Database.GetPendingMigrations();
                     dbm.Database.Migrate();
                 }
                 catch (Exception e)
