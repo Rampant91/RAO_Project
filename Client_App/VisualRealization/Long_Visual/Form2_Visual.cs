@@ -36,13 +36,26 @@ namespace Client_App.Long_Visual
                 Margin = Thickness.Parse(thickness),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!Cell.DataContextProperty] = new Binding(textProp, BindingMode.TwoWay),
+                [!Cell.DataContextProperty] = new Binding(textProp),
                 [Grid.ColumnProperty] = columnProp
             };
         }
 
-        public static TextBlock CreateTextBlock(string margin, int columnProp, int height, string text)
+        public static TextBlock CreateTextBlock(string margin, int columnProp, int height, string text, double width = 0)
         {
+            if (width != 0)
+            {
+                return new TextBlock
+                {
+                    Width = width,
+                    Height = height,
+                    Margin = Thickness.Parse(margin),
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                    Text = text,
+                    [Grid.ColumnProperty] = columnProp
+                };
+            }
             return new TextBlock
             {
                 Height = height,
@@ -70,7 +83,7 @@ namespace Client_App.Long_Visual
             grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
 
             grd.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
-                ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
+                ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty(Property)
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
 
@@ -120,9 +133,13 @@ namespace Client_App.Long_Visual
             return pnl;
         }
 
-        public static Grid Form20_Visual(INameScope scp)
+        public static Control Form20_Visual(INameScope scp)
         {
+            ScrollViewer vw = new ScrollViewer();
+            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             Grid maingrid = new Grid();
+            vw.Content = maingrid;
+
             RowDefinition? row = new RowDefinition
             {
                 Height = new GridLength(0.07, GridUnitType.Star)
@@ -135,7 +152,12 @@ namespace Client_App.Long_Visual
             maingrid.RowDefinitions.Add(row);
             row = new RowDefinition
             {
-                Height = new GridLength(0.86, GridUnitType.Star)
+                Height = new GridLength(0.07, GridUnitType.Star)
+            };
+            maingrid.RowDefinitions.Add(row);
+            row = new RowDefinition
+            {
+                Height = new GridLength(0.79, GridUnitType.Star)
             };
             maingrid.RowDefinitions.Add(row);
 
@@ -168,7 +190,33 @@ namespace Client_App.Long_Visual
             //column3 = new ColumnDefinition();
             //topPnl3.ColumnDefinitions.Add(column3);
 
-            topPnl3.SetValue(Grid.RowProperty, 1);
+            topPnl3.SetValue(Grid.RowProperty, 2);
+
+            StackPanel pnlmin = new StackPanel()
+            {
+                [Grid.ColumnProperty] = 0,
+                [Grid.RowProperty] = 1
+            };
+            maingrid.Children.Add(pnlmin);
+
+            string BindingPrefix = "Storage.Rows20";
+            StackPanel grd = new StackPanel();
+            grd.Orientation = Orientation.Horizontal;
+
+            grd.Children.Add(CreateTextBlock("5,10,0,0", 0, 30,
+                ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty("OrganUprav")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            , 295));
+            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + "OrganUprav", 400));
+            pnlmin.Children.Add(grd);
+            StackPanel grd1 = new StackPanel();
+            grd1.Orientation = Orientation.Horizontal;
+            grd1.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
+                ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty("RegNo")
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            , 295));
+            grd1.Children.Add(CreateTextBox("5,0,10,20", 0, 30, BindingPrefix + "[0]." + "RegNo", 400));
+            pnlmin.Children.Add(grd1);
 
             var pnl1 = new Panel();
             pnl1.Width = 400;
@@ -209,37 +257,9 @@ namespace Client_App.Long_Visual
             StackPanel pnl = new StackPanel()
             {
                 [Grid.ColumnProperty] = 0,
-                [Grid.RowProperty] = 2
+                [Grid.RowProperty] = 3
             };
             maingrid.Children.Add(pnl);
-
-            string BindingPrefix = "Storage.Rows20";
-            Grid grd = new Grid()
-            {
-                Width = 700
-            };
-            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
-            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
-
-            grd.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
-                ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty("OrganUprav")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + "OrganUprav", 400));
-            pnl.Children.Add(grd);
-            Grid grd1 = new Grid()
-            {
-                Width = 700
-            };
-            grd1.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
-            grd1.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
-
-            grd1.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
-                ((Form_PropertyAttribute)Type.GetType("Models.Form20,Models").GetProperty("RegNo")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
-            grd1.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + "RegNo", 400));
-            pnl.Children.Add(grd1);
             pnl.Children.Add(Create20Row("SubjectRF", BindingPrefix));
             pnl.Children.Add(Create20Row("JurLico", BindingPrefix));
             pnl.Children.Add(Create20Row("ShortJurLico", BindingPrefix));
@@ -258,7 +278,7 @@ namespace Client_App.Long_Visual
             pnl.Children.Add(Create20Row("Okopf", BindingPrefix));
             pnl.Children.Add(Create20Row("Okfs", BindingPrefix));
 
-            return maingrid;
+            return vw;
         }
 
         public static Grid Form21_Visual(INameScope scp)

@@ -7,7 +7,6 @@ using System.Linq;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Client_App.Controls.DataGrid;
-using Client_App.ViewModels;
 using Models.Attributes;
 
 namespace Client_App.Long_Visual
@@ -30,7 +29,7 @@ namespace Client_App.Long_Visual
 
         public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width)
         {
-            return new Cell(textProp,false)
+            return new Cell(textProp, false)
             {
                 Height = height,
                 Width = width,
