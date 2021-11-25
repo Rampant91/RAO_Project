@@ -176,13 +176,13 @@ namespace Client_App.ViewModels
                             tmp.Master = Storage;
                             if (tmp.Master.Rows10.Count() != 0)
                             {
-                                tmp.Master.Rows10[1].OrganUprav = tmp.Master.Rows10[0].OrganUprav;
-                                tmp.Master.Rows10[1].RegNo = tmp.Master.Rows10[0].RegNo;
+                                tmp.Master.Rows10[1].OrganUprav.Value = tmp.Master.Rows10[0].OrganUprav.Value;
+                                tmp.Master.Rows10[1].RegNo.Value = tmp.Master.Rows10[0].RegNo.Value;
                             }
                             if (tmp.Master.Rows20.Count() != 0)
                             {
-                                tmp.Master.Rows20[1].OrganUprav = tmp.Master.Rows20[0].OrganUprav;
-                                tmp.Master.Rows20[1].RegNo = tmp.Master.Rows20[0].RegNo;
+                                tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
+                                tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
                             }
                             t.DBO.Reports_Collection.Add(tmp);
                         }
