@@ -65,12 +65,72 @@ namespace Models.Collections
                     }
             }
 
-            if(typeof(T) == typeof(Form))
+            var flag = false;
+            var bsT = typeof(T).BaseType;
+            if (bsT != null)
             {
-
+                if (bsT == typeof(Form))
+                {
+                    flag = true;
+                }
+                else
+                {
+                    var bsT2 = bsT.BaseType;
+                    if (bsT2 != null)
+                    {
+                        if (bsT2 == typeof(Form))
+                        {
+                            flag = true;
+                        }
+                    }
+                }
+            }
+            if (flag)
+            {
+                QuickSort();
             }
 
             base.OnCollectionChanged(e);
+        }
+
+        //метод для обмена элементов массива
+        void Swap(int index1, int index2)
+        {
+            var t = Items[index1];
+            Items[index1] = Items[index2];
+            Items[index2] = t;
+        }
+        int Partition(int minIndex, int maxIndex)
+        {
+            var pivot = minIndex - 1;
+            for (var i = minIndex; i < maxIndex; i++)
+            {
+                if ((Items[i] as Form).NumberInOrder_DB < (Items[maxIndex] as Form).NumberInOrder_DB)
+                {
+                    pivot++;
+                    Swap(pivot, i);
+                }
+            }
+
+            pivot++;
+            Swap(pivot, maxIndex);
+            return pivot;
+        }
+        void QuickSort(int minIndex, int maxIndex)
+        {
+            if (minIndex >= maxIndex)
+            {
+                return;
+            }
+
+            var pivotIndex = Partition(minIndex, maxIndex);
+            QuickSort(minIndex, pivotIndex - 1);
+            QuickSort(pivotIndex + 1, maxIndex);
+        }
+
+        public void QuickSort()
+        {
+            QuickSort(0, Items.Count - 1);
         }
 
         protected override void RemoveItem(int index)

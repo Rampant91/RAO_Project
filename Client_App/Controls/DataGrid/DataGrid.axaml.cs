@@ -735,7 +735,6 @@ o => o.Pagination,
             var Id2 = from item in items select item.GetHashCode();
 
             var Outer1 = Id1.Except(Id2).ToArray();
-            var Outer2 = Id2.Except(Id1).ToArray();
 
             foreach (var item in Outer1)
                 foreach (var row in Rows)
@@ -743,10 +742,23 @@ o => o.Pagination,
                     var tmp = row.Value.SCells.DataContext.GetHashCode();
                     if (item == tmp)
                     {
+                        var tkey = row.Key;
                         Rows.Remove(Convert.ToInt32(row.Key));
+                        foreach (var trow in Rows)
+                        {
+                            if(Convert.ToInt32(trow.Key)> Convert.ToInt32(tkey))
+                            {
+                                Rows.Remove(Convert.ToInt32(trow.Key));
+                            }
+                        }
                         break;
                     }
                 }
+
+            items = GetPageItems();
+            Id1 = from item in Rows select item.Value.SCells.DataContext.GetHashCode();
+            Id2 = from item in items select item.GetHashCode();
+            var Outer2 = Id2.Except(Id1).ToArray();
 
             foreach (var item in Outer2)
                 foreach (var row in items)

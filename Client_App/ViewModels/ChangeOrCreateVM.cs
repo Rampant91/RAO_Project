@@ -283,10 +283,19 @@ namespace Client_App.ViewModels
             {
                 lst.Add((Models.Abstracts.Form)item);
             }
-            foreach (Models.Abstracts.Form item in lst)
+            var grp = lst.GroupBy(x => x.NumberInOrder_DB);
+            foreach (var group in grp)
             {
+                var item = group.FirstOrDefault();
                 if (item != null)
                 {
+                    foreach (Form it in Storage[item.FormNum_DB])
+                    {
+                        if (it.NumberInOrder_DB > item.NumberInOrder_DB)
+                        {
+                            it.NumberInOrder.Value = it.NumberInOrder_DB - 1;
+                        }
+                    }
                     if (item.FormNum.Value == "1.1")
                     {
                         Storage.Rows11.Remove((Form11) item);
@@ -390,13 +399,6 @@ namespace Client_App.ViewModels
                     if (item.FormNum.Value == "2.12")
                     {
                         Storage.Rows212.Remove((Form212) item);
-                    }
-                    foreach (Form it in Storage[item.FormNum_DB])
-                    {
-                        if (it.NumberInOrder_DB > item.NumberInOrder_DB)
-                        {
-                            it.NumberInOrder.Value = it.NumberInOrder_DB - 1;
-                        }
                     }
                 }
             }

@@ -97,18 +97,7 @@ namespace Client_App.Controls.DataGrid
 
         public int Add(CellCollection stck)
         {
-            var counter = 0;
-            var max = 0;
-            if (Rows.Count() != 0)
-            {
-                max = Rows.Max(x => Convert.ToInt32(x.Key));
-            }
-            for (var i = 1; i < max; i++)
-                if (this[i] == null)
-                    counter = i;
-
-            if (counter == 0) counter = max + 1;
-
+            var counter = GetFreeRow();
             Add(stck, counter);
 
             return counter;
@@ -156,28 +145,7 @@ namespace Client_App.Controls.DataGrid
 
         private void AddToSRows(int Row, CellCollection cellCollection)
         {
-            int offset = 0;
-            int maxKey = 0;
-            foreach(var key in Rows.Keys)
-            {
-                var num = Convert.ToInt32(key);
-                if(maxKey<num)
-                {
-                    maxKey = num;
-                }
-            }
-            for(int i=1;i<maxKey;i++)
-            {
-                if(this[i]==null)
-                {
-                    offset++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            SRows.Children.Insert(Row - 1-offset, cellCollection.SCells);
+            SRows.Children.Insert((Row-1)%20, cellCollection.SCells);
         }
 
         public void Reorgonize(NameScope scp, string topName)
@@ -207,13 +175,15 @@ namespace Client_App.Controls.DataGrid
             int count = offset + 1;
             foreach (Row item in SRows.Children)
             {
-                var rw = Rows[item.SRow.ToString()];
+                if (item.SRow != count)
+                {
+                    var rw = Rows[(item.SRow).ToString()];
 
-                Rows.Remove(item.SRow.ToString());
-                Rows.Add(count.ToString(), rw);
-
-                this[count].Reorgonize(item.SRow.ToString(), count.ToString());
-                item.SRow = count;
+                    Rows.Remove(item.SRow.ToString());
+                    rw.Reorgonize(item.SRow.ToString(), count.ToString());
+                    Rows.Add(count.ToString(), rw);
+                    item.SRow = count;
+                }
                 count++;
             }
         }

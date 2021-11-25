@@ -71,10 +71,10 @@ namespace Models.Collections
                 }
                 else
                 {
-                    var bsT2 = typeof(T).BaseType;
+                    var bsT2 = bsT.BaseType;
                     if (bsT2 != null)
                     {
-                        if (bsT == typeof(Form))
+                        if (bsT2 == typeof(Form))
                         {
                             flag = true;
                         }
@@ -158,6 +158,8 @@ namespace Models.Collections
         {
             foreach (T item in Items)
                 item.PropertyChanged += ChildPropertyChanged;
+
+            QuickSort();
 
         }
 
