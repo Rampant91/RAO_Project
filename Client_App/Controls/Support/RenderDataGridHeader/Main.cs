@@ -120,7 +120,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get1Header(2, 5,
-                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("IsCorrection")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("CorrectionNumber")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get1Header(1, 6,
@@ -222,7 +222,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get3Header(2, 5,
-                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("IsCorrection")
+                ((Form_PropertyAttribute) Type.GetType("Models.Collections.Report,Models").GetProperty("CorrectionNumber")
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             ));
             stck.Add(Get1Header(1, 6,

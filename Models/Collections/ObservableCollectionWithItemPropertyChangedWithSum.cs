@@ -11,6 +11,7 @@ using System.Threading;
 using Models;
 using Models.Collections;
 using OfficeOpenXml;
+using Models.Abstracts;
 
 namespace Models.Collections
 {
@@ -64,8 +65,18 @@ namespace Models.Collections
                     }
             }
 
+            if(typeof(T) == typeof(Form))
+            {
+
+            }
 
             base.OnCollectionChanged(e);
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            this[index].PropertyChanged -= ChildPropertyChanged;
+            base.RemoveItem(index);
         }
 
         public void Sum()

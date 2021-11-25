@@ -7,7 +7,7 @@ namespace Models.DBRealization.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable("form_16");
+            migrationBuilder.DropTable(name: "form_16");
             migrationBuilder.CreateTable(
                 name: "form_16",
                 columns: table => new
@@ -24,7 +24,7 @@ namespace Models.DBRealization.Migrations
                     AlphaActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     TransuraniumActivity_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ActivityMeasurementDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
-                    QuantityOZIII_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
+                    QuantityOZIII_DB = table.Column<int>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     ProviderOrRecieverOKPO_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     TransporterOKPO_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     PackName_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
@@ -64,7 +64,7 @@ namespace Models.DBRealization.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable("form_16");
+            migrationBuilder.DropTable(name: "form_16");
             migrationBuilder.CreateTable(
                 name: "form_16",
                 columns: table => new

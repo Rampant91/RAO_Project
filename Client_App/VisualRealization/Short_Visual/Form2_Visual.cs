@@ -119,13 +119,13 @@ namespace Client_App.Short_Visual
                 new MenuItem
                 {
                     Header = "Для печати",
-                    [!MenuItem.CommandProperty] = new Binding("Print_Excel_Export"),
+                    [!MenuItem.CommandProperty] = new Binding("_Print_Excel_Export"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[3].SelectedItems"),
                 },
                 new MenuItem
                 {
                     Header = "Для выгрузки",
-                    [!MenuItem.CommandProperty] = new Binding("Excel_Export"),
+                    [!MenuItem.CommandProperty] = new Binding("_Excel_Export"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[3].SelectedItems"),
                 }
             };

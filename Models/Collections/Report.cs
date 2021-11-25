@@ -230,11 +230,11 @@ namespace Models.Collections
 
         #region  Forms10
         ObservableCollectionWithItemPropertyChanged<Form10> Rows10_DB;
-        [NotMapped]
-        public  ObservableCollectionWithItemPropertyChanged<Form10> Rows10
+        public virtual ObservableCollectionWithItemPropertyChanged<Form10> Rows10
         {
             get
             {
+
                 return Rows10_DB;
             }
             set
@@ -818,7 +818,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 FIOexecutor_DB = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(FIOexecutor));
+                //OnPropertyChanged(nameof(FIOexecutor));
             }
         }
         private bool FIOexecutor_Validation(RamAccess<string> value)
@@ -851,7 +851,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 GradeExecutor_DB = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(GradeExecutor));
+                //OnPropertyChanged(nameof(GradeExecutor));
             }
         }
         private bool GradeExecutor_Validation(RamAccess<string> value)
@@ -884,7 +884,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 ExecPhone_DB = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(ExecPhone));
+                //OnPropertyChanged(nameof(ExecPhone));
             }
         }
         private bool ExecPhone_Validation(RamAccess<string> value)
@@ -917,7 +917,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 ExecEmail_DB = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(ExecEmail));
+                //OnPropertyChanged(nameof(ExecEmail));
             }
         }
         private bool ExecEmail_Validation(RamAccess<string> value)
@@ -2272,6 +2272,7 @@ namespace Models.Collections
             Notes.CleanIds();
         }
 
+        [NotMapped]
         public List<IKey> this[string FormNum]
         {
             get
@@ -2279,6 +2280,87 @@ namespace Models.Collections
                 if(FormNum=="1.1")
                 {
                     return Rows11.ToList<IKey>();
+                }
+                if (FormNum == "1.2")
+                {
+                    return Rows12.ToList<IKey>();
+                }
+                if (FormNum == "1.3")
+                {
+                    return Rows13.ToList<IKey>();
+                }
+                if (FormNum == "1.4")
+                {
+                    return Rows14.ToList<IKey>();
+                }
+                if (FormNum == "1.5")
+                {
+                    return Rows15.ToList<IKey>();
+                }
+                if (FormNum == "1.6")
+                {
+                    return Rows16.ToList<IKey>();
+                }
+                if (FormNum == "1.7")
+                {
+                    return Rows17.ToList<IKey>();
+                }
+                if (FormNum == "1.8")
+                {
+                    return Rows18.ToList<IKey>();
+                }
+                if (FormNum == "1.9")
+                {
+                    return Rows19.ToList<IKey>();
+                }
+
+                if (FormNum == "2.1")
+                {
+                    return Rows21.ToList<IKey>();
+                }
+                if (FormNum == "2.2")
+                {
+                    return Rows22.ToList<IKey>();
+                }
+                if (FormNum == "2.3")
+                {
+                    return Rows23.ToList<IKey>();
+                }
+                if (FormNum == "2.4")
+                {
+                    return Rows24.ToList<IKey>();
+                }
+                if (FormNum == "2.5")
+                {
+                    return Rows25.ToList<IKey>();
+                }
+                if (FormNum == "2.6")
+                {
+                    return Rows26.ToList<IKey>();
+                }
+                if (FormNum == "2.7")
+                {
+                    return Rows27.ToList<IKey>();
+                }
+                if (FormNum == "2.8")
+                {
+                    return Rows28.ToList<IKey>();
+                }
+                if (FormNum == "2.9")
+                {
+                    return Rows29.ToList<IKey>();
+                }
+                if (FormNum == "2.10")
+                {
+                    return Rows210.ToList<IKey>();
+                }
+                if (FormNum == "2.11")
+                {
+                    return Rows211.ToList<IKey>();
+                }
+                if (FormNum == "2.12")
+                {
+                    return Rows212.ToList<IKey>();
                 }
                 return null;
             }

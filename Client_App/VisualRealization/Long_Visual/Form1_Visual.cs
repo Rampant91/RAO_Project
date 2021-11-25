@@ -37,7 +37,7 @@ namespace Client_App.Long_Visual
                 Margin = Thickness.Parse(thickness),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!Cell.DataContextProperty] = new Binding(textProp, BindingMode.TwoWay),
+                [!Cell.DataContextProperty] = new Binding(textProp),
                 [Grid.ColumnProperty] = columnProp
             };
         }

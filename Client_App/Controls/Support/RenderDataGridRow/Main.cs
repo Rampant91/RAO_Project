@@ -115,7 +115,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get1Row(1.6, Row, 2, "StartPeriod", scp, TopName));
             stck.Children.Add(Get1Row(1.6, Row, 3, "EndPeriod", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 4, "ExportDate", scp, TopName));
-            stck.Children.Add(Get1Row(2, Row, 5, "IsCorrection", scp, TopName));
+            stck.Children.Add(Get1Row(2, Row, 5, "CorrectionNumber", scp, TopName));
             stck.Children.Add(Get1Row(1, Row, 6, "Comments", scp, TopName));
             return stck;
         }
@@ -206,7 +206,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get3Row(1, Row, 1, "FormNum", scp, TopName));
             stck.Children.Add(Get3Row(2, Row, 2, "Year", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 4, "ExportDate", scp, TopName));
-            stck.Children.Add(Get3Row(2, Row, 5, "IsCorrection", scp, TopName));
+            stck.Children.Add(Get3Row(2, Row, 5, "CorrectionNumber", scp, TopName));
             stck.Children.Add(Get3Row(1, Row, 6, "Comments", scp, TopName));
             return stck;
         }

@@ -64,11 +64,30 @@ namespace Client_App.ViewModels
                 }
                 catch (Exception e)
                 {
-                    StaticConfiguration.DBPath = Path.Combine(Path.GetDirectoryName(StaticConfiguration.DBPath), Path.GetFileNameWithoutExtension(StaticConfiguration.DBPath) + "_2.raodb");
-                    StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
+                    var i = 2;
+                    bool flag = false;
+                    foreach (var file in Directory.GetFiles(Path.GetDirectoryName(StaticConfiguration.DBPath)))
+                    {
+                        try
+                        {
+                            StaticConfiguration.DBPath = file;
+                            StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
 
-                    dbm = StaticConfiguration.DBModel;
-                    dbm.Database.EnsureCreated();
+                            dbm = StaticConfiguration.DBModel;
+                            dbm.Database.Migrate();
+                            flag = true;
+                            break;
+                        }
+                        catch
+                        {
+                            i++;
+                        }
+                    }
+                    if(!flag)
+                    {
+                        StaticConfiguration.DBPath = Path.Combine(Path.GetDirectoryName(StaticConfiguration.DBPath), Path.GetFileNameWithoutExtension(StaticConfiguration.DBPath) + "_"+i+".raodb");
+                        StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
+                    }
                 }
             }
             else
@@ -78,6 +97,32 @@ namespace Client_App.ViewModels
 
             dbm.LoadTables();
             if (dbm.DBObservableDbSet.Local.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
+
+            foreach(var item in dbm.DBObservableDbSet)
+            {
+                foreach(var it in item.Reports_Collection)
+                {
+                    if(it.Master_DB.FormNum_DB!="")
+                    {
+                        if (it.Master_DB.FormNum_DB == "1.0")
+                        {
+                            if (it.Master.Rows10.Count == 0)
+                            {
+                                it.Master.Rows10.Add((Form10)FormCreator.Create("1.0"));
+                                it.Master.Rows10.Add((Form10)FormCreator.Create("1.0"));
+                            }
+                        }
+                        if (it.Master_DB.FormNum_DB == "2.0")
+                        {
+                            if (it.Master.Rows20.Count == 0)
+                            {
+                                it.Master.Rows20.Add((Form20)FormCreator.Create("2.0"));
+                                it.Master.Rows20.Add((Form20)FormCreator.Create("2.0"));
+                            }
+                        }
+                    }
+                }
+            }
 
             dbm.SaveChanges();
 
@@ -107,8 +152,6 @@ namespace Client_App.ViewModels
 
             Excel_Export =
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_Excel_Export);
-            Print_Excel_Export =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_Print_Excel_Export);
             All_Excel_Export =
                 ReactiveCommand.CreateFromTask<string>(_All_Excel_Export);
         }
@@ -554,7 +597,7 @@ namespace Client_App.ViewModels
                         Name = "Excel",
                         Extensions = {
                         "xlsx"
-                    }
+                        }
                     };
                     var param = "";
                     if (forms != null)
@@ -569,6 +612,10 @@ namespace Client_App.ViewModels
                     if (param != "")
                     {
                         var res = await dial.ShowAsync(desktop.MainWindow);
+                        //var to= dial.ShowAsync(desktop.MainWindow);
+                        //to.Start();
+                        //to.Wait();
+                        //var res=to.Result;
                         if (res != null)
                         {
                             if (res.Count() != 0)
@@ -607,9 +654,89 @@ namespace Client_App.ViewModels
                                                                   where t.Report_Collection.Contains(item)
                                                                   select t;
                                                 var reps = findReports.FirstOrDefault();
+                                                foreach (var cell in worksheet.Cells[1, 1, 50, 50])
+                                                {
+                                                    var text = cell.Text;
+                                                    var address = cell.Address;
+                                                    string RowStr = address;
+                                                    string ColumnStr = address;
+                                                    foreach (var ch in address)
+                                                    {
+                                                        try
+                                                        {
+                                                            var num = Convert.ToInt32(ch + "");
+                                                            ColumnStr = ColumnStr.Replace(ch + "", "");
+                                                        }
+                                                        catch
+                                                        {
+                                                            RowStr = RowStr.Replace(ch + "", "");
+                                                        }
+                                                    }
+                                                    int Row = Convert.ToInt32(RowStr);
+                                                    int Column = 0;
+                                                    for (int i = ColumnStr.Length - 1; i >= 0; i--)
+                                                    {
+                                                        int num = ColumnStr[i] - 'A' + 1;
+                                                        Column += num * Convert.ToInt32(Math.Pow(26, i));
+                                                    }
+
+                                                    var inRow = Row;
+                                                    var inColumn = Column;
+                                                    if (cell.Merge == true)
+                                                    {
+                                                        for (int i = 0; i < 100; i++)
+                                                        {
+                                                            var tmpCell = worksheet.Cells[inRow, inColumn];
+                                                            if (tmpCell.Merge == true)
+                                                            {
+                                                                inColumn++;
+                                                            }
+                                                            else
+                                                            {
+                                                                break;
+                                                            }
+                                                        }
+
+                                                    }
+
+                                                    #region Top
+                                                    if (text == "Дата окончания предыдущего отчетного периода")
+                                                    {
+                                                        worksheet.Cells[inRow, inColumn].Value=item.StartPeriod_DB;
+                                                    }
+                                                    if (text == "Дата окончания настящего отчетного периода")
+                                                    {
+                                                        worksheet.Cells[inRow, inColumn].Value = item.EndPeriod_DB;
+                                                    }
+                                                    if (text == "Номер корректировки")
+                                                    {
+                                                        worksheet.Cells[inRow, inColumn].Value = item.CorrectionNumber_DB;
+                                                    }
+                                                    #endregion
+
+                                                    #region Bottom
+                                                    if (text == "(Должность)")
+                                                    {
+                                                        worksheet.Cells[inRow-1, inColumn].Value = item.GradeExecutor_DB;
+                                                    }
+                                                    if (text == "(Фамилия, имя, отчество (при наличии))")
+                                                    {
+                                                        worksheet.Cells[inRow - 1, inColumn].Value = item.FIOexecutor_DB;
+                                                    }
+                                                    if (text == "(Телефон)")
+                                                    {
+                                                        worksheet.Cells[inRow - 1, inColumn].Value = item.ExecPhone_DB;
+                                                    }
+                                                    if (text == "(Электронная почта)")
+                                                    {
+                                                        worksheet.Cells[inRow - 1, inColumn].Value = item.ExecEmail_DB;
+                                                    }
+                                                    #endregion
+                                                }
+
                                                 if (reps != null)
                                                 {
-                                                    List<IKey> lst = item[param];
+                                                    List<IKey> lst = item[param].OrderBy(x=>((Form)x).NumberInOrder_DB).ToList();
 
                                                     if (lst.Count > 0)
                                                     {
@@ -797,7 +924,8 @@ namespace Client_App.ViewModels
                                                         {
                                                             if (worksheet.Cells[primcnt, 1].Value != null)
                                                             {
-                                                                if (worksheet.Cells[primcnt, 1].Value.ToString() == "Примечание:")
+                                                                if (worksheet.Cells[primcnt, 1].Value.ToString() == "Примечание:"||
+                                                                    worksheet.Cells[primcnt, 1].Value.ToString() == "Примечания:" )
                                                                 {
                                                                     break;
                                                                 }
@@ -868,9 +996,8 @@ namespace Client_App.ViewModels
                                                         }
                                                     }
                                                 }
-
-                                                excelPackage.SaveAs(new FileInfo(path));
                                             }
+                                            excelPackage.Save();
                                         }
                                     }
                                 }
@@ -924,7 +1051,7 @@ namespace Client_App.ViewModels
 
                                 if (path != null)
                                 {
-                                    using (ExcelPackage excelPackage = new ExcelPackage())
+                                    using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path)))
                                     {
                                         //Set some properties of the Excel document
                                         excelPackage.Workbook.Properties.Author = "RAO_APP";
@@ -958,35 +1085,13 @@ namespace Client_App.ViewModels
                                                 var reps = findReports.FirstOrDefault();
                                                 if (reps != null)
                                                 {
-                                                    List<IKey> lst = item[param];
+                                                    List<IKey> lst = item[param].OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
                                                     Note.ExcelHeader(worksheetPrim, 1, 1);
                                                     var cnty = 2;
                                                     foreach (var i in item.Notes)
                                                     {
                                                         var mstrep = reps.Master_DB;
                                                         i.ExcelRow(worksheetPrim, cnty,1);
-                                                        //if (param.Split('.')[0] == "1")
-                                                        //{
-                                                        //    if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                                                        //    {
-                                                        //        reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, cnty, 1);
-                                                        //    }
-                                                        //    else
-                                                        //    {
-                                                        //        reps.Master_DB.Rows10[0].ExcelRow(worksheetPrim, cnty, 1);
-                                                        //    }
-                                                        //}
-                                                        //else
-                                                        //{
-                                                        //    if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                                                        //    {
-                                                        //        reps.Master_DB.Rows20[1].ExcelRow(worksheetPrim, cnty, 1);
-                                                        //    }
-                                                        //    else
-                                                        //    {
-                                                        //        reps.Master_DB.Rows20[0].ExcelRow(worksheetPrim, cnty, 1);
-                                                        //    }
-                                                        //}
                                                         cnty++;
                                                     }
                                                     if (param == "1.1")
@@ -1197,9 +1302,7 @@ namespace Client_App.ViewModels
                                                     }
                                                 }
                                             }
-                                            FileInfo fi = new FileInfo(path);
-
-                                            excelPackage.SaveAs(fi);
+                                            excelPackage.Save();
                                         }
                                     }
                                 }
@@ -1244,7 +1347,7 @@ namespace Client_App.ViewModels
 
                                 if (path != null)
                                 {
-                                    using (ExcelPackage excelPackage = new ExcelPackage())
+                                    using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path)))
                                     {
                                         //Set some properties of the Excel document
                                         excelPackage.Workbook.Properties.Author = "RAO_APP";
@@ -1298,7 +1401,7 @@ namespace Client_App.ViewModels
                                                 var reps = findReports.FirstOrDefault();
                                                 if (reps != null)
                                                 {
-                                                    List<IKey> lst = item[param];
+                                                    List<IKey> lst = item[param].OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
                                                     if (param == "1.1")
                                                     {
                                                         Form11.ExcelHeader(worksheet, 1, masterheaderlength + 1);
@@ -1507,9 +1610,7 @@ namespace Client_App.ViewModels
                                                     }
                                                 }
                                             }
-                                            FileInfo fi = new FileInfo(path);
-
-                                            excelPackage.SaveAs(fi);
+                                            excelPackage.Save();
                                         }
                                     }
                                 }

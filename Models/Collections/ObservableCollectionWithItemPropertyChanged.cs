@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Models.Collections;
 using OfficeOpenXml;
+using Models.Abstracts;
+using System.Linq;
 
 namespace Models.Collections
 {
@@ -59,8 +61,72 @@ namespace Models.Collections
                         item.PropertyChanged += ChildPropertyChanged;
                     }
             }
+            var flag = false;
+            var bsT = typeof(T).BaseType;
+            if (bsT!=null)
+            {
+                if (bsT == typeof(Form))
+                {
+                    flag = true;
+                }
+                else
+                {
+                    var bsT2 = typeof(T).BaseType;
+                    if (bsT2 != null)
+                    {
+                        if (bsT == typeof(Form))
+                        {
+                            flag = true;
+                        }
+                    }
+                }
+            }
+            if(flag)
+            {
+                QuickSort();
+            }
 
             base.OnCollectionChanged(e);
+        }
+
+        //метод для обмена элементов массива
+        void Swap(int index1,int index2)
+        {
+            var t = Items[index1];
+            Items[index1] = Items[index2];
+            Items[index2] = t;
+        }
+        int Partition(int minIndex, int maxIndex)
+        {
+            var pivot = minIndex - 1;
+            for (var i = minIndex; i < maxIndex; i++)
+            {
+                if ((Items[i] as Form).NumberInOrder_DB < (Items[maxIndex] as Form).NumberInOrder_DB)
+                {
+                    pivot++;
+                    Swap(pivot, i);
+                }
+            }
+
+            pivot++;
+            Swap(pivot, maxIndex);
+            return pivot;
+        }
+        void QuickSort(int minIndex, int maxIndex)
+        {
+            if (minIndex >= maxIndex)
+            {
+                return;
+            }
+
+            var pivotIndex = Partition( minIndex, maxIndex);
+            QuickSort(minIndex, pivotIndex - 1);
+            QuickSort(pivotIndex + 1, maxIndex);
+        }
+
+        public void QuickSort()
+        {
+            QuickSort(0, Items.Count - 1);
         }
 
         protected void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)
@@ -82,10 +148,17 @@ namespace Models.Collections
             base.ClearItems();
         }
 
+        protected override void RemoveItem(int index)
+        {
+            this[index].PropertyChanged -= ChildPropertyChanged;
+            base.RemoveItem(index);
+        }
+
         private void ObserveAll()
         {
             foreach (T item in Items)
                 item.PropertyChanged += ChildPropertyChanged;
+
         }
 
         private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
