@@ -1667,6 +1667,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("FcpNumber_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1717,6 +1720,9 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("Subsidy_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<bool>("Subsidy_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
 
                     b.Property<bool>("Sum_DB")
                         .HasColumnType("BOOLEAN");

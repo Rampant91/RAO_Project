@@ -3,15 +3,17 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
 namespace Models.DBRealization.Migrations.DataExportModel
 {
     [DbContext(typeof(DBExportModel))]
-    partial class DBExportModelModelSnapshot : ModelSnapshot
+    [Migration("20211126080812_DataExportModel_3")]
+    partial class DataExportModel_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
