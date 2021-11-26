@@ -421,6 +421,7 @@ namespace Models.Collections
                             sumRow.PackName_DB = first.PackName_DB;
                             sumRow.PackType_DB = first.PackType_DB;
 
+
                             sumRow.Sum_DB = true;
                         }
 

@@ -8,7 +8,7 @@
         MinHeight="200" MinWidth="200"
         x:Class="Client_App.Views.MainWindow"
         xmlns:Converters="using:Client_App.Converters"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/logo.png"
         Title="Интерактивное пособие по вводу данных"
         x:Name="MainWindow"
         Background="#D3D3D3">

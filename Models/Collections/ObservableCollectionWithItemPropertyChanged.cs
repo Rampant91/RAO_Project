@@ -61,33 +61,7 @@ namespace Models.Collections
                         item.PropertyChanged += ChildPropertyChanged;
                     }
             }
-            var flag = false;
-            var bsT = typeof(T).BaseType;
-            if (bsT != null)
-            {
-                if (typeof(T) != typeof(Form10) && typeof(T) != typeof(Form20))
-                {
-                    if (bsT == typeof(Form))
-                    {
-                        flag = true;
-                    }
-                    else
-                    {
-                        var bsT2 = bsT.BaseType;
-                        if (bsT2 != null)
-                        {
-                            if (bsT2 == typeof(Form))
-                            {
-                                flag = true;
-                            }
-                        }
-                    }
-                }
-            }
-            if(flag)
-            {
-                QuickSort();
-            }
+            QuickSort();
 
             base.OnCollectionChanged(e);
         }
@@ -129,7 +103,33 @@ namespace Models.Collections
 
         public void QuickSort()
         {
-            QuickSort(0, Items.Count - 1);
+            var flag = false;
+            var bsT = typeof(T).BaseType;
+            if (bsT != null)
+            {
+                if (typeof(T) != typeof(Form10) && typeof(T) != typeof(Form20))
+                {
+                    if (bsT == typeof(Form))
+                    {
+                        flag = true;
+                    }
+                    else
+                    {
+                        var bsT2 = bsT.BaseType;
+                        if (bsT2 != null)
+                        {
+                            if (bsT2 == typeof(Form))
+                            {
+                                flag = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (flag)
+            {
+                QuickSort(0, Items.Count - 1);
+            }
         }
 
         protected void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)

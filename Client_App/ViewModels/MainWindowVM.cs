@@ -42,6 +42,7 @@ namespace Client_App.ViewModels
             string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
             string path = Path.GetPathRoot(system);
             var tmp = Path.Combine(path, "RAO");
+            var pty = tmp;
             tmp = Path.Combine(tmp, "temp");
             Directory.CreateDirectory(tmp);
             var fl = Directory.GetFiles(tmp);
@@ -52,48 +53,32 @@ namespace Client_App.ViewModels
 
             var a = Spravochniks.SprRadionuclids;
             var b = Spravochniks.SprTypesToRadionuclids;
+            var i = 0;
+            bool flag = false;
 
-            Local_Reports = new DBObservable();
-            var dbm = StaticConfiguration.DBModel;
-
-            if (File.Exists(StaticConfiguration.DBPath))
+            DBModel dbm = null;
+            foreach (var file in Directory.GetFiles(pty))
             {
                 try
                 {
-                    var r = dbm.Database.GetAppliedMigrations();
-                    var y = dbm.Database.GetPendingMigrations();
-                    dbm.Database.Migrate();
-                }
-                catch (Exception e)
-                {
-                    var i = 2;
-                    bool flag = false;
-                    foreach (var file in Directory.GetFiles(Path.GetDirectoryName(StaticConfiguration.DBPath)))
-                    {
-                        try
-                        {
-                            StaticConfiguration.DBPath = file;
-                            StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
+                    StaticConfiguration.DBPath = file;
+                    StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
 
-                            dbm = StaticConfiguration.DBModel;
-                            dbm.Database.Migrate();
-                            flag = true;
-                            break;
-                        }
-                        catch
-                        {
-                            i++;
-                        }
-                    }
-                    if(!flag)
-                    {
-                        StaticConfiguration.DBPath = Path.Combine(Path.GetDirectoryName(StaticConfiguration.DBPath), Path.GetFileNameWithoutExtension(StaticConfiguration.DBPath) + "_"+i+".raodb");
-                        StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
-                    }
+                    dbm = StaticConfiguration.DBModel;
+                    dbm.Database.Migrate();
+                    flag = true;
+                    break;
+                }
+                catch
+                {
+                    i++;
                 }
             }
-            else
+            if (!flag)
             {
+                StaticConfiguration.DBPath = Path.Combine(pty, "Local" + "_" + i + ".raodb");
+                StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
+                dbm = StaticConfiguration.DBModel;
                 dbm.Database.Migrate();
             }
 
