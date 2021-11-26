@@ -380,7 +380,6 @@ namespace Models.Collections
                               (x as Form22).StoragePlaceCode_DB +
                               (x as Form22).PackName_DB +
                               (x as Form22).PackType_DB).ToList();
-            int rowCount = 1;
             var y = tItems.ToList();
 
             var ito = new Dictionary<string, List<T>>();
@@ -395,9 +394,7 @@ namespace Models.Collections
                 {
                     foreach (var t in item)
                     {
-                        (t as Form22).NumberInOrder_DB = rowCount;
                         ito[item.Key].Add(t);
-                        rowCount++;
                     }
                     tItems.Remove(item);
                 }
@@ -423,12 +420,24 @@ namespace Models.Collections
                             sumRow.PackName_DB = first.PackName_DB;
                             sumRow.PackType_DB = first.PackType_DB;
 
+                            sumRow.StoragePlaceName_Hidden = true;
+                            sumRow.StoragePlaceCode_Hidden = true;
+                            sumRow.PackName_Hidden = true;
+                            sumRow.PackType_Hidden = true;
+
+                            sumRow.StoragePlaceName_Hidden2 = true;
+                            sumRow.StoragePlaceCode_Hidden2 = true;
+                            sumRow.PackName_Hidden2 = true;
+                            sumRow.PackType_Hidden2 = true;
+
+                            sumRow.CodeRAO_Hidden = true;
+                            sumRow.StatusRAO_Hidden = true;
+                            sumRow.MainRadionuclids_Hidden = true;
+                            sumRow.Subsidy_Hidden = true;
+                            sumRow.FcpNumber_Hidden = true;
 
                             sumRow.Sum_DB = true;
                         }
-
-                        sumRow.NumberInOrder_DB = rowCount;
-                        rowCount++;
 
                         double volumeSum = 0;
                         double massSum = 0;
@@ -440,14 +449,20 @@ namespace Models.Collections
                         double transSum = 0;
 
                         List<T> lst = new List<T>();
-                        foreach (var itemThread in ty)
+                        var u = ty.OrderBy(x => (x as Form22).NumberInOrder_DB);
+                        foreach (var itemThread in u)
                         {
                             var item = itemThread;
                             var form = item as Form22;
                             if (form.Sum_DB != true)
                             {
-                                form.NumberInOrder_DB = rowCount;
+                                form.StoragePlaceName_Hidden = true;
+                                form.StoragePlaceCode_Hidden = true;
+                                form.PackName_Hidden = true;
+                                form.PackType_Hidden = true;
 
+                                form.VolumeInPack_Hidden = true;
+                                form.MassInPack_Hidden = true;
                                 volumeSum += StringToNumber(form.VolumeOutOfPack_DB);
                                 massSum += StringToNumber(form.MassOutOfPack_DB);
                                 //quantitySum += StringToNumber(form.QuantityIn_DB);
@@ -458,21 +473,16 @@ namespace Models.Collections
 
 
                                 lst.Add(form as T);
-                                rowCount++;
                             }
                         }
 
-                        sumRow.CodeRAO_Hidden = true;
-                        sumRow.StatusRAO_Hidden = true;
-                        sumRow.MainRadionuclids_Hidden = true;
-
-                        sumRow.VolumeOutOfPack_DB = volumeSum.ToString("E2");
-                        sumRow.MassOutOfPack_DB = massSum.ToString("E2");
+                        sumRow.VolumeOutOfPack_DB = volumeSum >= double.Epsilon ? volumeSum.ToString("E2") : "-";
+                        sumRow.MassOutOfPack_DB = massSum >= double.Epsilon ? massSum.ToString("E2") : "-"; 
                         //sumRow.QuantityOZIII_DB = quantityInSum.ToString("E2");
-                        sumRow.AlphaActivity_DB = alphaSum.ToString("E2");
-                        sumRow.BetaGammaActivity_DB = betaSum.ToString("E2");
-                        sumRow.TritiumActivity_DB = tritSum.ToString("E2");
-                        sumRow.TransuraniumActivity_DB = transSum.ToString("E2");
+                        sumRow.AlphaActivity_DB = alphaSum >= double.Epsilon ? alphaSum.ToString("E2") : "-";
+                        sumRow.BetaGammaActivity_DB = betaSum >= double.Epsilon ? betaSum.ToString("E2") : "-";
+                        sumRow.TritiumActivity_DB = tritSum >= double.Epsilon ? tritSum.ToString("E2") : "-";
+                        sumRow.TransuraniumActivity_DB = transSum >= double.Epsilon ? transSum.ToString("E2") : "-";
 
                         lock (ito)
                         {
@@ -492,9 +502,11 @@ namespace Models.Collections
                                 if ((t as Form22).Sum_DB != true)
                                 {
                                     var form = (t as Form22);
-                                    form.NumberInOrder_DB = rowCount;
+                                    form.StoragePlaceName_Hidden = false;
+                                    form.StoragePlaceCode_Hidden = false;
+                                    form.PackName_Hidden = false;
+                                    form.PackType_Hidden = false;
                                     ito[itemT.Key].Add(t);
-                                    rowCount++;
                                 }
                             }
                         }
@@ -511,10 +523,19 @@ namespace Models.Collections
 
             this.ClearItems();
             var yu = ito.OrderBy(x => x.Key);
+            var count = 1;
             foreach (var item in yu)
             {
+                var o = item.Value as List<Form22>;
+                foreach (var i in o)
+                {
+                    i.NumberInOrder.Value = count;
+                    count++;
+                }
+
                 this.AddRange(item.Value);
             }
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         protected void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)

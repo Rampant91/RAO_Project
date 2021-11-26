@@ -650,20 +650,48 @@ namespace Models
         #endregion
 
         #region VolumeInPack
-        public string VolumeInPack_DB { get; set; } = "";[NotMapped]
+        public string VolumeInPack_DB { get; set; } = "";
+        public bool VolumeInPack_Hidden_Priv { get; set; } = false;
+
+        [NotMapped]
+        public bool VolumeInPack_Hidden
+        {
+            get => VolumeInPack_Hidden_Priv;
+            set { VolumeInPack_Hidden_Priv = value; }
+        }
+        public bool VolumeInPack_Hidden_Priv2 { get; set; } = false;
+
+        [NotMapped]
+        public bool VolumeInPack_Hidden2
+        {
+            get => VolumeInPack_Hidden_Priv2;
+            set { VolumeInPack_Hidden_Priv2 = value; }
+        }
+        [NotMapped]
         [Attributes.Form_Property("РАО с упаковкой")]
         public RamAccess<string> VolumeInPack
         {
             get
             {
-                var tmp = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
-                tmp.PropertyChanged += VolumeInPackValueChanged;
-                return tmp;
+                if (!VolumeInPack_Hidden || VolumeInPack_Hidden2)
+                {
+                    var tmp = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
+                    tmp.PropertyChanged += VolumeInPackValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                VolumeInPack_DB = value.Value;
-                OnPropertyChanged(nameof(VolumeInPack));
+                if (!VolumeInPack_Hidden)
+                {
+                    VolumeInPack_DB = value.Value;
+                    OnPropertyChanged(nameof(VolumeInPack));
+                }
             }
         }
 
@@ -720,20 +748,49 @@ namespace Models
         #endregion
 
         #region MassInPack
-        public string MassInPack_DB { get; set; } = "";[NotMapped]
+        public string MassInPack_DB { get; set; } = "";
+        public bool MassInPack_Hidden_Priv { get; set; } = false;
+
+        [NotMapped]
+        public bool MassInPack_Hidden
+        {
+            get => MassInPack_Hidden_Priv;
+            set { MassInPack_Hidden_Priv = value; }
+        }
+        public bool MassInPack_Hidden_Priv2 { get; set; } = false;
+
+        [NotMapped]
+        public bool MassInPack_Hidden2
+        {
+            get => MassInPack_Hidden_Priv2;
+            set { MassInPack_Hidden_Priv2 = value; }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("РАО с упаковкой (брутто)")]
         public RamAccess<string> MassInPack
         {
             get
             {
-                var tmp = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
-                tmp.PropertyChanged += MassInPackValueChanged;
-                return tmp;
+                if (!MassInPack_Hidden || MassInPack_Hidden2)
+                {
+                    var tmp = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
+                    tmp.PropertyChanged += MassInPackValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                MassInPack_DB = value.Value;
-                OnPropertyChanged(nameof(MassInPack));
+                if (!MassInPack_Hidden)
+                {
+                    MassInPack_DB = value.Value;
+                    OnPropertyChanged(nameof(MassInPack));
+                }
             }
         }
 
