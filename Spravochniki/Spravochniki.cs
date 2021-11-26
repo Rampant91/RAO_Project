@@ -16,6 +16,10 @@ namespace Spravochniki
         {
 
         };
+        public static List<short> SprCodeTypesAccObjects = new List<short>
+        {
+            11,12,13,21,22,23,31,32,33,99
+        };
         public static List<short> SprOpCodes = new List<short>
         {
             1,10,11,12,13,14,15,16,17,18,21,22,25,26,27,28,29,31,32,35,36,37,38,39,41,42,43,44,45,

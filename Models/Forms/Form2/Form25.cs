@@ -196,15 +196,16 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         }
 
         private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                FcpNumber_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            if (args.PropertyName == "Value")
+            {
+                FcpNumber_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+        {
+            value.ClearErrors();
+            return true;
         }
         //FcpNumber property
         #endregion

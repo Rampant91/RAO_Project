@@ -925,6 +925,10 @@ namespace Models
         private bool Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
             if (value.Value.Equals("-"))
             {
                 return true;
@@ -973,7 +977,8 @@ namespace Models
         }
         private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
         #endregion
 
