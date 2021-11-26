@@ -995,8 +995,8 @@ namespace Models.DBRealization.Migrations.DataExportModel
                     b.Property<bool>("ProviderOrRecieverOKPO_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
-                    b.Property<int?>("Quantity_DB")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Quantity_DB")
+                        .HasColumnType("BLOB SUB_TYPE TEXT");
 
                     b.Property<string>("Radionuclids_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");

@@ -1849,6 +1849,10 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                value1 = value1.Replace(" ","");
+                value1 = value1.Replace("\n", "");
+                value1 = value1.Replace("\t", "");
+                value1 = value1.Replace("\r", "");
                 if (value1.Equals("-"))
                 {
                     TransuraniumActivityOut_DB = value1;
@@ -1874,6 +1878,10 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            value1 = value1.Replace(" ", "");
+            value1 = value1.Replace("\n", "");
+            value1 = value1.Replace("\t", "");
+            value1 = value1.Replace("\r", "");
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
