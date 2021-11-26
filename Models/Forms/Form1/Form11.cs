@@ -291,7 +291,7 @@ namespace Models
         #region Activity
         public string Activity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("активность, Бк")]
+        [Attributes.Form_Property("суммарная активность, Бк")]
         public RamAccess<string> Activity
         {
             get
