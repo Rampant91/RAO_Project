@@ -70,8 +70,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            List<short> spr = new List<short>();
-            if (!spr.Contains((short)value.Value))
+            if (!Spravochniks.SprCodeTypesAccObjects.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;

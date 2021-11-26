@@ -1097,6 +1097,10 @@ namespace Models
             {
                 return true;
             }
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
             try
             {
                 int tmp = int.Parse(value.Value);
@@ -1141,7 +1145,8 @@ namespace Models
         }
         private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
         #endregion
 

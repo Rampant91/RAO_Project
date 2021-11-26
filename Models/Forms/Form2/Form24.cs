@@ -124,14 +124,14 @@ private bool CodeOYAT_Validation(RamAccess<string> value)
             }
         }
 
-                private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 FcpNumber_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             return true;

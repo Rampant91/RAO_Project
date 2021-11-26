@@ -1498,10 +1498,9 @@ namespace Models
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                value.AddError("Поле не заполнено");
-                return false;
+                return true;
             }
-            if (value.Value == "-")
+            if (value.Value.Equals("-"))
             {
                 return true;
             }
@@ -1548,7 +1547,8 @@ namespace Models
         }
         private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;
+            value.ClearErrors();
+            return true;
         }
         #endregion
 
