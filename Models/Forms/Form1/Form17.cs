@@ -1386,14 +1386,14 @@ namespace Models
         #endregion
 
         #region Quantity
-        public int? Quantity_DB { get; set; } = null;
+        public string Quantity_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("количество ОЗИИИ, шт.")]
-        public RamAccess<int?> Quantity
+        public RamAccess<string> Quantity
         {
             get
             {
-                var tmp = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
+                var tmp = new RamAccess<string>(Quantity_Validation, Quantity_DB);
                 tmp.PropertyChanged += QuantityValueChanged;
                 return tmp;
             }
@@ -1408,13 +1408,30 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Quantity_DB = ((RamAccess<int?>)Value).Value;
+                Quantity_DB = ((RamAccess<string>)Value).Value;
             }
         }
-        private bool Quantity_Validation(RamAccess<int?> value)//Ready
+        private bool Quantity_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value <= 0)
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
+            try
+            {
+                if (int.Parse(value.Value) <= 0)
+                {
+                    value.AddError("Число должно быть больше нуля");
+                    return false;
+                }
+            }
+            catch (Exception)
             {
                 value.AddError("Недопустимое значение");
                 return false;
