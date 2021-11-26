@@ -272,7 +272,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             stck.Children.Add(Get4Row(1, Row, 11, "Mass", scp, TopName));
             stck.Children.Add(Get4Row(2, Row, 12, "AggregateState", scp, TopName));
             stck.Children.Add(Get4Row(2, Row, 13, "PropertyCode", scp, TopName));
-            stck.Children.Add(Get4Row(1.5, Row, 14, "Owner", scp, TopName));
+            stck.Children.Add(Get4Row(1.7, Row, 14, "Owner", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 15, "DocumentVid", scp, TopName));
             stck.Children.Add(Get4Row(1.5, Row, 16, "DocumentNumber", scp, TopName));
             stck.Children.Add(Get4Row(1, Row, 17, "DocumentDate", scp, TopName));

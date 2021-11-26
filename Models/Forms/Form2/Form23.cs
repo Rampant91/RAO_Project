@@ -380,6 +380,10 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
+            {
+                return true;
+            }
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -486,6 +490,10 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
+            {
+                return true;
+            }
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
