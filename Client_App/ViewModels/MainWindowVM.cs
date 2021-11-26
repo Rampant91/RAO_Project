@@ -32,12 +32,12 @@ namespace Client_App.ViewModels
 
         public MainWindowVM()
         {
-            tm.Elapsed += (x, y) =>
-            {
-                GC.Collect(1000, GCCollectionMode.Forced);
-            };
-            tm.AutoReset = true;
-            tm.Start();
+            //tm.Elapsed += (x, y) =>
+            //{
+            //    GC.Collect(1000, GCCollectionMode.Forced);
+            //};
+            //tm.AutoReset = true;
+            //tm.Start();
 
             string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
             string path = Path.GetPathRoot(system);
