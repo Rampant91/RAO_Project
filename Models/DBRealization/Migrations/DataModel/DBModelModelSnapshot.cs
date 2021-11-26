@@ -1682,6 +1682,12 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("MassInPack_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("MassInPack_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("MassInPack_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("MassOutOfPack_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1759,6 +1765,12 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("VolumeInPack_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<bool>("VolumeInPack_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("VolumeInPack_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
 
                     b.Property<string>("VolumeOutOfPack_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
