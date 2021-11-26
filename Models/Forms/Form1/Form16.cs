@@ -1201,6 +1201,14 @@ namespace Models
         private bool Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
             try
             {
                 int tmp = Int32.Parse(value.Value);

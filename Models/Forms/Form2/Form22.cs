@@ -1283,18 +1283,22 @@ private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
             }
         }
 
-
         private void SubsidyValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 Subsidy_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool Subsidy_Validation(RamAccess<string> value)//Ready
+            }
+        }
+
+        private bool Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
+            {
+                return true;
+            }
+            if (value.Value.Equals("-"))
             {
                 return true;
             }
@@ -1335,15 +1339,17 @@ private bool Subsidy_Validation(RamAccess<string> value)//Ready
 
         
         private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
-                FcpNumber_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors(); return true;}
+            if (args.PropertyName == "Value")
+            {
+                FcpNumber_DB = ((RamAccess<string>)Value).Value;
+            }
+        }
+        private bool FcpNumber_Validation(RamAccess<string> value)//TODO
+        {
+            value.ClearErrors();
+            return true;
+        }
         //FcpNumber property
         #endregion
 
