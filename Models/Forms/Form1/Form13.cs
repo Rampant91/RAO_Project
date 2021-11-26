@@ -803,7 +803,7 @@ namespace Models
         #region PackNumber
         public string PackNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("номер упаковки")]
+        [Attributes.Form_Property("номер")]
         public RamAccess<string> PackNumber
         {
             get

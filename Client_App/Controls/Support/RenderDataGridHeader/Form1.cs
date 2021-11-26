@@ -726,7 +726,7 @@ namespace Client_App.Controls.Support.RenderDataGridHeader
             //    ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("AggregateState")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,10
             //));
-            stck.Add(Get3Header(new double[9] { 1.5, 1, 1, 2, 1, 2, 2, 2, 12.5 }, 3, new string[9] {
+            stck.Add(Get3Header(new double[9] { 2.1, 1, 1, 2, 1, 2, 2, 2, 13.1 }, 3, new string[9] {
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute) Type.GetType("Models.Form13,Models").GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
