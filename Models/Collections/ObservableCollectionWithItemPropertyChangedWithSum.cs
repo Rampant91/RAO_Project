@@ -161,7 +161,6 @@ namespace Models.Collections
                                           (x as Form21).MachineCode_DB +
                                           (x as Form21).MachinePower_DB +
                                           (x as Form21).NumberOfHoursPerYear_DB).ToList();
-            int rowCount = 1;
             var y = tItems.ToList();
 
             var ito = new Dictionary<string,List<T>>();
@@ -176,9 +175,7 @@ namespace Models.Collections
                 {
                     foreach (var t in item)
                     {
-                        (t as Form21).NumberInOrder_DB = rowCount;
                         ito[item.Key].Add(t);
-                        rowCount++;
                     }
                     tItems.Remove(item);
                 }
@@ -188,7 +185,7 @@ namespace Models.Collections
             {
                 var tr = new Thread(x =>
                 {
-                    var ty = x as IGrouping<string, T>;
+                    var ty = (x as IGrouping<string, T>);
                     var sums = ty.Where(x => (x as Form21).Sum_DB == true).FirstOrDefault();
 
                     Form21 sumRow = sums as Form21;
@@ -222,8 +219,7 @@ namespace Models.Collections
                             sumRow.Sum_DB = true;
                         }
 
-                        sumRow.NumberInOrder_DB = rowCount;
-                        rowCount++;
+                        sumRow.NumberInOrder_DB = 0;
 
                         double volumeInSum = 0;
                         double massInSum = 0;
@@ -242,7 +238,8 @@ namespace Models.Collections
                         double transOutSum = 0;
 
                         List<T> lst = new List<T>();
-                        foreach (var itemThread in ty)
+                        var u = ty.OrderBy(x => (x as Form21).NumberInOrder_DB);
+                        foreach (var itemThread in u)
                         {
                             var item = itemThread;
                             var form = item as Form21;
@@ -252,7 +249,6 @@ namespace Models.Collections
                                 form.MachineCode_Hidden = true;
                                 form.MachinePower_Hidden = true;
                                 form.NumberOfHoursPerYear_Hidden = true;
-                                form.NumberInOrder_DB = rowCount;
 
                                 volumeInSum += StringToNumber(form.VolumeIn_DB);
                                 massInSum += StringToNumber(form.MassIn_DB);
@@ -271,7 +267,6 @@ namespace Models.Collections
                                 transOutSum += StringToNumber(form.TransuraniumActivityOut_DB);
 
                                 lst.Add(form as T);
-                                rowCount++;
                             }
                         }
 
@@ -313,9 +308,7 @@ namespace Models.Collections
                                     form.MachineCode_Hidden = false;
                                     form.MachinePower_Hidden = false;
                                     form.NumberOfHoursPerYear_Hidden = false;
-                                    form.NumberInOrder.Value = rowCount;
                                     ito[itemT.Key].Add(t);
-                                    rowCount++;
                                 }
                             }
                         }
