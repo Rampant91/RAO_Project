@@ -245,7 +245,7 @@ namespace Models
         #region CreatorOKPO
         public string CreatorOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("ОКПО изготовителя")]
+        [Attributes.Form_Property("код ОКПО изготовителя")]
         public RamAccess<string> CreatorOKPO
         {
             get
@@ -671,7 +671,8 @@ namespace Models
             {
                 PackName_DB = ((RamAccess<string>)Value).Value;
             }
-        } private bool PackName_Validation(RamAccess<string> value)
+        }
+        private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -734,7 +735,7 @@ namespace Models
         #region PackNumber
         public string PackNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("номер упаковки")]
+        [Attributes.Form_Property("номер")]
         public RamAccess<string> PackNumber
         {
             get
