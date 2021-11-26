@@ -1667,6 +1667,9 @@ namespace Models.DBRealization.Migrations.DataExportModel
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("FcpNumber_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1691,11 +1694,23 @@ namespace Models.DBRealization.Migrations.DataExportModel
                     b.Property<string>("PackName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("PackName_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("PackName_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<int?>("PackQuantity_DB")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PackType_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<bool>("PackType_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("PackType_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
 
                     b.Property<string>("QuantityOZIII_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1712,11 +1727,26 @@ namespace Models.DBRealization.Migrations.DataExportModel
                     b.Property<string>("StoragePlaceCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("StoragePlaceCode_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("StoragePlaceCode_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("StoragePlaceName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<bool>("StoragePlaceName_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
+
+                    b.Property<bool>("StoragePlaceName_Hidden_Priv2")
+                        .HasColumnType("BOOLEAN");
+
                     b.Property<string>("Subsidy_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<bool>("Subsidy_Hidden_Priv")
+                        .HasColumnType("BOOLEAN");
 
                     b.Property<bool>("Sum_DB")
                         .HasColumnType("BOOLEAN");

@@ -94,7 +94,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Sum_DB = ((RamAccess<bool>) Value).Value;
+                Sum_DB = ((RamAccess<bool>)Value).Value;
             }
         }
 
@@ -106,9 +106,25 @@ namespace Models
 
         #endregion
 
-        #region StoragePlaceNameNumberInOrder
+        #region StoragePlaceName
 
         public string StoragePlaceName_DB { get; set; } = "";
+        public bool StoragePlaceName_Hidden_Priv { get; set; } = false;
+
+        [NotMapped]
+        public bool StoragePlaceName_Hidden
+        {
+            get => StoragePlaceName_Hidden_Priv;
+            set { StoragePlaceName_Hidden_Priv = value; }
+        }
+        public bool StoragePlaceName_Hidden_Priv2 { get; set; } = false;
+
+        [NotMapped]
+        public bool StoragePlaceName_Hidden2
+        {
+            get => StoragePlaceName_Hidden_Priv2;
+            set { StoragePlaceName_Hidden_Priv2 = value; }
+        }
 
         [NotMapped]
         [Attributes.Form_Property("наименование")]
@@ -116,14 +132,25 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
-                tmp.PropertyChanged += StoragePlaceNameValueChanged;
-                return tmp;
+                if (!StoragePlaceName_Hidden || StoragePlaceName_Hidden2)
+                {
+                    var tmp = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
+                    tmp.PropertyChanged += StoragePlaceNameValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                StoragePlaceName_DB = value.Value;
-                OnPropertyChanged(nameof(StoragePlaceName));
+                if (!StoragePlaceName_Hidden)
+                {
+                    StoragePlaceName_DB = value.Value;
+                    OnPropertyChanged(nameof(StoragePlaceName));
+                }
             }
         }
         //If change this change validation
@@ -132,7 +159,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                StoragePlaceName_DB = ((RamAccess<string>) Value).Value;
+                StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -145,12 +172,12 @@ namespace Models
                 return false;
             }
 
-//            var spr = new List<string>();//here binds spr
-//            if (!spr.Contains(value.Value))
-//            {
-//                value.AddError( "Недопустимое значение");
-//return false;
-//            }
+            //            var spr = new List<string>();//here binds spr
+            //            if (!spr.Contains(value.Value))
+            //            {
+            //                value.AddError( "Недопустимое значение");
+            //return false;
+            //            }
             return true;
         }
 
@@ -161,6 +188,22 @@ namespace Models
         #region StoragePlaceCode
 
         public string StoragePlaceCode_DB { get; set; } = "";
+        public bool StoragePlaceCode_Hidden_Priv { get; set; } = false;
+
+        [NotMapped]
+        public bool StoragePlaceCode_Hidden
+        {
+            get => StoragePlaceCode_Hidden_Priv;
+            set { StoragePlaceCode_Hidden_Priv = value; }
+        }
+        public bool StoragePlaceCode_Hidden_Priv2 { get; set; } = false;
+
+        [NotMapped]
+        public bool StoragePlaceCode_Hidden2
+        {
+            get => StoragePlaceCode_Hidden_Priv2;
+            set { StoragePlaceCode_Hidden_Priv2 = value; }
+        }
 
         [NotMapped]
         [Attributes.Form_Property("код")]
@@ -168,14 +211,25 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
-                tmp.PropertyChanged += StoragePlaceCodeValueChanged;
-                return tmp;
+                if (!StoragePlaceCode_Hidden||StoragePlaceName_Hidden2)
+                {
+                    var tmp = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
+                    tmp.PropertyChanged += StoragePlaceCodeValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                StoragePlaceCode_DB = value.Value;
-                OnPropertyChanged(nameof(StoragePlaceCode));
+                if (!StoragePlaceCode_Hidden)
+                {
+                    StoragePlaceCode_DB = value.Value;
+                    OnPropertyChanged(nameof(StoragePlaceCode));
+                }
             }
         }
         //if change this change validation
@@ -184,7 +238,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                StoragePlaceCode_DB = ((RamAccess<string>) Value).Value;
+                StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -222,6 +276,22 @@ namespace Models
         #region PackName
 
         public string PackName_DB { get; set; } = "";
+        public bool PackName_Hidden_Priv { get; set; } = false;
+
+        [NotMapped]
+        public bool PackName_Hidden
+        {
+            get => PackName_Hidden_Priv;
+            set { PackName_Hidden_Priv = value; }
+        }
+        public bool PackName_Hidden_Priv2 { get; set; } = false;
+
+        [NotMapped]
+        public bool PackName_Hidden2
+        {
+            get => PackName_Hidden_Priv2;
+            set { PackName_Hidden_Priv2 = value; }
+        }
 
         [NotMapped]
         [Attributes.Form_Property("наименование")]
@@ -229,14 +299,25 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(PackName_Validation, PackName_DB); //OK
-                tmp.PropertyChanged += PackNameValueChanged;
-                return tmp;
+                if (!PackName_Hidden || PackName_Hidden2)
+                {
+                    var tmp = new RamAccess<string>(PackName_Validation, PackName_DB); //OK
+                    tmp.PropertyChanged += PackNameValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
-                PackName_DB = value.Value;
-                OnPropertyChanged(nameof(PackName));
+                if (!PackName_Hidden)
+                {
+                    PackName_DB = value.Value;
+                    OnPropertyChanged(nameof(PackName));
+                }
             }
         }
 
@@ -245,7 +326,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                PackName_DB = ((RamAccess<string>) Value).Value;
+                PackName_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -263,12 +344,12 @@ namespace Models
                 return true;
             }
 
-//            var spr = new List<string>(); //here binds spr
-//            if (!spr.Contains(value.Value))
-//            {
-//                value.AddError( "Недопустимое значение");
-//return false;
-//            }
+            //            var spr = new List<string>(); //here binds spr
+            //            if (!spr.Contains(value.Value))
+            //            {
+            //                value.AddError( "Недопустимое значение");
+            //return false;
+            //            }
             return true;
         }
 
@@ -279,6 +360,22 @@ namespace Models
         #region PackType
 
         public string PackType_DB { get; set; } = "";
+        public bool PackType_Hidden_Priv { get; set; } = false;
+
+        [NotMapped]
+        public bool PackType_Hidden
+        {
+            get => PackType_Hidden_Priv;
+            set { PackType_Hidden_Priv = value; }
+        }
+        public bool PackType_Hidden_Priv2 { get; set; } = false;
+
+        [NotMapped]
+        public bool PackType_Hidden2
+        {
+            get => PackType_Hidden_Priv2;
+            set { PackType_Hidden_Priv2 = value; }
+        }
 
         [NotMapped]
         [Attributes.Form_Property("тип")]
@@ -286,9 +383,17 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(PackType_Validation, PackType_DB); //OK
-                tmp.PropertyChanged += PackTypeValueChanged;
-                return tmp;
+                if (!PackType_Hidden || PackType_Hidden2)
+                {
+                    var tmp = new RamAccess<string>(PackType_Validation, PackType_DB); //OK
+                    tmp.PropertyChanged += PackTypeValueChanged;
+                    return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
@@ -302,7 +407,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                PackType_DB = ((RamAccess<string>) Value).Value;
+                PackType_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
@@ -362,7 +467,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                PackQuantity_DB = ((RamAccess<int?>) Value).Value;
+                PackQuantity_DB = ((RamAccess<int?>)Value).Value;
             }
         }
 
@@ -375,7 +480,7 @@ namespace Models
                 return false;
             }
 
-            if ((int) value.Value <= 0)
+            if ((int)value.Value <= 0)
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -498,13 +603,13 @@ namespace Models
 
 
         private void StatusRAOValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 StatusRAO_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool StatusRAO_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -545,19 +650,19 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region VolumeInPack
-        public string VolumeInPack_DB { get; set; } = ""; [NotMapped]
+        public string VolumeInPack_DB { get; set; } = "";[NotMapped]
         [Attributes.Form_Property("РАО с упаковкой")]
         public RamAccess<string> VolumeInPack
         {
             get
             {
-                    var tmp = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
-                    tmp.PropertyChanged += VolumeInPackValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
+                tmp.PropertyChanged += VolumeInPackValueChanged;
+                return tmp;
             }
             set
             {
-                    VolumeInPack_DB = value.Value;
+                VolumeInPack_DB = value.Value;
                 OnPropertyChanged(nameof(VolumeInPack));
             }
         }
@@ -603,11 +708,11 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)){value.AddError("Число должно быть больше нуля");return false;}
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
-                value.AddError( "Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение"); return false;
             }
             return true;
         }
@@ -615,19 +720,19 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region MassInPack
-        public string MassInPack_DB { get; set; } = ""; [NotMapped]
+        public string MassInPack_DB { get; set; } = "";[NotMapped]
         [Attributes.Form_Property("РАО с упаковкой (брутто)")]
         public RamAccess<string> MassInPack
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
-                    tmp.PropertyChanged += MassInPackValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
+                tmp.PropertyChanged += MassInPackValueChanged;
+                return tmp;
             }
             set
             {
-                    MassInPack_DB = value.Value;
+                MassInPack_DB = value.Value;
                 OnPropertyChanged(nameof(MassInPack));
             }
         }
@@ -688,19 +793,19 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region VolumeOutOfPack 
-        public string VolumeOutOfPack_DB { get; set; } = ""; [NotMapped]
+        public string VolumeOutOfPack_DB { get; set; } = "";[NotMapped]
         [Attributes.Form_Property("РАО без упаковки")]
         public RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
         {
             get
             {
-                    var tmp = new RamAccess<string>(VolumeOutOfPack_Validation, VolumeOutOfPack_DB);
-                    tmp.PropertyChanged += VolumeOutOfPackValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(VolumeOutOfPack_Validation, VolumeOutOfPack_DB);
+                tmp.PropertyChanged += VolumeOutOfPackValueChanged;
+                return tmp;
             }
             set
             {
-                    VolumeOutOfPack_DB = value.Value;
+                VolumeOutOfPack_DB = value.Value;
                 OnPropertyChanged(nameof(VolumeOutOfPack));
             }
         }
@@ -759,19 +864,19 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region MassOutOfPack
-        public string MassOutOfPack_DB { get; set; } = ""; [NotMapped]
+        public string MassOutOfPack_DB { get; set; } = "";[NotMapped]
         [Attributes.Form_Property("РАО без упаковки (нетто)")]
         public RamAccess<string> MassOutOfPack//SUMMARIZABLE
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassOutOfPack_Validation, MassOutOfPack_DB);
-                    tmp.PropertyChanged += MassOutOfPackValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(MassOutOfPack_Validation, MassOutOfPack_DB);
+                tmp.PropertyChanged += MassOutOfPackValueChanged;
+                return tmp;
             }
             set
             {
-                    MassOutOfPack_DB = value.Value;
+                MassOutOfPack_DB = value.Value;
                 OnPropertyChanged(nameof(MassOutOfPack));
             }
         }
@@ -834,19 +939,19 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region QuantityOZIII_DB
-        public string QuantityOZIII_DB { get; set; } = null; [NotMapped]
+        public string QuantityOZIII_DB { get; set; } = null;[NotMapped]
         [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
         public RamAccess<string> QuantityOZIII//SUMMARIZABLE
         {
             get
             {
-                    var tmp = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);//OK
-                    tmp.PropertyChanged += QuantityOZIIIValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);//OK
+                tmp.PropertyChanged += QuantityOZIIIValueChanged;
+                return tmp;
             }
             set
             {
-                    QuantityOZIII_DB = value.Value;
+                QuantityOZIII_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
         }
@@ -890,19 +995,19 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region TritiumActivity
-        public string TritiumActivity_DB { get; set; } = ""; [NotMapped]
+        public string TritiumActivity_DB { get; set; } = "";[NotMapped]
         [Attributes.Form_Property("тритий")]
         public RamAccess<string> TritiumActivity//SUMMARIZABLE
         {
             get
             {
-                    var tmp = new RamAccess<string>(TritiumActivity_Validation, TritiumActivity_DB);
-                    tmp.PropertyChanged += TritiumActivityValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(TritiumActivity_Validation, TritiumActivity_DB);
+                tmp.PropertyChanged += TritiumActivityValueChanged;
+                return tmp;
             }
             set
             {
-                    TritiumActivity_DB = value.Value;
+                TritiumActivity_DB = value.Value;
                 OnPropertyChanged(nameof(TritiumActivity));
             }
         }
@@ -965,19 +1070,19 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region BetaGammaActivity
-        public string BetaGammaActivity_DB { get; set; } = ""; [NotMapped]
+        public string BetaGammaActivity_DB { get; set; } = "";[NotMapped]
         [Attributes.Form_Property("бета-, гамма-излучающие радионуклиды (исключая тритий)")]
         public RamAccess<string> BetaGammaActivity//SUMMARIZABLE
         {
             get
             {
-                    var tmp = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
-                    tmp.PropertyChanged += BetaGammaActivityValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
+                tmp.PropertyChanged += BetaGammaActivityValueChanged;
+                return tmp;
             }
             set
             {
-                    BetaGammaActivity_DB = value.Value;
+                BetaGammaActivity_DB = value.Value;
                 OnPropertyChanged(nameof(BetaGammaActivity));
             }
         }
@@ -1003,7 +1108,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         private bool BetaGammaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if(string.IsNullOrEmpty(value.Value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1040,7 +1145,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region AlphaActivity 
-        public string AlphaActivity_DB { get; set; } = ""; [NotMapped]
+        public string AlphaActivity_DB { get; set; } = "";[NotMapped]
         [Attributes.Form_Property("альфа-излучающие радионуклиды (исключая трансурановые)")]
         public RamAccess<string> AlphaActivity//SUMMARIZABLE
         {
@@ -1078,7 +1183,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         private bool AlphaActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if(string.IsNullOrEmpty(value.Value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1114,19 +1219,19 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region TransuraniumActivity 
-        public string TransuraniumActivity_DB { get; set; } = ""; [NotMapped]
+        public string TransuraniumActivity_DB { get; set; } = "";[NotMapped]
         [Attributes.Form_Property("трансурановые радионуклиды")]
         public RamAccess<string> TransuraniumActivity//SUMMARIZABLE
         {
             get
             {
-                    var tmp = new RamAccess<string>(TransuraniumActivity_Validation, TransuraniumActivity_DB);
-                    tmp.PropertyChanged += TransuraniumActivityValueChanged;
-                    return tmp;
+                var tmp = new RamAccess<string>(TransuraniumActivity_Validation, TransuraniumActivity_DB);
+                tmp.PropertyChanged += TransuraniumActivityValueChanged;
+                return tmp;
             }
             set
             {
-                    TransuraniumActivity_DB = value.Value;
+                TransuraniumActivity_DB = value.Value;
                 OnPropertyChanged(nameof(TransuraniumActivity));
             }
         }
@@ -1152,7 +1257,7 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         private bool TransuraniumActivity_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
-            if(string.IsNullOrEmpty(value.Value))
+            if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
@@ -1229,13 +1334,13 @@ private bool StatusRAO_Validation(RamAccess<string> value)//TODO
         //If change this change validation
 
         private void MainRadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 MainRadionuclids_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -1266,22 +1371,44 @@ private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region Subsidy
-        public string Subsidy_DB { get; set; } = ""; [NotMapped]
+        public string Subsidy_DB { get; set; } = "";
+        public bool Subsidy_Hidden_Priv { get; set; } = false;
+
+        [NotMapped]
+        public bool Subsidy_Hidden
+        {
+            get => Subsidy_Hidden_Priv;
+            set { Subsidy_Hidden_Priv = value; }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("Субсидия, %")]
         public RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
             {
+                if (!Subsidy_Hidden)
+                {
                     var tmp = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
                     tmp.PropertyChanged += SubsidyValueChanged;
                     return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
+                if (!Subsidy_Hidden)
+                {
                     Subsidy_DB = value.Value;
-                OnPropertyChanged(nameof(Subsidy));
+                    OnPropertyChanged(nameof(Subsidy));
+                }
             }
         }
+
 
         private void SubsidyValueChanged(object Value, PropertyChangedEventArgs args)
         {
@@ -1290,15 +1417,10 @@ private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
                 Subsidy_DB = ((RamAccess<string>)Value).Value;
             }
         }
-
         private bool Subsidy_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
-            {
-                return true;
-            }
-            if (value.Value.Equals("-"))
             {
                 return true;
             }
@@ -1320,24 +1442,45 @@ private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
         #endregion
 
         #region FcpNumber
-        public string FcpNumber_DB { get; set; } = ""; [NotMapped]
+        public string FcpNumber_DB { get; set; } = "";
+        public bool FcpNumber_Hidden_Priv { get; set; } = false;
+
+        [NotMapped]
+        public bool FcpNumber_Hidden
+        {
+            get => FcpNumber_Hidden_Priv;
+            set { FcpNumber_Hidden_Priv = value; }
+        }
+
+        [NotMapped]
         [Attributes.Form_Property("Номер мероприятия ФЦП")]
         public RamAccess<string> FcpNumber
         {
             get
             {
+                if (!FcpNumber_Hidden)
+                {
                     var tmp = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
                     tmp.PropertyChanged += FcpNumberValueChanged;
                     return tmp;
+                }
+                else
+                {
+                    var tmp = new RamAccess<string>(null, null);
+                    return tmp;
+                }
             }
             set
             {
+                if (!FcpNumber_Hidden)
+                {
                     FcpNumber_DB = value.Value;
-                OnPropertyChanged(nameof(FcpNumber));
+                    OnPropertyChanged(nameof(FcpNumber));
+                }
             }
         }
 
-        
+
         private void FcpNumberValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")
@@ -1347,8 +1490,7 @@ private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
         }
         private bool FcpNumber_Validation(RamAccess<string> value)//TODO
         {
-            value.ClearErrors();
-            return true;
+            value.ClearErrors(); return true;
         }
         //FcpNumber property
         #endregion
@@ -1382,7 +1524,7 @@ private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
             return 19;
         }
 
-        public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
+        public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             var cnt = Form2.ExcelHeader(worksheet, Row, Column, Transpon);
             Column = Column + (Transpon == true ? cnt : 0);
@@ -1406,7 +1548,7 @@ private bool MainRadionuclids_Validation(RamAccess<string> value)//TODO
             worksheet.Cells[Row + (Transpon == false ? 15 : 0), Column + (Transpon == true ? 15 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(TransuraniumActivity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             worksheet.Cells[Row + (Transpon == false ? 16 : 0), Column + (Transpon == true ? 16 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(MainRadionuclids)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             worksheet.Cells[Row + (Transpon == false ? 17 : 0), Column + (Transpon == true ? 17 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(Subsidy)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18: 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+            worksheet.Cells[Row + (Transpon == false ? 18 : 0), Column + (Transpon == true ? 18 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form22,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             return 19;
         }
         #endregion

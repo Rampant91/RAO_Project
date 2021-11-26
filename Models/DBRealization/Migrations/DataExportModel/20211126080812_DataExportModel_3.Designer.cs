@@ -3,15 +3,17 @@ using System;
 using FirebirdSql.EntityFrameworkCore.Firebird.Metadata;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models.DBRealization;
 
-namespace Models.DBRealization.Migrations.DataModel
+namespace Models.DBRealization.Migrations.DataExportModel
 {
-    [DbContext(typeof(DBModel))]
-    partial class DBModelModelSnapshot : ModelSnapshot
+    [DbContext(typeof(DBExportModel))]
+    [Migration("20211126080812_DataExportModel_3")]
+    partial class DataExportModel_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1694,23 +1696,11 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("PackName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<bool>("PackName_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("PackName_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
-
                     b.Property<int?>("PackQuantity_DB")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PackType_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<bool>("PackType_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("PackType_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
 
                     b.Property<string>("QuantityOZIII_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1727,20 +1717,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("StoragePlaceCode_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<bool>("StoragePlaceCode_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("StoragePlaceCode_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
-
                     b.Property<string>("StoragePlaceName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<bool>("StoragePlaceName_Hidden_Priv")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("StoragePlaceName_Hidden_Priv2")
-                        .HasColumnType("BOOLEAN");
 
                     b.Property<string>("Subsidy_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
