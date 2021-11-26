@@ -1214,7 +1214,10 @@ o => o.Pagination,
                                 }
                                 else
                                 {
-                                    rt += item;
+                                    if (item != '\r')
+                                    {
+                                        rt += item;
+                                    }
                                 }
                             }
                         }
