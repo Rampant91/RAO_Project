@@ -332,10 +332,19 @@ namespace Models.Collections
 
             this.ClearItems();
             var yu = ito.OrderBy(x => x.Key);
+            var count = 1;
             foreach (var item in yu)
             {
+                var o=item.Value as List<Form21>;
+                foreach(var i in o)
+                {
+                    i.NumberInOrder.Value = count;
+                    count++;
+                }
+
                 this.AddRange(item.Value);
             }
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         double StringToNumber(string Num)
@@ -544,7 +553,8 @@ namespace Models.Collections
         {
             foreach (var item in items)
             {
-                this.Add(item);
+                item.PropertyChanged += ChildPropertyChanged;
+                Items.Add(item);
             }
         }
 
