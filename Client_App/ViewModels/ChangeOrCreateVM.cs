@@ -236,9 +236,9 @@ namespace Client_App.ViewModels
             if (FormType == "1.4") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows14); Storage.Rows14.Add((Form14)frm); Storage.LastAddedForm = Report.Forms.Form14; }
             if (FormType == "1.5") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows15); Storage.Rows15.Add((Form15)frm); Storage.LastAddedForm = Report.Forms.Form15; }
             if (FormType == "1.6") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows16); Storage.Rows16.Add((Form16)frm); Storage.LastAddedForm = Report.Forms.Form16; }
-            if (FormType == "1.7") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows16); Storage.Rows17.Add((Form17)frm); Storage.LastAddedForm = Report.Forms.Form17; }
-            if (FormType == "1.8") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows17); Storage.Rows18.Add((Form18)frm); Storage.LastAddedForm = Report.Forms.Form18; }
-            if (FormType == "1.9") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows17); Storage.Rows19.Add((Form19)frm); Storage.LastAddedForm = Report.Forms.Form19; }
+            if (FormType == "1.7") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows17); Storage.Rows17.Add((Form17)frm); Storage.LastAddedForm = Report.Forms.Form17; }
+            if (FormType == "1.8") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows18); Storage.Rows18.Add((Form18)frm); Storage.LastAddedForm = Report.Forms.Form18; }
+            if (FormType == "1.9") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows19); Storage.Rows19.Add((Form19)frm); Storage.LastAddedForm = Report.Forms.Form19; }
 
             if (FormType == "2.1") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows21); Storage.Rows21.Add((Form21)frm); Storage.LastAddedForm = Report.Forms.Form21; }
             if (FormType == "2.2") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows22); Storage.Rows22.Add((Form22)frm); Storage.LastAddedForm = Report.Forms.Form22; }
