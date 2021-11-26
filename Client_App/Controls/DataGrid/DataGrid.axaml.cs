@@ -403,7 +403,7 @@ o => o.Pagination,
                             {
                                 var lst = Rows[i].Cells;
                                 var cnt = lst.Count();
-                                for (int n =2;n<cnt;n++)
+                                for (int n =2;n<=cnt;n++)
                                 {
                                     Rows[i,n].Background = ChooseColor;
                                     SelectedCells.Add(Rows[i,n]);
