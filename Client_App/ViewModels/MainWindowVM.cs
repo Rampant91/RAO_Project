@@ -1348,7 +1348,10 @@ namespace Client_App.ViewModels
                                             {
                                                 foreach (var it in item.Report_Collection)
                                                 {
-                                                    rep_lst.Add(it);
+                                                    if (it.FormNum_DB == param)
+                                                    {
+                                                        rep_lst.Add(it);
+                                                    }
                                                 }
                                             }
                                         }
@@ -1358,13 +1361,17 @@ namespace Client_App.ViewModels
                                             {
                                                 foreach (var it in item.Report_Collection)
                                                 {
-                                                    rep_lst.Add(it);
+                                                    if (it.FormNum_DB == param)
+                                                    {
+                                                        rep_lst.Add(it);
+                                                    }
                                                 }
                                             }
                                         }
 
                                         if (rep_lst.Count > 0)
                                         {
+
                                             ExcelWorksheet worksheet =
                                                 excelPackage.Workbook.Worksheets.Add("Отчеты " + param);
                                             ExcelWorksheet worksheetPrim =
@@ -1379,6 +1386,7 @@ namespace Client_App.ViewModels
                                             {
                                                 masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1);
                                             }
+                                            var count = 2;
                                             foreach (var item in rep_lst)
                                             {
 
@@ -1477,7 +1485,6 @@ namespace Client_App.ViewModels
 
                                                     if (lst.Count > 0)
                                                     {
-                                                        var count = 2;
                                                         foreach (var it in lst)
                                                         {
                                                             if (it != null)
