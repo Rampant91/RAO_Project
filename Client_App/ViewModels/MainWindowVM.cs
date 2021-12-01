@@ -280,7 +280,7 @@ namespace Client_App.ViewModels
                                 Directory.CreateDirectory(tmp);
                                 tmp = Path.Combine(tmp, filename + "_exp" + ".raodb");
 
-                                using (DBExportModel db = new DBExportModel(tmp))
+                                using (DBModel db = new DBModel(tmp))
                                 {
                                     try
                                     {
@@ -409,7 +409,7 @@ namespace Client_App.ViewModels
                             try
                             {
                                 File.Copy(res, tmp, true);
-                                using (DBExportModel db = new DBExportModel(tmp))
+                                using (DBModel db = new DBModel(tmp))
                                 {
                                     try
                                     {
