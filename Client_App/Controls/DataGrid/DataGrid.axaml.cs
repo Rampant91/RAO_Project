@@ -1181,7 +1181,7 @@ o => o.Pagination,
                                         {
                                             var panel = (Panel)child.Child;
                                             var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                            textbox.Text = rt;
+                                            textbox.Text = rt.Replace("\n","").Replace("\t", "").Replace("\t", "");
                                         }
                                         break;
                                     }

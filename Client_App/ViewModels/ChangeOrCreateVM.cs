@@ -189,7 +189,7 @@ namespace Client_App.ViewModels
 
                         var dbm = StaticConfiguration.DBModel;
                         dbm.SaveChanges();
-                        item.Close();
+                        IsCanSaveReportEnabled = false;
                         break;
                     }
                 }
@@ -534,6 +534,7 @@ namespace Client_App.ViewModels
             var frm = FormCreator.Create(FormType);
             foreach (var it in param)
             {
+                
                 var item = frm;
                 if (FormType == "1.1") { Storage.Rows11.Add((Form11)item); Storage.LastAddedForm = Report.Forms.Form11;}
                 if (FormType == "1.2") { Storage.Rows12.Add((Form12)item); Storage.LastAddedForm = Report.Forms.Form12;}
