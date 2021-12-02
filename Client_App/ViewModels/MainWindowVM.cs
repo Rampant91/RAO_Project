@@ -85,11 +85,11 @@ namespace Client_App.ViewModels
             dbm.LoadTables();
             if (dbm.DBObservableDbSet.Local.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
 
-            foreach(var item in dbm.DBObservableDbSet)
+            foreach (var item in dbm.DBObservableDbSet)
             {
-                foreach(var it in item.Reports_Collection)
+                foreach (var it in item.Reports_Collection)
                 {
-                    if(it.Master_DB.FormNum_DB!="")
+                    if (it.Master_DB.FormNum_DB != "")
                     {
                         if (it.Master_DB.FormNum_DB == "1.0")
                         {
@@ -689,7 +689,7 @@ namespace Client_App.ViewModels
                                                     #region Top
                                                     if (text == "Дата окончания предыдущего отчетного периода")
                                                     {
-                                                        worksheet.Cells[inRow, inColumn].Value=item.StartPeriod_DB;
+                                                        worksheet.Cells[inRow, inColumn].Value = item.StartPeriod_DB;
                                                     }
                                                     if (text == "Дата окончания настящего отчетного периода")
                                                     {
@@ -704,7 +704,7 @@ namespace Client_App.ViewModels
                                                     #region Bottom
                                                     if (text == "(Должность)")
                                                     {
-                                                        worksheet.Cells[inRow-1, inColumn].Value = item.GradeExecutor_DB;
+                                                        worksheet.Cells[inRow - 1, inColumn].Value = item.GradeExecutor_DB;
                                                     }
                                                     if (text == "(Фамилия, имя, отчество (при наличии))")
                                                     {
@@ -723,7 +723,7 @@ namespace Client_App.ViewModels
 
                                                 if (reps != null)
                                                 {
-                                                    List<IKey> lst = item[param].OrderBy(x=>((Form)x).NumberInOrder_DB).ToList();
+                                                    List<IKey> lst = item[param].OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
 
                                                     if (lst.Count > 0)
                                                     {
@@ -911,8 +911,8 @@ namespace Client_App.ViewModels
                                                         {
                                                             if (worksheet.Cells[primcnt, 1].Value != null)
                                                             {
-                                                                if (worksheet.Cells[primcnt, 1].Value.ToString() == "Примечание:"||
-                                                                    worksheet.Cells[primcnt, 1].Value.ToString() == "Примечания:" )
+                                                                if (worksheet.Cells[primcnt, 1].Value.ToString() == "Примечание:" ||
+                                                                    worksheet.Cells[primcnt, 1].Value.ToString() == "Примечания:")
                                                                 {
                                                                     break;
                                                                 }
@@ -972,7 +972,7 @@ namespace Client_App.ViewModels
                                                                     }
                                                                     if (flag2)
                                                                     {
-                                                                        worksheet.Cells[next +(primcnt + ty).ToString()].Value = i.GraphNumber_DB;
+                                                                        worksheet.Cells[next + (primcnt + ty).ToString()].Value = i.GraphNumber_DB;
                                                                         flag2 = false;
                                                                         flag3 = true;
                                                                         next = Convert.ToChar(Convert.ToInt32(next) + 1);
@@ -998,7 +998,7 @@ namespace Client_App.ViewModels
 
             }
         }
-        private void _Excel_Export_Notes(string param, int StartRow, int StartColumn, ExcelWorksheet worksheetPrim, ObservableCollectionWithItemPropertyChanged<IKey> forms)
+        private int _Excel_Export_Notes(string param, int StartRow, int StartColumn, ExcelWorksheet worksheetPrim, List<Report> forms)
         {
             foreach (Report item in forms)
             {
@@ -1013,13 +1013,13 @@ namespace Client_App.ViewModels
                     foreach (Note i in item.Notes)
                     {
                         var mstrep = reps.Master_DB;
-                        i.ExcelRow(worksheetPrim, cnty, StartColumn+1);
+                        i.ExcelRow(worksheetPrim, cnty, StartColumn + 1);
                         var yu = 0;
                         if (param.Split('.')[0] == "1")
                         {
                             if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
                             {
-                                yu=reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, cnty, 1);
+                                yu = reps.Master_DB.Rows10[1].ExcelRow(worksheetPrim, cnty, 1);
                             }
                             else
                             {
@@ -1041,10 +1041,12 @@ namespace Client_App.ViewModels
                         item.ExcelRow(worksheetPrim, cnty, yu);
                         cnty++;
                     }
+                    StartRow = cnty;
                 }
             }
+            return StartRow;
         }
-            private void _Excel_Export_Rows(string param,int StartRow,int StartColumn,ExcelWorksheet worksheet,ObservableCollectionWithItemPropertyChanged<IKey> forms)
+        private int _Excel_Export_Rows(string param, int StartRow, int StartColumn, ExcelWorksheet worksheet, List<Report> forms)
         {
             foreach (Report item in forms)
             {
@@ -1155,7 +1157,7 @@ namespace Client_App.ViewModels
                                 {
                                     if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
                                     {
-                                        yu=reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1);
+                                        yu = reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1);
                                     }
                                     else
                                     {
@@ -1174,13 +1176,15 @@ namespace Client_App.ViewModels
                                     }
                                 }
 
-                                item.ExcelRow(worksheet,count,yu);
+                                item.ExcelRow(worksheet, count, yu);
                                 count++;
                             }
                         }
+                        StartRow = count;
                     }
                 }
             }
+            return StartRow;
         }
 
         private async Task _Excel_Export(ObservableCollectionWithItemPropertyChanged<IKey> forms)
@@ -1219,7 +1223,7 @@ namespace Client_App.ViewModels
                                 {
                                     path += ".xlsx";
                                 }
-                                if(File.Exists(path))
+                                if (File.Exists(path))
                                 {
                                     File.Delete(path);
                                 }
@@ -1250,7 +1254,177 @@ namespace Client_App.ViewModels
                                                 masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1);
                                                 masterheaderlength = Form20.ExcelHeader(worksheetPrim, 1, 1);
                                             }
-                                            var t=Report.ExcelHeader(worksheet,param,1,masterheaderlength);
+                                            var t = Report.ExcelHeader(worksheet, param, 1, masterheaderlength);
+                                            Report.ExcelHeader(worksheetPrim, param, 1, masterheaderlength);
+                                            masterheaderlength += t;
+                                            if (param == "1.1")
+                                            {
+                                                Form11.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "1.2")
+                                            {
+                                                Form12.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "1.3")
+                                            {
+                                                Form13.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "1.4")
+                                            {
+                                                Form14.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "1.5")
+                                            {
+                                                Form15.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "1.6")
+                                            {
+                                                Form16.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "1.7")
+                                            {
+                                                Form17.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "1.8")
+                                            {
+                                                Form18.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "1.9")
+                                            {
+                                                Form19.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+
+                                            if (param == "2.1")
+                                            {
+                                                Form21.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.2")
+                                            {
+                                                Form22.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.3")
+                                            {
+                                                Form23.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.4")
+                                            {
+                                                Form24.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.5")
+                                            {
+                                                Form25.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.6")
+                                            {
+                                                Form26.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.7")
+                                            {
+                                                Form27.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.8")
+                                            {
+                                                Form28.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.9")
+                                            {
+                                                Form29.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.10")
+                                            {
+                                                Form210.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.11")
+                                            {
+                                                Form211.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            if (param == "2.12")
+                                            {
+                                                Form212.ExcelHeader(worksheet, 1, masterheaderlength + 1);
+                                            }
+                                            Note.ExcelHeader(worksheetPrim, 1, masterheaderlength + 1);
+                                            var lst = new List<Report>();
+                                            foreach (Report item in forms)
+                                            {
+                                                lst.Add(item);
+                                            }
+                                            _Excel_Export_Rows(param, 2, masterheaderlength, worksheet, lst);
+                                            _Excel_Export_Notes(param, 2, masterheaderlength, worksheetPrim, lst);
+
+                                            excelPackage.Save();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private async Task _All_Excel_Export(string param)
+        {
+            try
+            {
+                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    SaveFileDialog dial = new();
+                    var filter = new FileDialogFilter
+                    {
+                        Name = "Excel",
+                        Extensions = {
+                        "xlsx"
+                    }
+                    };
+                    dial.Filters.Add(filter);
+                    if (param != "")
+                    {
+                        var res = await dial.ShowAsync(desktop.MainWindow);
+                        if (res != null)
+                        {
+                            if (res.Count() != 0)
+                            {
+                                var path = res;
+                                if (!path.Contains(".xlsx"))
+                                {
+                                    path += ".xlsx";
+                                }
+                                if (File.Exists(path))
+                                {
+                                    File.Delete(path);
+                                }
+                                if (path != null)
+                                {
+                                    using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path)))
+                                    {
+                                        //Set some properties of the Excel document
+                                        excelPackage.Workbook.Properties.Author = "RAO_APP";
+                                        excelPackage.Workbook.Properties.Title = "Report";
+                                        excelPackage.Workbook.Properties.Created = DateTime.Now;
+
+                                        if (Local_Reports.Reports_Collection.Count > 0)
+                                        {
+                                            ExcelWorksheet worksheet =
+                                                excelPackage.Workbook.Worksheets.Add("Отчеты " + param);
+                                            ExcelWorksheet worksheetPrim =
+                                                excelPackage.Workbook.Worksheets.Add("Примечания " + param);
+
+                                            var masterheaderlength = 0;
+                                            if (param.Split('.')[0] == "1")
+                                            {
+                                                masterheaderlength = Form10.ExcelHeader(worksheet, 1, 1);
+                                                masterheaderlength = Form10.ExcelHeader(worksheetPrim, 1, 1);
+                                            }
+                                            else
+                                            {
+                                                masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1);
+                                                masterheaderlength = Form20.ExcelHeader(worksheetPrim, 1, 1);
+                                            }
+                                            var t = Report.ExcelHeader(worksheet, param, 1, masterheaderlength);
                                             Report.ExcelHeader(worksheetPrim, param, 1, masterheaderlength);
                                             masterheaderlength += t;
                                             if (param == "1.1")
@@ -1340,324 +1514,16 @@ namespace Client_App.ViewModels
                                             }
                                             Note.ExcelHeader(worksheetPrim, 1, masterheaderlength + 1);
 
-                                            _Excel_Export_Rows(param, 2, masterheaderlength, worksheet, forms);
-                                            _Excel_Export_Notes(param, 2, masterheaderlength, worksheetPrim, forms);
-
-                                            excelPackage.Save();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-
-        private async Task _All_Excel_Export(string param)
-        {
-            try
-            {
-                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    SaveFileDialog dial = new();
-                    var filter = new FileDialogFilter
-                    {
-                        Name = "Excel",
-                        Extensions = {
-                        "xlsx"
-                    }
-                    };
-                    dial.Filters.Add(filter);
-                    if (param != "")
-                    {
-                        var res = await dial.ShowAsync(desktop.MainWindow);
-                        if (res != null)
-                        {
-                            if (res.Count() != 0)
-                            {
-                                var path = res;
-                                if (!path.Contains(".xlsx"))
-                                {
-                                    path += ".xlsx";
-                                }
-
-                                if (path != null)
-                                {
-                                    using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path)))
-                                    {
-                                        //Set some properties of the Excel document
-                                        excelPackage.Workbook.Properties.Author = "RAO_APP";
-                                        excelPackage.Workbook.Properties.Title = "Report";
-                                        excelPackage.Workbook.Properties.Created = DateTime.Now;
-
-                                        List<Report> rep_lst = new List<Report>();
-                                        if (param.Split('.')[0] == "1")
-                                        {
-                                            foreach (var item in Local_Reports.Reports_Collection10)
+                                            var tyu = 2;
+                                            var lst = new List<Report>();
+                                            foreach (Reports item in Local_Reports.Reports_Collection)
                                             {
-                                                foreach (var it in item.Report_Collection)
-                                                {
-                                                    if (it.FormNum_DB == param)
-                                                    {
-                                                        rep_lst.Add(it);
-                                                    }
-                                                }
+                                                lst.AddRange(item.Report_Collection);
                                             }
-                                        }
-                                        else
-                                        {
-                                            foreach (var item in Local_Reports.Reports_Collection20)
-                                            {
-                                                foreach (var it in item.Report_Collection)
-                                                {
-                                                    if (it.FormNum_DB == param)
-                                                    {
-                                                        rep_lst.Add(it);
-                                                    }
-                                                }
-                                            }
-                                        }
 
-                                        if (rep_lst.Count > 0)
-                                        {
+                                            _Excel_Export_Rows(param, tyu, masterheaderlength, worksheet, lst);
+                                            _Excel_Export_Notes(param, tyu, masterheaderlength, worksheetPrim, lst);
 
-                                            ExcelWorksheet worksheet =
-                                                excelPackage.Workbook.Worksheets.Add("Отчеты " + param);
-                                            ExcelWorksheet worksheetPrim =
-                                                excelPackage.Workbook.Worksheets.Add("Примечания " + param);
-
-                                            var masterheaderlength = 0;
-                                            if (param.Split('.')[0] == "1")
-                                            {
-                                                masterheaderlength = Form10.ExcelHeader(worksheet, 1, 1);
-                                            }
-                                            else
-                                            {
-                                                masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1);
-                                            }
-                                            var count = 2;
-                                            foreach (var item in rep_lst)
-                                            {
-
-                                                var findReports = from t in Local_Reports.Reports_Collection
-                                                                  where t.Report_Collection.Contains(item)
-                                                                  select t;
-                                                var reps = findReports.FirstOrDefault();
-                                                if (reps != null)
-                                                {
-                                                    List<IKey> lst = item[param].OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
-                                                    if (param == "1.1")
-                                                    {
-                                                        Form11.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "1.2")
-                                                    {
-                                                        Form12.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "1.3")
-                                                    {
-                                                        Form13.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "1.4")
-                                                    {
-                                                        Form14.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "1.5")
-                                                    {
-                                                        Form15.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "1.6")
-                                                    {
-                                                        Form16.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "1.7")
-                                                    {
-                                                        Form17.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "1.8")
-                                                    {
-                                                        Form18.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "1.9")
-                                                    {
-                                                        Form19.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-
-                                                    if (param == "2.1")
-                                                    {
-                                                        Form21.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.2")
-                                                    {
-                                                        Form22.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.3")
-                                                    {
-                                                        Form23.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.4")
-                                                    {
-                                                        Form24.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.5")
-                                                    {
-                                                        Form25.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.6")
-                                                    {
-                                                        Form26.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.7")
-                                                    {
-                                                        Form27.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.8")
-                                                    {
-                                                        Form28.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.9")
-                                                    {
-                                                        Form29.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.10")
-                                                    {
-                                                        Form210.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.11")
-                                                    {
-                                                        Form211.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-                                                    if (param == "2.12")
-                                                    {
-                                                        Form212.ExcelHeader(worksheet, 1, masterheaderlength + 1);
-                                                    }
-
-                                                    if (lst.Count > 0)
-                                                    {
-                                                        foreach (var it in lst)
-                                                        {
-                                                            if (it != null)
-                                                            {
-                                                                if (it is Form11)
-                                                                {
-                                                                    ((Form11)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form12)
-                                                                {
-                                                                    ((Form12)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form13)
-                                                                {
-                                                                    ((Form13)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form14)
-                                                                {
-                                                                    ((Form14)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form15)
-                                                                {
-                                                                    ((Form15)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form16)
-                                                                {
-                                                                    ((Form16)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form17)
-                                                                {
-                                                                    ((Form17)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form18)
-                                                                {
-                                                                    ((Form18)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form19)
-                                                                {
-                                                                    ((Form19)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-
-                                                                if (it is Form21)
-                                                                {
-                                                                    ((Form21)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form22)
-                                                                {
-                                                                    ((Form22)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form23)
-                                                                {
-                                                                    ((Form23)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form24)
-                                                                {
-                                                                    ((Form24)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form25)
-                                                                {
-                                                                    ((Form25)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form26)
-                                                                {
-                                                                    ((Form26)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form27)
-                                                                {
-                                                                    ((Form27)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form28)
-                                                                {
-                                                                    ((Form28)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form29)
-                                                                {
-                                                                    ((Form29)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form210)
-                                                                {
-                                                                    ((Form210)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form211)
-                                                                {
-                                                                    ((Form211)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                if (it is Form212)
-                                                                {
-                                                                    ((Form212)(it)).ExcelRow(worksheet, count, masterheaderlength + 1);
-                                                                }
-                                                                var mstrep = reps.Master_DB;
-                                                                if (param.Split('.')[0] == "1")
-                                                                {
-                                                                    if (mstrep.Rows10[1].RegNo_DB != "" && mstrep.Rows10[1].Okpo_DB != "")
-                                                                    {
-                                                                        reps.Master_DB.Rows10[1].ExcelRow(worksheet, count, 1);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        reps.Master_DB.Rows10[0].ExcelRow(worksheet, count, 1);
-                                                                    }
-                                                                }
-                                                                else
-                                                                {
-                                                                    if (mstrep.Rows20[1].RegNo_DB != "" && mstrep.Rows20[1].Okpo_DB != "")
-                                                                    {
-                                                                        reps.Master_DB.Rows20[1].ExcelRow(worksheet, count, 1);
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        reps.Master_DB.Rows20[0].ExcelRow(worksheet, count, 1);
-                                                                    }
-                                                                }
-
-                                                                count++;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
                                             excelPackage.Save();
                                         }
                                     }

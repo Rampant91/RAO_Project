@@ -20,14 +20,6 @@ namespace Client_App.Views
         public FormChangeOrCreate(string param, in Report rep)
         {
             ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM(param);
-            if (rep.FormNum_DB == "1.7")
-            {
-                rep.Rows17.Sum();
-            }
-            if (rep.FormNum_DB == "1.8")
-            {
-                rep.Rows18.Sum();
-            }
             if (rep.FormNum_DB == "2.1")
             {
                 rep.Rows21.Sum();
