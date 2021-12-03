@@ -372,7 +372,7 @@ namespace Models
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                Activity_DB = value1;
+                Activity.Value = value1;
             }
         }
         private bool Activity_Validation(RamAccess<string> value)//Ready
@@ -607,7 +607,7 @@ namespace Models
             {
                 return true;
             }
-            if (!(OperationCode.Value == null))
+            if (OperationCode.Value != null)
             {
                 short tmp = (short)OperationCode.Value;
                 bool a = (tmp >= 10) && (tmp <= 14);
