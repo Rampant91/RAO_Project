@@ -36,7 +36,7 @@ namespace Models
             FactoryNumber_Validation(FactoryNumber);
             ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
             TransporterOKPO_Validation(TransporterOKPO);
-            Activity_Validation(Activity);
+            //Activity_Validation(Activity);
             Radionuclids_Validation(Radionuclids);
             Quantity_Validation(Quantity);
             CreationDate_Validation(CreationDate);
@@ -372,7 +372,8 @@ namespace Models
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                Activity.Value = value1;
+                Activity_DB = value1;
+                //Activity_DB = ((RamAccess<string>)Value).Value;
             }
         }
         private bool Activity_Validation(RamAccess<string> value)//Ready

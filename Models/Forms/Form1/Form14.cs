@@ -21,7 +21,8 @@ namespace Models
             FormNum.Value = "1.4";
             Validate_all();
         }
-
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             Owner_Validation(Owner);
@@ -69,13 +70,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
-                tmp.PropertyChanged += PassportNumberValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PassportNumber)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PassportNumber)]).Value = PassportNumber_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
+                    rm.PropertyChanged += PassportNumberValueChanged;
+                    Dictionary.Add(nameof(PassportNumber), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PassportNumber)];
+                }
             }
             set
             {
                 PassportNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PassportNumber));
             }
         }
         private void PassportNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -112,13 +123,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Name_Validation, Name_DB);
-                tmp.PropertyChanged += NameValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Name)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Name)]).Value = Name_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Name)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Name_Validation, Name_DB);
+                    rm.PropertyChanged += NameValueChanged;
+                    Dictionary.Add(nameof(Name), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Name)];
+                }
             }
             set
             {
                 Name_DB = value.Value;
+                OnPropertyChanged(nameof(Name));
             }
         }
         private void NameValueChanged(object Value, PropertyChangedEventArgs args)
@@ -148,13 +169,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<byte?>(Sort_Validation, Sort_DB);
-                tmp.PropertyChanged += SortValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Sort)))
+                {
+                    ((RamAccess<byte?>)Dictionary[nameof(Sort)]).Value = Sort_DB;
+                    return (RamAccess<byte?>)Dictionary[nameof(Sort)];
+                }
+                else
+                {
+                    var rm = new RamAccess<byte?>(Sort_Validation, Sort_DB);
+                    rm.PropertyChanged += SortValueChanged;
+                    Dictionary.Add(nameof(Sort), rm);
+                    return (RamAccess<byte?>)Dictionary[nameof(Sort)];
+                }
             }
             set
             {
                 Sort_DB = value.Value;
+                OnPropertyChanged(nameof(Sort));
             }
         }//If change this change validation
 
@@ -190,13 +221,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
-                tmp.PropertyChanged += RadionuclidsValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Radionuclids)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Radionuclids)]).Value = Radionuclids_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
+                    rm.PropertyChanged += RadionuclidsValueChanged;
+                    Dictionary.Add(nameof(Radionuclids), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                }
             }
             set
             {
                 Radionuclids_DB = value.Value;
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }//If change this change validation
 
@@ -244,13 +285,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Activity_Validation, Activity_DB);
-                tmp.PropertyChanged += ActivityValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Activity)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Activity)]).Value = Activity_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Activity)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
+                    rm.PropertyChanged += ActivityValueChanged;
+                    Dictionary.Add(nameof(Activity), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Activity)];
+                }
             }
             set
             {
                 Activity_DB = value.Value;
+                OnPropertyChanged(nameof(Activity));
             }
         }
         private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -306,13 +357,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(ActivityMeasurementDate_Validation, ActivityMeasurementDate_DB);
-                tmp.PropertyChanged += ActivityMeasurementDateValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ActivityMeasurementDate)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ActivityMeasurementDate)]).Value = ActivityMeasurementDate_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ActivityMeasurementDate)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ActivityMeasurementDate_Validation, ActivityMeasurementDate_DB);
+                    rm.PropertyChanged += ActivityMeasurementDateValueChanged;
+                    Dictionary.Add(nameof(ActivityMeasurementDate), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ActivityMeasurementDate)];
+                }
             }
             set
             {
                 ActivityMeasurementDate_DB = value.Value;
+                OnPropertyChanged(nameof(ActivityMeasurementDate));
             }
         }//if change this change validation
 
@@ -367,13 +428,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Volume_Validation, Volume_DB);
-                tmp.PropertyChanged += VolumeValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Volume)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Volume)]).Value = Volume_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Volume)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Volume_Validation, Volume_DB);
+                    rm.PropertyChanged += VolumeValueChanged;
+                    Dictionary.Add(nameof(Volume), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Volume)];
+                }
             }
             set
             {
                 Volume_DB = value.Value;
+                OnPropertyChanged(nameof(Volume));
             }
         }
         private void VolumeValueChanged(object Value, PropertyChangedEventArgs args)
@@ -428,13 +499,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Mass_Validation, Mass_DB);
-                tmp.PropertyChanged += MassValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Mass)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Mass)]).Value = Mass_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Mass)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
+                    rm.PropertyChanged += MassValueChanged;
+                    Dictionary.Add(nameof(Mass), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Mass)];
+                }
             }
             set
             {
                 Mass_DB = value.Value;
+                OnPropertyChanged(nameof(Mass));
             }
         }
         private void MassValueChanged(object Value, PropertyChangedEventArgs args)
@@ -493,13 +574,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<byte?>(AggregateState_Validation, AggregateState_DB);
-                tmp.PropertyChanged += AggregateStateValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(AggregateState)))
+                {
+                    ((RamAccess<byte?>)Dictionary[nameof(AggregateState)]).Value = AggregateState_DB;
+                    return (RamAccess<byte?>)Dictionary[nameof(AggregateState)];
+                }
+                else
+                {
+                    var rm = new RamAccess<byte?>(AggregateState_Validation, AggregateState_DB);
+                    rm.PropertyChanged += AggregateStateValueChanged;
+                    Dictionary.Add(nameof(AggregateState), rm);
+                    return (RamAccess<byte?>)Dictionary[nameof(AggregateState)];
+                }
             }
             set
             {
                 AggregateState_DB = value.Value;
+                OnPropertyChanged(nameof(AggregateState));
             }
         }
         private void AggregateStateValueChanged(object Value, PropertyChangedEventArgs args)
@@ -534,13 +625,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<byte?>(PropertyCode_Validation, PropertyCode_DB);
-                tmp.PropertyChanged += PropertyCodeValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PropertyCode)))
+                {
+                    ((RamAccess<byte?>)Dictionary[nameof(PropertyCode)]).Value = PropertyCode_DB;
+                    return (RamAccess<byte?>)Dictionary[nameof(PropertyCode)];
+                }
+                else
+                {
+                    var rm = new RamAccess<byte?>(PropertyCode_Validation, PropertyCode_DB);
+                    rm.PropertyChanged += PropertyCodeValueChanged;
+                    Dictionary.Add(nameof(PropertyCode), rm);
+                    return (RamAccess<byte?>)Dictionary[nameof(PropertyCode)];
+                }
             }//OK
             set
             {
                 PropertyCode_DB = value.Value;
+                OnPropertyChanged(nameof(PropertyCode));
             }
         }
         private void PropertyCodeValueChanged(object Value, PropertyChangedEventArgs args)
@@ -575,13 +676,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Owner_Validation, Owner_DB);
-                tmp.PropertyChanged += OwnerValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Owner)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Owner)]).Value = Owner_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Owner)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Owner_Validation, Owner_DB);
+                    rm.PropertyChanged += OwnerValueChanged;
+                    Dictionary.Add(nameof(Owner), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Owner)];
+                }
             }
             set
             {
                 Owner_DB = value.Value;
+                OnPropertyChanged(nameof(Owner));
             }
         }//if change this change validation
 
@@ -722,13 +833,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
-                tmp.PropertyChanged += TransporterOKPOValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(TransporterOKPO)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(TransporterOKPO)]).Value = TransporterOKPO_DB;
+                    return (RamAccess<string>)Dictionary[nameof(TransporterOKPO)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
+                    rm.PropertyChanged += TransporterOKPOValueChanged;
+                    Dictionary.Add(nameof(TransporterOKPO), rm);
+                    return (RamAccess<string>)Dictionary[nameof(TransporterOKPO)];
+                }
             }
             set
             {
                 TransporterOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
         private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -780,9 +901,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(PackName_Validation, PackName_DB);
-                tmp.PropertyChanged += PackNameValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PackName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PackName)]).Value = PackName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PackName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PackName_Validation, PackName_DB);
+                    rm.PropertyChanged += PackNameValueChanged;
+                    Dictionary.Add(nameof(PackName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PackName)];
+                }
             }
             set
             {
@@ -823,9 +953,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(PackType_Validation, PackType_DB);
-                tmp.PropertyChanged += PackTypeValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PackType)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PackType)]).Value = PackType_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PackType)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PackType_Validation, PackType_DB);
+                    rm.PropertyChanged += PackTypeValueChanged;
+                    Dictionary.Add(nameof(PackType), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PackType)];
+                }
             }
             set
             {
@@ -866,9 +1005,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);
-                tmp.PropertyChanged += PackNumberValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PackNumber)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PackNumber)]).Value = PackNumber_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PackNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);
+                    rm.PropertyChanged += PackNumberValueChanged;
+                    Dictionary.Add(nameof(PackNumber), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PackNumber)];
+                }
             }
             set
             {
