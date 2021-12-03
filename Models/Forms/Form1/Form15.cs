@@ -532,18 +532,21 @@ namespace Models
             {
                 return true;
             }
-            short tmp = (short)OperationCode.Value;
-            bool a = (tmp >= 10) && (tmp <= 14);
-            bool b = (tmp >= 41) && (tmp <= 45);
-            bool c = (tmp >= 71) && (tmp <= 73);
-            bool e = (tmp >= 55) && (tmp <= 57);
-            bool d = (tmp == 1) || (tmp == 16) || (tmp == 18) || (tmp == 48) ||
-                (tmp == 49) || (tmp == 51) || (tmp == 52) || (tmp == 59) ||
-                (tmp == 68) || (tmp == 75) || (tmp == 76);
-            if (a || b || c || d || e)
+            if (!(OperationCode.Value == null))
             {
-                //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-                //return true;
+                short tmp = (short)OperationCode.Value;
+                bool a = (tmp >= 10) && (tmp <= 14);
+                bool b = (tmp >= 41) && (tmp <= 45);
+                bool c = (tmp >= 71) && (tmp <= 73);
+                bool e = (tmp >= 55) && (tmp <= 57);
+                bool d = (tmp == 1) || (tmp == 16) || (tmp == 18) || (tmp == 48) ||
+                    (tmp == 49) || (tmp == 51) || (tmp == 52) || (tmp == 59) ||
+                    (tmp == 68) || (tmp == 75) || (tmp == 76);
+                if (a || b || c || d || e)
+                {
+                    //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+                    //return true;
+                }
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
