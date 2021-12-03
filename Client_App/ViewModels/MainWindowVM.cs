@@ -571,18 +571,6 @@ namespace Client_App.ViewModels
                     Local_Reports.Reports_Collection.Remove((Reports)item);
             await StaticConfiguration.DBModel.SaveChangesAsync();
         }
-
-        private async Task _Print_Excel_Export(ObservableCollectionWithItemPropertyChanged<IKey> forms)
-        {
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
         private int _Excel_Export_Notes(string param, int StartRow, int StartColumn, ExcelWorksheet worksheetPrim, List<Report> forms)
         {
             foreach (Report item in forms)
@@ -772,6 +760,78 @@ namespace Client_App.ViewModels
             return StartRow;
         }
 
+        private void _Excel_Print_Titul_Export(string param, ExcelWorksheet worksheet, Report form)
+        {
+            var findReports = from t in Local_Reports.Reports_Collection
+                              where t.Report_Collection.Contains(form)
+                              select t;
+            var reps = findReports.FirstOrDefault();
+
+
+        }
+        private async Task _Print_Excel_Export(ObservableCollectionWithItemPropertyChanged<IKey> forms)
+        {
+            try
+            {
+                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    SaveFileDialog dial = new();
+                    var filter = new FileDialogFilter
+                    {
+                        Name = "Excel",
+                        Extensions = {
+                        "xlsx"
+                    }
+                    };
+                    var param = "";
+                    if (forms != null)
+                    {
+                        if (forms.Count > 0)
+                        {
+                            var t = (Report)forms.First();
+                            param = t.FormNum_DB;
+                        }
+                    }
+                    dial.Filters.Add(filter);
+                    if (param != "")
+                    {
+                        var res = await dial.ShowAsync(desktop.MainWindow);
+                        if (res != null)
+                        {
+                            if (res.Count() != 0)
+                            {
+                                var path = res;
+                                if (!path.Contains(".xlsx"))
+                                {
+                                    path += ".xlsx";
+                                }
+                                if (File.Exists(path))
+                                {
+                                    File.Delete(path);
+                                }
+#if DEBUG
+                                string pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "Excel"), param+".xlsx");
+#else
+                                string pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),"data"), "Excel"), param+".xlsx");
+#endif
+                                if (path != null)
+                                {
+                                    using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path),new FileInfo(pth)))
+                                    {
+                                        
+                                        excelPackage.Save();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
         private async Task _Excel_Export(ObservableCollectionWithItemPropertyChanged<IKey> forms)
         {
             try
