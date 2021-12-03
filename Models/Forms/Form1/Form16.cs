@@ -852,6 +852,10 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value.Equals("Минобороны"))
+            {
+                return true;
+            }
             if (OKSM.Contains(value.Value.ToUpper()))
             {
                 return true;
