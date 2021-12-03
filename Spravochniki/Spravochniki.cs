@@ -151,7 +151,7 @@ namespace Spravochniki
             string[] rows = File.ReadAllLines(path);
             for (int k = 1; k < rows.Count(); k++)
             {
-                var tmp = rows[k].Split(";");
+                var tmp = rows[k].Split(";",2);
                 string i1 = tmp[0];
                 string i2 = tmp[1];
                 res.Add(new Tuple<string, string>(i1, i2));
