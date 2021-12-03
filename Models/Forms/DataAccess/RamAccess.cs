@@ -12,7 +12,7 @@ using OfficeOpenXml;
 namespace Models.DataAccess
 {
 
-    public class RamAccess<T> : INotifyDataErrorInfo, INotifyPropertyChanged, IKey
+    public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChanged, IKey
     {
         [NotMapped]
         public Func<RamAccess<T>, bool> Handler { get; set; }
@@ -33,6 +33,7 @@ namespace Models.DataAccess
                 }
             }
         }
+
         public RamAccess(Func<RamAccess<T>, bool> Handler, T Value)
         {
             this.Handler = Handler;
