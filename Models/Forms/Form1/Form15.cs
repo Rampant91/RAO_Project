@@ -372,7 +372,7 @@ namespace Models
                 {
                     value1 = value1.Replace("+", "e+").Replace("-", "e-");
                 }
-                Activity_DB = value1;
+                Activity.ValueWithOutHandler = value1;
             }
         }
         private bool Activity_Validation(RamAccess<string> value)//Ready
