@@ -23,6 +23,8 @@ namespace Models
             Validate_all();
         }
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             WasteSourceName_Validation(WasteSourceName);
@@ -51,13 +53,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
-                    tmp.PropertyChanged += WasteSourceNameValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(WasteSourceName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(WasteSourceName)]).Value = WasteSourceName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
+                    rm.PropertyChanged += WasteSourceNameValueChanged;
+                    Dictionary.Add(nameof(WasteSourceName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(WasteSourceName)];
+                }
             }
             set
             {
-                    WasteSourceName_DB = value.Value;
+                WasteSourceName_DB = value.Value;
                 OnPropertyChanged(nameof(WasteSourceName));
             }
         }
@@ -90,13 +101,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(WasteRecieverName_Validation, WasteRecieverName_DB);
-                    tmp.PropertyChanged += WasteRecieverNameValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(WasteRecieverName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(WasteRecieverName)]).Value = WasteRecieverName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(WasteRecieverName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(WasteRecieverName_Validation, WasteRecieverName_DB);
+                    rm.PropertyChanged += WasteRecieverNameValueChanged;
+                    Dictionary.Add(nameof(WasteRecieverName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(WasteRecieverName)];
+                }
             }
             set
             {
-                    WasteRecieverName_DB = value.Value;
+                WasteRecieverName_DB = value.Value;
                 OnPropertyChanged(nameof(WasteRecieverName));
             }
         }
@@ -129,13 +149,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(RecieverTypeCode_Validation, RecieverTypeCode_DB);
-                    tmp.PropertyChanged += RecieverTypeCodeValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(RecieverTypeCode)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(RecieverTypeCode)]).Value = RecieverTypeCode_DB;
+                    return (RamAccess<string>)Dictionary[nameof(RecieverTypeCode)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(RecieverTypeCode_Validation, RecieverTypeCode_DB);
+                    rm.PropertyChanged += RecieverTypeCodeValueChanged;
+                    Dictionary.Add(nameof(RecieverTypeCode), rm);
+                    return (RamAccess<string>)Dictionary[nameof(RecieverTypeCode)];
+                }
             }
             set
             {
-                    RecieverTypeCode_DB = value.Value;
+                RecieverTypeCode_DB = value.Value;
                 OnPropertyChanged(nameof(RecieverTypeCode));
             }
         }
@@ -173,13 +202,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(PoolDistrictName_Validation, PoolDistrictName_DB);
-                    tmp.PropertyChanged += PoolDistrictNameValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(PoolDistrictName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PoolDistrictName)]).Value = PoolDistrictName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PoolDistrictName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PoolDistrictName_Validation, PoolDistrictName_DB);
+                    rm.PropertyChanged += PoolDistrictNameValueChanged;
+                    Dictionary.Add(nameof(PoolDistrictName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PoolDistrictName)];
+                }
             }
             set
             {
-                    PoolDistrictName_DB = value.Value;
+                PoolDistrictName_DB = value.Value;
                 OnPropertyChanged(nameof(PoolDistrictName));
             }
         }
@@ -219,13 +257,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(AllowedWasteRemovalVolume_Validation, AllowedWasteRemovalVolume_DB);
-                    tmp.PropertyChanged += AllowedWasteRemovalVolumeValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(AllowedWasteRemovalVolume)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)]).Value = AllowedWasteRemovalVolume_DB;
+                    return (RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(AllowedWasteRemovalVolume_Validation, AllowedWasteRemovalVolume_DB);
+                    rm.PropertyChanged += AllowedWasteRemovalVolumeValueChanged;
+                    Dictionary.Add(nameof(AllowedWasteRemovalVolume), rm);
+                    return (RamAccess<string>)Dictionary[nameof(AllowedWasteRemovalVolume)];
+                }
             }
             set
             {
-                    AllowedWasteRemovalVolume_DB = value.Value;
+                AllowedWasteRemovalVolume_DB = value.Value;
                 OnPropertyChanged(nameof(AllowedWasteRemovalVolume));
             }
         }
@@ -288,13 +335,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);
-                    tmp.PropertyChanged += RemovedWasteVolumeValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(RemovedWasteVolume)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)]).Value = RemovedWasteVolume_DB;
+                    return (RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);
+                    rm.PropertyChanged += RemovedWasteVolumeValueChanged;
+                    Dictionary.Add(nameof(RemovedWasteVolume), rm);
+                    return (RamAccess<string>)Dictionary[nameof(RemovedWasteVolume)];
+                }
             }
             set
             {
-                    RemovedWasteVolume_DB = value.Value;
+                RemovedWasteVolume_DB = value.Value;
                 OnPropertyChanged(nameof(RemovedWasteVolume));
             }
         }

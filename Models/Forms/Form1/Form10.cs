@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Models.Abstracts;
 using Models.Attributes;
+using System.Collections.Generic;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 
@@ -24,7 +25,8 @@ namespace Models
         {
             OnPropertyChanged(args.PropertyName);
         }
-
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         public override bool Object_Validation()
         {
             return !(Okfs.HasErrors ||
@@ -58,9 +60,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(RegNo_Validation, RegNo_DB);
-                tmp.PropertyChanged += RegNoValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(RegNo)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(RegNo)]).Value = RegNo_DB;
+                    return (RamAccess<string>)Dictionary[nameof(RegNo)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(RegNo_Validation, RegNo_DB);
+                    rm.PropertyChanged += RegNoValueChanged;
+                    Dictionary.Add(nameof(RegNo), rm);
+                    return (RamAccess<string>)Dictionary[nameof(RegNo)];
+                }
             }
             set
             {
@@ -118,9 +129,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
-                tmp.PropertyChanged += OrganUpravValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(OrganUprav)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(OrganUprav)]).Value = OrganUprav_DB;
+                    return (RamAccess<string>)Dictionary[nameof(OrganUprav)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
+                    rm.PropertyChanged += OrganUpravValueChanged;
+                    Dictionary.Add(nameof(OrganUprav), rm);
+                    return (RamAccess<string>)Dictionary[nameof(OrganUprav)];
+                }
             }
             set
             {
@@ -156,9 +176,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
-                tmp.PropertyChanged += SubjectRFValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(SubjectRF)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(SubjectRF)]).Value = SubjectRF_DB;
+                    return (RamAccess<string>)Dictionary[nameof(SubjectRF)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
+                    rm.PropertyChanged += SubjectRFValueChanged;
+                    Dictionary.Add(nameof(SubjectRF), rm);
+                    return (RamAccess<string>)Dictionary[nameof(SubjectRF)];
+                }
             }
             set
             {
@@ -194,9 +223,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(JurLico_Validation, JurLico_DB);
-                tmp.PropertyChanged += JurLicoValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(JurLico)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(JurLico)]).Value = JurLico_DB;
+                    return (RamAccess<string>)Dictionary[nameof(JurLico)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(JurLico_Validation, JurLico_DB);
+                    rm.PropertyChanged += JurLicoValueChanged;
+                    Dictionary.Add(nameof(JurLico), rm);
+                    return (RamAccess<string>)Dictionary[nameof(JurLico)];
+                }
             }
             set
             {
@@ -232,9 +270,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
-                tmp.PropertyChanged += ShortJurLicoValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ShortJurLico)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ShortJurLico)]).Value = ShortJurLico_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
+                    rm.PropertyChanged += ShortJurLicoValueChanged;
+                    Dictionary.Add(nameof(ShortJurLico), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
+                }
             }
             set
             {
@@ -270,9 +317,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
-                tmp.PropertyChanged += JurLicoAddressValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(JurLicoAddress)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(JurLicoAddress)]).Value = JurLicoAddress_DB;
+                    return (RamAccess<string>)Dictionary[nameof(JurLicoAddress)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
+                    rm.PropertyChanged += JurLicoAddressValueChanged;
+                    Dictionary.Add(nameof(JurLicoAddress), rm);
+                    return (RamAccess<string>)Dictionary[nameof(JurLicoAddress)];
+                }
             }
             set
             {
@@ -308,9 +364,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
-                tmp.PropertyChanged += JurLicoFactAddressValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(JurLicoFactAddress)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)]).Value = JurLicoFactAddress_DB;
+                    return (RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
+                    rm.PropertyChanged += JurLicoFactAddressValueChanged;
+                    Dictionary.Add(nameof(JurLicoFactAddress), rm);
+                    return (RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)];
+                }
             }
             set
             {
@@ -346,9 +411,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
-                tmp.PropertyChanged += GradeFIOValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(GradeFIO)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(GradeFIO)]).Value = GradeFIO_DB;
+                    return (RamAccess<string>)Dictionary[nameof(GradeFIO)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
+                    rm.PropertyChanged += GradeFIOValueChanged;
+                    Dictionary.Add(nameof(GradeFIO), rm);
+                    return (RamAccess<string>)Dictionary[nameof(GradeFIO)];
+                }
             }
             set
             {
@@ -384,9 +458,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Telephone_Validation, Telephone_DB);
-                tmp.PropertyChanged += TelephoneValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Telephone)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Telephone)]).Value = Telephone_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Telephone)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Telephone_Validation, Telephone_DB);
+                    rm.PropertyChanged += TelephoneValueChanged;
+                    Dictionary.Add(nameof(Telephone), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Telephone)];
+                }
             }
             set
             {
@@ -422,9 +505,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Fax_Validation, Fax_DB);
-                tmp.PropertyChanged += FaxValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Fax)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Fax)]).Value = Fax_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Fax)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Fax_Validation, Fax_DB);
+                    rm.PropertyChanged += FaxValueChanged;
+                    Dictionary.Add(nameof(Fax), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Fax)];
+                }
             }
             set
             {
@@ -460,9 +552,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Email_Validation, Email_DB);
-                tmp.PropertyChanged += EmailValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Email)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Email)]).Value = Email_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Email)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Email_Validation, Email_DB);
+                    rm.PropertyChanged += EmailValueChanged;
+                    Dictionary.Add(nameof(Email), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Email)];
+                }
             }
             set
             {
@@ -498,9 +599,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Okpo_Validation, Okpo_DB);
-                tmp.PropertyChanged += OkpoValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Okpo)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Okpo)]).Value = Okpo_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Okpo)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Okpo_Validation, Okpo_DB);
+                    rm.PropertyChanged += OkpoValueChanged;
+                    Dictionary.Add(nameof(Okpo), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Okpo)];
+                }
             }
             set
             {
@@ -555,9 +665,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Okved_Validation, Okved_DB);
-                tmp.PropertyChanged += OkvedValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Okved)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Okved)]).Value = Okved_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Okved)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Okved_Validation, Okved_DB);
+                    rm.PropertyChanged += OkvedValueChanged;
+                    Dictionary.Add(nameof(Okved), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Okved)];
+                }
             }
             set
             {
@@ -604,9 +723,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Okogu_Validation, Okogu_DB);
-                tmp.PropertyChanged += OkoguValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Okogu)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Okogu)]).Value = Okogu_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Okogu)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Okogu_Validation, Okogu_DB);
+                    rm.PropertyChanged += OkoguValueChanged;
+                    Dictionary.Add(nameof(Okogu), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Okogu)];
+                }
             }
             set
             {
@@ -655,9 +783,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
-                tmp.PropertyChanged += OktmoValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Oktmo)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Oktmo)]).Value = Oktmo_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Oktmo)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
+                    rm.PropertyChanged += OktmoValueChanged;
+                    Dictionary.Add(nameof(Oktmo), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Oktmo)];
+                }
             }
             set
             {
@@ -706,9 +843,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Inn_Validation, Inn_DB);
-                tmp.PropertyChanged += InnValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Inn)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Inn)]).Value = Inn_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Inn)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Inn_Validation, Inn_DB);
+                    rm.PropertyChanged += InnValueChanged;
+                    Dictionary.Add(nameof(Inn), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Inn)];
+                }
             }
             set
             {
@@ -757,9 +903,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Kpp_Validation, Kpp_DB);
-                tmp.PropertyChanged += KppValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Kpp)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Kpp)]).Value = Kpp_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Kpp)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Kpp_Validation, Kpp_DB);
+                    rm.PropertyChanged += KppValueChanged;
+                    Dictionary.Add(nameof(Kpp), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Kpp)];
+                }
             }
             set
             {
@@ -808,9 +963,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Okopf_Validation, Okopf_DB);
-                tmp.PropertyChanged += OkopfValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Okopf)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Okopf)]).Value = Okopf_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Okopf)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Okopf_Validation, Okopf_DB);
+                    rm.PropertyChanged += OkopfValueChanged;
+                    Dictionary.Add(nameof(Okopf), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Okopf)];
+                }
             }
             set
             {
@@ -859,9 +1023,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Okfs_Validation, Okfs_DB);
-                tmp.PropertyChanged += OkfsValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Okfs)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Okfs)]).Value = Okfs_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Okfs)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Okfs_Validation, Okfs_DB);
+                    rm.PropertyChanged += OkfsValueChanged;
+                    Dictionary.Add(nameof(Okfs), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Okfs)];
+                }
             }
             set
             {

@@ -1,5 +1,5 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
-using System;
+using System; using System.Collections.Generic;
 using System.Globalization;
 using Spravochniki;
 using System.Linq;
@@ -22,6 +22,8 @@ namespace Models
             Validate_all();
         }
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             Radionuclids_Validation(Radionuclids);
@@ -54,13 +56,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(PlotName_Validation, PlotName_DB);
-                    tmp.PropertyChanged += PlotNameValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(PlotName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PlotName)]).Value = PlotName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PlotName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PlotName_Validation, PlotName_DB);
+                    rm.PropertyChanged += PlotNameValueChanged;
+                    Dictionary.Add(nameof(PlotName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PlotName)];
+                }
             }
             set
             {
-                    PlotName_DB = value.Value;
+                PlotName_DB = value.Value;
                 OnPropertyChanged(nameof(PlotName));
             }
         }
@@ -92,13 +103,22 @@ private bool PlotName_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(PlotKadastrNumber_Validation, PlotKadastrNumber_DB);
-                    tmp.PropertyChanged += PlotKadastrNumberValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(PlotKadastrNumber)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PlotKadastrNumber)]).Value = PlotKadastrNumber_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PlotKadastrNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PlotKadastrNumber_Validation, PlotKadastrNumber_DB);
+                    rm.PropertyChanged += PlotKadastrNumberValueChanged;
+                    Dictionary.Add(nameof(PlotKadastrNumber), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PlotKadastrNumber)];
+                }
             }
             set
             {
-                    PlotKadastrNumber_DB = value.Value;
+                PlotKadastrNumber_DB = value.Value;
                 OnPropertyChanged(nameof(PlotKadastrNumber));
             }
         }
@@ -130,13 +150,22 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(PlotCode_Validation, PlotCode_DB);
-                    tmp.PropertyChanged += PlotCodeValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(PlotCode)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PlotCode)]).Value = PlotCode_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PlotCode)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PlotCode_Validation, PlotCode_DB);
+                    rm.PropertyChanged += PlotCodeValueChanged;
+                    Dictionary.Add(nameof(PlotCode), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PlotCode)];
+                }
             }
             set
             {
-                    PlotCode_DB = value.Value;
+                PlotCode_DB = value.Value;
                 OnPropertyChanged(nameof(PlotCode));
             }
         }
@@ -174,13 +203,22 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(InfectedArea_Validation, InfectedArea_DB);
-                    tmp.PropertyChanged += InfectedAreaValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(InfectedArea)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(InfectedArea)]).Value = InfectedArea_DB;
+                    return (RamAccess<string>)Dictionary[nameof(InfectedArea)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(InfectedArea_Validation, InfectedArea_DB);
+                    rm.PropertyChanged += InfectedAreaValueChanged;
+                    Dictionary.Add(nameof(InfectedArea), rm);
+                    return (RamAccess<string>)Dictionary[nameof(InfectedArea)];
+                }
             }
             set
             {
-                    InfectedArea_DB = value.Value;
+                InfectedArea_DB = value.Value;
                 OnPropertyChanged(nameof(InfectedArea));
             }
         }
@@ -238,13 +276,22 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);//OK
-                    tmp.PropertyChanged += RadionuclidsValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(Radionuclids)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Radionuclids)]).Value = Radionuclids_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
+                    rm.PropertyChanged += RadionuclidsValueChanged;
+                    Dictionary.Add(nameof(Radionuclids), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                }
             }
             set
             {
-                    Radionuclids_DB = value.Value;
+                Radionuclids_DB = value.Value;
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
@@ -290,13 +337,22 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(SpecificActivityOfPlot_Validation, SpecificActivityOfPlot_DB);
-                    tmp.PropertyChanged += SpecificActivityOfPlotValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(SpecificActivityOfPlot)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(SpecificActivityOfPlot)]).Value = SpecificActivityOfPlot_DB;
+                    return (RamAccess<string>)Dictionary[nameof(SpecificActivityOfPlot)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(SpecificActivityOfPlot_Validation, SpecificActivityOfPlot_DB);
+                    rm.PropertyChanged += SpecificActivityOfPlotValueChanged;
+                    Dictionary.Add(nameof(SpecificActivityOfPlot), rm);
+                    return (RamAccess<string>)Dictionary[nameof(SpecificActivityOfPlot)];
+                }
             }
             set
             {
-                    SpecificActivityOfPlot_DB = value.Value;
+                SpecificActivityOfPlot_DB = value.Value;
                 OnPropertyChanged(nameof(SpecificActivityOfPlot));
             }
         }
@@ -353,13 +409,22 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(SpecificActivityOfLiquidPart_Validation, SpecificActivityOfLiquidPart_DB);
-                    tmp.PropertyChanged += SpecificActivityOfLiquidPartValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(SpecificActivityOfLiquidPart)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(SpecificActivityOfLiquidPart)]).Value = SpecificActivityOfLiquidPart_DB;
+                    return (RamAccess<string>)Dictionary[nameof(SpecificActivityOfLiquidPart)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(SpecificActivityOfLiquidPart_Validation, SpecificActivityOfLiquidPart_DB);
+                    rm.PropertyChanged += SpecificActivityOfLiquidPartValueChanged;
+                    Dictionary.Add(nameof(SpecificActivityOfLiquidPart), rm);
+                    return (RamAccess<string>)Dictionary[nameof(SpecificActivityOfLiquidPart)];
+                }
             }
             set
             {
-                    SpecificActivityOfLiquidPart_DB = value.Value;
+                SpecificActivityOfLiquidPart_DB = value.Value;
                 OnPropertyChanged(nameof(SpecificActivityOfLiquidPart));
             }
         }
@@ -416,9 +481,18 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                var tmp = new RamAccess<string>(SpecificActivityOfDensePart_Validation, SpecificActivityOfDensePart_DB);
-                tmp.PropertyChanged += SpecificActivityOfDensePartValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(SpecificActivityOfDensePart)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(SpecificActivityOfDensePart)]).Value = SpecificActivityOfDensePart_DB;
+                    return (RamAccess<string>)Dictionary[nameof(SpecificActivityOfDensePart)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(SpecificActivityOfDensePart_Validation, SpecificActivityOfDensePart_DB);
+                    rm.PropertyChanged += SpecificActivityOfDensePartValueChanged;
+                    Dictionary.Add(nameof(SpecificActivityOfDensePart), rm);
+                    return (RamAccess<string>)Dictionary[nameof(SpecificActivityOfDensePart)];
+                }
             }
             set
             {

@@ -23,6 +23,8 @@ namespace Models
             Validate_all();
         }
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             Radionuclids_Validation(Radionuclids);
@@ -48,26 +50,36 @@ namespace Models
         public RamAccess<short?> OperationCode
         {
             get
-{
-var tmp = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
-tmp.PropertyChanged += OperationCodeValueChanged;
-return tmp;
-}            set
+            {
+                if (Dictionary.ContainsKey(nameof(OperationCode)))
+                {
+                    ((RamAccess<short?>)Dictionary[nameof(OperationCode)]).Value = OperationCode_DB;
+                    return (RamAccess<short?>)Dictionary[nameof(OperationCode)];
+                }
+                else
+                {
+                    var rm = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
+                    rm.PropertyChanged += OperationCodeValueChanged;
+                    Dictionary.Add(nameof(OperationCode), rm);
+                    return (RamAccess<short?>)Dictionary[nameof(OperationCode)];
+                }
+            }
+            set
             {
                 OperationCode_DB = value.Value;
                 OnPropertyChanged(nameof(OperationCode));
             }
         }
 
-
-       private void OperationCodeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void OperationCodeValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 OperationCode_DB = ((RamAccess<short?>)Value).Value;
-}
-}
-private bool OperationCode_Validation(RamAccess<short?> value)
+            }
+        }
+
+        private bool OperationCode_Validation(RamAccess<short?> value)
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -92,13 +104,22 @@ private bool OperationCode_Validation(RamAccess<short?> value)
         {
             get
             {
-                    var tmp = new RamAccess<short?>(ObjectTypeCode_Validation, ObjectTypeCode_DB);
-                    tmp.PropertyChanged += ObjectTypeCodeValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(ObjectTypeCode)))
+                {
+                    ((RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)]).Value = ObjectTypeCode_DB;
+                    return (RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)];
+                }
+                else
+                {
+                    var rm = new RamAccess<short?>(ObjectTypeCode_Validation, ObjectTypeCode_DB);
+                    rm.PropertyChanged += ObjectTypeCodeValueChanged;
+                    Dictionary.Add(nameof(ObjectTypeCode), rm);
+                    return (RamAccess<short?>)Dictionary[nameof(ObjectTypeCode)];
+                }
             }
             set
             {
-                    ObjectTypeCode_DB = value.Value;
+                ObjectTypeCode_DB = value.Value;
                 OnPropertyChanged(nameof(ObjectTypeCode));
             }
         }
@@ -136,26 +157,35 @@ private bool OperationCode_Validation(RamAccess<short?> value)
         {
             get
             {
-                    var tmp = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);//OK
-                    tmp.PropertyChanged += RadionuclidsValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(Radionuclids)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Radionuclids)]).Value = Radionuclids_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
+                    rm.PropertyChanged += RadionuclidsValueChanged;
+                    Dictionary.Add(nameof(Radionuclids), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                }
             }
             set
             {
-                    Radionuclids_DB = value.Value;
+                Radionuclids_DB = value.Value;
                 OnPropertyChanged(nameof(Radionuclids));
             }
         }
         //If change this change validation
 
-       private void RadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void RadionuclidsValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 Radionuclids_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool Radionuclids_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -192,13 +222,22 @@ private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(Activity_Validation, Activity_DB);
-                    tmp.PropertyChanged += ActivityValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(Activity)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Activity)]).Value = Activity_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Activity)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
+                    rm.PropertyChanged += ActivityValueChanged;
+                    Dictionary.Add(nameof(Activity), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Activity)];
+                }
             }
             set
             {
-                    Activity_DB = value.Value;
+                Activity_DB = value.Value;
                 OnPropertyChanged(nameof(Activity));
             }
         }
@@ -257,13 +296,22 @@ private bool Radionuclids_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);//OK
-                    tmp.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(ProviderOrRecieverOKPO)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)]).Value = ProviderOrRecieverOKPO_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
+                    rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+                    Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                }
             }
             set
             {
-                    ProviderOrRecieverOKPO_DB = value.Value;
+                ProviderOrRecieverOKPO_DB = value.Value;
                 OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }

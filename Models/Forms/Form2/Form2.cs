@@ -3,6 +3,7 @@ using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
 using System.Linq;
 using Models.Attributes;
+using System.Collections.Generic;
 using OfficeOpenXml;
 
 namespace Models.Abstracts
@@ -15,6 +16,8 @@ namespace Models.Abstracts
 
         }
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
             OnPropertyChanged(args.PropertyName);
@@ -30,9 +33,18 @@ namespace Models.Abstracts
         {
             get
             {
-                var tmp = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
-                tmp.PropertyChanged += CorrectionNumberValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(CorrectionNumber)))
+                {
+                    ((RamAccess<byte>)Dictionary[nameof(CorrectionNumber)]).Value = CorrectionNumber_DB;
+                    return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
+                    rm.PropertyChanged += CorrectionNumberValueChanged;
+                    Dictionary.Add(nameof(CorrectionNumber), rm);
+                    return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
+                }
             }
             set
             {

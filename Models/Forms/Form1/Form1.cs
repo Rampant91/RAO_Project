@@ -1,5 +1,6 @@
 ﻿using Models.DataAccess;
 using System;
+using System.Collections.Generic;
 using Spravochniki;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
@@ -25,6 +26,8 @@ namespace Models.Abstracts
         {
             OnPropertyChanged(args.PropertyName);
         }
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
 
         #region OperationCode
         public short? OperationCode_DB { get; set; } = null;
@@ -101,9 +104,18 @@ namespace Models.Abstracts
             {
                 if (!OperationDate_Hidden_Priv)
                 {
-                    var tmp = new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
-                    tmp.PropertyChanged += OperationDateValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(OperationDate)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(OperationDate)]).Value = OperationDate_DB;
+                        return (RamAccess<string>)Dictionary[nameof(OperationDate)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
+                        rm.PropertyChanged += OperationDateValueChanged;
+                        Dictionary.Add(nameof(OperationDate), rm);
+                        return (RamAccess<string>)Dictionary[nameof(OperationDate)];
+                    }
                 }
                 else
                 {
@@ -185,9 +197,18 @@ namespace Models.Abstracts
             {
                 if (!DocumentVid_Hidden_Priv)
                 {
-                    var tmp = new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
-                    tmp.PropertyChanged += DocumentVidValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(DocumentVid)))
+                    {
+                        ((RamAccess<byte?>)Dictionary[nameof(DocumentVid)]).Value = DocumentVid_DB;
+                        return (RamAccess<byte?>)Dictionary[nameof(DocumentVid)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
+                        rm.PropertyChanged += DocumentVidValueChanged;
+                        Dictionary.Add(nameof(DocumentVid), rm);
+                        return (RamAccess<byte?>)Dictionary[nameof(DocumentVid)];
+                    }
                 }
                 else
                 {
@@ -250,9 +271,18 @@ namespace Models.Abstracts
             {
                 if (!DocumentNumber_Hidden_Priv)
                 {
-                    var tmp = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
-                    tmp.PropertyChanged += DocumentNumberValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(DocumentNumber)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(DocumentNumber)]).Value = DocumentNumber_DB;
+                        return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
+                        rm.PropertyChanged += DocumentNumberValueChanged;
+                        Dictionary.Add(nameof(DocumentNumber), rm);
+                        return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
+                    }
                 }
                 else
                 {
@@ -301,9 +331,18 @@ namespace Models.Abstracts
             {
                 if (!DocumentDate_Hidden_Priv)
                 {
-                    var tmp = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
-                    tmp.PropertyChanged += DocumentDateValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(DocumentDate)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(DocumentDate)]).Value = DocumentDate_DB;
+                        return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
+                        rm.PropertyChanged += DocumentDateValueChanged;
+                        Dictionary.Add(nameof(DocumentDate), rm);
+                        return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
+                    }
                 }
                 else
                 {

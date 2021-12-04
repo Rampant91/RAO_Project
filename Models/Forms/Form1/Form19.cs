@@ -22,7 +22,8 @@ namespace Models
             OperationCode.Value = 10;
             Validate_all();
         }
-
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             //Quantity_Validation(Quantity);
@@ -45,9 +46,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<short?>(CodeTypeAccObject_Validation, CodeTypeAccObject_DB);
-                tmp.PropertyChanged += CodeTypeAccObjectValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(CodeTypeAccObject)))
+                {
+                    ((RamAccess<short?>)Dictionary[nameof(CodeTypeAccObject)]).Value = CodeTypeAccObject_DB;
+                    return (RamAccess<short?>)Dictionary[nameof(CodeTypeAccObject)];
+                }
+                else
+                {
+                    var rm = new RamAccess<short?>(CodeTypeAccObject_Validation, CodeTypeAccObject_DB);
+                    rm.PropertyChanged += CodeTypeAccObjectValueChanged;
+                    Dictionary.Add(nameof(CodeTypeAccObject), rm);
+                    return (RamAccess<short?>)Dictionary[nameof(CodeTypeAccObject)];
+                }
             }
             set
             {
@@ -87,9 +97,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
-                tmp.PropertyChanged += RadionuclidsValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Radionuclids)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Radionuclids)]).Value = Radionuclids_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
+                    rm.PropertyChanged += RadionuclidsValueChanged;
+                    Dictionary.Add(nameof(Radionuclids), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Radionuclids)];
+                }
             }
             set
             {
@@ -138,9 +157,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Activity_Validation, Activity_DB);
-                tmp.PropertyChanged += ActivityValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Activity)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Activity)]).Value = Activity_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Activity)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
+                    rm.PropertyChanged += ActivityValueChanged;
+                    Dictionary.Add(nameof(Activity), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Activity)];
+                }
             }
             set
             {

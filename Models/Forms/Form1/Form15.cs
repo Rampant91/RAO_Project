@@ -36,7 +36,7 @@ namespace Models
             FactoryNumber_Validation(FactoryNumber);
             ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
             TransporterOKPO_Validation(TransporterOKPO);
-            //Activity_Validation(Activity);
+            Activity_Validation(Activity);
             Radionuclids_Validation(Radionuclids);
             Quantity_Validation(Quantity);
             CreationDate_Validation(CreationDate);

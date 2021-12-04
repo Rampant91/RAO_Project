@@ -1,5 +1,5 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
-using System;
+using System; using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Spravochniki;
@@ -22,6 +22,8 @@ namespace Models
             Validate_all();
         }
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             ObservedSourceNumber_Validation(ObservedSourceNumber);
@@ -49,9 +51,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
-                tmp.PropertyChanged += ObservedSourceNumberValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ObservedSourceNumber)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)]).Value = ObservedSourceNumber_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
+                    rm.PropertyChanged += ObservedSourceNumberValueChanged;
+                    Dictionary.Add(nameof(ObservedSourceNumber), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
+                }
             }
             set
             {
@@ -88,13 +99,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
-                    tmp.PropertyChanged += RadionuclidNameValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(RadionuclidName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(RadionuclidName)]).Value = RadionuclidName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
+                    rm.PropertyChanged += RadionuclidNameValueChanged;
+                    Dictionary.Add(nameof(RadionuclidName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
+                }
             }
             set
             {
-                    RadionuclidName_DB = value.Value;
+                RadionuclidName_DB = value.Value;
                 OnPropertyChanged(nameof(RadionuclidName));
             }
         }
@@ -135,13 +155,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(AllowedWasteValue_Validation, AllowedWasteValue_DB);
-                    tmp.PropertyChanged += AllowedWasteValueValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(AllowedWasteValue)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(AllowedWasteValue)]).Value = AllowedWasteValue_DB;
+                    return (RamAccess<string>)Dictionary[nameof(AllowedWasteValue)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(AllowedWasteValue_Validation, AllowedWasteValue_DB);
+                    rm.PropertyChanged += AllowedWasteValueValueChanged;
+                    Dictionary.Add(nameof(AllowedWasteValue), rm);
+                    return (RamAccess<string>)Dictionary[nameof(AllowedWasteValue)];
+                }
             }
             set
             {
-                    AllowedWasteValue_DB = value.Value;
+                AllowedWasteValue_DB = value.Value;
                 OnPropertyChanged(nameof(AllowedWasteValue));
             }
         }
@@ -205,13 +234,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(FactedWasteValue_Validation, FactedWasteValue_DB);
-                    tmp.PropertyChanged += FactedWasteValueValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(FactedWasteValue)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(FactedWasteValue)]).Value = FactedWasteValue_DB;
+                    return (RamAccess<string>)Dictionary[nameof(FactedWasteValue)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(FactedWasteValue_Validation, FactedWasteValue_DB);
+                    rm.PropertyChanged += FactedWasteValueValueChanged;
+                    Dictionary.Add(nameof(FactedWasteValue), rm);
+                    return (RamAccess<string>)Dictionary[nameof(FactedWasteValue)];
+                }
             }
             set
             {
-                    FactedWasteValue_DB = value.Value;
+                FactedWasteValue_DB = value.Value;
                 OnPropertyChanged(nameof(FactedWasteValue));
             }
         }
@@ -282,13 +320,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(WasteOutbreakPreviousYear_Validation, WasteOutbreakPreviousYear_DB);
-                    tmp.PropertyChanged += WasteOutbreakPreviousYearValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(WasteOutbreakPreviousYear)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(WasteOutbreakPreviousYear)]).Value = WasteOutbreakPreviousYear_DB;
+                    return (RamAccess<string>)Dictionary[nameof(WasteOutbreakPreviousYear)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(WasteOutbreakPreviousYear_Validation, WasteOutbreakPreviousYear_DB);
+                    rm.PropertyChanged += WasteOutbreakPreviousYearValueChanged;
+                    Dictionary.Add(nameof(WasteOutbreakPreviousYear), rm);
+                    return (RamAccess<string>)Dictionary[nameof(WasteOutbreakPreviousYear)];
+                }
             }
             set
             {
-                    WasteOutbreakPreviousYear_DB = value.Value;
+                WasteOutbreakPreviousYear_DB = value.Value;
                 OnPropertyChanged(nameof(WasteOutbreakPreviousYear));
             }
         }

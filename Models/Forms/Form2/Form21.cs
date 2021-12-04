@@ -1,5 +1,5 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
-using System;
+using System; using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
@@ -20,7 +20,8 @@ namespace Models
             //NumberOfFields.Value = 24;
             Validate_all();
         }
-
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             MachinePower_Validation(MachinePower);
@@ -223,9 +224,18 @@ namespace Models
                 {
                     if (MachineCode_Hidden2)
                     {
-                        var tmp = new RamAccess<byte?>(null, MachineCode_DB);
-                        tmp.PropertyChanged += MachineCodeValueChanged;
-                        return tmp;
+                        if (Dictionary.ContainsKey(nameof(MachineCode)))
+                        {
+                            ((RamAccess<byte?>)Dictionary[nameof(MachineCode)]).Value = MachineCode_DB;
+                            return (RamAccess<byte?>)Dictionary[nameof(MachineCode)];
+                        }
+                        else
+                        {
+                            var rm = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB);
+                            rm.PropertyChanged += MachineCodeValueChanged;
+                            Dictionary.Add(nameof(MachineCode), rm);
+                            return (RamAccess<byte?>)Dictionary[nameof(MachineCode)];
+                        }
                     }
                     else
                     {
@@ -325,15 +335,36 @@ namespace Models
                 {
                     if (MachinePower_Hidden2)
                     {
-                        var tmp = new RamAccess<string>(null, MachinePower_DB);
-                        tmp.PropertyChanged += MachinePowerValueChanged;
-                        return tmp;
+                        if (Dictionary.ContainsKey(nameof(MachinePower)))
+                        {
+                            ((RamAccess<string>)Dictionary[nameof(MachinePower)]).Value = MachinePower_DB;
+                            ((RamAccess<string>)Dictionary[nameof(MachinePower)]).PropertyChanged -= MachinePowerValueChanged;
+                            return (RamAccess<string>)Dictionary[nameof(MachinePower)];
+                        }
+                        else
+                        {
+                            var rm = new RamAccess<string>(MachinePower_Validation, MachinePower_DB);
+                            Dictionary.Add(nameof(MachinePower), rm);
+                            return (RamAccess<string>)Dictionary[nameof(MachinePower)];
+                        }
+                        //var tmp = new RamAccess<string>(null, MachinePower_DB);
+                        //tmp.PropertyChanged += MachinePowerValueChanged;
+                        //return tmp;
                     }
                     else
                     {
-                        var tmp = new RamAccess<string>(MachinePower_Validation, MachinePower_DB);
-                        tmp.PropertyChanged += MachinePowerValueChanged;
-                        return tmp;
+                        if (Dictionary.ContainsKey(nameof(MachinePower)))
+                        {
+                            ((RamAccess<string>)Dictionary[nameof(MachinePower)]).Value = MachinePower_DB;
+                            return (RamAccess<string>)Dictionary[nameof(MachinePower)];
+                        }
+                        else
+                        {
+                            var rm = new RamAccess<string>(MachinePower_Validation, MachinePower_DB);
+                            rm.PropertyChanged += MachinePowerValueChanged;
+                            Dictionary.Add(nameof(MachinePower), rm);
+                            return (RamAccess<string>)Dictionary[nameof(MachinePower)];
+                        }
                     }
                 }
                 else
@@ -454,15 +485,36 @@ namespace Models
                 {
                     if (NumberOfHoursPerYear_Hidden2)
                     {
-                        var tmp = new RamAccess<string>(null, NumberOfHoursPerYear_DB);
-                        tmp.PropertyChanged += NumberOfHoursPerYearValueChanged;
-                        return tmp;
+                        if (Dictionary.ContainsKey(nameof(NumberOfHoursPerYear)))
+                        {
+                            ((RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)]).Value = NumberOfHoursPerYear_DB;
+                            ((RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)]).PropertyChanged -= NumberOfHoursPerYearValueChanged;
+                            return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
+                        }
+                        else
+                        {
+                            var rm = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB);
+                            Dictionary.Add(nameof(NumberOfHoursPerYear), rm);
+                            return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
+                        }
+                        //var tmp = new RamAccess<string>(null, NumberOfHoursPerYear_DB);
+                        //tmp.PropertyChanged += NumberOfHoursPerYearValueChanged;
+                        //return tmp;
                     }
                     else
                     {
-                        var tmp = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB);
-                        tmp.PropertyChanged += NumberOfHoursPerYearValueChanged;
-                        return tmp;
+                        if (Dictionary.ContainsKey(nameof(NumberOfHoursPerYear)))
+                        {
+                            ((RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)]).Value = NumberOfHoursPerYear_DB;
+                            return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
+                        }
+                        else
+                        {
+                            var rm = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB);
+                            rm.PropertyChanged += NumberOfHoursPerYearValueChanged;
+                            Dictionary.Add(nameof(NumberOfHoursPerYear), rm);
+                            return (RamAccess<string>)Dictionary[nameof(NumberOfHoursPerYear)];
+                        }
                     }
                 }
                 else
@@ -567,9 +619,18 @@ namespace Models
             {
                 if (!CodeRAOIn_Hidden)
                 {
-                    var tmp = new RamAccess<string>(CodeRAOIn_Validation, CodeRAOIn_DB);
-                    tmp.PropertyChanged += CodeRAOInValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(CodeRAOIn)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(CodeRAOIn)]).Value = CodeRAOIn_DB;
+                        return (RamAccess<string>)Dictionary[nameof(CodeRAOIn)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(CodeRAOIn_Validation, CodeRAOIn_DB);
+                        rm.PropertyChanged += CodeRAOInValueChanged;
+                        Dictionary.Add(nameof(CodeRAOIn), rm);
+                        return (RamAccess<string>)Dictionary[nameof(CodeRAOIn)];
+                    }
                 }
                 else
                 {
@@ -637,9 +698,18 @@ namespace Models
             {
                 if (!StatusRAOIn_Hidden)
                 {
-                    var tmp = new RamAccess<string>(StatusRAOIn_Validation, StatusRAOIn_DB);
-                    tmp.PropertyChanged += StatusRAOInValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(StatusRAOIn)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(StatusRAOIn)]).Value = StatusRAOIn_DB;
+                        return (RamAccess<string>)Dictionary[nameof(StatusRAOIn)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(StatusRAOIn_Validation, StatusRAOIn_DB);
+                        rm.PropertyChanged += StatusRAOInValueChanged;
+                        Dictionary.Add(nameof(StatusRAOIn), rm);
+                        return (RamAccess<string>)Dictionary[nameof(StatusRAOIn)];
+                    }
                 }
                 else
                 {
@@ -717,9 +787,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(VolumeIn_Validation, VolumeIn_DB);
-                tmp.PropertyChanged += VolumeInValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(VolumeIn)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(VolumeIn)]).Value = VolumeIn_DB;
+                    return (RamAccess<string>)Dictionary[nameof(VolumeIn)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(VolumeIn_Validation, VolumeIn_DB);
+                    rm.PropertyChanged += VolumeInValueChanged;
+                    Dictionary.Add(nameof(VolumeIn), rm);
+                    return (RamAccess<string>)Dictionary[nameof(VolumeIn)];
+                }
             }
             set
             {
@@ -800,10 +879,20 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(MassIn_Validation, MassIn_DB);
-                tmp.PropertyChanged += MassInValueChanged;
-                return tmp;
-            } set
+                if (Dictionary.ContainsKey(nameof(MassIn)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassIn)]).Value = MassIn_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassIn)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassIn_Validation, MassIn_DB);
+                    rm.PropertyChanged += MassInValueChanged;
+                    Dictionary.Add(nameof(MassIn), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassIn)];
+                }
+            }
+            set
             {
                 MassIn_DB = value.Value;
                 OnPropertyChanged(nameof(MassIn));
@@ -873,9 +962,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(QuantityIn_Validation, QuantityIn_DB);//OK
-                tmp.PropertyChanged += QuantityInValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityIn)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityIn)]).Value = QuantityIn_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityIn)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityIn_Validation, QuantityIn_DB);
+                    rm.PropertyChanged += QuantityInValueChanged;
+                    Dictionary.Add(nameof(QuantityIn), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityIn)];
+                }
             }
             set
             {
@@ -935,9 +1033,18 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(TritiumActivityIn_Validation, TritiumActivityIn_DB);
-                    tmp.PropertyChanged += TritiumActivityInValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(TritiumActivityIn)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(TritiumActivityIn)]).Value = TritiumActivityIn_DB;
+                    return (RamAccess<string>)Dictionary[nameof(TritiumActivityIn)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(TritiumActivityIn_Validation, TritiumActivityIn_DB);
+                    rm.PropertyChanged += TritiumActivityInValueChanged;
+                    Dictionary.Add(nameof(TritiumActivityIn), rm);
+                    return (RamAccess<string>)Dictionary[nameof(TritiumActivityIn)];
+                }
             }
             set
             {
@@ -1009,13 +1116,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(BetaGammaActivityIn_Validation, BetaGammaActivityIn_DB);
-                    tmp.PropertyChanged += BetaGammaActivityInValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(BetaGammaActivityIn)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(BetaGammaActivityIn)]).Value = BetaGammaActivityIn_DB;
+                    return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityIn)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(BetaGammaActivityIn_Validation, BetaGammaActivityIn_DB);
+                    rm.PropertyChanged += BetaGammaActivityInValueChanged;
+                    Dictionary.Add(nameof(BetaGammaActivityIn), rm);
+                    return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityIn)];
+                }
             }
             set
             {
-                    BetaGammaActivityIn_DB = value.Value;
+                BetaGammaActivityIn_DB = value.Value;
                 OnPropertyChanged(nameof(BetaGammaActivityIn));
             }
         }
@@ -1083,13 +1199,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(AlphaActivityIn_Validation, AlphaActivityIn_DB);
-                    tmp.PropertyChanged += AlphaActivityInValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(AlphaActivityIn)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(AlphaActivityIn)]).Value = AlphaActivityIn_DB;
+                    return (RamAccess<string>)Dictionary[nameof(AlphaActivityIn)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(AlphaActivityIn_Validation, AlphaActivityIn_DB);
+                    rm.PropertyChanged += AlphaActivityInValueChanged;
+                    Dictionary.Add(nameof(AlphaActivityIn), rm);
+                    return (RamAccess<string>)Dictionary[nameof(AlphaActivityIn)];
+                }
             }
             set
             {
-                    AlphaActivityIn_DB = value.Value;
+                AlphaActivityIn_DB = value.Value;
                 OnPropertyChanged(nameof(AlphaActivityIn));
             }
         }
@@ -1157,13 +1282,22 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(TransuraniumActivityIn_Validation, TransuraniumActivityIn_DB);
-                    tmp.PropertyChanged += TransuraniumActivityInValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(TransuraniumActivityIn)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(TransuraniumActivityIn)]).Value = TransuraniumActivityIn_DB;
+                    return (RamAccess<string>)Dictionary[nameof(TransuraniumActivityIn)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(TransuraniumActivityIn_Validation, TransuraniumActivityIn_DB);
+                    rm.PropertyChanged += TransuraniumActivityInValueChanged;
+                    Dictionary.Add(nameof(TransuraniumActivityIn), rm);
+                    return (RamAccess<string>)Dictionary[nameof(TransuraniumActivityIn)];
+                }
             }
             set
             {
-                    TransuraniumActivityIn_DB = value.Value;
+                TransuraniumActivityIn_DB = value.Value;
                 OnPropertyChanged(nameof(TransuraniumActivityIn));
             }
         }
@@ -1245,9 +1379,18 @@ namespace Models
             {
                 if (!CodeRAOout_Hidden)
                 {
-                    var tmp = new RamAccess<string>(CodeRAOout_Validation, CodeRAOout_DB);
-                    tmp.PropertyChanged += CodeRAOoutValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(CodeRAOout)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(CodeRAOout)]).Value = CodeRAOout_DB;
+                        return (RamAccess<string>)Dictionary[nameof(CodeRAOout)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(CodeRAOout_Validation, CodeRAOout_DB);
+                        rm.PropertyChanged += CodeRAOoutValueChanged;
+                        Dictionary.Add(nameof(CodeRAOout), rm);
+                        return (RamAccess<string>)Dictionary[nameof(CodeRAOout)];
+                    }
                 }
                 else
                 {
@@ -1316,9 +1459,18 @@ namespace Models
             {
                 if (!StatusRAOout_Hidden)
                 {
-                    var tmp = new RamAccess<string>(StatusRAOout_Validation, StatusRAOout_DB);
-                    tmp.PropertyChanged += StatusRAOoutValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(StatusRAOout)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(StatusRAOout)]).Value = StatusRAOout_DB;
+                        return (RamAccess<string>)Dictionary[nameof(StatusRAOout)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(StatusRAOout_Validation, StatusRAOout_DB);
+                        rm.PropertyChanged += StatusRAOoutValueChanged;
+                        Dictionary.Add(nameof(StatusRAOout), rm);
+                        return (RamAccess<string>)Dictionary[nameof(StatusRAOout)];
+                    }
                 }
                 else
                 {
@@ -1337,13 +1489,13 @@ namespace Models
         }
 
         private void StatusRAOoutValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 StatusRAOout_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -1391,13 +1543,22 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(VolumeOut_Validation, VolumeOut_DB);
-                    tmp.PropertyChanged += VolumeOutValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(VolumeOut)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(VolumeOut)]).Value = VolumeOut_DB;
+                    return (RamAccess<string>)Dictionary[nameof(VolumeOut)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(VolumeOut_Validation, VolumeOut_DB);
+                    rm.PropertyChanged += VolumeOutValueChanged;
+                    Dictionary.Add(nameof(VolumeOut), rm);
+                    return (RamAccess<string>)Dictionary[nameof(VolumeOut)];
+                }
             }
             set
             {
-                    VolumeOut_DB = value.Value;
+                VolumeOut_DB = value.Value;
                 OnPropertyChanged(nameof(VolumeOut));
             }
         }
@@ -1466,13 +1627,22 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassOut_Validation, MassOut_DB);
-                    tmp.PropertyChanged += MassOutValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(MassOut)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassOut)]).Value = MassOut_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassOut)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassOut_Validation, MassOut_DB);
+                    rm.PropertyChanged += MassOutValueChanged;
+                    Dictionary.Add(nameof(MassOut), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassOut)];
+                }
             }
             set
             {
-                    MassOut_DB = value.Value;
+                MassOut_DB = value.Value;
                 OnPropertyChanged(nameof(MassOut));
             }
         }
@@ -1542,13 +1712,22 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(QuantityOZIIIout_Validation, QuantityOZIIIout_DB);//OK
-                    tmp.PropertyChanged += QuantityOZIIIoutValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityOZIIIout)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityOZIIIout)]).Value = QuantityOZIIIout_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityOZIIIout)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityOZIIIout_Validation, QuantityOZIIIout_DB);
+                    rm.PropertyChanged += QuantityOZIIIoutValueChanged;
+                    Dictionary.Add(nameof(QuantityOZIIIout), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityOZIIIout)];
+                }
             }
             set
             {
-                    QuantityOZIIIout_DB = value.Value;
+                QuantityOZIIIout_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityOZIIIout));
             }
         }
@@ -1609,13 +1788,22 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(TritiumActivityOut_Validation, TritiumActivityOut_DB);
-                    tmp.PropertyChanged += TritiumActivityOutValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(TritiumActivityOut)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(TritiumActivityOut)]).Value = TritiumActivityOut_DB;
+                    return (RamAccess<string>)Dictionary[nameof(TritiumActivityOut)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(TritiumActivityOut_Validation, TritiumActivityOut_DB);
+                    rm.PropertyChanged += TritiumActivityOutValueChanged;
+                    Dictionary.Add(nameof(TritiumActivityOut), rm);
+                    return (RamAccess<string>)Dictionary[nameof(TritiumActivityOut)];
+                }
             }
             set
             {
-                    TritiumActivityOut_DB = value.Value;
+                TritiumActivityOut_DB = value.Value;
                 OnPropertyChanged(nameof(TritiumActivityOut));
             }
         }
@@ -1684,13 +1872,22 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(BetaGammaActivityOut_Validation, BetaGammaActivityOut_DB);
-                    tmp.PropertyChanged += BetaGammaActivityOutValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(BetaGammaActivityOut)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(BetaGammaActivityOut)]).Value = BetaGammaActivityOut_DB;
+                    return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityOut)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(BetaGammaActivityOut_Validation, BetaGammaActivityOut_DB);
+                    rm.PropertyChanged += BetaGammaActivityOutValueChanged;
+                    Dictionary.Add(nameof(BetaGammaActivityOut), rm);
+                    return (RamAccess<string>)Dictionary[nameof(BetaGammaActivityOut)];
+                }
             }
             set
             {
-                    BetaGammaActivityOut_DB = value.Value;
+                BetaGammaActivityOut_DB = value.Value;
                 OnPropertyChanged(nameof(BetaGammaActivityOut));
             }
         }
@@ -1758,13 +1955,22 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(AlphaActivityOut_Validation, AlphaActivityOut_DB);
-                    tmp.PropertyChanged += AlphaActivityOutValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(AlphaActivityOut)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(AlphaActivityOut)]).Value = AlphaActivityOut_DB;
+                    return (RamAccess<string>)Dictionary[nameof(AlphaActivityOut)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(AlphaActivityOut_Validation, AlphaActivityOut_DB);
+                    rm.PropertyChanged += AlphaActivityOutValueChanged;
+                    Dictionary.Add(nameof(AlphaActivityOut), rm);
+                    return (RamAccess<string>)Dictionary[nameof(AlphaActivityOut)];
+                }
             }
             set
             {
-                    AlphaActivityOut_DB = value.Value;
+                AlphaActivityOut_DB = value.Value;
                 OnPropertyChanged(nameof(AlphaActivityOut));
             }
         }
@@ -1833,13 +2039,22 @@ private bool StatusRAOout_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(TransuraniumActivityOut_Validation, TransuraniumActivityOut_DB);
-                    tmp.PropertyChanged += TransuraniumActivityOutValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(TransuraniumActivityOut)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(TransuraniumActivityOut)]).Value = TransuraniumActivityOut_DB;
+                    return (RamAccess<string>)Dictionary[nameof(TransuraniumActivityOut)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(TransuraniumActivityOut_Validation, TransuraniumActivityOut_DB);
+                    rm.PropertyChanged += TransuraniumActivityOutValueChanged;
+                    Dictionary.Add(nameof(TransuraniumActivityOut), rm);
+                    return (RamAccess<string>)Dictionary[nameof(TransuraniumActivityOut)];
+                }
             }
             set
             {
-                    TransuraniumActivityOut_DB = value.Value;
+                TransuraniumActivityOut_DB = value.Value;
                 OnPropertyChanged(nameof(TransuraniumActivityOut));
             }
         }

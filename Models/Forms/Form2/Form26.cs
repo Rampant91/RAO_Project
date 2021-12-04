@@ -22,6 +22,8 @@ namespace Models
             Validate_all();
         }
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             ObservedSourceNumber_Validation(ObservedSourceNumber);
@@ -52,11 +54,21 @@ namespace Models
         public RamAccess<string> ObservedSourceNumber
         {
             get
-{
-var tmp = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
-tmp.PropertyChanged += ObservedSourceNumberValueChanged;
-return tmp;
-}            set
+            {
+                if (Dictionary.ContainsKey(nameof(ObservedSourceNumber)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)]).Value = ObservedSourceNumber_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
+                    rm.PropertyChanged += ObservedSourceNumberValueChanged;
+                    Dictionary.Add(nameof(ObservedSourceNumber), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ObservedSourceNumber)];
+                }
+            }
+            set
             {
                 ObservedSourceNumber_DB = value.Value;
                 OnPropertyChanged(nameof(ObservedSourceNumber));
@@ -85,9 +97,18 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                var tmp = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
-                tmp.PropertyChanged += ControlledAreaNameValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ControlledAreaName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ControlledAreaName)]).Value = ControlledAreaName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ControlledAreaName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
+                    rm.PropertyChanged += ControlledAreaNameValueChanged;
+                    Dictionary.Add(nameof(ControlledAreaName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ControlledAreaName)];
+                }
             }
             set
             {
@@ -139,11 +160,21 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         public RamAccess<string> SupposedWasteSource
         {
             get
-{
-var tmp = new RamAccess<string>(SupposedWasteSource_Validation, SupposedWasteSource_DB);
-tmp.PropertyChanged += SupposedWasteSourceValueChanged;
-return tmp;
-}            set
+            {
+                if (Dictionary.ContainsKey(nameof(SupposedWasteSource)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(SupposedWasteSource)]).Value = SupposedWasteSource_DB;
+                    return (RamAccess<string>)Dictionary[nameof(SupposedWasteSource)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(SupposedWasteSource_Validation, SupposedWasteSource_DB);
+                    rm.PropertyChanged += SupposedWasteSourceValueChanged;
+                    Dictionary.Add(nameof(SupposedWasteSource), rm);
+                    return (RamAccess<string>)Dictionary[nameof(SupposedWasteSource)];
+                }
+            }
+            set
             {
                 SupposedWasteSource_DB = value.Value;
                 OnPropertyChanged(nameof(SupposedWasteSource));
@@ -173,13 +204,22 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                var tmp = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
-                tmp.PropertyChanged += DistanceToWasteSourceValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(DistanceToWasteSource)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)]).Value = DistanceToWasteSource_DB;
+                    return (RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
+                    rm.PropertyChanged += DistanceToWasteSourceValueChanged;
+                    Dictionary.Add(nameof(DistanceToWasteSource), rm);
+                    return (RamAccess<string>)Dictionary[nameof(DistanceToWasteSource)];
+                }
             }
             set
             {
-                    DistanceToWasteSource_DB = value.Value;
+                DistanceToWasteSource_DB = value.Value;
                 OnPropertyChanged(nameof(DistanceToWasteSource));
             }
         }
@@ -246,13 +286,22 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(TestDepth_Validation, TestDepth_DB);
-                    tmp.PropertyChanged += TestDepthValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(TestDepth)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(TestDepth)]).Value = TestDepth_DB;
+                    return (RamAccess<string>)Dictionary[nameof(TestDepth)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(TestDepth_Validation, TestDepth_DB);
+                    rm.PropertyChanged += TestDepthValueChanged;
+                    Dictionary.Add(nameof(TestDepth), rm);
+                    return (RamAccess<string>)Dictionary[nameof(TestDepth)];
+                }
             }
             set
             {
-                    TestDepth_DB = value.Value;
+                TestDepth_DB = value.Value;
                 OnPropertyChanged(nameof(TestDepth));
             }
         }
@@ -322,9 +371,18 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
-                    tmp.PropertyChanged += RadionuclidNameValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(RadionuclidName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(RadionuclidName)]).Value = RadionuclidName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
+                    rm.PropertyChanged += RadionuclidNameValueChanged;
+                    Dictionary.Add(nameof(RadionuclidName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(RadionuclidName)];
+                }
             }
             set
             {
@@ -368,13 +426,22 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
-                    tmp.PropertyChanged += AverageYearConcentrationValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(AverageYearConcentration)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(AverageYearConcentration)]).Value = AverageYearConcentration_DB;
+                    return (RamAccess<string>)Dictionary[nameof(AverageYearConcentration)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);
+                    rm.PropertyChanged += AverageYearConcentrationValueChanged;
+                    Dictionary.Add(nameof(AverageYearConcentration), rm);
+                    return (RamAccess<string>)Dictionary[nameof(AverageYearConcentration)];
+                }
             }
             set
             {
-                    AverageYearConcentration_DB = value.Value;
+                AverageYearConcentration_DB = value.Value;
                 OnPropertyChanged(nameof(AverageYearConcentration));
             }
         }
