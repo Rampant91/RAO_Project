@@ -46,6 +46,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             return null;
         }
 
+        #region Notes
         private static Control GetRowNotes(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
         {
             DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
@@ -97,33 +98,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
-        private static readonly int Wdth1 = 100;
-        private static readonly int RowHeight1 = 30;
-        private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
-
-        private static Control Get1Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-            var cell = new Cell(Binding, false)
-            {
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
-            };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
-
-            cell.CellRow = Row;
-            cell.CellColumn = Column;
-
-            return cell;
-        }
-
+        #region 2.0
         private static Control Get0Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
         {
             DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
@@ -147,294 +124,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return cell;
         }
-
-        private static readonly int Wdth2 = 100;
-        private static readonly int RowHeight2 = 30;
-        private static readonly Color border_color2 = Color.FromArgb(255, 0, 0, 0);
-
-        private static Control Get2Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-            var cell = new Cell(Binding, false)
-            {
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
-            };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
-
-            cell.CellRow = Row;
-            cell.CellColumn = Column;
-
-            return cell;
-        }
-
-        private static Control Get3Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-            var cell = new Cell(Binding, false)
-            {
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
-            };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
-
-            cell.CellRow = Row;
-            cell.CellColumn = Column;
-
-            return cell;
-        }
-
-        private static Control Get4Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-            var cell = new Cell(Binding, false)
-            {
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
-            };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
-
-            cell.CellRow = Row;
-            cell.CellColumn = Column;
-
-            return cell;
-        }
-
-        private static Control Get5Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-
-                var cell = new Cell(Binding, false)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                Binding b = new()
-                {
-                    Path = "Items[" + (Row - 1) + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(StyledElement.DataContextProperty, b);
-
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
-
-                return cell;
-            
-        }
-
-        private static Control Get6Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-                var cell = new Cell(Binding, false)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                Binding b = new()
-                {
-                    Path = "Items[" + (Row - 1) + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(StyledElement.DataContextProperty, b);
-
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
-
-                return cell;
-        }
-
-        private static Control Get7Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-
-                var cell = new Cell(Binding, false)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                Binding b = new()
-                {
-                    Path = "Items[" + (Row - 1) + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(StyledElement.DataContextProperty, b);
-
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
-
-                return cell;
-            
-        }
-
-        private static Control Get8Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-                var cell = new Cell(Binding, false)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                Binding b = new()
-                {
-                    Path = "Items[" + (Row - 1) + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(StyledElement.DataContextProperty, b);
-
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
-
-                return cell;
-            
-        }
-        public class MyConverter:IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                var value1 = (RamAccess<string>)value;
-                if ((!value1.Value.Contains('e')) && (value1.Value.Contains('+') ^ value1.Value.Contains('-')))
-                {
-                    return new RamAccess<string>(value1.Handler,value1.Value.Replace("+", "e+").Replace("-", "e-"));
-                }
-                return value1;
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                return value;
-            }
-        }
-        private static Control Get9Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-                var cell = new Cell(Binding, false)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                if (Binding.Equals("AllowedActivity"))
-                {
-                    Binding b = new()
-                    {
-                        Path = "Items[" + (Row - 1) + "]." + Binding,
-                        ElementName = TopName,
-                        //Converter = new MyConverter(),
-                        NameScope = new WeakReference<INameScope>(scp)
-                    };
-                    cell.Bind(StyledElement.DataContextProperty, b);
-                }
-                else
-                {
-                    Binding b = new()
-                    {
-                        Path = "Items[" + (Row - 1) + "]." + Binding,
-                        ElementName = TopName,
-                        NameScope = new WeakReference<INameScope>(scp)
-                    };
-                    cell.Bind(StyledElement.DataContextProperty, b);
-                }
-
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
-
-                return cell;
-           
-        }
-
-        private static Control Get10Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-                var cell = new Cell(Binding, false)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                Binding b = new()
-                {
-                    Path = "Items[" + (Row - 1) + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(StyledElement.DataContextProperty, b);
-
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
-
-                return cell;
-           
-        }
-
-        private static Control Get11Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-
-                var cell = new Cell(Binding, false)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                Binding b = new()
-                {
-                    Path = "Items[" + (Row - 1) + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(StyledElement.DataContextProperty, b);
-
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
-
-                return cell;
-            
-        }
-
-        private static Control Get12Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
-        {
-
-                var cell = new Cell(Binding, false)
-                {
-                    Width = starWidth * Wdth1,
-                    Height = RowHeight1,
-                    BorderBrush = new SolidColorBrush(border_color1)
-                };
-                Binding b = new()
-                {
-                    Path = "Items[" + (Row - 1) + "]." + Binding,
-                    ElementName = TopName,
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                cell.Bind(StyledElement.DataContextProperty, b);
-
-                cell.CellRow = Row;
-                cell.CellColumn = Column;
-
-                return cell;
-            
-        }
-
         private static Control Get0(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -476,7 +165,34 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.1
+        private static readonly int Wdth1 = 100;
+        private static readonly int RowHeight1 = 30;
+        private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
+
+        private static Control Get1Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
         private static Control Get1(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -523,7 +239,34 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.2
+        private static readonly int Wdth2 = 100;
+        private static readonly int RowHeight2 = 30;
+        private static readonly Color border_color2 = Color.FromArgb(255, 0, 0, 0);
+
+        private static Control Get2Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
         private static Control Get2(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -567,7 +310,30 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.3
+        private static Control Get3Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
         private static Control Get3(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -604,7 +370,30 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.4
+        private static Control Get4Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
         private static Control Get4(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -645,7 +434,30 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.5
+        private static Control Get5Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
         private static Control Get5(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -679,7 +491,30 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.6
+        private static Control Get6Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
         private static Control Get6(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -711,7 +546,32 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.7
+        private static Control Get7Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+
+        }
         private static Control Get7(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -741,7 +601,31 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.8
+        private static Control Get8Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+
+        }
         private static Control Get8(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -772,7 +656,44 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.9
+        private static Control Get9Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            if (Binding.Equals("AllowedActivity"))
+            {
+                Binding b = new()
+                {
+                    Path = "Items[" + (Row - 1) + "]." + Binding,
+                    ElementName = TopName,
+                    //Converter = new MyConverter(),
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(StyledElement.DataContextProperty, b);
+            }
+            else
+            {
+                Binding b = new()
+                {
+                    Path = "Items[" + (Row - 1) + "]." + Binding,
+                    ElementName = TopName,
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                cell.Bind(StyledElement.DataContextProperty, b);
+            }
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+        }
         private static Control Get9(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -801,7 +722,31 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.10
+        private static Control Get10Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+
+        }
         private static Control Get10(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -836,7 +781,32 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.11
+        private static Control Get11Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+
+        }
         private static Control Get11(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -869,7 +839,32 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
 
+        #region 2.12
+        private static Control Get12Row(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        {
+
+            var cell = new Cell(Binding, false)
+            {
+                Width = starWidth * Wdth1,
+                Height = RowHeight1,
+                BorderBrush = new SolidColorBrush(border_color1)
+            };
+            Binding b = new()
+            {
+                Path = "Items[" + (Row - 1) + "]." + Binding,
+                ElementName = TopName,
+                NameScope = new WeakReference<INameScope>(scp)
+            };
+            cell.Bind(StyledElement.DataContextProperty, b);
+
+            cell.CellRow = Row;
+            cell.CellColumn = Column;
+
+            return cell;
+
+        }
         private static Control Get12(int Row, INameScope scp, string TopName)
         {
             DataGrid.Row stck = new DataGrid.Row
@@ -899,5 +894,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             return stck;
         }
+        #endregion
     }
 }

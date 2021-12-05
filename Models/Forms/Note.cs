@@ -1,4 +1,4 @@
-﻿
+﻿using System.Collections.Generic;
 using Models.DataAccess;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -28,6 +28,8 @@ namespace Models
         {
             OnPropertyChanged(args.PropertyName);
         }
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         public void Init()
         {
             RowNumber.PropertyChanged += InPropertyChanged;
@@ -44,13 +46,23 @@ namespace Models
         public string? RowNumber_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("№ строки")]
+        #nullable enable
         public RamAccess<string?> RowNumber
         {
             get
             {
-                var tmp = new RamAccess<string?>(RowNumber_Validation, RowNumber_DB);
-                tmp.PropertyChanged += RowNumberValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(RowNumber)))
+                {
+                    ((RamAccess<string?>)Dictionary[nameof(RowNumber)]).Value = RowNumber_DB;
+                    return (RamAccess<string?>)Dictionary[nameof(RowNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string?>(RowNumber_Validation, RowNumber_DB);
+                    rm.PropertyChanged += RowNumberValueChanged;
+                    Dictionary.Add(nameof(RowNumber), rm);
+                    return (RamAccess<string?>)Dictionary[nameof(RowNumber)];
+                }
             }
             set
             {
@@ -76,13 +88,23 @@ namespace Models
         public string? GraphNumber_DB { get; set; } = null;
         [NotMapped]
         [Attributes.Form_Property("№ графы")]
+        #nullable enable
         public RamAccess<string?> GraphNumber
         {
             get
             {
-                var tmp = new RamAccess<string?>(GraphNumber_Validation, GraphNumber_DB);
-                tmp.PropertyChanged += GraphNumberValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(GraphNumber)))
+                {
+                    ((RamAccess<string?>)Dictionary[nameof(GraphNumber)]).Value = GraphNumber_DB;
+                    return (RamAccess<string?>)Dictionary[nameof(GraphNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string?>(GraphNumber_Validation, GraphNumber_DB);
+                    rm.PropertyChanged += GraphNumberValueChanged;
+                    Dictionary.Add(nameof(GraphNumber), rm);
+                    return (RamAccess<string?>)Dictionary[nameof(GraphNumber)];
+                }
             }
             set
             {
@@ -112,9 +134,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Comment_Validation, Comment_DB);
-                tmp.PropertyChanged += CommentValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Comment)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Comment)]).Value = Comment_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Comment)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Comment_Validation, Comment_DB);
+                    rm.PropertyChanged += CommentValueChanged;
+                    Dictionary.Add(nameof(Comment), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Comment)];
+                }
             }
             set
             {

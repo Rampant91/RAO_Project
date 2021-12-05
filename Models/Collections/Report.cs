@@ -234,7 +234,6 @@ namespace Models.Collections
         {
             get
             {
-
                 return Rows10_DB;
             }
             set
@@ -699,6 +698,8 @@ namespace Models.Collections
         }
         #endregion
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         #region FormNum
         public string FormNum_DB { get; set; } = "";
         [NotMapped]
@@ -707,9 +708,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(null, FormNum_DB);
-                tmp.PropertyChanged += FormNumValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(FormNum)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(FormNum)]).Value = FormNum_DB;
+                    return (RamAccess<string>)Dictionary[nameof(FormNum)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(FormNum_Validation, FormNum_DB);
+                    rm.PropertyChanged += FormNumValueChanged;
+                    Dictionary.Add(nameof(FormNum), rm);
+                    return (RamAccess<string>)Dictionary[nameof(FormNum)];
+                }
             }
             set
             {
@@ -724,7 +734,7 @@ namespace Models.Collections
                 FormNum_DB = ((RamAccess<string>)Value).Value;
             }
         }
-        private bool FormNum_Validation(RamAccess<bool> value)
+        private bool FormNum_Validation(RamAccess<string> value)
         {
             return true;
         }
@@ -738,9 +748,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<bool>(IsCorrection_Validation, IsCorrection_DB);
-                tmp.PropertyChanged += IsCorrectionValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(IsCorrection)))
+                {
+                    ((RamAccess<bool>)Dictionary[nameof(IsCorrection)]).Value = IsCorrection_DB;
+                    return (RamAccess<bool>)Dictionary[nameof(IsCorrection)];
+                }
+                else
+                {
+                    var rm = new RamAccess<bool>(IsCorrection_Validation, IsCorrection_DB);
+                    rm.PropertyChanged += IsCorrectionValueChanged;
+                    Dictionary.Add(nameof(IsCorrection), rm);
+                    return (RamAccess<bool>)Dictionary[nameof(IsCorrection)];
+                }
             }
             set
             {
@@ -770,9 +789,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
-                tmp.PropertyChanged += CorrectionNumberValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(CorrectionNumber)))
+                {
+                    ((RamAccess<byte>)Dictionary[nameof(CorrectionNumber)]).Value = CorrectionNumber_DB;
+                    return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<byte>(CorrectionNumber_Validation, CorrectionNumber_DB);
+                    rm.PropertyChanged += CorrectionNumberValueChanged;
+                    Dictionary.Add(nameof(CorrectionNumber), rm);
+                    return (RamAccess<byte>)Dictionary[nameof(CorrectionNumber)];
+                }
             }
             set
             {
@@ -803,9 +831,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(FIOexecutor_Validation, FIOexecutor_DB);
-                tmp.PropertyChanged += FIOexecutorValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(FIOexecutor)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(FIOexecutor)]).Value = FIOexecutor_DB;
+                    return (RamAccess<string>)Dictionary[nameof(FIOexecutor)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(FIOexecutor_Validation, FIOexecutor_DB);
+                    rm.PropertyChanged += FIOexecutorValueChanged;
+                    Dictionary.Add(nameof(FIOexecutor), rm);
+                    return (RamAccess<string>)Dictionary[nameof(FIOexecutor)];
+                }
             }
             set
             {
@@ -836,9 +873,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(GradeExecutor_Validation, GradeExecutor_DB);
-                tmp.PropertyChanged += GradeExecutorValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(GradeExecutor)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(GradeExecutor)]).Value = GradeExecutor_DB;
+                    return (RamAccess<string>)Dictionary[nameof(GradeExecutor)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(GradeExecutor_Validation, GradeExecutor_DB);
+                    rm.PropertyChanged += GradeExecutorValueChanged;
+                    Dictionary.Add(nameof(GradeExecutor), rm);
+                    return (RamAccess<string>)Dictionary[nameof(GradeExecutor)];
+                }
             }
             set
             {
@@ -869,9 +915,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ExecPhone_Validation, ExecPhone_DB);
-                tmp.PropertyChanged += ExecPhoneValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ExecPhone)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ExecPhone)]).Value = ExecPhone_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ExecPhone)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ExecPhone_Validation, ExecPhone_DB);
+                    rm.PropertyChanged += ExecPhoneValueChanged;
+                    Dictionary.Add(nameof(ExecPhone), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ExecPhone)];
+                }
             }
             set
             {
@@ -902,9 +957,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ExecEmail_Validation, ExecEmail_DB);
-                tmp.PropertyChanged += ExecEmailValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ExecEmail)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ExecEmail)]).Value = ExecEmail_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ExecEmail)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ExecEmail_Validation, ExecEmail_DB);
+                    rm.PropertyChanged += ExecEmailValueChanged;
+                    Dictionary.Add(nameof(ExecEmail), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ExecEmail)];
+                }
             }
             set
             {
@@ -935,9 +999,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(NumberInOrder_Validation, NumberInOrder_DB);
-                tmp.PropertyChanged += NumberInOrderValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(NumberInOrder)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(NumberInOrder)]).Value = NumberInOrder_DB;
+                    return (RamAccess<string>)Dictionary[nameof(NumberInOrder)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(NumberInOrder_Validation, NumberInOrder_DB);
+                    rm.PropertyChanged += NumberInOrderValueChanged;
+                    Dictionary.Add(nameof(NumberInOrder), rm);
+                    return (RamAccess<string>)Dictionary[nameof(NumberInOrder)];
+                }
             }
             set
             {
@@ -966,9 +1039,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(Comments_Validation, Comments_DB);
-                tmp.PropertyChanged += CommentsValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Comments)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Comments)]).Value = Comments_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Comments)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Comments_Validation, Comments_DB);
+                    rm.PropertyChanged += CommentsValueChanged;
+                    Dictionary.Add(nameof(Comments), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Comments)];
+                }
             }
             set
             {
@@ -1020,9 +1102,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(PermissionNumber_28_Validation, PermissionNumber_28_DB);
-                tmp.PropertyChanged += PermissionNumber_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PermissionNumber_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PermissionNumber_28)]).Value = PermissionNumber_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PermissionNumber_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PermissionNumber_28_Validation, PermissionNumber_28_DB);
+                    rm.PropertyChanged += PermissionNumber_28ValueChanged;
+                    Dictionary.Add(nameof(PermissionNumber_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PermissionNumber_28)];
+                }
             }
             set
             {
@@ -1052,9 +1143,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(PermissionIssueDate_28_Validation, PermissionIssueDate_28_DB);
-                tmp.PropertyChanged += PermissionIssueDate_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PermissionIssueDate_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PermissionIssueDate_28)]).Value = PermissionIssueDate_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PermissionIssueDate_28_Validation, PermissionIssueDate_28_DB);
+                    rm.PropertyChanged += PermissionIssueDate_28ValueChanged;
+                    Dictionary.Add(nameof(PermissionIssueDate_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate_28)];
+                }
             }
             set
             {
@@ -1112,9 +1212,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(PermissionDocumentName_28_Validation, PermissionDocumentName_28_DB);
-                tmp.PropertyChanged += PermissionDocumentName_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PermissionDocumentName_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName_28)]).Value = PermissionDocumentName_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PermissionDocumentName_28_Validation, PermissionDocumentName_28_DB);
+                    rm.PropertyChanged += PermissionDocumentName_28ValueChanged;
+                    Dictionary.Add(nameof(PermissionDocumentName_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName_28)];
+                }
             }
             set
             {
@@ -1143,9 +1252,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ValidBegin_28_Validation, ValidBegin_28_DB);
-                tmp.PropertyChanged += ValidBegin_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ValidBegin_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ValidBegin_28)]).Value = ValidBegin_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ValidBegin_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ValidBegin_28_Validation, ValidBegin_28_DB);
+                    rm.PropertyChanged += ValidBegin_28ValueChanged;
+                    Dictionary.Add(nameof(ValidBegin_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ValidBegin_28)];
+                }
             }
             set
             {
@@ -1203,9 +1321,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ValidThru_28_Validation, ValidThru_28_DB);
-                tmp.PropertyChanged += ValidThru_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ValidThru_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ValidThru_28)]).Value = ValidThru_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ValidThru_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ValidThru_28_Validation, ValidThru_28_DB);
+                    rm.PropertyChanged += ValidThru_28ValueChanged;
+                    Dictionary.Add(nameof(ValidThru_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ValidThru_28)];
+                }
             }
             set
             {
@@ -1263,9 +1390,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(PermissionNumber1_28_Validation, PermissionNumber1_28_DB);
-                tmp.PropertyChanged += PermissionNumber1_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PermissionNumber1_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PermissionNumber1_28)]).Value = PermissionNumber1_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PermissionNumber1_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PermissionNumber1_28_Validation, PermissionNumber1_28_DB);
+                    rm.PropertyChanged += PermissionNumber1_28ValueChanged;
+                    Dictionary.Add(nameof(PermissionNumber1_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PermissionNumber1_28)];
+                }
             }
             set
             {
@@ -1294,9 +1430,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(PermissionIssueDate1_28_Validation, PermissionIssueDate1_28_DB);
-                tmp.PropertyChanged += PermissionIssueDate1_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PermissionIssueDate1_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PermissionIssueDate1_28)]).Value = PermissionIssueDate1_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate1_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PermissionIssueDate1_28_Validation, PermissionIssueDate1_28_DB);
+                    rm.PropertyChanged += PermissionIssueDate1_28ValueChanged;
+                    Dictionary.Add(nameof(PermissionIssueDate1_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate1_28)];
+                }
             }
             set
             {
@@ -1354,9 +1499,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(PermissionDocumentName1_28_Validation, PermissionDocumentName1_28_DB);
-                tmp.PropertyChanged += PermissionDocumentName1_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PermissionDocumentName1_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName1_28)]).Value = PermissionDocumentName1_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName1_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PermissionDocumentName1_28_Validation, PermissionDocumentName1_28_DB);
+                    rm.PropertyChanged += PermissionDocumentName1_28ValueChanged;
+                    Dictionary.Add(nameof(PermissionDocumentName1_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName1_28)];
+                }
             }
             set
             {
@@ -1385,9 +1539,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ValidBegin1_28_Validation, ValidBegin1_28_DB);
-                tmp.PropertyChanged += ValidBegin1_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ValidBegin1_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ValidBegin1_28)]).Value = ValidBegin1_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ValidBegin1_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ValidBegin1_28_Validation, ValidBegin1_28_DB);
+                    rm.PropertyChanged += ValidBegin1_28ValueChanged;
+                    Dictionary.Add(nameof(ValidBegin1_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ValidBegin1_28)];
+                }
             }
             set
             {
@@ -1445,9 +1608,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ValidThru1_28_Validation, ValidThru1_28_DB);
-                tmp.PropertyChanged += ValidThru1_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ValidThru1_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ValidThru1_28)]).Value = ValidThru1_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ValidThru1_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ValidThru1_28_Validation, ValidThru1_28_DB);
+                    rm.PropertyChanged += ValidThru1_28ValueChanged;
+                    Dictionary.Add(nameof(ValidThru1_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ValidThru1_28)];
+                }
             }
             set
             {
@@ -1505,9 +1677,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ContractNumber_28_Validation, ContractNumber_28_DB);
-                tmp.PropertyChanged += ContractNumber_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ContractNumber_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ContractNumber_28)]).Value = ContractNumber_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ContractNumber_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ContractNumber_28_Validation, ContractNumber_28_DB);
+                    rm.PropertyChanged += ContractNumber_28ValueChanged;
+                    Dictionary.Add(nameof(ContractNumber_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ContractNumber_28)];
+                }
             }
             set
             {
@@ -1536,9 +1717,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ContractIssueDate2_28_Validation, ContractIssueDate2_28_DB);
-                tmp.PropertyChanged += ContractIssueDate2_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ContractIssueDate2_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ContractIssueDate2_28)]).Value = ContractIssueDate2_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ContractIssueDate2_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ContractIssueDate2_28_Validation, ContractIssueDate2_28_DB);
+                    rm.PropertyChanged += ContractIssueDate2_28ValueChanged;
+                    Dictionary.Add(nameof(ContractIssueDate2_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ContractIssueDate2_28)];
+                }
             }
             set
             {
@@ -1596,9 +1786,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(OrganisationReciever_28_Validation, OrganisationReciever_28_DB);
-                tmp.PropertyChanged += OrganisationReciever_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(OrganisationReciever_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(OrganisationReciever_28)]).Value = OrganisationReciever_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(OrganisationReciever_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(OrganisationReciever_28_Validation, OrganisationReciever_28_DB);
+                    rm.PropertyChanged += OrganisationReciever_28ValueChanged;
+                    Dictionary.Add(nameof(OrganisationReciever_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(OrganisationReciever_28)];
+                }
             }
             set
             {
@@ -1627,9 +1826,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ValidBegin2_28_Validation, ValidBegin2_28_DB);
-                tmp.PropertyChanged += ValidBegin2_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ValidBegin2_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ValidBegin2_28)]).Value = ValidBegin2_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ValidBegin2_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ValidBegin2_28_Validation, ValidBegin2_28_DB);
+                    rm.PropertyChanged += ValidBegin2_28ValueChanged;
+                    Dictionary.Add(nameof(ValidBegin2_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ValidBegin2_28)];
+                }
             }
             set
             {
@@ -1687,9 +1895,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ValidThru2_28_Validation, ValidThru2_28_DB);
-                tmp.PropertyChanged += ValidThru2_28ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ValidThru2_28)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ValidThru2_28)]).Value = ValidThru2_28_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ValidThru2_28)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ValidThru2_28_Validation, ValidThru2_28_DB);
+                    rm.PropertyChanged += ValidThru2_28ValueChanged;
+                    Dictionary.Add(nameof(ValidThru2_28), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ValidThru2_28)];
+                }
             }
             set
             {
@@ -1747,9 +1964,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(PermissionNumber27_Validation, PermissionNumber27_DB);
-                tmp.PropertyChanged += PermissionNumber27ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PermissionNumber27)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PermissionNumber27)]).Value = PermissionNumber27_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PermissionNumber27)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PermissionNumber27_Validation, PermissionNumber27_DB);
+                    rm.PropertyChanged += PermissionNumber27ValueChanged;
+                    Dictionary.Add(nameof(PermissionNumber27), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PermissionNumber27)];
+                }
             }
             set
             {
@@ -1779,9 +2005,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(PermissionIssueDate27_Validation, PermissionIssueDate27_DB);
-                tmp.PropertyChanged += PermissionIssueDate27ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PermissionIssueDate27)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PermissionIssueDate27)]).Value = PermissionIssueDate27_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate27)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PermissionIssueDate27_Validation, PermissionIssueDate27_DB);
+                    rm.PropertyChanged += PermissionIssueDate27ValueChanged;
+                    Dictionary.Add(nameof(PermissionIssueDate27), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PermissionIssueDate27)];
+                }
             }
             set
             {
@@ -1839,9 +2074,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(PermissionDocumentName27_Validation, PermissionDocumentName27_DB);
-                tmp.PropertyChanged += PermissionDocumentName27ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PermissionDocumentName27)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)]).Value = PermissionDocumentName27_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(PermissionDocumentName27_Validation, PermissionDocumentName27_DB);
+                    rm.PropertyChanged += PermissionDocumentName27ValueChanged;
+                    Dictionary.Add(nameof(PermissionDocumentName27), rm);
+                    return (RamAccess<string>)Dictionary[nameof(PermissionDocumentName27)];
+                }
             }
             set
             {
@@ -1871,9 +2115,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ValidBegin27_Validation, ValidBegin27_DB);
-                tmp.PropertyChanged += ValidBegin27ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ValidBegin27)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ValidBegin27)]).Value = ValidBegin27_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ValidBegin27)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ValidBegin27_Validation, ValidBegin27_DB);
+                    rm.PropertyChanged += ValidBegin27ValueChanged;
+                    Dictionary.Add(nameof(ValidBegin27), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ValidBegin27)];
+                }
             }
             set
             {
@@ -1932,9 +2185,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ValidThru27_Validation, ValidThru27_DB);
-                tmp.PropertyChanged += ValidThru27ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ValidThru27)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ValidThru27)]).Value = ValidThru27_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ValidThru27)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ValidThru27_Validation, ValidThru27_DB);
+                    rm.PropertyChanged += ValidThru27ValueChanged;
+                    Dictionary.Add(nameof(ValidThru27), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ValidThru27)];
+                }
             }
             set
             {
@@ -1994,9 +2256,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<int?>(SourcesQuantity26_Validation, SourcesQuantity26_DB);
-                tmp.PropertyChanged += SourcesQuantity26ValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(SourcesQuantity26)))
+                {
+                    ((RamAccess<int?>)Dictionary[nameof(SourcesQuantity26)]).Value = SourcesQuantity26_DB;
+                    return (RamAccess<int?>)Dictionary[nameof(SourcesQuantity26)];
+                }
+                else
+                {
+                    var rm = new RamAccess<int?>(SourcesQuantity26_Validation, SourcesQuantity26_DB);
+                    rm.PropertyChanged += SourcesQuantity26ValueChanged;
+                    Dictionary.Add(nameof(SourcesQuantity26), rm);
+                    return (RamAccess<int?>)Dictionary[nameof(SourcesQuantity26)];
+                }
             }
             set
             {
@@ -2036,9 +2307,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<int?>(Year_Validation, Year_DB);
-                tmp.PropertyChanged += YearValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Year)))
+                {
+                    ((RamAccess<int?>)Dictionary[nameof(Year)]).Value = Year_DB;
+                    return (RamAccess<int?>)Dictionary[nameof(Year)];
+                }
+                else
+                {
+                    var rm = new RamAccess<int?>(Year_Validation, Year_DB);
+                    rm.PropertyChanged += YearValueChanged;
+                    Dictionary.Add(nameof(Year), rm);
+                    return (RamAccess<int?>)Dictionary[nameof(Year)];
+                }
             }
             set
             {
@@ -2083,9 +2363,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(StartPeriod_Validation, StartPeriod_DB);
-                tmp.PropertyChanged += StartPeriodValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(StartPeriod)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(StartPeriod)]).Value = StartPeriod_DB;
+                    return (RamAccess<string>)Dictionary[nameof(StartPeriod)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(StartPeriod_Validation, StartPeriod_DB);
+                    rm.PropertyChanged += StartPeriodValueChanged;
+                    Dictionary.Add(nameof(StartPeriod), rm);
+                    return (RamAccess<string>)Dictionary[nameof(StartPeriod)];
+                }
             }
             set
             {
@@ -2145,9 +2434,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(EndPeriod_Validation, EndPeriod_DB);
-                tmp.PropertyChanged += EndPeriodValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(EndPeriod)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(EndPeriod)]).Value = EndPeriod_DB;
+                    return (RamAccess<string>)Dictionary[nameof(EndPeriod)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(EndPeriod_Validation, EndPeriod_DB);
+                    rm.PropertyChanged += EndPeriodValueChanged;
+                    Dictionary.Add(nameof(EndPeriod), rm);
+                    return (RamAccess<string>)Dictionary[nameof(EndPeriod)];
+                }
             }
             set
             {
@@ -2217,9 +2515,18 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = new RamAccess<string>(ExportDate_Validation, ExportDate_DB);
-                tmp.PropertyChanged += ExportDateValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ExportDate)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ExportDate)]).Value = ExportDate_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ExportDate)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ExportDate_Validation, ExportDate_DB);
+                    rm.PropertyChanged += ExportDateValueChanged;
+                    Dictionary.Add(nameof(ExportDate), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ExportDate)];
+                }
             }
             set
             {

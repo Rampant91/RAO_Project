@@ -1,5 +1,5 @@
 ﻿using Models.DataAccess; using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
+using System.Globalization; using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System;
 using System.ComponentModel;
@@ -21,6 +21,8 @@ namespace Models
             Validate_all();
         }
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             CodeOYAT_Validation(CodeOYAT);
@@ -70,25 +72,34 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(CodeOYAT_Validation, CodeOYAT_DB);
-                    tmp.PropertyChanged += CodeOYATValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(CodeOYAT)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(CodeOYAT)]).Value = CodeOYAT_DB;
+                    return (RamAccess<string>)Dictionary[nameof(CodeOYAT)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(CodeOYAT_Validation, CodeOYAT_DB);
+                    rm.PropertyChanged += CodeOYATValueChanged;
+                    Dictionary.Add(nameof(CodeOYAT), rm);
+                    return (RamAccess<string>)Dictionary[nameof(CodeOYAT)];
+                }
             }
             set
             {
-                    CodeOYAT_DB = value.Value;
+                CodeOYAT_DB = value.Value;
                 OnPropertyChanged(nameof(CodeOYAT));
             }
         }
 
         private void CodeOYATValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 CodeOYAT_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool CodeOYAT_Validation(RamAccess<string> value)
+            }
+        }
+        private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -113,13 +124,22 @@ private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             get
             {
-                    var tmp = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
-                    tmp.PropertyChanged += FcpNumberValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(FcpNumber)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(FcpNumber)]).Value = FcpNumber_DB;
+                    return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
+                    rm.PropertyChanged += FcpNumberValueChanged;
+                    Dictionary.Add(nameof(FcpNumber), rm);
+                    return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+                }
             }
             set
             {
-                    FcpNumber_DB = value.Value;
+                FcpNumber_DB = value.Value;
                 OnPropertyChanged(nameof(FcpNumber));
             }
         }
@@ -147,13 +167,22 @@ private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassCreated_Validation, MassCreated_DB);
-                    tmp.PropertyChanged += MassCreatedValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(MassCreated)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassCreated)]).Value = MassCreated_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassCreated)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassCreated_Validation, MassCreated_DB);
+                    rm.PropertyChanged += MassCreatedValueChanged;
+                    Dictionary.Add(nameof(MassCreated), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassCreated)];
+                }
             }
             set
             {
-                    MassCreated_DB = value.Value;
+                MassCreated_DB = value.Value;
                 OnPropertyChanged(nameof(MassCreated));
             }
         }
@@ -218,25 +247,34 @@ private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             get
             {
-                    var tmp = new RamAccess<string>(QuantityCreated_Validation, QuantityCreated_DB);//OK
-                    tmp.PropertyChanged += QuantityCreatedValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityCreated)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityCreated)]).Value = QuantityCreated_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityCreated)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityCreated_Validation, QuantityCreated_DB);
+                    rm.PropertyChanged += QuantityCreatedValueChanged;
+                    Dictionary.Add(nameof(QuantityCreated), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityCreated)];
+                }
             }
             set
             {
-                    QuantityCreated_DB = value.Value;
+                QuantityCreated_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityCreated));
             }
         }
         // positive int.
-                private void QuantityCreatedValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void QuantityCreatedValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 QuantityCreated_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -270,13 +308,22 @@ private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassFromAnothers_Validation, MassFromAnothers_DB);
-                    tmp.PropertyChanged += MassFromAnothersValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(MassFromAnothers)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassFromAnothers)]).Value = MassFromAnothers_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassFromAnothers)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassFromAnothers_Validation, MassFromAnothers_DB);
+                    rm.PropertyChanged += MassFromAnothersValueChanged;
+                    Dictionary.Add(nameof(MassFromAnothers), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassFromAnothers)];
+                }
             }
             set
             {
-                    MassFromAnothers_DB = value.Value;
+                MassFromAnothers_DB = value.Value;
                 OnPropertyChanged(nameof(MassFromAnothers));
             }
         }
@@ -341,25 +388,34 @@ private bool QuantityCreated_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(QuantityFromAnothers_Validation, QuantityFromAnothers_DB);//OK
-                    tmp.PropertyChanged += QuantityFromAnothersValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityFromAnothers)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityFromAnothers)]).Value = QuantityFromAnothers_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityFromAnothers)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityFromAnothers_Validation, QuantityFromAnothers_DB);
+                    rm.PropertyChanged += QuantityFromAnothersValueChanged;
+                    Dictionary.Add(nameof(QuantityFromAnothers), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityFromAnothers)];
+                }
             }
             set
             {
-                    QuantityFromAnothers_DB = value.Value;
+                QuantityFromAnothers_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityFromAnothers));
             }
         }
         // positive int.
-                private void QuantityFromAnothersValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void QuantityFromAnothersValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 QuantityFromAnothers_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -393,13 +449,22 @@ private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassFromAnothersImported_Validation, MassFromAnothersImported_DB);
-                    tmp.PropertyChanged += MassFromAnothersImportedValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(MassFromAnothersImported)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassFromAnothersImported)]).Value = MassFromAnothersImported_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassFromAnothersImported)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassFromAnothersImported_Validation, MassFromAnothersImported_DB);
+                    rm.PropertyChanged += MassFromAnothersImportedValueChanged;
+                    Dictionary.Add(nameof(MassFromAnothersImported), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassFromAnothersImported)];
+                }
             }
             set
             {
-                    MassFromAnothersImported_DB = value.Value;
+                MassFromAnothersImported_DB = value.Value;
                 OnPropertyChanged(nameof(MassFromAnothersImported));
             }
         }
@@ -464,25 +529,34 @@ private bool QuantityFromAnothers_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(QuantityFromAnothersImported_Validation, QuantityFromAnothersImported_DB);//OK
-                    tmp.PropertyChanged += QuantityFromAnothersImportedValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityFromAnothersImported)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityFromAnothersImported)]).Value = QuantityFromAnothersImported_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityFromAnothersImported)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityFromAnothersImported_Validation, QuantityFromAnothersImported_DB);
+                    rm.PropertyChanged += QuantityFromAnothersImportedValueChanged;
+                    Dictionary.Add(nameof(QuantityFromAnothersImported), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityFromAnothersImported)];
+                }
             }
             set
             {
-                    QuantityFromAnothersImported_DB = value.Value;
+                QuantityFromAnothersImported_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityFromAnothersImported));
             }
         }
         // positive int.
-                private void QuantityFromAnothersImportedValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void QuantityFromAnothersImportedValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 QuantityFromAnothersImported_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -516,13 +590,22 @@ private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//R
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassAnotherReasons_Validation, MassAnotherReasons_DB);
-                    tmp.PropertyChanged += MassAnotherReasonsValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(MassAnotherReasons)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassAnotherReasons)]).Value = MassAnotherReasons_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassAnotherReasons)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassAnotherReasons_Validation, MassAnotherReasons_DB);
+                    rm.PropertyChanged += MassAnotherReasonsValueChanged;
+                    Dictionary.Add(nameof(MassAnotherReasons), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassAnotherReasons)];
+                }
             }
             set
             {
-                    MassAnotherReasons_DB = value.Value;
+                MassAnotherReasons_DB = value.Value;
                 OnPropertyChanged(nameof(MassAnotherReasons));
             }
         }
@@ -587,25 +670,34 @@ private bool QuantityFromAnothersImported_Validation(RamAccess<string> value)//R
         {
             get
             {
-                var tmp = new RamAccess<string>(QuantityAnotherReasons_Validation, QuantityAnotherReasons_DB);//OK
-                tmp.PropertyChanged += QuantityAnotherReasonsValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityAnotherReasons)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityAnotherReasons)]).Value = QuantityAnotherReasons_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityAnotherReasons)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityAnotherReasons_Validation, QuantityAnotherReasons_DB);
+                    rm.PropertyChanged += QuantityAnotherReasonsValueChanged;
+                    Dictionary.Add(nameof(QuantityAnotherReasons), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityAnotherReasons)];
+                }
             }
             set
             {
-                    QuantityAnotherReasons_DB = value.Value;
+                QuantityAnotherReasons_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityAnotherReasons));
             }
         }
         // positive int.
-                private void QuantityAnotherReasonsValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void QuantityAnotherReasonsValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 QuantityAnotherReasons_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -639,13 +731,22 @@ private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassTransferredToAnother_Validation, MassTransferredToAnother_DB);
-                    tmp.PropertyChanged += MassTransferredToAnotherValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(MassTransferredToAnother)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassTransferredToAnother)]).Value = MassTransferredToAnother_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassTransferredToAnother)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassTransferredToAnother_Validation, MassTransferredToAnother_DB);
+                    rm.PropertyChanged += MassTransferredToAnotherValueChanged;
+                    Dictionary.Add(nameof(MassTransferredToAnother), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassTransferredToAnother)];
+                }
             }
             set
             {
-                    MassTransferredToAnother_DB = value.Value;
+                MassTransferredToAnother_DB = value.Value;
                 OnPropertyChanged(nameof(MassTransferredToAnother));
             }
         }
@@ -710,25 +811,34 @@ private bool QuantityAnotherReasons_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(QuantityTransferredToAnother_Validation, QuantityTransferredToAnother_DB);//OK
-                    tmp.PropertyChanged += QuantityTransferredToAnotherValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityTransferredToAnother)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityTransferredToAnother)]).Value = QuantityTransferredToAnother_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityTransferredToAnother)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityTransferredToAnother_Validation, QuantityTransferredToAnother_DB);
+                    rm.PropertyChanged += QuantityTransferredToAnotherValueChanged;
+                    Dictionary.Add(nameof(QuantityTransferredToAnother), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityTransferredToAnother)];
+                }
             }
             set
             {
-                    QuantityTransferredToAnother_DB = value.Value;
+                QuantityTransferredToAnother_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityTransferredToAnother));
             }
         }
         // positive int.
-                private void QuantityTransferredToAnotherValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void QuantityTransferredToAnotherValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 QuantityTransferredToAnother_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -762,13 +872,22 @@ private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//R
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassRefined_Validation, MassRefined_DB);
-                    tmp.PropertyChanged += MassRefinedValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(MassRefined)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassRefined)]).Value = MassRefined_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassRefined)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassRefined_Validation, MassRefined_DB);
+                    rm.PropertyChanged += MassRefinedValueChanged;
+                    Dictionary.Add(nameof(MassRefined), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassRefined)];
+                }
             }
             set
             {
-                    MassRefined_DB = value.Value;
+                MassRefined_DB = value.Value;
                 OnPropertyChanged(nameof(MassRefined));
             }
         }
@@ -833,25 +952,34 @@ private bool QuantityTransferredToAnother_Validation(RamAccess<string> value)//R
         {
             get
             {
-                    var tmp = new RamAccess<string>(QuantityRefined_Validation, QuantityRefined_DB);//OK
-                    tmp.PropertyChanged += QuantityRefinedValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityRefined)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityRefined)]).Value = QuantityRefined_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityRefined)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityRefined_Validation, QuantityRefined_DB);
+                    rm.PropertyChanged += QuantityRefinedValueChanged;
+                    Dictionary.Add(nameof(QuantityRefined), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityRefined)];
+                }
             }
             set
             {
-                    QuantityRefined_DB = value.Value;
+                QuantityRefined_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityRefined));
             }
         }
         // positive int.
-                private void QuantityRefinedValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void QuantityRefinedValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 QuantityRefined_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))
@@ -885,13 +1013,22 @@ private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(MassRemovedFromAccount_Validation, MassRemovedFromAccount_DB);
-                    tmp.PropertyChanged += MassRemovedFromAccountValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(MassRemovedFromAccount)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassRemovedFromAccount)]).Value = MassRemovedFromAccount_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassRemovedFromAccount)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassRemovedFromAccount_Validation, MassRemovedFromAccount_DB);
+                    rm.PropertyChanged += MassRemovedFromAccountValueChanged;
+                    Dictionary.Add(nameof(MassRemovedFromAccount), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassRemovedFromAccount)];
+                }
             }
             set
             {
-                    MassRemovedFromAccount_DB = value.Value;
+                MassRemovedFromAccount_DB = value.Value;
                 OnPropertyChanged(nameof(MassRemovedFromAccount));
             }
         }
@@ -956,25 +1093,34 @@ private bool QuantityRefined_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(QuantityRemovedFromAccount_Validation, QuantityRemovedFromAccount_DB);//OK
-                    tmp.PropertyChanged += QuantityRemovedFromAccountValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityRemovedFromAccount)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityRemovedFromAccount)]).Value = QuantityRemovedFromAccount_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityRemovedFromAccount)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityRemovedFromAccount_Validation, QuantityRemovedFromAccount_DB);
+                    rm.PropertyChanged += QuantityRemovedFromAccountValueChanged;
+                    Dictionary.Add(nameof(QuantityRemovedFromAccount), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityRemovedFromAccount)];
+                }
             }
             set
             {
-                    QuantityRemovedFromAccount_DB = value.Value;
+                QuantityRemovedFromAccount_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityRemovedFromAccount));
             }
         }
         // positive int.
-                private void QuantityRemovedFromAccountValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        private void QuantityRemovedFromAccountValueChanged(object Value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
                 QuantityRemovedFromAccount_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool QuantityRemovedFromAccount_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool QuantityRemovedFromAccount_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value) || value.Value.Equals("-"))

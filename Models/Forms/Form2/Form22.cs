@@ -23,6 +23,8 @@ namespace Models
             Validate_all();
         }
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             StoragePlaceName_Validation(StoragePlaceName);
@@ -79,9 +81,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<bool>(Sum_Validation, Sum_DB);
-                tmp.PropertyChanged += SumValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Sum)))
+                {
+                    ((RamAccess<bool>)Dictionary[nameof(Sum)]).Value = Sum_DB;
+                    return (RamAccess<bool>)Dictionary[nameof(Sum)];
+                }
+                else
+                {
+                    var rm = new RamAccess<bool>(Sum_Validation, Sum_DB);
+                    rm.PropertyChanged += SumValueChanged;
+                    Dictionary.Add(nameof(Sum), rm);
+                    return (RamAccess<bool>)Dictionary[nameof(Sum)];
+                }
             }
             set
             {
@@ -134,9 +145,18 @@ namespace Models
             {
                 if (!StoragePlaceName_Hidden || StoragePlaceName_Hidden2)
                 {
-                    var tmp = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
-                    tmp.PropertyChanged += StoragePlaceNameValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(VolumeInPack)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(VolumeInPack)]).Value = VolumeInPack_DB;
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
+                        rm.PropertyChanged += VolumeInPackValueChanged;
+                        Dictionary.Add(nameof(VolumeInPack), rm);
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
                 }
                 else
                 {
@@ -213,9 +233,18 @@ namespace Models
             {
                 if (!StoragePlaceCode_Hidden||StoragePlaceName_Hidden2)
                 {
-                    var tmp = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
-                    tmp.PropertyChanged += StoragePlaceCodeValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(VolumeInPack)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(VolumeInPack)]).Value = VolumeInPack_DB;
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
+                        rm.PropertyChanged += VolumeInPackValueChanged;
+                        Dictionary.Add(nameof(VolumeInPack), rm);
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
                 }
                 else
                 {
@@ -301,9 +330,18 @@ namespace Models
             {
                 if (!PackName_Hidden || PackName_Hidden2)
                 {
-                    var tmp = new RamAccess<string>(PackName_Validation, PackName_DB); //OK
-                    tmp.PropertyChanged += PackNameValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(VolumeInPack)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(VolumeInPack)]).Value = VolumeInPack_DB;
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
+                        rm.PropertyChanged += VolumeInPackValueChanged;
+                        Dictionary.Add(nameof(VolumeInPack), rm);
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
                 }
                 else
                 {
@@ -385,9 +423,18 @@ namespace Models
             {
                 if (!PackType_Hidden || PackType_Hidden2)
                 {
-                    var tmp = new RamAccess<string>(PackType_Validation, PackType_DB); //OK
-                    tmp.PropertyChanged += PackTypeValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(VolumeInPack)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(VolumeInPack)]).Value = VolumeInPack_DB;
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
+                        rm.PropertyChanged += VolumeInPackValueChanged;
+                        Dictionary.Add(nameof(VolumeInPack), rm);
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
                 }
                 else
                 {
@@ -451,9 +498,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<int?>(PackQuantity_Validation, PackQuantity_DB);
-                tmp.PropertyChanged += PackQuantityValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(PackQuantity)))
+                {
+                    ((RamAccess<int?>)Dictionary[nameof(PackQuantity)]).Value = PackQuantity_DB;
+                    return (RamAccess<int?>)Dictionary[nameof(PackQuantity)];
+                }
+                else
+                {
+                    var rm = new RamAccess<int?>(PackQuantity_Validation, PackQuantity_DB);
+                    rm.PropertyChanged += PackQuantityValueChanged;
+                    Dictionary.Add(nameof(PackQuantity), rm);
+                    return (RamAccess<int?>)Dictionary[nameof(PackQuantity)];
+                }
             }
             set
             {
@@ -513,9 +569,18 @@ namespace Models
             {
                 if (!CodeRAO_Hidden)
                 {
-                    var tmp = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
-                    tmp.PropertyChanged += CodeRAOValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(CodeRAO)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(CodeRAO)]).Value = CodeRAO_DB;
+                        return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
+                        rm.PropertyChanged += CodeRAOValueChanged;
+                        Dictionary.Add(nameof(CodeRAO), rm);
+                        return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
+                    }
                 }
                 else
                 {
@@ -581,9 +646,18 @@ namespace Models
             {
                 if (!StatusRAO_Hidden)
                 {
-                    var tmp = new RamAccess<string>(StatusRAO_Validation, StatusRAO_DB);
-                    tmp.PropertyChanged += StatusRAOValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(StatusRAO)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(StatusRAO)]).Value = StatusRAO_DB;
+                        return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(StatusRAO_Validation, StatusRAO_DB);
+                        rm.PropertyChanged += StatusRAOValueChanged;
+                        Dictionary.Add(nameof(StatusRAO), rm);
+                        return (RamAccess<string>)Dictionary[nameof(StatusRAO)];
+                    }
                 }
                 else
                 {
@@ -675,9 +749,18 @@ namespace Models
             {
                 if (!VolumeInPack_Hidden || VolumeInPack_Hidden2)
                 {
-                    var tmp = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
-                    tmp.PropertyChanged += VolumeInPackValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(VolumeInPack)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(VolumeInPack)]).Value = VolumeInPack_DB;
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(VolumeInPack_Validation, VolumeInPack_DB);
+                        rm.PropertyChanged += VolumeInPackValueChanged;
+                        Dictionary.Add(nameof(VolumeInPack), rm);
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
                 }
                 else
                 {
@@ -774,9 +857,18 @@ namespace Models
             {
                 if (!MassInPack_Hidden || MassInPack_Hidden2)
                 {
-                    var tmp = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
-                    tmp.PropertyChanged += MassInPackValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(MassInPack)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(MassInPack)]).Value = MassInPack_DB;
+                        return (RamAccess<string>)Dictionary[nameof(MassInPack)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(MassInPack_Validation, MassInPack_DB);
+                        rm.PropertyChanged += MassInPackValueChanged;
+                        Dictionary.Add(nameof(MassInPack), rm);
+                        return (RamAccess<string>)Dictionary[nameof(MassInPack)];
+                    }
                 }
                 else
                 {
@@ -856,9 +948,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(VolumeOutOfPack_Validation, VolumeOutOfPack_DB);
-                tmp.PropertyChanged += VolumeOutOfPackValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(VolumeOutOfPack)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(VolumeOutOfPack)]).Value = VolumeOutOfPack_DB;
+                    return (RamAccess<string>)Dictionary[nameof(VolumeOutOfPack)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(VolumeOutOfPack_Validation, VolumeOutOfPack_DB);
+                    rm.PropertyChanged += VolumeOutOfPackValueChanged;
+                    Dictionary.Add(nameof(VolumeOutOfPack), rm);
+                    return (RamAccess<string>)Dictionary[nameof(VolumeOutOfPack)];
+                }
             }
             set
             {
@@ -927,9 +1028,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(MassOutOfPack_Validation, MassOutOfPack_DB);
-                tmp.PropertyChanged += MassOutOfPackValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(MassOutOfPack)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(MassOutOfPack)]).Value = MassOutOfPack_DB;
+                    return (RamAccess<string>)Dictionary[nameof(MassOutOfPack)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(MassOutOfPack_Validation, MassOutOfPack_DB);
+                    rm.PropertyChanged += MassOutOfPackValueChanged;
+                    Dictionary.Add(nameof(MassOutOfPack), rm);
+                    return (RamAccess<string>)Dictionary[nameof(MassOutOfPack)];
+                }
             }
             set
             {
@@ -1002,9 +1112,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);//OK
-                tmp.PropertyChanged += QuantityOZIIIValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityOZIII)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(QuantityOZIII)]).Value = QuantityOZIII_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
+                    rm.PropertyChanged += QuantityOZIIIValueChanged;
+                    Dictionary.Add(nameof(QuantityOZIII), rm);
+                    return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
+                }
             }
             set
             {
@@ -1058,9 +1177,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(TritiumActivity_Validation, TritiumActivity_DB);
-                tmp.PropertyChanged += TritiumActivityValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(TritiumActivity)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(TritiumActivity)]).Value = TritiumActivity_DB;
+                    return (RamAccess<string>)Dictionary[nameof(TritiumActivity)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(TritiumActivity_Validation, TritiumActivity_DB);
+                    rm.PropertyChanged += TritiumActivityValueChanged;
+                    Dictionary.Add(nameof(TritiumActivity), rm);
+                    return (RamAccess<string>)Dictionary[nameof(TritiumActivity)];
+                }
             }
             set
             {
@@ -1133,9 +1261,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
-                tmp.PropertyChanged += BetaGammaActivityValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(BetaGammaActivity)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(BetaGammaActivity)]).Value = BetaGammaActivity_DB;
+                    return (RamAccess<string>)Dictionary[nameof(BetaGammaActivity)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
+                    rm.PropertyChanged += BetaGammaActivityValueChanged;
+                    Dictionary.Add(nameof(BetaGammaActivity), rm);
+                    return (RamAccess<string>)Dictionary[nameof(BetaGammaActivity)];
+                }
             }
             set
             {
@@ -1208,9 +1345,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(AlphaActivity_Validation, AlphaActivity_DB);
-                tmp.PropertyChanged += AlphaActivityValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(AlphaActivity)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(AlphaActivity)]).Value = AlphaActivity_DB;
+                    return (RamAccess<string>)Dictionary[nameof(AlphaActivity)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(AlphaActivity_Validation, AlphaActivity_DB);
+                    rm.PropertyChanged += AlphaActivityValueChanged;
+                    Dictionary.Add(nameof(AlphaActivity), rm);
+                    return (RamAccess<string>)Dictionary[nameof(AlphaActivity)];
+                }
             }
             set
             {
@@ -1282,9 +1428,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(TransuraniumActivity_Validation, TransuraniumActivity_DB);
-                tmp.PropertyChanged += TransuraniumActivityValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(TransuraniumActivity)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(TransuraniumActivity)]).Value = TransuraniumActivity_DB;
+                    return (RamAccess<string>)Dictionary[nameof(TransuraniumActivity)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(TransuraniumActivity_Validation, TransuraniumActivity_DB);
+                    rm.PropertyChanged += TransuraniumActivityValueChanged;
+                    Dictionary.Add(nameof(TransuraniumActivity), rm);
+                    return (RamAccess<string>)Dictionary[nameof(TransuraniumActivity)];
+                }
             }
             set
             {
@@ -1369,9 +1524,18 @@ namespace Models
             {
                 if (!MainRadionuclids_Hidden)
                 {
-                    var tmp = new RamAccess<string>(MainRadionuclids_Validation, MainRadionuclids_DB);
-                    tmp.PropertyChanged += MainRadionuclidsValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(MainRadionuclids)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(MainRadionuclids)]).Value = MainRadionuclids_DB;
+                        return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(MainRadionuclids_Validation, MainRadionuclids_DB);
+                        rm.PropertyChanged += MainRadionuclidsValueChanged;
+                        Dictionary.Add(nameof(MainRadionuclids), rm);
+                        return (RamAccess<string>)Dictionary[nameof(MainRadionuclids)];
+                    }
                 }
                 else
                 {
@@ -1446,9 +1610,18 @@ namespace Models
             {
                 if (!Subsidy_Hidden)
                 {
-                    var tmp = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
-                    tmp.PropertyChanged += SubsidyValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(Subsidy)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(Subsidy)]).Value = Subsidy_DB;
+                        return (RamAccess<string>)Dictionary[nameof(Subsidy)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
+                        rm.PropertyChanged += SubsidyValueChanged;
+                        Dictionary.Add(nameof(Subsidy), rm);
+                        return (RamAccess<string>)Dictionary[nameof(Subsidy)];
+                    }
                 }
                 else
                 {
@@ -1517,9 +1690,18 @@ namespace Models
             {
                 if (!FcpNumber_Hidden)
                 {
-                    var tmp = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
-                    tmp.PropertyChanged += FcpNumberValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(FcpNumber)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(FcpNumber)]).Value = FcpNumber_DB;
+                        return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
+                        rm.PropertyChanged += FcpNumberValueChanged;
+                        Dictionary.Add(nameof(FcpNumber), rm);
+                        return (RamAccess<string>)Dictionary[nameof(FcpNumber)];
+                    }
                 }
                 else
                 {

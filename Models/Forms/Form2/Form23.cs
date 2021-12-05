@@ -22,6 +22,8 @@ namespace Models
             Validate_all();
         }
 
+        [NotMapped]
+        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             StoragePlaceName_Validation(StoragePlaceName);
@@ -62,26 +64,35 @@ namespace Models
         {
             get
             {
-                    var tmp = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
-                    tmp.PropertyChanged += StoragePlaceNameValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(StoragePlaceName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(StoragePlaceName)]).Value = StoragePlaceName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
+                    rm.PropertyChanged += StoragePlaceNameValueChanged;
+                    Dictionary.Add(nameof(StoragePlaceName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(StoragePlaceName)];
+                }
             }
             set
             {
-                    StoragePlaceName_DB = value.Value;
+                StoragePlaceName_DB = value.Value;
                 OnPropertyChanged(nameof(StoragePlaceName));
             }
         }
         //If change this change validation
 
         private void StoragePlaceNameValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -107,26 +118,35 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
-                    tmp.PropertyChanged += StoragePlaceCodeValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(StoragePlaceCode)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(StoragePlaceCode)]).Value = StoragePlaceCode_DB;
+                    return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
+                    rm.PropertyChanged += StoragePlaceCodeValueChanged;
+                    Dictionary.Add(nameof(StoragePlaceCode), rm);
+                    return (RamAccess<string>)Dictionary[nameof(StoragePlaceCode)];
+                }
             }
             set
             {
-                    StoragePlaceCode_DB = value.Value;
+                StoragePlaceCode_DB = value.Value;
                 OnPropertyChanged(nameof(StoragePlaceCode));
             }
         }
         //if change this change validation
 
         private void StoragePlaceCodeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -162,13 +182,22 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(ProjectVolume_Validation, ProjectVolume_DB);
-                    tmp.PropertyChanged += ProjectVolumeValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(ProjectVolume)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ProjectVolume)]).Value = ProjectVolume_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ProjectVolume)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ProjectVolume_Validation, ProjectVolume_DB);
+                    rm.PropertyChanged += ProjectVolumeValueChanged;
+                    Dictionary.Add(nameof(ProjectVolume), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ProjectVolume)];
+                }
             }
             set
             {
-                    ProjectVolume_DB = value.Value;
+                ProjectVolume_DB = value.Value;
                 OnPropertyChanged(nameof(ProjectVolume));
             }
         }
@@ -230,13 +259,22 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
-                    tmp.PropertyChanged += CodeRAOValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(CodeRAO)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(CodeRAO)]).Value = CodeRAO_DB;
+                    return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
+                    rm.PropertyChanged += CodeRAOValueChanged;
+                    Dictionary.Add(nameof(CodeRAO), rm);
+                    return (RamAccess<string>)Dictionary[nameof(CodeRAO)];
+                }
             }
             set
             {
-                    CodeRAO_DB = value.Value;
+                CodeRAO_DB = value.Value;
                 OnPropertyChanged(nameof(CodeRAO));
             }
         }
@@ -279,13 +317,22 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(Volume_Validation, Volume_DB);
-                    tmp.PropertyChanged += VolumeValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(Volume)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Volume)]).Value = Volume_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Volume)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Volume_Validation, Volume_DB);
+                    rm.PropertyChanged += VolumeValueChanged;
+                    Dictionary.Add(nameof(Volume), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Volume)];
+                }
             }
             set
             {
-                    Volume_DB = value.Value;
+                Volume_DB = value.Value;
                 OnPropertyChanged(nameof(Volume));
             }
         }
@@ -343,13 +390,22 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<string>(Mass_Validation, Mass_DB);
-                    tmp.PropertyChanged += MassValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(Mass)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Mass)]).Value = Mass_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Mass)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
+                    rm.PropertyChanged += MassValueChanged;
+                    Dictionary.Add(nameof(Mass), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Mass)];
+                }
             }
             set
             {
-                    Mass_DB = value.Value;
+                Mass_DB = value.Value;
                 OnPropertyChanged(nameof(Mass));
             }
         }
@@ -411,26 +467,35 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             get
             {
-                    var tmp = new RamAccess<int?>(QuantityOZIII_Validation, QuantityOZIII_DB);//OK
-                    tmp.PropertyChanged += QuantityOZIIIValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(QuantityOZIII)))
+                {
+                    ((RamAccess<int?>)Dictionary[nameof(QuantityOZIII)]).Value = QuantityOZIII_DB;
+                    return (RamAccess<int?>)Dictionary[nameof(QuantityOZIII)];
+                }
+                else
+                {
+                    var rm = new RamAccess<int?>(QuantityOZIII_Validation, QuantityOZIII_DB);
+                    rm.PropertyChanged += QuantityOZIIIValueChanged;
+                    Dictionary.Add(nameof(QuantityOZIII), rm);
+                    return (RamAccess<int?>)Dictionary[nameof(QuantityOZIII)];
+                }
             }
             set
             {
-                    QuantityOZIII_DB = value.Value;
+                QuantityOZIII_DB = value.Value;
                 OnPropertyChanged(nameof(QuantityOZIII));
             }
         }
         // positive int.
 
         private void QuantityOZIIIValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 QuantityOZIII_DB = ((RamAccess<int?>)Value).Value;
-}
-}
-private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
+            }
+        }
+        private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -453,13 +518,22 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(SummaryActivity_Validation, SummaryActivity_DB);
-                    tmp.PropertyChanged += SummaryActivityValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(SummaryActivity)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(SummaryActivity)]).Value = SummaryActivity_DB;
+                    return (RamAccess<string>)Dictionary[nameof(SummaryActivity)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(SummaryActivity_Validation, SummaryActivity_DB);
+                    rm.PropertyChanged += SummaryActivityValueChanged;
+                    Dictionary.Add(nameof(SummaryActivity), rm);
+                    return (RamAccess<string>)Dictionary[nameof(SummaryActivity)];
+                }
             }
             set
             {
-                    SummaryActivity_DB = value.Value;
+                SummaryActivity_DB = value.Value;
                 OnPropertyChanged(nameof(SummaryActivity));
             }
         }
@@ -521,13 +595,22 @@ private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);//OK
-                    tmp.PropertyChanged += DocumentNumberValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(DocumentNumber)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(DocumentNumber)]).Value = DocumentNumber_DB;
+                    return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
+                    rm.PropertyChanged += DocumentNumberValueChanged;
+                    Dictionary.Add(nameof(DocumentNumber), rm);
+                    return (RamAccess<string>)Dictionary[nameof(DocumentNumber)];
+                }
             }
             set
             {
-                    DocumentNumber_DB = value.Value;
+                DocumentNumber_DB = value.Value;
                 OnPropertyChanged(nameof(DocumentNumber));
             }
         }
@@ -560,9 +643,18 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);//OK
-                    tmp.PropertyChanged += DocumentDateValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(DocumentDate)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(DocumentDate)]).Value = DocumentDate_DB;
+                    return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);
+                    rm.PropertyChanged += DocumentDateValueChanged;
+                    Dictionary.Add(nameof(DocumentDate), rm);
+                    return (RamAccess<string>)Dictionary[nameof(DocumentDate)];
+                }
             }
             set
             {
@@ -623,13 +715,22 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(ExpirationDate_Validation, ExpirationDate_DB);
-                    tmp.PropertyChanged += ExpirationDateValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(ExpirationDate)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ExpirationDate)]).Value = ExpirationDate_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ExpirationDate)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ExpirationDate_Validation, ExpirationDate_DB);
+                    rm.PropertyChanged += ExpirationDateValueChanged;
+                    Dictionary.Add(nameof(ExpirationDate), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ExpirationDate)];
+                }
             }
             set
             {
-                    ExpirationDate_DB = value.Value;
+                ExpirationDate_DB = value.Value;
                 OnPropertyChanged(nameof(ExpirationDate));
             }
         }
@@ -686,26 +787,35 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         {
             get
             {
-                    var tmp = new RamAccess<string>(DocumentName_Validation, DocumentName_DB);
-                    tmp.PropertyChanged += DocumentNameValueChanged;
-                    return tmp;
+                if (Dictionary.ContainsKey(nameof(DocumentName)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(DocumentName)]).Value = DocumentName_DB;
+                    return (RamAccess<string>)Dictionary[nameof(DocumentName)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(DocumentName_Validation, DocumentName_DB);
+                    rm.PropertyChanged += DocumentNameValueChanged;
+                    Dictionary.Add(nameof(DocumentName), rm);
+                    return (RamAccess<string>)Dictionary[nameof(DocumentName)];
+                }
             }
             set
             {
-                    DocumentName_DB = value.Value;
+                DocumentName_DB = value.Value;
                 OnPropertyChanged(nameof(DocumentName));
             }
         }
 
 
         private void DocumentNameValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 DocumentName_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool DocumentName_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool DocumentName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
