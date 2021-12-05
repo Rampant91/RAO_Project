@@ -23,6 +23,7 @@ namespace Models.Collections
         #region Reports_Collection
         ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection_DB;
 
+        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
         {
             get
