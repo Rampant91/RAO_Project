@@ -20,9 +20,6 @@ namespace Models
             //NumberOfFields.Value = 12;
             Validate_all();
         }
-
-        [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             CodeOYAT_Validation(CodeOYAT);

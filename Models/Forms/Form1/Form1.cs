@@ -26,8 +26,6 @@ namespace Models.Abstracts
         {
             OnPropertyChanged(args.PropertyName);
         }
-        [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
 
         #region OperationCode
         public short? OperationCode_DB { get; set; } = null;

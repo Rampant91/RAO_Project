@@ -22,8 +22,6 @@ namespace Models
             FormNum.Value = "1.3";
             Validate_all();
         }
-        [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         public bool _autoRN = false;
         public override bool Object_Validation()
         {

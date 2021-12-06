@@ -21,9 +21,6 @@ namespace Models
             FormNum.Value = "1.8";
             Validate_all();
         }
-
-        [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             CodeRAO_Validation(CodeRAO);

@@ -835,7 +835,6 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 CorrectionNumber_DB = ((RamAccess<byte>)Value).Value;
-                OnPropertyChanged(nameof(CorrectionNumber));
             }
         }
         private bool CorrectionNumber_Validation(RamAccess<byte> value)
@@ -2416,7 +2415,7 @@ namespace Models.Collections
                     tmp = tmp.Insert(6, "20");
                 }
                 StartPeriod_DB = tmp;
-                OnPropertyChanged(nameof(StartPeriod));
+                //OnPropertyChanged(nameof(StartPeriod));
             }
         }
         private bool StartPeriod_Validation(RamAccess<string> value)
@@ -2487,7 +2486,6 @@ namespace Models.Collections
                     tmp = tmp.Insert(6, "20");
                 }
                 EndPeriod_DB = tmp;
-                OnPropertyChanged(nameof(EndPeriod));
             }
         }
         private bool EndPeriod_Validation(RamAccess<string> value)

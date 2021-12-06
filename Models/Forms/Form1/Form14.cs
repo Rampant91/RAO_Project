@@ -21,8 +21,6 @@ namespace Models
             FormNum.Value = "1.4";
             Validate_all();
         }
-        [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             Owner_Validation(Owner);

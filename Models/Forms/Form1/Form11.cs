@@ -22,8 +22,6 @@ namespace Models
             FormNum.Value = "1.1";
             Validate_all();
         }
-        [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         public bool _autoRN = false;
         private void Validate_all()
         {
@@ -520,7 +518,7 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value;
-                value1 = value1.ToUpper();
+                value1 = (value1 == null) ? null : value1.ToUpper();
                 CreatorOKPO_DB = value1;
             }
         }
@@ -827,7 +825,7 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value;
-                value1 = value1.ToUpper();
+                value1 = (value1 == null) ? null : value1.ToUpper();
                 ProviderOrRecieverOKPO_DB = value1;
             }
         }
@@ -897,7 +895,7 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value;
-                value1 = value1.ToUpper();
+                value1 = (value1 == null) ? null : value1.ToUpper();
                 TransporterOKPO_DB = value1;
             }
         }
@@ -965,12 +963,13 @@ namespace Models
         }
 
         private void PackNameValueChanged(object Value, PropertyChangedEventArgs args)
-{
+        {
             if (args.PropertyName == "Value")
-{
+            {
                 PackName_DB = ((RamAccess<string>)Value).Value;
-}
-}private bool PackName_Validation(RamAccess<string> value)
+            }
+        }
+        private bool PackName_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -1017,12 +1016,13 @@ namespace Models
         }
         //If change this change validation
         private void PackTypeValueChanged(object Value, PropertyChangedEventArgs args)
-{
+        {
             if (args.PropertyName == "Value")
-{
+            {
                 PackType_DB = ((RamAccess<string>)Value).Value;
-}
-}private bool PackType_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool PackType_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -1069,12 +1069,13 @@ namespace Models
         }
         //If change this change validation
         private void PackNumberValueChanged(object Value, PropertyChangedEventArgs args)
-{
+        {
             if (args.PropertyName == "Value")
-{
+            {
                 PackNumber_DB = ((RamAccess<string>)Value).Value;
-}
-}private bool PackNumber_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool PackNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))//ok

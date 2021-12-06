@@ -22,8 +22,6 @@ namespace Models
             FormNum.Value = "1.6";
             Validate_all();
         }
-        [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
 
         private void Validate_all()
         {

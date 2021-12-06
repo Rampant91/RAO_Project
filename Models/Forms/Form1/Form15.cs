@@ -23,9 +23,6 @@ namespace Models
             Validate_all();
         }
         public bool _autoRN = false;
-
-        [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         private void Validate_all()
         {
             Type_Validation(Type);
