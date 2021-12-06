@@ -127,7 +127,7 @@ namespace Models
         #endregion
 
         #region Comment
-        public string Comment_DB { get; set; } = "";
+        public string? Comment_DB { get; set; } = "";
         [NotMapped]
         [Attributes.Form_Property("Пояснение")]
         public RamAccess<string> Comment
