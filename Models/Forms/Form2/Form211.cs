@@ -224,15 +224,19 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    InfectedArea_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        InfectedArea_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 InfectedArea_DB = value1;
             }
@@ -358,15 +362,19 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    SpecificActivityOfPlot_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        SpecificActivityOfPlot_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 SpecificActivityOfPlot_DB = value1;
             }
@@ -430,15 +438,19 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    SpecificActivityOfLiquidPart_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        SpecificActivityOfLiquidPart_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 SpecificActivityOfLiquidPart_DB = value1;
             }
@@ -502,15 +514,19 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    SpecificActivityOfDensePart_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        SpecificActivityOfDensePart_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 SpecificActivityOfDensePart_DB = value1;
             }

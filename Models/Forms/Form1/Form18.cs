@@ -307,15 +307,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    Volume6_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        Volume6_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 Volume6_DB = value1;
             }
@@ -404,15 +408,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    Mass7_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        Mass7_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 Mass7_DB = value1;
             }
@@ -501,15 +509,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    SaltConcentration_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        SaltConcentration_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 SaltConcentration_DB = value1;
             }
@@ -640,15 +652,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    SpecificActivity_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        SpecificActivity_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 SpecificActivity_DB = value1;
             }
@@ -1180,15 +1196,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    Volume20_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        Volume20_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 Volume20_DB = value1;
             }
@@ -1251,15 +1271,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    Mass21_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        Mass21_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 Mass21_DB = value1;
             }
@@ -1323,15 +1347,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    TritiumActivity_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        TritiumActivity_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 TritiumActivity_DB = value1;
             }
@@ -1398,15 +1426,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    BetaGammaActivity_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        BetaGammaActivity_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 BetaGammaActivity_DB = value1;
             }
@@ -1473,15 +1505,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    AlphaActivity_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        AlphaActivity_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 AlphaActivity_DB = value1;
             }
@@ -1548,15 +1584,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    TransuraniumActivity_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        TransuraniumActivity_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 TransuraniumActivity_DB = value1;
             }

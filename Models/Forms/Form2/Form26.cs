@@ -225,15 +225,19 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    DistanceToWasteSource_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        DistanceToWasteSource_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 DistanceToWasteSource_DB = value1;
             }
@@ -307,15 +311,19 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    TestDepth_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        TestDepth_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 TestDepth_DB = value1;
             }
@@ -447,15 +455,19 @@ private bool SupposedWasteSource_Validation(RamAccess<string> value)//Ready
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    AverageYearConcentration_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        AverageYearConcentration_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 AverageYearConcentration_DB = value1;
             }

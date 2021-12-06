@@ -188,15 +188,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    MassCreated_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        MassCreated_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 MassCreated_DB = value1;
             }
@@ -329,15 +333,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    MassFromAnothers_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        MassFromAnothers_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 MassFromAnothers_DB = value1;
             }
@@ -470,15 +478,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    MassFromAnothersImported_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        MassFromAnothersImported_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 MassFromAnothersImported_DB = value1;
             }
@@ -611,15 +623,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    MassAnotherReasons_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        MassAnotherReasons_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 MassAnotherReasons_DB = value1;
             }
@@ -752,15 +768,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    MassTransferredToAnother_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        MassTransferredToAnother_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 MassTransferredToAnother_DB = value1;
             }
@@ -893,15 +913,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    MassRefined_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        MassRefined_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 MassRefined_DB = value1;
             }
@@ -1034,15 +1058,19 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    MassRemovedFromAccount_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        MassRemovedFromAccount_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 MassRemovedFromAccount_DB = value1;
             }

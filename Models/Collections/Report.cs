@@ -248,7 +248,6 @@ namespace Models.Collections
             OnPropertyChanged(nameof(RegNoRep));
             OnPropertyChanged(nameof(OkpoRep));
             OnPropertyChanged(nameof(ShortJurLicoRep));
-
             OnPropertyChanged(nameof(Rows10));
         }
         #endregion
@@ -463,7 +462,6 @@ namespace Models.Collections
             OnPropertyChanged(nameof(RegNoRep1));
             OnPropertyChanged(nameof(OkpoRep1));
             OnPropertyChanged(nameof(ShortJurLicoRep1));
-
             OnPropertyChanged(nameof(Rows20));
         }
         #endregion
@@ -794,7 +792,6 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 IsCorrection_DB = ((RamAccess<bool>)Value).Value;
-                OnPropertyChanged(nameof(IsCorrection));
             }
         }
         private bool IsCorrection_Validation(RamAccess<bool> value)
@@ -876,7 +873,6 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 FIOexecutor_DB = ((RamAccess<string>)Value).Value;
-                //OnPropertyChanged(nameof(FIOexecutor));
             }
         }
         private bool FIOexecutor_Validation(RamAccess<string> value)
@@ -918,7 +914,6 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 GradeExecutor_DB = ((RamAccess<string>)Value).Value;
-                //OnPropertyChanged(nameof(GradeExecutor));
             }
         }
         private bool GradeExecutor_Validation(RamAccess<string> value)
@@ -960,7 +955,6 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 ExecPhone_DB = ((RamAccess<string>)Value).Value;
-                //OnPropertyChanged(nameof(ExecPhone));
             }
         }
         private bool ExecPhone_Validation(RamAccess<string> value)
@@ -1002,7 +996,6 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 ExecEmail_DB = ((RamAccess<string>)Value).Value;
-                //OnPropertyChanged(nameof(ExecEmail));
             }
         }
         private bool ExecEmail_Validation(RamAccess<string> value)
@@ -1084,7 +1077,6 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 Comments_DB = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(Comments));
             }
         }
         private bool Comments_Validation(RamAccess<string> value)
@@ -1755,7 +1747,6 @@ namespace Models.Collections
             set
             {
                 ContractIssueDate2_28_DB = value.Value;
-                OnPropertyChanged(nameof(ContractIssueDate2_28));
             }
         }
 
@@ -2355,7 +2346,6 @@ namespace Models.Collections
                 int k = (int)((RamAccess<int?>)Value).Value;
                 if ((k >= 0) && (k < 100)) k += 2000;
                 Year_DB = k;
-                OnPropertyChanged(nameof(Year));
             }
         }
         private bool Year_Validation(RamAccess<int?> value)
@@ -2415,7 +2405,6 @@ namespace Models.Collections
                     tmp = tmp.Insert(6, "20");
                 }
                 StartPeriod_DB = tmp;
-                //OnPropertyChanged(nameof(StartPeriod));
             }
         }
         private bool StartPeriod_Validation(RamAccess<string> value)
@@ -2560,7 +2549,6 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 ExportDate_DB = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(ExportDate));
             }
         }
         private bool ExportDate_Validation(RamAccess<string> value)

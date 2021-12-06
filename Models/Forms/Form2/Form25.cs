@@ -277,15 +277,19 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    FuelMass_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        FuelMass_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 FuelMass_DB = value1;
             }
@@ -357,15 +361,19 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    CellMass_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        CellMass_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 CellMass_DB = value1;
             }
@@ -491,15 +499,19 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    BetaGammaActivity_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        BetaGammaActivity_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 BetaGammaActivity_DB = value1;
             }
@@ -574,15 +586,19 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
-                if (value1.Equals("-"))
+                var value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
                 {
-                    AlphaActivity_DB = value1;
-                    return;
-                }
-                if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
-                {
-                    value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    value1 = value1.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+                    if (value1.Equals("-"))
+                    {
+                        AlphaActivity_DB = value1;
+                        return;
+                    }
+                    if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
+                    {
+                        value1 = value1.Replace("+", "e+").Replace("-", "e-");
+                    }
                 }
                 AlphaActivity_DB = value1;
             }
