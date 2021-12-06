@@ -22,8 +22,6 @@ namespace Models.Collections
 
         #region Reports_Collection
         ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection_DB;
-
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
         {
             get
@@ -45,8 +43,7 @@ namespace Models.Collections
         #endregion
 
         #region Reports_Collection10
-        [NotMapped]
-        public ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection10
+        public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection10
         {
             get
             {
@@ -58,8 +55,7 @@ namespace Models.Collections
         #endregion
 
         #region Reports_Collection20
-        [NotMapped]
-        public ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection20
+        public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection20
         {
             get
             {

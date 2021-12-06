@@ -229,7 +229,6 @@ namespace Models.Collections
 
         #region  Forms10
         ObservableCollectionWithItemPropertyChanged<Form10> Rows10_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form10> Rows10
         {
             get
@@ -254,7 +253,6 @@ namespace Models.Collections
 
         #region Forms11
         ObservableCollectionWithItemPropertyChanged<Form11> Rows11_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form11> Rows11
         {
             get
@@ -276,7 +274,6 @@ namespace Models.Collections
 
         #region Forms12
         ObservableCollectionWithItemPropertyChanged<Form12> Rows12_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form12> Rows12
         {
             get
@@ -297,7 +294,6 @@ namespace Models.Collections
 
         #region Forms13
         ObservableCollectionWithItemPropertyChanged<Form13> Rows13_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form13> Rows13
         {
             get
@@ -318,7 +314,6 @@ namespace Models.Collections
 
         #region Forms14
         ObservableCollectionWithItemPropertyChanged<Form14> Rows14_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form14> Rows14
         {
             get
@@ -339,7 +334,6 @@ namespace Models.Collections
 
         #region Forms15
         ObservableCollectionWithItemPropertyChanged<Form15> Rows15_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form15> Rows15
         {
             get
@@ -360,7 +354,6 @@ namespace Models.Collections
 
         #region Forms16
         ObservableCollectionWithItemPropertyChanged<Form16> Rows16_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form16> Rows16
         {
             get
@@ -381,7 +374,6 @@ namespace Models.Collections
 
         #region Forms17
         ObservableCollectionWithItemPropertyChangedWithSum<Form17> Rows17_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form17> Rows17
         {
             get
@@ -402,7 +394,6 @@ namespace Models.Collections
 
         #region Forms18
         ObservableCollectionWithItemPropertyChangedWithSum<Form18> Rows18_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form18> Rows18
         {
             get
@@ -423,7 +414,6 @@ namespace Models.Collections
 
         #region Forms19
         ObservableCollectionWithItemPropertyChanged<Form19> Rows19_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form19> Rows19
         {
             get
@@ -444,7 +434,6 @@ namespace Models.Collections
 
         #region Forms20
         ObservableCollectionWithItemPropertyChanged<Form20> Rows20_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form20> Rows20
         {
             get
@@ -468,7 +457,6 @@ namespace Models.Collections
 
         #region Forms21
         ObservableCollectionWithItemPropertyChangedWithSum<Form21> Rows21_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form21> Rows21
         {
             get
@@ -489,7 +477,6 @@ namespace Models.Collections
 
         #region Forms22
         ObservableCollectionWithItemPropertyChangedWithSum<Form22> Rows22_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChangedWithSum<Form22> Rows22
         {
             get
@@ -510,7 +497,6 @@ namespace Models.Collections
 
         #region Forms23
         ObservableCollectionWithItemPropertyChanged<Form23> Rows23_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form23> Rows23
         {
             get
@@ -531,7 +517,6 @@ namespace Models.Collections
 
         #region Forms24
         ObservableCollectionWithItemPropertyChanged<Form24> Rows24_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form24> Rows24
         {
             get
@@ -552,7 +537,6 @@ namespace Models.Collections
 
         #region Forms25
         ObservableCollectionWithItemPropertyChanged<Form25> Rows25_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form25> Rows25
         {
             get
@@ -573,7 +557,6 @@ namespace Models.Collections
 
         #region Forms26
         ObservableCollectionWithItemPropertyChanged<Form26> Rows26_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form26> Rows26
         {
             get
@@ -594,7 +577,6 @@ namespace Models.Collections
 
         #region Forms27
         ObservableCollectionWithItemPropertyChanged<Form27> Rows27_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form27> Rows27
         {
             get
@@ -615,7 +597,6 @@ namespace Models.Collections
 
         #region Forms28
         ObservableCollectionWithItemPropertyChanged<Form28> Rows28_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form28> Rows28
         {
             get
@@ -636,7 +617,6 @@ namespace Models.Collections
 
         #region Forms29
         ObservableCollectionWithItemPropertyChanged<Form29> Rows29_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form29> Rows29
         {
             get
@@ -657,7 +637,6 @@ namespace Models.Collections
 
         #region Forms210
         ObservableCollectionWithItemPropertyChanged<Form210> Rows210_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form210> Rows210
         {
             get
@@ -678,7 +657,6 @@ namespace Models.Collections
 
         #region Forms211
         ObservableCollectionWithItemPropertyChanged<Form211> Rows211_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form211> Rows211
         {
             get
@@ -699,7 +677,6 @@ namespace Models.Collections
 
         #region Forms212
         ObservableCollectionWithItemPropertyChanged<Form212> Rows212_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Form212> Rows212
         {
             get
@@ -1090,7 +1067,6 @@ namespace Models.Collections
 
         [Form_Property("Примечания")]
         ObservableCollectionWithItemPropertyChanged<Note> Notes_DB;
-        [NotMapped]
         public virtual ObservableCollectionWithItemPropertyChanged<Note> Notes
         {
             get
