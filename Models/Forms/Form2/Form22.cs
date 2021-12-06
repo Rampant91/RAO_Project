@@ -160,8 +160,16 @@ namespace Models
                 }
                 else
                 {
-                    var tmp = new RamAccess<string>(null, null);
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(VolumeInPack)))
+                    {
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(null, null);
+                        Dictionary.Add(nameof(VolumeInPack), rm);
+                        return (RamAccess<string>)Dictionary[nameof(VolumeInPack)];
+                    }
                 }
             }
             set
