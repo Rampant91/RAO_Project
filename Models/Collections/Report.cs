@@ -88,7 +88,6 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 _OkpoRep = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(OkpoRep));
             }
         }
         #endregion

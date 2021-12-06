@@ -25,8 +25,6 @@ namespace Models
         {
             OnPropertyChanged(args.PropertyName);
         }
-        [NotMapped]
-        Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         public override bool Object_Validation()
         {
             return !(Okfs.HasErrors ||
@@ -85,7 +83,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 RegNo_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(RegNo));
             }
         }
 
@@ -154,7 +151,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 OrganUprav_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(OrganUprav));
             }
         }
 
@@ -201,7 +197,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 SubjectRF_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(SubjectRF));
             }
         }
 
@@ -248,7 +243,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 JurLico_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(JurLico));
             }
         }
 
@@ -295,7 +289,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 ShortJurLico_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(ShortJurLico));
             }
         }
 
@@ -342,7 +335,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 JurLicoAddress_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(JurLicoAddress));
             }
         }
 
@@ -389,7 +381,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 JurLicoFactAddress_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(JurLicoFactAddress));
             }
         }
 
@@ -436,7 +427,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 GradeFIO_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(GradeFIO));
             }
         }
 
@@ -483,7 +473,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Telephone_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Telephone));
             }
         }
 
@@ -530,7 +519,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Fax_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Fax));
             }
         }
 
@@ -577,7 +565,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Email_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Email));
             }
         }
 
@@ -624,7 +611,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Okpo_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Okpo));
             }
         }
 
@@ -690,7 +676,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Okved_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Okved));
             }
         }
 
@@ -748,7 +733,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Okogu_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Okogu));
             }
         }
 
@@ -808,7 +792,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Oktmo_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Oktmo));
             }
         }
 
@@ -868,7 +851,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Inn_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Inn));
             }
         }
 
@@ -928,7 +910,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Kpp_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Kpp));
             }
         }
 
@@ -988,7 +969,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Okopf_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Okopf));
             }
         }
 
@@ -1048,7 +1028,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 Okfs_DB = ((RamAccess<string>) Value).Value;
-                OnPropertyChanged(nameof(Okfs));
             }
         }
 
