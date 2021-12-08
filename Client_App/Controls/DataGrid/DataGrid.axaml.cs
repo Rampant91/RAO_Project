@@ -847,7 +847,23 @@ o => o.Pagination,
             if (PressedKey == Key.Right|| PressedKey == Key.Tab)
             {
                 var n = FirstPressedItem[1]+1;
-                var maxn = Columns.Count;
+                var maxn = 0;
+                foreach (var column in Columns)
+                {
+                    var cell =(column.Value.Cells.LastOrDefault()).Value;
+                    if (cell is CustomCell)
+                    {
+                        var inner = (StackPanel)(cell as CustomCell).Control;
+                        maxn += ((StackPanel)(cell as CustomCell).Control).Children.Count;
+                    }
+                    else
+                    {
+                        if (cell is Cell)
+                        {
+                            maxn++;
+                        }
+                    }
+                }
                 if (n >= maxn)
                     n = maxn;
                 FirstPressedItem[1] = n;
@@ -908,7 +924,23 @@ o => o.Pagination,
             if (PressedKey == Key.Right)
             {
                 var n = tmp[1] + 1;
-                var maxn = Columns.Count;
+                var maxn = 0;
+                foreach (var column in Columns)
+                {
+                    var cell = (column.Value.Cells.LastOrDefault()).Value;
+                    if (cell is CustomCell)
+                    {
+                        var inner = (StackPanel)(cell as CustomCell).Control;
+                        maxn += ((StackPanel)(cell as CustomCell).Control).Children.Count;
+                    }
+                    else
+                    {
+                        if (cell is Cell)
+                        {
+                            maxn++;
+                        }
+                    }
+                }
                 if (n >= maxn)
                     n = maxn;
                 tmp[1] = n;
@@ -943,10 +975,8 @@ o => o.Pagination,
 
             if (args.Key == Key.Left)
                 ChangeSelectedCellsByKeys(Key.Left);
-            if (args.Key == Key.Right)
+            if (args.Key == Key.Right || args.Key == Key.Tab)
                 ChangeSelectedCellsByKeys(Key.Right);
-            if (args.Key == Key.Tab)
-                ChangeSelectedCellsByKeys(Key.Tab);
             if (args.Key == Key.Up)
                 ChangeSelectedCellsByKeys(Key.Up);
             if (args.Key == Key.Down || args.Key == Key.Enter)
