@@ -546,32 +546,76 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var t = desktop.MainWindow as MainWindow;
-                if (t.SelectedReports.Count() != 0)
+                MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
+                List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
+                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
                 {
-                    var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-                    var y = t.SelectedReports.First() as Reports;
-                    if (param != null)
+                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                    Name = "Да"
+                });
+                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+                {
+                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                    Name = "Нет"
+                });
+                par.ButtonDefinitions = lt;
+                par.ContentTitle = "Уведомление";
+                par.ContentHeader = "Уведомление";
+                par.ContentMessage = "Вы действительно хотите удалить отчет?";
+                var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
+                var answ = await mssg.ShowDialog(desktop.MainWindow);
+                if (answ == "Да")
+                {
+                    var t = desktop.MainWindow as MainWindow;
+                    if (t.SelectedReports.Count() != 0)
                     {
-                        foreach (var item in param)
+                        var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+                        var y = t.SelectedReports.First() as Reports;
+                        if (param != null)
                         {
-                            y.Report_Collection.Remove((Report)item);
+                            foreach (var item in param)
+                            {
+                                y.Report_Collection.Remove((Report)item);
+                            }
                         }
+                        t.SelectedReports = tmp;
+
                     }
-                    t.SelectedReports = tmp;
 
+                    await StaticConfiguration.DBModel.SaveChangesAsync();
                 }
-
-                await StaticConfiguration.DBModel.SaveChangesAsync();
             }
         }
 
         private async Task _DeleteReport(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
-            if (param != null)
-                foreach (var item in param)
-                    Local_Reports.Reports_Collection.Remove((Reports)item);
-            await StaticConfiguration.DBModel.SaveChangesAsync();
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                MessageBox.Avalonia.DTO.MessageBoxCustomParams par= new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
+                List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
+                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition { 
+                    Type=MessageBox.Avalonia.Enums.ButtonType.Default,
+                    Name="Да"
+                });
+                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+                {
+                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                    Name = "Нет"
+                });
+                par.ButtonDefinitions=lt;
+                par.ContentTitle = "Уведомление";
+                par.ContentHeader = "Уведомление";
+                par.ContentMessage = "Вы действительно хотите удалить организацию?";
+                var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
+                var answ=await mssg.ShowDialog(desktop.MainWindow);
+                if (answ == "Да")
+                {
+                    if (param != null)
+                        foreach (var item in param)
+                            Local_Reports.Reports_Collection.Remove((Reports)item);
+                    await StaticConfiguration.DBModel.SaveChangesAsync();
+                }
+            }
         }
         private int _Excel_Export_Notes(string param, int StartRow, int StartColumn, ExcelWorksheet worksheetPrim, List<Report> forms)
         {

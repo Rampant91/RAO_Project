@@ -19,6 +19,15 @@ using Models.Attributes;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Models.Abstracts;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
+using Avalonia;
+using Client_App.Views;
+using DynamicData;
+using OfficeOpenXml;
+using Spravochniki;
+using System.IO;
+using System.Threading;
+using System.Timers;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.ViewModels
 {
@@ -117,7 +126,7 @@ namespace Client_App.ViewModels
             WindowHeader= ((Form_ClassAttribute)Type.GetType("Models.Form"+a+",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow = ReactiveCommand.Create(_AddRow);
-            DeleteRow = ReactiveCommand.Create<IList>(_DeleteRow);
+            DeleteRow = ReactiveCommand.CreateFromTask<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             PasteRows = ReactiveCommand.CreateFromTask<IList>(_PasteRows);
             DuplicateRowsx1 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx1);
@@ -273,134 +282,158 @@ namespace Client_App.ViewModels
             }
         }
 
-        private void _DeleteRow(IEnumerable param)
+        private async Task _DeleteRow(IEnumerable param)
         {
-            List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
-            foreach (object? item in param)
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                lst.Add((Models.Abstracts.Form)item);
-            }
-            var grp = lst.GroupBy(x => x.NumberInOrder_DB);
-            foreach (var group in grp)
-            {
-                var item = group.FirstOrDefault();
-                if (item != null)
+                MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
+                List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
+                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
                 {
-                    foreach (Form it in Storage[item.FormNum_DB])
+                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                    Name = "Да"
+                });
+                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+                {
+                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                    Name = "Нет"
+                });
+                par.ButtonDefinitions = lt;
+                par.ContentTitle = "Уведомление";
+                par.ContentHeader = "Уведомление";
+                par.ContentMessage = "Вы действительно хотите удалить строчку?";
+                var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
+                var answ = await mssg.ShowDialog(desktop.MainWindow);
+                if (answ == "Да")
+                {
+                    List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
+                    foreach (object? item in param)
                     {
-                        if (it.NumberInOrder_DB > item.NumberInOrder_DB)
+                        lst.Add((Models.Abstracts.Form)item);
+                    }
+                    var grp = lst.GroupBy(x => x.NumberInOrder_DB);
+                    foreach (var group in grp)
+                    {
+                        var item = group.FirstOrDefault();
+                        if (item != null)
                         {
-                            it.NumberInOrder.Value = it.NumberInOrder_DB - 1;
+                            foreach (Form it in Storage[item.FormNum_DB])
+                            {
+                                if (it.NumberInOrder_DB > item.NumberInOrder_DB)
+                                {
+                                    it.NumberInOrder.Value = it.NumberInOrder_DB - 1;
+                                }
+                            }
+                            if (item.FormNum.Value == "1.1")
+                            {
+                                Storage.Rows11.Remove((Form11)item);
+                            }
+
+                            if (item.FormNum.Value == "1.2")
+                            {
+                                Storage.Rows12.Remove((Form12)item);
+                            }
+
+                            if (item.FormNum.Value == "1.3")
+                            {
+                                Storage.Rows13.Remove((Form13)item);
+                            }
+
+                            if (item.FormNum.Value == "1.4")
+                            {
+                                Storage.Rows14.Remove((Form14)item);
+                            }
+
+                            if (item.FormNum.Value == "1.5")
+                            {
+                                Storage.Rows15.Remove((Form15)item);
+                            }
+
+                            if (item.FormNum.Value == "1.6")
+                            {
+                                Storage.Rows16.Remove((Form16)item);
+                            }
+
+                            if (item.FormNum.Value == "1.7")
+                            {
+                                Storage.Rows17.Remove((Form17)item);
+                            }
+
+                            if (item.FormNum.Value == "1.8")
+                            {
+                                Storage.Rows18.Remove((Form18)item);
+                            }
+
+                            if (item.FormNum.Value == "1.9")
+                            {
+                                Storage.Rows19.Remove((Form19)item);
+                            }
+
+                            if (item.FormNum.Value == "2.1")
+                            {
+                                Storage.Rows21.Remove((Form21)item);
+                            }
+
+                            if (item.FormNum.Value == "2.2")
+                            {
+                                Storage.Rows22.Remove((Form22)item);
+                            }
+
+                            if (item.FormNum.Value == "2.3")
+                            {
+                                Storage.Rows23.Remove((Form23)item);
+                            }
+
+                            if (item.FormNum.Value == "2.4")
+                            {
+                                Storage.Rows24.Remove((Form24)item);
+                            }
+
+                            if (item.FormNum.Value == "2.5")
+                            {
+                                Storage.Rows25.Remove((Form25)item);
+                            }
+
+                            if (item.FormNum.Value == "2.6")
+                            {
+                                Storage.Rows26.Remove((Form26)item);
+                            }
+
+                            if (item.FormNum.Value == "2.7")
+                            {
+                                Storage.Rows27.Remove((Form27)item);
+                            }
+
+                            if (item.FormNum.Value == "2.8")
+                            {
+                                Storage.Rows28.Remove((Form28)item);
+                            }
+
+                            if (item.FormNum.Value == "2.9")
+                            {
+                                Storage.Rows29.Remove((Form29)item);
+                            }
+
+                            if (item.FormNum.Value == "2.10")
+                            {
+                                Storage.Rows210.Remove((Form210)item);
+                            }
+
+                            if (item.FormNum.Value == "2.11")
+                            {
+                                Storage.Rows211.Remove((Form211)item);
+                            }
+
+                            if (item.FormNum.Value == "2.12")
+                            {
+                                Storage.Rows212.Remove((Form212)item);
+                            }
                         }
                     }
-                    if (item.FormNum.Value == "1.1")
-                    {
-                        Storage.Rows11.Remove((Form11) item);
-                    }
-
-                    if (item.FormNum.Value == "1.2")
-                    {
-                        Storage.Rows12.Remove((Form12) item);
-                    }
-
-                    if (item.FormNum.Value == "1.3")
-                    {
-                        Storage.Rows13.Remove((Form13) item);
-                    }
-
-                    if (item.FormNum.Value == "1.4")
-                    {
-                        Storage.Rows14.Remove((Form14) item);
-                    }
-
-                    if (item.FormNum.Value == "1.5")
-                    {
-                        Storage.Rows15.Remove((Form15) item);
-                    }
-
-                    if (item.FormNum.Value == "1.6")
-                    {
-                        Storage.Rows16.Remove((Form16) item);
-                    }
-
-                    if (item.FormNum.Value == "1.7")
-                    {
-                        Storage.Rows17.Remove((Form17) item);
-                    }
-
-                    if (item.FormNum.Value == "1.8")
-                    {
-                        Storage.Rows18.Remove((Form18) item);
-                    }
-
-                    if (item.FormNum.Value == "1.9")
-                    {
-                        Storage.Rows19.Remove((Form19) item);
-                    }
-
-                    if (item.FormNum.Value == "2.1")
-                    {
-                        Storage.Rows21.Remove((Form21) item);
-                    }
-
-                    if (item.FormNum.Value == "2.2")
-                    {
-                        Storage.Rows22.Remove((Form22) item);
-                    }
-
-                    if (item.FormNum.Value == "2.3")
-                    {
-                        Storage.Rows23.Remove((Form23) item);
-                    }
-
-                    if (item.FormNum.Value == "2.4")
-                    {
-                        Storage.Rows24.Remove((Form24) item);
-                    }
-
-                    if (item.FormNum.Value == "2.5")
-                    {
-                        Storage.Rows25.Remove((Form25) item);
-                    }
-
-                    if (item.FormNum.Value == "2.6")
-                    {
-                        Storage.Rows26.Remove((Form26) item);
-                    }
-
-                    if (item.FormNum.Value == "2.7")
-                    {
-                        Storage.Rows27.Remove((Form27) item);
-                    }
-
-                    if (item.FormNum.Value == "2.8")
-                    {
-                        Storage.Rows28.Remove((Form28) item);
-                    }
-
-                    if (item.FormNum.Value == "2.9")
-                    {
-                        Storage.Rows29.Remove((Form29) item);
-                    }
-
-                    if (item.FormNum.Value == "2.10")
-                    {
-                        Storage.Rows210.Remove((Form210) item);
-                    }
-
-                    if (item.FormNum.Value == "2.11")
-                    {
-                        Storage.Rows211.Remove((Form211) item);
-                    }
-
-                    if (item.FormNum.Value == "2.12")
-                    {
-                        Storage.Rows212.Remove((Form212) item);
-                    }
+                    Storage.Rows21.Sum();
+                    Storage.Rows22.Sum();
                 }
             }
-            Storage.Rows21.Sum();
-            Storage.Rows22.Sum();
         }
 
         private void _AddSort(string param)
