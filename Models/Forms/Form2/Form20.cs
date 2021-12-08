@@ -1080,11 +1080,10 @@ namespace Models
 
         #region IExcel
 
-        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+        public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
-            var cnt = base.ExcelRow(worksheet, Row, Column, Transpon);
-            Column = Column + (Transpon == true ? cnt : 0);
-            Row = Row + (Transpon == false ? cnt : 0);
+            Column = Column;
+            Row = Row;
 
             worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = Okpo_DB;
             worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ShortJurLico_DB;

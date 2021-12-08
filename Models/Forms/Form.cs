@@ -155,10 +155,7 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
-        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true)
-        {
-            return 0;
-        }
+        public abstract int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true);
 
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {

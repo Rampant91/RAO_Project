@@ -8,6 +8,7 @@ using DynamicData;
 using Models.Abstracts;
 using Models;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using ReactiveUI;
 using Spravochniki;
 using System;
@@ -21,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Client_App.ViewModels
 {
@@ -767,8 +769,339 @@ namespace Client_App.ViewModels
                               select t;
             var reps = findReports.FirstOrDefault();
 
+            Report master = reps.Master_DB;
+
+            if (param.Split('.')[0] == "2")
+            {
+                var frmYur = master.Rows20[0];
+                var frmObosob = master.Rows20[1];
+                worksheet.Cells["G10"].Value = form.Year_DB;
+
+                worksheet.Cells["F6"].Value = frmYur.RegNo_DB;
+                worksheet.Cells["F15"].Value = frmYur.OrganUprav_DB;
+                worksheet.Cells["F16"].Value = frmYur.SubjectRF_DB;
+                worksheet.Cells["F17"].Value = frmYur.JurLico_DB;
+                worksheet.Cells["F18"].Value = frmYur.ShortJurLico_DB;
+                worksheet.Cells["F19"].Value = frmYur.JurLicoAddress_DB;
+                worksheet.Cells["F20"].Value = frmYur.JurLicoFactAddress_DB;
+                worksheet.Cells["F21"].Value = frmYur.GradeFIO_DB;
+                worksheet.Cells["F22"].Value = frmYur.Telephone_DB;
+                worksheet.Cells["F23"].Value = frmYur.Fax_DB;
+                worksheet.Cells["F24"].Value = frmYur.Email_DB;
+
+                worksheet.Cells["F25"].Value = frmObosob.SubjectRF_DB;
+                worksheet.Cells["F26"].Value = frmObosob.JurLico_DB;
+                worksheet.Cells["F27"].Value = frmObosob.ShortJurLico_DB;
+                worksheet.Cells["F28"].Value = frmObosob.JurLicoAddress_DB;
+                worksheet.Cells["F29"].Value = frmObosob.GradeFIO_DB;
+                worksheet.Cells["F30"].Value = frmObosob.Telephone_DB;
+                worksheet.Cells["F31"].Value = frmObosob.Fax_DB;
+                worksheet.Cells["F32"].Value = frmObosob.Email_DB;
+
+                worksheet.Cells["B36"].Value = frmYur.Okpo_DB;
+                worksheet.Cells["C36"].Value = frmYur.Okved_DB;
+                worksheet.Cells["D36"].Value = frmYur.Okogu_DB;
+                worksheet.Cells["E36"].Value = frmYur.Oktmo_DB;
+                worksheet.Cells["F36"].Value = frmYur.Inn_DB;
+                worksheet.Cells["G36"].Value = frmYur.Kpp_DB;
+                worksheet.Cells["H36"].Value = frmYur.Okopf_DB;
+                worksheet.Cells["I36"].Value = frmYur.Okfs_DB;
+
+                worksheet.Cells["B37"].Value = frmObosob.Okpo_DB;
+                worksheet.Cells["C37"].Value = frmObosob.Okved_DB;
+                worksheet.Cells["D37"].Value = frmObosob.Okogu_DB;
+                worksheet.Cells["E37"].Value = frmObosob.Oktmo_DB;
+                worksheet.Cells["F37"].Value = frmObosob.Inn_DB;
+                worksheet.Cells["G37"].Value = frmObosob.Kpp_DB;
+                worksheet.Cells["H37"].Value = frmObosob.Okopf_DB;
+                worksheet.Cells["I37"].Value = frmObosob.Okfs_DB;
+            }
+            else
+            {
+                var frmYur = master.Rows10[0];
+                var frmObosob = master.Rows10[1];
+
+                worksheet.Cells["F6"].Value = frmYur.RegNo_DB;
+                worksheet.Cells["F15"].Value = frmYur.OrganUprav_DB;
+                worksheet.Cells["F16"].Value = frmYur.SubjectRF_DB;
+                worksheet.Cells["F17"].Value = frmYur.JurLico_DB;
+                worksheet.Cells["F18"].Value = frmYur.ShortJurLico_DB;
+                worksheet.Cells["F19"].Value = frmYur.JurLicoAddress_DB;
+                worksheet.Cells["F20"].Value = frmYur.JurLicoFactAddress_DB;
+                worksheet.Cells["F21"].Value = frmYur.GradeFIO_DB;
+                worksheet.Cells["F22"].Value = frmYur.Telephone_DB;
+                worksheet.Cells["F23"].Value = frmYur.Fax_DB;
+                worksheet.Cells["F24"].Value = frmYur.Email_DB;
+
+                worksheet.Cells["F25"].Value = frmObosob.SubjectRF_DB;
+                worksheet.Cells["F26"].Value = frmObosob.JurLico_DB;
+                worksheet.Cells["F27"].Value = frmObosob.ShortJurLico_DB;
+                worksheet.Cells["F28"].Value = frmObosob.JurLicoAddress_DB;
+                worksheet.Cells["F29"].Value = frmObosob.GradeFIO_DB;
+                worksheet.Cells["F30"].Value = frmObosob.Telephone_DB;
+                worksheet.Cells["F31"].Value = frmObosob.Fax_DB;
+                worksheet.Cells["F32"].Value = frmObosob.Email_DB;
+
+                worksheet.Cells["B36"].Value = frmYur.Okpo_DB;
+                worksheet.Cells["C36"].Value = frmYur.Okved_DB;
+                worksheet.Cells["D36"].Value = frmYur.Okogu_DB;
+                worksheet.Cells["E36"].Value = frmYur.Oktmo_DB;
+                worksheet.Cells["F36"].Value = frmYur.Inn_DB;
+                worksheet.Cells["G36"].Value = frmYur.Kpp_DB;
+                worksheet.Cells["H36"].Value = frmYur.Okopf_DB;
+                worksheet.Cells["I36"].Value = frmYur.Okfs_DB;
+
+                worksheet.Cells["B37"].Value = frmObosob.Okpo_DB;
+                worksheet.Cells["C37"].Value = frmObosob.Okved_DB;
+                worksheet.Cells["D37"].Value = frmObosob.Okogu_DB;
+                worksheet.Cells["E37"].Value = frmObosob.Oktmo_DB;
+                worksheet.Cells["F37"].Value = frmObosob.Inn_DB;
+                worksheet.Cells["G37"].Value = frmObosob.Kpp_DB;
+                worksheet.Cells["H37"].Value = frmObosob.Okopf_DB;
+                worksheet.Cells["I37"].Value = frmObosob.Okfs_DB;
+            }
+        }
+        private void _Excel_Print_SubMain_Export(string param, ExcelWorksheet worksheet, Report form)
+        {
+            var findReports = from t in Local_Reports.Reports_Collection
+                              where t.Report_Collection.Contains(form)
+                              select t;
+            var reps = findReports.FirstOrDefault();
+            Report master = reps.Master_DB;
+
+            if (param.Split('.')[0] == "1")
+            {
+                worksheet.Cells["G3"].Value = form.StartPeriod_DB;
+                worksheet.Cells["G4"].Value = form.EndPeriod_DB;
+                worksheet.Cells["G5"].Value = form.CorrectionNumber_DB;
+            }
+            else
+            {
+                switch (param)
+                {
+                    case "2.6":
+                        {
+                            worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
+                            worksheet.Cells["G5"].Value = form.SourcesQuantity26_DB;
+                            break;
+                        }
+                    case "2.7":
+                        {
+                            worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
+                            worksheet.Cells["G4"].Value = form.PermissionNumber27_DB;
+                            worksheet.Cells["G5"].Value = form.ValidBegin27_DB;
+                            worksheet.Cells["J5"].Value = form.ValidThru27_DB;
+                            worksheet.Cells["G6"].Value = form.PermissionDocumentName27_DB;
+                            break;
+                        }
+                    case "2.8":
+                        {
+                            worksheet.Cells["G3"].Value = form.CorrectionNumber_DB;
+                            worksheet.Cells["G4"].Value = form.PermissionNumber_28_DB;
+                            worksheet.Cells["K4"].Value = form.ValidBegin_28_DB;
+                            worksheet.Cells["N4"].Value = form.ValidThru_28_DB;
+                            worksheet.Cells["G5"].Value = form.PermissionDocumentName_28_DB;
+
+                            worksheet.Cells["G6"].Value = form.PermissionNumber1_28_DB;
+                            worksheet.Cells["K6"].Value = form.ValidBegin1_28_DB;
+                            worksheet.Cells["N6"].Value = form.ValidThru1_28_DB;
+                            worksheet.Cells["G7"].Value = form.PermissionDocumentName1_28_DB;
+
+                            worksheet.Cells["G8"].Value = form.ContractNumber_28_DB;
+                            worksheet.Cells["K8"].Value = form.ValidBegin2_28_DB;
+                            worksheet.Cells["N8"].Value = form.ValidThru2_28_DB;
+                            worksheet.Cells["G9"].Value = form.OrganisationReciever_28_DB;
+
+                            worksheet.Cells["D21"].Value = form.GradeExecutor_DB;
+                            worksheet.Cells["F21"].Value = form.FIOexecutor_DB;
+                            worksheet.Cells["I21"].Value = form.ExecPhone_DB;
+                            worksheet.Cells["K21"].Value = form.ExecEmail_DB;
+                            return;
+                        }
+                    default:
+                        {
+                            worksheet.Cells["G4"].Value = form.CorrectionNumber_DB;
+                            break;
+                        }
+                }
+            }
+            worksheet.Cells["D18"].Value = form.GradeExecutor_DB;
+            worksheet.Cells["F18"].Value = form.FIOexecutor_DB;
+            worksheet.Cells["I18"].Value = form.ExecPhone_DB;
+            worksheet.Cells["K18"].Value = form.ExecEmail_DB;
 
         }
+        private void _Excel_Print_Notes_Export(string param, ExcelWorksheet worksheet, Report form)
+        {
+            int Start = 15;
+            if(param=="2.8")
+            {
+                Start = 18;
+            }
+
+            for(int i =0;i<form.Notes.Count-1;i++)
+            {
+                worksheet.InsertRow(Start+1, 1, Start);
+                var cells=worksheet.Cells["A" + (Start + 1) + ":B" + (Start + 1)];
+                foreach (var cell in cells)
+                {
+                    var btm = cell.Style.Border.Bottom;
+                    var lft = cell.Style.Border.Left;
+                    var rgt = cell.Style.Border.Right;
+                    var top = cell.Style.Border.Top;
+                    btm.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    btm.Color.SetColor(255, 0, 0, 0);
+                    lft.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    lft.Color.SetColor(255, 0, 0, 0);
+                    rgt.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    rgt.Color.SetColor(255, 0, 0, 0);
+                    top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    top.Color.SetColor(255, 0, 0, 0);
+                }
+                var cellCL = worksheet.Cells["C" + (Start + 1) + ":L" + (Start + 1)];
+                cellCL.Merge = true;
+                var btmCL = cellCL.Style.Border.Bottom;
+                var lftCL = cellCL.Style.Border.Left;
+                var rgtCL = cellCL.Style.Border.Right;
+                var topCL = cellCL.Style.Border.Top;
+                btmCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                btmCL.Color.SetColor(255, 0, 0, 0);
+                lftCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                lftCL.Color.SetColor(255, 0, 0, 0);
+                rgtCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                rgtCL.Color.SetColor(255, 0, 0, 0);
+                topCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                topCL.Color.SetColor(255, 0, 0, 0);
+            }
+
+            int Count = Start;
+            foreach (var note in form.Notes)
+            {
+                note.ExcelRow(worksheet,Count,1);
+                Count++;
+            }
+        }
+        private void _Excel_Print_Rows_Export(string param, ExcelWorksheet worksheet, Report form)
+        {
+            int Start = 11;
+            if (param == "2.8")
+            {
+                Start = 14;
+            }
+
+            for (int i = 0; i < form[param].Count - 1; i++)
+            {
+                worksheet.InsertRow(Start + 1, 1, Start);
+                var cells = worksheet.Cells["A" + (Start + 1) + ":B" + (Start + 1)];
+                foreach (var cell in cells)
+                {
+                    var btm = cell.Style.Border.Bottom;
+                    var lft = cell.Style.Border.Left;
+                    var rgt = cell.Style.Border.Right;
+                    var top = cell.Style.Border.Top;
+                    btm.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    btm.Color.SetColor(255, 0, 0, 0);
+                    lft.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    lft.Color.SetColor(255, 0, 0, 0);
+                    rgt.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    rgt.Color.SetColor(255, 0, 0, 0);
+                    top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+                    top.Color.SetColor(255, 0, 0, 0);
+                }
+            }
+
+            int Count = Start;
+            foreach (var it in form[param])
+            {
+                if (it is Form11)
+                {
+                    ((Form11)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form12)
+                {
+                    ((Form12)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form13)
+                {
+                    ((Form13)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form14)
+                {
+                    ((Form14)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form15)
+                {
+                    ((Form15)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form16)
+                {
+                    ((Form16)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form17)
+                {
+                    ((Form17)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form18)
+                {
+                    ((Form18)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form19)
+                {
+                    ((Form19)(it)).ExcelRow(worksheet, Count, 1);
+                }
+
+                if (it is Form21)
+                {
+                    ((Form21)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form22)
+                {
+                    ((Form22)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form23)
+                {
+                    ((Form23)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form24)
+                {
+                    ((Form24)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form25)
+                {
+                    ((Form25)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form26)
+                {
+                    ((Form26)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form27)
+                {
+                    ((Form27)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form28)
+                {
+                    ((Form28)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form29)
+                {
+                    ((Form29)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form210)
+                {
+                    ((Form210)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form211)
+                {
+                    ((Form211)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                if (it is Form212)
+                {
+                    ((Form212)(it)).ExcelRow(worksheet, Count, 1);
+                }
+                Count++;
+            }
+        }
+
         private async Task _Print_Excel_Export(ObservableCollectionWithItemPropertyChanged<IKey> forms)
         {
             try
@@ -818,7 +1151,15 @@ namespace Client_App.ViewModels
                                 {
                                     using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(path),new FileInfo(pth)))
                                     {
-                                        
+                                        var form = (Report)forms.FirstOrDefault();
+                                        ExcelWorksheet worksheetTitul =
+                                            excelPackage.Workbook.Worksheets[param.Split('.')[0]+".0"];
+                                        ExcelWorksheet worksheetMain =
+                                            excelPackage.Workbook.Worksheets[param];
+                                        _Excel_Print_Titul_Export(param, worksheetTitul,form);
+                                        _Excel_Print_SubMain_Export(param, worksheetMain, form);
+                                        _Excel_Print_Notes_Export(param, worksheetMain, form);
+                                        _Excel_Print_Rows_Export(param, worksheetMain, form);
                                         excelPackage.Save();
                                     }
                                 }

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Client_App.Controls.DataGrid.Cell">
-  <Border BorderThickness="1" BorderBrush="{Binding $parent.BorderBrush}">
+  <Border BorderThickness="1" BorderBrush="Black">
     <Panel Background="Transparent">
       <TextBox DataContext="{Binding}"
                Text="{Binding Value}"

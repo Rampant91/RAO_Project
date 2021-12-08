@@ -32,9 +32,6 @@ namespace Models
         Dictionary<string, RamAccess> Dictionary { get; set; } = new Dictionary<string, RamAccess>();
         public void Init()
         {
-            RowNumber.PropertyChanged += InPropertyChanged;
-            GraphNumber.PropertyChanged += InPropertyChanged;
-            Comment.PropertyChanged += InPropertyChanged;
             RowNumber_Validation(RowNumber);
             GraphNumber_Validation(GraphNumber);
             Comment_Validation(Comment);

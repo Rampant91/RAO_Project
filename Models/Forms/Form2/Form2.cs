@@ -69,7 +69,7 @@ namespace Models.Abstracts
         #endregion
 
         #region IExcel
-        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
+        public override int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
             worksheet.Cells[Row, Column].Value = NumberInOrder_DB;
 
