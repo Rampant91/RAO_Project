@@ -157,7 +157,7 @@ namespace Models.Collections
             base.RemoveItem(index);
         }
 
-        private void ObserveAll()
+        protected void ObserveAll()
         {
             foreach (T item in Items)
                 item.PropertyChanged += ChildPropertyChanged;
@@ -166,7 +166,17 @@ namespace Models.Collections
 
         }
 
-        private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void AddRange(IEnumerable<T> items)
+        {
+            foreach (var item in items)
+            {
+                item.PropertyChanged += ChildPropertyChanged;
+                Items.Add(item);
+            }
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        protected void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             T typedSender = (T) sender;
             int i = Items.IndexOf(typedSender);

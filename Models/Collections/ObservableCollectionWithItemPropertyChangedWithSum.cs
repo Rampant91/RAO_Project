@@ -15,26 +15,12 @@ using Models.Abstracts;
 
 namespace Models.Collections
 {
-    public class ObservableCollectionWithItemPropertyChangedWithSum<T> : ObservableCollection<T>, IKey
+    public class ObservableCollectionWithItemPropertyChangedWithSum<T> : ObservableCollectionWithItemPropertyChanged<T>
         where T : class, IKey
     {
-        /// <summary>
-        /// Occurs when a property is changed within an item.
-        /// </summary>
-        public event EventHandler<ItemPropertyChangedEventArgs> ItemPropertyChanged;
-
-        public int Id { get; set; }
 
         public ObservableCollectionWithItemPropertyChangedWithSum() : base()
         {
-        }
-
-        public void CleanIds()
-        {
-            foreach (var item in Items)
-            {
-                item.Id = 0;
-            }
         }
 
         public ObservableCollectionWithItemPropertyChangedWithSum(List<T> list) : base(list)
@@ -91,46 +77,6 @@ namespace Models.Collections
             }
 
             base.OnCollectionChanged(e);
-        }
-
-        //метод для обмена элементов массива
-        void Swap(int index1, int index2)
-        {
-            var t = Items[index1];
-            Items[index1] = Items[index2];
-            Items[index2] = t;
-        }
-        int Partition(int minIndex, int maxIndex)
-        {
-            var pivot = minIndex - 1;
-            for (var i = minIndex; i < maxIndex; i++)
-            {
-                if ((Items[i] as Form).NumberInOrder_DB < (Items[maxIndex] as Form).NumberInOrder_DB)
-                {
-                    pivot++;
-                    Swap(pivot, i);
-                }
-            }
-
-            pivot++;
-            Swap(pivot, maxIndex);
-            return pivot;
-        }
-        void QuickSort(int minIndex, int maxIndex)
-        {
-            if (minIndex >= maxIndex)
-            {
-                return;
-            }
-
-            var pivotIndex = Partition(minIndex, maxIndex);
-            QuickSort(minIndex, pivotIndex - 1);
-            QuickSort(pivotIndex + 1, maxIndex);
-        }
-
-        public void QuickSort()
-        {
-            QuickSort(0, Items.Count - 1);
         }
 
         protected override void RemoveItem(int index)
@@ -538,17 +484,6 @@ namespace Models.Collections
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        protected void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)
-        {
-            ItemPropertyChanged?.Invoke(this, e);
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-
-        protected void OnItemPropertyChanged(int index, PropertyChangedEventArgs e)
-        {
-            OnItemPropertyChanged(new ItemPropertyChangedEventArgs(index, e));
-        }
-
         protected override void ClearItems()
         {
             foreach (T item in Items)
@@ -556,43 +491,5 @@ namespace Models.Collections
 
             base.ClearItems();
         }
-
-        private void ObserveAll()
-        {
-            foreach (T item in Items)
-                item.PropertyChanged += ChildPropertyChanged;
-        }
-
-        public void AddRange(IEnumerable<T>items)
-        {
-            foreach (var item in items)
-            {
-                item.PropertyChanged += ChildPropertyChanged;
-                Items.Add(item);
-            }
-        }
-
-        private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            T typedSender = (T) sender;
-            int i = Items.IndexOf(typedSender);
-
-            if (i < 0)
-                throw new ArgumentException("Received property notification from item not in collection");
-
-            OnItemPropertyChanged(i, e);
-        }
-
-        #region IExcel
-        public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
-        {
-            throw new System.NotImplementedException();
-        }
-        #endregion
     }
 }

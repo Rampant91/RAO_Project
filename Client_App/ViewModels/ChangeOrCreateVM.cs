@@ -109,13 +109,7 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> AddNote { get; }
         public ReactiveCommand<Unit, Unit> AddRow { get; }
         public ReactiveCommand<IList, Unit> DeleteRow { get; }
-
-        public ReactiveCommand<IList, Unit> DuplicateRowsx1 { get; }
-        public ReactiveCommand<IList, Unit> DuplicateRowsx10 { get; }
-        public ReactiveCommand<IList, Unit> DuplicateRowsx100 { get; }
-        public ReactiveCommand<IList, Unit> DuplicateRowsx1000 { get; }
-        public ReactiveCommand<IList, Unit> DuplicateRowsx10_000 { get; }
-        public ReactiveCommand<IList, Unit> DuplicateRowsx100_000 { get; }
+        public ReactiveCommand<Unit, Unit> DuplicateRowsx1 { get; }
         public ReactiveCommand<IList, Unit> CopyRows { get; }
         public ReactiveCommand<IList, Unit> PasteRows { get; }
         public ReactiveCommand<IList, Unit> DeleteNote { get; }
@@ -123,21 +117,16 @@ namespace Client_App.ViewModels
         public ChangeOrCreateVM(string FormNum)
         {
             string a = FormNum.Replace(".", "");
-            WindowHeader= ((Form_ClassAttribute)Type.GetType("Models.Form"+a+",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow = ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.CreateFromTask<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             PasteRows = ReactiveCommand.CreateFromTask<IList>(_PasteRows);
-            DuplicateRowsx1 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx1);
-            DuplicateRowsx10 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx10);
-            DuplicateRowsx100 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx100);
-            DuplicateRowsx1000 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx1000);
-            DuplicateRowsx10_000 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx10_000);
-            DuplicateRowsx100_000 = ReactiveCommand.CreateFromTask<IList>(_DuplicateRowsx100_000);
+            DuplicateRowsx1 = ReactiveCommand.CreateFromTask(_DuplicateRowsx1);
             CopyRows = ReactiveCommand.CreateFromTask<IList>(_CopyRows);
             AddNote = ReactiveCommand.Create<string>(_AddNote);
-            DeleteNote = ReactiveCommand.Create<IList>(_DeleteNote);
+            DeleteNote = ReactiveCommand.CreateFromTask<IList>(_DeleteNote);
             //PasteNotes = ReactiveCommand.CreateFromTask(_PasteNotes);
         }
 
@@ -227,13 +216,13 @@ namespace Client_App.ViewModels
             foreach (var item in lst)
             {
                 var frm = (Form)item;
-                if(frm.NumberInOrder_DB>=maxNum)
+                if (frm.NumberInOrder_DB >= maxNum)
                 {
-                    maxNum ++;
+                    maxNum++;
                 }
             }
 
-            return maxNum+1;
+            return maxNum + 1;
         }
 
         private void _AddRow()
@@ -265,20 +254,44 @@ namespace Client_App.ViewModels
 
         private void _AddNote(string Param)
         {
-            Note? nt = new Note(); 
+            Note? nt = new Note();
             Storage.Notes.Add(nt);
         }
 
-        private void _DeleteNote(IEnumerable param)
+        private async Task _DeleteNote(IEnumerable param)
         {
-            List<Note> lst = new List<Note>();
-            foreach (object? item in param)
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                lst.Add((Note)item);
-            }
-            foreach (Note nt in lst)
-            {
-                Storage.Notes.Remove((Note)nt);
+                MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
+                List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
+                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+                {
+                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                    Name = "Да"
+                });
+                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+                {
+                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                    Name = "Нет"
+                });
+                par.ButtonDefinitions = lt;
+                par.ContentTitle = "Уведомление";
+                par.ContentHeader = "Уведомление";
+                par.ContentMessage = "Вы действительно хотите удалить комментарий?";
+                var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
+                var answ = await mssg.ShowDialog(desktop.MainWindow);
+                if (answ == "Да")
+                {
+                    List<Note> lst = new List<Note>();
+                    foreach (object? item in param)
+                    {
+                        lst.Add((Note)item);
+                    }
+                    foreach (Note nt in lst)
+                    {
+                        Storage.Notes.Remove((Note)nt);
+                    }
+                }
             }
         }
 
@@ -449,7 +462,7 @@ namespace Client_App.ViewModels
                 Cell cl = null;
                 foreach (var item in param)
                 {
-                    cl = (Cell) item;
+                    cl = (Cell)item;
                     break;
                 }
 
@@ -457,7 +470,7 @@ namespace Client_App.ViewModels
                 {
                     int Row = cl.CellRow;
                     int Column = cl.CellColumn;
-                    
+
                     if (text != null && text != "")
                     {
                         string rt = "";
@@ -562,70 +575,90 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DuplicateRowsx1(IEnumerable param)
+        private async Task _DuplicateRowsx1()
         {
-            var frm = FormCreator.Create(FormType);
-            foreach (var it in param)
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                
-                var item = frm;
-                if (FormType == "1.1") { Storage.Rows11.Add((Form11)item); Storage.LastAddedForm = Report.Forms.Form11;}
-                if (FormType == "1.2") { Storage.Rows12.Add((Form12)item); Storage.LastAddedForm = Report.Forms.Form12;}
-                if (FormType == "1.3") { Storage.Rows13.Add((Form13)item); Storage.LastAddedForm = Report.Forms.Form13;}
-                if (FormType == "1.4") { Storage.Rows14.Add((Form14)item); Storage.LastAddedForm = Report.Forms.Form14;}
-                if (FormType == "1.5") { Storage.Rows15.Add((Form15)item); Storage.LastAddedForm = Report.Forms.Form15;}
-                if (FormType == "1.6") { Storage.Rows16.Add((Form16)item); Storage.LastAddedForm = Report.Forms.Form16;}
-                if (FormType == "1.7") { Storage.Rows17.Add((Form17)item); Storage.LastAddedForm = Report.Forms.Form17;}
-                if (FormType == "1.8") { Storage.Rows18.Add((Form18)item); Storage.LastAddedForm = Report.Forms.Form18;}
-                if (FormType == "1.9") { Storage.Rows19.Add((Form19)item); Storage.LastAddedForm = Report.Forms.Form19;}
+                RowNumber rw = new RowNumber();
+                await rw.ShowDialog(desktop.MainWindow);
+                var t = Convert.ToInt32(rw.Number);
+                if (t > 0)
+                {
+                    List<Form> lst = new List<Form>();
+                    var number = 0;
+                    if (FormType == "1.1") { number = GetNumberInOrder(Storage.Rows11); }
+                    if (FormType == "1.2") { number = GetNumberInOrder(Storage.Rows12); }
+                    if (FormType == "1.3") { number = GetNumberInOrder(Storage.Rows13); }
+                    if (FormType == "1.4") { number = GetNumberInOrder(Storage.Rows14); }
+                    if (FormType == "1.5") { number = GetNumberInOrder(Storage.Rows15); }
+                    if (FormType == "1.6") { number = GetNumberInOrder(Storage.Rows16); }
+                    if (FormType == "1.7") { number = GetNumberInOrder(Storage.Rows17); }
+                    if (FormType == "1.8") { number = GetNumberInOrder(Storage.Rows18); }
+                    if (FormType == "1.9") { number = GetNumberInOrder(Storage.Rows19); }
 
-                if (FormType == "2.1") { Storage.Rows21.Add((Form21)item); Storage.LastAddedForm = Report.Forms.Form21;}
-                if (FormType == "2.2") { Storage.Rows22.Add((Form22)item); Storage.LastAddedForm = Report.Forms.Form22;}
-                if (FormType == "2.3") { Storage.Rows23.Add((Form23)item); Storage.LastAddedForm = Report.Forms.Form23;}
-                if (FormType == "2.4") { Storage.Rows24.Add((Form24)item); Storage.LastAddedForm = Report.Forms.Form24;}
-                if (FormType == "2.5") { Storage.Rows25.Add((Form25)item); Storage.LastAddedForm = Report.Forms.Form25;}
-                if (FormType == "2.6") { Storage.Rows26.Add((Form26)item); Storage.LastAddedForm = Report.Forms.Form26;}
-                if (FormType == "2.7") { Storage.Rows27.Add((Form27)item); Storage.LastAddedForm = Report.Forms.Form27;}
-                if (FormType == "2.8") { Storage.Rows28.Add((Form28)item); Storage.LastAddedForm = Report.Forms.Form28;}
-                if (FormType == "2.9") { Storage.Rows29.Add((Form29)item); Storage.LastAddedForm = Report.Forms.Form29;}
-                if (FormType == "2.10") { Storage.Rows210.Add((Form210)item); Storage.LastAddedForm = Report.Forms.Form210; }
-                if (FormType == "2.11") { Storage.Rows211.Add((Form211)item); Storage.LastAddedForm = Report.Forms.Form211; }
-                if (FormType == "2.12") { Storage.Rows212.Add((Form212)item); Storage.LastAddedForm = Report.Forms.Form212; }
-            }
-        }
-        private async Task _DuplicateRowsx10(IEnumerable param)
-        {
-            for(int i=0;i<10;i++)
-            {
-                _DuplicateRowsx1(param);
-            }
-        }
-        private async Task _DuplicateRowsx100(IEnumerable param)
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                _DuplicateRowsx1(param);
-            }
-        }
-        private async Task _DuplicateRowsx1000(IEnumerable param)
-        {
-            for (int i = 0; i < 1000; i++)
-            {
-                _DuplicateRowsx1(param);
-            }
-        }
-        private async Task _DuplicateRowsx10_000(IEnumerable param)
-        {
-            for (int i = 0; i < 10000; i++)
-            {
-                _DuplicateRowsx1(param);
-            }
-        }
-        private async Task _DuplicateRowsx100_000(IEnumerable param)
-        {
-            for (int i = 0; i < 100000; i++)
-            {
-                _DuplicateRowsx1(param);
+                    if (FormType == "2.1") { number = GetNumberInOrder(Storage.Rows21); }
+                    if (FormType == "2.2") { number = GetNumberInOrder(Storage.Rows22); }
+                    if (FormType == "2.3") { number = GetNumberInOrder(Storage.Rows23); }
+                    if (FormType == "2.4") { number = GetNumberInOrder(Storage.Rows24); }
+                    if (FormType == "2.5") { number = GetNumberInOrder(Storage.Rows25); }
+                    if (FormType == "2.6") { number = GetNumberInOrder(Storage.Rows26); }
+                    if (FormType == "2.7") { number = GetNumberInOrder(Storage.Rows27); }
+                    if (FormType == "2.8") { number = GetNumberInOrder(Storage.Rows28); }
+                    if (FormType == "2.9") { number = GetNumberInOrder(Storage.Rows29); }
+                    if (FormType == "2.10") { number = GetNumberInOrder(Storage.Rows210); }
+                    if (FormType == "2.11") { number = GetNumberInOrder(Storage.Rows211); }
+                    if (FormType == "2.12") { number = GetNumberInOrder(Storage.Rows212); }
+                    for (int i = 0; i < t; i++)
+                    {
+                        var frm = FormCreator.Create(FormType);
+                        if (FormType == "1.1") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form11; }
+                        if (FormType == "1.2") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form12; }
+                        if (FormType == "1.3") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form13; }
+                        if (FormType == "1.4") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form14; }
+                        if (FormType == "1.5") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form15; }
+                        if (FormType == "1.6") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form16; }
+                        if (FormType == "1.7") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form17; }
+                        if (FormType == "1.8") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form18; }
+                        if (FormType == "1.9") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form19; }
+
+                        if (FormType == "2.1") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form21; }
+                        if (FormType == "2.2") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form22; }
+                        if (FormType == "2.3") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form23; }
+                        if (FormType == "2.4") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form24; }
+                        if (FormType == "2.5") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form25; }
+                        if (FormType == "2.6") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form26; }
+                        if (FormType == "2.7") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form27; }
+                        if (FormType == "2.8") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form28; }
+                        if (FormType == "2.9") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form29; }
+                        if (FormType == "2.10") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form210; }
+                        if (FormType == "2.11") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form211; }
+                        if (FormType == "2.12") { frm.NumberInOrder_DB = number; Storage.LastAddedForm = Report.Forms.Form212; }
+                        lst.Add(frm);
+                        number++;
+                    }
+                    if (FormType == "1.1") { var tmp = from i in lst select (Form11)i; Storage.Rows11.AddRange(tmp); }
+                    if (FormType == "1.2") { var tmp = from i in lst select (Form12)i; Storage.Rows12.AddRange(tmp); }
+                    if (FormType == "1.3") { var tmp = from i in lst select (Form13)i; Storage.Rows13.AddRange(tmp); }
+                    if (FormType == "1.4") { var tmp = from i in lst select (Form14)i; Storage.Rows14.AddRange(tmp); }
+                    if (FormType == "1.5") { var tmp = from i in lst select (Form15)i; Storage.Rows15.AddRange(tmp); }
+                    if (FormType == "1.6") { var tmp = from i in lst select (Form16)i; Storage.Rows16.AddRange(tmp); }
+                    if (FormType == "1.7") { var tmp = from i in lst select (Form17)i; Storage.Rows17.AddRange(tmp); }
+                    if (FormType == "1.8") { var tmp = from i in lst select (Form18)i; Storage.Rows18.AddRange(tmp); }
+                    if (FormType == "1.9") { var tmp = from i in lst select (Form19)i; Storage.Rows19.AddRange(tmp); }
+
+                    if (FormType == "2.1") { var tmp = from i in lst select (Form21)i; Storage.Rows21.AddRange(tmp); }
+                    if (FormType == "2.2") { var tmp = from i in lst select (Form22)i; Storage.Rows22.AddRange(tmp); }
+                    if (FormType == "2.3") { var tmp = from i in lst select (Form23)i; Storage.Rows23.AddRange(tmp); }
+                    if (FormType == "2.4") { var tmp = from i in lst select (Form24)i; Storage.Rows24.AddRange(tmp); }
+                    if (FormType == "2.5") { var tmp = from i in lst select (Form25)i; Storage.Rows25.AddRange(tmp); }
+                    if (FormType == "2.6") { var tmp = from i in lst select (Form26)i; Storage.Rows26.AddRange(tmp); }
+                    if (FormType == "2.7") { var tmp = from i in lst select (Form27)i; Storage.Rows27.AddRange(tmp); }
+                    if (FormType == "2.8") { var tmp = from i in lst select (Form28)i; Storage.Rows28.AddRange(tmp); }
+                    if (FormType == "2.9") { var tmp = from i in lst select (Form29)i; Storage.Rows29.AddRange(tmp); }
+                    if (FormType == "2.10") { var tmp = from i in lst select (Form210)i; Storage.Rows210.AddRange(tmp); }
+                    if (FormType == "2.11") { var tmp = from i in lst select (Form211)i; Storage.Rows211.AddRange(tmp); }
+                    if (FormType == "2.12") { var tmp = from i in lst select (Form212)i; Storage.Rows212.AddRange(tmp); }
+                }
             }
         }
     }

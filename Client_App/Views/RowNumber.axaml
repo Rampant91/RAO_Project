@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        MinHeight="70" MinWidth="150"
+        MaxHeight="70"
+        MaxWidth="150"
+        Width="150"
+        Height="70"
+        x:Class="Client_App.Views.RowNumber"
+        xmlns:vm="using:Client_App.ViewModels"
+        Name="RowNumber"
+        Icon="/Assets/logo.png"
+        Title="{Binding WindowHeader}">
+  <Panel x:Name="NumberPanel">
+    <StackPanel Orientation="Vertical">
+      <TextBlock Text="Какое кол-во строчек вы хотите добавить?"/>
+      <TextBox Text="{Binding #RowNumber.Number, Mode=TwoWay}"/>
+      <StackPanel Orientation="Horizontal">
+        <Button Content="Подтвердить" Click="OnButtonClick"/>
+        </StackPanel>
+    </StackPanel>
+  </Panel>
+</Window>

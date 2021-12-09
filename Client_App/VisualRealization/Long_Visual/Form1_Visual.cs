@@ -417,6 +417,11 @@ namespace Client_App.Long_Visual
                 },
                 new MenuItem
                 {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
+                },
+                new MenuItem
+                {
                     Header = "Копировать",
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
