@@ -407,6 +407,11 @@ namespace Client_App.Long_Visual
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
+                },
                 new MenuItem
                 {
                     Header = "Копировать",
@@ -676,6 +681,11 @@ namespace Client_App.Long_Visual
                 {
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
+                },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
                 {
@@ -950,6 +960,11 @@ namespace Client_App.Long_Visual
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
+                },
                 new MenuItem
                 {
                     Header = "Копировать",
@@ -1220,6 +1235,11 @@ namespace Client_App.Long_Visual
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
+                },
                 new MenuItem
                 {
                     Header = "Копировать",
@@ -1489,6 +1509,11 @@ namespace Client_App.Long_Visual
                 {
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
+                },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
                 {
@@ -1787,6 +1812,11 @@ namespace Client_App.Long_Visual
                 {
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
+                },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
                 {
@@ -2097,6 +2127,11 @@ namespace Client_App.Long_Visual
                 {
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
+                },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
                 {
@@ -2452,6 +2487,11 @@ namespace Client_App.Long_Visual
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
+                },
                 new MenuItem
                 {
                     Header = "Копировать",
@@ -2719,6 +2759,11 @@ namespace Client_App.Long_Visual
                 {
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
+                },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
                 {
@@ -2991,6 +3036,11 @@ namespace Client_App.Long_Visual
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
+                },
                 new MenuItem
                 {
                     Header = "Копировать",
@@ -3262,6 +3312,11 @@ namespace Client_App.Long_Visual
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
+                },
                 new MenuItem
                 {
                     Header = "Копировать",
@@ -3532,6 +3587,11 @@ namespace Client_App.Long_Visual
                 {
                     Header = "Добавить строку",
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
+                },
+                                new MenuItem
+                {
+                    Header = "Добавить N строк",
+                    [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
                 {
