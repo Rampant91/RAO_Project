@@ -1063,7 +1063,6 @@ namespace Models.Collections
         #endregion
 
         #region Notes
-        public int? NotesId { get; set; }
 
         [Form_Property("Примечания")]
         ObservableCollectionWithItemPropertyChanged<Note> Notes_DB;

@@ -166,6 +166,7 @@ namespace Client_App.ViewModels
                         if (t.Str != null)
                         {
                             t.Str.Report_Collection.Add(Storage);
+                            t.Str = null;
                         }
 
                         if (t.DBO != null)
@@ -183,6 +184,7 @@ namespace Client_App.ViewModels
                                 tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
                             }
                             t.DBO.Reports_Collection.Add(tmp);
+                            t.DBO = null;
                         }
 
                         var dbm = StaticConfiguration.DBModel;
