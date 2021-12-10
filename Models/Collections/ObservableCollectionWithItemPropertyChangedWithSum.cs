@@ -288,33 +288,36 @@ namespace Models.Collections
 
         double StringToNumber(string Num)
         {
-            string tmp = Num;
-            tmp.Replace(" ","");
-            int len = tmp.Length;
-            if (len >= 1)
+            if (Num != null)
             {
-                if (len > 2)
+                string tmp = Num;
+                tmp.Replace(" ", "");
+                int len = tmp.Length;
+                if (len >= 1)
                 {
-                    if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+                    if (len > 2)
                     {
-                        tmp = tmp.Remove(len - 1, 1);
-                        tmp = tmp.Remove(0, 1);
+                        if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+                        {
+                            tmp = tmp.Remove(len - 1, 1);
+                            tmp = tmp.Remove(0, 1);
+                        }
                     }
-                }
-                if(len==1)
-                {
-                    tmp = tmp.Replace("-", "0");
-                }
+                    if (len == 1)
+                    {
+                        tmp = tmp.Replace("-", "0");
+                    }
 
-                tmp = tmp.Replace(",", ".");
-                NumberStyles styles = NumberStyles.Any;
-                try
-                {
-                    return double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"));
-                }
-                catch
-                {
-                    return 0;
+                    tmp = tmp.Replace(",", ".");
+                    NumberStyles styles = NumberStyles.Any;
+                    try
+                    {
+                        return double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB"));
+                    }
+                    catch
+                    {
+                        return 0;
+                    }
                 }
             }
             return 0;
@@ -387,7 +390,7 @@ namespace Models.Collections
 
                         double volumeSum = 0;
                         double massSum = 0;
-                        //double quantitySum = 0;
+                        double quantitySum = 0;
 
                         double alphaSum = 0;
                         double betaSum = 0;
@@ -411,7 +414,7 @@ namespace Models.Collections
                                 form.MassInPack_Hidden = true;
                                 volumeSum += StringToNumber(form.VolumeOutOfPack_DB);
                                 massSum += StringToNumber(form.MassOutOfPack_DB);
-                                //quantitySum += StringToNumber(form.QuantityIn_DB);
+                                quantitySum += StringToNumber(form.QuantityOZIII_DB);
                                 alphaSum += StringToNumber(form.AlphaActivity_DB);
                                 betaSum += StringToNumber(form.BetaGammaActivity_DB);
                                 tritSum += StringToNumber(form.TritiumActivity_DB);
@@ -424,7 +427,7 @@ namespace Models.Collections
 
                         sumRow.VolumeOutOfPack_DB = volumeSum >= double.Epsilon ? volumeSum.ToString("E2") : "-";
                         sumRow.MassOutOfPack_DB = massSum >= double.Epsilon ? massSum.ToString("E2") : "-"; 
-                        //sumRow.QuantityOZIII_DB = quantityInSum.ToString("E2");
+                        sumRow.QuantityOZIII_DB = quantitySum >= double.Epsilon ? quantitySum.ToString("E2") : "-";
                         sumRow.AlphaActivity_DB = alphaSum >= double.Epsilon ? alphaSum.ToString("E2") : "-";
                         sumRow.BetaGammaActivity_DB = betaSum >= double.Epsilon ? betaSum.ToString("E2") : "-";
                         sumRow.TritiumActivity_DB = tritSum >= double.Epsilon ? tritSum.ToString("E2") : "-";
