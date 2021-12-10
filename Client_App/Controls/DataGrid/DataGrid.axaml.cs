@@ -893,7 +893,6 @@ o => o.Pagination,
             if (PressedKey != Key.Tab)
             {
                 var bd = (Cell)Rows[FirstPressedItem[0], FirstPressedItem[1]];
-                bd.Focus();
                 if (!bd.IsReadOnly)
                 {
                     var t = ((TextBox)((Panel)((Border)bd
@@ -975,8 +974,10 @@ o => o.Pagination,
 
             if (args.Key == Key.Left)
                 ChangeSelectedCellsByKeys(Key.Left);
-            if (args.Key == Key.Right || args.Key == Key.Tab)
+            if (args.Key == Key.Right)
                 ChangeSelectedCellsByKeys(Key.Right);
+            if (args.Key == Key.Tab)
+                ChangeSelectedCellsByKeys(Key.Tab);
             if (args.Key == Key.Up)
                 ChangeSelectedCellsByKeys(Key.Up);
             if (args.Key == Key.Down || args.Key == Key.Enter)

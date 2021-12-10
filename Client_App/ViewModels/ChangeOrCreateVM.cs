@@ -105,6 +105,7 @@ namespace Client_App.ViewModels
         }
 
         public ReactiveCommand<Unit, Unit> CheckReport { get; }
+        public ReactiveCommand<Unit, Unit> SumRow { get; }
         public ReactiveCommand<string, Unit> AddSort { get; }
         public ReactiveCommand<string, Unit> AddNote { get; }
         public ReactiveCommand<Unit, Unit> AddRow { get; }
@@ -122,6 +123,7 @@ namespace Client_App.ViewModels
             AddRow = ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.CreateFromTask<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
+            SumRow = ReactiveCommand.Create(_SumRow);
             PasteRows = ReactiveCommand.CreateFromTask<IList>(_PasteRows);
             DuplicateRowsx1 = ReactiveCommand.CreateFromTask(_DuplicateRowsx1);
             CopyRows = ReactiveCommand.CreateFromTask<IList>(_CopyRows);
@@ -166,6 +168,7 @@ namespace Client_App.ViewModels
                         if (t.Str != null)
                         {
                             t.Str.Report_Collection.Add(Storage);
+                            t.Str = null;
                         }
 
                         if (t.DBO != null)
@@ -183,6 +186,7 @@ namespace Client_App.ViewModels
                                 tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
                             }
                             t.DBO.Reports_Collection.Add(tmp);
+                            t.DBO = null;
                         }
 
                         var dbm = StaticConfiguration.DBModel;
@@ -196,9 +200,12 @@ namespace Client_App.ViewModels
 
         private void _CheckReport()
         {
+            IsCanSaveReportEnabled = true;
+        }
+        private void _SumRow()
+        {
             Storage.Rows21.Sum();
             Storage.Rows22.Sum();
-            IsCanSaveReportEnabled = true;
         }
         public void _AddRow10()
         {
@@ -443,8 +450,6 @@ namespace Client_App.ViewModels
                             }
                         }
                     }
-                    Storage.Rows21.Sum();
-                    Storage.Rows22.Sum();
                 }
             }
         }

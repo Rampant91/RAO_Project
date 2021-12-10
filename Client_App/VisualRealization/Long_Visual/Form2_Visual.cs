@@ -363,6 +363,10 @@ namespace Client_App.Long_Visual
             {
                 Width = new GridLength(1, GridUnitType.Star)
             };
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
             column = new ColumnDefinition();
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -373,8 +377,9 @@ namespace Client_App.Long_Visual
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
             topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
-            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
-            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
+            topPnl2.Children.Add(CreateButton("Суммировать", "5,12,0,0", 2, 30, "SumRow"));
+            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 3, 30, "CheckReport"));
+            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 4, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
 
@@ -638,6 +643,10 @@ namespace Client_App.Long_Visual
             {
                 Width = new GridLength(1, GridUnitType.Star)
             };
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
             topPnl2.ColumnDefinitions.Add(column);
             column = new ColumnDefinition();
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
@@ -648,8 +657,9 @@ namespace Client_App.Long_Visual
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
             topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
-            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
-            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
+            topPnl2.Children.Add(CreateButton("Суммировать", "5,12,0,0", 2, 30, "SumRow"));
+            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 3, 30, "CheckReport"));
+            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 4, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
 
