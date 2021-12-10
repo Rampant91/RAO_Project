@@ -263,7 +263,6 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 MachineCode_DB = ((RamAccess<byte?>)Value).Value;
-                OnPropertyChanged(nameof(MachineCode));
             }
         }
 
