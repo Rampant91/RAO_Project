@@ -26,23 +26,6 @@ namespace Client_App.Views
 
             _param = rep.FormNum_DB;
 
-            if (param == "1.0")
-            {
-                if (rep.Rows10.Count == 0)
-                {
-                    tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
-                    tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
-                }
-            }
-            if (param == "2.0")
-            {
-                if (rep.Rows20.Count == 0)
-                {
-                    tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
-                    tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
-                }
-            }
-
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
@@ -62,19 +45,21 @@ namespace Client_App.Views
 
             if (param == "1.0")
             {
-                if (reps.Master.Rows10.Count == 0)
-                {
-                    tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
-                    tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
-                }
+                var ty1 = (Form10)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form10)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                tmp.Storage.Rows10.Add(ty1);
+                tmp.Storage.Rows10.Add(ty2);
             }
             if (param == "2.0")
             {
-                if (reps.Master.Rows20.Count == 0)
-                {
-                    tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
-                    tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
-                }
+                var ty1 = (Form20)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form20)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                tmp.Storage.Rows20.Add(ty1);
+                tmp.Storage.Rows20.Add(ty2);
             }
 
             Str = reps;
@@ -100,15 +85,23 @@ namespace Client_App.Views
             DBO = reps;
             _param = param;
 
-            if (param.Split('.')[0] == "1")
+            if (param == "1.0")
             {
-                tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
-                tmp.Storage.Rows10.Add((Form10)FormCreator.Create(param));
+                var ty1 = (Form10)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form10)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                tmp.Storage.Rows10.Add(ty1);
+                tmp.Storage.Rows10.Add(ty2);
             }
-            if (param.Split('.')[0] == "2")
+            if (param == "2.0")
             {
-                tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
-                tmp.Storage.Rows20.Add((Form20)FormCreator.Create(param));
+                var ty1 = (Form20)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form20)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                tmp.Storage.Rows20.Add(ty1);
+                tmp.Storage.Rows20.Add(ty2);
             }
 
             InitializeComponent();

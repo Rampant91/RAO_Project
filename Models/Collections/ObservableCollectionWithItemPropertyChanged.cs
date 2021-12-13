@@ -107,21 +107,18 @@ namespace Models.Collections
             var bsT = typeof(T).BaseType;
             if (bsT != null)
             {
-                if (typeof(T) != typeof(Form10) && typeof(T) != typeof(Form20))
+                if (bsT == typeof(Form))
                 {
-                    if (bsT == typeof(Form))
+                    flag = true;
+                }
+                else
+                {
+                    var bsT2 = bsT.BaseType;
+                    if (bsT2 != null)
                     {
-                        flag = true;
-                    }
-                    else
-                    {
-                        var bsT2 = bsT.BaseType;
-                        if (bsT2 != null)
+                        if (bsT2 == typeof(Form))
                         {
-                            if (bsT2 == typeof(Form))
-                            {
-                                flag = true;
-                            }
+                            flag = true;
                         }
                     }
                 }

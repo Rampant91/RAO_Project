@@ -93,21 +93,23 @@ namespace Client_App.ViewModels
                 {
                     if (it.Master_DB.FormNum_DB != "")
                     {
-                        if (it.Master_DB.FormNum_DB == "1.0")
+                        if (it.Master_DB.Rows10.Count==0)
                         {
-                            if (it.Master.Rows10.Count == 0)
-                            {
-                                it.Master.Rows10.Add((Form10)FormCreator.Create("1.0"));
-                                it.Master.Rows10.Add((Form10)FormCreator.Create("1.0"));
-                            }
+                            var ty1 = (Form10)FormCreator.Create("1.0");
+                            ty1.NumberInOrder_DB = 1;
+                            var ty2 = (Form10)FormCreator.Create("1.0");
+                            ty2.NumberInOrder_DB = 2;
+                            it.Master_DB.Rows10.Add(ty1);
+                            it.Master_DB.Rows10.Add(ty2);
                         }
-                        if (it.Master_DB.FormNum_DB == "2.0")
+                        if (it.Master_DB.Rows20.Count == 0)
                         {
-                            if (it.Master.Rows20.Count == 0)
-                            {
-                                it.Master.Rows20.Add((Form20)FormCreator.Create("2.0"));
-                                it.Master.Rows20.Add((Form20)FormCreator.Create("2.0"));
-                            }
+                            var ty1 = (Form20)FormCreator.Create("2.0");
+                            ty1.NumberInOrder_DB = 1;
+                            var ty2 = (Form20)FormCreator.Create("2.0");
+                            ty2.NumberInOrder_DB = 2;
+                            it.Master_DB.Rows20.Add(ty1);
+                            it.Master_DB.Rows20.Add(ty2);
                         }
                     }
                 }
@@ -462,9 +464,42 @@ namespace Client_App.ViewModels
                                         }
                                         catch
                                         {
-                                        }
 
-                                        item.CleanIds();
+                                        }
+                                        if (item != null)
+                                        {
+                                            if(item.Master_DB.FormNum_DB=="1.0")
+                                            {
+                                                if(item.Master_DB.Rows10[0].Id> item.Master_DB.Rows10[1].Id)
+                                                {
+                                                    item.Master_DB.Rows10[0].NumberInOrder_DB = 2;
+                                                    item.Master_DB.Rows10[1].NumberInOrder_DB = 1;
+                                                    item.Master_DB.Rows10.QuickSort();
+                                                }
+                                                else
+                                                {
+                                                    item.Master_DB.Rows10[0].NumberInOrder_DB = 1;
+                                                    item.Master_DB.Rows10[1].NumberInOrder_DB = 2;
+                                                    item.Master_DB.Rows10.QuickSort();
+                                                }
+                                            }
+                                            if (item.Master_DB.FormNum_DB == "2.0")
+                                            {
+                                                if (item.Master_DB.Rows20[0].Id > item.Master_DB.Rows20[1].Id)
+                                                {
+                                                    item.Master_DB.Rows20[0].NumberInOrder_DB = 2;
+                                                    item.Master_DB.Rows20[1].NumberInOrder_DB = 1;
+                                                    item.Master_DB.Rows20.QuickSort();
+                                                }
+                                                else
+                                                {
+                                                    item.Master_DB.Rows20[0].NumberInOrder_DB = 1;
+                                                    item.Master_DB.Rows20[1].NumberInOrder_DB = 2;
+                                                    item.Master_DB.Rows20.QuickSort();
+                                                }
+                                            }
+                                            item.CleanIds();
+                                        }
                                         if (first11 != null)
                                         {
                                             foreach (var it in item.Report_Collection.OrderBy(x => x.NumberInOrder_DB))
