@@ -1143,7 +1143,7 @@ namespace Models
         }
 
         public List<string> Properties = new List<string>() {
-        ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
@@ -1166,7 +1166,7 @@ namespace Models
                 ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
                 ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("PackNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name };
 #region IExcel
-public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column, bool Transpon=true)
+        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column, bool Transpon=true)
         {
             var cnt = base.ExcelRow(worksheet,Row,Column,Transpon);
             Column = Column +(Transpon == true ? cnt: 0);

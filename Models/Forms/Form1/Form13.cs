@@ -1016,6 +1016,31 @@ namespace Models
             return true;
         }
 
+        List<string> Properties = new List<string>()
+        {
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("NumberInOrder").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("FactoryNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("Activity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("CreatorOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("CreationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("AggregateState").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("DocumentVid").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("DocumentNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("DocumentDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form13,Models").GetProperty("PackNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+        };
+
         #region IExcel
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
