@@ -1142,8 +1142,31 @@ namespace Models
             return true;
         }
 
-        #region IExcel
-        public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column, bool Transpon=true)
+        public List<string> Properties = new List<string>() {
+        ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("OperationCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("OperationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("PassportNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("Type").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("Radionuclids").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("FactoryNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("Quantity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("Activity").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("CreatorOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("CreationDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("Category").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("SignedServicePeriod").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("PropertyCode").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("Owner").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("DocumentVid").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("DocumentNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("DocumentDate").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("ProviderOrRecieverOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("TransporterOKPO").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("PackName").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("PackType").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name,
+                ((Form_PropertyAttribute)System.Type.GetType("Models.Form11,Models").GetProperty("PackNumber").GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name };
+#region IExcel
+public int ExcelRow(ExcelWorksheet worksheet, int Row,int Column, bool Transpon=true)
         {
             var cnt = base.ExcelRow(worksheet,Row,Column,Transpon);
             Column = Column +(Transpon == true ? cnt: 0);
