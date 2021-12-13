@@ -172,9 +172,7 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                RefineMachineName_DB = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(RefineMachineName));
-            }
+                RefineMachineName_DB = ((RamAccess<string>)Value).Value;            }
         }
 
         private bool RefineMachineName_Validation(RamAccess<string> value)

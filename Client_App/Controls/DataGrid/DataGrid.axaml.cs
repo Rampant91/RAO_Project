@@ -893,17 +893,20 @@ o => o.Pagination,
             if (PressedKey != Key.Tab)
             {
                 var bd = (Cell)Rows[FirstPressedItem[0], FirstPressedItem[1]];
-                if (!bd.IsReadOnly)
+                if (bd != null)
                 {
-                    var t = ((TextBox)((Panel)((Border)bd
-                        .GetLogicalChildren().First())
-                        .Child)
-                        .Children[0]);
-                    t.Focus();
-                    if (t.Text != null)
+                    if (!bd.IsReadOnly)
                     {
-                        t.SelectionStart = 0;
-                        t.SelectionEnd = t.Text.Length;
+                        var t = ((TextBox)((Panel)((Border)bd
+                            .GetLogicalChildren().First())
+                            .Child)
+                            .Children[0]);
+                        t.Focus();
+                        if (t.Text != null)
+                        {
+                            t.SelectionStart = 0;
+                            t.SelectionEnd = t.Text.Length;
+                        }
                     }
                 }
             }
