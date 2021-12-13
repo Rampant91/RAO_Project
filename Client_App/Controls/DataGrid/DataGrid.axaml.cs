@@ -743,14 +743,14 @@ o => o.Pagination,
                     if (item == tmp)
                     {
                         var tkey = row.Key;
-                        Rows.Remove(Convert.ToInt32(row.Key));
                         foreach (var trow in Rows)
                         {
-                            if(Convert.ToInt32(trow.Key)> Convert.ToInt32(tkey))
+                            if (Convert.ToInt32(trow.Key) > Convert.ToInt32(tkey))
                             {
                                 Rows.Remove(Convert.ToInt32(trow.Key));
                             }
                         }
+                        Rows.Remove(Convert.ToInt32(row.Key));
                         break;
                     }
                 }
@@ -837,10 +837,10 @@ o => o.Pagination,
             var num = Convert.ToInt32(_nowPage);
             if (PressedKey == Key.Left)
             {
-                var n = FirstPressedItem[1]-1;
+                var n = FirstPressedItem[1] - 1;
                 if (n <= 1)
                     n = 1;
-                FirstPressedItem[1]=n;
+                FirstPressedItem[1] = n;
                 LastPressedItem[0] = FirstPressedItem[0];
                 LastPressedItem[1] = FirstPressedItem[1];
             }
