@@ -30,15 +30,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth0,
                 Height = RowHeight0,
-                BorderBrush = new SolidColorBrush(border_color0)
+                BorderBrush = new SolidColorBrush(border_color0),
+                BindingPath = Binding
             };
-            Binding b = new Binding
-            {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
             cell.CellRow = Row;
             cell.CellColumn = Column;
             return cell;
@@ -52,13 +46,13 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Width = 4 * Wdth0 - 3,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Spacing = 0,
-                SRow = Row
+                SRow = Row,
             };
             Binding b = new Binding
             {
                 Path = "Items[" + (Row - 1).ToString() + "]",
-                Mode = BindingMode.OneTime,
                 ElementName = TopName,
+                Mode = BindingMode.OneTime,
                 NameScope = new WeakReference<INameScope>(scp)
             };
             stck.Bind(StackPanel.DataContextProperty, b);

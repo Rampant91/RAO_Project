@@ -142,7 +142,7 @@ o => o.Pagination,
                             if (val <= maxpage && val >= 1)
                             {
                                 SetAndRaise(NowPageProperty, ref _nowPage, value);
-                                UpdateAllCells();
+                                UpdateCells();
                             }
                             else
                             {
@@ -151,7 +151,7 @@ o => o.Pagination,
                                     if (_nowPage != maxpage.ToString())
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, maxpage.ToString());
-                                        UpdateAllCells();
+                                        UpdateCells();
                                     }
                                 }
                                 if (val < 1)
@@ -159,7 +159,7 @@ o => o.Pagination,
                                     if (_nowPage != "1")
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, "1");
-                                        UpdateAllCells();
+                                        UpdateCells();
                                     }
                                 }
                             }
@@ -735,7 +735,7 @@ o => o.Pagination,
             NameScope scp = new();
             scp.Register(Name, this);
             var items = GetPageItems();
-            if (items.Count() <=5)
+            if (items.Count() ==0)
             {
                 UpdateAllCells();
                 return;
@@ -747,9 +747,21 @@ o => o.Pagination,
 
             for (int i=offset;i<num*PageSize;i++)
             {
-                if(its[i]!=Rows[i-offset].SCells.DataContext)
+                if (i >= its.Count)
                 {
-                    Rows[i - offset].SCells.DataContext = its[i];
+                    Rows[i - offset + 1].SCells.RowHide = true;
+                }
+                else
+                {
+                    if (its[i] != Rows[i - offset + 1].SCells.DataContext)
+                    {
+                        Rows[i - offset + 1].SCells.DataContext = its[i];
+                        Rows[i - offset + 1].SCells.RowHide = false;
+                    }
+                    else
+                    {
+                        Rows[i - offset + 1].SCells.RowHide = false;
+                    }
                 }
             }
 
