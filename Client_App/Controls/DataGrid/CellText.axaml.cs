@@ -13,7 +13,7 @@ using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid
 {
-    public class Cell : UserControl
+    public class CellText : Cell
     {
         public static readonly DirectProperty<Cell, int> CellRowProperty =
             AvaloniaProperty.RegisterDirect<Cell, int>(
@@ -23,7 +23,7 @@ namespace Client_App.Controls.DataGrid
 
         public int cellRow = -1;
 
-        public Cell(object DataContext, string BindingPath, bool IsReadOnly)
+        public CellText(object DataContext, string BindingPath, bool IsReadOnly)
         {
             this.DataContext = DataContext;
             this.IsReadOnly = IsReadOnly;
@@ -34,7 +34,7 @@ namespace Client_App.Controls.DataGrid
 
         public bool RightHandler { get; set; } = true;
 
-        public Cell(string BindingPath, bool IsReadOnly,bool RightHandler=true)
+        public CellText(string BindingPath, bool IsReadOnly,bool RightHandler=true)
         {
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
@@ -42,7 +42,7 @@ namespace Client_App.Controls.DataGrid
             this.RightHandler = RightHandler;
         }
 
-        public Cell()
+        public CellText()
         {
             InitializeComponent();
         }

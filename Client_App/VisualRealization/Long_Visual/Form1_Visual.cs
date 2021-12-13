@@ -29,7 +29,7 @@ namespace Client_App.Long_Visual
 
         public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width)
         {
-            return new Cell(textProp, false)
+            return new CellText(textProp, false)
             {
                 Height = height,
                 Width = width,
