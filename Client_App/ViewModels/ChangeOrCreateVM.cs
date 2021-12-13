@@ -185,6 +185,7 @@ namespace Client_App.ViewModels
                                 tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
                                 tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
                             }
+
                             t.DBO.Reports_Collection.Add(tmp);
                             t.DBO = null;
                         }
