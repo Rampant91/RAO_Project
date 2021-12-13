@@ -7,6 +7,9 @@ using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Markup.Xaml;
 using Avalonia.VisualTree;
+using Avalonia.Data;
+using Avalonia.Layout;
+using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -23,7 +26,6 @@ namespace Client_App.Controls.DataGrid
         public Cell(object DataContext, string BindingPath, bool IsReadOnly)
         {
             this.DataContext = DataContext;
-            this.BindingPath = BindingPath;
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
 
@@ -34,7 +36,6 @@ namespace Client_App.Controls.DataGrid
 
         public Cell(string BindingPath, bool IsReadOnly,bool RightHandler=true)
         {
-            this.BindingPath = BindingPath;
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
             Focusable = false;
@@ -46,7 +47,49 @@ namespace Client_App.Controls.DataGrid
             InitializeComponent();
         }
 
-        public string BindingPath { get; set; } = "";
+        public static readonly DirectProperty<Cell, string> BindingPathProperty =
+            AvaloniaProperty.RegisterDirect<Cell, string>(
+        nameof(BindingPath),
+        o => o.BindingPath,
+        (o, v) => o.BindingPath = v);
+
+        string bindingPath = "";
+        public string BindingPath
+        {
+            get => bindingPath;
+            set
+            {
+                if (value != null)
+                {
+                    SetAndRaise(BindingPathProperty, ref bindingPath, value);
+                    SetBindingToText();
+                }
+            }
+        }
+        void SetBindingToText()
+        {
+            if (this.DataContext != null)
+            {
+                var t = (TextBox)((Panel)((Border)Content).Child).Children[0];
+                if (t != null)
+                {
+                    Binding b = new()
+                    {
+                        Path = BindingPath,
+
+                    };
+                    t.Bind(TextBox.DataContextProperty, b);
+                }
+            }
+            else
+            {
+                var t = (TextBox)((Panel)((Border)Content).Child).Children[0];
+                if (t != null)
+                {
+                    t.DataContext = this.DataContext;
+                }
+            }
+        }
 
         public bool IsReadOnly { get; set; }
 
@@ -65,6 +108,7 @@ namespace Client_App.Controls.DataGrid
         {
             AvaloniaXamlLoader.Load(this);
 
+            this.BindingPath = BindingPath;
             var t = (TextBox) ((Panel) ((Border) Content).Child).Children[0];
             t.IsEnabled = !IsReadOnly;
         }

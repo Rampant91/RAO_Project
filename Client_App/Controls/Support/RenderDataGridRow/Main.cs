@@ -78,15 +78,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-            Binding b = new Binding
-            {
-                Path = "Items[" + (Row - 1).ToString() + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(DataGrid.Cell.DataContextProperty, b);
             cell.CellRow = Row;
             cell.CellColumn = Column;
             return cell;

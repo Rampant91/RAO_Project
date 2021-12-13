@@ -706,11 +706,21 @@ o => o.Pagination,
 
             var num = Convert.ToInt32(_nowPage);
             var offset = (num - 1) * PageSize;
-            var count = offset+1;
+            var count = 1;
             var items = GetPageItems();
-            foreach (var item in items)
+
+            var its = Items.ToList();
+            for(int i=0;i<PageSize;i++)
             {
                 var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
+                if((i+offset)>=items.Count())
+                {
+                    tmp.RowHide = true;
+                }
+                else
+                {
+                    tmp.DataContext = its[i];
+                }
                 Rows.Add(new CellCollection(tmp), count);
                 count++;
             }
@@ -725,58 +735,22 @@ o => o.Pagination,
             NameScope scp = new();
             scp.Register(Name, this);
             var items = GetPageItems();
-            if (items.Count() == 0)
+            if (items.Count() <=5)
             {
                 UpdateAllCells();
                 return;
             }
 
-            var Id1 = from item in Rows select item.Value.SCells.DataContext.GetHashCode();
-            var Id2 = from item in items select item.GetHashCode();
+            var num = Convert.ToInt32(_nowPage);
+            var offset = (num - 1) * PageSize;
+            var its = Items.ToList();
 
-            var Outer1 = Id1.Except(Id2).ToArray();
-
-            foreach (var item in Outer1)
-                foreach (var row in Rows)
-                {
-                    var tmp = row.Value.SCells.DataContext.GetHashCode();
-                    if (item == tmp)
-                    {
-                        var tkey = row.Key;
-                        Rows.Remove(Convert.ToInt32(row.Key));
-                        foreach (var trow in Rows)
-                        {
-                            if(Convert.ToInt32(trow.Key)> Convert.ToInt32(tkey))
-                            {
-                                Rows.Remove(Convert.ToInt32(trow.Key));
-                            }
-                        }
-                        break;
-                    }
-                }
-
-            items = GetPageItems();
-            Id1 = from item in Rows select item.Value.SCells.DataContext.GetHashCode();
-            Id2 = from item in items select item.GetHashCode();
-            var Outer2 = Id2.Except(Id1).ToArray();
-
-            foreach (var item in Outer2)
-                foreach (var row in items)
-                {
-                    var tmp = row.GetHashCode();
-                    if (item == tmp)
-                    {
-                        var num = Convert.ToInt32(_nowPage);
-                        var offset = (num-1) * PageSize;
-                        var tp = Rows.GetFreeRow()+offset;
-                        var t = (Row)Support.RenderDataGridRow.Render.GetControl(Type, tp, scp, Name);
-                        Rows.Add(new CellCollection(t), tp);
-                    }
-                }
-
-            if (Outer1.Length != 0 || Outer2.Length != 0)
+            for (int i=offset;i<num*PageSize;i++)
             {
-                Rows.Reorgonize(scp, Name);
+                if(its[i]!=Rows[i-offset].SCells.DataContext)
+                {
+                    Rows[i - offset].SCells.DataContext = its[i];
+                }
             }
 
             SetSelectedControls();

@@ -3,13 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Client_App.Controls.DataGrid.Cell">
+             x:Class="Client_App.Controls.DataGrid.Cell"
+             xmlns:local="clr-namespace:Client_App.Controls.DataGrid">
   <Border BorderThickness="1" BorderBrush="Black">
-    <Panel Background="Transparent">
-      <TextBox DataContext="{Binding}"
-               Text="{Binding Value}"
-               Background="Transparent"
-               TextAlignment="Center">
+    <Panel Background="Transparent" DataContext="{Binding $parent[local:Row].DataContext}">
+      <TextBox
+          Text="{Binding Value}"
+          Background="Transparent"
+          TextAlignment="Center">
         <TextBox.ContextMenu>
           <ContextMenu Width="0" Height="0"/>
         </TextBox.ContextMenu>
