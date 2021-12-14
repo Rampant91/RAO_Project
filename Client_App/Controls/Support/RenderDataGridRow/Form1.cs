@@ -118,15 +118,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -188,15 +182,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -257,15 +245,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -334,15 +316,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -415,15 +391,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -496,15 +466,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -582,15 +546,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -664,15 +622,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-            cell.Bind(StyledElement.DataContextProperty, b);
 
             cell.CellRow = Row;
             cell.CellColumn = Column;
@@ -726,17 +678,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             {
                 Width = starWidth * Wdth1,
                 Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1)
+                BorderBrush = new SolidColorBrush(border_color1),
+                BindingPath = Binding
             };
-
-            Binding b = new()
-            {
-                Path = "Items[" + (Row - 1) + "]." + Binding,
-                ElementName = TopName,
-                NameScope = new WeakReference<INameScope>(scp)
-            };
-
-            cell.Bind(StyledElement.DataContextProperty, b);
 
             cell.CellRow = Row;
             cell.CellColumn = Column;

@@ -61,7 +61,9 @@
                   <ColumnDefinition MaxWidth="452"></ColumnDefinition>
                   <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Panel x:Name="Forms_p1_0" Grid.Column="0"/>
+                <ScrollViewer>
+                  <Panel x:Name="Forms_p1_0" Grid.Column="0"/>
+                </ScrollViewer>
                 <Panel x:Name="Forms_p1_B" Grid.Column="1"/>
               </Grid>
               <Panel Margin="0,5,0,0" x:Name="Forms_p1_X" Grid.Row="1"/>
@@ -72,7 +74,7 @@
           <Panel x:Name="Forms_p2">
             <Grid>
               <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" MinHeight="200"></RowDefinition>
+                <RowDefinition Height="Auto" MinHeight="220"></RowDefinition>
                 <RowDefinition></RowDefinition>
               </Grid.RowDefinitions>
               <Grid Grid.Row="0">
@@ -80,7 +82,9 @@
                   <ColumnDefinition MaxWidth="452"></ColumnDefinition>
                   <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <Panel x:Name="Forms_p2_0" Grid.Column="0"/>
+                <ScrollViewer>
+                  <Panel x:Name="Forms_p2_0" Grid.Column="0"/>
+                </ScrollViewer>
                 <Panel x:Name="Forms_p2_B" Grid.Column="1"/>
               </Grid>
               <Panel Margin="0,5,0,0" x:Name="Forms_p2_X" Grid.Row="1"/>

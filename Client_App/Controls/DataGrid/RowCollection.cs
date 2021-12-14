@@ -145,7 +145,7 @@ namespace Client_App.Controls.DataGrid
 
         private void AddToSRows(int Row, CellCollection cellCollection)
         {
-            SRows.Children.Insert((Row-1)%20, cellCollection.SCells);
+            SRows.Children.Insert((Row-1), cellCollection.SCells);
         }
 
         public void Reorgonize(NameScope scp, string topName)

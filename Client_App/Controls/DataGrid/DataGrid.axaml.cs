@@ -100,7 +100,7 @@ o => o.Pagination,
             set
             {
                 SetAndRaise(PaginationProperty, ref _pagination, value);
-                UpdateAllCells();
+                UpdateCells();
             }
         }
         public static readonly DirectProperty<DataGrid, int> PageSizeProperty =
@@ -109,14 +109,14 @@ o => o.Pagination,
         o => o.PageSize,
         (o, v) => o.PageSize = v);
 
-        private int _pageSize = 20;
+        private int _pageSize = 30;
         public int PageSize
         {
             get => _pageSize;
             set
             {
                 SetAndRaise(PageSizeProperty, ref _pageSize, value);
-                UpdateAllCells();
+                UpdateCells();
             }
         }
         public static readonly DirectProperty<DataGrid, string> NowPageProperty =
@@ -214,7 +214,7 @@ o => o.Pagination,
                     SetAndRaise(ItemsProperty, ref _items, value);
                     if (Name == "Form1AllDataGrid_" || Name == "Form2AllDataGrid_"|| Name == "Form20AllDataGrid_"||Name == "Form10AllDataGrid_")
                     {
-                        UpdateAllCells();
+                        UpdateCells();
                     }
                     else
                     {
@@ -707,13 +707,13 @@ o => o.Pagination,
             var num = Convert.ToInt32(_nowPage);
             var offset = (num - 1) * PageSize;
             var count = 1;
-            var items = GetPageItems();
 
-            var its = Items.ToList();
+            var its = Items as IList;
+            _nowPage = "1";
             for(int i=0;i<PageSize;i++)
             {
                 var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                if((i+offset)>=items.Count())
+                if((i+offset)>=Items.Count())
                 {
                     tmp.RowHide = true;
                 }
@@ -733,40 +733,42 @@ o => o.Pagination,
         {
             //UpdateAllCells();
             NameScope scp = new();
-            scp.Register(Name, this);
-            var items = GetPageItems();
-            if (items.Count() ==0)
+            if (Name != null)
             {
-                UpdateAllCells();
-                return;
-            }
-
-            var num = Convert.ToInt32(_nowPage);
-            var offset = (num - 1) * PageSize;
-            var its = Items.ToList();
-
-            for (int i=offset;i<num*PageSize;i++)
-            {
-                if (i >= its.Count)
+                scp.Register(Name, this);
+                if (Items.Count() == 0)
                 {
-                    Rows[i - offset + 1].SCells.RowHide = true;
+                    UpdateAllCells();
+                    return;
                 }
-                else
+
+                var num = Convert.ToInt32(_nowPage);
+                var offset = (num - 1) * PageSize;
+                var its = Items as IList;
+
+                for (int i = offset; i < num * PageSize; i++)
                 {
-                    if (its[i] != Rows[i - offset + 1].SCells.DataContext)
+                    if (i >= its.Count)
                     {
-                        Rows[i - offset + 1].SCells.DataContext = its[i];
-                        Rows[i - offset + 1].SCells.RowHide = false;
+                        Rows[i - offset + 1].SCells.RowHide = true;
                     }
                     else
                     {
-                        Rows[i - offset + 1].SCells.RowHide = false;
+                        if (its[i] != Rows[i - offset + 1].SCells.DataContext)
+                        {
+                            Rows[i - offset + 1].SCells.DataContext = its[i];
+                            Rows[i - offset + 1].SCells.RowHide = false;
+                        }
+                        else
+                        {
+                            Rows[i - offset + 1].SCells.RowHide = false;
+                        }
                     }
                 }
-            }
 
-            SetSelectedControls();
-            SetSelectedItemsWithHandler();
+                SetSelectedControls();
+                SetSelectedItemsWithHandler();
+            }
         }
 
         private void ItemsChanged(object sender, PropertyChangedEventArgs args)

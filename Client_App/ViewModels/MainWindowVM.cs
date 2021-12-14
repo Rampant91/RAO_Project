@@ -303,7 +303,7 @@ namespace Client_App.ViewModels
                                         db.SaveChanges();
 
                                         string filename2 = "";
-                                        if (rp.Master.Rows10.Count > 0)
+                                        if (rp.Master.Rows10.Count > 0&& rp.Master.Rows10[0].Okpo_DB != ""&& rp.Master.Rows10[0].Okpo_DB != "")
                                         {
                                             if (rp.Master.Rows10[1].RegNo_DB == "")
                                             {

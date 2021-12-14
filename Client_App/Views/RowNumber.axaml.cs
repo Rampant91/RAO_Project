@@ -34,7 +34,7 @@ namespace Client_App.Views
                 try
                 {
                     var t = System.Convert.ToInt32(value);
-                    if (t > 0 &&t<=1000&& t.ToString() != Number)
+                    if (t > 0 &&t<=10000&& t.ToString() != Number)
                     {
                         SetAndRaise(NumberProperty, ref _Number, value);
                     }

@@ -281,39 +281,12 @@ namespace Client_App.Long_Visual
             return vw;
         }
 
-        public static Grid Form11_Visual(INameScope scp)
+        public static Control Form11_Visual(INameScope scp)
         {
-            Grid maingrid = new Grid();
-            RowDefinition? row = new RowDefinition
-            {
-                Height = new GridLength(0.5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.4, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(3, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            ScrollViewer vw = new ScrollViewer();
+            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            StackPanel maingrid = new StackPanel();
+            vw.Content = maingrid;
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -394,7 +367,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight=700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -467,7 +441,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -557,41 +532,13 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
             maingrid.Children.Add(topPnl23);
-            return maingrid;
+            return vw;
         }
-        public static Grid Form12_Visual(INameScope scp)
+        public static Control Form12_Visual(INameScope scp)
         {
-            Grid maingrid = new Grid();
-            RowDefinition? row = new RowDefinition
-            {
-                Height = new GridLength(0.5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.4, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(3, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            ScrollViewer vw = new ScrollViewer();
+            StackPanel maingrid = new StackPanel();
+            vw.Content = maingrid;
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -671,7 +618,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -746,7 +694,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -843,41 +792,13 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
             maingrid.Children.Add(topPnl23);
 
-            return maingrid;
+            return vw;
         }
-        public static Grid Form13_Visual(INameScope scp)
+        public static Control Form13_Visual(INameScope scp)
         {
-            Grid maingrid = new Grid();
-            RowDefinition? row = new RowDefinition
-            {
-                Height = new GridLength(0.5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.4, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(3, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            StackPanel maingrid = new StackPanel();
+            vw.Content = maingrid;
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -957,7 +878,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1031,7 +953,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1126,41 +1049,13 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
             maingrid.Children.Add(topPnl23);
-            return maingrid;
+            return vw;
         }
-        public static Grid Form14_Visual(INameScope scp)
+        public static Control Form14_Visual(INameScope scp)
         {
-            Grid maingrid = new Grid();
-            RowDefinition? row = new RowDefinition
-            {
-                Height = new GridLength(0.5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.4, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(3, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            StackPanel maingrid = new StackPanel();
+            vw.Content = maingrid;
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -1240,7 +1135,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1313,7 +1209,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1409,41 +1306,13 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
             maingrid.Children.Add(topPnl23);
-            return maingrid;
+            return vw;
         }
-        public static Grid Form15_Visual(INameScope scp)
+        public static Control Form15_Visual(INameScope scp)
         {
-            Grid maingrid = new Grid();
-            RowDefinition? row = new RowDefinition
-            {
-                Height = new GridLength(0.5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.4, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(3, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            StackPanel maingrid = new StackPanel();
+            vw.Content = maingrid;
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -1523,7 +1392,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1596,7 +1466,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1693,41 +1564,13 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
             maingrid.Children.Add(topPnl23);
 
-            return maingrid;
+            return vw;
         }
-        public static Grid Form16_Visual(INameScope scp)
+        public static Control Form16_Visual(INameScope scp)
         {
-            Grid maingrid = new Grid();
-            RowDefinition? row = new RowDefinition
-            {
-                Height = new GridLength(0.5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.4, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(3, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            StackPanel maingrid = new StackPanel();
+            vw.Content = maingrid;
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -1807,7 +1650,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1880,7 +1724,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1977,41 +1822,13 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
             maingrid.Children.Add(topPnl23);
 
-            return maingrid;
+            return vw;
         }
-        public static Grid Form17_Visual(INameScope scp)
+        public static Control Form17_Visual(INameScope scp)
         {
-            Grid maingrid = new Grid();
-            RowDefinition? row = new RowDefinition
-            {
-                Height = new GridLength(0.5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.4, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(3, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            StackPanel maingrid = new StackPanel();
+            vw.Content = maingrid;
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -2091,7 +1908,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -2164,7 +1982,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -2261,41 +2080,13 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
             maingrid.Children.Add(topPnl23);
 
-            return maingrid;
+            return vw;
         }
-        public static Grid Form18_Visual(INameScope scp)
+        public static Control Form18_Visual(INameScope scp)
         {
-            Grid maingrid = new Grid();
-            RowDefinition? row = new RowDefinition
-            {
-                Height = new GridLength(0.5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.4, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(3, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            StackPanel maingrid = new StackPanel();
+            vw.Content = maingrid;
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -2375,7 +2166,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -2448,7 +2240,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -2545,41 +2338,13 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
             maingrid.Children.Add(topPnl23);
 
-            return maingrid;
+            return vw;
         }
-        public static Grid Form19_Visual(INameScope scp)
+        public static Control Form19_Visual(INameScope scp)
         {
-            Grid maingrid = new Grid();
-            RowDefinition? row = new RowDefinition
-            {
-                Height = new GridLength(0.5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(5, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.4, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(3, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
-            row = new RowDefinition
-            {
-                Height = new GridLength(0.7, GridUnitType.Star)
-            };
-            maingrid.RowDefinitions.Add(row);
+            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            StackPanel maingrid = new StackPanel();
+            vw.Content = maingrid;
 
             Grid? topPnl1 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
@@ -2659,7 +2424,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -2733,7 +2499,8 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -2830,7 +2597,7 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
             maingrid.Children.Add(topPnl23);
 
-            return maingrid;
+            return vw;
         }
     }
 }
