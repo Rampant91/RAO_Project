@@ -2392,9 +2392,12 @@ namespace Models.Collections
         {
             if (args.PropertyName == "Value")
             {
-                int k = (int)((RamAccess<int?>)Value).Value;
-                if ((k >= 0) && (k < 100)) k += 2000;
-                Year_DB = k;
+                var k = ((RamAccess<int?>)Value).Value;
+                if (k != null)
+                {
+                    if ((k >= 0) && (k < 100)) k += 2000;
+                    Year_DB = k;
+                }
             }
         }
         private bool Year_Validation(RamAccess<int?> value)

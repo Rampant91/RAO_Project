@@ -8,6 +8,7 @@ using System.Linq;
 using Models.DBRealization;
 using Models;
 using ReactiveUI;
+using System;
 
 namespace Client_App.Views
 {
@@ -40,7 +41,41 @@ namespace Client_App.Views
                 FormNum_DB = param
             };
 
-            tmp.FormType = param;
+            if (param.Split('.')[0] == "1")
+            {
+                if (param != "1.0")
+                {
+                    try
+                    {
+                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param orderby DateTimeOffset.Parse(t.EndPeriod_DB) select t.EndPeriod_DB).LastOrDefault();
+
+                        tmp.FormType = param;
+                        tmp.Storage.StartPeriod.Value = ty;
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                if (param != "2.0")
+                {
+                    try
+                    {
+                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param orderby t.Year_DB select t.Year_DB).LastOrDefault();
+
+                        tmp.FormType = param;
+                        tmp.Storage.Year.Value = ty;
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+
             DataContext = tmp;
 
             if (param == "1.0")
