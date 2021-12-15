@@ -476,6 +476,10 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (OKSM.Contains(value.Value.ToUpper()))
+            {
+                return true;
+            }
             if (value.Value.Equals("прим."))
             {
                 //if ((CreatorOKPONote.Value == null) || CreatorOKPONote.Value.Equals(""))
@@ -638,6 +642,10 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (OKSM.Contains(value.Value.ToUpper()))
+            {
+                return true;
+            }
             if (value.Value.Equals("прим."))
             {
                 //if ((OwnerNote.Value == null) || OwnerNote.Value.Equals(""))
@@ -691,6 +699,10 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            if (value.Value.Equals("Минобороны"))
+            {
+                return true;
             }
             if (value.Value.Equals("прим."))
             {

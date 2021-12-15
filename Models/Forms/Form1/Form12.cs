@@ -323,6 +323,10 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (OKSM.Contains(value.Value.ToUpper()))
+            {
+                return true;
+            }
             if (value.Value.Equals("прим."))
             {
                 //if ((CreatorOKPONote.Value == null) || (CreatorOKPONote.Value == ""))
@@ -557,13 +561,18 @@ namespace Models
             {
                 Owner_DB = ((RamAccess<string>)Value).Value;
             }
-        } private bool Owner_Validation(RamAccess<string> value)//Ready
+        }
+        private bool Owner_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            if (OKSM.Contains(value.Value.ToUpper()))
+            {
+                return true;
             }
             if (value.Value.Equals("прим."))
             {
@@ -626,6 +635,10 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            if (value.Value.Equals("Минобороны"))
+            {
+                return true;
             }
             if (value.Value.Equals("прим."))
             {

@@ -123,13 +123,13 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         }
 
         private void CodeOYATValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 CodeOYAT_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool CodeOYAT_Validation(RamAccess<string> value)
+            }
+        }
+        private bool CodeOYAT_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -524,6 +524,10 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
@@ -610,6 +614,10 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            if (value.Value.Equals("-"))
+            {
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
