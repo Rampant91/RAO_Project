@@ -42,6 +42,26 @@ namespace Models.DataAccess
                 OnPropertyChanged(nameof(Value));
             }
         }
+        public T ValueWithOutHandlerAndPropChanged
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+            }
+        }
+        public T ValueWithOutPropChanged
+        {
+            get => _value;
+            set
+            {
+                _value = value;
+                if (Handler != null)
+                {
+                    Handler(this);
+                }
+            }
+        }
 
         public RamAccess(Func<RamAccess<T>, bool> Handler, T Value)
         {

@@ -77,12 +77,19 @@ namespace Models.Collections
                 if(Rows10[1].Okpo_DB=="")
                 {
                     tmp = Rows10[0].Okpo;
+                    tmp.PropertyChanged -= OkpoRepValueChanged;
+                    tmp.PropertyChanged += OkpoRepValueChanged;
+                    Rows10[1].Okpo.PropertyChanged -= OkpoRepValueChanged;
+                    Rows10[1].Okpo.PropertyChanged += OkpoRepValueChanged;
                 }
                 else
                 {
                     tmp = Rows10[1].Okpo;
+                    tmp.PropertyChanged -= OkpoRepValueChanged;
+                    tmp.PropertyChanged += OkpoRepValueChanged;
+                    Rows10[0].Okpo.PropertyChanged -= OkpoRepValueChanged;
+                    Rows10[0].Okpo.PropertyChanged += OkpoRepValueChanged;
                 }
-                tmp.PropertyChanged += OkpoRepValueChanged;
                 return tmp;
             }
             set
@@ -96,6 +103,9 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 _OkpoRep = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(OkpoRep));
+                OnPropertyChanged(nameof(RegNoRep));
+                OnPropertyChanged(nameof(ShortJurLicoRep));
             }
         }
         #endregion
@@ -109,15 +119,9 @@ namespace Models.Collections
             get
             {
                 RamAccess<string> tmp = null;
-                if (Rows10[1].RegNo_DB == "")
-                {
-                    tmp = Rows10[0].RegNo;
-                }
-                else
-                {
-                    tmp = Rows10[1].RegNo;
-                }
-                tmp.PropertyChanged += RegNoRepRepValueChanged;
+                tmp = Rows10[0].RegNo;
+                tmp.PropertyChanged -= RegNoRepValueChanged;
+                tmp.PropertyChanged += RegNoRepValueChanged;
                 return tmp;
             }
             set
@@ -126,11 +130,12 @@ namespace Models.Collections
                 OnPropertyChanged(nameof(RegNoRep));
             }
         }
-        private void RegNoRepRepValueChanged(object Value, PropertyChangedEventArgs args)
+        private void RegNoRepValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")
             {
                 _RegNoRep = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(RegNoRep));
             }
         }
         #endregion
@@ -144,15 +149,22 @@ namespace Models.Collections
             get
             {
                 RamAccess<string> tmp = null;
-                if (Rows10[1].ShortJurLico_DB == "")
+                if (Rows10[1].Okpo_DB == "")
                 {
                     tmp = Rows10[0].ShortJurLico;
+                    tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
+                    tmp.PropertyChanged += ShortJurLicoRepValueChanged;
+                    Rows10[1].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
+                    Rows10[1].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
                 }
                 else
                 {
                     tmp = Rows10[1].ShortJurLico;
+                    tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
+                    tmp.PropertyChanged += ShortJurLicoRepValueChanged;
+                    Rows10[0].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
+                    Rows10[0].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
                 }
-                tmp.PropertyChanged += ShortJurLicoRepValueChanged;
                 return tmp;
             }
             set
@@ -166,6 +178,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 _ShortJurLicoRep = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(ShortJurLicoRep));
             }
         }
         #endregion
@@ -182,12 +195,19 @@ namespace Models.Collections
                 if (Rows20[1].Okpo_DB == "")
                 {
                     tmp = Rows20[0].Okpo;
+                    tmp.PropertyChanged -= OkpoRep1ValueChanged;
+                    tmp.PropertyChanged += OkpoRep1ValueChanged;
+                    Rows20[1].Okpo.PropertyChanged -= OkpoRep1ValueChanged;
+                    Rows20[1].Okpo.PropertyChanged += OkpoRep1ValueChanged;
                 }
                 else
                 {
                     tmp = Rows20[1].Okpo;
+                    tmp.PropertyChanged -= OkpoRep1ValueChanged;
+                    tmp.PropertyChanged += OkpoRep1ValueChanged;
+                    Rows20[0].Okpo.PropertyChanged -= OkpoRep1ValueChanged;
+                    Rows20[0].Okpo.PropertyChanged += OkpoRep1ValueChanged;
                 }
-                tmp.PropertyChanged += OkpoRepValueChanged;
                 return tmp;
             }
             set
@@ -196,11 +216,14 @@ namespace Models.Collections
                 OnPropertyChanged(nameof(OkpoRep1));
             }
         }
-        private void OkpoRepValue1Changed(object Value, PropertyChangedEventArgs args)
+        private void OkpoRep1ValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")
             {
                 _OkpoRep1 = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(OkpoRep1));
+                OnPropertyChanged(nameof(RegNoRep1));
+                OnPropertyChanged(nameof(ShortJurLicoRep1));
             }
         }
         #endregion
@@ -214,15 +237,9 @@ namespace Models.Collections
             get
             {
                 RamAccess<string> tmp = null;
-                if (Rows20[1].RegNo_DB == "")
-                {
-                    tmp = Rows20[0].RegNo;
-                }
-                else
-                {
-                    tmp = Rows20[1].RegNo;
-                }
-                tmp.PropertyChanged += RegNoRepRep1ValueChanged;
+                tmp = Rows20[0].RegNo;
+                tmp.PropertyChanged -= RegNoRepValueChanged;
+                tmp.PropertyChanged += RegNoRepValueChanged;
                 return tmp;
             }
             set
@@ -236,6 +253,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 _RegNoRep1 = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(RegNoRep1));
             }
         }
         #endregion
@@ -249,15 +267,22 @@ namespace Models.Collections
             get
             {
                 RamAccess<string> tmp = null;
-                if (Rows20[1].ShortJurLico_DB == "")
+                if (Rows20[1].Okpo_DB == "")
                 {
                     tmp = Rows20[0].ShortJurLico;
+                    tmp.PropertyChanged -= ShortJurLicoRep1ValueChanged;
+                    tmp.PropertyChanged += ShortJurLicoRep1ValueChanged;
+                    Rows20[1].ShortJurLico.PropertyChanged -= ShortJurLicoRep1ValueChanged;
+                    Rows20[1].ShortJurLico.PropertyChanged += ShortJurLicoRep1ValueChanged;
                 }
                 else
                 {
                     tmp = Rows20[1].ShortJurLico;
+                    tmp.PropertyChanged -= ShortJurLicoRep1ValueChanged;
+                    tmp.PropertyChanged += ShortJurLicoRep1ValueChanged;
+                    Rows20[0].ShortJurLico.PropertyChanged -= ShortJurLicoRep1ValueChanged;
+                    Rows20[0].ShortJurLico.PropertyChanged += ShortJurLicoRep1ValueChanged;
                 }
-                tmp.PropertyChanged += ShortJurLicoRep1ValueChanged;
                 return tmp;
             }
             set
@@ -271,6 +296,7 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 _ShortJurLicoRep1 = ((RamAccess<string>)Value).Value;
+                OnPropertyChanged(nameof(ShortJurLicoRep1));
             }
         }
         #endregion

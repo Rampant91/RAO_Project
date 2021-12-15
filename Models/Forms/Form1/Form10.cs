@@ -60,7 +60,7 @@ namespace Models
             {
                 if (Dictionary.ContainsKey(nameof(RegNo)))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(RegNo)]).Value = RegNo_DB;
+                    ((RamAccess<string>)Dictionary[nameof(RegNo)]).ValueWithOutHandlerAndPropChanged = RegNo_DB;
                     return (RamAccess<string>)Dictionary[nameof(RegNo)];
                 }
                 else
@@ -266,7 +266,7 @@ namespace Models
             {
                 if (Dictionary.ContainsKey(nameof(ShortJurLico)))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(ShortJurLico)]).Value = ShortJurLico_DB;
+                    ((RamAccess<string>)Dictionary[nameof(ShortJurLico)]).ValueWithOutHandlerAndPropChanged = ShortJurLico_DB;
                     return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
                 }
                 else
@@ -588,7 +588,7 @@ namespace Models
             {
                 if (Dictionary.ContainsKey(nameof(Okpo)))
                 {
-                    ((RamAccess<string>)Dictionary[nameof(Okpo)]).Value = Okpo_DB;
+                    ((RamAccess<string>)Dictionary[nameof(Okpo)]).ValueWithOutHandlerAndPropChanged = Okpo_DB;
                     return (RamAccess<string>)Dictionary[nameof(Okpo)];
                 }
                 else
