@@ -321,6 +321,7 @@ namespace Client_App.ViewModels
                                             {
                                                 filename2 += "_" + rp.Master.Rows10[1].Okpo_DB;
                                             }
+                                            filename2 += "_" + rep.CorrectionNumber_DB;
                                             filename2 += "_" + rep.FormNum_DB;
                                             filename2 += "_" + rep.StartPeriod_DB;
                                             filename2 += "_" + rep.EndPeriod_DB;
@@ -345,6 +346,7 @@ namespace Client_App.ViewModels
                                                 {
                                                     filename2 += "_" + rp.Master.Rows20[1].Okpo_DB;
                                                 }
+                                                filename2 += "_" + rep.CorrectionNumber_DB;
                                                 filename2 += "_" + rep.FormNum_DB;
                                                 filename2 += "_" + rep.Year_DB;
                                             }

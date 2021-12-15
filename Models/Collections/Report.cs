@@ -73,7 +73,15 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = Rows10[0].Okpo;
+                RamAccess<string> tmp = null;
+                if(Rows10[1].Okpo_DB=="")
+                {
+                    tmp = Rows10[0].Okpo;
+                }
+                else
+                {
+                    tmp = Rows10[1].Okpo;
+                }
                 tmp.PropertyChanged += OkpoRepValueChanged;
                 return tmp;
             }
@@ -100,7 +108,15 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = Rows10.First().RegNo;
+                RamAccess<string> tmp = null;
+                if (Rows10[1].RegNo_DB == "")
+                {
+                    tmp = Rows10[0].RegNo;
+                }
+                else
+                {
+                    tmp = Rows10[1].RegNo;
+                }
                 tmp.PropertyChanged += RegNoRepRepValueChanged;
                 return tmp;
             }
@@ -127,7 +143,15 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = Rows10.First().ShortJurLico;
+                RamAccess<string> tmp = null;
+                if (Rows10[1].ShortJurLico_DB == "")
+                {
+                    tmp = Rows10[0].ShortJurLico;
+                }
+                else
+                {
+                    tmp = Rows10[1].ShortJurLico;
+                }
                 tmp.PropertyChanged += ShortJurLicoRepValueChanged;
                 return tmp;
             }
@@ -154,7 +178,15 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = Rows20.First().Okpo;
+                RamAccess<string> tmp = null;
+                if (Rows20[1].Okpo_DB == "")
+                {
+                    tmp = Rows20[0].Okpo;
+                }
+                else
+                {
+                    tmp = Rows20[1].Okpo;
+                }
                 tmp.PropertyChanged += OkpoRepValueChanged;
                 return tmp;
             }
@@ -181,7 +213,15 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = Rows20.First().RegNo;
+                RamAccess<string> tmp = null;
+                if (Rows20[1].RegNo_DB == "")
+                {
+                    tmp = Rows20[0].RegNo;
+                }
+                else
+                {
+                    tmp = Rows20[1].RegNo;
+                }
                 tmp.PropertyChanged += RegNoRepRep1ValueChanged;
                 return tmp;
             }
@@ -208,7 +248,15 @@ namespace Models.Collections
         {
             get
             {
-                var tmp = Rows20.First().ShortJurLico;
+                RamAccess<string> tmp = null;
+                if (Rows20[1].ShortJurLico_DB == "")
+                {
+                    tmp = Rows20[0].ShortJurLico;
+                }
+                else
+                {
+                    tmp = Rows20[1].ShortJurLico;
+                }
                 tmp.PropertyChanged += ShortJurLicoRep1ValueChanged;
                 return tmp;
             }

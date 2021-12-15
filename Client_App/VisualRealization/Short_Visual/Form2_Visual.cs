@@ -120,7 +120,6 @@ namespace Client_App.Short_Visual
                 new MenuItem
                 {
                     Header = "Для печати",
-                    //IsEnabled=false,
                     [!MenuItem.CommandProperty] = new Binding("_Print_Excel_Export"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[3].SelectedItems"),
                 },
