@@ -47,7 +47,7 @@ namespace Client_App.Views
                 {
                     try
                     {
-                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param orderby DateTimeOffset.Parse(t.EndPeriod_DB) select t.EndPeriod_DB).LastOrDefault();
+                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param && t.EndPeriod_DB!="" orderby DateTimeOffset.Parse(t.EndPeriod_DB) select t.EndPeriod_DB).LastOrDefault();
 
                         tmp.FormType = param;
                         tmp.Storage.StartPeriod.Value = ty;
@@ -64,10 +64,10 @@ namespace Client_App.Views
                 {
                     try
                     {
-                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param orderby t.Year_DB select t.Year_DB).LastOrDefault();
+                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param && t.Year_DB!=null orderby t.Year_DB select t.Year_DB).LastOrDefault();
 
                         tmp.FormType = param;
-                        tmp.Storage.Year.Value = ty;
+                        tmp.Storage.Year.Value = ty+1;
                     }
                     catch
                     {

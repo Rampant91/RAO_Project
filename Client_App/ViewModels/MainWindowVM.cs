@@ -145,6 +145,8 @@ namespace Client_App.ViewModels
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_Excel_Export);
             All_Excel_Export =
                 ReactiveCommand.CreateFromTask<string>(_All_Excel_Export);
+
+
         }
 
         private IEnumerable<Reports> _selectedReports = new ObservableCollectionWithItemPropertyChanged<Reports>();
@@ -210,24 +212,31 @@ namespace Client_App.ViewModels
 
         private async Task _AddForm(string param)
         {
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            try
             {
-                var t = desktop.MainWindow as MainWindow;
-                if (t.SelectedReports.Count() != 0)
+                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 {
-                    var y = t.SelectedReports.First() as Reports;
-                    if (y.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
+                    var t = desktop.MainWindow as MainWindow;
+                    if (t.SelectedReports.Count() != 0)
                     {
-                        //y.Report_Collection.Add(rt);
-                        var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+                        var y = t.SelectedReports.First() as Reports;
+                        if (y.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
+                        {
+                            //y.Report_Collection.Add(rt);
+                            var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
-                        FormChangeOrCreate frm = new(param, y);
-                        await frm.ShowDialog<Form>(desktop.MainWindow);
-                        frm.Close();
+                            FormChangeOrCreate frm = new(param, y);
+                            await frm.ShowDialog<Form>(desktop.MainWindow);
+                            frm.Close();
 
-                        t.SelectedReports = tmp;
+                            t.SelectedReports = tmp;
+                        }
                     }
                 }
+            }
+            catch(Exception e)
+            {
+
             }
         }
         private async Task _AddReport(string param)
@@ -242,6 +251,7 @@ namespace Client_App.ViewModels
                     FormChangeOrCreate frm = new(param, Local_Reports);
                     await frm.ShowDialog<Form>(desktop.MainWindow);
                     frm.Close();
+                    
 
                     t.SelectedReports = tmp;
                 }
