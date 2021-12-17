@@ -142,10 +142,7 @@ namespace Models.Collections
             }
             if (flag)
             {
-                var lsty = Items.ToList();
-                var ty = (from t in lsty orderby (t as Form).NumberInOrder_DB select t).ToList();
-                ClearItems();
-                AddRange(lsty);
+                QuickSort(0,Items.Count-1);
             }
         }
 

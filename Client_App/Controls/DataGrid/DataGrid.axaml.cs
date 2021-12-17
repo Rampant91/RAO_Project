@@ -119,36 +119,34 @@ o => o.Pagination,
                 UpdateCells();
             }
         }
-        public static readonly DirectProperty<DataGrid, int> ItemsCountProperty =
-     AvaloniaProperty.RegisterDirect<DataGrid, int>(
+        public static readonly DirectProperty<DataGrid, string> ItemsCountProperty =
+     AvaloniaProperty.RegisterDirect<DataGrid, string>(
 nameof(ItemsCount),
 o => o.ItemsCount,
 (o, v) => o.ItemsCount = v);
 
-        private int _ItemsCount = 0;
-        public int ItemsCount
+        private string _ItemsCount = "0";
+        public string ItemsCount
         {
-            get => Items.Count();
+            get => Items.Count().ToString();
             set
             {
-                SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items.Count());
-                UpdateCells();
+                SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items.Count().ToString());
             }
         }
-        public static readonly DirectProperty<DataGrid, int> PageCountProperty =
-AvaloniaProperty.RegisterDirect<DataGrid, int>(
+        public static readonly DirectProperty<DataGrid, string> PageCountProperty =
+AvaloniaProperty.RegisterDirect<DataGrid, string>(
 nameof(PageCount),
 o => o.PageCount,
 (o, v) => o.PageCount = v);
 
-        private int _PageCount = 0;
-        public int PageCount
+        private string _PageCount = "0";
+        public string PageCount
         {
-            get => Items.Count()/PageSize+1;
+            get => (Items.Count()/PageSize+1).ToString();
             set
             {
-                SetAndRaise(PageCountProperty, ref _PageCount, Items.Count() / PageSize + 1);
-                UpdateCells();
+                SetAndRaise(PageCountProperty, ref _PageCount, (Items.Count() / PageSize + 1).ToString());
             }
         }
         public static readonly DirectProperty<DataGrid, string> NowPageProperty =
@@ -805,6 +803,8 @@ o => o.PageCount,
 
         private void ItemsChanged(object sender, PropertyChangedEventArgs args)
         {
+            PageCount = "0";
+            ItemsCount = "0";
             if (Rows.Count > 0)
                 UpdateCells();
             else

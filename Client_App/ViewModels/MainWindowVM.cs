@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -146,8 +147,14 @@ namespace Client_App.ViewModels
             All_Excel_Export =
                 ReactiveCommand.CreateFromTask<string>(_All_Excel_Export);
 
+            ShowDialog = new Interaction<ChangeOrCreateVM, object>();
+            ShowMessage = new Interaction<string, string>();
 
         }
+
+        public Interaction<ChangeOrCreateVM, object> ShowDialog { get; }
+        public Interaction<string, string> ShowMessage { get; }
+
 
         private IEnumerable<Reports> _selectedReports = new ObservableCollectionWithItemPropertyChanged<Reports>();
         public IEnumerable<Reports> SelectedReports
@@ -225,9 +232,8 @@ namespace Client_App.ViewModels
                             //y.Report_Collection.Add(rt);
                             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
-                            FormChangeOrCreate frm = new(param, y);
-                            await frm.ShowDialog<Form>(desktop.MainWindow);
-                            frm.Close();
+                            ChangeOrCreateVM frm = new(param, y);
+                            await ShowDialog.Handle(frm);
 
                             t.SelectedReports = tmp;
                         }
@@ -248,10 +254,10 @@ namespace Client_App.ViewModels
                     var t = desktop.MainWindow as MainWindow;
                     var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
-                    FormChangeOrCreate frm = new(param, Local_Reports);
-                    await frm.ShowDialog<Form>(desktop.MainWindow);
-                    frm.Close();
-                    
+
+                    ChangeOrCreateVM frm = new(param, Local_Reports);
+                    await ShowDialog.Handle(frm);
+
 
                     t.SelectedReports = tmp;
                 }
@@ -559,8 +565,11 @@ namespace Client_App.ViewModels
                         var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
                         var rep = (Report)obj;
-                        FormChangeOrCreate frm = new(rep.FormNum.Value, rep);
-                        await frm.ShowDialog(desktop.MainWindow);
+
+                        var tre = (from i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
+
+                        ChangeOrCreateVM frm = new(rep.FormNum.Value, rep,tre);
+                        await ShowDialog.Handle(frm);
 
                         t.SelectedReports = tmp;
                     }
@@ -581,8 +590,8 @@ namespace Client_App.ViewModels
 
                         var rep = (Reports)obj;
 
-                        FormChangeOrCreate frm = new FormChangeOrCreate(rep.Master.FormNum.Value, rep.Master);
-                        await frm.ShowDialog(desktop.MainWindow);
+                        ChangeOrCreateVM frm = new(rep.Master.FormNum.Value, rep.Master,rep);
+                        await ShowDialog.Handle(frm);
 
                         t.SelectedReports = tmp;
                     }
@@ -593,24 +602,8 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
-                List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
-                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-                {
-                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                    Name = "Да"
-                });
-                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-                {
-                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                    Name = "Нет"
-                });
-                par.ButtonDefinitions = lt;
-                par.ContentTitle = "Уведомление";
-                par.ContentHeader = "Уведомление";
-                par.ContentMessage = "Вы действительно хотите удалить отчет?";
-                var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-                var answ = await mssg.ShowDialog(desktop.MainWindow);
+                var str = "Вы действительно хотите удалить отчет?";
+                var answ = (string)await ShowMessage.Handle(str);
                 if (answ == "Да")
                 {
                     var t = desktop.MainWindow as MainWindow;
@@ -638,23 +631,8 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                MessageBox.Avalonia.DTO.MessageBoxCustomParams par= new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
-                List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
-                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition { 
-                    Type=MessageBox.Avalonia.Enums.ButtonType.Default,
-                    Name="Да"
-                });
-                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-                {
-                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                    Name = "Нет"
-                });
-                par.ButtonDefinitions=lt;
-                par.ContentTitle = "Уведомление";
-                par.ContentHeader = "Уведомление";
-                par.ContentMessage = "Вы действительно хотите удалить организацию?";
-                var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-                var answ=await mssg.ShowDialog(desktop.MainWindow);
+                var str = "Вы действительно хотите удалить организацию?";
+                var answ = (string)await ShowMessage.Handle(str);
                 if (answ == "Да")
                 {
                     if (param != null)

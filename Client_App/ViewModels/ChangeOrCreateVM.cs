@@ -28,6 +28,7 @@ using System.IO;
 using System.Threading;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
+using System.Reactive.Linq;
 
 namespace Client_App.ViewModels
 {
@@ -64,6 +65,32 @@ namespace Client_App.ViewModels
                 {
                     _Storage = value;
                     NotifyPropertyChanged("Storage");
+                }
+            }
+        }
+        private Reports _Storages;
+        public Reports Storages
+        {
+            get => _Storages;
+            set
+            {
+                if (_Storages != value)
+                {
+                    _Storages = value;
+                    NotifyPropertyChanged("Storages");
+                }
+            }
+        }
+        private DBObservable _DBO;
+        public DBObservable DBO
+        {
+            get => _DBO;
+            set
+            {
+                if (_DBO != value)
+                {
+                    _DBO = value;
+                    NotifyPropertyChanged("DBO");
                 }
             }
         }
@@ -104,21 +131,134 @@ namespace Client_App.ViewModels
             }
         }
 
-        public ReactiveCommand<Unit, Unit> CheckReport { get; }
-        public ReactiveCommand<Unit, Unit> SumRow { get; }
-        public ReactiveCommand<string, Unit> AddSort { get; }
-        public ReactiveCommand<string, Unit> AddNote { get; }
-        public ReactiveCommand<Unit, Unit> AddRow { get; }
-        public ReactiveCommand<IList, Unit> DeleteRow { get; }
-        public ReactiveCommand<Unit, Unit> DuplicateRowsx1 { get; }
-        public ReactiveCommand<IList, Unit> CopyRows { get; }
-        public ReactiveCommand<IList, Unit> PasteRows { get; }
-        public ReactiveCommand<IList, Unit> DeleteNote { get; }
-        public ReactiveCommand<Unit, Unit> PasteNotes { get; }
-        public ChangeOrCreateVM(string FormNum)
+        public ReactiveCommand<Unit, Unit> CheckReport { get; protected set; }
+        public ReactiveCommand<Unit, Unit> SumRow { get; protected set; }
+        public ReactiveCommand<string, Unit> AddSort { get; protected set; }
+        public ReactiveCommand<string, Unit> AddNote { get; protected set; }
+        public ReactiveCommand<Unit, Unit> AddRow { get; protected set; }
+        public ReactiveCommand<IList, Unit> DeleteRow { get; protected set; }
+        public ReactiveCommand<Unit, Unit> DuplicateRowsx1 { get; protected set; }
+        public ReactiveCommand<IList, Unit> CopyRows { get; protected set; }
+        public ReactiveCommand<IList, Unit> PasteRows { get; protected set; }
+        public ReactiveCommand<IList, Unit> DeleteNote { get; protected set; }
+        public ReactiveCommand<Unit, Unit> PasteNotes { get; protected set; }
+
+        public ChangeOrCreateVM(string param, in Report rep,Reports reps)
         {
-            string a = FormNum.Replace(".", "");
-            WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            Storage = rep;
+            Storages = reps;
+            FormType = param;
+            Init();
+        }
+        public ChangeOrCreateVM(string param, in Reports reps)
+        {
+            Storage = new Report()
+            {
+                FormNum_DB = param
+            };
+
+            if (param.Split('.')[0] == "1")
+            {
+                if (param != "1.0")
+                {
+                    try
+                    {
+                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param && t.EndPeriod_DB != "" orderby DateTimeOffset.Parse(t.EndPeriod_DB) select t.EndPeriod_DB).LastOrDefault();
+
+                        FormType = param;
+                        Storage.StartPeriod.Value = ty;
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                if (param != "2.0")
+                {
+                    try
+                    {
+                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param && t.Year_DB != null orderby t.Year_DB select t.Year_DB).LastOrDefault();
+
+                        FormType = param;
+                        Storage.Year.Value = ty + 1;
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+
+            if (param == "1.0")
+            {
+                var ty1 = (Form10)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form10)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows10.Add(ty1);
+                Storage.Rows10.Add(ty2);
+            }
+            if (param == "2.0")
+            {
+                var ty1 = (Form20)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form20)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows20.Add(ty1);
+                Storage.Rows20.Add(ty2);
+            }
+            Storages = reps;
+            FormType = param;
+            Init();
+        }
+        public ChangeOrCreateVM(string param, in DBObservable reps)
+        {
+            Storage = new Report()
+            {
+                FormNum_DB = param
+            };
+
+            if (param == "1.0")
+            {
+                var ty1 = (Form10)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form10)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows10.Add(ty1);
+                Storage.Rows10.Add(ty2);
+            }
+            if (param == "2.0")
+            {
+                var ty1 = (Form20)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form20)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows20.Add(ty1);
+                Storage.Rows20.Add(ty2);
+            }
+
+            FormType = param;
+            DBO = reps;
+            Init();
+        }
+        public Interaction<object, int> ShowDialog { get; protected set; }
+        public Interaction<string, string> ShowMessage { get; protected set; }
+        public void Init()
+        {
+            string a = FormType.Replace(".", "");
+            if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1")
+            {
+                WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name +
+                    " " + Storages.Master_DB.RegNoRep.Value + " " + Storages.Master_DB.ShortJurLicoRep.Value + " " + Storages.Master_DB.OkpoRep.Value;
+            }
+            if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2")
+            {
+                WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name +
+                    " " + Storages.Master_DB.RegNoRep1.Value + " " + Storages.Master_DB.ShortJurLicoRep1.Value + " " + Storages.Master_DB.OkpoRep1.Value;
+            }
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow = ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.CreateFromTask<IList>(_DeleteRow);
@@ -130,6 +270,9 @@ namespace Client_App.ViewModels
             AddNote = ReactiveCommand.Create<string>(_AddNote);
             DeleteNote = ReactiveCommand.CreateFromTask<IList>(_DeleteNote);
             //PasteNotes = ReactiveCommand.CreateFromTask(_PasteNotes);
+
+            ShowDialog = new Interaction<object,int>();
+            ShowMessage = new Interaction<string, string>();
         }
 
         private bool _isCanSaveReportEnabled = false;
@@ -160,42 +303,34 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                foreach (Avalonia.Controls.Window? item in desktop.Windows)
+                if (Storages != null)
                 {
-                    if (item is Views.FormChangeOrCreate)
-                    {
-                        var t = item as Views.FormChangeOrCreate;
-                        if (t.Str != null)
-                        {
-                            t.Str.Report_Collection.Add(Storage);
-                            t.Str = null;
-                        }
-
-                        if (t.DBO != null)
-                        {
-                            var tmp = new Reports();
-                            tmp.Master = Storage;
-                            if (tmp.Master.Rows10.Count() != 0)
-                            {
-                                tmp.Master.Rows10[1].OrganUprav.Value = tmp.Master.Rows10[0].OrganUprav.Value;
-                                tmp.Master.Rows10[1].RegNo.Value = tmp.Master.Rows10[0].RegNo.Value;
-                            }
-                            if (tmp.Master.Rows20.Count() != 0)
-                            {
-                                tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
-                                tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
-                            }
-
-                            t.DBO.Reports_Collection.Add(tmp);
-                            t.DBO = null;
-                        }
-
-                        var dbm = StaticConfiguration.DBModel;
-                        dbm.SaveChanges();
-                        IsCanSaveReportEnabled = false;
-                        break;
-                    }
+                    Storages.Report_Collection.Add(Storage);
+                    Storages = null;
                 }
+
+                if (DBO != null)
+                {
+                    var tmp = new Reports();
+                    tmp.Master = Storage;
+                    if (tmp.Master.Rows10.Count() != 0)
+                    {
+                        tmp.Master.Rows10[1].OrganUprav.Value = tmp.Master.Rows10[0].OrganUprav.Value;
+                        tmp.Master.Rows10[1].RegNo.Value = tmp.Master.Rows10[0].RegNo.Value;
+                    }
+                    if (tmp.Master.Rows20.Count() != 0)
+                    {
+                        tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
+                        tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
+                    }
+
+                    DBO.Reports_Collection.Add(tmp);
+                    DBO = null;
+                }
+
+                var dbm = StaticConfiguration.DBModel;
+                dbm.SaveChanges();
+                IsCanSaveReportEnabled = false;
             }
         }
 
@@ -270,24 +405,8 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
-                List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
-                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-                {
-                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                    Name = "Да"
-                });
-                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-                {
-                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                    Name = "Нет"
-                });
-                par.ButtonDefinitions = lt;
-                par.ContentTitle = "Уведомление";
-                par.ContentHeader = "Уведомление";
-                par.ContentMessage = "Вы действительно хотите удалить комментарий?";
-                var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-                var answ = await mssg.ShowDialog(desktop.MainWindow);
+                var str = "Вы действительно хотите удалить комментарий?";
+                var answ=await ShowMessage.Handle(str);
                 if (answ == "Да")
                 {
                     List<Note> lst = new List<Note>();
@@ -307,24 +426,8 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
-                List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
-                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-                {
-                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                    Name = "Да"
-                });
-                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-                {
-                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                    Name = "Нет"
-                });
-                par.ButtonDefinitions = lt;
-                par.ContentTitle = "Уведомление";
-                par.ContentHeader = "Уведомление";
-                par.ContentMessage = "Вы действительно хотите удалить строчку?";
-                var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-                var answ = await mssg.ShowDialog(desktop.MainWindow);
+                var str = "Вы действительно хотите удалить строчку?";
+                var answ = await ShowMessage.Handle(str);
                 if (answ == "Да")
                 {
                     List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();

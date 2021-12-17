@@ -38,7 +38,42 @@ namespace Client_App.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
+            this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
         }
+
+        private async Task DoShowDialogAsync(InteractionContext<ViewModels.ChangeOrCreateVM, object> interaction)
+        {
+            FormChangeOrCreate frm = new FormChangeOrCreate(interaction.Input.FormType);
+            frm.DataContext = interaction.Input;
+
+            await frm.ShowDialog(this);
+            interaction.SetOutput(null);
+        }
+        private async Task DoShowDialogAsync(InteractionContext<string, string> interaction)
+        {
+            MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
+            List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
+            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+            {
+                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                Name = "Да"
+            });
+            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+            {
+                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                Name = "Нет"
+            });
+            par.ButtonDefinitions = lt;
+            par.ContentTitle = "Уведомление";
+            par.ContentHeader = "Уведомление";
+            par.ContentMessage = interaction.Input;
+            var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
+            var answ = await mssg.ShowDialog(this);
+
+            interaction.SetOutput(answ);
+        }
+
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);

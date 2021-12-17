@@ -9,149 +9,35 @@ using Models.DBRealization;
 using Models;
 using ReactiveUI;
 using System;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Client_App.Views
 {
     public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     {
         private readonly string _param = "";
-        public Reports Str { get; set; }
-        public DBObservable DBO { get; set; }
 
-        public FormChangeOrCreate(string param, in Report rep)
+        public FormChangeOrCreate(string param)
         {
-            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM(param);
-            tmp.Storage = rep;
-            tmp.FormType = rep.FormNum_DB;
-            DataContext = tmp;
-
-            _param = rep.FormNum_DB;
-
-            InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
-            Init();
-        }
-        public FormChangeOrCreate(string param, in Reports reps)
-        {
-            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM(param);
-            tmp.Storage = new Report()
-            {
-                FormNum_DB = param
-            };
-
-            if (param.Split('.')[0] == "1")
-            {
-                if (param != "1.0")
-                {
-                    try
-                    {
-                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param && t.EndPeriod_DB!="" orderby DateTimeOffset.Parse(t.EndPeriod_DB) select t.EndPeriod_DB).LastOrDefault();
-
-                        tmp.FormType = param;
-                        tmp.Storage.StartPeriod.Value = ty;
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-            else
-            {
-                if (param != "2.0")
-                {
-                    try
-                    {
-                        var ty = (from t in reps.Report_Collection where t.FormNum_DB == param && t.Year_DB!=null orderby t.Year_DB select t.Year_DB).LastOrDefault();
-
-                        tmp.FormType = param;
-                        tmp.Storage.Year.Value = ty+1;
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-
-            DataContext = tmp;
-
-            if (param == "1.0")
-            {
-                var ty1 = (Form10)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form10)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                tmp.Storage.Rows10.Add(ty1);
-                tmp.Storage.Rows10.Add(ty2);
-            }
-            if (param == "2.0")
-            {
-                var ty1 = (Form20)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form20)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                tmp.Storage.Rows20.Add(ty1);
-                tmp.Storage.Rows20.Add(ty2);
-            }
-
-            Str = reps;
             _param = param;
-
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
 #endif
+            this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
             Init();
         }
-        public FormChangeOrCreate(string param, in DBObservable reps)
-        {
-            ViewModels.ChangeOrCreateVM? tmp = new ViewModels.ChangeOrCreateVM(param);
-            tmp.Storage = new Report()
-            {
-                FormNum_DB = param
-            };
-
-            tmp.FormType = param;
-            DataContext = tmp;
-
-            DBO = reps;
-            _param = param;
-
-            if (param == "1.0")
-            {
-                var ty1 = (Form10)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form10)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                tmp.Storage.Rows10.Add(ty1);
-                tmp.Storage.Rows10.Add(ty2);
-            }
-            if (param == "2.0")
-            {
-                var ty1 = (Form20)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form20)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                tmp.Storage.Rows20.Add(ty1);
-                tmp.Storage.Rows20.Add(ty2);
-            }
-
-            InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
-            Init();
-        }
-
         public FormChangeOrCreate()
         {
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
 #endif
+            this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -159,9 +45,6 @@ namespace Client_App.Views
             var dbm = StaticConfiguration.DBModel;
             dbm.Restore();
             dbm.SaveChanges();
-
-            base.OnClosing(e);
-            
         }
 
         private void Form1Init(in Panel panel)
@@ -278,6 +161,37 @@ namespace Client_App.Views
             Panel? panel = this.FindControl<Panel>("ChangingPanel");
             Form1Init(panel);
             Form2Init(panel);
+        }
+        private async Task DoShowDialogAsync(InteractionContext<object, int> interaction)
+        {
+            RowNumber frm = new RowNumber();
+
+            await frm.ShowDialog(this);
+
+            interaction.SetOutput(Convert.ToInt32(frm.Number));
+        }
+        private async Task DoShowDialogAsync(InteractionContext<string, string> interaction)
+        {
+            MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
+            List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
+            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+            {
+                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                Name = "Да"
+            });
+            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+            {
+                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                Name = "Нет"
+            });
+            par.ButtonDefinitions = lt;
+            par.ContentTitle = "Уведомление";
+            par.ContentHeader = "Уведомление";
+            par.ContentMessage = interaction.Input;
+            var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
+            var answ = await mssg.ShowDialog(this);
+
+            interaction.SetOutput(answ);
         }
 
         private void InitializeComponent()
