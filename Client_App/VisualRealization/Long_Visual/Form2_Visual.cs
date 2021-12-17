@@ -469,7 +469,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };
@@ -721,7 +721,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
-                    [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
+                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
             };

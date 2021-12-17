@@ -8,6 +8,8 @@ using Models.Collections;
 using OfficeOpenXml;
 using Models.Abstracts;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Models.Collections
 {
@@ -43,25 +45,39 @@ namespace Models.Collections
             ObserveAll();
         }
 
+        public bool Sorted { get; set; } = false;
+        public bool SortFlag { get; set; } = false;
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove ||
                 e.Action == NotifyCollectionChangedAction.Replace)
             {
                 foreach (T item in e.OldItems)
+                {
                     item.PropertyChanged -= ChildPropertyChanged;
+                    Sorted = false;
+                }
+
             }
 
             if (e.Action == NotifyCollectionChangedAction.Add ||
                 e.Action == NotifyCollectionChangedAction.Replace)
             {
                 foreach (T item in e.NewItems)
+                {
                     if (item != null)
                     {
                         item.PropertyChanged += ChildPropertyChanged;
+                        Sorted = false;
                     }
+                }
             }
-            QuickSort();
+
+            if (!Sorted&& e.Action != NotifyCollectionChangedAction.Reset)
+            {
+                QuickSort();
+                Sorted = true;
+            }
 
             base.OnCollectionChanged(e);
         }
@@ -101,6 +117,7 @@ namespace Models.Collections
             QuickSort(pivotIndex + 1, maxIndex);
         }
 
+        public Thread Thr { get; set; } = null;
         public void QuickSort()
         {
             var flag = false;
@@ -125,7 +142,10 @@ namespace Models.Collections
             }
             if (flag)
             {
-                QuickSort(0, Items.Count - 1);
+                var lsty = Items.ToList();
+                var ty = (from t in lsty orderby (t as Form).NumberInOrder_DB select t).ToList();
+                ClearItems();
+                AddRange(lsty);
             }
         }
 
@@ -171,6 +191,14 @@ namespace Models.Collections
                 Items.Add(item);
             }
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+        public void AddRangeNoChange(IEnumerable<T> items)
+        {
+            foreach (var item in items)
+            {
+                item.PropertyChanged += ChildPropertyChanged;
+                Items.Add(item);
+            }
         }
 
         protected void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -85,7 +85,7 @@ namespace Client_App.ViewModels
             }
 
             dbm.LoadTables();
-            if (dbm.DBObservableDbSet.Local.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
+            if (dbm.DBObservableDbSet.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
 
             foreach (var item in dbm.DBObservableDbSet)
             {

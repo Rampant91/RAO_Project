@@ -32,59 +32,6 @@ namespace Models.Collections
         {
             ObserveAll();
         }
-        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Remove ||
-                e.Action == NotifyCollectionChangedAction.Replace)
-            {
-                foreach (T item in e.OldItems)
-                    item.PropertyChanged -= ChildPropertyChanged;
-            }
-
-            if (e.Action == NotifyCollectionChangedAction.Add ||
-                e.Action == NotifyCollectionChangedAction.Replace)
-            {
-                foreach (T item in e.NewItems)
-                    if (item != null)
-                    {
-                        item.PropertyChanged += ChildPropertyChanged;
-                    }
-            }
-
-            var flag = false;
-            var bsT = typeof(T).BaseType;
-            if (bsT != null)
-            {
-                if (bsT == typeof(Form))
-                {
-                    flag = true;
-                }
-                else
-                {
-                    var bsT2 = bsT.BaseType;
-                    if (bsT2 != null)
-                    {
-                        if (bsT2 == typeof(Form))
-                        {
-                            flag = true;
-                        }
-                    }
-                }
-            }
-            if (flag)
-            {
-                QuickSort();
-            }
-
-            base.OnCollectionChanged(e);
-        }
-
-        protected override void RemoveItem(int index)
-        {
-            this[index].PropertyChanged -= ChildPropertyChanged;
-            base.RemoveItem(index);
-        }
-
         public void Sum()
         {
             if (Items.Count > 0)
@@ -485,14 +432,6 @@ namespace Models.Collections
                 this.AddRange(item.Value);
             }
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-
-        protected override void ClearItems()
-        {
-            foreach (T item in Items)
-                item.PropertyChanged -= ChildPropertyChanged;
-
-            base.ClearItems();
         }
     }
 }

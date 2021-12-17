@@ -119,6 +119,38 @@ o => o.Pagination,
                 UpdateCells();
             }
         }
+        public static readonly DirectProperty<DataGrid, int> ItemsCountProperty =
+     AvaloniaProperty.RegisterDirect<DataGrid, int>(
+nameof(ItemsCount),
+o => o.ItemsCount,
+(o, v) => o.ItemsCount = v);
+
+        private int _ItemsCount = 0;
+        public int ItemsCount
+        {
+            get => Items.Count();
+            set
+            {
+                SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items.Count());
+                UpdateCells();
+            }
+        }
+        public static readonly DirectProperty<DataGrid, int> PageCountProperty =
+AvaloniaProperty.RegisterDirect<DataGrid, int>(
+nameof(PageCount),
+o => o.PageCount,
+(o, v) => o.PageCount = v);
+
+        private int _PageCount = 0;
+        public int PageCount
+        {
+            get => Items.Count()/PageSize+1;
+            set
+            {
+                SetAndRaise(PageCountProperty, ref _PageCount, Items.Count() / PageSize + 1);
+                UpdateCells();
+            }
+        }
         public static readonly DirectProperty<DataGrid, string> NowPageProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, string>(
             nameof(NowPage),
@@ -1157,6 +1189,11 @@ o => o.Pagination,
             };
             btnUp.Click += NowPageUp;
             s.Children.Add(btnUp);
+            s.Children.Add(new TextBlock() {Text="Кол-во страниц:"});
+            s.Children.Add(new TextBlock() { [!TextBox.TextProperty]= this[!DataGrid.PageCountProperty] });
+
+            s.Children.Add(new TextBlock() { Text = "Кол-во строчек:" });
+            s.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid.ItemsCountProperty] });
 
             Content = brd;
         }
