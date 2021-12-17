@@ -537,6 +537,7 @@ namespace Client_App.Long_Visual
         public static Control Form12_Visual(INameScope scp)
         {
             ScrollViewer vw = new ScrollViewer();
+            vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
 
