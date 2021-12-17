@@ -384,9 +384,14 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                return true;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -460,9 +465,14 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                return true;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -536,9 +546,14 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
             {
-                return true;
+                value.AddError("Поле не заполнено");
+                return false;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");

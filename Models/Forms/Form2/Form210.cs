@@ -545,6 +545,10 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -620,6 +624,10 @@ private bool PlotKadastrNumber_Validation(RamAccess<string> value)//TODO
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value.Value.Equals("-"))
+            {
+                return true;
+            }
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
