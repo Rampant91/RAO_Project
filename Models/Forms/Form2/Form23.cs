@@ -471,22 +471,22 @@ namespace Models
 
         //QuantityOZIII property
         #region  QuantityOZIII
-        public int? QuantityOZIII_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("количество ОЗИИИ, шт.")]
-        public RamAccess<int?> QuantityOZIII
+        public string QuantityOZIII_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("количество ОЗИИИ, шт.")]
+        public RamAccess<string> QuantityOZIII
         {
             get
             {
                 if (Dictionary.ContainsKey(nameof(QuantityOZIII)))
                 {
-                    ((RamAccess<int?>)Dictionary[nameof(QuantityOZIII)]).Value = QuantityOZIII_DB;
-                    return (RamAccess<int?>)Dictionary[nameof(QuantityOZIII)];
+                    ((RamAccess<string>)Dictionary[nameof(QuantityOZIII)]).Value = QuantityOZIII_DB;
+                    return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
                 }
                 else
                 {
-                    var rm = new RamAccess<int?>(QuantityOZIII_Validation, QuantityOZIII_DB);
+                    var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
                     rm.PropertyChanged += QuantityOZIIIValueChanged;
                     Dictionary.Add(nameof(QuantityOZIII), rm);
-                    return (RamAccess<int?>)Dictionary[nameof(QuantityOZIII)];
+                    return (RamAccess<string>)Dictionary[nameof(QuantityOZIII)];
                 }
             }
             set
@@ -501,19 +501,33 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                QuantityOZIII_DB = ((RamAccess<int?>)Value).Value;
+                QuantityOZIII_DB = ((RamAccess<string>)Value).Value;
             }
         }
-        private bool QuantityOZIII_Validation(RamAccess<int?> value)//Ready
+        private bool QuantityOZIII_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
-            if (value.Value == null)
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value.Equals("-"))
             {
                 return true;
             }
-            if ((int)value.Value <= 0)
+            try
             {
-                value.AddError("Недопустимое значение"); return false;
+                if (int.Parse(value.Value) <= 0)
+                {
+                    value.AddError("Число должно быть больше нуля");
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
