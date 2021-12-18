@@ -12,7 +12,7 @@ using OfficeOpenXml;
 namespace Models.DataAccess
 {
 
-    public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, INotifyPropertyChanged, IKey
+    public class RamAccess<T> : RamAccess, INotifyDataErrorInfo, IKey
     {
         [NotMapped]
         public Func<RamAccess<T>, bool> Handler { get; set; }
@@ -170,17 +170,6 @@ namespace Models.DataAccess
         }
         #endregion
 
-        #region INotifyPropertyChanged
-
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-            }
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-        #endregion
         #region IExcel
         public int ExcelRow(ExcelWorksheet worksheet, int Row, int Column, bool Tanspon = true)
         {

@@ -12,6 +12,7 @@ using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Client_App.Views
 {
@@ -28,6 +29,7 @@ namespace Client_App.Views
 #endif
             this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
+            this.Closing += OnStandartClosing;
             Init();
         }
         public FormChangeOrCreate()
@@ -36,15 +38,65 @@ namespace Client_App.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
-            this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
-            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; } = null;
+
+        protected void OnStandartClosing(object sender, CancelEventArgs args)
         {
-            var dbm = StaticConfiguration.DBModel;
-            dbm.Restore();
-            dbm.SaveChanges();
+            if (Answ == null)
+            {
+                var tmp = this.DataContext as ViewModels.ChangeOrCreateVM;
+                Answ = tmp.ShowMessage.Handle("Сохранить?").GetAwaiter();
+                Answ.OnCompleted(() =>
+                {
+                    this.Close();
+                });
+                Answ.Subscribe(x =>
+                {
+                    if (x == "Да")
+                    {
+                        tmp.SaveReport();
+                    }
+                    if (x == "Нет")
+                    {
+                        var dbm = StaticConfiguration.DBModel;
+                        dbm.Restore();
+                        dbm.LoadTables();
+                        if (tmp.FormType != "1.0" && tmp.FormType != "2.0")
+                        {
+                            if (tmp.FormType.Split('.')[0] == "1")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            }
+                            if (tmp.FormType.Split('.')[0] == "2")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                            }
+                        }
+                        else
+                        {
+                            if (tmp.FormType == "1.0")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
+                            }
+                            if (tmp.FormType == "2.0")
+                            {
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep1));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep1));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep1));
+                            }
+                        }
+                    }
+                });
+
+                args.Cancel = true;
+            }
         }
 
         private void Form1Init(in Panel panel)

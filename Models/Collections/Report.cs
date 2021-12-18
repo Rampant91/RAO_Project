@@ -2900,10 +2900,42 @@ namespace Models.Collections
         #endregion
 
         #region Property Changed
-        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            if (prop != "All")
+            {
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
+            else
+            {
+                var props=typeof(Report).GetProperties();
+                foreach(var proper in props)
+                {
+                    if (proper.Name == nameof(EndPeriod))
+                    {
+
+                    }
+                    if (!proper.Name.Contains("_DB"))
+                    {
+                        try
+                        {
+                            var objec = proper.GetValue(this);
+                            if (objec is RamAccess)
+                            {
+                                Models.DataAccess.RamAccess rm = objec as Models.DataAccess.RamAccess;
+
+                                OnPropertyChanged(proper.Name);
+                                rm.OnPropertyChanged("Value");
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+            }
         }
         #endregion
     }

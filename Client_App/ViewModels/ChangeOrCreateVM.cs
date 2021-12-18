@@ -259,6 +259,10 @@ namespace Client_App.ViewModels
                 WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name +
                     " " + Storages.Master_DB.RegNoRep1.Value + " " + Storages.Master_DB.ShortJurLicoRep1.Value + " " + Storages.Master_DB.OkpoRep1.Value;
             }
+            if(FormType=="1.0"||FormType=="2.0")
+            {
+                WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            }
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow = ReactiveCommand.Create(_AddRow);
             DeleteRow = ReactiveCommand.CreateFromTask<IList>(_DeleteRow);
@@ -303,12 +307,6 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                if (Storages != null)
-                {
-                    Storages.Report_Collection.Add(Storage);
-                    Storages = null;
-                }
-
                 if (DBO != null)
                 {
                     var tmp = new Reports();
@@ -326,6 +324,24 @@ namespace Client_App.ViewModels
 
                     DBO.Reports_Collection.Add(tmp);
                     DBO = null;
+                    Storages = null;
+                }
+                else
+                {
+                    if (Storages != null)
+                    {
+                        if (FormType != "1.0" && FormType != "2.0")
+                        {
+                            if (!Storages.Report_Collection.Contains(Storage))
+                            {
+                                Storages.Report_Collection.Add(Storage);
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                    }
                 }
 
                 var dbm = StaticConfiguration.DBModel;
