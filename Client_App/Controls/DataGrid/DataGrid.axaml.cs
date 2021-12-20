@@ -740,10 +740,10 @@ o => o.PageCount,
 
             var its = Items as IList;
             _nowPage = "1";
-            for(int i=0;i<PageSize;i++)
+            for(int i = offset; i < num * PageSize; i++)
             {
                 var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                if((i+offset)>=Items.Count())
+                if((i)>=Items.Count())
                 {
                     tmp.RowHide = true;
                 }
