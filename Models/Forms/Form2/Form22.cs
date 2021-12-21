@@ -519,25 +519,25 @@ namespace Models
 
         #region PackQuantity
 
-        public int? PackQuantity_DB { get; set; } = null;
+        public string PackQuantity_DB { get; set; } = null;
 
         [NotMapped]
         [Attributes.Form_Property("количество, шт.")]
-        public RamAccess<int?> PackQuantity
+        public RamAccess<string> PackQuantity
         {
             get
             {
                 if (Dictionary.ContainsKey(nameof(PackQuantity)))
                 {
-                    ((RamAccess<int?>)Dictionary[nameof(PackQuantity)]).Value = PackQuantity_DB;
-                    return (RamAccess<int?>)Dictionary[nameof(PackQuantity)];
+                    ((RamAccess<string>)Dictionary[nameof(PackQuantity)]).Value = PackQuantity_DB;
+                    return (RamAccess<string>)Dictionary[nameof(PackQuantity)];
                 }
                 else
                 {
-                    var rm = new RamAccess<int?>(PackQuantity_Validation, PackQuantity_DB);
+                    var rm = new RamAccess<string>(PackQuantity_Validation, PackQuantity_DB);
                     rm.PropertyChanged += PackQuantityValueChanged;
                     Dictionary.Add(nameof(PackQuantity), rm);
-                    return (RamAccess<int?>)Dictionary[nameof(PackQuantity)];
+                    return (RamAccess<string>)Dictionary[nameof(PackQuantity)];
                 }
             }
             set
@@ -552,11 +552,11 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                PackQuantity_DB = ((RamAccess<int?>)Value).Value;
+                PackQuantity_DB = ((RamAccess<string>)Value).Value;
             }
         }
 
-        private bool PackQuantity_Validation(RamAccess<int?> value) //Ready
+        private bool PackQuantity_Validation(RamAccess<string> value) //Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -564,13 +564,15 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-
-            if ((int)value.Value <= 0)
+            if(value.Value == "-")
+            {
+                return true;
+            }
+            if (int.Parse(value.Value) <= 0)
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-
             return true;
         }
 
@@ -861,6 +863,10 @@ namespace Models
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
+            {
+                return true;
+            }
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
@@ -981,6 +987,10 @@ namespace Models
                 return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
+            if (value1.Equals("-"))
+            {
+                return true;
+            }
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
