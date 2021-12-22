@@ -544,7 +544,6 @@ o => o.PageCount,
                 mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
                 if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
                 {
-                    this.ContextMenu.Open(this);
                     if (Rows.Count > 0)
                     {
                         var tmp = FindCell(mouse);
@@ -618,10 +617,14 @@ o => o.PageCount,
                                 SetSelectedItemsWithHandler();
                             }
                         }
+                        this.ContextMenu.Close();
+                        this.ContextMenu.PlacementTarget = Rows[tmp[0], tmp[1]];
+                        this.ContextMenu.Open();
                     }
                 }
                 else
                 {
+                    this.ContextMenu.Close();
                     if (Rows.Count > 0)
                     {
                         var tmp = FindCell(mouse);
