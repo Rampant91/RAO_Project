@@ -608,6 +608,10 @@ namespace Models
             {
                 return true;
             }
+            if (value.Value.Equals("Минобороны"))
+            {
+                return true;
+            }
             if (OperationCode.Value != null)
             {
                 short tmp = (short)OperationCode.Value;

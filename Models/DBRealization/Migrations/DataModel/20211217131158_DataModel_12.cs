@@ -13,7 +13,7 @@ namespace Models.DBRealization.Migrations.DataModel
             migrationBuilder.DropTable("FORM_23_TEMP");
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
+        protected override void Down(MigrationBuilder migrationBuilder)//NOT READY YET
         {
             migrationBuilder.CreateTable(
                  name: "form_23_tmp",

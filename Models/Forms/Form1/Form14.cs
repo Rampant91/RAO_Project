@@ -785,6 +785,10 @@ namespace Models
                 //    value.AddError( "Заполните примечание");
                 return true;
             }
+            if (value.Value.Equals("Минобороны"))
+            {
+                return true;
+            }
             short tmp = (short)OperationCode.Value;
             bool a = (tmp >= 10) && (tmp <= 12);
             bool b = (tmp >= 41) && (tmp <= 43);
