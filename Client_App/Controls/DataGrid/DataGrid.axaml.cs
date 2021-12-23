@@ -479,7 +479,7 @@ o => o.PageCount,
                 {
                     if ((item as StackPanel).DataContext != null)
                     {
-                        var ch = (IKey)((item as StackPanel).DataContext as RamAccess<object>).Value;
+                        var ch = (IKey)((item as StackPanel).DataContext);
                         lst.Add(ch);
                     }
                 }
@@ -507,7 +507,7 @@ o => o.PageCount,
                 {
                     if ((item as StackPanel).DataContext != null)
                     {
-                        var ch = (IKey)((item as StackPanel).DataContext as RamAccess<object>).Value;
+                        var ch = (IKey)((item as StackPanel).DataContext);
                         lst.Add(ch);
                     }
                 }
@@ -765,7 +765,7 @@ o => o.PageCount,
                 }
                 else
                 {
-                    tmp.DataContext = new RamAccess<object>(null,its[i]);
+                    tmp.DataContext = its[i];
                 }
                 Rows.Add(new CellCollection(tmp), count);
                 count++;
@@ -796,28 +796,14 @@ o => o.PageCount,
                 {
                     if (i >= its.Count)
                     {
-                        if (Rows[i - offset + 1].SCells.DataContext == null || !(Rows[i - offset + 1].SCells.DataContext is RamAccess<object>))
-                        {
-                            Rows[i - offset + 1].SCells.DataContext = new RamAccess<object>(null, null);
-                        }
-                        else
-                        {
-                            (Rows[i - offset + 1].SCells.DataContext as RamAccess<object>).Value = null;
-                        }
+                        Rows[i - offset + 1].SCells.DataContext = null;
                         Rows[i - offset + 1].SCells.RowHide = true;
                     }
                     else
                     {
                         if (its[i] != Rows[i - offset + 1].SCells.DataContext)
                         {
-                            if (Rows[i - offset + 1].SCells.DataContext == null || !(Rows[i - offset + 1].SCells.DataContext is RamAccess<object>))
-                            {
-                                Rows[i - offset + 1].SCells.DataContext = new RamAccess<object>(null, its[i]);
-                            }
-                            else
-                            {
-                                (Rows[i - offset + 1].SCells.DataContext as RamAccess<object>).Value = its[i];
-                            }
+                            Rows[i - offset + 1].SCells.DataContext = its[i];
                             Rows[i - offset + 1].SCells.RowHide = false;
                         }
                         else
