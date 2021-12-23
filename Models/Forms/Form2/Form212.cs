@@ -339,6 +339,10 @@ namespace Models
             {
                 return true;
             }
+            if (value.Value.Equals("Минобороны"))
+            {
+                return true;
+            }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
                 value.AddError("Недопустимое значение"); return false;
