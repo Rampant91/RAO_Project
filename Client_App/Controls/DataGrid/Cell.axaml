@@ -6,9 +6,9 @@
              x:Class="Client_App.Controls.DataGrid.Cell"
              xmlns:local="clr-namespace:Client_App.Controls.DataGrid">
   <Border BorderThickness="1" BorderBrush="Black">
-    <Panel Background="Transparent" DataContext="{Binding $parent[local:Row].DataContext}">
+    <Panel Background="Transparent" DataContext="{Binding $parent[local:Row].DataContext.Value, Mode=TwoWay}">
       <TextBox
-          Text="{Binding Value}"
+          Text="{Binding Value, Mode=TwoWay}"
           Background="Transparent"
           TextAlignment="Center">
         <TextBox.ContextMenu>

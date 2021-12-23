@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 
 namespace Client_App.ViewModels
@@ -41,8 +42,15 @@ namespace Client_App.ViewModels
             //};
             //tm.AutoReset = true;
             //tm.Start();
-
-            string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+            string system = "";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+            }
+            else
+            {
+                system = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
             string path = Path.GetPathRoot(system);
             var tmp = Path.Combine(path, "RAO");
             var pty = tmp;
