@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Models.DBRealization
 {
@@ -15,11 +16,55 @@ namespace Models.DBRealization
                 Directory.CreateDirectory(direct);
             }
 #if DEBUG
-            string pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")),"data"),"REDDB"), "fbclient.dll");
+            string pth = "";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (RuntimeInformation.OSArchitecture == Architecture.X64)
+                {
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "x64"), "fbclient.dll");
+                }
+                if (RuntimeInformation.OSArchitecture == Architecture.X86)
+                {
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "x32"), "fbclient.dll");
+                }
+            }
+            else
+            {
+                if (RuntimeInformation.OSArchitecture == Architecture.X64)
+                {
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux_x64"), "lib"), "libfbclient.so");
+                }
+                if (RuntimeInformation.OSArchitecture == Architecture.X86)
+                {
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux_x32"), "lib"), "libfbclient.so");
+                }
+            }
 #else
-            string pth = Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),"data"),"REDDB"), "fbclient.dll");
+            string pth = "";
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                if (RuntimeInformation.OSArchitecture == Architecture.X64)
+                {
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "x64"), "fbclient.dll");
+                }
+                if (RuntimeInformation.OSArchitecture == Architecture.X86)
+                {
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "x32"), "fbclient.dll");
+                }
+            }
+            else
+            {
+                if (RuntimeInformation.OSArchitecture == Architecture.X64)
+                {
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "linux_x64"), "lib"), "libfbclient.so");
+                }
+                if (RuntimeInformation.OSArchitecture == Architecture.X86)
+                {
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "linux_x32"), "lib"), "libfbclient.so");
+                }
+            }
 #endif
-            
+            Console.WriteLine(_path);
             return new FbConnectionStringBuilder
             {
                 

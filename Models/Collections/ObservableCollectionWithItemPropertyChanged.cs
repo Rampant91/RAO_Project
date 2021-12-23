@@ -94,6 +94,7 @@ namespace Models.Collections
             var pivot = minIndex - 1;
             for (var i = minIndex; i < maxIndex; i++)
             {
+
                 if ((Items[i] as Form).NumberInOrder_DB < (Items[maxIndex] as Form).NumberInOrder_DB)
                 {
                     pivot++;

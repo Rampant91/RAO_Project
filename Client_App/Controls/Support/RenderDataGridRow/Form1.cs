@@ -38,8 +38,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         private static readonly int RowHeight1 = 30;
         private static readonly Color border_color1 = Color.FromArgb(255, 0, 0, 0);
 
-        private static Control Get1Row(double starWidth, int Row, int Column, string Binding, INameScope scp,
-            string TopName)
+        private static Control Get1Row(double starWidth, int Row, int Column, string Binding, INameScope scp,string TopName)
         {
             var cell = new Cell(Binding, false)
             {
@@ -65,16 +64,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 Spacing = 0,
                 SRow = Row
             };
-
-            //Binding b = new()
-            //{
-            //    Path = "Items[" + (Row - 1) + "]",
-            //    Mode = BindingMode.OneTime,
-            //    ElementName = TopName,
-            //    NameScope = new WeakReference<INameScope>(scp)
-            //};
-
-            //stck.Bind(StyledElement.DataContextProperty, b);
 
             stck.Children.Add(Get1Row(0.5, Row, 1, "NumberInOrder", scp, TopName));
             stck.Children.Add(Get1Row(0.9, Row, 2, "OperationCode", scp, TopName));

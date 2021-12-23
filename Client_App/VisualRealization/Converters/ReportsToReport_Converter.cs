@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
+using Models.DataAccess;
 
 namespace Client_App.Converters
 {

@@ -138,6 +138,7 @@ namespace Client_App.ViewModels
         public ReactiveCommand<Unit, Unit> AddRow { get; protected set; }
         public ReactiveCommand<IList, Unit> DeleteRow { get; protected set; }
         public ReactiveCommand<Unit, Unit> DuplicateRowsx1 { get; protected set; }
+        public ReactiveCommand<Unit, Unit> DuplicateNotes { get; protected set; }
         public ReactiveCommand<IList, Unit> CopyRows { get; protected set; }
         public ReactiveCommand<IList, Unit> PasteRows { get; protected set; }
         public ReactiveCommand<IList, Unit> DeleteNote { get; protected set; }
@@ -273,6 +274,7 @@ namespace Client_App.ViewModels
             CopyRows = ReactiveCommand.CreateFromTask<IList>(_CopyRows);
             AddNote = ReactiveCommand.Create<string>(_AddNote);
             DeleteNote = ReactiveCommand.CreateFromTask<IList>(_DeleteNote);
+            DuplicateNotes=ReactiveCommand.CreateFromTask(_DuplicateNotes);
             //PasteNotes = ReactiveCommand.CreateFromTask(_PasteNotes);
 
             ShowDialog = new Interaction<object,int>();
@@ -700,7 +702,31 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DuplicateRowsx1()
+        private async Task _DuplicateNotes()
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                RowNumber rw = new RowNumber();
+                await rw.ShowDialog(desktop.MainWindow);
+                var t = Convert.ToInt32(rw.Number);
+                if (t > 0)
+                {
+                    List<Note> lst = new List<Note>();
+                    var number = 0;
+
+                    for (int i = 0; i < t; i++)
+                    {
+                        var frm = new Note();
+
+                        lst.Add(frm);
+                        number++;
+                    }
+                    Storage.Notes.AddRange(lst);
+                }
+            }
+        }
+
+            private async Task _DuplicateRowsx1()
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {

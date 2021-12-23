@@ -26,6 +26,7 @@ using Models.DBRealization;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Models.Abstracts;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
+using Models.DataAccess;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -164,6 +165,7 @@ o => o.PageCount,
                 try
                 {
                     var val = Convert.ToInt32(value);
+
                     if (val != null)
                     {
                         int maxpage = (Items.Count() / PageSize) + 1;
@@ -172,7 +174,7 @@ o => o.PageCount,
                             if (val <= maxpage && val >= 1)
                             {
                                 SetAndRaise(NowPageProperty, ref _nowPage, value);
-                                UpdateCells();
+                                UpdateAllCells();
                             }
                             else
                             {
@@ -181,7 +183,7 @@ o => o.PageCount,
                                     if (_nowPage != maxpage.ToString())
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, maxpage.ToString());
-                                        UpdateCells();
+                                        UpdateAllCells();
                                     }
                                 }
                                 if (val < 1)
@@ -189,7 +191,7 @@ o => o.PageCount,
                                     if (_nowPage != "1")
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, "1");
-                                        UpdateCells();
+                                        UpdateAllCells();
                                     }
                                 }
                             }
@@ -467,18 +469,23 @@ o => o.PageCount,
                 {
                     var ch = (Border)((Cell)item).Content;
                     var ch2 = (Panel)ch.Child;
-                    var text = (TextBox)ch2.Children[0];
-                    lst.Add((IKey)text.DataContext);
+                    if (ch2.DataContext != null)
+                    {
+                        lst.Add((IKey)(ch2.DataContext));
+                    }
                 }
 
                 if (item is StackPanel)
                 {
-                    var ch = (Cell)((StackPanel)item).Children[0];
-                    lst.Add((IKey)ch.DataContext);
+                    if ((item as StackPanel).DataContext != null)
+                    {
+                        var ch = (IKey)((item as StackPanel).DataContext);
+                        lst.Add(ch);
+                    }
                 }
 
-                _selecteditems = lst;
             }
+            _selecteditems = lst;
         }
 
         private void SetSelectedItemsWithHandler()
@@ -488,14 +495,21 @@ o => o.PageCount,
             {
                 if (item is Cell)
                 {
-                    var ch = (Row)((Cell)item).Parent;
-                    lst.Add((IKey)ch.DataContext);
+                    var ch = (Border)((Cell)item).Content;
+                    var ch2 = (Panel)ch.Child;
+                    if (ch2.DataContext != null)
+                    {
+                        lst.Add((IKey)(ch2.DataContext));
+                    }
                 }
 
                 if (item is StackPanel)
                 {
-                    var ch = (IKey)(item as StackPanel).DataContext;
-                    lst.Add(ch);
+                    if ((item as StackPanel).DataContext != null)
+                    {
+                        var ch = (IKey)((item as StackPanel).DataContext);
+                        lst.Add(ch);
+                    }
                 }
             }
 
@@ -544,7 +558,6 @@ o => o.PageCount,
                 mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
                 if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
                 {
-                    this.ContextMenu.Open(this);
                     if (Rows.Count > 0)
                     {
                         var tmp = FindCell(mouse);
@@ -618,10 +631,14 @@ o => o.PageCount,
                                 SetSelectedItemsWithHandler();
                             }
                         }
+                        this.ContextMenu.Close();
+                        this.ContextMenu.PlacementTarget = Rows[tmp[0], tmp[1]];
+                        this.ContextMenu.Open();
                     }
                 }
                 else
                 {
+                    this.ContextMenu.Close();
                     if (Rows.Count > 0)
                     {
                         var tmp = FindCell(mouse);
@@ -739,7 +756,6 @@ o => o.PageCount,
             var count = 1;
 
             var its = Items as IList;
-            _nowPage = "1";
             for(int i = offset; i < num * PageSize; i++)
             {
                 var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
@@ -780,6 +796,7 @@ o => o.PageCount,
                 {
                     if (i >= its.Count)
                     {
+                        Rows[i - offset + 1].SCells.DataContext = null;
                         Rows[i - offset + 1].SCells.RowHide = true;
                     }
                     else
