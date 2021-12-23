@@ -7,7 +7,7 @@ namespace Models.DBRealization.Migrations.DataModel
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            string b = "\"Id\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
+            string b = "\"Id\",\"MassInPack_Hidden_Priv\",\"MassInPack_Hidden_Priv2\",\"VolumeInPack_Hidden_Priv\",\"VolumeInPack_Hidden_Priv2\",\"FcpNumber_Hidden_Priv\",\"Subsidy_Hidden_Priv\",\"Sum_DB\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"PackName_DB\",\"PackType_DB\",\"CodeRAO_DB\",\"CodeRAO_Hidden_Priv\",\"StatusRAO_DB\",\"" +
                "StatusRAO_Hidden_Priv\",\"VolumeInPack_DB\",\"MassInPack_DB\",\"VolumeOutOfPack_DB\",\"MassOutOfPack_DB\",\"QuantityOZIII_DB\",\"TritiumActivity_DB\",\"BetaGammaActivity_DB\"," +
                "\"AlphaActivity_DB\",\"TransuraniumActivity_DB\",\"MainRadionuclids_DB\",\"MainRadionuclids_Hidden_Priv\",\"Subsidy_DB\",\"FcpNumber_DB\",\"ReportId\",\"FormNum_DB\"," +
                "\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
@@ -23,6 +23,10 @@ namespace Models.DBRealization.Migrations.DataModel
                  {
                      Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                     MassInPack_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                     MassInPack_Hidden_Priv2 = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                     VolumeInPack_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                     VolumeInPack_Hidden_Priv2 = table.Column<bool>(type: "BOOLEAN", nullable: false),
                      FcpNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                      Subsidy_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                      Sum_DB = table.Column<bool>(type: "BOOLEAN", nullable: false),
@@ -67,6 +71,10 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
+                    MassInPack_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                    MassInPack_Hidden_Priv2 = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                    VolumeInPack_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
+                    VolumeInPack_Hidden_Priv2 = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     FcpNumber_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     Subsidy_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false),
                     Sum_DB = table.Column<bool>(type: "BOOLEAN", nullable: false),
