@@ -84,7 +84,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes1.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;

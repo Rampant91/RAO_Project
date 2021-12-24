@@ -19,7 +19,7 @@ namespace Models
         public Form19() : base()
         {
             FormNum.Value = "1.9";
-            OperationCode.Value = 10;
+            OperationCode.Value = "10";
             Validate_all();
         }
         private void Validate_all()
@@ -222,7 +222,7 @@ namespace Models
         }
         #endregion
 
-        protected override bool OperationCode_Validation(RamAccess<short?> value)//OK
+        protected override bool OperationCode_Validation(RamAccess<string> value)//OK
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -230,7 +230,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (value.Value != 10)
+            if (value.Value != "10")
             {
                 value.AddError("Недопустимое значение");
                 return false;

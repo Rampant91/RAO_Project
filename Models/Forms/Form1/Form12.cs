@@ -650,13 +650,13 @@ namespace Models
             {
                 return true;
             }
-            bool a = (OperationCode.Value >= 10) && (OperationCode.Value <= 12);
-            bool b = (OperationCode.Value >= 41) && (OperationCode.Value <= 43);
-            bool c = (OperationCode.Value >= 71) && (OperationCode.Value <= 73);
-            bool d = (OperationCode.Value == 15) || (OperationCode.Value == 17) || (OperationCode.Value == 18) || (OperationCode.Value == 46) ||
-                (OperationCode.Value == 47) || (OperationCode.Value == 48) || (OperationCode.Value == 53) || (OperationCode.Value == 54) ||
-                (OperationCode.Value == 58) || (OperationCode.Value == 61) || (OperationCode.Value == 62) || (OperationCode.Value == 65) ||
-                (OperationCode.Value == 67) || (OperationCode.Value == 68) || (OperationCode.Value == 75) || (OperationCode.Value == 76);
+            bool a = (int.Parse(OperationCode.Value) >= 10) && (int.Parse(OperationCode.Value) <= 12);
+            bool b = (int.Parse(OperationCode.Value) >= 41) && (int.Parse(OperationCode.Value) <= 43);
+            bool c = (int.Parse(OperationCode.Value) >= 71) && (int.Parse(OperationCode.Value) <= 73);
+            bool d = (OperationCode.Value == "15") || (OperationCode.Value == "17") || (OperationCode.Value == "18") || (OperationCode.Value == "46") ||
+                (OperationCode.Value == "47") || (OperationCode.Value == "48") || (OperationCode.Value == "53") || (OperationCode.Value == "54") ||
+                (OperationCode.Value == "58") || (OperationCode.Value == "61") || (OperationCode.Value == "62") || (OperationCode.Value == "65") ||
+                (OperationCode.Value == "67") || (OperationCode.Value == "68") || (OperationCode.Value == "75") || (OperationCode.Value == "76");
             if (a || b || c || d)
             {
                 //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
@@ -934,7 +934,7 @@ namespace Models
             }
             return true;
         }
-        protected override bool OperationCode_Validation(RamAccess<short?> value)//OK
+        protected override bool OperationCode_Validation(RamAccess<string> value)//OK
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -942,19 +942,19 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            if ((value.Value == 1) || (value.Value == 13) ||
-            (value.Value == 14) || (value.Value == 16) ||
-            (value.Value == 26) || (value.Value == 36) ||
-            (value.Value == 44) || (value.Value == 45) ||
-            (value.Value == 49) || (value.Value == 51) ||
-            (value.Value == 52) || (value.Value == 55) ||
-            (value.Value == 56) || (value.Value == 57) ||
-            (value.Value == 59) || (value.Value == 76))
+            if((value.Value == "01") || (value.Value == "13") ||
+            (value.Value == "14") || (value.Value == "16") ||
+            (value.Value == "26") || (value.Value == "36") ||
+            (value.Value == "44") || (value.Value == "45") ||
+            (value.Value == "49") || (value.Value == "51") ||
+            (value.Value == "52") || (value.Value == "55") ||
+            (value.Value == "56") || (value.Value == "57") ||
+            (value.Value == "59") || (value.Value == "76"))
             {
                 value.AddError("Код операции не может быть использован для РВ");
                 return false;
