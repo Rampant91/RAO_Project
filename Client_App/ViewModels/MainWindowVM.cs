@@ -301,7 +301,15 @@ namespace Client_App.ViewModels
                             var rt = findReports.FirstOrDefault();
                             if (rt != null)
                             {
-                                string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                                string system = "";
+                                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                                {
+                                    system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                                }
+                                else
+                                {
+                                    system = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                                }
                                 string path = Path.GetPathRoot(system);
                                 var tmp = Path.Combine(path, "RAO");
                                 tmp = Path.Combine(tmp, "temp");
@@ -413,7 +421,15 @@ namespace Client_App.ViewModels
                     {
                         if (res != "")
                         {
-                            string system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                            string system = "";
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                            {
+                                system = Environment.GetFolderPath(Environment.SpecialFolder.System);
+                            }
+                            else
+                            {
+                                system = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                            }
                             string path = Path.GetPathRoot(system);
                             var tmp = Path.Combine(path, "RAO");
                             tmp = Path.Combine(tmp, "temp");
