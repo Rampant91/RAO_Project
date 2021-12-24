@@ -21,22 +21,22 @@ namespace Models.DBRealization
             {
                 if (RuntimeInformation.OSArchitecture == Architecture.X64)
                 {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "x64"), "fbclient.dll");
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "win-x64"), "fbclient.dll");
                 }
                 if (RuntimeInformation.OSArchitecture == Architecture.X86)
                 {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "x32"), "fbclient.dll");
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "win-x32"), "fbclient.dll");
                 }
             }
             else
             {
                 if (RuntimeInformation.OSArchitecture == Architecture.X64)
                 {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux_x64"), "lib"), "libfbclient.so");
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux-x64"), "lib"), "libfbclient.so");
                 }
                 if (RuntimeInformation.OSArchitecture == Architecture.X86)
                 {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux_x32"), "lib"), "libfbclient.so");
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data"), "REDDB"), "linux-x32"), "lib"), "libfbclient.so");
                 }
             }
 #else
@@ -45,22 +45,22 @@ namespace Models.DBRealization
             {
                 if (RuntimeInformation.OSArchitecture == Architecture.X64)
                 {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "x64"), "fbclient.dll");
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "win-x64"), "fbclient.dll");
                 }
                 if (RuntimeInformation.OSArchitecture == Architecture.X86)
                 {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "x32"), "fbclient.dll");
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "win-x32"), "fbclient.dll");
                 }
             }
             else
             {
                 if (RuntimeInformation.OSArchitecture == Architecture.X64)
                 {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "linux_x64"), "lib"), "libfbclient.so");
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "linux-x64"), "lib"), "libfbclient.so");
                 }
                 if (RuntimeInformation.OSArchitecture == Architecture.X86)
                 {
-                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "linux_x32"), "lib"), "libfbclient.so");
+                    pth = Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data"), "REDDB"), "linux-x32"), "lib"), "libfbclient.so");
                 }
             }
 #endif
