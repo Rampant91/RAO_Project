@@ -2106,7 +2106,7 @@ namespace Models
             {
                 if (!tmp.Equals(OperationDate))
                 {
-                    value.AddError("Заполните примечание");// to do note handling
+                    //value.AddError("Заполните примечание");// to do note handling
                     return true;
                 }
             }
