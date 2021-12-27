@@ -732,7 +732,13 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                TransporterOKPO_DB = ((RamAccess<string>)Value).Value;
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
+                TransporterOKPO_DB = value1;
             }
         } private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
         {
@@ -743,6 +749,10 @@ namespace Models
                 return false;
             }
             if (value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (OKSM.Contains(value.Value.ToUpper()))
             {
                 return true;
             }
