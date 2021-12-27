@@ -951,8 +951,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value;
-                value1 = value1.ToUpper();
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
                 ProviderOrRecieverOKPO_DB = value1;
                 bool a = (int.Parse(OperationCode.Value) >= 10) && (int.Parse(OperationCode.Value) <= 14);
                 bool b = (int.Parse(OperationCode.Value) >= 41) && (int.Parse(OperationCode.Value) <= 45);

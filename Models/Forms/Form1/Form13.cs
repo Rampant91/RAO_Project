@@ -465,7 +465,13 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                CreatorOKPO_DB = ((RamAccess<string>)Value).Value;
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
+                CreatorOKPO_DB = value1;
             }
         }
         private bool CreatorOKPO_Validation(RamAccess<string> value)//TODO
@@ -631,7 +637,13 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Owner_DB = ((RamAccess<string>)Value).Value;
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
+                Owner_DB = value1;
             }
         }
         private bool Owner_Validation(RamAccess<string> value)//Ready
@@ -687,8 +699,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value;
-                value1 = value1.ToUpper();
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
                 ProviderOrRecieverOKPO_DB = value1;
             }
         }

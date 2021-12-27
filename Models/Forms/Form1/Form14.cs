@@ -483,11 +483,18 @@ namespace Models
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
+            string tmp = value1;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
@@ -558,11 +565,18 @@ namespace Models
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
+            string tmp = value1;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0))
                 {
                     value.AddError("Число должно быть больше нуля"); return false;
                 }
@@ -710,7 +724,13 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Owner_DB = ((RamAccess<string>)Value).Value;
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
+                Owner_DB = value1;
             }
         }
         private bool Owner_Validation(RamAccess<string> value)//Ready
@@ -766,8 +786,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value;
-                value1 = value1.ToUpper();
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
                 ProviderOrRecieverOKPO_DB = value1;
             }
         }

@@ -522,7 +522,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value;
-                value1 = (value1 == null) ? null : value1.ToUpper();
+                if(value1!=null)
+                if (OKSM.Contains(value1.ToUpper()))
+                {
+                    value1 = value1.ToUpper();
+                }
                 CreatorOKPO_DB = value1;
             }
         }
@@ -765,7 +769,13 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Owner_DB = ((RamAccess<string>)Value).Value;
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
+                Owner_DB = value1;
             }
         }
         private bool Owner_Validation(RamAccess<string> value)//Ready
@@ -780,6 +790,10 @@ namespace Models
             {
                 //if ((OwnerNote == null) || OwnerNote.Equals(""))
                 //    value.AddError("Заполните примечание");
+                return true;
+            }
+            if (OKSM.Contains(value.Value.ToUpper()))
+            {
                 return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -829,7 +843,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value;
-                value1 = (value1 == null) ? null : value1.ToUpper();
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
                 ProviderOrRecieverOKPO_DB = value1;
             }
         }
@@ -903,7 +921,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value;
-                value1 = (value1 == null) ? null : value1.ToUpper();
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
                 TransporterOKPO_DB = value1;
             }
         }
