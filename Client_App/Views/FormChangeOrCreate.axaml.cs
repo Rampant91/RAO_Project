@@ -63,6 +63,7 @@ namespace Client_App.Views
                         var dbm = StaticConfiguration.DBModel;
                         dbm.Restore();
                         dbm.LoadTables();
+                        dbm.SaveChanges();
                         if (tmp.FormType != "1.0" && tmp.FormType != "2.0")
                         {
                             if (tmp.FormType.Split('.')[0] == "1")
