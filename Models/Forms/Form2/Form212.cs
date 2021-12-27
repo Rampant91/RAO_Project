@@ -84,7 +84,7 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes1.Contains((short)value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
@@ -322,8 +322,12 @@ namespace Models
        {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value;
-                value1 = value1.ToUpper();
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
                 ProviderOrRecieverOKPO_DB = value1;
             }
        }

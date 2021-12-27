@@ -918,8 +918,12 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                var value1 = ((RamAccess<string>)Value).Value;
-                value1 = value1.ToUpper();
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
                 ProviderOrRecieverOKPO_DB = value1;
             }
         }
@@ -2028,7 +2032,7 @@ namespace Models
         }
         #endregion
 
-        protected override bool OperationCode_Validation(RamAccess<short?> value)//OK
+        protected override bool OperationCode_Validation(RamAccess<string> value)//OK
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -2036,23 +2040,23 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            bool a0 = value.Value == 1;
-            bool a1 = value.Value == 10;
-            bool a2 = value.Value == 18;
-            bool a3 = value.Value == 55;
-            bool a4 = value.Value == 63;
-            bool a5 = value.Value == 64;
-            bool a6 = value.Value == 68;
-            bool a7 = value.Value == 97;
-            bool a8 = value.Value == 98;
-            bool a9 = value.Value == 99;
-            bool a10 = (value.Value >= 21) && (value.Value <= 29);
-            bool a11 = (value.Value >= 31) && (value.Value <= 39);
+            bool a0 = value.Value == "01";
+            bool a1 = value.Value == "10";
+            bool a2 = value.Value == "18";
+            bool a3 = value.Value == "55";
+            bool a4 = value.Value == "63";
+            bool a5 = value.Value == "64";
+            bool a6 = value.Value == "68";
+            bool a7 = value.Value == "97";
+            bool a8 = value.Value == "98";
+            bool a9 = value.Value == "99";
+            bool a10 = (int.Parse(value.Value) >= 21) && (int.Parse(value.Value) <= 29);
+            bool a11 = (int.Parse(value.Value) >= 31) && (int.Parse(value.Value) <= 39);
             if (!(a0 || a1 || a2 || a3 || a4 || a5 || a6 || a7 || a8 || a9 || a10 || a11))
             {
                 value.AddError("Код операции не может быть использован в форме 1.7");
@@ -2099,14 +2103,14 @@ namespace Models
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            bool ab = (OperationCode.Value == 51) || (OperationCode.Value == 52);
-            bool c = (OperationCode.Value == 68);
-            bool d = (OperationCode.Value == 18) || (OperationCode.Value == 55);
+            bool ab = (OperationCode.Value == "51") || (OperationCode.Value == "52");
+            bool c =  (OperationCode.Value == "68");
+            bool d =  (OperationCode.Value == "18") || (OperationCode.Value == "55");
             if (ab || c || d)
             {
                 if (!tmp.Equals(OperationDate))
                 {
-                    value.AddError("Заполните примечание");// to do note handling
+                    //value.AddError("Заполните примечание");// to do note handling
                     return true;
                 }
             }

@@ -522,7 +522,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value;
-                value1 = (value1 == null) ? null : value1.ToUpper();
+                if(value1!=null)
+                if (OKSM.Contains(value1.ToUpper()))
+                {
+                    value1 = value1.ToUpper();
+                }
                 CreatorOKPO_DB = value1;
             }
         }
@@ -765,7 +769,13 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                Owner_DB = ((RamAccess<string>)Value).Value;
+                string value1 = ((RamAccess<string>)Value).Value;
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
+                Owner_DB = value1;
             }
         }
         private bool Owner_Validation(RamAccess<string> value)//Ready
@@ -780,6 +790,10 @@ namespace Models
             {
                 //if ((OwnerNote == null) || OwnerNote.Equals(""))
                 //    value.AddError("Заполните примечание");
+                return true;
+            }
+            if (OKSM.Contains(value.Value.ToUpper()))
+            {
                 return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
@@ -829,7 +843,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value;
-                value1 = (value1 == null) ? null : value1.ToUpper();
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
                 ProviderOrRecieverOKPO_DB = value1;
             }
         }
@@ -903,7 +921,11 @@ namespace Models
             if (args.PropertyName == "Value")
             {
                 var value1 = ((RamAccess<string>)Value).Value;
-                value1 = (value1 == null) ? null : value1.ToUpper();
+                if (value1 != null)
+                    if (OKSM.Contains(value1.ToUpper()))
+                    {
+                        value1 = value1.ToUpper();
+                    }
                 TransporterOKPO_DB = value1;
             }
         }
@@ -1118,7 +1140,7 @@ namespace Models
             return true;
         }
 
-        protected override bool OperationCode_Validation(RamAccess<short?> value)//OK
+        protected override bool OperationCode_Validation(RamAccess<string> value)//OK
         {
            value.ClearErrors();
             if (value.Value == null)
@@ -1126,19 +1148,19 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (!Spravochniks.SprOpCodes.Contains((short)value.Value))
+            if (!Spravochniks.SprOpCodes.Contains(value.Value))
             {
                 value.AddError("Недопустимое значение");
                 return false;
             }
-            if ((value.Value == 1) || (value.Value == 13) ||
-                (value.Value == 14) || (value.Value == 16) ||
-                (value.Value == 26) || (value.Value == 36) ||
-                (value.Value == 44) || (value.Value == 45) ||
-                (value.Value == 49) || (value.Value == 51) ||
-                (value.Value == 52) || (value.Value == 55) ||
-                (value.Value == 56) || (value.Value == 57) ||
-                (value.Value == 59) || (value.Value == 76))
+            if ((value.Value == "01") || (value.Value == "13") ||
+                (value.Value == "14") || (value.Value == "16") ||
+                (value.Value == "26") || (value.Value == "36") ||
+                (value.Value == "44") || (value.Value == "45") ||
+                (value.Value == "49") || (value.Value == "51") ||
+                (value.Value == "52") || (value.Value == "55") ||
+                (value.Value == "56") || (value.Value == "57") ||
+                (value.Value == "59") || (value.Value == "76"))
             {
                 value.AddError("Код операции не может быть использован для РВ");
                 return false;

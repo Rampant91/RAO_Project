@@ -28,7 +28,7 @@ namespace Models.Abstracts
         }
 
         #region OperationCode
-        public short? OperationCode_DB { get; set; } = null;
+        public string OperationCode_DB { get; set; } = null;
         public bool OperationCode_Hidden_Priv { get; set; } = false;
         [NotMapped]
         public bool OperationCode_Hidden
@@ -42,19 +42,19 @@ namespace Models.Abstracts
 
         [NotMapped]
         [Attributes.Form_Property("код")]
-        public RamAccess<short?> OperationCode
+        public RamAccess<string> OperationCode
         {
             get
             {
                 if (!OperationCode_Hidden_Priv)
                 {
-                    var tmp = new RamAccess<short?>(OperationCode_Validation, OperationCode_DB);
+                    var tmp = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
                     tmp.PropertyChanged += OperationCodeValueChanged;
                     return tmp;
                 }
                 else
                 {
-                    var tmp = new RamAccess<short?>(null, null);
+                    var tmp = new RamAccess<string>(null, null);
                     return tmp;
                 }
             }
@@ -71,10 +71,10 @@ namespace Models.Abstracts
         {
             if (args.PropertyName == "Value")
             {
-                OperationCode_DB = ((RamAccess<short?>)Value).Value;
+                OperationCode_DB = ((RamAccess<string>)Value).Value;
             }
         }
-        protected virtual bool OperationCode_Validation(RamAccess<short?> value)//Ready
+        protected virtual bool OperationCode_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             return true;
