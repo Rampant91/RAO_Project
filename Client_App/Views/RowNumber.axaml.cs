@@ -58,6 +58,16 @@ namespace Client_App.Views
 #endif
         }
 
+        bool flag = false;
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if(!flag)
+            {
+                _Number = "0";
+            }
+            base.OnClosing(e);
+        }
+
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
@@ -65,6 +75,7 @@ namespace Client_App.Views
 
         private void OnButtonClick(object sender, RoutedEventArgs e)
         {
+            flag = true;
             this.Close();
         }
         #region INotifyPropertyChanged
