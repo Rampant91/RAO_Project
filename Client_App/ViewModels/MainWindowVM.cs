@@ -335,24 +335,11 @@ namespace Client_App.ViewModels
                                         db.SaveChanges();
 
                                         string filename2 = "";
-                                        if (rp.Master.Rows10.Count > 0&& rp.Master.Rows10[0].Okpo_DB != ""&& rp.Master.Rows10[0].Okpo_DB != "")
+                                        if (rp.Master_DB.FormNum_DB=="1.0")
                                         {
-                                            if (rp.Master.Rows10[1].RegNo_DB == "")
-                                            {
-                                                filename2 += rp.Master.Rows10[0].RegNo_DB;
-                                            }
-                                            else
-                                            {
-                                                filename2 += rp.Master.Rows10[1].RegNo_DB;
-                                            }
-                                            if (rp.Master.Rows10[1].Okpo_DB == "")
-                                            {
-                                                filename2 += "_" + rp.Master.Rows10[0].Okpo_DB;
-                                            }
-                                            else
-                                            {
-                                                filename2 += "_" + rp.Master.Rows10[1].Okpo_DB;
-                                            }
+                                            filename2 += rp.Master.RegNoRep.Value;
+                                            filename2 += "_"+rp.Master.OkpoRep.Value;
+                                            
                                             filename2 += "_" + rep.CorrectionNumber_DB;
                                             filename2 += "_" + rep.FormNum_DB;
                                             filename2 += "_" + rep.StartPeriod_DB;
@@ -362,22 +349,9 @@ namespace Client_App.ViewModels
                                         {
                                             if (rp.Master.Rows20.Count > 0)
                                             {
-                                                if (rp.Master.Rows20[1].RegNo_DB == "")
-                                                {
-                                                    filename2 += rp.Master.Rows20[0].RegNo_DB;
-                                                }
-                                                else
-                                                {
-                                                    filename2 += rp.Master.Rows20[1].RegNo_DB;
-                                                }
-                                                if (rp.Master.Rows20[1].Okpo_DB == "")
-                                                {
-                                                    filename2 += "_" + rp.Master.Rows20[0].Okpo_DB;
-                                                }
-                                                else
-                                                {
-                                                    filename2 += "_" + rp.Master.Rows20[1].Okpo_DB;
-                                                }
+                                                filename2 += rp.Master.RegNoRep1.Value;
+                                                filename2 += rp.Master.OkpoRep1.Value;
+
                                                 filename2 += "_" + rep.CorrectionNumber_DB;
                                                 filename2 += "_" + rep.FormNum_DB;
                                                 filename2 += "_" + rep.Year_DB;
