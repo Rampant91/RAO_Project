@@ -211,6 +211,10 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value.Equals("прим."))
+            {
+                return true;
+            }
             string[] nuclids = value.Value.Split(";");
             for (int k = 0; k < nuclids.Length; k++)
             {
@@ -343,11 +347,18 @@ namespace Models
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
+            string tmp = value1;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
@@ -832,6 +843,10 @@ namespace Models
                 return true;
             }
             if (OKSM.Contains(value.Value.ToUpper()))
+            {
+                return true;
+            }
+            if (value.Value.Equals("Минобороны"))
             {
                 return true;
             }

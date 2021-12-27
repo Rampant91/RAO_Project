@@ -740,7 +740,9 @@ namespace Models
                     }
                 TransporterOKPO_DB = value1;
             }
-        } private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
+        }
+        
+        private bool TransporterOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -753,6 +755,10 @@ namespace Models
                 return true;
             }
             if (OKSM.Contains(value.Value.ToUpper()))
+            {
+                return true;
+            }
+            if (value.Value.Equals("Минобороны"))
             {
                 return true;
             }

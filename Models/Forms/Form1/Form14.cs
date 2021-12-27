@@ -254,6 +254,10 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value.Equals("прим."))
+            {
+                return true;
+            }
             string[] nuclids = value.Value.Split(";");
             for (int k = 0; k < nuclids.Length; k++)
             {
@@ -331,16 +335,27 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value.Equals("прим."))
+            {
+                return true;
+            }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
             {
                 value1 = value1.Replace("+", "e+").Replace("-", "e-");
             }
+            string tmp = value1;
+            int len = tmp.Length;
+            if ((tmp[0] == '(') && (tmp[len - 1] == ')'))
+            {
+                tmp = tmp.Remove(len - 1, 1);
+                tmp = tmp.Remove(0, 1);
+            }
             NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands |
                NumberStyles.AllowExponent;
             try
             {
-                if (!(double.Parse(value1, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
+                if (!(double.Parse(tmp, styles, CultureInfo.CreateSpecificCulture("en-GB")) > 0)) { value.AddError("Число должно быть больше нуля"); return false; }
             }
             catch
             {
@@ -399,6 +414,10 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            if (value.Value.Equals("прим."))
+            {
+                return true;
             }
             var tmp = value.Value;
             Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
@@ -477,6 +496,14 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            if (value.Value.Equals("прим."))
+            {
+                return true;
+            }
+            if (value.Value.Equals("-"))
+            {
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
@@ -559,6 +586,14 @@ namespace Models
             {
                 value.AddError("Поле не заполнено");
                 return false;
+            }
+            if (value.Value.Equals("прим."))
+            {
+                return true;
+            }
+            if (value.Value.Equals("-"))
+            {
+                return true;
             }
             var value1 = value.Value.Replace('е', 'e').Replace('Е', 'e').Replace('E', 'e');
             if ((!value1.Contains('e')) && (value1.Contains('+') ^ value1.Contains('-')))
@@ -916,6 +951,10 @@ namespace Models
                 return false;
             }
             if (value.Value.Equals("-"))
+            {
+                return true;
+            }
+            if (value.Value.Equals("Минобороны"))
             {
                 return true;
             }
