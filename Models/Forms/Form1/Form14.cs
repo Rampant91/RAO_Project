@@ -808,9 +808,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
-                tmp.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ProviderOrRecieverOKPO)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)]).Value = ProviderOrRecieverOKPO_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
+                    rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+                    Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                }
             }
             set
             {
@@ -851,19 +860,6 @@ namespace Models
             if (value.Value.Equals("Минобороны"))
             {
                 return true;
-            }
-            short tmp = short.Parse(OperationCode.Value);
-            bool a = (tmp >= 10) && (tmp <= 12);
-            bool b = (tmp >= 41) && (tmp <= 43);
-            bool c = (tmp >= 71) && (tmp <= 73);
-            bool d = (tmp == 15) || (tmp == 17) || (tmp == 18) || (tmp == 46) ||
-                (tmp == 47) || (tmp == 48) || (tmp == 53) || (tmp == 54) ||
-                (tmp == 58) || (tmp == 61) || (tmp == 62) || (tmp == 65) ||
-                (tmp == 67) || (tmp == 68) || (tmp == 75) || (tmp == 76);
-            if (a || b || c || d)
-            {
-                //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-                //return false;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {

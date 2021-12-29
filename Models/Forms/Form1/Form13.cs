@@ -697,13 +697,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
-                tmp.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ProviderOrRecieverOKPO)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)]).Value = ProviderOrRecieverOKPO_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
+                    rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+                    Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                }
             }
             set
             {
                 ProviderOrRecieverOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
         private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -739,19 +749,6 @@ namespace Models
             }
             if (OKSM.Contains(value.Value.ToUpper()))
             {
-                return true;
-            }
-            bool a = (int.Parse(OperationCode.Value) >= 10) && (int.Parse(OperationCode.Value) <= 12);
-            bool b = (int.Parse(OperationCode.Value) >= 41) && (int.Parse(OperationCode.Value) <= 43);
-            bool c = (int.Parse(OperationCode.Value) >= 71) && (int.Parse(OperationCode.Value) <= 73);
-            bool d = (OperationCode.Value == "15") || (OperationCode.Value == "17") || (OperationCode.Value == "18") || (OperationCode.Value == "46") ||
-                (OperationCode.Value == "47") || (OperationCode.Value == "48") || (OperationCode.Value == "53") || (OperationCode.Value == "54") ||
-                (OperationCode.Value == "58") || (OperationCode.Value == "61") || (OperationCode.Value == "62") || (OperationCode.Value == "65") ||
-                (OperationCode.Value == "67") || (OperationCode.Value == "68") || (OperationCode.Value == "75") || (OperationCode.Value == "76");
-            if (a || b || c || d)
-            {
-                //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-                //return true;
                 return true;
             }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
