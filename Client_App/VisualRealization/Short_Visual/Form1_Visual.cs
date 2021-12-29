@@ -50,7 +50,8 @@ namespace Client_App.Short_Visual
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                Type = "0.0"
+                Type = "0.0",
+                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeReport")
             };
             grd.PageSize = 8;
 
