@@ -44,14 +44,31 @@ namespace Client_App.Controls.DataGrid
 
     public class DataGrid : UserControl
     {
+        public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> DoubleClickCommandProperty =
+    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
+         nameof(DoubleClickCommand),
+         o => o.DoubleClickCommand,
+        (o, v) => o.DoubleClickCommand = v);
+
+        private ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> _DoubleClickCommand = null;
+
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> DoubleClickCommand
+        {
+            get => _DoubleClickCommand;
+            set
+            {
+                SetAndRaise(DoubleClickCommandProperty, ref _DoubleClickCommand, value);
+            }
+
+        }
         public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> ItemsProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
                 nameof(Items),
                 o => o.Items,
                 (o, v) => o.Items = v, defaultBindingMode: BindingMode.TwoWay);
 
-        public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> SelectedItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<IKey>> SelectedItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IKey>>(
                 nameof(SelectedItems),
                 o => o.SelectedItems,
                 (o, v) => o.SelectedItems = v);
@@ -83,7 +100,7 @@ namespace Client_App.Controls.DataGrid
         private IEnumerable<INotifyPropertyChanged> _items =
             new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-        private IEnumerable<INotifyPropertyChanged> _selecteditems =
+        private IEnumerable<IKey> _selecteditems =
             new ObservableCollectionWithItemPropertyChanged<IKey>();
 
         private string _type = "";
@@ -234,8 +251,17 @@ o => o.PageCount,
             InitializeComponent();
 
             ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
+            this.DoubleTapped += DataGrid_DoubleTapped;
         }
 
+        private void DataGrid_DoubleTapped(object? sender, RoutedEventArgs e)
+        {
+            if (DoubleClickCommand != null)
+            {
+                DownFlag = false;
+                DoubleClickCommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
+            }
+        }
         public IEnumerable<INotifyPropertyChanged> Items
         {
             get => _items;
@@ -256,7 +282,7 @@ o => o.PageCount,
             }
         }
 
-        public IEnumerable<INotifyPropertyChanged> SelectedItems
+        public IEnumerable<IKey> SelectedItems
         {
             get => _selecteditems;
             set
