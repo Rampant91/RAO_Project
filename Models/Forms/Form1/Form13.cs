@@ -697,13 +697,23 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
-                tmp.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(ProviderOrRecieverOKPO)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)]).Value = ProviderOrRecieverOKPO_DB;
+                    return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
+                    rm.PropertyChanged += ProviderOrRecieverOKPOValueChanged;
+                    Dictionary.Add(nameof(ProviderOrRecieverOKPO), rm);
+                    return (RamAccess<string>)Dictionary[nameof(ProviderOrRecieverOKPO)];
+                }
             }
             set
             {
                 ProviderOrRecieverOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(ProviderOrRecieverOKPO));
             }
         }
         private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
