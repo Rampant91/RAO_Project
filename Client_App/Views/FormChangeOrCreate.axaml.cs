@@ -59,11 +59,12 @@ namespace Client_App.Views
                 {
                     if (x == "Да")
                     {
-                        tmp.SaveReport();
                         flag = true;
+                        tmp.SaveReport();
                     }
                     if (x == "Нет")
                     {
+                        flag = true;
                         var dbm = StaticConfiguration.DBModel;
                         dbm.Restore();
                         dbm.LoadTables();
@@ -97,7 +98,6 @@ namespace Client_App.Views
                                 tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep1));
                             }
                         }
-                        flag = true;
                     }
                 });
 
