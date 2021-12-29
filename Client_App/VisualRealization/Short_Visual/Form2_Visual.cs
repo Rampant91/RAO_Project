@@ -46,7 +46,8 @@ namespace Client_App.Short_Visual
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                Type = "0.2"
+                Type = "0.2",
+                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeReport")
             };
             grd.PageSize = 12;
 
@@ -107,7 +108,8 @@ namespace Client_App.Short_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeForm")
             };
 
             Binding b = new Binding
