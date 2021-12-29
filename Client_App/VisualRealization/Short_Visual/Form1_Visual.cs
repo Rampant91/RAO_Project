@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Client_App.Views;
+using Avalonia.Interactivity;
+using System.Windows;
 
 namespace Client_App.Short_Visual
 {
@@ -62,25 +64,31 @@ namespace Client_App.Short_Visual
             };
 
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
-
-            ContextMenu? cntx = new ContextMenu();
+        
+        ContextMenu? cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>
             {
                 new MenuItem
                 {
                     Header = "Добавить форму",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D1"),
+                    HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+D1"),
                     [!MenuItem.CommandProperty] = new Binding("AddReport"),
                     CommandParameter = "1.0",
                 },
                 new MenuItem
                 {
                     Header = "Изменить форму",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+R"),
+                    HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+R"),
                     [!MenuItem.CommandProperty] = new Binding("ChangeReport"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить форму",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
+                    HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteReport"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -103,7 +111,8 @@ namespace Client_App.Short_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeForm")
             };
 
             Binding b = new Binding
@@ -111,9 +120,8 @@ namespace Client_App.Short_Visual
                 Path = "SelectedItems",
                 ElementName = "Form10AllDataGrid_",
                 NameScope = new WeakReference<INameScope>(scp),
-                Converter = new Converters.ReportsToReport_Converter()
+                Converter = new Converters.ReportsToReport_Converter(),
             };
-
             grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
 
             ContextMenu? cntx = new ContextMenu();
@@ -133,6 +141,7 @@ namespace Client_App.Short_Visual
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[3].SelectedItems"),
                 }
             };
+
 
             List<MenuItem> itms = new List<MenuItem>
             {
@@ -161,10 +170,10 @@ namespace Client_App.Short_Visual
                 }
             };
             cntx.Items = itms;
-
             grd.ContextMenu = cntx;
             return grd;
         }
+
 
         //Кнопки создания или изменения формы
         private static Panel FormB_Visual()
