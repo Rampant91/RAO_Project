@@ -1257,7 +1257,7 @@ o => o.PageCount,
                                         {
                                             var panel = (Panel)child.Child;
                                             var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                            textbox.Text = rt.Replace("\n","").Replace("\t", "").Replace("\t", "");
+                                            textbox.Text = rt.Replace("\n","").Replace("\t", "").Replace("\r", "");
                                         }
                                         break;
                                     }
