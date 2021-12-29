@@ -10,6 +10,7 @@ using OfficeOpenXml;
 
 namespace Models.Collections
 {
+
     public class Reports : IKey
     {
         public Reports()

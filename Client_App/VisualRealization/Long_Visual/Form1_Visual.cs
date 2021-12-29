@@ -397,12 +397,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -473,12 +475,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -666,12 +670,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -744,12 +750,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -938,12 +946,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -1014,12 +1024,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -1207,12 +1219,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -1283,12 +1297,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -1476,12 +1492,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -1552,12 +1570,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -1746,12 +1766,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -1822,12 +1844,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -2016,12 +2040,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -2092,12 +2118,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -2286,12 +2314,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -2362,12 +2392,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -2556,12 +2588,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
@@ -2633,12 +2667,14 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Копировать",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
                     [!MenuItem.CommandProperty] = new Binding("CopyRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
                 new MenuItem
                 {
                     Header = "Вставить",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
                     [!MenuItem.CommandProperty] = new Binding("PasteRows"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
                 },
