@@ -14,10 +14,19 @@ using Avalonia.Media;
 using Models.Collections;
 using Avalonia.Interactivity;
 using System.Threading.Tasks;
-using Avalonia.LogicalTree;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Metadata;
+using Models;
 using ReactiveUI;
 using System.Reactive;
-
+using System.Runtime.CompilerServices;
+using Avalonia.LogicalTree;
+using Client_App.Controls.DataGrid;
+using Models.DBRealization;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Models.Abstracts;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
+using Models.DataAccess;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -41,35 +50,17 @@ namespace Client_App.Controls.DataGrid
                 o => o.Items,
                 (o, v) => o.Items = v, defaultBindingMode: BindingMode.TwoWay);
 
-        public static readonly DirectProperty<DataGrid, IEnumerable<IKey>> SelectedItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IKey>>(
+        public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> SelectedItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
                 nameof(SelectedItems),
                 o => o.SelectedItems,
                 (o, v) => o.SelectedItems = v);
 
-        public static readonly DirectProperty<DataGrid, IList<INotifyPropertyChanged>> SelectedCellsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IList<INotifyPropertyChanged>>(
+        public static readonly DirectProperty<DataGrid, IList<Control>> SelectedCellsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IList<Control>>(
                 nameof(SelectedCells),
                 o => o.SelectedCells,
                 (o, v) => o.SelectedCells = v);
-
-        public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> DoubleClickCommandProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> > (
-                 nameof(DoubleClickCommand),
-                 o => o.DoubleClickCommand,
-                (o, v) => o.DoubleClickCommand = v);
-
-        private ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> _DoubleClickCommand = null;
-
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> DoubleClickCommand
-        {
-            get => _DoubleClickCommand;
-            set
-            {
-                SetAndRaise(DoubleClickCommandProperty, ref _DoubleClickCommand, value);
-            }
-        
-        }
 
         public static readonly DirectProperty<DataGrid, string> TypeProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, string>(
@@ -86,13 +77,13 @@ namespace Client_App.Controls.DataGrid
         public static readonly StyledProperty<Brush> ChooseColorProperty =
             AvaloniaProperty.Register<DataGrid, Brush>(nameof(ChooseColor));
 
-        private IList<INotifyPropertyChanged> _selectedCells =
-            new List<INotifyPropertyChanged>();
+        private IList<Control> _selectedCells =
+            new List<Control>();
 
         private IEnumerable<INotifyPropertyChanged> _items =
             new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-        private IEnumerable<IKey> _selecteditems =
+        private IEnumerable<INotifyPropertyChanged> _selecteditems =
             new ObservableCollectionWithItemPropertyChanged<IKey>();
 
         private string _type = "";
@@ -174,6 +165,7 @@ o => o.PageCount,
                 try
                 {
                     var val = Convert.ToInt32(value);
+
                     if (val != null)
                     {
                         int maxpage = (Items.Count() / PageSize) + 1;
@@ -182,7 +174,7 @@ o => o.PageCount,
                             if (val <= maxpage && val >= 1)
                             {
                                 SetAndRaise(NowPageProperty, ref _nowPage, value);
-                                UpdateCells();
+                                UpdateAllCells();
                             }
                             else
                             {
@@ -191,7 +183,7 @@ o => o.PageCount,
                                     if (_nowPage != maxpage.ToString())
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, maxpage.ToString());
-                                        UpdateCells();
+                                        UpdateAllCells();
                                     }
                                 }
                                 if (val < 1)
@@ -199,7 +191,7 @@ o => o.PageCount,
                                     if (_nowPage != "1")
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, "1");
-                                        UpdateCells();
+                                        UpdateAllCells();
                                     }
                                 }
                             }
@@ -242,17 +234,6 @@ o => o.PageCount,
             InitializeComponent();
 
             ItemsProperty.Changed.Subscribe(new ItemsObserver(ItemsChanged));
-
-            this.DoubleTapped += DataGrid_DoubleTapped;
-        }
-
-        private void DataGrid_DoubleTapped(object? sender, RoutedEventArgs e)
-        {
-            if(DoubleClickCommand!=null)
-            {
-                DownFlag = false;
-                DoubleClickCommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
-            }
         }
 
         public IEnumerable<INotifyPropertyChanged> Items
@@ -275,7 +256,7 @@ o => o.PageCount,
             }
         }
 
-        public IEnumerable<IKey> SelectedItems
+        public IEnumerable<INotifyPropertyChanged> SelectedItems
         {
             get => _selecteditems;
             set
@@ -283,7 +264,7 @@ o => o.PageCount,
                 if (value != null) SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
             }
         }
-        public IList<INotifyPropertyChanged> SelectedCells
+        public IList<Control> SelectedCells
         {
             get => _selectedCells;
             set
@@ -488,18 +469,23 @@ o => o.PageCount,
                 {
                     var ch = (Border)((Cell)item).Content;
                     var ch2 = (Panel)ch.Child;
-                    var text = (TextBox)ch2.Children[0];
-                    lst.Add((IKey)text.DataContext);
+                    if (ch2.DataContext != null)
+                    {
+                        lst.Add((IKey)(ch2.DataContext));
+                    }
                 }
 
                 if (item is StackPanel)
                 {
-                    var ch = (Cell)((StackPanel)item).Children[0];
-                    lst.Add((IKey)ch.DataContext);
+                    if ((item as StackPanel).DataContext != null)
+                    {
+                        var ch = (IKey)((item as StackPanel).DataContext);
+                        lst.Add(ch);
+                    }
                 }
 
-                _selecteditems = lst;
             }
+            _selecteditems = lst;
         }
 
         private void SetSelectedItemsWithHandler()
@@ -509,14 +495,21 @@ o => o.PageCount,
             {
                 if (item is Cell)
                 {
-                    var ch = (Row)((Cell)item).Parent;
-                    lst.Add((IKey)ch.DataContext);
+                    var ch = (Border)((Cell)item).Content;
+                    var ch2 = (Panel)ch.Child;
+                    if (ch2.DataContext != null)
+                    {
+                        lst.Add((IKey)(ch2.DataContext));
+                    }
                 }
 
                 if (item is StackPanel)
                 {
-                    var ch = (IKey)(item as StackPanel).DataContext;
-                    lst.Add(ch);
+                    if ((item as StackPanel).DataContext != null)
+                    {
+                        var ch = (IKey)((item as StackPanel).DataContext);
+                        lst.Add(ch);
+                    }
                 }
             }
 
@@ -642,7 +635,6 @@ o => o.PageCount,
                         this.ContextMenu.PlacementTarget = Rows[tmp[0], tmp[1]];
                         this.ContextMenu.Open();
                     }
-
                 }
                 else
                 {
@@ -764,7 +756,6 @@ o => o.PageCount,
             var count = 1;
 
             var its = Items as IList;
-            _nowPage = "1";
             for(int i = offset; i < num * PageSize; i++)
             {
                 var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
@@ -805,6 +796,7 @@ o => o.PageCount,
                 {
                     if (i >= its.Count)
                     {
+                        Rows[i - offset + 1].SCells.DataContext = null;
                         Rows[i - offset + 1].SCells.RowHide = true;
                     }
                     else
@@ -1231,52 +1223,32 @@ o => o.PageCount,
             NowPage = (Convert.ToInt32(NowPage) + 1).ToString();
         }
 
-        private async Task _PasteRows(IEnumerable param)
+        private async Task _PasteRows(IEnumerable<Control> param)
         {
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
-                string? text = await clip.GetTextAsync();
-                Cell cl = null;
-                foreach (var item in param)
+                var first = param.FirstOrDefault();
+                if (first is Cell)
                 {
-                    cl = (Cell)item;
-                    break;
-                }
-
-                if (cl != null)
-                {
-                    int Row = cl.CellRow;
-                    int Column = cl.CellColumn;
-
-                    if (text != null && text != "")
+                    string? text = await clip.GetTextAsync();
+                    Cell cl = null;
+                    foreach (var item in param)
                     {
-                        string rt = "";
-                        foreach (var item in text)
+                        cl = (Cell)item;
+                        break;
+                    }
+
+                    if (cl != null)
+                    {
+                        int Row = cl.CellRow;
+                        int Column = cl.CellColumn;
+
+                        if (text != null && text != "")
                         {
-                            if (item == '\n')
+                            string rt = "";
+                            foreach (var item in text)
                             {
-                                foreach (var it in param)
-                                {
-                                    var cell = (Cell)it;
-                                    if (cell.CellColumn == Column && cell.CellRow == Row)
-                                    {
-                                        var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                        if (child != null)
-                                        {
-                                            var panel = (Panel)child.Child;
-                                            var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                            textbox.Text = rt.Replace("\n","").Replace("\t", "").Replace("\t", "");
-                                        }
-                                        break;
-                                    }
-                                }
-                                rt = "";
-                                Row++;
-                                Column = cl.CellColumn;
-                            }
-                            else
-                            {
-                                if (item == '\t')
+                                if (item == '\r')
                                 {
                                     foreach (var it in param)
                                     {
@@ -1288,20 +1260,59 @@ o => o.PageCount,
                                             {
                                                 var panel = (Panel)child.Child;
                                                 var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                textbox.Text = rt;
+                                                textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
                                             }
                                             break;
                                         }
                                     }
                                     rt = "";
-                                    Column++;
+                                    Row++;
+                                    Column = cl.CellColumn;
                                 }
                                 else
                                 {
-                                    if (item != '\r')
+                                    if (item == '\t')
                                     {
-                                        rt += item;
+                                        foreach (var it in param)
+                                        {
+                                            var cell = (Cell)it;
+                                            if (cell.CellColumn == Column && cell.CellRow == Row)
+                                            {
+                                                var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                                if (child != null)
+                                                {
+                                                    var panel = (Panel)child.Child;
+                                                    var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                                    textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        rt = "";
+                                        Column++;
                                     }
+                                    else
+                                    {
+                                        if (item != '\n')
+                                        {
+                                            rt += item;
+                                        }
+                                    }
+                                }
+                            }
+                            foreach (var it in param)
+                            {
+                                var cell = (Cell)it;
+                                if (cell.CellColumn == Column && cell.CellRow == Row)
+                                {
+                                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                    if (child != null)
+                                    {
+                                        var panel = (Panel)child.Child;
+                                        var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                        textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
+                                    }
+                                    break;
                                 }
                             }
                         }
@@ -1310,46 +1321,36 @@ o => o.PageCount,
             }
         }
 
-        private async Task _CopyRows(IEnumerable param)
+        private async Task _CopyRows(IEnumerable<Control> param)
         {
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
                 string txt = "";
 
-                var Column = 1;
-                var Row = 1;
-
-                bool flag = true;
-                foreach (var item in param)
+                var first = param.FirstOrDefault();
+                if (first is Cell)
                 {
-                    var cell = (Cell)item;
-                    if (flag)
+
+                    var ord = param.GroupBy(x => ((Cell)x).CellRow);
+                    foreach (var item in ord)
                     {
-                        Column = cell.CellColumn;
-                        Row = cell.CellRow;
-                        flag = false;
-                    }
-                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                    if (child != null)
-                    {
-                        var panel = (Panel)child.Child;
-                        var textbox = (TextBox)panel.Children.FirstOrDefault();
-                        if (Row != cell.CellRow)
+                        var t = item.OrderBy(x => ((Cell)x).CellColumn);
+                        foreach (var it in t)
                         {
-                            txt += "\n";
-                            Row = cell.CellRow;
-                            Column = cell.CellColumn;
+                            var cell = (Cell)it;
+                            var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                            if (child != null)
+                            {
+                                var panel = (Panel)child.Child;
+                                var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                txt += textbox.Text;
+                                txt += "\t";
+                            }
                         }
-                        if (Column != cell.CellColumn)
-                        {
-                            txt += "\t";
-                            Column = cell.CellColumn;
-                        }
-                        txt += textbox.Text;
+                        txt += "\r";
                     }
                 }
 
-                txt += "\t";
                 await clip.ClearAsync();
                 await clip.SetTextAsync(txt);
             }

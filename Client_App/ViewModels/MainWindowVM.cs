@@ -360,7 +360,6 @@ namespace Client_App.ViewModels
 
                                         res = Path.Combine(res, filename2 + ".raodb");
 
-                                        StaticConfiguration.DBModel.SaveChanges();
                                     }
                                     catch (Exception e)
                                     {
@@ -370,11 +369,12 @@ namespace Client_App.ViewModels
                                 }
                                 try
                                 {
-                                    File.Copy(tmp, res);
+                                    var sourceFile = new FileInfo(tmp);
+                                    sourceFile.CopyTo(res, true);
                                 }
-                                catch
+                                catch(Exception e)
                                 {
-
+                                    Console.WriteLine(e);
                                 }
                             }
                         }
@@ -428,7 +428,8 @@ namespace Client_App.ViewModels
                             }
                             try
                             {
-                                File.Copy(res, tmp, true);
+                                var sourceFile = new FileInfo(res);
+                                sourceFile.CopyTo(tmp, true);
                                 using (DBModel db = new DBModel(tmp))
                                 {
                                     try
@@ -542,7 +543,7 @@ namespace Client_App.ViewModels
                             }
                             catch (Exception e)
                             {
-
+                                Console.WriteLine(e);
                             }
                         }
                     }
