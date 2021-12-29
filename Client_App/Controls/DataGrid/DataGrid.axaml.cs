@@ -1245,7 +1245,7 @@ o => o.PageCount,
                         string rt = "";
                         foreach (var item in text)
                         {
-                            if (item == '\n')
+                            if (item == '\r')
                             {
                                 foreach (var it in param)
                                 {
@@ -1257,7 +1257,7 @@ o => o.PageCount,
                                         {
                                             var panel = (Panel)child.Child;
                                             var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                            textbox.Text = rt.Replace("\n","").Replace("\t", "").Replace("\t", "");
+                                            textbox.Text = rt.Replace("\n","").Replace("\t", "").Replace("\r", "");
                                         }
                                         break;
                                     }
@@ -1280,7 +1280,7 @@ o => o.PageCount,
                                             {
                                                 var panel = (Panel)child.Child;
                                                 var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                textbox.Text = rt;
+                                                textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
                                             }
                                             break;
                                         }
@@ -1290,11 +1290,26 @@ o => o.PageCount,
                                 }
                                 else
                                 {
-                                    if (item != '\r')
+                                    if (item != '\n')
                                     {
                                         rt += item;
                                     }
                                 }
+                            }
+                        }
+                        foreach (var it in param)
+                        {
+                            var cell = (Cell)it;
+                            if (cell.CellColumn == Column && cell.CellRow == Row)
+                            {
+                                var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                if (child != null)
+                                {
+                                    var panel = (Panel)child.Child;
+                                    var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                    textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
+                                }
+                                break;
                             }
                         }
                     }
