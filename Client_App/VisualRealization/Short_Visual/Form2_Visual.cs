@@ -67,18 +67,24 @@ namespace Client_App.Short_Visual
                 new MenuItem
                 {
                     Header = "Добавить форму",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D2"),
+                    HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+D2"),
                     [!MenuItem.CommandProperty] = new Binding("AddReport"),
                     CommandParameter = "2.0",
                 },
                 new MenuItem
                 {
                     Header = "Изменить форму",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+R"),
+                    HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+R"),
                     [!MenuItem.CommandProperty] = new Binding("ChangeReport"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить форму",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
+                    HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteReport"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
