@@ -41,7 +41,7 @@ namespace Client_App.Views
         }
 
         System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; } = null;
-
+        bool flag = false;
         protected void OnStandartClosing(object sender, CancelEventArgs args)
         {
             if (Answ == null)
@@ -50,13 +50,17 @@ namespace Client_App.Views
                 Answ = tmp.ShowMessage.Handle("Сохранить?").GetAwaiter();
                 Answ.OnCompleted(() =>
                 {
-                    this.Close();
+                    if (flag)
+                    {
+                        this.Close();
+                    }
                 });
                 Answ.Subscribe(x =>
                 {
                     if (x == "Да")
                     {
                         tmp.SaveReport();
+                        flag = true;
                     }
                     if (x == "Нет")
                     {
@@ -93,6 +97,7 @@ namespace Client_App.Views
                                 tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep1));
                             }
                         }
+                        flag = true;
                     }
                 });
 
