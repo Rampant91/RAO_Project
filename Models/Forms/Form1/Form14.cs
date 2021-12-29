@@ -852,28 +852,34 @@ namespace Models
             {
                 return true;
             }
-            short tmp = short.Parse(OperationCode.Value);
-            bool a = (tmp >= 10) && (tmp <= 12);
-            bool b = (tmp >= 41) && (tmp <= 43);
-            bool c = (tmp >= 71) && (tmp <= 73);
-            bool d = (tmp == 15) || (tmp == 17) || (tmp == 18) || (tmp == 46) ||
-                (tmp == 47) || (tmp == 48) || (tmp == 53) || (tmp == 54) ||
-                (tmp == 58) || (tmp == 61) || (tmp == 62) || (tmp == 65) ||
-                (tmp == 67) || (tmp == 68) || (tmp == 75) || (tmp == 76);
-            if (a || b || c || d)
+            try
             {
-                //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
-                //return false;
+                short tmp = short.Parse(OperationCode.Value);
+                bool a = (tmp >= 10) && (tmp <= 12);
+                bool b = (tmp >= 41) && (tmp <= 43);
+                bool c = (tmp >= 71) && (tmp <= 73);
+                bool d = (tmp == 15) || (tmp == 17) || (tmp == 18) || (tmp == 46) ||
+                    (tmp == 47) || (tmp == 48) || (tmp == 53) || (tmp == 54) ||
+                    (tmp == 58) || (tmp == 61) || (tmp == 62) || (tmp == 65) ||
+                    (tmp == 67) || (tmp == 68) || (tmp == 75) || (tmp == 76);
+                if (a || b || c || d)
+                {
+                    //ProviderOrRecieverOKPO.Value = "ОКПО ОТЧИТЫВАЮЩЕЙСЯ ОРГ";
+                    //return false;
+                }
             }
+            catch (Exception) { }
             if ((value.Value.Length != 8) && (value.Value.Length != 14))
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
 
             }
             Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
             if (!mask.IsMatch(value.Value))
             {
-                value.AddError("Недопустимое значение"); return false;
+                value.AddError("Недопустимое значение");
+                return false;
             }
             return true;
         }
