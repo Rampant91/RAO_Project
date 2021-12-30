@@ -44,6 +44,96 @@ namespace Client_App.Controls.DataGrid
 
     public class DataGrid : UserControl
     {
+
+        public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> CtrlDRCommandProperty =
+    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
+         nameof(CtrlDRCommand),
+         o => o.CtrlDRCommand,
+        (o, v) => o.CtrlDRCommand = v);
+
+        private ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> _CtrlDRCommand = null;
+
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> CtrlDRCommand
+        {
+            get => _CtrlDRCommand;
+            set
+            {
+                SetAndRaise(CtrlDRCommandProperty, ref _CtrlDRCommand, value);
+            }
+
+        }
+
+        public static readonly DirectProperty<DataGrid, ReactiveCommand<Unit, Unit>> CtrlRCommandProperty =
+    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<Unit, Unit>>(
+         nameof(CtrlRCommand),
+         o => o.CtrlRCommand,
+        (o, v) => o.CtrlRCommand = v);
+
+        private ReactiveCommand<Unit, Unit> _CtrlRCommand = null;
+
+        public ReactiveCommand<Unit, Unit> CtrlRCommand
+        {
+            get => _CtrlRCommand;
+            set
+            {
+                SetAndRaise(CtrlRCommandProperty, ref _CtrlRCommand, value);
+            }
+
+        }
+
+        public static readonly DirectProperty<DataGrid, ReactiveCommand<String, Unit>> CtrlACommandProperty =
+    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<String, Unit>>(
+         nameof(CtrlACommand),
+         o => o.CtrlACommand,
+        (o, v) => o.CtrlACommand = v);
+
+        private ReactiveCommand<String, Unit> _CtrlACommand = null;
+
+        public ReactiveCommand<String, Unit> CtrlACommand
+        {
+            get => _CtrlACommand;
+            set
+            {
+                SetAndRaise(CtrlACommandProperty, ref _CtrlACommand, value);
+            }
+
+        }
+
+        public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> CtrlECommandProperty =
+    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
+         nameof(CtrlECommand),
+         o => o.CtrlECommand,
+        (o, v) => o.CtrlECommand = v);
+
+        private ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> _CtrlECommand = null;
+
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> CtrlECommand
+        {
+            get => _CtrlECommand;
+            set
+            {
+                SetAndRaise(CtrlECommandProperty, ref _CtrlECommand, value);
+            }
+
+        }
+        public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> CtrlDCommandProperty =
+    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
+         nameof(CtrlDCommand),
+         o => o.CtrlDCommand,
+        (o, v) => o.CtrlDCommand = v);
+
+        private ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> _CtrlDCommand = null;
+
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> CtrlDCommand
+        {
+            get => _CtrlDCommand;
+            set
+            {
+                SetAndRaise(CtrlDCommandProperty, ref _CtrlDCommand, value);
+            }
+
+        }
+
         public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> DoubleClickCommandProperty =
     AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
          nameof(DoubleClickCommand),
@@ -61,6 +151,7 @@ namespace Client_App.Controls.DataGrid
             }
 
         }
+
         public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> ItemsProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
                 nameof(Items),
@@ -262,6 +353,8 @@ o => o.PageCount,
                 DoubleClickCommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
             }
         }
+
+
         public IEnumerable<INotifyPropertyChanged> Items
         {
             get => _items;
@@ -1059,6 +1152,38 @@ o => o.PageCount,
                 {
                     _PasteRows(SelectedCells);
                 }
+                if (args.Key == Key.A) 
+                {
+                    if (CtrlRCommand != null)
+                    {
+                        CtrlRCommand.Execute();
+                    }
+                    if (this.Type == "0.0")
+                    {
+                        CtrlACommand.Execute("1.0");
+                    }
+
+                    if (this.Type == "0.2")
+                    {
+                        CtrlACommand.Execute("2.0");
+                    }
+                }
+                if (args.Key == Key.E)
+                {
+                    if (CtrlECommand != null)
+                    {
+                        CtrlECommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
+                    }
+                }
+
+                if (args.Key == Key.D)
+                {
+                    if (CtrlDCommand != null)
+                    {
+                        CtrlDCommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
+                    }
+                }
+
             }
 
             if (args.Key == Key.Delete)

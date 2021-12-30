@@ -364,7 +364,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -383,6 +384,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -634,7 +636,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -653,6 +656,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -902,7 +906,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -921,6 +926,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -1167,7 +1173,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1186,6 +1193,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -1432,7 +1440,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1451,6 +1460,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -1720,7 +1730,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 3);
 
@@ -1739,6 +1750,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -2020,7 +2032,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 3);
 
@@ -2039,6 +2052,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -2365,7 +2379,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 3);
 
@@ -2384,6 +2399,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -2630,7 +2646,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 2);
             Binding b = new Binding
@@ -2647,6 +2664,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -2894,7 +2912,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -2913,6 +2932,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -3160,7 +3180,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -3179,6 +3200,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem
@@ -3425,7 +3447,8 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -3444,6 +3467,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить строку",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     [!MenuItem.CommandProperty] = new Binding("AddRow"),
                 },
                                 new MenuItem

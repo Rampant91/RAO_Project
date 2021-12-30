@@ -62,11 +62,13 @@
                   <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer>
-                  <Panel x:Name="Forms_p1_0" Grid.Column="0"/>
+                  <Panel x:Name="Forms_p1_0" Grid.Column="0">
+				  </Panel>
                 </ScrollViewer>
                 <Panel x:Name="Forms_p1_B" Grid.Column="1"/>
               </Grid>
-              <Panel Margin="0,5,0,0" x:Name="Forms_p1_X" Grid.Row="1"/>
+              <Panel Margin="0,5,0,0" x:Name="Forms_p1_X" Grid.Row="1">
+	          </Panel>  
             </Grid>
           </Panel>
         </TabItem>

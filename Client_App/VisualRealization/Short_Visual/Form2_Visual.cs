@@ -47,7 +47,9 @@ namespace Client_App.Short_Visual
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 Type = "0.2",
-                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeReport")
+                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeReport"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteReport"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddReport")
             };
             grd.PageSize = 12;
 
@@ -68,7 +70,7 @@ namespace Client_App.Short_Visual
                 new MenuItem
                 {
                     Header = "Добавить форму",
-                    //InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D2"),
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                     //HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+D2"),
                     [!MenuItem.CommandProperty] = new Binding("AddReport"),
                     CommandParameter = "2.0",
@@ -76,16 +78,13 @@ namespace Client_App.Short_Visual
                 new MenuItem
                 {
                     Header = "Изменить форму",
-                    //InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+R"),
-                    //HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+R"),
                     [!MenuItem.CommandProperty] = new Binding("ChangeReport"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 },
                 new MenuItem
                 {
                     Header = "Удалить форму",
-                    //InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
-                    //HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteReport"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -93,7 +92,6 @@ namespace Client_App.Short_Visual
             cntx.Items = itms;
 
             grd.ContextMenu = cntx;
-
             return grd;
         }
 
@@ -109,7 +107,9 @@ namespace Client_App.Short_Visual
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeForm")
+                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeForm"),
+                [!Controls.DataGrid.DataGrid.CtrlECommandProperty] = new Binding("ExportForm"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteForm")
             };
 
             Binding b = new Binding
@@ -149,6 +149,7 @@ namespace Client_App.Short_Visual
                 new MenuItem
                 {
                     Header = "Экспорт",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+E"),
                     [!MenuItem.CommandProperty] = new Binding("ExportForm"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 },
@@ -161,6 +162,7 @@ namespace Client_App.Short_Visual
                 new MenuItem
                 {
                     Header = "Удалить форму",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }

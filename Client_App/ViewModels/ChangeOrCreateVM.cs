@@ -265,7 +265,7 @@ namespace Client_App.ViewModels
                 WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             }
             AddSort = ReactiveCommand.Create<string>(_AddSort);
-            AddRow = ReactiveCommand.Create(_AddRow);
+            AddRow = ReactiveCommand.CreateFromTask(_AddRow);
             DeleteRow = ReactiveCommand.CreateFromTask<IList>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             SumRow = ReactiveCommand.Create(_SumRow);
@@ -386,7 +386,7 @@ namespace Client_App.ViewModels
             return maxNum + 1;
         }
 
-        private void _AddRow()
+        private async Task _AddRow()
         {
             var frm = FormCreator.Create(FormType);
             if (FormType == "1.1") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows11); Storage.Rows11.Add((Form11)frm); Storage.LastAddedForm = Report.Forms.Form11; }
@@ -726,7 +726,7 @@ namespace Client_App.ViewModels
             }
         }
 
-            private async Task _DuplicateRowsx1()
+        private async Task _DuplicateRowsx1()
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
