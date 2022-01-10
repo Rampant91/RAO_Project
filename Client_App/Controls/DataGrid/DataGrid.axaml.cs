@@ -44,25 +44,6 @@ namespace Client_App.Controls.DataGrid
 
     public class DataGrid : UserControl
     {
-
-        public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> CtrlDRCommandProperty =
-    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
-         nameof(CtrlDRCommand),
-         o => o.CtrlDRCommand,
-        (o, v) => o.CtrlDRCommand = v);
-
-        private ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> _CtrlDRCommand = null;
-
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> CtrlDRCommand
-        {
-            get => _CtrlDRCommand;
-            set
-            {
-                SetAndRaise(CtrlDRCommandProperty, ref _CtrlDRCommand, value);
-            }
-
-        }
-
         public static readonly DirectProperty<DataGrid, ReactiveCommand<Unit, Unit>> CtrlRCommandProperty =
     AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<Unit, Unit>>(
          nameof(CtrlRCommand),
@@ -116,15 +97,15 @@ namespace Client_App.Controls.DataGrid
             }
 
         }
-        public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> CtrlDCommandProperty =
-    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
+        public static readonly DirectProperty<DataGrid, ReactiveCommand<IEnumerable, Unit>> CtrlDCommandProperty =
+    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<IEnumerable, Unit>>(
          nameof(CtrlDCommand),
          o => o.CtrlDCommand,
         (o, v) => o.CtrlDCommand = v);
 
-        private ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> _CtrlDCommand = null;
+        private ReactiveCommand<IEnumerable, Unit> _CtrlDCommand = null;
 
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> CtrlDCommand
+        public ReactiveCommand<IEnumerable, Unit> CtrlDCommand
         {
             get => _CtrlDCommand;
             set
@@ -133,6 +114,25 @@ namespace Client_App.Controls.DataGrid
             }
 
         }
+
+        public static readonly DirectProperty<DataGrid, ReactiveCommand<Unit, Unit>> CtrlNCommandProperty =
+    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<Unit, Unit>>(
+         nameof(CtrlNCommand),
+         o => o.CtrlNCommand,
+        (o, v) => o.CtrlNCommand = v);
+
+        private ReactiveCommand<Unit, Unit> _CtrlNCommand = null;
+
+        public ReactiveCommand<Unit, Unit> CtrlNCommand
+        {
+            get => _CtrlNCommand;
+            set
+            {
+                SetAndRaise(CtrlNCommandProperty, ref _CtrlNCommand, value);
+            }
+
+        }
+
 
         public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> DoubleClickCommandProperty =
     AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
@@ -187,6 +187,7 @@ namespace Client_App.Controls.DataGrid
 
         private IList<Control> _selectedCells =
             new List<Control>();
+
 
         private IEnumerable<INotifyPropertyChanged> _items =
             new ObservableCollectionWithItemPropertyChanged<IKey>();
@@ -1167,12 +1168,32 @@ o => o.PageCount,
                     {
                         CtrlACommand.Execute("2.0");
                     }
+
+                    if (this.Type == "1.1*")
+                    {
+                        CtrlACommand.Execute("1.1*");
+                    }
+
+                    if (this.Type == "2.1*")
+                    {
+                        CtrlACommand.Execute("2.1*");
+                    }
+
+
                 }
                 if (args.Key == Key.E)
                 {
                     if (CtrlECommand != null)
                     {
                         CtrlECommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
+                    }
+                }
+
+                if (args.Key == Key.N)
+                {
+                    if (CtrlNCommand != null)
+                    {
+                        CtrlNCommand.Execute();
                     }
                 }
 

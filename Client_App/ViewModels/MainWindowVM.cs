@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
+using System.Collections;
 
 
 namespace Client_App.ViewModels
@@ -146,9 +147,9 @@ namespace Client_App.ViewModels
             ChangeReport =
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ChangeReport);
             DeleteForm =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_DeleteForm);
+                ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteForm);
             DeleteReport =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_DeleteReport);
+                ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteReport);
 
             Excel_Export =
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_Excel_Export);
@@ -204,8 +205,8 @@ namespace Client_App.ViewModels
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ExportForm { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeForm { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeReport { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> DeleteForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> DeleteReport { get; }
+        public ReactiveCommand<IEnumerable, Unit> DeleteForm { get; }
+        public ReactiveCommand<IEnumerable, Unit> DeleteReport { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Print_Excel_Export { get; }
         public ReactiveCommand<string, Unit> All_Excel_Export { get; }
@@ -597,7 +598,7 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _DeleteForm(ObservableCollectionWithItemPropertyChanged<IKey> param)
+        private async Task _DeleteForm(IEnumerable param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -626,7 +627,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DeleteReport(ObservableCollectionWithItemPropertyChanged<IKey> param)
+        private async Task _DeleteReport(IEnumerable param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {

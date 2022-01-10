@@ -365,7 +365,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -390,6 +392,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -409,6 +412,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -442,7 +446,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -458,6 +465,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -468,6 +476,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -487,6 +496,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -637,7 +647,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -662,6 +674,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -681,6 +694,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -714,7 +728,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -729,6 +746,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -738,6 +756,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -757,6 +776,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -907,7 +927,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -932,6 +954,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -951,6 +974,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -984,7 +1008,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1001,6 +1028,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -1010,6 +1038,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -1029,6 +1058,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -1174,7 +1204,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1199,6 +1231,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -1218,6 +1251,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -1251,7 +1285,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1268,6 +1305,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -1277,6 +1315,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -1296,6 +1335,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -1441,7 +1481,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1466,6 +1508,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -1485,6 +1528,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -1518,7 +1562,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1535,6 +1582,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -1544,6 +1592,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -1563,6 +1612,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -1731,7 +1781,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 3);
 
@@ -1756,6 +1808,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -1775,6 +1828,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -1808,7 +1862,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 5);
 
@@ -1825,6 +1882,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -1834,6 +1892,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -1853,6 +1912,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -2033,7 +2093,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 3);
 
@@ -2058,6 +2120,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -2077,6 +2140,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -2110,7 +2174,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 5);
 
@@ -2127,6 +2194,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -2136,6 +2204,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -2155,6 +2224,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -2380,7 +2450,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 3);
 
@@ -2405,6 +2477,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -2424,6 +2497,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -2457,7 +2531,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 5);
 
@@ -2474,6 +2551,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -2483,6 +2561,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -2502,6 +2581,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -2647,7 +2727,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 2);
             Binding b = new Binding
@@ -2670,6 +2752,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -2689,6 +2772,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -2722,7 +2806,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -2739,6 +2826,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -2748,6 +2836,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -2767,6 +2856,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -2913,7 +3003,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -2938,6 +3030,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -2957,6 +3050,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -2990,7 +3084,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -3007,6 +3104,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -3016,6 +3114,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -3035,6 +3134,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -3181,7 +3281,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -3206,6 +3308,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -3225,6 +3328,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -3257,7 +3361,11 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -3274,6 +3382,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -3283,6 +3392,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -3302,6 +3412,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -3448,7 +3559,9 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow")
+                [!Controls.DataGrid.DataGrid.CtrlRCommandProperty] = new Binding("AddRow"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -3473,6 +3586,7 @@ namespace Client_App.Long_Visual
                                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
                 },
                 new MenuItem
@@ -3492,6 +3606,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }
@@ -3525,7 +3640,10 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700
+                MaxHeight = 700,
+                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
+                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
+                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -3541,6 +3659,7 @@ namespace Client_App.Long_Visual
             var mn = new MenuItem
             {
                 Header = "Добавить строку",
+                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
                 [!MenuItem.CommandProperty] = new Binding("AddNote")
             };
             mn.SetValue(MenuItem.CommandParameterProperty, "2.1*");
@@ -3550,6 +3669,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Добавить N строк",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
                     [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
                 },
                 new MenuItem
@@ -3569,6 +3689,7 @@ namespace Client_App.Long_Visual
                 new MenuItem
                 {
                     Header = "Удалить строки",
+                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
                     [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
                     [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
                 }

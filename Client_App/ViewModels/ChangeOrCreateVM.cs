@@ -136,12 +136,12 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> AddSort { get; protected set; }
         public ReactiveCommand<string, Unit> AddNote { get; protected set; }
         public ReactiveCommand<Unit, Unit> AddRow { get; protected set; }
-        public ReactiveCommand<IList, Unit> DeleteRow { get; protected set; }
+        public ReactiveCommand<IEnumerable, Unit> DeleteRow { get; protected set; }
         public ReactiveCommand<Unit, Unit> DuplicateRowsx1 { get; protected set; }
         public ReactiveCommand<Unit, Unit> DuplicateNotes { get; protected set; }
-        public ReactiveCommand<IList, Unit> CopyRows { get; protected set; }
-        public ReactiveCommand<IList, Unit> PasteRows { get; protected set; }
-        public ReactiveCommand<IList, Unit> DeleteNote { get; protected set; }
+        public ReactiveCommand<IEnumerable<Control>, Unit> CopyRows { get; protected set; }
+        public ReactiveCommand<IEnumerable<Control>, Unit> PasteRows { get; protected set; }
+        public ReactiveCommand<IEnumerable, Unit> DeleteNote { get; protected set; }
         public ReactiveCommand<Unit, Unit> PasteNotes { get; protected set; }
 
         public ChangeOrCreateVM(string param, in Report rep,Reports reps)
@@ -266,15 +266,15 @@ namespace Client_App.ViewModels
             }
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow = ReactiveCommand.CreateFromTask(_AddRow);
-            DeleteRow = ReactiveCommand.CreateFromTask<IList>(_DeleteRow);
+            DeleteRow = ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             SumRow = ReactiveCommand.Create(_SumRow);
-            PasteRows = ReactiveCommand.CreateFromTask<IList>(_PasteRows);
+            PasteRows = ReactiveCommand.CreateFromTask<IEnumerable<Control>>(_PasteRows);
             DuplicateRowsx1 = ReactiveCommand.CreateFromTask(_DuplicateRowsx1);
-            CopyRows = ReactiveCommand.CreateFromTask<IList>(_CopyRows);
-            AddNote = ReactiveCommand.Create<string>(_AddNote);
-            DeleteNote = ReactiveCommand.CreateFromTask<IList>(_DeleteNote);
-            DuplicateNotes=ReactiveCommand.CreateFromTask(_DuplicateNotes);
+            CopyRows = ReactiveCommand.CreateFromTask<IEnumerable<Control>>(_CopyRows);
+            AddNote = ReactiveCommand.CreateFromTask<string>(_AddNote);
+            DeleteNote = ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteNote);
+            DuplicateNotes = ReactiveCommand.CreateFromTask(_DuplicateNotes);
             //PasteNotes = ReactiveCommand.CreateFromTask(_PasteNotes);
 
             ShowDialog = new Interaction<object,int>();
@@ -413,7 +413,7 @@ namespace Client_App.ViewModels
             if (FormType == "2.12") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows212); Storage.Rows212.Add((Form212)frm); Storage.LastAddedForm = Report.Forms.Form212; }
         }
 
-        private void _AddNote(string Param)
+        private async Task _AddNote(string Param)
         {
             Note? nt = new Note();
             Storage.Notes.Add(nt);
@@ -581,52 +581,32 @@ namespace Client_App.ViewModels
             //Storage.Filters.SortPath = param;
         }
 
-        private async Task _PasteRows(IEnumerable param)
+        private async Task _PasteRows(IEnumerable<Control> param)
         {
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
-                string? text = await clip.GetTextAsync();
-                Cell cl = null;
-                foreach (var item in param)
+                var first = param.FirstOrDefault();
+                if (first is Cell)
                 {
-                    cl = (Cell)item;
-                    break;
-                }
-
-                if (cl != null)
-                {
-                    int Row = cl.CellRow;
-                    int Column = cl.CellColumn;
-
-                    if (text != null && text != "")
+                    string? text = await clip.GetTextAsync();
+                    Cell cl = null;
+                    foreach (var item in param)
                     {
-                        string rt = "";
-                        foreach (var item in text)
+                        cl = (Cell)item;
+                        break;
+                    }
+
+                    if (cl != null)
+                    {
+                        int Row = cl.CellRow;
+                        int Column = cl.CellColumn;
+
+                        if (text != null && text != "")
                         {
-                            if (item == '\n')
+                            string rt = "";
+                            foreach (var item in text)
                             {
-                                foreach (var it in param)
-                                {
-                                    var cell = (Cell)it;
-                                    if (cell.CellColumn == Column && cell.CellRow == Row)
-                                    {
-                                        var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                        if (child != null)
-                                        {
-                                            var panel = (Panel)child.Child;
-                                            var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                            textbox.Text = rt;
-                                        }
-                                        break;
-                                    }
-                                }
-                                rt = "";
-                                Row++;
-                                Column = cl.CellColumn;
-                            }
-                            else
-                            {
-                                if (item == '\t')
+                                if (item == '\r')
                                 {
                                     foreach (var it in param)
                                     {
@@ -638,17 +618,59 @@ namespace Client_App.ViewModels
                                             {
                                                 var panel = (Panel)child.Child;
                                                 var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                textbox.Text = rt;
+                                                textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
                                             }
                                             break;
                                         }
                                     }
                                     rt = "";
-                                    Column++;
+                                    Row++;
+                                    Column = cl.CellColumn;
                                 }
                                 else
                                 {
-                                    rt += item;
+                                    if (item == '\t')
+                                    {
+                                        foreach (var it in param)
+                                        {
+                                            var cell = (Cell)it;
+                                            if (cell.CellColumn == Column && cell.CellRow == Row)
+                                            {
+                                                var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                                if (child != null)
+                                                {
+                                                    var panel = (Panel)child.Child;
+                                                    var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                                    textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
+                                                }
+                                                break;
+                                            }
+                                        }
+                                        rt = "";
+                                        Column++;
+                                    }
+                                    else
+                                    {
+                                        if (item != '\n')
+                                        {
+                                            rt += item;
+                                        }
+                                    }
+                                }
+                            }
+                            foreach (var it in param)
+                            {
+                                var cell = (Cell)it;
+                                if (cell.CellColumn == Column && cell.CellRow == Row)
+                                {
+                                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                    if (child != null)
+                                    {
+                                        var panel = (Panel)child.Child;
+                                        var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                        textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
+                                    }
+                                    break;
                                 }
                             }
                         }
@@ -657,46 +679,36 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _CopyRows(IEnumerable param)
+        private async Task _CopyRows(IEnumerable<Control> param)
         {
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
                 string txt = "";
 
-                var Column = 1;
-                var Row = 1;
-
-                bool flag = true;
-                foreach (var item in param)
+                var first = param.FirstOrDefault();
+                if (first is Cell)
                 {
-                    var cell = (Cell)item;
-                    if (flag)
+
+                    var ord = param.GroupBy(x => ((Cell)x).CellRow);
+                    foreach (var item in ord)
                     {
-                        Column = cell.CellColumn;
-                        Row = cell.CellRow;
-                        flag = false;
-                    }
-                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                    if (child != null)
-                    {
-                        var panel = (Panel)child.Child;
-                        var textbox = (TextBox)panel.Children.FirstOrDefault();
-                        if (Row != cell.CellRow)
+                        var t = item.OrderBy(x => ((Cell)x).CellColumn);
+                        foreach (var it in t)
                         {
-                            txt += "\n";
-                            Row = cell.CellRow;
-                            Column = cell.CellColumn;
+                            var cell = (Cell)it;
+                            var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                            if (child != null)
+                            {
+                                var panel = (Panel)child.Child;
+                                var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                txt += textbox.Text;
+                                txt += "\t";
+                            }
                         }
-                        if (Column != cell.CellColumn)
-                        {
-                            txt += "\t";
-                            Column = cell.CellColumn;
-                        }
-                        txt += textbox.Text;
+                        txt += "\r";
                     }
                 }
 
-                txt += "\t";
                 await clip.ClearAsync();
                 await clip.SetTextAsync(txt);
             }
