@@ -346,7 +346,7 @@ namespace Client_App.ViewModels
 
                     }
                 }
-
+                Storages.Report_Collection.QuickSort();
                 var dbm = StaticConfiguration.DBModel;
                 dbm.SaveChanges();
                 IsCanSaveReportEnabled = false;

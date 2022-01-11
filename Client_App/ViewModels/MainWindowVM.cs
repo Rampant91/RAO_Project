@@ -134,6 +134,7 @@ namespace Client_App.ViewModels
 
             foreach (var item in Local_Reports.Reports_Collection) 
             {
+                item.Report_Collection.QuickSort();
                 foreach (var it in item.Report_Collection) 
                 {
                     foreach (var _i in it.Notes) 
@@ -277,12 +278,8 @@ namespace Client_App.ViewModels
                 {
                     var t = desktop.MainWindow as MainWindow;
                     var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-
-
                     ChangeOrCreateVM frm = new(param, Local_Reports);
                     await ShowDialog.Handle(frm);
-
-
                     t.SelectedReports = tmp;
                 }
             }
@@ -720,6 +717,7 @@ namespace Client_App.ViewModels
                     if (param != null)
                         foreach (var item in param)
                             Local_Reports.Reports_Collection.Remove((Reports)item);
+                    Local_Reports.Reports_Collection.QuickSort();
                     await StaticConfiguration.DBModel.SaveChangesAsync();
                 }
             }

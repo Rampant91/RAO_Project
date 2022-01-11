@@ -64,7 +64,45 @@ namespace Models.Collections
             Init();
         }
 
-        public int Order{ get; set; }
+        public int Order{ 
+            get 
+            {
+                try
+                {
+                    var frm = FormNum_DB.Replace(".", "");
+                    if(FormNum_DB.Split('.')[0]=="1")
+                    {
+                        try
+                        {
+                            var dt = DateTimeOffset.Parse(EndPeriod_DB);
+                            var num = dt.Day * 1000000;
+                            num += dt.Month * 10000;
+                            num += dt.Year;
+                            frm += (int)(1.0 / num * 10000000000.0);
+                        }
+                        catch
+                        {
+
+                        }
+                        return Convert.ToInt32(frm);
+                    }
+                    else
+                    {
+                        if (Year_DB != null&& Year_DB != 0)
+                        {
+                            frm += (int)(1.0 / Year_DB * 10000000);
+                        }
+                        return Convert.ToInt32(frm);
+                    }
+                }
+                catch
+                {
+                    return 0;
+                }
+
+
+            } 
+        }
 
         #region OkpoRep
         [NotMapped]
