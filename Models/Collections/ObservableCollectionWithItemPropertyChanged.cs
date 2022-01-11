@@ -21,6 +21,15 @@ namespace Models.Collections
         /// </summary>
         public event EventHandler<ItemPropertyChangedEventArgs> ItemPropertyChanged;
 
+        [NotMapped]
+        public int Order
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public int Id { get; set; }
 
         public ObservableCollectionWithItemPropertyChanged() : base()
@@ -99,7 +108,7 @@ namespace Models.Collections
             for (var i = minIndex; i < maxIndex; i++)
             {
 
-                if ((Items[i] as Form).NumberInOrder_DB < (Items[maxIndex] as Form).NumberInOrder_DB)
+                if (Items[i].Order < Items[maxIndex].Order)
                 {
                     pivot++;
                     Swap(pivot, i);
@@ -146,10 +155,17 @@ namespace Models.Collections
             }
             if (flag&&!Sorted)
             {
-                if (CheckForSort())
+                try
                 {
-                    QuickSort(0, Items.Count - 1);
-                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                    if (CheckForSort())
+                    {
+                        QuickSort(0, Items.Count - 1);
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                    }
+                }
+                catch
+                {
+
                 }
             }
         }
@@ -160,7 +176,7 @@ namespace Models.Collections
             bool flag = true;
             foreach(var item in Items)
             {
-                if((item as Form).NumberInOrder_DB!=count)
+                if(item.Order != count)
                 {
                     flag = false;
                     break;

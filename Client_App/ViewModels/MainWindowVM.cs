@@ -132,6 +132,20 @@ namespace Client_App.ViewModels
 
             Local_Reports.PropertyChanged += Local_ReportsChanged;
 
+            foreach (var item in Local_Reports.Reports_Collection) 
+            {
+                foreach (var it in item.Report_Collection) 
+                {
+                    foreach (var _i in it.Notes) 
+                    {
+                        if (_i.Order == 0) 
+                        {
+                            _i.Order = GetNumberInOrder(it.Notes);
+                        }
+                    }
+                }
+            }
+
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
             AddReport = ReactiveCommand.CreateFromTask<string>(_AddReport);
@@ -411,6 +425,22 @@ namespace Client_App.ViewModels
                 }
         }
 
+        int GetNumberInOrder(IEnumerable lst)
+        {
+            int maxNum = 0;
+
+            foreach (var item in lst)
+            {
+                var frm = (INumberInOrder)item;
+                if (frm.Order >= maxNum)
+                {
+                    maxNum++;
+                }
+            }
+
+            return maxNum + 1;
+        }
+
         private async Task _ImportForm()
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -550,6 +580,13 @@ namespace Client_App.ViewModels
                                         {
                                             foreach (var it in item.Report_Collection.OrderBy(x => x.NumberInOrder_DB))
                                             {
+                                                foreach(var note in it.Notes)
+                                                {
+                                                    if(note.Order==0)
+                                                    {
+                                                        note.Order = GetNumberInOrder(it.Notes);
+                                                    }
+                                                }
                                                 first11.Report_Collection.Add(it);
                                             }
                                         }
@@ -559,11 +596,28 @@ namespace Client_App.ViewModels
                                             {
                                                 foreach (var it in item.Report_Collection.OrderBy(x => x.NumberInOrder_DB))
                                                 {
+                                                    foreach (var note in it.Notes)
+                                                    {
+                                                        if (note.Order == 0)
+                                                        {
+                                                            note.Order = GetNumberInOrder(it.Notes);
+                                                        }
+                                                    }
                                                     first21.Report_Collection.Add(it);
                                                 }
                                             }
                                             else
                                             {
+                                                foreach (var form in item.Report_Collection)
+                                                {
+                                                    foreach (var note in form.Notes)
+                                                    {
+                                                        if (note.Order == 0)
+                                                        {
+                                                            note.Order = GetNumberInOrder(form.Notes);
+                                                        }
+                                                    }
+                                                }
                                                 Local_Reports.Reports_Collection.Add(item);
                                             }
                                         }

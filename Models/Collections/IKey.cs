@@ -3,10 +3,8 @@ using Models.Collections;
 
 namespace Models.Collections
 {
-    public interface IKey:INotifyPropertyChanged,IExcel
+    public interface IKey:INotifyPropertyChanged,INumberInOrder,IExcel
     {
-        int Id { get; set; }
-
-        
+        int Id { get; set; } 
     }
 }

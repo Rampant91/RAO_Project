@@ -8,7 +8,7 @@ using OfficeOpenXml;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : INotifyPropertyChanged, IKey
+    public abstract class Form : INotifyPropertyChanged,IKey
     {
         public int Id { get; set; }
         [NotMapped]
@@ -54,6 +54,15 @@ namespace Models.Abstracts
             return true;
         }
         #endregion
+
+        [NotMapped]
+        public int Order
+        {
+            get
+            {
+                return NumberInOrder_DB;
+            }
+        }
 
         #region NumberInOrder
         public int NumberInOrder_DB { get; set; } = 0;

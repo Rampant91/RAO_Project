@@ -13,10 +13,9 @@ using System.Collections.Generic;
 
 namespace Models.Collections
 {
-    public class Report : IKey, INotifyPropertyChanged
+    public class Report : IKey, INotifyPropertyChanged, INumberInOrder
     {
         //ExportDate
-
         public enum Forms
         {
             None,
@@ -64,6 +63,8 @@ namespace Models.Collections
         {
             Init();
         }
+
+        public int Order{ get; set; }
 
         #region OkpoRep
         [NotMapped]
@@ -1057,7 +1058,7 @@ namespace Models.Collections
         #endregion
 
         #region NumberInOrder
-        public string NumberInOrder_DB { get; set; } = "";
+        public string NumberInOrder_DB { get; set; }
         [NotMapped]
         [Form_Property("Номер")]
         public RamAccess<string> NumberInOrder

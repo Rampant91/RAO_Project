@@ -377,8 +377,8 @@ namespace Client_App.ViewModels
 
             foreach (var item in lst)
             {
-                var frm = (Form)item;
-                if (frm.NumberInOrder_DB >= maxNum)
+                var frm = (INumberInOrder)item;
+                if (frm.Order >= maxNum)
                 {
                     maxNum++;
                 }
@@ -419,8 +419,8 @@ namespace Client_App.ViewModels
         private async Task _AddNote(string Param)
         {
             Note? nt = new Note();
+            nt.Order = GetNumberInOrder(Storage.Notes);
             Storage.Notes.Add(nt);
-
             Storage.Sort();
         }
 
@@ -437,9 +437,24 @@ namespace Client_App.ViewModels
                     {
                         lst.Add((Note)item);
                     }
-                    foreach (Note nt in lst)
+                    var grp = lst.GroupBy(x => x.Order);
+                    foreach (var group in grp)
                     {
-                        Storage.Notes.Remove((Note)nt);
+                        var item = group.FirstOrDefault();
+                        if (item != null)
+                        {
+                            foreach (Note it in Storage.Notes)
+                            {
+                                if (it.Order > item.Order)
+                                {
+                                    it.Order = it.Order - 1;
+                                }
+                            }
+                            foreach (Note nt in lst)
+                            {
+                                Storage.Notes.Remove((Note)nt);
+                            }
+                        }
                     }
                     Storage.Sort();
                 }

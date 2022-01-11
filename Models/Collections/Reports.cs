@@ -7,12 +7,21 @@ using Models.DBRealization;
 using Models;
 using Models.DataAccess;
 using OfficeOpenXml;
+using System;
 
 namespace Models.Collections
 {
 
-    public class Reports : IKey
+    public class Reports : IKey,INumberInOrder
     {
+        [NotMapped]
+        public int Order
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
         public Reports()
         {
             Init();
