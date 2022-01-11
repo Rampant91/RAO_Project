@@ -44,24 +44,7 @@ namespace Client_App.Controls.DataGrid
 
     public class DataGrid : UserControl
     {
-        public static readonly DirectProperty<DataGrid, ReactiveCommand<Unit, Unit>> CtrlRCommandProperty =
-    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<Unit, Unit>>(
-         nameof(CtrlRCommand),
-         o => o.CtrlRCommand,
-        (o, v) => o.CtrlRCommand = v);
-
-        private ReactiveCommand<Unit, Unit> _CtrlRCommand = null;
-
-        public ReactiveCommand<Unit, Unit> CtrlRCommand
-        {
-            get => _CtrlRCommand;
-            set
-            {
-                SetAndRaise(CtrlRCommandProperty, ref _CtrlRCommand, value);
-            }
-
-        }
-
+        #region DirectProperty AddReports, AddNote, AddRow
         public static readonly DirectProperty<DataGrid, ReactiveCommand<String, Unit>> CtrlACommandProperty =
     AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<String, Unit>>(
          nameof(CtrlACommand),
@@ -79,7 +62,9 @@ namespace Client_App.Controls.DataGrid
             }
 
         }
+        #endregion
 
+        #region DirectProperty Export
         public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> CtrlECommandProperty =
     AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
          nameof(CtrlECommand),
@@ -97,6 +82,9 @@ namespace Client_App.Controls.DataGrid
             }
 
         }
+        #endregion
+
+        #region DirectProperty DeleteForm, DeleteReport, DeleteNote, DeleteRow
         public static readonly DirectProperty<DataGrid, ReactiveCommand<IEnumerable, Unit>> CtrlDCommandProperty =
     AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<IEnumerable, Unit>>(
          nameof(CtrlDCommand),
@@ -114,7 +102,9 @@ namespace Client_App.Controls.DataGrid
             }
 
         }
+        #endregion
 
+        #region DirectProperty DuplicateRowsx1, DuplicateNote
         public static readonly DirectProperty<DataGrid, ReactiveCommand<Unit, Unit>> CtrlNCommandProperty =
     AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<Unit, Unit>>(
          nameof(CtrlNCommand),
@@ -132,8 +122,9 @@ namespace Client_App.Controls.DataGrid
             }
 
         }
+        #endregion
 
-
+        #region DirectProperty DoubleClick
         public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> DoubleClickCommandProperty =
     AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
          nameof(DoubleClickCommand),
@@ -151,6 +142,7 @@ namespace Client_App.Controls.DataGrid
             }
 
         }
+        #endregion
 
         public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> ItemsProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
@@ -198,10 +190,10 @@ namespace Client_App.Controls.DataGrid
         private string _type = "";
 
         public static readonly DirectProperty<DataGrid, bool> PaginationProperty =
-     AvaloniaProperty.RegisterDirect<DataGrid, bool>(
-nameof(Pagination),
-o => o.Pagination,
-(o, v) => o.Pagination = v);
+            AvaloniaProperty.RegisterDirect<DataGrid, bool>(
+                nameof(Pagination),
+                o => o.Pagination,
+                (o, v) => o.Pagination = v);
 
         private bool _pagination = true;
         public bool Pagination
@@ -215,9 +207,9 @@ o => o.Pagination,
         }
         public static readonly DirectProperty<DataGrid, int> PageSizeProperty =
              AvaloniaProperty.RegisterDirect<DataGrid, int>(
-        nameof(PageSize),
-        o => o.PageSize,
-        (o, v) => o.PageSize = v);
+                nameof(PageSize),
+                o => o.PageSize,
+                (o, v) => o.PageSize = v);
 
         private int _pageSize = 30;
         public int PageSize
@@ -230,10 +222,10 @@ o => o.Pagination,
             }
         }
         public static readonly DirectProperty<DataGrid, string> ItemsCountProperty =
-     AvaloniaProperty.RegisterDirect<DataGrid, string>(
-nameof(ItemsCount),
-o => o.ItemsCount,
-(o, v) => o.ItemsCount = v);
+            AvaloniaProperty.RegisterDirect<DataGrid, string>(
+                nameof(ItemsCount),
+                o => o.ItemsCount,
+                (o, v) => o.ItemsCount = v);
 
         private string _ItemsCount = "0";
         public string ItemsCount
@@ -245,10 +237,10 @@ o => o.ItemsCount,
             }
         }
         public static readonly DirectProperty<DataGrid, string> PageCountProperty =
-AvaloniaProperty.RegisterDirect<DataGrid, string>(
-nameof(PageCount),
-o => o.PageCount,
-(o, v) => o.PageCount = v);
+            AvaloniaProperty.RegisterDirect<DataGrid, string>(
+                nameof(PageCount),
+                o => o.PageCount,
+                (o, v) => o.PageCount = v);
 
         private string _PageCount = "0";
         public string PageCount
@@ -261,9 +253,9 @@ o => o.PageCount,
         }
         public static readonly DirectProperty<DataGrid, string> NowPageProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, string>(
-            nameof(NowPage),
-            o => o.NowPage,
-            (o, v) => o.NowPage = v,defaultBindingMode:BindingMode.TwoWay);
+                nameof(NowPage),
+                o => o.NowPage,
+                (o, v) => o.NowPage = v,defaultBindingMode:BindingMode.TwoWay);
 
         private string _nowPage = "1";
         public string NowPage
@@ -1148,60 +1140,48 @@ o => o.PageCount,
                 if (args.Key == Key.C)
                 {
                     _CopyRows(SelectedCells);
+                    ctrlFlag = false;
                 }
                 if (args.Key == Key.V)
                 {
                     _PasteRows(SelectedCells);
+                    ctrlFlag = false;
                 }
                 if (args.Key == Key.A) 
                 {
-                    if (CtrlRCommand != null)
+                    var t = this.Type;
+                    if (CtrlACommand != null)
                     {
-                        CtrlRCommand.Execute();
+                        if (t == "0.0")
+                            t = "1.0";
+                        if (t == "0.2")
+                            t = "2.0";
+                        CtrlACommand.Execute(t);
+                        ctrlFlag = false;
                     }
-                    if (this.Type == "0.0")
-                    {
-                        CtrlACommand.Execute("1.0");
-                    }
-
-                    if (this.Type == "0.2")
-                    {
-                        CtrlACommand.Execute("2.0");
-                    }
-
-                    if (this.Type == "1.1*")
-                    {
-                        CtrlACommand.Execute("1.1*");
-                    }
-
-                    if (this.Type == "2.1*")
-                    {
-                        CtrlACommand.Execute("2.1*");
-                    }
-
-
                 }
                 if (args.Key == Key.E)
                 {
                     if (CtrlECommand != null)
                     {
                         CtrlECommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
+                        ctrlFlag = false;
                     }
                 }
-
                 if (args.Key == Key.N)
                 {
                     if (CtrlNCommand != null)
                     {
                         CtrlNCommand.Execute();
+                        ctrlFlag = false;
                     }
                 }
-
                 if (args.Key == Key.D)
                 {
                     if (CtrlDCommand != null)
                     {
                         CtrlDCommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
+                        ctrlFlag = false;
                     }
                 }
 

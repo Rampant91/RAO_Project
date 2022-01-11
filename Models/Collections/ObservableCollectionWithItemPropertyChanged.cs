@@ -73,7 +73,7 @@ namespace Models.Collections
                 }
             }
 
-            if (!Sorted&& e.Action != NotifyCollectionChangedAction.Reset)
+            if (!Sorted && e.Action != NotifyCollectionChangedAction.Reset)
             {
                 QuickSort();
                 Sorted = true;
