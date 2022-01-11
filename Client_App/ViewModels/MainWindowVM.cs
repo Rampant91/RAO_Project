@@ -25,6 +25,7 @@ using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 using System.Collections;
+using FirebirdSql.Data.FirebirdClient;
 
 
 namespace Client_App.ViewModels
@@ -317,66 +318,93 @@ namespace Client_App.ViewModels
                                 Directory.CreateDirectory(tmp);
                                 tmp = Path.Combine(tmp, filename + "_exp" + ".raodb");
 
-                                using (DBModel db = new DBModel(tmp))
-                                {
+                                var tsk = new Task(() =>
+                                  {
+                                      DBModel db = new DBModel(tmp);
+                                      try
+                                      {
+                                          Reports rp = new Reports();
+                                          rp.Master = rt.Master;
+                                          rp.Report_Collection.Add(rep);
+                                          if (File.Exists(tmp))
+                                          {
+                                              db.Database.Migrate();
+                                          }
+                                          else
+                                          {
+                                              db.Database.Migrate();
+                                          }
+                                          db.ReportsCollectionDbSet.Add(rp);
+                                          db.SaveChanges();
+
+                                          string filename2 = "";
+                                          if (rp.Master_DB.FormNum_DB == "1.0")
+                                          {
+                                              filename2 += rp.Master.RegNoRep.Value;
+                                              filename2 += "_" + rp.Master.OkpoRep.Value;
+
+                                              filename2 += "_" + rep.CorrectionNumber_DB;
+                                              filename2 += "_" + rep.FormNum_DB;
+                                              filename2 += "_" + rep.StartPeriod_DB;
+                                              filename2 += "_" + rep.EndPeriod_DB;
+                                          }
+                                          else
+                                          {
+                                              if (rp.Master.Rows20.Count > 0)
+                                              {
+                                                  filename2 += rp.Master.RegNoRep1.Value;
+                                                  filename2 += rp.Master.OkpoRep1.Value;
+
+                                                  filename2 += "_" + rep.CorrectionNumber_DB;
+                                                  filename2 += "_" + rep.FormNum_DB;
+                                                  filename2 += "_" + rep.Year_DB;
+                                              }
+                                          }
+
+                                          res = Path.Combine(res, filename2 + ".raodb");
+
+
+                                          var t = db.Database.GetDbConnection() as FbConnection;
+                                          t.Close();
+                                          t.Dispose();
+
+                                          db.Database.CloseConnection();
+                                          db.Dispose();
+
+                                      }
+                                      catch (Exception e)
+                                      {
+                                          Console.WriteLine(e);
+                                          throw;
+                                      }
+                                  });
+                                tsk.Start();
+                                await tsk.ContinueWith((a) => {
                                     try
                                     {
-                                        Reports rp = new Reports();
-                                        rp.Master = rt.Master;
-                                        rp.Report_Collection.Add(rep);
-                                        if (File.Exists(tmp))
-                                        {
-                                            db.Database.Migrate();
-                                        }
-                                        else
-                                        {
-                                            db.Database.Migrate();
-                                        }
-                                        db.ReportsCollectionDbSet.Add(rp);
-                                        db.SaveChanges();
-
-                                        string filename2 = "";
-                                        if (rp.Master_DB.FormNum_DB=="1.0")
-                                        {
-                                            filename2 += rp.Master.RegNoRep.Value;
-                                            filename2 += "_"+rp.Master.OkpoRep.Value;
-                                            
-                                            filename2 += "_" + rep.CorrectionNumber_DB;
-                                            filename2 += "_" + rep.FormNum_DB;
-                                            filename2 += "_" + rep.StartPeriod_DB;
-                                            filename2 += "_" + rep.EndPeriod_DB;
-                                        }
-                                        else
-                                        {
-                                            if (rp.Master.Rows20.Count > 0)
+                                        //var sourceFile = new FileInfo(tmp);
+                                        //sourceFile.CopyTo(res, true);
+                                        using (var inputFile = new FileStream(
+                                                tmp,
+                                                FileMode.Open,
+                                                FileAccess.Read,
+                                                FileShare.ReadWrite))
+                                            using (var outputFile = new FileStream(res, FileMode.Create))
                                             {
-                                                filename2 += rp.Master.RegNoRep1.Value;
-                                                filename2 += rp.Master.OkpoRep1.Value;
+                                                var buffer = new byte[0x10000];
+                                                int bytes;
 
-                                                filename2 += "_" + rep.CorrectionNumber_DB;
-                                                filename2 += "_" + rep.FormNum_DB;
-                                                filename2 += "_" + rep.Year_DB;
+                                                while ((bytes = inputFile.Read(buffer, 0, buffer.Length)) > 0)
+                                                {
+                                                    outputFile.Write(buffer, 0, bytes);
+                                                }
                                             }
-                                        }
-
-                                        res = Path.Combine(res, filename2 + ".raodb");
-
                                     }
                                     catch (Exception e)
                                     {
                                         Console.WriteLine(e);
-                                        throw;
                                     }
-                                }
-                                try
-                                {
-                                    var sourceFile = new FileInfo(tmp);
-                                    sourceFile.CopyTo(res, true);
-                                }
-                                catch(Exception e)
-                                {
-                                    Console.WriteLine(e);
-                                }
+                                });
                             }
                         }
                     }

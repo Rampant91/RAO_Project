@@ -28,7 +28,7 @@ namespace Models.Abstracts
         }
 
         #region OperationCode
-        public string OperationCode_DB { get; set; } = null;
+        public string OperationCode_DB { get; set; } = "";
         public bool OperationCode_Hidden_Priv { get; set; } = false;
         [NotMapped]
         public bool OperationCode_Hidden

@@ -11,7 +11,7 @@ namespace Client_App
         public static void Main(string[] args)
         {
             BuildAvaloniaApp()
-.StartWithClassicDesktopLifetime(args);
+                .StartWithClassicDesktopLifetime(args);
         }
 
         // Avalonia configuration, don't remove; also used by visual designer.
