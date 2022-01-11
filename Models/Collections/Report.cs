@@ -2841,6 +2841,33 @@ namespace Models.Collections
             Notes.CollectionChanged -= CollectionChangedNotes;
         }
 
+        public void Sort()
+        {
+            Rows11.QuickSort();
+            Rows12.QuickSort();
+            Rows13.QuickSort();
+            Rows14.QuickSort();
+            Rows15.QuickSort();
+            Rows16.QuickSort();
+            Rows17.QuickSort();
+            Rows18.QuickSort();
+            Rows19.QuickSort();
+
+            Rows21.QuickSort();
+            Rows22.QuickSort();
+            Rows23.QuickSort();
+            Rows24.QuickSort();
+            Rows25.QuickSort();
+            Rows26.QuickSort();
+            Rows27.QuickSort();
+            Rows28.QuickSort();
+            Rows29.QuickSort();
+            Rows210.QuickSort();
+            Rows211.QuickSort();
+            Rows212.QuickSort();
+
+            Notes.QuickSort();
+        }
         private void NotesValueChanged(object Value, PropertyChangedEventArgs args)
         {
             if (args.PropertyName == "Value")

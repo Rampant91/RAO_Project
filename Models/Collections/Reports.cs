@@ -55,6 +55,11 @@ namespace Models.Collections
             }
         }
 
+        public void Sort()
+        {
+
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public int Id { get; set; }

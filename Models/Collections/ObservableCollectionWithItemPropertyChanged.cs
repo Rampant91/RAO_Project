@@ -46,7 +46,6 @@ namespace Models.Collections
         }
 
         public bool Sorted { get; set; } = false;
-        public bool SortFlag { get; set; } = false;
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove ||
@@ -73,11 +72,11 @@ namespace Models.Collections
                 }
             }
 
-            if (!Sorted&& e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                QuickSort();
-                Sorted = true;
-            }
+            //if (!Sorted&& e.Action != NotifyCollectionChangedAction.Reset)
+            //{
+            //    QuickSort();
+            //    Sorted = true;
+            //}
 
             base.OnCollectionChanged(e);
         }
@@ -118,7 +117,6 @@ namespace Models.Collections
             QuickSort(pivotIndex + 1, maxIndex);
         }
 
-        public Thread Thr { get; set; } = null;
         public void QuickSort()
         {
             var flag = false;
@@ -141,10 +139,31 @@ namespace Models.Collections
                     }
                 }
             }
-            if (flag)
+            if (flag&&!Sorted)
             {
-                QuickSort(0,Items.Count-1);
+                if (CheckForSort())
+                {
+                    QuickSort(0, Items.Count - 1);
+                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                }
             }
+        }
+
+        public bool CheckForSort()
+        {
+            int count = 1;
+            bool flag = true;
+            foreach(var item in Items)
+            {
+                if((item as Form).NumberInOrder_DB!=count)
+                {
+                    flag = false;
+                    break;
+                }
+                count++;
+            }
+
+            return flag;
         }
 
         protected void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)
