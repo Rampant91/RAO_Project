@@ -41,7 +41,7 @@ namespace Client_App.Views
         }
 
         System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; } = null;
-
+        bool flag = false;
         protected void OnStandartClosing(object sender, CancelEventArgs args)
         {
             if (Answ == null)
@@ -50,16 +50,21 @@ namespace Client_App.Views
                 Answ = tmp.ShowMessage.Handle("Сохранить?").GetAwaiter();
                 Answ.OnCompleted(() =>
                 {
-                    this.Close();
+                    if (flag)
+                    {
+                        this.Close();
+                    }
                 });
                 Answ.Subscribe(x =>
                 {
                     if (x == "Да")
                     {
+                        flag = true;
                         tmp.SaveReport();
                     }
                     if (x == "Нет")
                     {
+                        flag = true;
                         var dbm = StaticConfiguration.DBModel;
                         dbm.Restore();
                         dbm.LoadTables();
