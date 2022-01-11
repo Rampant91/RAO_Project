@@ -11,7 +11,7 @@ using OfficeOpenXml;
 
 namespace Models
 {
-    public class Note : IKey
+    public class Note : IKey, INumberInOrder
     {
         public Note()
         {
@@ -38,6 +38,8 @@ namespace Models
         }
 
         public int Id { get; set; }
+
+        public int Order { get;set; }
 
         #region RowNUmber
         public string? RowNumber_DB { get; set; } = null;
