@@ -279,6 +279,8 @@ namespace Client_App.ViewModels
 
             ShowDialog = new Interaction<object,int>();
             ShowMessage = new Interaction<string, string>();
+
+            Storage.Sort();
         }
 
         private bool _isCanSaveReportEnabled = false;
@@ -411,12 +413,16 @@ namespace Client_App.ViewModels
             if (FormType == "2.10") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows210); Storage.Rows210.Add((Form210)frm); Storage.LastAddedForm = Report.Forms.Form210; }
             if (FormType == "2.11") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows211); Storage.Rows211.Add((Form211)frm); Storage.LastAddedForm = Report.Forms.Form211; }
             if (FormType == "2.12") { frm.NumberInOrder_DB = GetNumberInOrder(Storage.Rows212); Storage.Rows212.Add((Form212)frm); Storage.LastAddedForm = Report.Forms.Form212; }
+
+            Storage.Sort();
         }
 
         private void _AddNote(string Param)
         {
             Note? nt = new Note();
             Storage.Notes.Add(nt);
+
+            Storage.Sort();
         }
 
         private async Task _DeleteNote(IEnumerable param)
@@ -436,6 +442,7 @@ namespace Client_App.ViewModels
                     {
                         Storage.Notes.Remove((Note)nt);
                     }
+                    Storage.Sort();
                 }
             }
         }
@@ -572,6 +579,8 @@ namespace Client_App.ViewModels
                             }
                         }
                     }
+
+                    Storage.Sort();
                 }
             }
         }
@@ -714,7 +723,7 @@ namespace Client_App.ViewModels
             }
         }
 
-            private async Task _DuplicateNotes()
+        private async Task _DuplicateNotes()
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -738,7 +747,7 @@ namespace Client_App.ViewModels
             }
         }
 
-            private async Task _DuplicateRowsx1()
+        private async Task _DuplicateRowsx1()
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -821,6 +830,8 @@ namespace Client_App.ViewModels
                     if (FormType == "2.10") { var tmp = from i in lst select (Form210)i; Storage.Rows210.AddRange(tmp); }
                     if (FormType == "2.11") { var tmp = from i in lst select (Form211)i; Storage.Rows211.AddRange(tmp); }
                     if (FormType == "2.12") { var tmp = from i in lst select (Form212)i; Storage.Rows212.AddRange(tmp); }
+
+                    Storage.Sort();
                 }
             }
         }
