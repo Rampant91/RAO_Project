@@ -72,11 +72,6 @@ namespace Models.Collections
                 }
             }
 
-            if (!Sorted && e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                QuickSort();
-                Sorted = true;
-            }
             //if (!Sorted&& e.Action != NotifyCollectionChangedAction.Reset)
             //{
             //    QuickSort();
@@ -146,7 +141,7 @@ namespace Models.Collections
             }
             if (flag&&!Sorted)
             {
-                if (CheckForSort())
+                if (!CheckForSort())
                 {
                     QuickSort(0, Items.Count - 1);
                     OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
