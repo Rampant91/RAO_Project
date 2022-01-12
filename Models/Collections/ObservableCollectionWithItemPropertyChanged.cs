@@ -81,6 +81,13 @@ namespace Models.Collections
                 }
             }
 
+=======
+            //if (!Sorted&& e.Action != NotifyCollectionChangedAction.Reset)
+            //{
+            //    QuickSort();
+            //    Sorted = true;
+            //}
+
             base.OnCollectionChanged(e);
         }
 
@@ -124,6 +131,7 @@ namespace Models.Collections
         {
             if (!Sorted)
             {
+                if (!CheckForSort())
                 try
                 {
                     if (!CheckForSort())

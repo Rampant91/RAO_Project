@@ -48,7 +48,7 @@ namespace Models.DBRealization.Migrations.DataModel
                         onDelete: ReferentialAction.Restrict);
                 });
             string b = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"" +
-           "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
+                        "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
             migrationBuilder.Sql("INSERT INTO \"FORM_19_TEMP\" (" + b + ") SELECT " + b + " FROM FORM_19_NEW_COLUMN INNER JOIN \"form_19_tmp\" ON \"Id\"=\"IdNew\"");
             migrationBuilder.DropTable("FORM_19_NEW_COLUMN");
             migrationBuilder.DropTable("form_19_tmp");

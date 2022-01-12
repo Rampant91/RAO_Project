@@ -440,24 +440,24 @@ namespace Models
         #endregion
 
         #region SignedServicePeriod
-        public float? SignedServicePeriod_DB { get; set; } = null;
+        public string SignedServicePeriod_DB { get; set; } = "";
         [NotMapped]
         [Attributes.Form_Property("НСС, мес.")]
-        public RamAccess<float?> SignedServicePeriod
+        public RamAccess<string> SignedServicePeriod
         {
             get
             {
                 if (Dictionary.ContainsKey(nameof(SignedServicePeriod)))
                 {
-                    ((RamAccess<float?>)Dictionary[nameof(SignedServicePeriod)]).Value = SignedServicePeriod_DB;
-                    return (RamAccess<float?>)Dictionary[nameof(SignedServicePeriod)];
+                    ((RamAccess<string>)Dictionary[nameof(SignedServicePeriod)]).Value = SignedServicePeriod_DB;
+                    return (RamAccess<string>)Dictionary[nameof(SignedServicePeriod)];
                 }
                 else
                 {
-                    var rm = new RamAccess<float?>(SignedServicePeriod_Validation, SignedServicePeriod_DB);
+                    var rm = new RamAccess<string>(SignedServicePeriod_Validation, SignedServicePeriod_DB);
                     rm.PropertyChanged += SignedServicePeriodValueChanged;
                     Dictionary.Add(nameof(SignedServicePeriod), rm);
-                    return (RamAccess<float?>)Dictionary[nameof(SignedServicePeriod)];
+                    return (RamAccess<string>)Dictionary[nameof(SignedServicePeriod)];
                 }
             }
             set
@@ -471,9 +471,9 @@ namespace Models
         {
             if (args.PropertyName == "Value")
             {
-                SignedServicePeriod_DB = ((RamAccess<float?>)Value).Value;
+                SignedServicePeriod_DB = ((RamAccess<string>)Value).Value;
             }
-        } private bool SignedServicePeriod_Validation(RamAccess<float?> value)//Ready
+        } private bool SignedServicePeriod_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -481,10 +481,17 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            if (value.Value <= 0)
+            try
             {
-                value.AddError("Недопустимое значение");
-                return false;
+                if (Convert.ToSingle(value.Value) <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch
+            {
+
             }
             return true;
         }
