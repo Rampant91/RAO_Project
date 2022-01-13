@@ -1459,7 +1459,7 @@ namespace Client_App.Controls.DataGrid
                                                         var panel = (Panel)child.Child;
                                                         var textbox = (TextBox)panel.Children.FirstOrDefault();
 
-                                                        if (textbox.TextWrapping.ToString() == "WrapWithOverflow")
+                                                        if (textbox.TextWrapping==TextWrapping.WrapWithOverflow)
                                                         {
                                                             textbox.Text = rt;
                                                         }
@@ -1496,7 +1496,7 @@ namespace Client_App.Controls.DataGrid
                                                         {
                                                             var panel = (Panel)child.Child;
                                                             var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                            if (textbox.TextWrapping.ToString() == "WrapWithOverflow")
+                                                            if (textbox.TextWrapping == TextWrapping.WrapWithOverflow)
                                                             {
                                                                 textbox.Text = rt;
                                                             }
