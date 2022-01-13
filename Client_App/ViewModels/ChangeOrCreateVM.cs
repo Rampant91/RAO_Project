@@ -29,6 +29,13 @@ using System.Threading;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using System.Reactive.Linq;
+using Avalonia.Controls.Primitives;
+using Avalonia.Data;
+using Avalonia.Input;
+using Avalonia.Layout;
+using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Models.DataAccess;
 
 namespace Client_App.ViewModels
 {
@@ -589,6 +596,7 @@ namespace Client_App.ViewModels
                 if (first is Cell)
                 {
                     string? text = await clip.GetTextAsync();
+                    bool _flag = false;
                     Cell cl = null;
                     foreach (var item in param)
                     {
@@ -604,54 +612,102 @@ namespace Client_App.ViewModels
                         if (text != null && text != "")
                         {
                             string rt = "";
-                            foreach (var item in text)
+                            for (int i = 0; i < text.Length; i++)
                             {
-                                if (item == '\r')
+                                var item = text[i];
+                                if (item == '\"')
                                 {
-                                    foreach (var it in param)
-                                    {
-                                        var cell = (Cell)it;
-                                        if (cell.CellColumn == Column && cell.CellRow == Row)
-                                        {
-                                            var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                            if (child != null)
-                                            {
-                                                var panel = (Panel)child.Child;
-                                                var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    rt = "";
-                                    Row++;
-                                    Column = cl.CellColumn;
+                                    _flag = !_flag;
                                 }
                                 else
                                 {
-                                    if (item == '\t')
+                                    if (item == '\r' || item == '\n')
                                     {
-                                        foreach (var it in param)
+                                        if (item == '\r')
                                         {
-                                            var cell = (Cell)it;
-                                            if (cell.CellColumn == Column && cell.CellRow == Row)
+                                            if (i + 1 < text.Length)
                                             {
-                                                var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                                if (child != null)
+                                                if (text[i + 1] == '\n')
                                                 {
-                                                    var panel = (Panel)child.Child;
-                                                    var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                    textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
+                                                    i++;
+                                                    if (_flag)
+                                                    {
+                                                        rt += text[i + 1];
+                                                    }
                                                 }
-                                                break;
                                             }
                                         }
-                                        rt = "";
-                                        Column++;
+                                        if (!_flag)
+                                        {
+                                            foreach (var it in param)
+                                            {
+                                                var cell = (Cell)it;
+                                                if (cell.CellColumn == Column && cell.CellRow == Row)
+                                                {
+                                                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                                    if (child != null)
+                                                    {
+                                                        var panel = (Panel)child.Child;
+                                                        var textbox = (TextBox)panel.Children.FirstOrDefault();
+
+                                                        if (textbox.TextWrapping == TextWrapping.WrapWithOverflow)
+                                                        {
+                                                            textbox.Text = rt;
+                                                        }
+                                                        else
+                                                        {
+                                                            textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
+                                                        }
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                            rt = "";
+                                            Row++;
+                                            Column = cl.CellColumn;
+                                        }
+                                        else
+                                        {
+                                            rt += item;
+                                        }
                                     }
                                     else
                                     {
-                                        if (item != '\n')
+                                        if (!_flag)
+                                        {
+                                            if (item == '\t')
+                                            {
+                                                foreach (var it in param)
+                                                {
+                                                    var cell = (Cell)it;
+                                                    if (cell.CellColumn == Column && cell.CellRow == Row)
+                                                    {
+                                                        var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                                        if (child != null)
+                                                        {
+                                                            var panel = (Panel)child.Child;
+                                                            var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                                            if (textbox.TextWrapping == TextWrapping.WrapWithOverflow)
+                                                            {
+                                                                textbox.Text = rt;
+                                                            }
+                                                            else
+                                                            {
+                                                                textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+                                                rt = "";
+                                                Column++;
+                                            }
+                                            else
+                                            {
+                                                rt += item;
+                                            }
+                                        }
+                                        else
                                         {
                                             rt += item;
                                         }
@@ -701,14 +757,20 @@ namespace Client_App.ViewModels
                             {
                                 var panel = (Panel)child.Child;
                                 var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                txt += textbox.Text;
+                                if (textbox.Text.Contains("\n") || textbox.Text.Contains("\t") || textbox.Text.Contains("\r"))
+                                {
+                                    txt += "\"" + textbox.Text + "\"";
+                                }
+                                else
+                                {
+                                    txt += textbox.Text;
+                                }
                                 txt += "\t";
                             }
                         }
                         txt += "\r";
                     }
                 }
-
                 await clip.ClearAsync();
                 await clip.SetTextAsync(txt);
             }
