@@ -611,7 +611,12 @@ namespace Client_App.Controls.DataGrid
                     var ch2 = (Panel)ch.Child;
                     if (ch2.DataContext != null)
                     {
-                        lst.Add((IKey)(ch2.DataContext));
+                        try
+                        {
+                            lst.Add((IKey)(ch2.DataContext));
+                        }
+                        catch
+                        { }
                     }
                 }
 
@@ -636,10 +641,27 @@ namespace Client_App.Controls.DataGrid
             var offset = Rows.Offset;
             var Rws = Rows[1 + offset, 1];
             double h = 0;
-            h = Rws.Height;
+            h = Rws.Bounds.Size.Height;
             int[] ret = new int[2];
 
-            var t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity) + 1 + offset;
+            var t1 = 0;
+            double sum_y = 0;
+            for (var i = 1; i <= Rows.Count; i++) 
+            {
+                var tp = Rows[i];
+                if (tp != null)
+                {
+                    sum_y += tp.SCells.Bounds.Height;
+                }
+
+                if (mouse.Position.Y <= sum_y)
+                {
+                    t1 = i;
+                    break;
+                }
+            }
+
+            //var t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity) + 1 + offset;
             if (t1 <= Rows.Count + offset && t1 > offset)
             {
                 ret[0] = t1;
@@ -1132,7 +1154,7 @@ namespace Client_App.Controls.DataGrid
                 ChangeSelectedCellsByKeys(Key.Tab);
             if (args.Key == Key.Up)
                 ChangeSelectedCellsByKeys(Key.Up);
-            if (args.Key == Key.Down || args.Key == Key.Enter)
+            if (args.Key == Key.Down)
                 ChangeSelectedCellsByKeys(Key.Down);
 
             if (ctrlFlag==true)
@@ -1383,6 +1405,7 @@ namespace Client_App.Controls.DataGrid
                 if (first is Cell)
                 {
                     string? text = await clip.GetTextAsync();
+                    bool _flag = false;
                     Cell cl = null;
                     foreach (var item in param)
                     {
@@ -1398,54 +1421,102 @@ namespace Client_App.Controls.DataGrid
                         if (text != null && text != "")
                         {
                             string rt = "";
-                            foreach (var item in text)
+                            for(int i=0;i<text.Length;i++)
                             {
-                                if (item == '\r')
+                                var item = text[i];
+                                if (item == '\"')
                                 {
-                                    foreach (var it in param)
-                                    {
-                                        var cell = (Cell)it;
-                                        if (cell.CellColumn == Column && cell.CellRow == Row)
-                                        {
-                                            var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                            if (child != null)
-                                            {
-                                                var panel = (Panel)child.Child;
-                                                var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    rt = "";
-                                    Row++;
-                                    Column = cl.CellColumn;
+                                    _flag = !_flag;
                                 }
                                 else
                                 {
-                                    if (item == '\t')
+                                    if (item == '\r'||item == '\n')
                                     {
-                                        foreach (var it in param)
+                                        if (item =='\r')
                                         {
-                                            var cell = (Cell)it;
-                                            if (cell.CellColumn == Column && cell.CellRow == Row)
+                                            if (i + 1 < text.Length)
                                             {
-                                                var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                                if (child != null)
+                                                if (text[i + 1] == '\n')
                                                 {
-                                                    var panel = (Panel)child.Child;
-                                                    var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                    textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
+                                                    i++;
+                                                    if (_flag)
+                                                    {
+                                                        rt += text[i + 1];
+                                                    }
                                                 }
-                                                break;
                                             }
                                         }
-                                        rt = "";
-                                        Column++;
+                                        if (!_flag)
+                                        {
+                                            foreach (var it in param)
+                                            {
+                                                var cell = (Cell)it;
+                                                if (cell.CellColumn == Column && cell.CellRow == Row)
+                                                {
+                                                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                                    if (child != null)
+                                                    {
+                                                        var panel = (Panel)child.Child;
+                                                        var textbox = (TextBox)panel.Children.FirstOrDefault();
+
+                                                        if (textbox.TextWrapping.ToString() == "WrapWithOverflow")
+                                                        {
+                                                            textbox.Text = rt;
+                                                        }
+                                                        else
+                                                        {
+                                                            textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
+                                                        }
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                            rt = "";
+                                            Row++;
+                                            Column = cl.CellColumn;
+                                        }
+                                        else
+                                        {
+                                            rt += item;
+                                        }
                                     }
                                     else
                                     {
-                                        if (item != '\n')
+                                        if (!_flag)
+                                        {
+                                            if (item == '\t')
+                                            {
+                                                foreach (var it in param)
+                                                {
+                                                    var cell = (Cell)it;
+                                                    if (cell.CellColumn == Column && cell.CellRow == Row)
+                                                    {
+                                                        var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                                        if (child != null)
+                                                        {
+                                                            var panel = (Panel)child.Child;
+                                                            var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                                            if (textbox.TextWrapping.ToString() == "WrapWithOverflow")
+                                                            {
+                                                                textbox.Text = rt;
+                                                            }
+                                                            else
+                                                            {
+                                                                textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n","");
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+                                                rt = "";
+                                                Column++;
+                                            }
+                                            else
+                                            {
+                                                rt += item;
+                                            }
+                                        }
+                                        else
                                         {
                                             rt += item;
                                         }
@@ -1495,14 +1566,20 @@ namespace Client_App.Controls.DataGrid
                             {
                                 var panel = (Panel)child.Child;
                                 var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                txt += textbox.Text;
+                                if (textbox.Text.Contains("\n")|| textbox.Text.Contains("\t")|| textbox.Text.Contains("\r"))
+                                {
+                                    txt += "\""+textbox.Text+"\"";
+                                }
+                                else
+                                {
+                                    txt += textbox.Text;
+                                }
                                 txt += "\t";
                             }
                         }
                         txt += "\r";
                     }
-                }
-
+                }        
                 await clip.ClearAsync();
                 await clip.SetTextAsync(txt);
             }

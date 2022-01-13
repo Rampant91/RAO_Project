@@ -27,19 +27,20 @@ namespace Client_App.Long_Visual
             };
         }
 
-        public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width)
+        public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width, string watermark = "", bool _flag = false)
         {
-            return new CellText(textProp, false)
-            {
-                Height = height,
-                Width = width,
-                Margin = Thickness.Parse(thickness),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!Cell.DataContextProperty] = new Binding(textProp),
-                [Grid.ColumnProperty] = columnProp,
-            };
+
+                return new CellText(textProp, false, _flag, watermark ,true)
+                {
+                    Width = width,
+                    Margin = Thickness.Parse(thickness),
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    [!Cell.DataContextProperty] = new Binding(textProp),
+                    [Grid.ColumnProperty] = columnProp,
+                }; 
         }
+
 
         public static TextBlock CreateTextBlock(string margin, int columnProp, int height, string text,double width=0)
         {
@@ -50,7 +51,7 @@ namespace Client_App.Long_Visual
                     Width = width,
                     Height = height,
                     Margin = Thickness.Parse(margin),
-                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
                     HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                     Text = text,
                     [Grid.ColumnProperty] = columnProp
@@ -60,7 +61,7 @@ namespace Client_App.Long_Visual
             {
                 Height = height,
                 Margin = Thickness.Parse(margin),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 Text = text,
                 [Grid.ColumnProperty] = columnProp
@@ -164,7 +165,7 @@ namespace Client_App.Long_Visual
             Grid? topPnl2 = new Grid();
             ColumnDefinition? column = new ColumnDefinition
             {
-                Width = new GridLength(1, GridUnitType.Star)
+                Width = new GridLength(1, GridUnitType.Star) 
             };
             topPnl2.ColumnDefinitions.Add(column);
             column = new ColumnDefinition
@@ -558,13 +559,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
             return vw;
         }
@@ -846,13 +847,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;
@@ -1132,13 +1133,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
             return vw;
         }
@@ -1417,13 +1418,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
             return vw;
         }
@@ -1702,13 +1703,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;
@@ -1988,13 +1989,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;
@@ -2274,14 +2275,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
-            maingrid.Children.Add(topPnl23);
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
 
             return vw;
         }
@@ -2560,13 +2560,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;
@@ -2848,13 +2848,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;

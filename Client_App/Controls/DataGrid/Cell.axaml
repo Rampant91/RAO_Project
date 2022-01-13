@@ -10,7 +10,8 @@
       <TextBox
           Text="{Binding Value}"
           Background="Transparent"
-          TextAlignment="Center">
+          TextAlignment="Center"
+		 >
         <TextBox.ContextMenu>
           <ContextMenu Width="0" Height="0"/>
         </TextBox.ContextMenu>
