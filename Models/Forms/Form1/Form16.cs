@@ -967,16 +967,23 @@ namespace Models
                         value1 = value1.ToUpper();
                     }
                 ProviderOrRecieverOKPO_DB = value1;
-                bool a = (int.Parse(OperationCode.Value) >= 10) && (int.Parse(OperationCode.Value) <= 14);
-                bool b = (int.Parse(OperationCode.Value) >= 41) && (int.Parse(OperationCode.Value) <= 45);
-                bool c = (int.Parse(OperationCode.Value) >= 71) && (int.Parse(OperationCode.Value) <= 73);
-                bool e = (int.Parse(OperationCode.Value) >= 55) && (int.Parse(OperationCode.Value) <= 57);
-                bool d = (OperationCode.Value == "01") || (OperationCode.Value == "16") || (OperationCode.Value == "18") || (OperationCode.Value == "48") ||
-                         (OperationCode.Value == "49") || (OperationCode.Value == "51") || (OperationCode.Value == "52") || (OperationCode.Value == "59") ||
-                         (OperationCode.Value == "68") || (OperationCode.Value == "75") || (OperationCode.Value == "76");
-                if (a || b || c || d || e)
+                try
                 {
-                    //ProviderOrRecieverOKPO_DB = OKPOofFormFiller;
+                    bool a = (int.Parse(OperationCode.Value) >= 10) && (int.Parse(OperationCode.Value) <= 14);
+                    bool b = (int.Parse(OperationCode.Value) >= 41) && (int.Parse(OperationCode.Value) <= 45);
+                    bool c = (int.Parse(OperationCode.Value) >= 71) && (int.Parse(OperationCode.Value) <= 73);
+                    bool e = (int.Parse(OperationCode.Value) >= 55) && (int.Parse(OperationCode.Value) <= 57);
+                    bool d = (OperationCode.Value == "01") || (OperationCode.Value == "16") || (OperationCode.Value == "18") || (OperationCode.Value == "48") ||
+                             (OperationCode.Value == "49") || (OperationCode.Value == "51") || (OperationCode.Value == "52") || (OperationCode.Value == "59") ||
+                             (OperationCode.Value == "68") || (OperationCode.Value == "75") || (OperationCode.Value == "76");
+                    if (a || b || c || d || e)
+                    {
+                        //ProviderOrRecieverOKPO_DB = OKPOofFormFiller;
+                    }
+                }
+                catch
+                {
+
                 }
             }
         }
