@@ -6,6 +6,7 @@ namespace Models.DBRealization.Migrations.DataModel
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            #region Add column FcpNumber_Hidden_Priv, Subsidy_Hidden_Priv in form_22
             migrationBuilder.AddColumn<bool>(
                 name: "FcpNumber_Hidden_Priv",
                 table: "form_22",
@@ -19,6 +20,7 @@ namespace Models.DBRealization.Migrations.DataModel
                 type: "BOOLEAN",
                 nullable: false,
                 defaultValue: false);
+            #endregion
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

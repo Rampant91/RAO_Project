@@ -6,6 +6,7 @@ namespace Models.DBRealization.Migrations.DataModel
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            #region Add column CodeRAOout_Hidden_Priv, StatusRAOIn_Hidden_Priv, StatusRAOout_Hidden_Priv in form_21
             migrationBuilder.AddColumn<bool>(
                 name: "CodeRAOout_Hidden_Priv",
                 table: "form_21",
@@ -26,6 +27,7 @@ namespace Models.DBRealization.Migrations.DataModel
                 type: "BOOLEAN",
                 nullable: false,
                 defaultValue: false);
+            #endregion
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

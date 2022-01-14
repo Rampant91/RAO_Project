@@ -6,6 +6,7 @@ namespace Models.DBRealization.Migrations.DataModel
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            #region Add column MachineCode_Hidden_Priv2, MachinePower_Hidden_Priv2, NumberOfHoursPerYear_Hidden_P~1, RefineMachineName_Hidden_Priv2 in form_21
             migrationBuilder.AddColumn<bool>(
                 name: "MachineCode_Hidden_Priv2",
                 table: "form_21",
@@ -33,6 +34,7 @@ namespace Models.DBRealization.Migrations.DataModel
                 type: "BOOLEAN",
                 nullable: false,
                 defaultValue: false);
+            #endregion
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

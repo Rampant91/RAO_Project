@@ -7,6 +7,7 @@ namespace Models.DBRealization.Migrations.DataModel
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            #region Create form_17_tmp
             migrationBuilder.CreateTable(
                  name: "form_17_tmp",
                  columns: table => new
@@ -66,6 +67,9 @@ namespace Models.DBRealization.Migrations.DataModel
                      DocumentDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                      DocumentDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false)
                  });
+            #endregion
+
+            #region Create FORM_17_NEW_COLUMN
             migrationBuilder.CreateTable(
                 name: "FORM_17_NEW_COLUMN",
                 columns: table => new
@@ -74,6 +78,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         .Annotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn),
                     Quantity_DB = table.Column<int>(type: "BLOB SUB_TYPE TEXT", nullable: true)
                 });
+            #endregion
+
+            #region FORM_17_TEMP
             migrationBuilder.CreateTable(
                 name: "FORM_17_TEMP",
                 columns: table => new
@@ -134,6 +141,7 @@ namespace Models.DBRealization.Migrations.DataModel
                     DocumentDate_DB = table.Column<string>(type: "BLOB SUB_TYPE TEXT", nullable: true),
                     DocumentDate_Hidden_Priv = table.Column<bool>(type: "BOOLEAN", nullable: false)
                 });
+            #endregion
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

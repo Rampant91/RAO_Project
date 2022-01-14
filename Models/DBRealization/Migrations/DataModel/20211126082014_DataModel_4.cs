@@ -6,6 +6,7 @@ namespace Models.DBRealization.Migrations.DataModel
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            #region Add column PackName_Hidden_Priv/2, PackType_Hidden_Priv/2, StoragePlaceCode_Hidden_Priv/2, StoragePlaceName_Hidden_Priv/2 in form_22
             migrationBuilder.AddColumn<bool>(
                 name: "PackName_Hidden_Priv",
                 table: "form_22",
@@ -61,6 +62,7 @@ namespace Models.DBRealization.Migrations.DataModel
                 type: "BOOLEAN",
                 nullable: false,
                 defaultValue: false);
+            #endregion
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

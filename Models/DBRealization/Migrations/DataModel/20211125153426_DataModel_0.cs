@@ -7,6 +7,7 @@ namespace Models.DBRealization.Migrations.DataModel
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            #region Create DBObservable_DbSet
             migrationBuilder.CreateTable(
                 name: "DBObservable_DbSet",
                 columns: table => new
@@ -18,7 +19,9 @@ namespace Models.DBRealization.Migrations.DataModel
                 {
                     table.PrimaryKey("PK_DBObservable_DbSet", x => x.Id);
                 });
+            #endregion
 
+            #region Create ReportsCollection_DbSet
             migrationBuilder.CreateTable(
                 name: "ReportsCollection_DbSet",
                 columns: table => new
@@ -38,7 +41,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create ReportCollection_DbSet
             migrationBuilder.CreateTable(
                 name: "ReportCollection_DbSet",
                 columns: table => new
@@ -92,7 +97,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_10
             migrationBuilder.CreateTable(
                 name: "form_10",
                 columns: table => new
@@ -133,7 +140,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_11
             migrationBuilder.CreateTable(
                 name: "form_11",
                 columns: table => new
@@ -182,7 +191,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_12
             migrationBuilder.CreateTable(
                 name: "form_12",
                 columns: table => new
@@ -228,7 +239,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_13
             migrationBuilder.CreateTable(
                 name: "form_13",
                 columns: table => new
@@ -275,7 +288,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_14
             migrationBuilder.CreateTable(
                 name: "form_14",
                 columns: table => new
@@ -323,7 +338,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_15
             migrationBuilder.CreateTable(
                 name: "form_15",
                 columns: table => new
@@ -373,7 +390,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_16
             migrationBuilder.CreateTable(
                 name: "form_16",
                 columns: table => new
@@ -426,7 +445,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_17
             migrationBuilder.CreateTable(
                 name: "form_17",
                 columns: table => new
@@ -497,7 +518,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_18
             migrationBuilder.CreateTable(
                 name: "form_18",
                 columns: table => new
@@ -561,7 +584,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_19
             migrationBuilder.CreateTable(
                 name: "form_19",
                 columns: table => new
@@ -596,7 +621,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_20
             migrationBuilder.CreateTable(
                 name: "form_20",
                 columns: table => new
@@ -637,7 +664,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_21
             migrationBuilder.CreateTable(
                 name: "form_21",
                 columns: table => new
@@ -688,7 +717,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_210
             migrationBuilder.CreateTable(
                 name: "form_210",
                 columns: table => new
@@ -721,7 +752,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_211
             migrationBuilder.CreateTable(
                 name: "form_211",
                 columns: table => new
@@ -752,7 +785,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_212
             migrationBuilder.CreateTable(
                 name: "form_212",
                 columns: table => new
@@ -780,7 +815,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_22
             migrationBuilder.CreateTable(
                 name: "form_22",
                 columns: table => new
@@ -826,7 +863,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_23
             migrationBuilder.CreateTable(
                 name: "form_23",
                 columns: table => new
@@ -861,7 +900,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_24
             migrationBuilder.CreateTable(
                 name: "form_24",
                 columns: table => new
@@ -900,7 +941,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_25
             migrationBuilder.CreateTable(
                 name: "form_25",
                 columns: table => new
@@ -932,7 +975,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_26
             migrationBuilder.CreateTable(
                 name: "form_26",
                 columns: table => new
@@ -962,7 +1007,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_27
             migrationBuilder.CreateTable(
                 name: "form_27",
                 columns: table => new
@@ -990,7 +1037,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_28
             migrationBuilder.CreateTable(
                 name: "form_28",
                 columns: table => new
@@ -1019,7 +1068,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create form_29
             migrationBuilder.CreateTable(
                 name: "form_29",
                 columns: table => new
@@ -1046,7 +1097,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
+            #region Create notes
             migrationBuilder.CreateTable(
                 name: "notes",
                 columns: table => new
@@ -1068,6 +1121,7 @@ namespace Models.DBRealization.Migrations.DataModel
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+            #endregion
 
             migrationBuilder.CreateIndex(
                 name: "IX_form_10_ReportId",
