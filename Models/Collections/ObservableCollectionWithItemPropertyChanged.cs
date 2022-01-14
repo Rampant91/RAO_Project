@@ -81,12 +81,6 @@ namespace Models.Collections
                 }
             }
 
-            //if (!Sorted&& e.Action != NotifyCollectionChangedAction.Reset)
-            //{
-            //    QuickSort();
-            //    Sorted = true;
-            //}
-
             base.OnCollectionChanged(e);
         }
 
@@ -128,35 +122,15 @@ namespace Models.Collections
 
         public void QuickSort()
         {
-            var flag = false;
-            var bsT = typeof(T).BaseType;
-            if (bsT != null)
+            if (!Sorted)
             {
-                if (bsT == typeof(Form))
-                {
-                    flag = true;
-                }
-                else
-                {
-                    var bsT2 = bsT.BaseType;
-                    if (bsT2 != null)
-                    {
-                        if (bsT2 == typeof(Form))
-                        {
-                            flag = true;
-                        }
-                    }
-                }
-            }
-            if (flag&&!Sorted)
-            {
-                if (!CheckForSort())
                 try
                 {
-                    if (CheckForSort())
+                    if (!CheckForSort())
                     {
                         QuickSort(0, Items.Count - 1);
                         OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                        Sorted = true;
                     }
                 }
                 catch
@@ -224,6 +198,7 @@ namespace Models.Collections
                 item.PropertyChanged += ChildPropertyChanged;
                 Items.Add(item);
             }
+            Sorted = false;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
         public void AddRangeNoChange(IEnumerable<T> items)

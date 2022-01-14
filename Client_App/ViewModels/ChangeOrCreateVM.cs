@@ -29,6 +29,7 @@ using System.Threading;
 using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using System.Reactive.Linq;
+using Avalonia.Media;
 
 namespace Client_App.ViewModels
 {
@@ -136,6 +137,7 @@ namespace Client_App.ViewModels
         public ReactiveCommand<string, Unit> AddSort { get; protected set; }
         public ReactiveCommand<string, Unit> AddNote { get; protected set; }
         public ReactiveCommand<string, Unit> AddRow { get; protected set; }
+        public ReactiveCommand<IEnumerable, Unit> AddRowIn { get; protected set; }
         public ReactiveCommand<IEnumerable, Unit> DeleteRow { get; protected set; }
         public ReactiveCommand<Unit, Unit> DuplicateRowsx1 { get; protected set; }
         public ReactiveCommand<Unit, Unit> DuplicateNotes { get; protected set; }
@@ -245,6 +247,8 @@ namespace Client_App.ViewModels
             DBO = reps;
             Init();
         }
+
+        public Interaction<int, int> ShowDialogIn { get; protected set; }
         public Interaction<object, int> ShowDialog { get; protected set; }
         public Interaction<string, string> ShowMessage { get; protected set; }
         public void Init()
@@ -266,6 +270,7 @@ namespace Client_App.ViewModels
             }
             AddSort = ReactiveCommand.Create<string>(_AddSort);
             AddRow = ReactiveCommand.CreateFromTask<string>(_AddRow);
+            AddRowIn = ReactiveCommand.CreateFromTask<IEnumerable>(_AddRowIn);
             DeleteRow = ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             SumRow = ReactiveCommand.Create(_SumRow);
@@ -278,6 +283,7 @@ namespace Client_App.ViewModels
             //PasteNotes = ReactiveCommand.CreateFromTask(_PasteNotes);
 
             ShowDialog = new Interaction<object,int>();
+            ShowDialogIn = new Interaction<int, int>();
             ShowMessage = new Interaction<string, string>();
             Storage.Sort();
         }
@@ -346,7 +352,12 @@ namespace Client_App.ViewModels
 
                     }
                 }
-
+                if (Storages != null)
+                {
+                    Storages.Report_Collection.QuickSort();
+                }
+                
+  
                 var dbm = StaticConfiguration.DBModel;
                 dbm.SaveChanges();
                 IsCanSaveReportEnabled = false;
@@ -416,6 +427,93 @@ namespace Client_App.ViewModels
             Storage.Sort();
         }
 
+        private async Task _AddRowIn(IEnumerable param)
+        {
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
+                foreach (object? item1 in param)
+                {
+                    lst.Add((Models.Abstracts.Form)item1);
+                }
+
+                var item = lst.FirstOrDefault();
+
+                if (item != null)
+                {
+                    var number_cell = item.NumberInOrder_DB;
+                    var t2 = await ShowDialogIn.Handle(number_cell);
+
+                    if (item != null)
+                    {
+                        foreach (Form it in Storage[item.FormNum_DB])
+                        {
+                            if (it.NumberInOrder_DB > number_cell - 1)
+                            {
+                                it.NumberInOrder.Value = it.NumberInOrder_DB + t2;
+                            }
+                        }
+                    }
+
+
+                    if (t2 > 0)
+                    {
+                        List<Form> _lst = new List<Form>();
+                        for (int i = 0; i < t2; i++)
+                        {
+                            var frm = FormCreator.Create(FormType);
+                            if (FormType == "1.1") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form11; }
+                            if (FormType == "1.2") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form12; }
+                            if (FormType == "1.3") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form13; }
+                            if (FormType == "1.4") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form14; }
+                            if (FormType == "1.5") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form15; }
+                            if (FormType == "1.6") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form16; }
+                            if (FormType == "1.7") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form17; }
+                            if (FormType == "1.8") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form18; }
+                            if (FormType == "1.9") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form19; }
+
+                            if (FormType == "2.1") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form21; }
+                            if (FormType == "2.2") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form22; }
+                            if (FormType == "2.3") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form23; }
+                            if (FormType == "2.4") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form24; }
+                            if (FormType == "2.5") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form25; }
+                            if (FormType == "2.6") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form26; }
+                            if (FormType == "2.7") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form27; }
+                            if (FormType == "2.8") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form28; }
+                            if (FormType == "2.9") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form29; }
+                            if (FormType == "2.10") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form210; }
+                            if (FormType == "2.11") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form211; }
+                            if (FormType == "2.12") { frm.NumberInOrder_DB = number_cell; Storage.LastAddedForm = Report.Forms.Form212; }
+                            _lst.Add(frm);
+                            number_cell++;
+                        }
+                        if (FormType == "1.1") { var tmp = from i in _lst select (Form11)i; Storage.Rows11.AddRange(tmp); }
+                        if (FormType == "1.2") { var tmp = from i in _lst select (Form12)i; Storage.Rows12.AddRange(tmp); }
+                        if (FormType == "1.3") { var tmp = from i in _lst select (Form13)i; Storage.Rows13.AddRange(tmp); }
+                        if (FormType == "1.4") { var tmp = from i in _lst select (Form14)i; Storage.Rows14.AddRange(tmp); }
+                        if (FormType == "1.5") { var tmp = from i in _lst select (Form15)i; Storage.Rows15.AddRange(tmp); }
+                        if (FormType == "1.6") { var tmp = from i in _lst select (Form16)i; Storage.Rows16.AddRange(tmp); }
+                        if (FormType == "1.7") { var tmp = from i in _lst select (Form17)i; Storage.Rows17.AddRange(tmp); }
+                        if (FormType == "1.8") { var tmp = from i in _lst select (Form18)i; Storage.Rows18.AddRange(tmp); }
+                        if (FormType == "1.9") { var tmp = from i in _lst select (Form19)i; Storage.Rows19.AddRange(tmp); }
+
+                        if (FormType == "2.1") { var tmp = from i in _lst select (Form21)i; Storage.Rows21.AddRange(tmp); }
+                        if (FormType == "2.2") { var tmp = from i in _lst select (Form22)i; Storage.Rows22.AddRange(tmp); }
+                        if (FormType == "2.3") { var tmp = from i in _lst select (Form23)i; Storage.Rows23.AddRange(tmp); }
+                        if (FormType == "2.4") { var tmp = from i in _lst select (Form24)i; Storage.Rows24.AddRange(tmp); }
+                        if (FormType == "2.5") { var tmp = from i in _lst select (Form25)i; Storage.Rows25.AddRange(tmp); }
+                        if (FormType == "2.6") { var tmp = from i in _lst select (Form26)i; Storage.Rows26.AddRange(tmp); }
+                        if (FormType == "2.7") { var tmp = from i in _lst select (Form27)i; Storage.Rows27.AddRange(tmp); }
+                        if (FormType == "2.8") { var tmp = from i in _lst select (Form28)i; Storage.Rows28.AddRange(tmp); }
+                        if (FormType == "2.9") { var tmp = from i in _lst select (Form29)i; Storage.Rows29.AddRange(tmp); }
+                        if (FormType == "2.10") { var tmp = from i in _lst select (Form210)i; Storage.Rows210.AddRange(tmp); }
+                        if (FormType == "2.11") { var tmp = from i in _lst select (Form211)i; Storage.Rows211.AddRange(tmp); }
+                        if (FormType == "2.12") { var tmp = from i in _lst select (Form212)i; Storage.Rows212.AddRange(tmp); }
+                        Storage.Sort();
+                    }
+                }
+            }
+        }
         private async Task _AddNote(string Param)
         {
             Note? nt = new Note();
@@ -612,6 +710,7 @@ namespace Client_App.ViewModels
                 if (first is Cell)
                 {
                     string? text = await clip.GetTextAsync();
+                    bool _flag = false;
                     Cell cl = null;
                     foreach (var item in param)
                     {
@@ -627,54 +726,101 @@ namespace Client_App.ViewModels
                         if (text != null && text != "")
                         {
                             string rt = "";
-                            foreach (var item in text)
+                            for (int i = 0; i < text.Length; i++)
                             {
-                                if (item == '\r')
+                                var item = text[i];
+                                if (item == '\"')
                                 {
-                                    foreach (var it in param)
-                                    {
-                                        var cell = (Cell)it;
-                                        if (cell.CellColumn == Column && cell.CellRow == Row)
-                                        {
-                                            var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                            if (child != null)
-                                            {
-                                                var panel = (Panel)child.Child;
-                                                var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    rt = "";
-                                    Row++;
-                                    Column = cl.CellColumn;
+                                    _flag = !_flag;
                                 }
                                 else
                                 {
-                                    if (item == '\t')
+                                    if (item == '\r' || item == '\n')
                                     {
-                                        foreach (var it in param)
+                                        if (item == '\r')
                                         {
-                                            var cell = (Cell)it;
-                                            if (cell.CellColumn == Column && cell.CellRow == Row)
+                                            if (i + 1 < text.Length)
                                             {
-                                                var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                                if (child != null)
+                                                if (text[i + 1] == '\n')
                                                 {
-                                                    var panel = (Panel)child.Child;
-                                                    var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                    textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
+                                                    i++;
+                                                    if (_flag)
+                                                    {
+                                                        rt += text[i + 1];
+                                                    }
                                                 }
-                                                break;
                                             }
                                         }
-                                        rt = "";
-                                        Column++;
+                                        if (!_flag)
+                                        {
+                                            foreach (var it in param)
+                                            {
+                                                var cell = (Cell)it;
+                                                if (cell.CellColumn == Column && cell.CellRow == Row)
+                                                {
+                                                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                                    if (child != null)
+                                                    {
+                                                        var panel = (Panel)child.Child;
+                                                        var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                                        if (textbox.TextWrapping == TextWrapping.Wrap)
+                                                        {
+                                                            textbox.Text = rt;
+                                                        }
+                                                        else
+                                                        {
+                                                            textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
+                                                        }
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                            rt = "";
+                                            Row++;
+                                            Column = cl.CellColumn;
+                                        }
+                                        else
+                                        {
+                                            rt += item;
+                                        }
                                     }
                                     else
                                     {
-                                        if (item != '\n')
+                                        if (!_flag)
+                                        {
+                                            if (item == '\t')
+                                            {
+                                                foreach (var it in param)
+                                                {
+                                                    var cell = (Cell)it;
+                                                    if (cell.CellColumn == Column && cell.CellRow == Row)
+                                                    {
+                                                        var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
+                                                        if (child != null)
+                                                        {
+                                                            var panel = (Panel)child.Child;
+                                                            var textbox = (TextBox)panel.Children.FirstOrDefault();
+                                                            if (textbox.TextWrapping == TextWrapping.Wrap)
+                                                            {
+                                                                textbox.Text = rt;
+                                                            }
+                                                            else
+                                                            {
+                                                                textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+                                                rt = "";
+                                                Column++;
+                                            }
+                                            else
+                                            {
+                                                rt += item;
+                                            }
+                                        }
+                                        else
                                         {
                                             rt += item;
                                         }
@@ -724,14 +870,23 @@ namespace Client_App.ViewModels
                             {
                                 var panel = (Panel)child.Child;
                                 var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                txt += textbox.Text;
-                                txt += "\t";
+                                if (textbox != null)
+                                {
+                                    if (textbox.Text.Contains("\n") || textbox.Text.Contains("\t") || textbox.Text.Contains("\r"))
+                                    {
+                                        txt += "\"" + textbox.Text + "\"";
+                                    }
+                                    else
+                                    {
+                                        txt += textbox.Text;
+                                    }
+                                    txt += "\t";
+                                }
                             }
                         }
                         txt += "\r";
                     }
                 }
-
                 await clip.ClearAsync();
                 await clip.SetTextAsync(txt);
             }
@@ -741,9 +896,8 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                RowNumber rw = new RowNumber();
-                await rw.ShowDialog(desktop.MainWindow);
-                var t = Convert.ToInt32(rw.Number);
+                var t = await ShowDialog.Handle(desktop.MainWindow);
+
                 if (t > 0)
                 {
                     List<Note> lst = new List<Note>();
@@ -765,9 +919,7 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                RowNumber rw = new RowNumber();
-                await rw.ShowDialog(desktop.MainWindow);
-                var t = Convert.ToInt32(rw.Number);
+                var t = await ShowDialog.Handle(desktop.MainWindow);
                 if (t > 0)
                 {
                     List<Form> lst = new List<Form>();

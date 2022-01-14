@@ -31,40 +31,24 @@ namespace Client_App.Controls.DataGrid
 
             Focusable = false;
         }
-
         public bool RightHandler { get; set; } = true;
+        public string watermark { get; set; } = "";
 
-        public CellText(string BindingPath, bool IsReadOnly,bool RightHandler=true)
+        public CellText(string BindingPath, bool IsReadOnly, bool RightHandler = true)
         {
             this.IsReadOnly = IsReadOnly;
             InitializeComponent();
             Focusable = false;
             this.RightHandler = RightHandler;
         }
-
-        public CellText()
+        public CellText(string BindingPath, bool IsReadOnly, bool _flag, string watermark, bool RightHandler = true)
         {
+            this._flag = _flag;
+            this.watermark = watermark;
+            this.IsReadOnly = IsReadOnly;
             InitializeComponent();
-        }
-
-        public static readonly DirectProperty<Cell, string> BindingPathProperty =
-            AvaloniaProperty.RegisterDirect<Cell, string>(
-        nameof(BindingPath),
-        o => o.BindingPath,
-        (o, v) => o.BindingPath = v);
-
-        string bindingPath = "";
-        public string BindingPath
-        {
-            get => bindingPath;
-            set
-            {
-                if (value != null)
-                {
-                    SetAndRaise(BindingPathProperty, ref bindingPath, value);
-                    SetBindingToText();
-                }
-            }
+            Focusable = false;
+            this.RightHandler = RightHandler;
         }
         void SetBindingToText()
         {
@@ -91,8 +75,33 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
-        public bool IsReadOnly { get; set; }
+        public CellText()
+        {
+            InitializeComponent();
+        }
 
+        public static readonly DirectProperty<Cell, string> BindingPathProperty =
+            AvaloniaProperty.RegisterDirect<Cell, string>(
+        nameof(BindingPath),
+        o => o.BindingPath,
+        (o, v) => o.BindingPath = v);
+
+        string bindingPath = "";
+        public string BindingPath
+        {
+            get => bindingPath;
+            set
+            {
+                if (value != null)
+                {
+                    SetAndRaise(BindingPathProperty, ref bindingPath, value);
+                    SetBindingToText();
+                }
+            }
+        }
+
+        public bool IsReadOnly { get; set; }
+        public bool _flag { get; set; }
         public int CellRow
         {
             get => cellRow;
@@ -109,9 +118,14 @@ namespace Client_App.Controls.DataGrid
             AvaloniaXamlLoader.Load(this);
 
             this.BindingPath = BindingPath;
-
-            var t = (TextBox) ((Panel) ((Border) Content).Child).Children[0];
+            var t = (TextBox)((Panel) ((Border) Content).Child).Children[0];
             t.IsEnabled = !IsReadOnly;
+            if (this._flag) 
+            {
+                t.AcceptsReturn = true;
+                t.Watermark = watermark;
+                t.TextWrapping = TextWrapping.Wrap;
+            }
         }
     }
 }

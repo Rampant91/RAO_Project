@@ -27,6 +27,7 @@ namespace Client_App.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
+            this.WhenActivated(d => d(ViewModel!.ShowDialogIn.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
             this.Closing += OnStandartClosing;
@@ -220,12 +221,18 @@ namespace Client_App.Views
             Form1Init(panel);
             Form2Init(panel);
         }
+
+        private async Task DoShowDialogAsync(InteractionContext<int, int> interaction)
+        {
+            RowNumberIn frm = new RowNumberIn(interaction.Input);
+            await frm.ShowDialog(this);
+            interaction.SetOutput(Convert.ToInt32(frm.Number2));
+        }
+
         private async Task DoShowDialogAsync(InteractionContext<object, int> interaction)
         {
             RowNumber frm = new RowNumber();
-
             await frm.ShowDialog(this);
-
             interaction.SetOutput(Convert.ToInt32(frm.Number));
         }
         private async Task DoShowDialogAsync(InteractionContext<string, string> interaction)

@@ -1,0 +1,36 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        MinHeight="110" MinWidth="250"
+        MaxHeight="110"
+        MaxWidth="250"
+        Width="350"
+        Height="250"
+        x:Class="Client_App.Views.RowNumberIn"
+        xmlns:vm="using:Client_App.ViewModels"
+        Name="RowNumberIn"
+        Icon="/Assets/logo.png"
+        Title="{Binding WindowHeader}">
+  <Panel x:Name="NumberPanel">
+	  <Grid>
+		  <Grid.RowDefinitions>
+			  <RowDefinition></RowDefinition>
+			  <RowDefinition></RowDefinition>
+			  <RowDefinition></RowDefinition>
+			  <RowDefinition></RowDefinition>
+		  </Grid.RowDefinitions>
+		  <Grid.ColumnDefinitions>
+			  <ColumnDefinition></ColumnDefinition>
+			  <ColumnDefinition></ColumnDefinition>
+		  </Grid.ColumnDefinitions>
+		  <TextBlock Grid.Column="0" Grid.Row="0" Text="Сколько добавить перед указанной строкой?"  Grid.ColumnSpan="2"/>
+		  <TextBlock Grid.Column="0" Grid.Row="1" Text="Выбранная строка:"/>
+		  <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding #RowNumberIn.Number1}"/>
+		  <TextBlock Grid.Column="0" Grid.Row="2" Text="Кол-во строк:"/>
+		  <TextBox Text="{Binding #RowNumberIn.Number2, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
+		  <Button Grid.Column="0" Grid.Row="3" Content="Подтвердить" Click="OnButtonClick" Grid.ColumnSpan="2"/>
+	  </Grid>
+  </Panel>
+</Window>
