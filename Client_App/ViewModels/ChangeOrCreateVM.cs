@@ -251,6 +251,7 @@ namespace Client_App.ViewModels
         public Interaction<int, int> ShowDialogIn { get; protected set; }
         public Interaction<object, int> ShowDialog { get; protected set; }
         public Interaction<string, string> ShowMessage { get; protected set; }
+        public Interaction<List<string>, string> ShowMessageT { get; protected set; }
         public void Init()
         {
             string a = FormType.Replace(".", "");
@@ -285,6 +286,7 @@ namespace Client_App.ViewModels
             ShowDialog = new Interaction<object,int>();
             ShowDialogIn = new Interaction<int, int>();
             ShowMessage = new Interaction<string, string>();
+            ShowMessageT = new Interaction<List<string>, string>();
             Storage.Sort();
         }
 
@@ -526,8 +528,7 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var str = "Вы действительно хотите удалить комментарий?";
-                var answ=await ShowMessage.Handle(str);
+                var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     List<Note> lst = new List<Note>();
