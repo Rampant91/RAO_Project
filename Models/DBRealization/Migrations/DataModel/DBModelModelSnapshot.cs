@@ -75,9 +75,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("NumberInOrder_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("OrganisationReciever_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -302,8 +299,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int>("NumberOfFields_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<short?>("OperationCode_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<bool>("OperationCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -408,8 +405,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int>("NumberOfFields_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<short?>("OperationCode_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<bool>("OperationCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -505,8 +502,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int>("NumberOfFields_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<short?>("OperationCode_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<bool>("OperationCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -605,8 +602,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int>("NumberOfFields_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<short?>("OperationCode_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<bool>("OperationCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -705,8 +702,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int>("NumberOfFields_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<short?>("OperationCode_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<bool>("OperationCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -823,8 +820,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int>("NumberOfFields_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<short?>("OperationCode_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<bool>("OperationCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -947,8 +944,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int>("NumberOfFields_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<short?>("OperationCode_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<bool>("OperationCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -1119,8 +1116,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int>("NumberOfFields_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<short?>("OperationCode_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<bool>("OperationCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -1249,8 +1246,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<int>("NumberOfFields_DB")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("OperationCode_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<short?>("OperationCode_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<bool>("OperationCode_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
@@ -2166,9 +2163,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("GraphNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");

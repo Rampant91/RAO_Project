@@ -82,11 +82,11 @@ namespace Client_App.ViewModels
                     flag = true;
                     break;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     i++;
                 }
-            }
+        }
             if (!flag)
             {
                 StaticConfiguration.DBPath = Path.Combine(pty, "Local" + "_" + i + ".raodb");
