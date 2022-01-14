@@ -78,6 +78,9 @@ namespace Client_App.ViewModels
                     StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
 
                     dbm = StaticConfiguration.DBModel;
+
+                    var rt = dbm.Database.GetAppliedMigrations();
+                    var yu = dbm.Database.GetPendingMigrations();
                     dbm.Database.Migrate();
                     flag = true;
                     break;
