@@ -8,8 +8,13 @@ namespace Models.DBRealization.Migrations.DataModel
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             #region form19
+<<<<<<< Updated upstream
             string b = "\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"" +
            "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
+=======
+            string b = "\"Id\",\"CodeTypeAccObject_DB\",\"Radionuclids_DB\",\"Activity_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"OperationCode_DB\",\"OperationCode_Hidden_Priv\",\"" +
+                "OperationDate_DB\",\"OperationDate_Hidden_Priv\",\"DocumentVid_DB\",\"DocumentVid_Hidden_Priv\",\"DocumentNumber_DB\",\"DocumentNumber_Hidden_Priv\",\"DocumentDate_DB\",\"DocumentDate_Hidden_Priv\"";
+>>>>>>> Stashed changes
             migrationBuilder.Sql("INSERT INTO \"form_19\" (" + b + ") SELECT " + b + " FROM FORM_19_TEMP");
             migrationBuilder.DropTable("FORM_19_TEMP");
             #endregion
