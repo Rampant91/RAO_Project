@@ -124,7 +124,7 @@ namespace Client_App.Controls.DataGrid
             {
                 t.AcceptsReturn = true;
                 t.Watermark = watermark;
-                t.TextWrapping = TextWrapping.WrapWithOverflow;
+                t.TextWrapping = TextWrapping.Wrap;
             }
         }
     }

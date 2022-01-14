@@ -667,7 +667,7 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                 {
                     [!TextBox.TextProperty] = new Binding("Value"),
                     AcceptsReturn = true,
-                    TextWrapping = TextWrapping.WrapWithOverflow,
+                    TextWrapping = TextWrapping.Wrap,
                     Background = new SolidColorBrush(new Color(0, 0, 0, 0))
                 }
                 , Binding, false)

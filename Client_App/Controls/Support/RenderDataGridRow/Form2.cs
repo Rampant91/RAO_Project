@@ -8,6 +8,7 @@ using System;
 using System.Reactive.Linq;
 using Client_App.Controls.DataGrid;
 using Models.DataAccess;
+using Avalonia.Layout;
 
 namespace Client_App.Controls.Support.RenderDataGridRow
 {
@@ -47,20 +48,58 @@ namespace Client_App.Controls.Support.RenderDataGridRow
         }
 
         #region Notes
-        private static Control GetRowNotes(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName)
+        private static Control GetRowNotes(double starWidth, int Row, int Column, string Binding, INameScope scp, string TopName, bool alignment)
         {
-            DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
+            //DataGrid.Cell? cell = new Controls.DataGrid.Cell(Binding, false)
+            //{
+            //    Width = starWidth * Wdth1,
+            //    Height = RowHeight1,
+            //    BorderBrush = new SolidColorBrush(border_color1),
+            //    BindingPath = Binding
+            //};
+
+            //cell.CellRow = Row;
+            //cell.CellColumn = Column;
+
+            //return cell;
+            if (!alignment)
             {
-                Width = starWidth * Wdth1,
-                Height = RowHeight1,
-                BorderBrush = new SolidColorBrush(border_color1),
-                BindingPath = Binding
-            };
-
-            cell.CellRow = Row;
-            cell.CellColumn = Column;
-
-            return cell;
+                var cell = new CustomCell(new TextBox()
+                {
+                    [!TextBox.TextProperty] = new Binding("Value"),
+                    AcceptsReturn = true,
+                    TextWrapping = TextWrapping.Wrap,
+                    Background = new SolidColorBrush(new Color(0, 0, 0, 0))
+                }
+                , Binding, false)
+                {
+                    Width = starWidth * Wdth1,
+                    BorderBrush = new SolidColorBrush(border_color1),
+                    BindingPath = Binding
+                };
+                cell.CellRow = Row;
+                cell.CellColumn = Column;
+                return cell;
+            }
+            else
+            {
+                var cell = new CustomCell(new TextBox()
+                {
+                    [!TextBox.TextProperty] = new Binding("Value"),
+                    HorizontalContentAlignment = HorizontalAlignment.Center,
+                    VerticalContentAlignment = VerticalAlignment.Center,
+                    Background = new SolidColorBrush(new Color(0, 0, 0, 0))
+                }
+                    , Binding, false)
+                {
+                    Width = starWidth * Wdth1,
+                    BorderBrush = new SolidColorBrush(border_color1),
+                    BindingPath = Binding
+                };
+                cell.CellRow = Row;
+                cell.CellColumn = Column;
+                return cell;
+            }
         }
 
         private static Control GetNotes(int Row, INameScope scp, string TopName)
@@ -84,9 +123,9 @@ namespace Client_App.Controls.Support.RenderDataGridRow
 
             stck.Bind(StackPanel.DataContextProperty, b);
 
-            stck.Children.Add(GetRowNotes(1, Row, 1, "RowNumber", scp, TopName));
-            stck.Children.Add(GetRowNotes(1, Row, 2, "GraphNumber", scp, TopName));
-            stck.Children.Add(GetRowNotes(6, Row, 3, "Comment", scp, TopName));
+            stck.Children.Add(GetRowNotes(1, Row, 1, "RowNumber", scp, TopName, true));
+            stck.Children.Add(GetRowNotes(1, Row, 2, "GraphNumber", scp, TopName, true));
+            stck.Children.Add(GetRowNotes(6, Row, 3, "Comment", scp, TopName, false));
 
             return stck;
         }

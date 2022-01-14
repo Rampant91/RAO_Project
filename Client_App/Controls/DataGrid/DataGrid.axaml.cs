@@ -144,6 +144,26 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region AddRowIn
+        public static readonly DirectProperty<DataGrid, ReactiveCommand<IEnumerable, Unit>> CtrlICommandProperty =
+    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<IEnumerable, Unit>>(
+         nameof(CtrlICommand),
+         o => o.CtrlICommand,
+        (o, v) => o.CtrlICommand = v);
+
+        private ReactiveCommand<IEnumerable, Unit> _CtrlICommand = null;
+
+        public ReactiveCommand<IEnumerable, Unit> CtrlICommand
+        {
+            get => _CtrlICommand;
+            set
+            {
+                SetAndRaise(CtrlICommandProperty, ref _CtrlICommand, value);
+            }
+
+        }
+        #endregion
+        
         public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> ItemsProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
                 nameof(Items),
@@ -1206,7 +1226,14 @@ namespace Client_App.Controls.DataGrid
                         ctrlFlag = false;
                     }
                 }
-
+                if (args.Key == Key.I)
+                {
+                    if (CtrlICommand != null)
+                    {
+                        CtrlICommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
+                        ctrlFlag = false;
+                    }
+                }
             }
 
             if (args.Key == Key.Delete)
@@ -1459,7 +1486,7 @@ namespace Client_App.Controls.DataGrid
                                                         var panel = (Panel)child.Child;
                                                         var textbox = (TextBox)panel.Children.FirstOrDefault();
 
-                                                        if (textbox.TextWrapping==TextWrapping.WrapWithOverflow)
+                                                        if (textbox.TextWrapping==TextWrapping.Wrap)
                                                         {
                                                             textbox.Text = rt;
                                                         }
@@ -1496,7 +1523,7 @@ namespace Client_App.Controls.DataGrid
                                                         {
                                                             var panel = (Panel)child.Child;
                                                             var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                            if (textbox.TextWrapping == TextWrapping.WrapWithOverflow)
+                                                            if (textbox.TextWrapping == TextWrapping.Wrap)
                                                             {
                                                                 textbox.Text = rt;
                                                             }
@@ -1566,15 +1593,18 @@ namespace Client_App.Controls.DataGrid
                             {
                                 var panel = (Panel)child.Child;
                                 var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                if (textbox.Text.Contains("\n")|| textbox.Text.Contains("\t")|| textbox.Text.Contains("\r"))
+                                if (textbox != null)
                                 {
-                                    txt += "\""+textbox.Text+"\"";
+                                    if (textbox.Text.Contains("\n") || textbox.Text.Contains("\t") || textbox.Text.Contains("\r"))
+                                    {
+                                        txt += "\"" + textbox.Text + "\"";
+                                    }
+                                    else
+                                    {
+                                        txt += textbox.Text;
+                                    }
+                                    txt += "\t";
                                 }
-                                else
-                                {
-                                    txt += textbox.Text;
-                                }
-                                txt += "\t";
                             }
                         }
                         txt += "\r";

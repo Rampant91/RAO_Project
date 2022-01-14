@@ -198,6 +198,7 @@ namespace Models.Collections
                 item.PropertyChanged += ChildPropertyChanged;
                 Items.Add(item);
             }
+            Sorted = false;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
         public void AddRangeNoChange(IEnumerable<T> items)

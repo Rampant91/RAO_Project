@@ -25,7 +25,7 @@ namespace Client_App.Views
                 o => o.Number,
                 (o, v) => o.Number = v);
 
-        private string _Number = "1";
+        private string _Number = "0";
         public string Number
         {
             get => _Number;
@@ -50,6 +50,7 @@ namespace Client_App.Views
                 }
             }
         }
+
         public RowNumber()
         {
             InitializeComponent();
