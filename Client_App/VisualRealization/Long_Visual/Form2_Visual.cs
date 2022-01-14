@@ -2431,7 +2431,7 @@ namespace Client_App.Long_Visual
                 HorizontalAlignment = HorizontalAlignment.Left
             };
 
-            b2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на сброс радионуклидов в водные объекты №"));
+            b2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на сброс радионуклидов в водные объекты №", 350));
             b2.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionNumber_28", 100));
             b2.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
             b2.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.PermissionIssueDate_28", 100));
@@ -2455,7 +2455,7 @@ namespace Client_App.Long_Visual
                 HorizontalAlignment = HorizontalAlignment.Left
             };
 
-            b5.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на сброс радионуклидов на рельеф местности №"));
+            b5.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Разрешение на сброс радионуклидов на рельеф местности №", 350));
             b5.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.PermissionNumber1_28", 100));
             b5.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
             b5.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.PermissionIssueDate1_28", 100));
@@ -2474,7 +2474,7 @@ namespace Client_App.Long_Visual
                 HorizontalAlignment = HorizontalAlignment.Left
             };
 
-            b8.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Договор на передачу сточных вод в сети канализации №"));
+            b8.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Договор на передачу сточных вод в сети канализации №", 350));
             b8.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.ContractNumber_28", 100));
             b8.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "от"));
             b8.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.ContractIssueDate2_28", 100));
