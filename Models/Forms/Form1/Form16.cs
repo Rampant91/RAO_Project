@@ -1612,7 +1612,7 @@ namespace Models
             worksheet.Cells[Row + (Transpon == false ? 20 : 0), Column + (Transpon == true ? 20 : 0)].Value = PackType_DB;
             worksheet.Cells[Row + (Transpon == false ? 21 : 0), Column + (Transpon == true ? 21 : 0)].Value = PackNumber_DB;
             worksheet.Cells[Row + (Transpon == false ? 22 : 0), Column + (Transpon == true ? 22 : 0)].Value = Subsidy_DB;
-            worksheet.Cells[Row + (Transpon == false ? 23 : 0), Column + (Transpon == true ? 1 : 0)].Value = FcpNumber_DB;
+            worksheet.Cells[Row + (Transpon == false ? 23 : 0), Column + (Transpon == true ? 23 : 0)].Value = FcpNumber_DB;
 
             return 24;
         }
