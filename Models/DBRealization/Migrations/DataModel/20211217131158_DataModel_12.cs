@@ -7,7 +7,7 @@ namespace Models.DBRealization.Migrations.DataModel
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            string b = "\"Id\",\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"ProjectVolume_DB\",\"CodeRAO_DB\",\"Volume_DB\",\"Mass_DB\",\"QuantityOZIII_DB\",\"SummaryActivity_DB\",\"DocumentNumber_DB\",\"" +
+            string b = "\"StoragePlaceName_DB\",\"StoragePlaceCode_DB\",\"ProjectVolume_DB\",\"CodeRAO_DB\",\"Volume_DB\",\"Mass_DB\",\"QuantityOZIII_DB\",\"SummaryActivity_DB\",\"DocumentNumber_DB\",\"" +
                "DocumentDate_DB\",\"ExpirationDate_DB\",\"DocumentName_DB\",\"ReportId\",\"FormNum_DB\",\"NumberInOrder_DB\",\"NumberOfFields_DB\",\"CorrectionNumber_DB\"";
             migrationBuilder.Sql("INSERT INTO \"form_23\" (" + b + ") SELECT " + b + " FROM FORM_23_TEMP");
             migrationBuilder.DropTable("FORM_23_TEMP");
