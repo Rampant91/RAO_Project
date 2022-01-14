@@ -134,7 +134,7 @@ namespace Client_App.ViewModels
 
             foreach (var item in Local_Reports.Reports_Collection) 
             {
-                item.Report_Collection.QuickSort();
+                item.Sort();
                 foreach (var it in item.Report_Collection) 
                 {
                     foreach (var _i in it.Notes) 
@@ -174,12 +174,14 @@ namespace Client_App.ViewModels
 
             ShowDialog = new Interaction<ChangeOrCreateVM, object>();
             ShowMessage = new Interaction<string, string>();
+            ShowMessageT = new Interaction<List<string>, string>();
 
         }
 
         public Interaction<ChangeOrCreateVM, object> ShowDialog { get; }
         public Interaction<string, string> ShowMessage { get; }
 
+        public Interaction<List<string>, string> ShowMessageT { get; }
 
         private IEnumerable<Reports> _selectedReports = new ObservableCollectionWithItemPropertyChanged<Reports>();
         public IEnumerable<Reports> SelectedReports
@@ -297,6 +299,7 @@ namespace Client_App.ViewModels
                     }
                     var obj = param.First();
                     OpenFolderDialog dial = new OpenFolderDialog();
+
                     var res = await dial.ShowAsync(desktop.MainWindow);
                     if (res != null)
                     {
@@ -444,154 +447,148 @@ namespace Client_App.ViewModels
             {
                 OpenFileDialog dial = new OpenFileDialog();
                 dial.AllowMultiple = true;
-                var answ = await dial.ShowAsync(desktop.MainWindow);
-                foreach (var res in answ)
+                var filter = new FileDialogFilter
                 {
-                    if (res != null)
+                    Name = "RAODB",
+                    Extensions = {
+                        "raodb"
+                    }
+                };
+                dial.Filters = new List<FileDialogFilter>() { filter };
+                var answ = await dial.ShowAsync(desktop.MainWindow);
+                if (answ != null)
+                {
+                    foreach (var res in answ)
                     {
-                        if (res != "")
+                        if (res != null)
                         {
-                            string system = "";
-                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                            if (res != "")
                             {
-                                system = Environment.GetFolderPath(Environment.SpecialFolder.System);
-                            }
-                            else
-                            {
-                                system = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                            }
-                            string path = Path.GetPathRoot(system);
-                            var tmp = Path.Combine(path, "RAO");
-                            tmp = Path.Combine(tmp, "temp");
-                            Directory.CreateDirectory(tmp);
-                            tmp = Path.Combine(tmp, Path.GetFileNameWithoutExtension(res)) + "_imp_1" + ".raodb";
-
-                            while (true)
-                            {
-                                if (File.Exists(tmp))
+                                string system = "";
+                                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                                 {
-                                    var rt = Path.GetFileNameWithoutExtension(tmp).Split('_');
-                                    var num = Convert.ToInt32(rt.Last());
-                                    tmp = "";
-                                    tmp = Path.Combine(path, "RAO");
-                                    tmp = Path.Combine(tmp, "temp");
-                                    tmp = Path.Combine(tmp, Path.GetFileNameWithoutExtension(res) + "_imp_" + (num + 1) + ".raodb");
+                                    system = Environment.GetFolderPath(Environment.SpecialFolder.System);
                                 }
                                 else
                                 {
-                                    break;
+                                    system = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                                 }
-                            }
-                            try
-                            {
-                                var sourceFile = new FileInfo(res);
-                                sourceFile.CopyTo(tmp, true);
-                                using (DBModel db = new DBModel(tmp))
+                                string path = Path.GetPathRoot(system);
+                                var tmp = Path.Combine(path, "RAO");
+                                tmp = Path.Combine(tmp, "temp");
+                                Directory.CreateDirectory(tmp);
+                                tmp = Path.Combine(tmp, Path.GetFileNameWithoutExtension(res)) + "_imp_1" + ".raodb";
+
+                                while (true)
                                 {
-                                    try
+                                    if (File.Exists(tmp))
                                     {
-                                        if (File.Exists(tmp))
-                                        {
-                                            db.Database.Migrate();
-                                        }
-                                        else
-                                        {
-                                            db.Database.Migrate();
-                                        }
-                                        db.LoadTables();
+                                        var rt = Path.GetFileNameWithoutExtension(tmp).Split('_');
+                                        var num = Convert.ToInt32(rt.Last());
+                                        tmp = "";
+                                        tmp = Path.Combine(path, "RAO");
+                                        tmp = Path.Combine(tmp, "temp");
+                                        tmp = Path.Combine(tmp, Path.GetFileNameWithoutExtension(res) + "_imp_" + (num + 1) + ".raodb");
                                     }
-                                    catch (Exception e)
+                                    else
                                     {
-                                        Console.WriteLine(e);
-                                        throw;
+                                        break;
                                     }
-
-                                    foreach (var item in db.ReportsCollectionDbSet)
+                                }
+                                try
+                                {
+                                    var sourceFile = new FileInfo(res);
+                                    sourceFile.CopyTo(tmp, true);
+                                    using (DBModel db = new DBModel(tmp))
                                     {
-                                        var tb11 = from t in Local_Reports.Reports_Collection10
-                                                   where (item.Master.Rows10[0].Okpo_DB != "") &&
-                                                   (t.Master.Rows10[0].Okpo_DB != "") &&
-                                                   (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
-                                                   (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB)
-                                                   select t;
-                                        var tb21 = from t in Local_Reports.Reports_Collection20
-                                                   where (item.Master.Rows20[0].Okpo_DB != "") &&
-                                                   (t.Master.Rows20[0].Okpo_DB != "") &&
-                                                   (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
-                                                   (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB)
-                                                   select t;
-
-                                        Reports first11 = null;
-                                        Reports first21 = null;
                                         try
                                         {
-                                            first11 = tb11.FirstOrDefault();
+                                            if (File.Exists(tmp))
+                                            {
+                                                db.Database.Migrate();
+                                            }
+                                            else
+                                            {
+                                                db.Database.Migrate();
+                                            }
+                                            db.LoadTables();
                                         }
-                                        catch
+                                        catch (Exception e)
                                         {
+                                            Console.WriteLine(e);
+                                            throw;
                                         }
 
-                                        try
+                                        foreach (var item in db.ReportsCollectionDbSet)
                                         {
-                                            first21 = tb21.FirstOrDefault();
-                                        }
-                                        catch
-                                        {
+                                            var tb11 = from t in Local_Reports.Reports_Collection10
+                                                       where (item.Master.Rows10[0].Okpo_DB != "") &&
+                                                       (t.Master.Rows10[0].Okpo_DB != "") &&
+                                                       (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
+                                                       (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB)
+                                                       select t;
+                                            var tb21 = from t in Local_Reports.Reports_Collection20
+                                                       where (item.Master.Rows20[0].Okpo_DB != "") &&
+                                                       (t.Master.Rows20[0].Okpo_DB != "") &&
+                                                       (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
+                                                       (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB)
+                                                       select t;
 
-                                        }
-                                        if (item != null)
-                                        {
-                                            if(item.Master_DB.FormNum_DB=="1.0")
+                                            Reports first11 = null;
+                                            Reports first21 = null;
+                                            try
                                             {
-                                                if(item.Master_DB.Rows10[0].Id> item.Master_DB.Rows10[1].Id)
-                                                {
-                                                    item.Master_DB.Rows10[0].NumberInOrder_DB = 2;
-                                                    item.Master_DB.Rows10[1].NumberInOrder_DB = 1;
-                                                    item.Master_DB.Rows10.QuickSort();
-                                                }
-                                                else
-                                                {
-                                                    item.Master_DB.Rows10[0].NumberInOrder_DB = 1;
-                                                    item.Master_DB.Rows10[1].NumberInOrder_DB = 2;
-                                                    item.Master_DB.Rows10.QuickSort();
-                                                }
+                                                first11 = tb11.FirstOrDefault();
                                             }
-                                            if (item.Master_DB.FormNum_DB == "2.0")
+                                            catch
                                             {
-                                                if (item.Master_DB.Rows20[0].Id > item.Master_DB.Rows20[1].Id)
-                                                {
-                                                    item.Master_DB.Rows20[0].NumberInOrder_DB = 2;
-                                                    item.Master_DB.Rows20[1].NumberInOrder_DB = 1;
-                                                    item.Master_DB.Rows20.QuickSort();
-                                                }
-                                                else
-                                                {
-                                                    item.Master_DB.Rows20[0].NumberInOrder_DB = 1;
-                                                    item.Master_DB.Rows20[1].NumberInOrder_DB = 2;
-                                                    item.Master_DB.Rows20.QuickSort();
-                                                }
                                             }
-                                            item.CleanIds();
-                                        }
-                                        if (first11 != null)
-                                        {
-                                            foreach (var it in item.Report_Collection.OrderBy(x => x.NumberInOrder_DB))
+
+                                            try
                                             {
-                                                foreach(var note in it.Notes)
+                                                first21 = tb21.FirstOrDefault();
+                                            }
+                                            catch
+                                            {
+
+                                            }
+                                            if (item != null)
+                                            {
+                                                if (item.Master_DB.FormNum_DB == "1.0")
                                                 {
-                                                    if(note.Order==0)
+                                                    if (item.Master_DB.Rows10[0].Id > item.Master_DB.Rows10[1].Id)
                                                     {
-                                                        note.Order = GetNumberInOrder(it.Notes);
+                                                        item.Master_DB.Rows10[0].NumberInOrder_DB = 2;
+                                                        item.Master_DB.Rows10[1].NumberInOrder_DB = 1;
+                                                        item.Master_DB.Rows10.QuickSort();
+                                                    }
+                                                    else
+                                                    {
+                                                        item.Master_DB.Rows10[0].NumberInOrder_DB = 1;
+                                                        item.Master_DB.Rows10[1].NumberInOrder_DB = 2;
+                                                        item.Master_DB.Rows10.QuickSort();
                                                     }
                                                 }
-                                                first11.Report_Collection.Add(it);
+                                                if (item.Master_DB.FormNum_DB == "2.0")
+                                                {
+                                                    if (item.Master_DB.Rows20[0].Id > item.Master_DB.Rows20[1].Id)
+                                                    {
+                                                        item.Master_DB.Rows20[0].NumberInOrder_DB = 2;
+                                                        item.Master_DB.Rows20[1].NumberInOrder_DB = 1;
+                                                        item.Master_DB.Rows20.QuickSort();
+                                                    }
+                                                    else
+                                                    {
+                                                        item.Master_DB.Rows20[0].NumberInOrder_DB = 1;
+                                                        item.Master_DB.Rows20[1].NumberInOrder_DB = 2;
+                                                        item.Master_DB.Rows20.QuickSort();
+                                                    }
+                                                }
+                                                item.CleanIds();
                                             }
-                                        }
-                                        else
-                                        {
-                                            if (first21 != null)
+                                            if (first11 != null)
                                             {
-                                                foreach (var it in item.Report_Collection.OrderBy(x => x.NumberInOrder_DB))
+                                                foreach (var it in item.Report_Collection)
                                                 {
                                                     foreach (var note in it.Notes)
                                                     {
@@ -600,30 +597,151 @@ namespace Client_App.ViewModels
                                                             note.Order = GetNumberInOrder(it.Notes);
                                                         }
                                                     }
-                                                    first21.Report_Collection.Add(it);
+                                                    var lst = first11.Report_Collection.ToList();
+                                                    foreach (var elem in lst)
+                                                    {
+                                                        try
+                                                        {
+                                                            var st_elem = DateTime.Parse(elem.StartPeriod.Value);
+                                                            var en_elem = DateTime.Parse(elem.EndPeriod.Value);
+                                                            if (st_elem > en_elem) 
+                                                            {
+                                                                var _e = st_elem;
+                                                                st_elem = en_elem;
+                                                                en_elem = _e;
+                                                            }
+
+                                                            DateTimeOffset st_it = DateTimeOffset.Now;
+                                                            DateTimeOffset en_it = DateTimeOffset.Now;
+                                                            try
+                                                            {
+                                                                st_it = DateTime.Parse(it.StartPeriod.Value);
+                                                                en_it = DateTime.Parse(it.EndPeriod.Value);
+                                                            }
+                                                            catch (Exception e) {
+                                                                first11.Report_Collection.Add(it);
+                                                                throw e;
+                                                            }
+                                                            if (st_it > en_it)
+                                                            {
+                                                                var _e = st_it;
+                                                                st_it = en_it;
+                                                                en_it = _e;
+                                                            }
+                                                            if (st_elem == st_it && en_elem == en_it)
+                                                            {
+                                                                var str = "Совпадение даты в " + elem.FormNum.Value + " " +
+                                                                    elem.StartPeriod.Value + "-" +
+                                                                    elem.EndPeriod.Value + " \n" +
+                                                                    first11.Master.RegNoRep.Value + " " +
+                                                                    first11.Master.ShortJurLicoRep.Value + " " +
+                                                                    first11.Master.OkpoRep.Value;
+                                                                var an = await ShowMessageT.Handle(new List<string>()
+                                                            {
+                                                                str,
+                                                                "Заменить",
+                                                                "Сохранить оба",
+                                                                "Отменить" });
+                                                                if (an == "Сохранить оба")
+                                                                {
+                                                                    first11.Report_Collection.Add(it);
+                                                                }
+                                                                if (an == "Заменить")
+                                                                {
+                                                                    first11.Report_Collection.Remove(elem);
+                                                                    first11.Report_Collection.Add(it);
+                                                                }
+                                                            }
+                                                            if (st_elem < st_it && st_it < en_elem ||st_elem < en_it && en_it < en_elem)
+                                                            {
+                                                                var str = "Пересечение даты в " + elem.FormNum.Value + " " +
+                                                                    elem.StartPeriod.Value + "-" +
+                                                                    elem.EndPeriod.Value + " \n" +
+                                                                    first11.Master.RegNoRep.Value + " " +
+                                                                    first11.Master.ShortJurLicoRep.Value + " " +
+                                                                    first11.Master.OkpoRep.Value;
+                                                                var an = await ShowMessageT.Handle(new List<string>()
+                                                            {
+                                                                str,
+                                                                "Сохранить оба",
+                                                                "Отменить" });
+                                                                if (an == "Сохранить оба")
+                                                                {
+                                                                    first11.Report_Collection.Add(it);
+                                                                }
+                                                            }
+                                                            first11.Sort();
+                                                        }
+                                                        catch { }
+                                                    }
                                                 }
                                             }
                                             else
                                             {
-                                                foreach (var form in item.Report_Collection)
+                                                if (first21 != null)
                                                 {
-                                                    foreach (var note in form.Notes)
+                                                    foreach (var it in item.Report_Collection)
                                                     {
-                                                        if (note.Order == 0)
+                                                        foreach (var note in it.Notes)
                                                         {
-                                                            note.Order = GetNumberInOrder(form.Notes);
+                                                            if (note.Order == 0)
+                                                            {
+                                                                note.Order = GetNumberInOrder(it.Notes);
+                                                            }
+                                                        }
+
+                                                        var lst = first21.Report_Collection.ToList();
+                                                        foreach (var elem in lst)
+                                                        {
+                                                            if (elem.Year == it.Year)
+                                                            {
+                                                                var str = "Совпадение даты в " + elem.FormNum.Value + " " +
+                                                                    elem.Year.Value + " " +
+                                                                    first21.Master.RegNoRep1.Value + " \n" +
+                                                                    first21.Master.ShortJurLicoRep1.Value + " " +
+                                                                    first21.Master.OkpoRep1.Value;
+                                                                var an = await ShowMessageT.Handle(new List<string>()
+                                                            {
+                                                                str,
+                                                                "Заменить",
+                                                                "Сохранить оба",
+                                                                "Отменить" });
+                                                                if (an == "Сохранить оба")
+                                                                {
+                                                                    first21.Report_Collection.Add(it);
+                                                                }
+                                                                if (an == "Заменить")
+                                                                {
+                                                                    first21.Report_Collection.Remove(elem);
+                                                                    first21.Report_Collection.Add(it);
+                                                                }
+                                                            }
+                                                            first21.Sort();
                                                         }
                                                     }
                                                 }
-                                                Local_Reports.Reports_Collection.Add(item);
+                                                else
+                                                {
+                                                    foreach (var form in item.Report_Collection)
+                                                    {
+                                                        foreach (var note in form.Notes)
+                                                        {
+                                                            if (note.Order == 0)
+                                                            {
+                                                                note.Order = GetNumberInOrder(form.Notes);
+                                                            }
+                                                        }
+                                                    }
+                                                    Local_Reports.Reports_Collection.Add(item);
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e);
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
                             }
                         }
                     }
@@ -681,8 +799,9 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var str = "Вы действительно хотите удалить отчет?";
-                var answ = (string)await ShowMessage.Handle(str);
+                //var str = "Вы действительно хотите удалить отчет?";
+                //var answ = (string)await ShowMessage.Handle(str);
+                var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     var t = desktop.MainWindow as MainWindow;
@@ -710,8 +829,9 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var str = "Вы действительно хотите удалить организацию?";
-                var answ = (string)await ShowMessage.Handle(str);
+                //var str = "Вы действительно хотите удалить организацию?";
+                //var answ = (string)await ShowMessage.Handle(str);
+                var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     if (param != null)

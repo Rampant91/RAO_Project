@@ -30,6 +30,8 @@ namespace Client_App.Views
             this.WhenActivated(d => d(ViewModel!.ShowDialogIn.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
+            this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
+
             this.Closing += OnStandartClosing;
             Init();
         }
@@ -253,6 +255,30 @@ namespace Client_App.Views
             par.ContentTitle = "Уведомление";
             par.ContentHeader = "Уведомление";
             par.ContentMessage = interaction.Input;
+            var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
+            var answ = await mssg.ShowDialog(this);
+
+            interaction.SetOutput(answ);
+        }
+
+        private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
+        {
+            MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
+            List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
+            par.ContentMessage = interaction.Input[0];
+            interaction.Input.RemoveAt(0);
+            foreach (var elem in interaction.Input) 
+            {
+                lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
+                {
+                    Type = MessageBox.Avalonia.Enums.ButtonType.Default,
+                    Name = elem
+                });
+
+            }
+            par.ButtonDefinitions = lt;
+            par.ContentTitle = "Уведомление";
+            par.ContentHeader = "Уведомление";
             var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
             var answ = await mssg.ShowDialog(this);
 

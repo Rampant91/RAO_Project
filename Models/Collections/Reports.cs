@@ -66,7 +66,7 @@ namespace Models.Collections
 
         public void Sort()
         {
-
+            Report_Collection.QuickSort();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
