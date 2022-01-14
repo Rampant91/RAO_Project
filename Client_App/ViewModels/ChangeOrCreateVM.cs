@@ -564,8 +564,7 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var str = "Вы действительно хотите удалить строчку?";
-                var answ = await ShowMessage.Handle(str);
+                var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();

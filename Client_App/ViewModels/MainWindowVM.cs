@@ -292,17 +292,17 @@ namespace Client_App.ViewModels
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
                 {
-                    foreach (var item in param)
-                    {
-                        var a = DateTime.Now.Date;
-                        ((Report)item).ExportDate.Value = a.Day + "." + a.Month + "." + a.Year;
-                    }
                     var obj = param.First();
                     OpenFolderDialog dial = new OpenFolderDialog();
 
                     var res = await dial.ShowAsync(desktop.MainWindow);
                     if (res != null)
                     {
+                        foreach (var item in param)
+                        {
+                            var a = DateTime.Now.Date;
+                            ((Report)item).ExportDate.Value = a.Day + "." + a.Month + "." + a.Year;
+                        }
                         if (res != "")
                         {
                             var dt = DateTime.Now;
@@ -598,81 +598,90 @@ namespace Client_App.ViewModels
                                                         }
                                                     }
                                                     var lst = first11.Report_Collection.ToList();
-                                                    foreach (var elem in lst)
+                                                    if (lst.Count != 0)
                                                     {
-                                                        try
+                                                        foreach (var elem in lst)
                                                         {
-                                                            var st_elem = DateTime.Parse(elem.StartPeriod.Value);
-                                                            var en_elem = DateTime.Parse(elem.EndPeriod.Value);
-                                                            if (st_elem > en_elem) 
-                                                            {
-                                                                var _e = st_elem;
-                                                                st_elem = en_elem;
-                                                                en_elem = _e;
-                                                            }
-
-                                                            DateTimeOffset st_it = DateTimeOffset.Now;
-                                                            DateTimeOffset en_it = DateTimeOffset.Now;
                                                             try
                                                             {
-                                                                st_it = DateTime.Parse(it.StartPeriod.Value);
-                                                                en_it = DateTime.Parse(it.EndPeriod.Value);
-                                                            }
-                                                            catch (Exception e) {
-                                                                first11.Report_Collection.Add(it);
-                                                                throw e;
-                                                            }
-                                                            if (st_it > en_it)
-                                                            {
-                                                                var _e = st_it;
-                                                                st_it = en_it;
-                                                                en_it = _e;
-                                                            }
-                                                            if (st_elem == st_it && en_elem == en_it)
-                                                            {
-                                                                var str = "Совпадение даты в " + elem.FormNum.Value + " " +
-                                                                    elem.StartPeriod.Value + "-" +
-                                                                    elem.EndPeriod.Value + " \n" +
-                                                                    first11.Master.RegNoRep.Value + " " +
-                                                                    first11.Master.ShortJurLicoRep.Value + " " +
-                                                                    first11.Master.OkpoRep.Value;
-                                                                var an = await ShowMessageT.Handle(new List<string>()
+                                                                var st_elem = DateTime.Parse(elem.StartPeriod.Value);
+                                                                var en_elem = DateTime.Parse(elem.EndPeriod.Value);
+                                                                if (st_elem > en_elem)
+                                                                {
+                                                                    var _e = st_elem;
+                                                                    st_elem = en_elem;
+                                                                    en_elem = _e;
+                                                                }
+
+                                                                DateTimeOffset st_it = DateTimeOffset.Now;
+                                                                DateTimeOffset en_it = DateTimeOffset.Now;
+                                                                try
+                                                                {
+                                                                    st_it = DateTime.Parse(it.StartPeriod.Value);
+                                                                    en_it = DateTime.Parse(it.EndPeriod.Value);
+                                                                }
+                                                                catch (Exception e)
+                                                                {
+                                                                    first11.Report_Collection.Add(it);
+                                                                    throw e;
+                                                                }
+                                                                if (st_it > en_it)
+                                                                {
+                                                                    var _e = st_it;
+                                                                    st_it = en_it;
+                                                                    en_it = _e;
+                                                                }
+                                                                if (st_elem == st_it && en_elem == en_it)
+                                                                {
+                                                                    var str = "Совпадение даты в " + elem.FormNum.Value + " " +
+                                                                        elem.StartPeriod.Value + "-" +
+                                                                        elem.EndPeriod.Value + " \n" +
+                                                                        first11.Master.RegNoRep.Value + " " +
+                                                                        first11.Master.ShortJurLicoRep.Value + " " +
+                                                                        first11.Master.OkpoRep.Value;
+                                                                    var an = await ShowMessageT.Handle(new List<string>()
                                                             {
                                                                 str,
                                                                 "Заменить",
                                                                 "Сохранить оба",
                                                                 "Отменить" });
-                                                                if (an == "Сохранить оба")
-                                                                {
-                                                                    first11.Report_Collection.Add(it);
+                                                                    if (an == "Сохранить оба")
+                                                                    {
+                                                                        first11.Report_Collection.Add(it);
+                                                                    }
+                                                                    if (an == "Заменить")
+                                                                    {
+                                                                        first11.Report_Collection.Remove(elem);
+                                                                        first11.Report_Collection.Add(it);
+                                                                    }
                                                                 }
-                                                                if (an == "Заменить")
+                                                                if (st_elem < st_it && st_it < en_elem || st_elem < en_it && en_it < en_elem)
                                                                 {
-                                                                    first11.Report_Collection.Remove(elem);
-                                                                    first11.Report_Collection.Add(it);
-                                                                }
-                                                            }
-                                                            if (st_elem < st_it && st_it < en_elem ||st_elem < en_it && en_it < en_elem)
-                                                            {
-                                                                var str = "Пересечение даты в " + elem.FormNum.Value + " " +
-                                                                    elem.StartPeriod.Value + "-" +
-                                                                    elem.EndPeriod.Value + " \n" +
-                                                                    first11.Master.RegNoRep.Value + " " +
-                                                                    first11.Master.ShortJurLicoRep.Value + " " +
-                                                                    first11.Master.OkpoRep.Value;
-                                                                var an = await ShowMessageT.Handle(new List<string>()
+                                                                    var str = "Пересечение даты в " + elem.FormNum.Value + " " +
+                                                                        elem.StartPeriod.Value + "-" +
+                                                                        elem.EndPeriod.Value + " \n" +
+                                                                        first11.Master.RegNoRep.Value + " " +
+                                                                        first11.Master.ShortJurLicoRep.Value + " " +
+                                                                        first11.Master.OkpoRep.Value;
+                                                                    var an = await ShowMessageT.Handle(new List<string>()
                                                             {
                                                                 str,
                                                                 "Сохранить оба",
                                                                 "Отменить" });
-                                                                if (an == "Сохранить оба")
-                                                                {
-                                                                    first11.Report_Collection.Add(it);
+                                                                    if (an == "Сохранить оба")
+                                                                    {
+                                                                        first11.Report_Collection.Add(it);
+                                                                    }
                                                                 }
+                                                                first11.Sort();
                                                             }
-                                                            first11.Sort();
+                                                            catch { }
                                                         }
-                                                        catch { }
+                                                    }
+                                                    else 
+                                                    {
+                                                        first11.Report_Collection.Add(it);
+                                                        first11.Sort();
                                                     }
                                                 }
                                             }
@@ -691,31 +700,39 @@ namespace Client_App.ViewModels
                                                         }
 
                                                         var lst = first21.Report_Collection.ToList();
-                                                        foreach (var elem in lst)
+                                                        if (lst.Count != 0)
                                                         {
-                                                            if (elem.Year == it.Year)
+                                                            foreach (var elem in lst)
                                                             {
-                                                                var str = "Совпадение даты в " + elem.FormNum.Value + " " +
-                                                                    elem.Year.Value + " " +
-                                                                    first21.Master.RegNoRep1.Value + " \n" +
-                                                                    first21.Master.ShortJurLicoRep1.Value + " " +
-                                                                    first21.Master.OkpoRep1.Value;
-                                                                var an = await ShowMessageT.Handle(new List<string>()
+                                                                if (elem.Year == it.Year)
+                                                                {
+                                                                    var str = "Совпадение даты в " + elem.FormNum.Value + " " +
+                                                                        elem.Year.Value + " " +
+                                                                        first21.Master.RegNoRep1.Value + " \n" +
+                                                                        first21.Master.ShortJurLicoRep1.Value + " " +
+                                                                        first21.Master.OkpoRep1.Value;
+                                                                    var an = await ShowMessageT.Handle(new List<string>()
                                                             {
                                                                 str,
                                                                 "Заменить",
                                                                 "Сохранить оба",
                                                                 "Отменить" });
-                                                                if (an == "Сохранить оба")
-                                                                {
-                                                                    first21.Report_Collection.Add(it);
+                                                                    if (an == "Сохранить оба")
+                                                                    {
+                                                                        first21.Report_Collection.Add(it);
+                                                                    }
+                                                                    if (an == "Заменить")
+                                                                    {
+                                                                        first21.Report_Collection.Remove(elem);
+                                                                        first21.Report_Collection.Add(it);
+                                                                    }
                                                                 }
-                                                                if (an == "Заменить")
-                                                                {
-                                                                    first21.Report_Collection.Remove(elem);
-                                                                    first21.Report_Collection.Add(it);
-                                                                }
+                                                                first21.Sort();
                                                             }
+                                                        }
+                                                        else 
+                                                        {
+                                                            first21.Report_Collection.Add(it);
                                                             first21.Sort();
                                                         }
                                                     }
@@ -799,9 +816,7 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                //var str = "Вы действительно хотите удалить отчет?";
-                //var answ = (string)await ShowMessage.Handle(str);
-                var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
+                var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить отчет?", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     var t = desktop.MainWindow as MainWindow;
@@ -829,9 +844,7 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                //var str = "Вы действительно хотите удалить организацию?";
-                //var answ = (string)await ShowMessage.Handle(str);
-                var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
+                var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить организацию?", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     if (param != null)
