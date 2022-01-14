@@ -82,7 +82,7 @@ namespace Client_App.ViewModels
                     flag = true;
                     break;
                 }
-                catch
+                catch(Exception e)
                 {
                     i++;
                 }
@@ -267,7 +267,7 @@ namespace Client_App.ViewModels
             }
             catch(Exception e)
             {
-
+                int y = 10;
             }
         }
         private async Task _AddReport(string param)
@@ -1497,7 +1497,7 @@ namespace Client_App.ViewModels
             }
             catch (Exception ex)
             {
-
+                int k = 10;
             }
         }
 
@@ -1670,7 +1670,7 @@ namespace Client_App.ViewModels
             }
             catch (Exception ex)
             {
-
+                int l = 10;
             }
         }
 
