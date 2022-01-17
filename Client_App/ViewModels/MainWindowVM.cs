@@ -89,12 +89,14 @@ namespace Client_App.ViewModels
                 {
                     i++;
                 }
-        }
+            }
             if (!flag)
             {
                 StaticConfiguration.DBPath = Path.Combine(pty, "Local" + "_" + i + ".raodb");
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
+                var rt = dbm.Database.GetAppliedMigrations();
+                var yu = dbm.Database.GetPendingMigrations();
                 dbm.Database.Migrate();
             }
 
