@@ -44,24 +44,25 @@ namespace Client_App.Views
         }
 
         System.Reactive.Subjects.AsyncSubject<string> Answ { get; set; } = null;
+        bool flag = false;
         protected void OnStandartClosing(object sender, CancelEventArgs args)
         {
             if (Answ == null)
             {
+                flag = false;
                 var tmp = this.DataContext as ViewModels.ChangeOrCreateVM;
                 Answ = tmp.ShowMessage.Handle("Сохранить?").GetAwaiter();
-                Answ.OnCompleted(() =>
-                {
-                    this.Close();
-                });
                 Answ.Subscribe(x =>
                 {
                     if (x == "Да")
                     {
+                        flag = true;
                         tmp.SaveReport();
+                        return;
                     }
                     if (x == "Нет")
                     {
+                        flag = true;
                         var dbm = StaticConfiguration.DBModel;
                         dbm.Restore();
                         dbm.LoadTables();
@@ -188,6 +189,14 @@ namespace Client_App.Views
                                 tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep1));
                             }
                         }
+                        return;
+                    }
+                });
+                Answ.OnCompleted(() =>
+                {
+                    if (flag)
+                    {
+                        this.Close();
                     }
                 });
 
