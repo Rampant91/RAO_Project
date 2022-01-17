@@ -133,22 +133,24 @@ namespace Client_App.ViewModels
 
             Local_Reports = dbm.DBObservableDbSet.Local.First();
 
-            Local_Reports.PropertyChanged += Local_ReportsChanged;
-
-            foreach (var item in Local_Reports.Reports_Collection) 
+            foreach (var item in Local_Reports.Reports_Collection)
             {
-                item.Sort();
-                foreach (var it in item.Report_Collection) 
+                foreach (var it in item.Report_Collection)
                 {
-                    foreach (var _i in it.Notes) 
+                    foreach (var _i in it.Notes)
                     {
-                        if (_i.Order == 0) 
+                        if (_i.Order == 0)
                         {
                             _i.Order = GetNumberInOrder(it.Notes);
                         }
                     }
                 }
+                item.Sort();
             }
+
+            dbm.SaveChanges();
+
+            Local_Reports.PropertyChanged += Local_ReportsChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
