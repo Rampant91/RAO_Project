@@ -10,8 +10,8 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    [Migration("20220110130053_DataModel_19")]
-    partial class DataModel_19
+    [Migration("20220111122451_DataModel_21")]
+    partial class DataModel_21
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

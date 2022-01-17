@@ -10,8 +10,8 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    [Migration("20220110135026_DataModel_21")]
-    partial class DataModel_21
+    [Migration("20220111122452_DataModel_22")]
+    partial class DataModel_22
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -76,6 +76,9 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("NumberInOrder_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("OrganisationReciever_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2165,6 +2168,9 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("GraphNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("ReportId")
                         .HasColumnType("INTEGER");
