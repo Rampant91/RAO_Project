@@ -198,6 +198,11 @@ namespace Client_App.Views
                     {
                         this.Close();
                     }
+                    else
+                    {
+                        Answ.Dispose();
+                        Answ = null;
+                    }
                 });
 
                 args.Cancel = true;
