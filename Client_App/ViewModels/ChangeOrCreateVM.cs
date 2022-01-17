@@ -902,13 +902,14 @@ namespace Client_App.ViewModels
                 {
                     List<Note> lst = new List<Note>();
                     var number = 0;
-
+                    var r= GetNumberInOrder(Storage.Notes);
                     for (int i = 0; i < t; i++)
                     {
                         var frm = new Note();
-
+                        frm.Order = r;
                         lst.Add(frm);
                         number++;
+                        r++;
                     }
                     Storage.Notes.AddRange(lst);
                 }

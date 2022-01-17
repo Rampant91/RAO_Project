@@ -69,6 +69,8 @@ namespace Client_App.Views
                         dbm.SaveChanges();
 
                         var lst=tmp.Storage[tmp.FormType];
+
+                        //tmp.Storage.Rows11.GetEnumerator();
                         foreach(var item in lst)
                         {
                             if (item.Id == 0)
