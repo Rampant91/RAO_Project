@@ -270,6 +270,8 @@ namespace Client_App.ViewModels
                             await ShowDialog.Handle(frm);
 
                             t.SelectedReports = tmp;
+
+                            y.Report_Collection.QuickSort();
                         }
                     }
                 }
@@ -290,6 +292,8 @@ namespace Client_App.ViewModels
                     ChangeOrCreateVM frm = new(param, Local_Reports);
                     await ShowDialog.Handle(frm);
                     t.SelectedReports = tmp;
+
+
                 }
             }
         }
