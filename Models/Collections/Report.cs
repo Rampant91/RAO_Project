@@ -75,10 +75,11 @@ namespace Models.Collections
                         try
                         {
                             var dt = DateTimeOffset.Parse(EndPeriod_DB);
-                            var num = dt.Day * 1000000;
-                            num += dt.Month * 10000;
-                            num += dt.Year;
-                            frm += (int)(1.0 / num * 10000000000.0);
+                            string num = dt.Day < 10 ? "0" + dt.Day.ToString() : dt.Day.ToString();
+                            num += dt.Month<10?"0"+dt.Month.ToString():dt.Month.ToString();
+                            num += dt.Year.ToString();
+                            num = num.Insert(0,"1");
+                            frm += (int)(1.0 / Convert.ToInt32(num) * 10000000000000.0);
                         }
                         catch
                         {
