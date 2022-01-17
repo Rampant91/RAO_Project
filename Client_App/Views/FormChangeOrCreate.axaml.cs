@@ -160,6 +160,14 @@ namespace Client_App.Views
                                 }
                             }
                         }
+                        var lstnote = tmp.Storage.Notes.ToList();
+                        foreach (var item in lstnote)
+                        {
+                            if (item.Id == 0)
+                            {
+                                tmp.Storage.Notes.Remove(item);
+                            }
+                        }
                         if (tmp.FormType != "1.0" && tmp.FormType != "2.0")
                         {
                             if (tmp.FormType.Split('.')[0] == "1")
