@@ -184,7 +184,7 @@ namespace Client_App.Controls.DataGrid
                 if (value != null)
                 {
                     SetAndRaise(ItemsProperty, ref _items, value);
-                    UpdateCells();
+                    UpdateAllCells();
                 }
             }
         }
@@ -389,7 +389,7 @@ namespace Client_App.Controls.DataGrid
                             if (val <= maxpage && val >= 1)
                             {
                                 SetAndRaise(NowPageProperty, ref _nowPage, value);
-                                UpdateCells();
+                                UpdateAllCells();
                             }
                             else
                             {
@@ -398,7 +398,7 @@ namespace Client_App.Controls.DataGrid
                                     if (_nowPage != maxpage.ToString())
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, maxpage.ToString());
-                                        UpdateCells();
+                                        UpdateAllCells();
                                     }
                                 }
                                 if (val < 1)
@@ -406,7 +406,7 @@ namespace Client_App.Controls.DataGrid
                                     if (_nowPage != "1")
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, "1");
-                                        UpdateCells();
+                                        UpdateAllCells();
                                     }
                                 }
                             }
@@ -923,37 +923,43 @@ namespace Client_App.Controls.DataGrid
         #region UpdateCells
         private void UpdateAllCells()
         {
-            NameScope scp = new();
-            scp.Register(Name, this);
-            Rows.Clear();
-
-            var num = Convert.ToInt32(_nowPage);
-            var offset = (num - 1) * PageSize;
-            var count = 1;
-
-            var its = Items as IList;
-            for(int i = offset; i < num * PageSize; i++)
+            if (Name != null)
             {
-                var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-                if((i)>=Items.Count())
-                {
-                    tmp.RowHide = true;
-                }
-                else
-                {
-                    tmp.DataContext = its[i];
-                }
-                Rows.Add(new CellCollection(tmp), count);
-                count++;
-            }
+                NameScope scp = new();
+                scp.Register(Name, this);
+                Rows.Clear();
 
-            SetSelectedControls();
-            SetSelectedItemsWithHandler();
+                var num = Convert.ToInt32(_nowPage);
+                var offset = (num - 1) * PageSize;
+                var count = 1;
+
+                var its = Items as IList;
+                for (int i = offset; i < num * PageSize; i++)
+                {
+                    var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
+                    if ((i) >= Items.Count())
+                    {
+                        tmp.RowHide = true;
+                    }
+                    else
+                    {
+                        tmp.DataContext = its[i];
+                    }
+                    Rows.Add(new CellCollection(tmp), count);
+                    count++;
+                }
+
+                SetSelectedControls();
+                SetSelectedItemsWithHandler();
+            }
         }
 
         private void UpdateCells()
         {
             //UpdateAllCells();
+            UpdateAllCells();
+            return;
+
             NameScope scp = new();
             if (Name != null)
             {
