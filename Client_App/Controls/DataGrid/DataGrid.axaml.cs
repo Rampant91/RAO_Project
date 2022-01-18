@@ -30,6 +30,7 @@ using Models.DataAccess;
 
 namespace Client_App.Controls.DataGrid
 {
+    #region DataGridEnums
     public enum ChooseMode
     {
         Cell = 0,
@@ -41,6 +42,7 @@ namespace Client_App.Controls.DataGrid
         Multi = 0,
         Single
     }
+    #endregion
 
     public class DataGrid : UserControl
     {
@@ -655,6 +657,7 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region FindCell
         private int[] FindCell(PointerPoint Mainmouse)
         {
             PointerPoint mouse = Mainmouse;
@@ -706,6 +709,7 @@ namespace Client_App.Controls.DataGrid
 
             return ret;
         }
+        #endregion
 
         #region DataGridPoiter Down/Moved/Up/DoubleTapped
         public bool DownFlag { get; set; }
