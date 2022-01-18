@@ -8,6 +8,6 @@ namespace Models.Collections
 {
     public interface INumberInOrder
     {
-        int Order { get; }
+        long Order { get; }
     }
 }

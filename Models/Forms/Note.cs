@@ -39,7 +39,7 @@ namespace Models
 
         public int Id { get; set; }
 
-        public int Order { get;set; }
+        public long Order { get;set; }
 
         #region RowNUmber
         public string? RowNumber_DB { get; set; } = null;

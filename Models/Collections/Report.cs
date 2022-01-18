@@ -64,7 +64,7 @@ namespace Models.Collections
             Init();
         }
 
-        public int Order{ 
+        public long Order{ 
             get 
             {
                 try
@@ -79,11 +79,11 @@ namespace Models.Collections
                             num += dt.Month<10?"0"+dt.Month.ToString():dt.Month.ToString();
                             num += dt.Day < 10 ? "0" + dt.Day.ToString() : dt.Day.ToString();
                             num = num.Insert(0,"1");
-                            frm += (int)(1.0 / Convert.ToInt32(num) * 1000000000000000.0);
+                            frm += (int)(1.0 / Convert.ToInt32(num) * 100000000000000000.0);
                         }
                         catch
                         {
-
+                            frm += "000000000";
                         }
                         return Convert.ToInt32(frm);
                     }

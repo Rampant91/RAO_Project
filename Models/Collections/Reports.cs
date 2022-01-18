@@ -15,7 +15,7 @@ namespace Models.Collections
     public class Reports : IKey,INumberInOrder
     {
         [NotMapped]
-        public int Order
+        public long Order
         {
             get
             {

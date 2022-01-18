@@ -56,7 +56,7 @@ namespace Models.Abstracts
         #endregion
 
         [NotMapped]
-        public int Order
+        public long Order
         {
             get
             {

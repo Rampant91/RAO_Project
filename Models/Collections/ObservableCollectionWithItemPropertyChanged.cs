@@ -22,7 +22,7 @@ namespace Models.Collections
         public event EventHandler<ItemPropertyChangedEventArgs> ItemPropertyChanged;
 
         [NotMapped]
-        public int Order
+        public long Order
         {
             get
             {
