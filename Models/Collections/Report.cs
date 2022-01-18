@@ -10,6 +10,7 @@ using Models.Attributes;
 using Models.DataAccess;
 using OfficeOpenXml;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace Models.Collections
 {
@@ -2681,98 +2682,105 @@ namespace Models.Collections
         }
 
         [NotMapped]
-        public List<IKey> this[string FormNum]
+        public IKeyCollection this[string FormNum]
         {
             get
             {
                 if(FormNum=="1.1")
                 {
-                    return Rows11.ToList<IKey>();
+                    return Rows11;
                 }
                 if (FormNum == "1.2")
                 {
-                    return Rows12.ToList<IKey>();
+                    return Rows12;
                 }
                 if (FormNum == "1.3")
                 {
-                    return Rows13.ToList<IKey>();
+                    return Rows13;
                 }
                 if (FormNum == "1.4")
                 {
-                    return Rows14.ToList<IKey>();
+                    return Rows14;
                 }
                 if (FormNum == "1.5")
                 {
-                    return Rows15.ToList<IKey>();
+                    return Rows15;
                 }
                 if (FormNum == "1.6")
                 {
-                    return Rows16.ToList<IKey>();
+                    return Rows16;
                 }
                 if (FormNum == "1.7")
                 {
-                    return Rows17.ToList<IKey>();
+                    return Rows17;
                 }
                 if (FormNum == "1.8")
                 {
-                    return Rows18.ToList<IKey>();
+                    return Rows18;
                 }
                 if (FormNum == "1.9")
                 {
-                    return Rows19.ToList<IKey>();
+                    return Rows19;
                 }
 
                 if (FormNum == "2.1")
                 {
-                    return Rows21.ToList<IKey>();
+                    return Rows21;
                 }
                 if (FormNum == "2.2")
                 {
-                    return Rows22.ToList<IKey>();
+                    return Rows22;
                 }
                 if (FormNum == "2.3")
                 {
-                    return Rows23.ToList<IKey>();
+                    return Rows23;
                 }
                 if (FormNum == "2.4")
                 {
-                    return Rows24.ToList<IKey>();
+                    return Rows24;
                 }
                 if (FormNum == "2.5")
                 {
-                    return Rows25.ToList<IKey>();
+                    return Rows25;
                 }
                 if (FormNum == "2.6")
                 {
-                    return Rows26.ToList<IKey>();
+                    return Rows26;
                 }
                 if (FormNum == "2.7")
                 {
-                    return Rows27.ToList<IKey>();
+                    return Rows27;
                 }
                 if (FormNum == "2.8")
                 {
-                    return Rows28.ToList<IKey>();
+                    return Rows28;
                 }
                 if (FormNum == "2.9")
                 {
-                    return Rows29.ToList<IKey>();
+                    return Rows29;
                 }
                 if (FormNum == "2.10")
                 {
-                    return Rows210.ToList<IKey>();
+                    return Rows210;
                 }
                 if (FormNum == "2.11")
                 {
-                    return Rows211.ToList<IKey>();
+                    return Rows211;
                 }
                 if (FormNum == "2.12")
                 {
-                    return Rows212.ToList<IKey>();
+                    return Rows212;
                 }
                 return null;
             }
         }
+
+        [NotMapped]
+        public IKeyCollection Rows
+        {
+            get => this[this.FormNum_DB];
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

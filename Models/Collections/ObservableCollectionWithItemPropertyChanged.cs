@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 
 namespace Models.Collections
 {
-    public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollection<T>, IKey
-        where T : IKey
+    public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollection<T>, IKey, IKeyCollection
+        where T : class,IKey
     {
         /// <summary>
         /// Occurs when a property is changed within an item.
@@ -220,6 +220,50 @@ namespace Models.Collections
                 throw new ArgumentException("Received property notification from item not in collection");
 
             OnItemPropertyChanged(i, e);
+        }
+
+        public void Add<T1>(T1 obj) where T1 : class, IKey
+        {
+            base.Add(obj as T);
+        }
+        public void Remove<T1>(T1 obj) where T1 : class, IKey
+        {
+            base.Remove(obj as T);
+        }
+        public void RemoveAt<T1>(int obj) where T1 : class, IKey
+        {
+            RemoveAt(obj);
+        }
+        public void AddRange<T1>(IEnumerable<T1> obj) where T1 : class, IKey
+        {
+            this.AddRange(obj.Cast<T>());
+        }
+        public T1 Get<T1>(int index) where T1 : class, IKey
+        {
+            return this[index] as T1;
+        }
+        public List<T1> ToList<T1>()where T1:class,IKey
+        {
+            var lst = new List<T1>();
+            foreach(var item in Items)
+            {
+                lst.Add(item as T1);
+            }
+            return lst;
+        }
+        public IEnumerator<IKey> GetEnumerator()
+        {
+            foreach(var item in Items)
+            {
+                yield return item;
+            }
+        }
+        public int Count 
+        {
+            get
+            {
+                return base.Count;
+            }
         }
 
         #region IExcel

@@ -48,7 +48,7 @@ namespace Models.Collections
         {
             get
             {
-                var sm = from t in Reports_Collection_DB where t.Master.FormNum.Value == "1.0" select t;
+                var sm = from Reports t in Reports_Collection_DB where t.Master.FormNum.Value == "1.0" select t;
                 var obj = new ObservableCollectionWithItemPropertyChanged<Reports>(sm);
                 return obj;
             }
@@ -61,7 +61,7 @@ namespace Models.Collections
         {
             get
             {
-                var sm = from t in Reports_Collection_DB where t.Master.FormNum.Value == "2.0" select t;
+                var sm = from Reports t in Reports_Collection_DB where t.Master.FormNum.Value == "2.0" select t;
 
                 var obj = new ObservableCollectionWithItemPropertyChanged<Reports>(sm);
                 return obj;
