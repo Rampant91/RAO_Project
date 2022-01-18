@@ -2685,6 +2685,10 @@ namespace Models.Collections
         {
             get
             {
+                if (FormNum == "1.0") 
+                {
+                    return Rows10.ToList<IKey>();
+                }
                 if(FormNum=="1.1")
                 {
                     return Rows11.ToList<IKey>();
@@ -2722,6 +2726,10 @@ namespace Models.Collections
                     return Rows19.ToList<IKey>();
                 }
 
+                if (FormNum == "2.0")
+                {
+                    return Rows20.ToList<IKey>();
+                }
                 if (FormNum == "2.1")
                 {
                     return Rows21.ToList<IKey>();
