@@ -976,10 +976,7 @@ namespace Client_App.Controls.DataGrid
         {
             PageCount = "0";
             ItemsCount = "0";
-            if (Rows.Count > 0)
-                UpdateCells();
-            else
-                UpdateAllCells();
+            UpdateAllCells();
         }
 
         public void MakeHeader()

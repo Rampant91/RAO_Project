@@ -16,7 +16,7 @@
   <Panel x:Name="NumberPanel">
     <StackPanel Orientation="Vertical">
       <TextBlock Text="Какое кол-во строчек вы хотите добавить?"/>
-      <TextBox Text="{Binding #RowNumber.Number, Mode=TwoWay}"/>
+      <TextBox x:Name="MainTextBox" Text="{Binding #RowNumber.Number, Mode=TwoWay}"/>
       <StackPanel Orientation="Horizontal">
         <Button Content="Подтвердить" Click="OnButtonClick"/>
         </StackPanel>

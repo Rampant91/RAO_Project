@@ -72,6 +72,10 @@ namespace Client_App.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+
+            var item = this.Get<TextBox>("MainTextBox");
+            item.SelectAll();
+            item.Focus();
         }
 
         private void OnButtonClick(object sender, RoutedEventArgs e)
@@ -79,6 +83,7 @@ namespace Client_App.Views
             flag = true;
             this.Close();
         }
+
         #region INotifyPropertyChanged
         protected void OnPropertyChanged([CallerMemberName] string prop = "")
         {
