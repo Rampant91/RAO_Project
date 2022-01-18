@@ -71,8 +71,7 @@ namespace Client_App.Views
 
         private void InitializeComponent()
         {
-            AvaloniaXamlLoader.Load(this);
-
+            AvaloniaXamlLoader.Load(this); 
             var item = this.Get<TextBox>("MainTextBox");
             item.SelectAll();
             item.Focus();

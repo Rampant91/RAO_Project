@@ -65,21 +65,22 @@ namespace Models.Collections
             Init();
         }
 
-        public long Order{ 
-            get 
+        public long Order
+        {
+            get
             {
                 try
                 {
                     var frm = FormNum_DB.Replace(".", "");
-                    if(FormNum_DB.Split('.')[0]=="1")
+                    if (FormNum_DB.Split('.')[0] == "1")
                     {
                         try
                         {
                             var dt = DateTimeOffset.Parse(EndPeriod_DB);
                             string num = dt.Year.ToString();
-                            num += dt.Month<10?"0"+dt.Month.ToString():dt.Month.ToString();
+                            num += dt.Month < 10 ? "0" + dt.Month.ToString() : dt.Month.ToString();
                             num += dt.Day < 10 ? "0" + dt.Day.ToString() : dt.Day.ToString();
-                            num = num.Insert(0,"1");
+                            num = num.Insert(0, "1");
                             frm += (int)(1.0 / Convert.ToInt32(num) * 100000000000000000.0);
                         }
                         catch
@@ -90,7 +91,7 @@ namespace Models.Collections
                     }
                     else
                     {
-                        if (Year_DB != null&& Year_DB != 0)
+                        if (Year_DB != null && Year_DB != 0)
                         {
                             frm += (int)(1.0 / Year_DB * 10000000);
                         }
@@ -103,7 +104,7 @@ namespace Models.Collections
                 }
 
 
-            } 
+            }
         }
 
         #region OkpoRep
@@ -115,7 +116,7 @@ namespace Models.Collections
             get
             {
                 RamAccess<string> tmp = null;
-                if(Rows10[1].Okpo_DB=="")
+                if (Rows10[1].Okpo_DB == "")
                 {
                     tmp = Rows10[0].Okpo;
                     tmp.PropertyChanged -= OkpoRepValueChanged;
@@ -2686,7 +2687,11 @@ namespace Models.Collections
         {
             get
             {
-                if(FormNum=="1.1")
+                if (FormNum == "1.0")
+                {
+                    return Rows10;
+                }
+                if (FormNum == "1.1")
                 {
                     return Rows11;
                 }
@@ -2723,6 +2728,10 @@ namespace Models.Collections
                     return Rows19;
                 }
 
+                if (FormNum == "2.0")
+                {
+                    return Rows20;
+                }
                 if (FormNum == "2.1")
                 {
                     return Rows21;
@@ -2984,8 +2993,8 @@ namespace Models.Collections
             }
             else
             {
-                var props=typeof(Report).GetProperties();
-                foreach(var proper in props)
+                var props = typeof(Report).GetProperties();
+                foreach (var proper in props)
                 {
                     if (proper.Name == nameof(EndPeriod))
                     {

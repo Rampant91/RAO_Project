@@ -29,7 +29,7 @@
 		  <TextBlock Grid.Column="0" Grid.Row="1" Text="Выбранная строка:"/>
 		  <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding #RowNumberIn.Number1}"/>
 		  <TextBlock Grid.Column="0" Grid.Row="2" Text="Кол-во строк:"/>
-		  <TextBox Text="{Binding #RowNumberIn.Number2, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
+		  <TextBox x:Name ="MainTextBox" Text="{Binding #RowNumberIn.Number2, Mode=TwoWay}" Grid.Column="1" Grid.Row="2"/>
 		  <Button Grid.Column="0" Grid.Row="3" Content="Подтвердить" Click="OnButtonClick" Grid.ColumnSpan="2"/>
 	  </Grid>
   </Panel>
