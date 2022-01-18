@@ -34,6 +34,7 @@ namespace Models.Collections
 
         public ObservableCollectionWithItemPropertyChanged() : base()
         {
+
         }
 
         public void CleanIds()
