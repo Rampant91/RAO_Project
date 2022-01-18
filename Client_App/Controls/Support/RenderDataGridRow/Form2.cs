@@ -64,13 +64,16 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             //return cell;
             if (!alignment)
             {
-                var cell = new CustomCell(new TextBox()
+                var obj = new TextBox()
                 {
                     [!TextBox.TextProperty] = new Binding("Value"),
                     AcceptsReturn = true,
                     TextWrapping = TextWrapping.Wrap,
                     Background = new SolidColorBrush(new Color(0, 0, 0, 0))
-                }
+                };
+                obj.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+
+                var cell = new CustomCell(obj
                 , Binding, false)
                 {
                     Width = starWidth * Wdth1,
@@ -83,13 +86,18 @@ namespace Client_App.Controls.Support.RenderDataGridRow
             }
             else
             {
-                var cell = new CustomCell(new TextBox()
+                var obj = new TextBox()
                 {
                     [!TextBox.TextProperty] = new Binding("Value"),
                     HorizontalContentAlignment = HorizontalAlignment.Center,
                     VerticalContentAlignment = VerticalAlignment.Center,
+                    AcceptsReturn = true,
+                    TextWrapping = TextWrapping.Wrap,
                     Background = new SolidColorBrush(new Color(0, 0, 0, 0))
-                }
+                };
+
+                obj.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                var cell = new CustomCell(obj
                     , Binding, false)
                 {
                     Width = starWidth * Wdth1,

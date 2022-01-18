@@ -1595,13 +1595,16 @@ namespace Client_App.Controls.DataGrid
                                 var textbox = (TextBox)panel.Children.FirstOrDefault();
                                 if (textbox != null)
                                 {
-                                    if (textbox.Text.Contains("\n") || textbox.Text.Contains("\t") || textbox.Text.Contains("\r"))
+                                    if (textbox.Text != null)
                                     {
-                                        txt += "\"" + textbox.Text + "\"";
-                                    }
-                                    else
-                                    {
-                                        txt += textbox.Text;
+                                        if (textbox.Text.Contains("\n") || textbox.Text.Contains("\t") || textbox.Text.Contains("\r"))
+                                        {
+                                            txt += "\"" + textbox.Text + "\"";
+                                        }
+                                        else
+                                        {
+                                            txt += textbox.Text;
+                                        }
                                     }
                                     txt += "\t";
                                 }
