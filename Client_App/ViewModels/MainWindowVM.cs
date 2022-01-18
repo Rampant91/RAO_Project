@@ -646,10 +646,16 @@ namespace Client_App.ViewModels
                                                                 {
                                                                     if (it.CorrectionNumber.Value < elem.CorrectionNumber.Value)
                                                                     {
-                                                                        var str = "Вы пытаетесь загрузить форму с наименим номером корректировки - " +
+                                                                        var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
                                                                             it.CorrectionNumber.Value + ",\n" +
                                                                             "при текущем значении корректировки - " +
-                                                                            elem.CorrectionNumber.Value;
+                                                                            elem.CorrectionNumber.Value + ",\n" +
+                                                                            "в форме " + elem.FormNum.Value + ", " +
+                                                                            "с датой " + elem.StartPeriod.Value + "-" +
+                                                                            elem.EndPeriod.Value + " \n" +
+                                                                            first11.Master.RegNoRep.Value + " " +
+                                                                            first11.Master.ShortJurLicoRep.Value + " " +
+                                                                            first11.Master.OkpoRep.Value;
                                                                         var an = await ShowMessageT.Handle(new List<string>()
                                                                         {str,
                                                                         "OK"
@@ -667,6 +673,7 @@ namespace Client_App.ViewModels
                                                                         {
                                                                         str,
                                                                         "Заменить",
+                                                                        "Дополнить",
                                                                         "Сохранить оба",
                                                                         "Отменить" });
                                                                         if (an == "Сохранить оба")
@@ -678,6 +685,15 @@ namespace Client_App.ViewModels
                                                                             first11.Report_Collection.Remove(elem);
                                                                             first11.Report_Collection.Add(it);
                                                                         }
+                                                                        //if (an == "Дополнить") 
+                                                                        //{
+                                                                        //    first11.Report_Collection.Remove(elem);
+
+                                                                        //    it.Rows.AddRange<IKey>(0,elem.Rows.GetEnumerable());
+                                                                        //    it.Notes.AddRange<IKey>(0,elem.Notes);
+                                                                           
+                                                                        //    first11.Report_Collection.Add(it);
+                                                                        //}
                                                                     }
                                                                 }
                                                                 if (st_elem < st_it && st_it < en_elem || st_elem < en_it && en_it < en_elem)

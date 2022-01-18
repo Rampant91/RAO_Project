@@ -2689,7 +2689,7 @@ namespace Models.Collections
             {
                 if (FormNum == "1.0")
                 {
-                    return Rows10.ToList<IKey>();
+                    return Rows10;
                 }
                 if (FormNum == "1.1")
                 {
@@ -2730,7 +2730,7 @@ namespace Models.Collections
 
                 if (FormNum == "2.0")
                 {
-                    return Rows20.ToList<IKey>();
+                    return Rows20;
                 }
                 if (FormNum == "2.1")
                 {

@@ -238,6 +238,18 @@ namespace Models.Collections
         {
             this.AddRange(obj.Cast<T>());
         }
+        public void AddRange<T1>(int index, IEnumerable<T1> obj) where T1 : class, IKey
+        {
+            var count = index;
+            foreach (var item in obj)
+            {
+                item.PropertyChanged += ChildPropertyChanged;
+                Items.Insert(count,item as T);
+                count++;
+            }
+            Sorted = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
         public T1 Get<T1>(int index) where T1 : class, IKey
         {
             return this[index] as T1;
@@ -250,6 +262,10 @@ namespace Models.Collections
                 lst.Add(item as T1);
             }
             return lst;
+        }
+        public IEnumerable<IKey> GetEnumerable()
+        {
+            return this;
         }
         public IEnumerator<IKey> GetEnumerator()
         {
