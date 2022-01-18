@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
+using Models.Collections;
 
 namespace Client_App.Controls.DataGrid
 {
-    public class ItemsObserver : IObserver<AvaloniaPropertyChangedEventArgs<IEnumerable<INotifyPropertyChanged>>>
+    public class ItemsObserver : IObserver<AvaloniaPropertyChangedEventArgs<IEnumerable<IKey>>>
     {
         public ItemsObserver(PropertyChangedEventHandler handler)
         {
@@ -23,7 +24,7 @@ namespace Client_App.Controls.DataGrid
         {
         }
 
-        public void OnNext(AvaloniaPropertyChangedEventArgs<IEnumerable<INotifyPropertyChanged>> obj)
+        public void OnNext(AvaloniaPropertyChangedEventArgs<IEnumerable<IKey>> obj)
         {
             if (obj.NewValue.Value != null)
                 if (Handler != null)

@@ -46,7 +46,7 @@ namespace Client_App.Controls.DataGrid
     {
         #region DirectProperty AddReports, AddNote, AddRow
         public static readonly DirectProperty<DataGrid, ReactiveCommand<String, Unit>> CtrlACommandProperty =
-    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<String, Unit>>(
+            AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<String, Unit>>(
          nameof(CtrlACommand),
          o => o.CtrlACommand,
         (o, v) => o.CtrlACommand = v);
@@ -66,9 +66,9 @@ namespace Client_App.Controls.DataGrid
 
         #region DirectProperty Export
         public static readonly DirectProperty<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>> CtrlECommandProperty =
-    AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
-         nameof(CtrlECommand),
-         o => o.CtrlECommand,
+            AvaloniaProperty.RegisterDirect<DataGrid, ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit>>(
+            nameof(CtrlECommand),
+            o => o.CtrlECommand,
         (o, v) => o.CtrlECommand = v);
 
         private ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> _CtrlECommand = null;
@@ -163,52 +163,150 @@ namespace Client_App.Controls.DataGrid
 
         }
         #endregion
-        
-        public static readonly DirectProperty<DataGrid, IEnumerable<INotifyPropertyChanged>> ItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<INotifyPropertyChanged>>(
+
+        #region Items
+        public static readonly DirectProperty<DataGrid, IEnumerable<IKey>> ItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IKey>>(
                 nameof(Items),
                 o => o.Items,
                 (o, v) => o.Items = v, defaultBindingMode: BindingMode.TwoWay);
 
+        private IEnumerable<IKey> _items =
+            new ObservableCollectionWithItemPropertyChanged<IKey>();
+
+        public IEnumerable<IKey> Items
+        {
+            get => _items;
+            set
+            {
+                if (value != null)
+                {
+                    SetAndRaise(ItemsProperty, ref _items, value);
+                    UpdateCells();
+                }
+            }
+        }
+
+        private void ItemsChanged(object sender, PropertyChangedEventArgs args)
+        {
+            PageCount = "0";
+            ItemsCount = "0";
+            if (Items.Count() > 0)
+            {
+                UpdateCells();
+            }
+            else
+            {
+                UpdateAllCells();
+            }
+        }
+        #endregion
+
+        #region ItemsCount
+        public static readonly DirectProperty<DataGrid, string> ItemsCountProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid, string>(
+                nameof(ItemsCount),
+                o => o.ItemsCount,
+                (o, v) => o.ItemsCount = v);
+
+        private string _ItemsCount = "0";
+        public string ItemsCount
+        {
+            get => Items.Count().ToString();
+            set
+            {
+                SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items.Count().ToString());
+            }
+        }
+        #endregion
+
+        #region SelectedItems
         public static readonly DirectProperty<DataGrid, IEnumerable<IKey>> SelectedItemsProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, IEnumerable<IKey>>(
                 nameof(SelectedItems),
                 o => o.SelectedItems,
                 (o, v) => o.SelectedItems = v);
+        private IEnumerable<IKey> _selecteditems =
+             new ObservableCollectionWithItemPropertyChanged<IKey>();
+        public IEnumerable<IKey> SelectedItems
+        {
+            get => _selecteditems;
+            set
+            {
+                if (value != null) SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
+            }
+        }
+        #endregion
 
+        #region SelectedCells
         public static readonly DirectProperty<DataGrid, IList<Control>> SelectedCellsProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, IList<Control>>(
                 nameof(SelectedCells),
                 o => o.SelectedCells,
                 (o, v) => o.SelectedCells = v);
 
+        private IList<Control> _selectedCells =
+                new List<Control>();
+        public IList<Control> SelectedCells
+        {
+            get => _selectedCells;
+            set
+            {
+                if (value != null) SetAndRaise(SelectedCellsProperty, ref _selectedCells, value);
+            }
+        }
+        #endregion
+
+        #region Type
         public static readonly DirectProperty<DataGrid, string> TypeProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, string>(
                 nameof(Type),
                 o => o.Type,
                 (o, v) => o.Type = v);
+        private string _type = "";
+        public string Type
+        {
+            get => _type;
+            set
+            {
+                SetAndRaise(TypeProperty, ref _type, value);
+                MakeHeader();
+            }
+        }
+        #endregion
 
+        #region ChooseMode
         public static readonly StyledProperty<ChooseMode> ChooseModeProperty =
             AvaloniaProperty.Register<DataGrid, ChooseMode>(nameof(ChooseMode));
 
+        public ChooseMode ChooseMode
+        {
+            get => GetValue(ChooseModeProperty);
+            set => SetValue(ChooseModeProperty, value);
+        }
+        #endregion
+
+        #region MultilineMode
         public static readonly StyledProperty<MultilineMode> MultilineModeProperty =
             AvaloniaProperty.Register<DataGrid, MultilineMode>(nameof(MultilineMode));
+        public MultilineMode MultilineMode
+        {
+            get => GetValue(MultilineModeProperty);
+            set => SetValue(MultilineModeProperty, value);
+        }
+        #endregion
 
+        #region ChooseColor
         public static readonly StyledProperty<Brush> ChooseColorProperty =
             AvaloniaProperty.Register<DataGrid, Brush>(nameof(ChooseColor));
+        public Brush ChooseColor
+        {
+            get => GetValue(ChooseColorProperty);
+            set => SetValue(ChooseColorProperty, value);
+        }
+        #endregion
 
-        private IList<Control> _selectedCells =
-            new List<Control>();
-
-
-        private IEnumerable<INotifyPropertyChanged> _items =
-            new ObservableCollectionWithItemPropertyChanged<IKey>();
-
-        private IEnumerable<IKey> _selecteditems =
-            new ObservableCollectionWithItemPropertyChanged<IKey>();
-
-        private string _type = "";
-
+        #region Pagination
         public static readonly DirectProperty<DataGrid, bool> PaginationProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, bool>(
                 nameof(Pagination),
@@ -225,6 +323,9 @@ namespace Client_App.Controls.DataGrid
                 UpdateCells();
             }
         }
+        #endregion
+
+        #region PageSize
         public static readonly DirectProperty<DataGrid, int> PageSizeProperty =
              AvaloniaProperty.RegisterDirect<DataGrid, int>(
                 nameof(PageSize),
@@ -241,21 +342,9 @@ namespace Client_App.Controls.DataGrid
                 UpdateCells();
             }
         }
-        public static readonly DirectProperty<DataGrid, string> ItemsCountProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid, string>(
-                nameof(ItemsCount),
-                o => o.ItemsCount,
-                (o, v) => o.ItemsCount = v);
+        #endregion
 
-        private string _ItemsCount = "0";
-        public string ItemsCount
-        {
-            get => Items.Count().ToString();
-            set
-            {
-                SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items.Count().ToString());
-            }
-        }
+        #region PageCount
         public static readonly DirectProperty<DataGrid, string> PageCountProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, string>(
                 nameof(PageCount),
@@ -271,6 +360,9 @@ namespace Client_App.Controls.DataGrid
                 SetAndRaise(PageCountProperty, ref _PageCount, (Items.Count() / PageSize + 1).ToString());
             }
         }
+        #endregion
+
+        #region NowPage
         public static readonly DirectProperty<DataGrid, string> NowPageProperty =
             AvaloniaProperty.RegisterDirect<DataGrid, string>(
                 nameof(NowPage),
@@ -295,7 +387,7 @@ namespace Client_App.Controls.DataGrid
                             if (val <= maxpage && val >= 1)
                             {
                                 SetAndRaise(NowPageProperty, ref _nowPage, value);
-                                UpdateAllCells();
+                                UpdateCells();
                             }
                             else
                             {
@@ -304,7 +396,7 @@ namespace Client_App.Controls.DataGrid
                                     if (_nowPage != maxpage.ToString())
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, maxpage.ToString());
-                                        UpdateAllCells();
+                                        UpdateCells();
                                     }
                                 }
                                 if (val < 1)
@@ -312,7 +404,7 @@ namespace Client_App.Controls.DataGrid
                                     if (_nowPage != "1")
                                     {
                                         SetAndRaise(NowPageProperty, ref _nowPage, "1");
-                                        UpdateAllCells();
+                                        UpdateCells();
                                     }
                                 }
                             }
@@ -326,29 +418,19 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
-        private IEnumerable<INotifyPropertyChanged> GetPageItems()
+        public void NowPageDown(object sender, RoutedEventArgs args)
         {
-            if (Pagination)
-            {
-                var items = _items.ToList();
-                var val = Convert.ToInt32(_nowPage);
-                int first_index = (val-1) * PageSize;
-                int last_index = Math.Min(items.Count, first_index + PageSize);
-
-                if (last_index <= first_index)
-                {
-                    items.Clear();
-                    return items;
-                }
-                var pageItems = items.GetRange(first_index, last_index - first_index);
-
-                return pageItems;
-            }
-            else
-            {
-                return _items;
-            }
+            NowPage = (Convert.ToInt32(NowPage) - 1).ToString();
         }
+        public void NowPageUp(object sender, RoutedEventArgs args)
+        {
+            NowPage = (Convert.ToInt32(NowPage) + 1).ToString();
+        }
+        #endregion
+
+        private RowCollection Columns { get; set; }
+        private RowCollection Rows { get; set; }
+        private Grid MainGrid { get; set; }
 
         public DataGrid()
         {
@@ -358,90 +440,7 @@ namespace Client_App.Controls.DataGrid
             this.DoubleTapped += DataGrid_DoubleTapped;
         }
 
-        private void DataGrid_DoubleTapped(object? sender, RoutedEventArgs e)
-        {
-            if (DoubleClickCommand != null)
-            {
-                DownFlag = false;
-                DoubleClickCommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
-            }
-        }
-
-
-        public IEnumerable<INotifyPropertyChanged> Items
-        {
-            get => _items;
-            set
-            {
-                if (value != null)
-                {
-                    SetAndRaise(ItemsProperty, ref _items, value);
-                    if (Name == "Form1AllDataGrid_" || Name == "Form2AllDataGrid_"|| Name == "Form20AllDataGrid_"||Name == "Form10AllDataGrid_")
-                    {
-                        UpdateCells();
-                    }
-                    else
-                    {
-                        ItemsChanged(null, null);
-                    }
-                }
-            }
-        }
-
-        public IEnumerable<IKey> SelectedItems
-        {
-            get => _selecteditems;
-            set
-            {
-                if (value != null) SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
-            }
-        }
-        public IList<Control> SelectedCells
-        {
-            get => _selectedCells;
-            set
-            {
-                if (value != null) SetAndRaise(SelectedCellsProperty, ref _selectedCells, value);
-            }
-        }
-
-        public string Type
-        {
-            get => _type;
-            set
-            {
-                SetAndRaise(TypeProperty, ref _type, value);
-                MakeHeader();
-            }
-        }
-
-        public ChooseMode ChooseMode
-        {
-            get => GetValue(ChooseModeProperty);
-            set => SetValue(ChooseModeProperty, value);
-        }
-
-        public MultilineMode MultilineMode
-        {
-            get => GetValue(MultilineModeProperty);
-            set => SetValue(MultilineModeProperty, value);
-        }
-
-        public Brush ChooseColor
-        {
-            get => GetValue(ChooseColorProperty);
-            set => SetValue(ChooseColorProperty, value);
-        }
-
-
-        private RowCollection Columns { get; set; }
-        private RowCollection Rows { get; set; }
-        private Grid MainGrid { get; set; }
-
-        public bool DownFlag { get; set; }
-        public int[] FirstPressedItem { get; set; } = new int[2];
-        public int[] LastPressedItem { get; set; } = new int[2];
-
+        #region SetSelectedControls
         private void SetSelectedControls()
         {
             if (ChooseMode == ChooseMode.Cell)
@@ -591,7 +590,9 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
+        #endregion
 
+        #region SetSelectedItems
         public void SetSelectedItems()
         {
             var lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
@@ -652,6 +653,7 @@ namespace Client_App.Controls.DataGrid
 
             SelectedItems = lst;
         }
+        #endregion
 
         private int[] FindCell(PointerPoint Mainmouse)
         {
@@ -704,6 +706,11 @@ namespace Client_App.Controls.DataGrid
 
             return ret;
         }
+
+        #region DataGridPoiter Down/Moved/Up/DoubleTapped
+        public bool DownFlag { get; set; }
+        public int[] FirstPressedItem { get; set; } = new int[2];
+        public int[] LastPressedItem { get; set; } = new int[2];
 
         public void DataGridPointerDown(object sender, PointerPressedEventArgs args)
         {
@@ -899,6 +906,17 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
+        private void DataGrid_DoubleTapped(object? sender, RoutedEventArgs e)
+        {
+            if (DoubleClickCommand != null)
+            {
+                DownFlag = false;
+                DoubleClickCommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
+            }
+        }
+        #endregion
+
+        #region UpdateCells
         private void UpdateAllCells()
         {
             NameScope scp = new();
@@ -972,13 +990,6 @@ namespace Client_App.Controls.DataGrid
             }
         }
 
-        private void ItemsChanged(object sender, PropertyChangedEventArgs args)
-        {
-            PageCount = "0";
-            ItemsCount = "0";
-            UpdateAllCells();
-        }
-
         public void MakeHeader()
         {
             Columns.Clear();
@@ -993,19 +1004,11 @@ namespace Client_App.Controls.DataGrid
                 MainGrid.RowDefinitions[0].Height = GridLength.Parse((lst.First().Children.Count * 30).ToString());
             }
         }
+        #endregion
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-            Init();
-
-            this.AddHandler(KeyDownEvent, KeyDownEventHandler, handledEventsToo: true);
-            this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
-        }
-
+        #region KeyDown/Up
         bool ctrlFlag { get; set; } = false;
         bool shiftFlag { get; set; } = false;
-
         private void ChangeSelectedCellsByKeys(Key PressedKey)
         {
             if(shiftFlag)
@@ -1264,163 +1267,9 @@ namespace Client_App.Controls.DataGrid
                 shiftFlag = false;
             }
         }
+        #endregion
 
-        private void Init()
-        {
-            Border brd = new()
-            {
-                BorderThickness = Thickness.Parse("1"),
-                BorderBrush = new SolidColorBrush(Color.Parse("Gray"))
-            };
-
-            Panel p = new()
-            {
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-            brd.Child = p;
-
-            Grid grde = new();
-            RowDefinition rde = new()
-            {
-                Height = GridLength.Parse("40")
-            };
-            grde.RowDefinitions.Add(new RowDefinition());
-            grde.RowDefinitions.Add(rde);
-            p.Children.Add(grde);
-
-            Panel pan1 = new Panel();
-            pan1.HorizontalAlignment = HorizontalAlignment.Stretch;
-            pan1.VerticalAlignment = VerticalAlignment.Stretch;
-            pan1.SetValue(Grid.RowProperty, 0);
-            grde.Children.Add(pan1);
-
-            ScrollViewer vw = new();
-            vw.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
-            vw.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            vw.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
-            pan1.Children.Add(vw);
-
-            Grid grd = new();
-            RowDefinition rd = new()
-            {
-                Height = GridLength.Parse("0")
-            };
-            grd.RowDefinitions.Add(rd);
-            grd.RowDefinitions.Add(new RowDefinition());
-            MainGrid = grd;
-            Panel pan3 = new Panel();
-            pan3.HorizontalAlignment = HorizontalAlignment.Stretch;
-            pan3.VerticalAlignment = VerticalAlignment.Stretch;
-            vw.Content = pan3;
-            pan3.Children.Add(grd);
-
-            Panel pnl = new();
-            pnl.SetValue(Grid.RowProperty, 0);
-            pnl.HorizontalAlignment = HorizontalAlignment.Stretch;
-            grd.Children.Add(pnl);
-
-            StackPanel stckC = new()
-            {
-                Margin = Thickness.Parse("0,0,0,0"),
-                Spacing = 0,
-                Orientation = Orientation.Horizontal,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch
-            };
-            pnl.Children.Add(stckC);
-            Columns = new RowCollection(stckC);
-
-            Panel pan = new Panel();
-            pan.HorizontalAlignment = HorizontalAlignment.Stretch;
-            pan.VerticalAlignment = VerticalAlignment.Stretch;
-            pan.SetValue(Grid.RowProperty, 1);
-            grd.Children.Add(pan);
-
-            ScrollViewer vw2 = new();
-            vw2.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
-            vw2.Offset= new Vector(-100, 0);
-            vw2.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            vw2.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            pan.Children.Add(vw2);
-
-            Panel pn = new Panel();
-            pn.HorizontalAlignment = HorizontalAlignment.Stretch;
-            pn.VerticalAlignment = VerticalAlignment.Stretch;
-            //pn.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
-            //pn.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
-            //pn.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
-            vw2.Content = pn;
-            StackPanel stck = new()
-            {
-                Margin = Thickness.Parse("0,-1,0,0"),
-                Spacing = 0,
-                Orientation = Orientation.Vertical,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch
-            };
-            stck.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
-            stck.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
-            stck.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
-            pn.Children.Add(stck);
-            Rows = new RowCollection(stck);
-
-            Panel pnle = new Panel();
-            pnle.HorizontalAlignment = HorizontalAlignment.Stretch;
-            pnle.VerticalAlignment = VerticalAlignment.Stretch;
-            pnle.SetValue(Grid.RowProperty, 1);
-            pnle.Background = new SolidColorBrush(Color.Parse("LightGray"));
-            grde.Children.Add(pnle);
-
-            StackPanel s = new StackPanel()
-            {
-                Margin = Thickness.Parse("5,0,0,0"),
-                Orientation = Orientation.Horizontal,
-                Spacing = 5
-            };
-            pnle.Children.Add(s);
-
-            Button btnDown = new Button { 
-                Content="<",
-                Width=30,
-                Height=30
-            };
-            btnDown.Click += NowPageDown;
-            s.Children.Add(btnDown);
-
-            TextBox box = new TextBox()
-            {
-                [!TextBox.TextProperty] = this[!DataGrid.NowPageProperty],
-                TextAlignment=TextAlignment.Center
-            };
-            box.Width = 30;
-            box.Height = 30;
-            s.Children.Add(box);
-
-            Button btnUp = new Button
-            {
-                Content = ">",
-                Width = 30,
-                Height = 30
-            };
-            btnUp.Click += NowPageUp;
-            s.Children.Add(btnUp);
-            s.Children.Add(new TextBlock() {Text="Кол-во страниц:"});
-            s.Children.Add(new TextBlock() { [!TextBox.TextProperty]= this[!DataGrid.PageCountProperty] });
-
-            s.Children.Add(new TextBlock() { Text = "Кол-во строчек:" });
-            s.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid.ItemsCountProperty] });
-
-            Content = brd;
-        }
-        public void NowPageDown(object sender,RoutedEventArgs args)
-        {
-            NowPage = (Convert.ToInt32(NowPage) - 1).ToString();
-        }
-        public void NowPageUp(object sender, RoutedEventArgs args)
-        {
-            NowPage = (Convert.ToInt32(NowPage) + 1).ToString();
-        }
-
+        #region Copy/Paste
         private async Task _PasteRows(IEnumerable<Control> param)
         {
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
@@ -1614,5 +1463,166 @@ namespace Client_App.Controls.DataGrid
                 await clip.SetTextAsync(txt);
             }
         }
+        #endregion
+
+        #region Init
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+            Init();
+
+            this.AddHandler(KeyDownEvent, KeyDownEventHandler, handledEventsToo: true);
+            this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
+        }
+
+        private void Init()
+        {
+            Border brd = new()
+            {
+                BorderThickness = Thickness.Parse("1"),
+                BorderBrush = new SolidColorBrush(Color.Parse("Gray"))
+            };
+
+            Panel p = new()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+            brd.Child = p;
+
+            Grid grde = new();
+            RowDefinition rde = new()
+            {
+                Height = GridLength.Parse("40")
+            };
+            grde.RowDefinitions.Add(new RowDefinition());
+            grde.RowDefinitions.Add(rde);
+            p.Children.Add(grde);
+
+            Panel pan1 = new Panel();
+            pan1.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pan1.VerticalAlignment = VerticalAlignment.Stretch;
+            pan1.SetValue(Grid.RowProperty, 0);
+            grde.Children.Add(pan1);
+
+            ScrollViewer vw = new();
+            vw.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
+            vw.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            vw.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+            pan1.Children.Add(vw);
+
+            Grid grd = new();
+            RowDefinition rd = new()
+            {
+                Height = GridLength.Parse("0")
+            };
+            grd.RowDefinitions.Add(rd);
+            grd.RowDefinitions.Add(new RowDefinition());
+            MainGrid = grd;
+            Panel pan3 = new Panel();
+            pan3.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pan3.VerticalAlignment = VerticalAlignment.Stretch;
+            vw.Content = pan3;
+            pan3.Children.Add(grd);
+
+            Panel pnl = new();
+            pnl.SetValue(Grid.RowProperty, 0);
+            pnl.HorizontalAlignment = HorizontalAlignment.Stretch;
+            grd.Children.Add(pnl);
+
+            StackPanel stckC = new()
+            {
+                Margin = Thickness.Parse("0,0,0,0"),
+                Spacing = 0,
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            pnl.Children.Add(stckC);
+            Columns = new RowCollection(stckC);
+
+            Panel pan = new Panel();
+            pan.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pan.VerticalAlignment = VerticalAlignment.Stretch;
+            pan.SetValue(Grid.RowProperty, 1);
+            grd.Children.Add(pan);
+
+            ScrollViewer vw2 = new();
+            vw2.Background = new SolidColorBrush(Color.Parse("WhiteSmoke"));
+            vw2.Offset = new Vector(-100, 0);
+            vw2.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            vw2.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            pan.Children.Add(vw2);
+
+            Panel pn = new Panel();
+            pn.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pn.VerticalAlignment = VerticalAlignment.Stretch;
+            //pn.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
+            //pn.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
+            //pn.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
+            vw2.Content = pn;
+            StackPanel stck = new()
+            {
+                Margin = Thickness.Parse("0,-1,0,0"),
+                Spacing = 0,
+                Orientation = Orientation.Vertical,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            stck.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
+            stck.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
+            stck.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
+            pn.Children.Add(stck);
+            Rows = new RowCollection(stck);
+
+            Panel pnle = new Panel();
+            pnle.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pnle.VerticalAlignment = VerticalAlignment.Stretch;
+            pnle.SetValue(Grid.RowProperty, 1);
+            pnle.Background = new SolidColorBrush(Color.Parse("LightGray"));
+            grde.Children.Add(pnle);
+
+            StackPanel s = new StackPanel()
+            {
+                Margin = Thickness.Parse("5,0,0,0"),
+                Orientation = Orientation.Horizontal,
+                Spacing = 5
+            };
+            pnle.Children.Add(s);
+
+            Button btnDown = new Button
+            {
+                Content = "<",
+                Width = 30,
+                Height = 30
+            };
+            btnDown.Click += NowPageDown;
+            s.Children.Add(btnDown);
+
+            TextBox box = new TextBox()
+            {
+                [!TextBox.TextProperty] = this[!DataGrid.NowPageProperty],
+                TextAlignment = TextAlignment.Center
+            };
+            box.Width = 30;
+            box.Height = 30;
+            s.Children.Add(box);
+
+            Button btnUp = new Button
+            {
+                Content = ">",
+                Width = 30,
+                Height = 30
+            };
+            btnUp.Click += NowPageUp;
+            s.Children.Add(btnUp);
+            s.Children.Add(new TextBlock() { Text = "Кол-во страниц:" });
+            s.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid.PageCountProperty] });
+
+            s.Children.Add(new TextBlock() { Text = "Кол-во строчек:" });
+            s.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid.ItemsCountProperty] });
+
+            Content = brd;
+        }
+        #endregion
     }
 }
