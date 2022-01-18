@@ -82,7 +82,7 @@ namespace Models.Collections
         {
             Id = 0;
             Master.CleanIds();
-            foreach (var item in Report_Collection)
+            foreach (Report item in Report_Collection)
             {
                 item.CleanIds();
             }

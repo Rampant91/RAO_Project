@@ -105,7 +105,7 @@ namespace Client_App.ViewModels
 
             foreach (var item in dbm.DBObservableDbSet)
             {
-                foreach (var it in item.Reports_Collection)
+                foreach (Reports it in item.Reports_Collection)
                 {
                     if (it.Master_DB.FormNum_DB != "")
                     {
@@ -135,11 +135,11 @@ namespace Client_App.ViewModels
 
             Local_Reports = dbm.DBObservableDbSet.Local.First();
 
-            foreach (var item in Local_Reports.Reports_Collection)
+            foreach (Reports item in Local_Reports.Reports_Collection)
             {
-                foreach (var it in item.Report_Collection)
+                foreach (Report it in item.Report_Collection)
                 {
-                    foreach (var _i in it.Notes)
+                    foreach (Note _i in it.Notes)
                     {
                         if (_i.Order == 0)
                         {
@@ -322,7 +322,7 @@ namespace Client_App.ViewModels
                                            "_" + dt.Second;
                             var rep = (Report)obj;
                             rep.ExportDate.Value = dt.Day + "." + dt.Month + "." + dt.Year;
-                            var findReports = from t in Local_Reports.Reports_Collection
+                            var findReports = from Reports t in Local_Reports.Reports_Collection
                                               where t.Report_Collection.Contains(rep)
                                               select t;
                             var rt = findReports.FirstOrDefault();
@@ -532,13 +532,13 @@ namespace Client_App.ViewModels
 
                                         foreach (var item in db.ReportsCollectionDbSet)
                                         {
-                                            var tb11 = from t in Local_Reports.Reports_Collection10
+                                            var tb11 = from Reports t in Local_Reports.Reports_Collection10
                                                        where (item.Master.Rows10[0].Okpo_DB != "") &&
                                                        (t.Master.Rows10[0].Okpo_DB != "") &&
                                                        (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
                                                        (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB)
                                                        select t;
-                                            var tb21 = from t in Local_Reports.Reports_Collection20
+                                            var tb21 = from Reports t in Local_Reports.Reports_Collection20
                                                        where (item.Master.Rows20[0].Okpo_DB != "") &&
                                                        (t.Master.Rows20[0].Okpo_DB != "") &&
                                                        (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
@@ -599,16 +599,16 @@ namespace Client_App.ViewModels
                                             }
                                             if (first11 != null)
                                             {
-                                                foreach (var it in item.Report_Collection)
+                                                foreach (Report it in item.Report_Collection)
                                                 {
-                                                    foreach (var note in it.Notes)
+                                                    foreach (Note note in it.Notes)
                                                     {
                                                         if (note.Order == 0)
                                                         {
                                                             note.Order = GetNumberInOrder(it.Notes);
                                                         }
                                                     }
-                                                    var lst = first11.Report_Collection.ToList();
+                                                    var lst = first11.Report_Collection.ToList<Report>();
                                                     if (lst.Count != 0)
                                                     {
                                                         foreach (var elem in lst)
@@ -714,9 +714,9 @@ namespace Client_App.ViewModels
                                             {
                                                 if (first21 != null)
                                                 {
-                                                    foreach (var it in item.Report_Collection)
+                                                    foreach (Report it in item.Report_Collection)
                                                     {
-                                                        foreach (var note in it.Notes)
+                                                        foreach (Note note in it.Notes)
                                                         {
                                                             if (note.Order == 0)
                                                             {
@@ -724,7 +724,7 @@ namespace Client_App.ViewModels
                                                             }
                                                         }
 
-                                                        var lst = first21.Report_Collection.ToList();
+                                                        var lst = first21.Report_Collection.ToList<Report>();
                                                         if (lst.Count != 0)
                                                         {
                                                             foreach (var elem in lst)
@@ -764,9 +764,9 @@ namespace Client_App.ViewModels
                                                 }
                                                 else
                                                 {
-                                                    foreach (var form in item.Report_Collection)
+                                                    foreach (Report form in item.Report_Collection)
                                                     {
-                                                        foreach (var note in form.Notes)
+                                                        foreach (Note note in form.Notes)
                                                         {
                                                             if (note.Order == 0)
                                                             {
@@ -805,7 +805,7 @@ namespace Client_App.ViewModels
 
                         var rep = (Report)obj;
 
-                        var tre = (from i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
+                        var tre = (from Reports i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
 
                         ChangeOrCreateVM frm = new(rep.FormNum.Value, rep,tre);
                         await ShowDialog.Handle(frm);
@@ -885,7 +885,7 @@ namespace Client_App.ViewModels
             foreach (Report item in forms)
             {
 
-                var findReports = from t in Local_Reports.Reports_Collection
+                var findReports = from Reports t in Local_Reports.Reports_Collection
                                   where t.Report_Collection.Contains(item)
                                   select t;
                 var reps = findReports.FirstOrDefault();
@@ -933,13 +933,13 @@ namespace Client_App.ViewModels
             foreach (Report item in forms)
             {
 
-                var findReports = from t in Local_Reports.Reports_Collection
+                var findReports = from Reports t in Local_Reports.Reports_Collection
                                   where t.Report_Collection.Contains(item)
                                   select t;
                 var reps = findReports.FirstOrDefault();
                 if (reps != null)
                 {
-                    List<IKey> lst = item[param].OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
+                    List<IKey> lst = item[param].ToList<IKey>().OrderBy(x => ((Form)x).NumberInOrder_DB).ToList();
 
                     if (lst.Count > 0)
                     {
@@ -1071,7 +1071,7 @@ namespace Client_App.ViewModels
 
         private void _Excel_Print_Titul_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = from t in Local_Reports.Reports_Collection
+            var findReports = from Reports t in Local_Reports.Reports_Collection
                               where t.Report_Collection.Contains(form)
                               select t;
             var reps = findReports.FirstOrDefault();
@@ -1170,7 +1170,7 @@ namespace Client_App.ViewModels
         }
         private void _Excel_Print_SubMain_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = from t in Local_Reports.Reports_Collection
+            var findReports = from Reports t in Local_Reports.Reports_Collection
                               where t.Report_Collection.Contains(form)
                               select t;
             var reps = findReports.FirstOrDefault();

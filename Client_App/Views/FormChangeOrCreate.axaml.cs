@@ -12,7 +12,9 @@ using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Collections;
 using System.Threading;
+using Models.Abstracts;
 
 namespace Client_App.Views
 {
@@ -71,12 +73,13 @@ namespace Client_App.Views
                         var lst=tmp.Storage[tmp.FormType];
 
                         //tmp.Storage.Rows11.GetEnumerator();
-                        foreach(var item in lst)
+                        foreach(Form item in lst)
                         {
                             if (item.Id == 0)
                             {
                                 if (tmp.FormType == "1.1")
                                 {
+                                    
                                     tmp.Storage.Rows11.Remove((Form11)item);
                                 }
                                 if (tmp.FormType == "1.2")
@@ -162,7 +165,7 @@ namespace Client_App.Views
                                 }
                             }
                         }
-                        var lstnote = tmp.Storage.Notes.ToList();
+                        var lstnote = tmp.Storage.Notes.ToList<Note>();
                         foreach (var item in lstnote)
                         {
                             if (item.Id == 0)
