@@ -85,7 +85,7 @@ namespace Models.Collections
                         {
                             frm += "000000000";
                         }
-                        return Convert.ToInt32(frm);
+                        return Convert.ToInt64(frm);
                     }
                     else
                     {
