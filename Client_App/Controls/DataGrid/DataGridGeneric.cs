@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using System.Collections.Generic;
 using System.Collections;
 using System.ComponentModel;
@@ -80,7 +80,7 @@ namespace Client_App.Controls.DataGrid
         private string _ItemsCount = "0";
         public string ItemsCount
         {
-            get => Items.Count.ToString();
+            get => Items!=null?Items.Count.ToString():"0";
             set
             {
             }
@@ -223,7 +223,7 @@ namespace Client_App.Controls.DataGrid
         private string _PageCount = "0";
         public string PageCount
         {
-            get => (Items.Count / PageSize + 1).ToString();
+            get => (Items!=null?Items.Count / PageSize + 1:0).ToString();
             set
             {
                 SetAndRaise(PageCountProperty, ref _PageCount, (Items.Count / PageSize + 1).ToString());
@@ -248,7 +248,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     var val = Convert.ToInt32(value);
 
-                    if (val != null)
+                    if (val != null&&Items!=null)
                     {
                         int maxpage = (Items.Count / PageSize) + 1;
                         if (val.ToString() != _nowPage)
@@ -307,15 +307,11 @@ namespace Client_App.Controls.DataGrid
         }
         private List<StackPanel> Rows { get; set; }
 
+        private StackPanel HeaderStackPanel { get; set; }
+        private StackPanel CenterStackPanel { get; set; }
         public DataGrid()
         {
-            InitializeComponent();
 
-            MakeAll();
-
-            this.DoubleTapped += DataGrid_DoubleTapped;
-            this.AddHandler(KeyDownEvent, KeyDownEventHandler, handledEventsToo: true);
-            this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
         }
 
         #region SetSelectedControls
@@ -1338,52 +1334,125 @@ namespace Client_App.Controls.DataGrid
         #endregion
 
         #region Init
-        private void InitializeComponent()
+
+        public void Init()
         {
-            AvaloniaXamlLoader.Load(this);
+            MakeAll();
+            MakeHeaderRows();
+            MakeCenterRows();
+
+            //this.DoubleTapped += DataGrid_DoubleTapped;
+            //this.AddHandler(KeyDownEvent, KeyDownEventHandler, handledEventsToo: true);
+            //this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
+        }
+        private void MakeHeaderRows()
+        {
+            var Columns = this.Columns;
+        }
+        private void MakeCenterRows()
+        {
+            var Columns = this.Columns;
         }
 
-        private void Init()
+        private void MakeAll()
         {
-            #region Main_<MainStackPanel>
-            Border MainBorder = new()
-            {
-                BorderThickness = Thickness.Parse("1"),
-                BorderBrush = new SolidColorBrush(Color.Parse("Gray"))
-            };
 
+            #region Main_<MainStackPanel>
             Panel MainPanel = new()
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
-            MainBorder.Child = MainPanel;
 
             StackPanel MainStackPanel = new StackPanel();
             MainStackPanel.Orientation = Orientation.Vertical;
-            #endregion
             MainPanel.Children.Add(MainStackPanel);
+            #endregion
 
             #region Header
-            Panel HeaderPanel = new();
-            MainStackPanel.Children.Add(HeaderPanel);
+            Border HeaderBorder = new()
+            {
+                BorderThickness = Thickness.Parse("1"),
+                BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
+                CornerRadius = CornerRadius.Parse("2,2,2,2")
+            };
+            MainStackPanel.Children.Add(HeaderBorder);
 
-            StackPanel HeaderStackPanel = new();
+            Panel HeaderPanel = new();
+            HeaderPanel.Background = new SolidColorBrush(Color.FromArgb(150,180, 154, 255));
+            HeaderPanel.Height = 50;
+            HeaderBorder.Child = HeaderPanel;
+
+            HeaderStackPanel = new();
             HeaderStackPanel.Orientation = Orientation.Horizontal;
             HeaderPanel.Children.Add(HeaderStackPanel);
             #endregion
 
             #region Center
-            Panel CenterPanel = new();
-            MainStackPanel.Children.Add(HeaderPanel);
+            Border CenterBorder = new()
+            {
+                Margin=Thickness.Parse("0,5,0,0"),
+                BorderThickness = Thickness.Parse("1"),
+                BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
+                CornerRadius = CornerRadius.Parse("2,2,2,2")
+            };
+            MainStackPanel.Children.Add(CenterBorder);
 
-            StackPanel CenterStackPanel = new();
-            HeaderStackPanel.Orientation = Orientation.Vertical;
-            HeaderPanel.Children.Add(HeaderStackPanel);
+            Panel CenterPanel = new()
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+
+            CenterPanel.MinHeight = 100;
+            CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
+            CenterBorder.Child=CenterPanel;
+
+            CenterStackPanel = new();
+            CenterStackPanel.Orientation = Orientation.Vertical;
+            CenterPanel.Children.Add(CenterStackPanel);
+            #endregion
+
+            #region MiddleFooter
+            Border MiddleFooterBorder = new()
+            {
+                Margin = Thickness.Parse("0,5,0,0"),
+                BorderThickness = Thickness.Parse("1"),
+                BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
+                CornerRadius = CornerRadius.Parse("2,2,2,2")
+            };
+            MainStackPanel.Children.Add(MiddleFooterBorder);
+
+            StackPanel MiddleFooterStackPanel = new();
+            MiddleFooterStackPanel.Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255));
+            MiddleFooterStackPanel.Orientation = Orientation.Vertical;
+            MiddleFooterBorder.Child = MiddleFooterStackPanel;
+
+            StackPanel MiddleFooterStackPanel1 = new();
+            MiddleFooterStackPanel1.Orientation = Orientation.Horizontal;
+            MiddleFooterStackPanel1.Children.Add(new TextBlock() { Text = "–ö–æ–ª-–≤–æ —Å—Ç—Ä–∞–Ω–∏—Ü:",Margin=Thickness.Parse("5,0,0,0") });
+            MiddleFooterStackPanel1.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.PageCountProperty], Margin = Thickness.Parse("5,0,0,0") });
+            MiddleFooterStackPanel.Children.Add(MiddleFooterStackPanel1);
+
+            StackPanel MiddleFooterStackPanel2 = new();
+            MiddleFooterStackPanel2.Orientation = Orientation.Horizontal;
+            MiddleFooterStackPanel2.Children.Add(new TextBlock() { Text = "–ö–æ–ª-–≤–æ —Å—Ç—Ä–æ—á–µ–∫:", Margin = Thickness.Parse("5,0,0,0") });
+            MiddleFooterStackPanel2.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0") });
+            MiddleFooterStackPanel.Children.Add(MiddleFooterStackPanel2);
             #endregion
 
             #region Footer
+            Border FooterBorder = new()
+            {
+                Margin = Thickness.Parse("0,5,0,0"),
+                BorderThickness = Thickness.Parse("1"),
+                BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
+                CornerRadius = CornerRadius.Parse("2,2,2,2")
+            };
+            MainStackPanel.Children.Add(FooterBorder);
+
             Panel FooterPanel = new();
-            MainStackPanel.Children.Add(HeaderPanel);
+            FooterPanel.Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255));
+            FooterPanel.Height = 40;
+            FooterBorder.Child=FooterPanel;
 
             StackPanel FooterStackPanel = new StackPanel()
             {
@@ -1391,6 +1460,7 @@ namespace Client_App.Controls.DataGrid
                 Orientation = Orientation.Horizontal,
                 Spacing = 5
             };
+            FooterPanel.Children.Add(FooterStackPanel);
 
             Button btnDown = new Button
             {
@@ -1404,7 +1474,8 @@ namespace Client_App.Controls.DataGrid
             TextBox box = new TextBox()
             {
                 [!TextBox.TextProperty] = this[!DataGrid<T>.NowPageProperty],
-                TextAlignment = TextAlignment.Center
+                TextAlignment = TextAlignment.Center,
+                CornerRadius = CornerRadius.Parse("2,2,2,2")
             };
             box.Width = 30;
             box.Height = 30;
@@ -1414,42 +1485,20 @@ namespace Client_App.Controls.DataGrid
             {
                 Content = ">",
                 Width = 30,
-                Height = 30
+                Height = 30,
+                CornerRadius = CornerRadius.Parse("2,2,2,2")
             };
             btnUp.Click += NowPageUp;
             FooterStackPanel.Children.Add(btnUp);
-            FooterStackPanel.Children.Add(new TextBlock() { Text = " ÓÎ-‚Ó ÒÚ‡ÌËˆ:" });
-            FooterStackPanel.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.PageCountProperty] });
 
-            FooterStackPanel.Children.Add(new TextBlock() { Text = " ÓÎ-‚Ó ÒÚÓ˜ÂÍ:" });
-            FooterStackPanel.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ItemsCountProperty] });
-
-            FooterPanel.Children.Add(FooterStackPanel);
             #endregion
 
 
-            //pn.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
-            //pn.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
-            //pn.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
+            ////pn.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
+            ////pn.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
+            ////pn.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
 
-            Content = MainBorder;
-        }
-
-        public void MakeAll()
-        {
-            Init();
-
-            //Columns.Clear();
-
-            //var lst = Support.RenderDataGridHeader.Render.GetControl(Type);
-            //if (lst != null)
-            //{
-            //    foreach (var item in lst)
-            //    {
-            //        Columns.Add(new CellCollection(item));
-            //    }
-            //    MainGrid.RowDefinitions[0].Height = GridLength.Parse((lst.First().Children.Count * 30).ToString());
-            //}
+            Content = MainPanel;
         }
         #endregion
     }

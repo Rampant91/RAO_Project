@@ -40,6 +40,12 @@
     <Compile Update="Controls\DataGrid\CustomCell.axaml.cs">
       <DependentUpon>CustomCell.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridReport.axaml.cs">
+      <DependentUpon>DataGridReport.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridReports.axaml.cs">
+      <DependentUpon>DataGridReports.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\RowNumberIn.axaml.cs">
       <DependentUpon>RowNumberIn.axaml</DependentUpon>
     </Compile>
