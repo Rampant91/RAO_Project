@@ -712,6 +712,7 @@ namespace Client_App.ViewModels
                                                                         });
                                                                         if (an == "Загрузить новую")
                                                                         {
+                                                                            first11.Report_Collection.Remove(elem);
                                                                             first11.Report_Collection.Add(it);
                                                                         }
                                                                     }
@@ -841,6 +842,7 @@ namespace Client_App.ViewModels
                                                                         });
                                                                         if (an == "Загрузить новую")
                                                                         {
+                                                                            first21.Report_Collection.Remove(elem);
                                                                             first21.Report_Collection.Add(it);
                                                                         }
                                                                     }
