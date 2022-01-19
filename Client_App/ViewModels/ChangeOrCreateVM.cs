@@ -255,12 +255,7 @@ namespace Client_App.ViewModels
         public void Init()
         {
             string a = FormType.Replace(".", "");
-            if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1")
-            {
-                WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name +
-                    " " + Storages.Master_DB.RegNoRep.Value + " " + Storages.Master_DB.ShortJurLicoRep.Value + " " + Storages.Master_DB.OkpoRep.Value;
-            }
-            if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2")
+            if ((FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "1")||(FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2"))
             {
                 WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name +
                     " " + Storages.Master_DB.RegNoRep.Value + " " + Storages.Master_DB.ShortJurLicoRep.Value + " " + Storages.Master_DB.OkpoRep.Value;
