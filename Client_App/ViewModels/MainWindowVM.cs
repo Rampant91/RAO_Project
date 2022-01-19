@@ -377,8 +377,8 @@ namespace Client_App.ViewModels
                                           {
                                               if (rp.Master.Rows20.Count > 0)
                                               {
-                                                  filename2 += rp.Master.RegNoRep1.Value;
-                                                  filename2 += rp.Master.OkpoRep1.Value;
+                                                  filename2 += rp.Master.RegNoRep.Value;
+                                                  filename2 += rp.Master.OkpoRep.Value;
 
                                                   filename2 += "_" + rep.CorrectionNumber_DB;
                                                   filename2 += "_" + rep.FormNum_DB;
@@ -749,9 +749,9 @@ namespace Client_App.ViewModels
                                                                 {
                                                                     var str = "Совпадение даты в " + elem.FormNum.Value + " " +
                                                                         elem.Year.Value + " " +
-                                                                        first21.Master.RegNoRep1.Value + " \n" +
-                                                                        first21.Master.ShortJurLicoRep1.Value + " " +
-                                                                        first21.Master.OkpoRep1.Value;
+                                                                        first21.Master.RegNoRep.Value + " \n" +
+                                                                        first21.Master.ShortJurLicoRep.Value + " " +
+                                                                        first21.Master.OkpoRep.Value;
                                                                     var an = await ShowMessageT.Handle(new List<string>()
                                                             {
                                                                 str,

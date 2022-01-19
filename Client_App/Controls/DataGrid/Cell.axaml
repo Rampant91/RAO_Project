@@ -4,18 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Client_App.Controls.DataGrid.Cell"
-             xmlns:local="clr-namespace:Client_App.Controls.DataGrid">
-  <Border BorderThickness="1" BorderBrush="Black">
-    <Panel Background="Transparent" DataContext="{Binding $parent[local:Row].DataContext}">
-      <TextBox
-          Text="{Binding Value}"
-          Background="Transparent"
-          TextAlignment="Center"
-		 >
-        <TextBox.ContextMenu>
-          <ContextMenu Width="0" Height="0"/>
-        </TextBox.ContextMenu>
-      </TextBox>
-    </Panel>
-  </Border>
+			 xmlns:local="clr-namespace:Client_App.Controls.DataGrid">
+    <Border BorderThickness="1" BorderBrush="{Binding $parent.BorderBrush}">
+        <Panel Background="Transparent" DataContext="{Binding $parent[StackPanel].DataContext}"></Panel>
+		
+    </Border>
 </UserControl>

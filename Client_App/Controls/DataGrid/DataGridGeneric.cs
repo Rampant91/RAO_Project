@@ -1156,8 +1156,8 @@ namespace Client_App.Controls.DataGrid
 
                     if (cl != null)
                     {
-                        int Row = cl.CellRow;
-                        int Column = cl.CellColumn;
+                        int Row = cl.Row;
+                        int Column = cl.Column;
 
                         if (text != null && text != "")
                         {
@@ -1192,7 +1192,7 @@ namespace Client_App.Controls.DataGrid
                                             foreach (var it in param)
                                             {
                                                 var cell = (Cell)it;
-                                                if (cell.CellColumn == Column && cell.CellRow == Row)
+                                                if (cell.Column == Column && cell.Row == Row)
                                                 {
                                                     var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
                                                     if (child != null)
@@ -1214,7 +1214,7 @@ namespace Client_App.Controls.DataGrid
                                             }
                                             rt = "";
                                             Row++;
-                                            Column = cl.CellColumn;
+                                            Column = cl.Column;
                                         }
                                         else
                                         {
@@ -1230,7 +1230,7 @@ namespace Client_App.Controls.DataGrid
                                                 foreach (var it in param)
                                                 {
                                                     var cell = (Cell)it;
-                                                    if (cell.CellColumn == Column && cell.CellRow == Row)
+                                                    if (cell.Column == Column && cell.Row == Row)
                                                     {
                                                         var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
                                                         if (child != null)
@@ -1267,7 +1267,7 @@ namespace Client_App.Controls.DataGrid
                             foreach (var it in param)
                             {
                                 var cell = (Cell)it;
-                                if (cell.CellColumn == Column && cell.CellRow == Row)
+                                if (cell.Column == Column && cell.Row == Row)
                                 {
                                     var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
                                     if (child != null)
@@ -1295,10 +1295,10 @@ namespace Client_App.Controls.DataGrid
                 if (first is Cell)
                 {
 
-                    var ord = param.GroupBy(x => ((Cell)x).CellRow);
+                    var ord = param.GroupBy(x => ((Cell)x).Row);
                     foreach (var item in ord)
                     {
-                        var t = item.OrderBy(x => ((Cell)x).CellColumn);
+                        var t = item.OrderBy(x => ((Cell)x).Column);
                         foreach (var it in t)
                         {
                             var cell = (Cell)it;
@@ -1348,6 +1348,7 @@ namespace Client_App.Controls.DataGrid
         private void MakeHeaderRows()
         {
             var Columns = this.Columns;
+
         }
         private void MakeCenterRows()
         {
