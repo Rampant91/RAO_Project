@@ -30,6 +30,7 @@ using Models.DataAccess;
 
 namespace Client_App.Controls.DataGrid
 {
+
     #region DataGridEnums
     public enum ChooseMode
     {
@@ -44,7 +45,7 @@ namespace Client_App.Controls.DataGrid
     }
     #endregion
 
-    public class DataGrid<T> : UserControl where T:class,IKey,IDataGridColumn,new()
+    public class DataGrid<T> : UserControl where T : class, IKey, IDataGridColumn, new()
     {
         #region Items
         public static readonly DirectProperty<DataGrid<T>, IKeyCollection> ItemsProperty =
@@ -131,7 +132,8 @@ namespace Client_App.Controls.DataGrid
                 (o, v) => o.Type = v);
         public string Type
         {
-            get {
+            get
+            {
 
                 return typeof(T).Name;
             }
@@ -221,7 +223,7 @@ namespace Client_App.Controls.DataGrid
         private string _PageCount = "0";
         public string PageCount
         {
-            get => (Items.Count/PageSize+1).ToString();
+            get => (Items.Count / PageSize + 1).ToString();
             set
             {
                 SetAndRaise(PageCountProperty, ref _PageCount, (Items.Count / PageSize + 1).ToString());
@@ -234,7 +236,7 @@ namespace Client_App.Controls.DataGrid
             AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
                 nameof(NowPage),
                 o => o.NowPage,
-                (o, v) => o.NowPage = v,defaultBindingMode:BindingMode.TwoWay);
+                (o, v) => o.NowPage = v, defaultBindingMode: BindingMode.TwoWay);
 
         private string _nowPage = "1";
         public string NowPage
@@ -297,7 +299,8 @@ namespace Client_App.Controls.DataGrid
 
         private DataGridColumns Columns
         {
-            get {
+            get
+            {
                 var t = new T();
                 return t.GetColumnStructure();
             }
@@ -746,7 +749,7 @@ namespace Client_App.Controls.DataGrid
                         var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
                         var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
 
-                        if (!(maxColumn ==1&&minColumn == 1))
+                        if (!(maxColumn == 1 && minColumn == 1))
                         {
                             if ((!(tmp[0] >= minRow && tmp[0] <= maxRow)) || (!(tmp[1] >= minColumn && tmp[1] <= maxColumn)))
                             {
@@ -758,7 +761,7 @@ namespace Client_App.Controls.DataGrid
                         }
                         else
                         {
-                            if((!(tmp[0] >= minRow && tmp[0] <= maxRow)))
+                            if ((!(tmp[0] >= minRow && tmp[0] <= maxRow)))
                             {
                                 LastPressedItem = tmp;
                                 DownFlag = false;
@@ -880,7 +883,7 @@ namespace Client_App.Controls.DataGrid
         bool shiftFlag { get; set; } = false;
         private void ChangeSelectedCellsByKeys(Key PressedKey)
         {
-            if(shiftFlag)
+            if (shiftFlag)
             {
                 ChangeSelectedCellsByKeyWithShift(PressedKey);
             }
@@ -1024,7 +1027,7 @@ namespace Client_App.Controls.DataGrid
             //    tmp[0] = n;
             //}
         }
-        private void KeyDownEventHandler(object sender,KeyEventArgs args)
+        private void KeyDownEventHandler(object sender, KeyEventArgs args)
         {
             //if(args.Key==Key.LeftCtrl)
             //{
@@ -1163,7 +1166,7 @@ namespace Client_App.Controls.DataGrid
                         if (text != null && text != "")
                         {
                             string rt = "";
-                            for(int i=0;i<text.Length;i++)
+                            for (int i = 0; i < text.Length; i++)
                             {
                                 var item = text[i];
                                 if (item == '\"')
@@ -1172,9 +1175,9 @@ namespace Client_App.Controls.DataGrid
                                 }
                                 else
                                 {
-                                    if (item == '\r'||item == '\n')
+                                    if (item == '\r' || item == '\n')
                                     {
-                                        if (item =='\r')
+                                        if (item == '\r')
                                         {
                                             if (i + 1 < text.Length)
                                             {
@@ -1201,7 +1204,7 @@ namespace Client_App.Controls.DataGrid
                                                         var panel = (Panel)child.Child;
                                                         var textbox = (TextBox)panel.Children.FirstOrDefault();
 
-                                                        if (textbox.TextWrapping==TextWrapping.Wrap)
+                                                        if (textbox.TextWrapping == TextWrapping.Wrap)
                                                         {
                                                             textbox.Text = rt;
                                                         }
@@ -1244,7 +1247,7 @@ namespace Client_App.Controls.DataGrid
                                                             }
                                                             else
                                                             {
-                                                                textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n","");
+                                                                textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
                                                             }
                                                         }
                                                         break;
@@ -1327,7 +1330,7 @@ namespace Client_App.Controls.DataGrid
                         }
                         txt += "\r";
                     }
-                }        
+                }
                 await clip.ClearAsync();
                 await clip.SetTextAsync(txt);
             }
