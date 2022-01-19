@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Models.Attributes;
 using OfficeOpenXml;
+using Models.Collections;
 
 namespace Models.Abstracts
 {
@@ -26,6 +27,13 @@ namespace Models.Abstracts
         {
             OnPropertyChanged(args.PropertyName);
         }
+
+        public DataGridColumns GetDataGridColumn() 
+        {
+            DataGridColumns dataGridColumns = new();
+            //dataGridColumns.name = 
+
+        } 
 
         #region OperationCode
         public string OperationCode_DB { get; set; } = "";

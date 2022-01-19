@@ -118,7 +118,15 @@ namespace Models.Collections
         #region IDataGridColumn
         public DataGridColumns GetColumnStructure()
         {
-            return null;
+            DataGridColumns dataGridColumns = new();
+            dataGridColumns.innertCol = new System.Collections.Generic.List<DataGridColumns>();
+
+            DataGridColumns regNo = new();
+            regNo.SizeCol = 50;
+            regNo.binding = nameof(Report.RegNoRep);
+            regNo.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty("RegNo").GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
+            dataGridColumns.innertCol.Add(regNo);
+            return dataGridColumns;
         }
         #endregion
     }

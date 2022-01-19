@@ -160,11 +160,23 @@ namespace Models.Collections
         {
             get
             {
-                RamAccess<string> tmp = null;
-                tmp = Rows10[0].RegNo;
-                tmp.PropertyChanged -= RegNoRepValueChanged;
-                tmp.PropertyChanged += RegNoRepValueChanged;
-                return tmp;
+                if (FormNum_DB == "1.0")
+                {
+                    RamAccess<string> tmp = null;
+                    tmp = Rows10[0].RegNo;
+                    tmp.PropertyChanged -= RegNoRepValueChanged;
+                    tmp.PropertyChanged += RegNoRepValueChanged;
+                    return tmp;
+                }
+                if (FormNum_DB == "2.0")
+                {
+                    RamAccess<string> tmp = null;
+                    tmp = Rows20[0].RegNo;
+                    tmp.PropertyChanged -= RegNoRepValueChanged;
+                    tmp.PropertyChanged += RegNoRepValueChanged;
+                    return tmp;
+                }
+                return null;
             }
             set
             {
@@ -225,123 +237,6 @@ namespace Models.Collections
         }
         #endregion
 
-        #region OkpoRep1
-        [NotMapped]
-        public string _OkpoRep1 { get; set; } = "";
-        [NotMapped]
-        public RamAccess<string> OkpoRep1
-        {
-            get
-            {
-                RamAccess<string> tmp = null;
-                if (Rows20[1].Okpo_DB == "")
-                {
-                    tmp = Rows20[0].Okpo;
-                    tmp.PropertyChanged -= OkpoRep1ValueChanged;
-                    tmp.PropertyChanged += OkpoRep1ValueChanged;
-                    Rows20[1].Okpo.PropertyChanged -= OkpoRep1ValueChanged;
-                    Rows20[1].Okpo.PropertyChanged += OkpoRep1ValueChanged;
-                }
-                else
-                {
-                    tmp = Rows20[1].Okpo;
-                    tmp.PropertyChanged -= OkpoRep1ValueChanged;
-                    tmp.PropertyChanged += OkpoRep1ValueChanged;
-                    Rows20[0].Okpo.PropertyChanged -= OkpoRep1ValueChanged;
-                    Rows20[0].Okpo.PropertyChanged += OkpoRep1ValueChanged;
-                }
-                return tmp;
-            }
-            set
-            {
-                _OkpoRep1 = value.Value;
-                OnPropertyChanged(nameof(OkpoRep1));
-            }
-        }
-        private void OkpoRep1ValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                _OkpoRep1 = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(OkpoRep1));
-                OnPropertyChanged(nameof(RegNoRep1));
-                OnPropertyChanged(nameof(ShortJurLicoRep1));
-            }
-        }
-        #endregion
-
-        #region RegNoRep1
-        [NotMapped]
-        public string _RegNoRep1 { get; set; } = "";
-        [NotMapped]
-        public RamAccess<string> RegNoRep1
-        {
-            get
-            {
-                RamAccess<string> tmp = null;
-                tmp = Rows20[0].RegNo;
-                tmp.PropertyChanged -= RegNoRepValueChanged;
-                tmp.PropertyChanged += RegNoRepValueChanged;
-                return tmp;
-            }
-            set
-            {
-                _RegNoRep1 = value.Value;
-                OnPropertyChanged(nameof(RegNoRep1));
-            }
-        }
-        private void RegNoRepRep1ValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                _RegNoRep1 = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(RegNoRep1));
-            }
-        }
-        #endregion
-
-        #region ShortJurLicoRep1
-        [NotMapped]
-        public string _ShortJurLicoRep1 { get; set; } = "";
-        [NotMapped]
-        public RamAccess<string> ShortJurLicoRep1
-        {
-            get
-            {
-                RamAccess<string> tmp = null;
-                if (Rows20[1].Okpo_DB == "")
-                {
-                    tmp = Rows20[0].ShortJurLico;
-                    tmp.PropertyChanged -= ShortJurLicoRep1ValueChanged;
-                    tmp.PropertyChanged += ShortJurLicoRep1ValueChanged;
-                    Rows20[1].ShortJurLico.PropertyChanged -= ShortJurLicoRep1ValueChanged;
-                    Rows20[1].ShortJurLico.PropertyChanged += ShortJurLicoRep1ValueChanged;
-                }
-                else
-                {
-                    tmp = Rows20[1].ShortJurLico;
-                    tmp.PropertyChanged -= ShortJurLicoRep1ValueChanged;
-                    tmp.PropertyChanged += ShortJurLicoRep1ValueChanged;
-                    Rows20[0].ShortJurLico.PropertyChanged -= ShortJurLicoRep1ValueChanged;
-                    Rows20[0].ShortJurLico.PropertyChanged += ShortJurLicoRep1ValueChanged;
-                }
-                return tmp;
-            }
-            set
-            {
-                _ShortJurLicoRep1 = value.Value;
-                OnPropertyChanged(nameof(ShortJurLicoRep1));
-            }
-        }
-        private void ShortJurLicoRep1ValueChanged(object Value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName == "Value")
-            {
-                _ShortJurLicoRep1 = ((RamAccess<string>)Value).Value;
-                OnPropertyChanged(nameof(ShortJurLicoRep1));
-            }
-        }
-        #endregion
 
         #region  Forms10
         ObservableCollectionWithItemPropertyChanged<Form10> Rows10_DB;
