@@ -11,7 +11,7 @@ using OfficeOpenXml;
 
 namespace Models
 {
-    public class Note : IKey, INumberInOrder
+    public class Note : IKey, INumberInOrder, IDataGridColumn
     {
         public Note()
         {

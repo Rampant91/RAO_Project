@@ -8,6 +8,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Client_App.Controls.DataGrid;
 using Models.Attributes;
+using Models;
 
 namespace Client_App.Long_Visual
 {
@@ -359,9 +360,8 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Form11> grd = new Controls.DataGrid.DataGrid<Form11>()
             {
-                Type = "1.1",
                 Name = "Form11Data_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
@@ -369,11 +369,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlICommandProperty] = new Binding("AddRowIn"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddRow"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -383,7 +379,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Form11>.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -449,9 +445,8 @@ namespace Client_App.Long_Visual
 
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
             {
-                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
@@ -459,10 +454,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
+                MaxHeight = 700
 
             };
             grd1.SetValue(Grid.RowProperty, 4);
@@ -473,7 +465,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();
@@ -654,7 +646,7 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Form12> grd = new Controls.DataGrid.DataGrid<Form12>
             {
                 Name = "Form12Data_",
                 Type = "1.2",
@@ -663,11 +655,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlICommandProperty] = new Binding("AddRowIn"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddRow"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -677,7 +665,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Form12>.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -745,9 +733,8 @@ namespace Client_App.Long_Visual
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
 
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
             {
-                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
@@ -755,10 +742,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -768,7 +752,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();
@@ -950,20 +934,15 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Form13> grd = new Controls.DataGrid.DataGrid<Form13>
             {
                 Name = "Form13Data_",
-                Type = "1.3",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlICommandProperty] = new Binding("AddRowIn"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddRow"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -973,7 +952,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Form13>.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -1040,9 +1019,8 @@ namespace Client_App.Long_Visual
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
 
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
             {
-                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
@@ -1050,10 +1028,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1063,7 +1038,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
 
             ContextMenu? cntx1 = new ContextMenu();
             var mn = new MenuItem
@@ -1243,20 +1218,15 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Form14> grd = new Controls.DataGrid.DataGrid<Form14>
             {
                 Name = "Form14Data_",
-                Type = "1.4",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlICommandProperty] = new Binding("AddRowIn"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddRow"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1266,7 +1236,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Form14>.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -1332,9 +1302,8 @@ namespace Client_App.Long_Visual
 
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
             {
-                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
@@ -1342,10 +1311,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1355,7 +1321,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();
@@ -1536,20 +1502,15 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Form15> grd = new Controls.DataGrid.DataGrid<Form15>
             {
                 Name = "Form15Data_",
-                Type = "1.5",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlICommandProperty] = new Binding("AddRowIn"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddRow"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1559,7 +1520,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Form15>.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -1625,9 +1586,8 @@ namespace Client_App.Long_Visual
 
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
             {
-                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
@@ -1635,10 +1595,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1648,7 +1605,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();
@@ -1830,20 +1787,15 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Form16> grd = new Controls.DataGrid.DataGrid<Form16>
             {
                 Name = "Form16Data_",
-                Type = "1.6",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlICommandProperty] = new Binding("AddRowIn"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddRow"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -1853,7 +1805,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Form16>.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -1919,9 +1871,8 @@ namespace Client_App.Long_Visual
 
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
             {
-                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
@@ -1929,10 +1880,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -1942,7 +1890,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();
@@ -2124,20 +2072,15 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Form17> grd = new Controls.DataGrid.DataGrid<Form17>
             {
                 Name = "Form17Data_",
-                Type = "1.7",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlICommandProperty] = new Binding("AddRowIn"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddRow"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -2147,7 +2090,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Form17>.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -2213,9 +2156,8 @@ namespace Client_App.Long_Visual
 
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
             {
-                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
@@ -2223,10 +2165,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -2236,7 +2175,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();
@@ -2417,20 +2356,15 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Form18> grd = new Controls.DataGrid.DataGrid<Form18>
             {
                 Name = "Form18Data_",
-                Type = "1.8",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlICommandProperty] = new Binding("AddRowIn"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddRow"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -2440,7 +2374,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Form18>.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -2506,9 +2440,8 @@ namespace Client_App.Long_Visual
 
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
             {
-                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
@@ -2516,10 +2449,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -2529,7 +2459,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();
@@ -2711,20 +2641,15 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Form19> grd = new Controls.DataGrid.DataGrid<Form19>
             {
                 Name = "Form19Data_",
-                Type = "1.9",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlICommandProperty] = new Binding("AddRowIn"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddRow"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteRow"),
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateRowsx1")
+                MaxHeight = 700
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -2734,7 +2659,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Form19>.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -2801,9 +2726,8 @@ namespace Client_App.Long_Visual
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
 
-            Controls.DataGrid.DataGrid grd1 = new Controls.DataGrid.DataGrid()
+            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
             {
-                Type = "1.1*",
                 Name = "Form11Notes_",
                 Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
@@ -2811,10 +2735,7 @@ namespace Client_App.Long_Visual
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                MaxHeight = 700,
-                [!Controls.DataGrid.DataGrid.CtrlNCommandProperty] = new Binding("DuplicateNotes"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddNote"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteNote")
+                MaxHeight = 700
             };
             grd1.SetValue(Grid.RowProperty, 4);
 
@@ -2824,7 +2745,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();

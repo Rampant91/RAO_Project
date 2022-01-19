@@ -9,6 +9,7 @@ using System.Linq;
 using Client_App.Views;
 using Avalonia.Interactivity;
 using System.Windows;
+using Models.Collections;
 
 namespace Client_App.Short_Visual
 {
@@ -18,13 +19,13 @@ namespace Client_App.Short_Visual
         public static void FormF_Visual(MainWindow v,in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
             INameScope? tp = pnl0.FindNameScope();
-            Controls.DataGrid.DataGrid? grd1 = (Controls.DataGrid.DataGrid)Form0_Visual(tp);
+            Controls.DataGrid.DataGrid<Reports>? grd1 = (Controls.DataGrid.DataGrid<Reports>)Form0_Visual(tp);
             pnl0.Children.Add(grd1);
 
             NameScope scp = new NameScope();
             scp.Register(grd1.Name, grd1);
             scp.Complete();
-            Controls.DataGrid.DataGrid? grd2 = (Controls.DataGrid.DataGrid)FormX_Visual(scp);
+            Controls.DataGrid.DataGrid<Report>? grd2 = (Controls.DataGrid.DataGrid<Report>)FormX_Visual(scp);
             pnlx.Children.Add(grd2);
 
             Binding bd = new Binding
@@ -43,17 +44,13 @@ namespace Client_App.Short_Visual
         //Форма 10
         private static Control Form0_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Reports> grd = new Controls.DataGrid.DataGrid<Reports>
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                Type = "0.0",
-                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeReport"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteReport"),
-                [!Controls.DataGrid.DataGrid.CtrlACommandProperty] = new Binding("AddReport")
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.PageSize = 8;
 
@@ -66,7 +63,7 @@ namespace Client_App.Short_Visual
                 NameScope = new WeakReference<INameScope>(scp)
             };
 
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Reports>.ItemsProperty, b);
         
         ContextMenu? cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>
@@ -104,18 +101,14 @@ namespace Client_App.Short_Visual
         //Форма 1X
         private static Control FormX_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGrid grd = new Controls.DataGrid.DataGrid
+            Controls.DataGrid.DataGrid<Report> grd = new Controls.DataGrid.DataGrid<Report>
             {
-                Type = "0.1",
                 Name = "Form1AllDataGrid_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
-                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
-                [!Controls.DataGrid.DataGrid.DoubleClickCommandProperty] = new Binding("ChangeForm"),
-                [!Controls.DataGrid.DataGrid.CtrlDCommandProperty] = new Binding("DeleteForm"),
-                [!Controls.DataGrid.DataGrid.CtrlECommandProperty] = new Binding("ExportForm")
+                ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
 
             Binding b = new Binding
@@ -125,7 +118,7 @@ namespace Client_App.Short_Visual
                 NameScope = new WeakReference<INameScope>(scp),
                 Converter = new Converters.ReportsToReport_Converter(),
             };
-            grd.Bind(Controls.DataGrid.DataGrid.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGrid<Report>.ItemsProperty, b);
 
             ContextMenu? cntx = new ContextMenu();
             List<MenuItem> excelitems = new List<MenuItem>

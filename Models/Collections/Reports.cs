@@ -12,7 +12,7 @@ using System;
 namespace Models.Collections
 {
 
-    public class Reports : IKey,INumberInOrder
+    public class Reports : IKey,INumberInOrder,IDataGridColumn
     {
         [NotMapped]
         public long Order
@@ -114,5 +114,12 @@ namespace Models.Collections
         {
             throw new System.NotImplementedException();
         }
+
+        #region IDataGridColumn
+        public DataGridColumns GetColumnStructure()
+        {
+            return null;
+        }
+        #endregion
     }
 }

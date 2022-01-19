@@ -14,7 +14,7 @@ using System.Collections;
 
 namespace Models.Collections
 {
-    public class Report : IKey, INotifyPropertyChanged, INumberInOrder
+    public class Report : IKey, INotifyPropertyChanged, INumberInOrder,IDataGridColumn
     {
         //ExportDate
         public enum Forms
@@ -3020,6 +3020,13 @@ namespace Models.Collections
                     }
                 }
             }
+        }
+        #endregion
+
+        #region IDataGridColumn
+        public DataGridColumns GetColumnStructure()
+        {
+            return null;
         }
         #endregion
     }
