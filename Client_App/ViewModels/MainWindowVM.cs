@@ -599,6 +599,7 @@ namespace Client_App.ViewModels
                                             }
                                             if (first11 != null)
                                             {
+                                                var not_in = false;
                                                 foreach (Report it in item.Report_Collection)
                                                 {
                                                     foreach (Note note in it.Notes)
@@ -642,8 +643,9 @@ namespace Client_App.ViewModels
                                                                     st_it = en_it;
                                                                     en_it = _e;
                                                                 }
-                                                                if (st_elem == st_it && en_elem == en_it)
+                                                                if (st_elem == st_it && en_elem == en_it && it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first11.Master.RegNoRep.Value)
                                                                 {
+                                                                    not_in = true;
                                                                     if (it.CorrectionNumber.Value < elem.CorrectionNumber.Value)
                                                                     {
                                                                         var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
@@ -661,7 +663,7 @@ namespace Client_App.ViewModels
                                                                         "OK"
                                                                         });
                                                                     }
-                                                                    else
+                                                                    else if (it.CorrectionNumber.Value == elem.CorrectionNumber.Value)
                                                                     {
                                                                         var str = "Совпадение даты в " + elem.FormNum.Value + " " +
                                                                             elem.StartPeriod.Value + "-" +
@@ -691,13 +693,32 @@ namespace Client_App.ViewModels
 
                                                                         //    it.Rows.AddRange<IKey>(0,elem.Rows.GetEnumerable());
                                                                         //    it.Notes.AddRange<IKey>(0,elem.Notes);
-                                                                           
+
                                                                         //    first11.Report_Collection.Add(it);
                                                                         //}
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        var str = "Форма " +
+                                                                            elem.FormNum.Value +
+                                                                            " с предыдущим номером корректировки №" +
+                                                                            elem.CorrectionNumber.Value +
+                                                                            " будет безвозвратно удалена.\n" +
+                                                                            "Сделайте резервную копию.";
+                                                                        var an = await ShowMessageT.Handle(new List<string>() { 
+                                                                        str,
+                                                                        "Загрузить новую",
+                                                                        "Отмена"
+                                                                        });
+                                                                        if (an == "Загрузить новую")
+                                                                        {
+                                                                            first11.Report_Collection.Add(it);
+                                                                        }
                                                                     }
                                                                 }
                                                                 if (st_elem < st_it && st_it < en_elem || st_elem < en_it && en_it < en_elem)
                                                                 {
+                                                                    not_in = true;
                                                                     var str = "Пересечение даты в " + elem.FormNum.Value + " " +
                                                                         elem.StartPeriod.Value + "-" +
                                                                         elem.EndPeriod.Value + " \n" +
@@ -713,6 +734,21 @@ namespace Client_App.ViewModels
                                                                     {
                                                                         first11.Report_Collection.Add(it);
                                                                     }
+                                                                }
+                                                                if (!not_in) 
+                                                                {
+                                                                    var str = "Загрузить новую форму?";
+                                                                    var an = await ShowMessageT.Handle(new List<string>()
+                                                                    {
+                                                                    str,
+                                                                    "Да",
+                                                                    "Нет"
+                                                                    });
+                                                                    if (an == "Да")
+                                                                    {
+                                                                        first11.Report_Collection.Add(it);
+                                                                    }
+                                                                    not_in = true;
                                                                 }
                                                                 first11.Sort();
                                                             }
@@ -730,6 +766,7 @@ namespace Client_App.ViewModels
                                             {
                                                 if (first21 != null)
                                                 {
+                                                    var not_in = false;
                                                     foreach (Report it in item.Report_Collection)
                                                     {
                                                         foreach (Note note in it.Notes)
@@ -739,7 +776,6 @@ namespace Client_App.ViewModels
                                                                 note.Order = GetNumberInOrder(it.Notes);
                                                             }
                                                         }
-
                                                         var lst = first21.Report_Collection.ToList<Report>();
                                                         if (lst.Count != 0)
                                                         {
@@ -747,6 +783,7 @@ namespace Client_App.ViewModels
                                                             {
                                                                 if (elem.Year == it.Year)
                                                                 {
+                                                                    not_in = true;
                                                                     var str = "Совпадение даты в " + elem.FormNum.Value + " " +
                                                                         elem.Year.Value + " " +
                                                                         first21.Master.RegNoRep1.Value + " \n" +
@@ -767,6 +804,21 @@ namespace Client_App.ViewModels
                                                                         first21.Report_Collection.Remove(elem);
                                                                         first21.Report_Collection.Add(it);
                                                                     }
+                                                                }
+                                                                if (!not_in)
+                                                                {
+                                                                    var str = "Загрузить новую форму?";
+                                                                    var an = await ShowMessageT.Handle(new List<string>()
+                                                                    {
+                                                                    str,
+                                                                    "Да",
+                                                                    "Нет"
+                                                                    });
+                                                                    if (an == "Да")
+                                                                    {
+                                                                        first21.Report_Collection.Add(it);
+                                                                    }
+                                                                    not_in = true;
                                                                 }
                                                                 first21.Sort();
                                                             }
