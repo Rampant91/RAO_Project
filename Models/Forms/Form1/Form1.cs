@@ -30,9 +30,9 @@ namespace Models.Abstracts
 
         public DataGridColumns GetDataGridColumn() 
         {
-            DataGridColumns dataGridColumns = new();
+            //DataGridColumns dataGridColumns = new();
             //dataGridColumns.name = 
-
+            return null;
         } 
 
         #region OperationCode

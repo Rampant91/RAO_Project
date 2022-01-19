@@ -38,5 +38,25 @@ namespace Models.Collections
                 } 
             }
         }
+
+        public int Level
+        {
+            get
+            {
+                if(innertCol==null)
+                {
+                    return 1;
+                }
+                var tmp = innertCol.FirstOrDefault();
+                if(tmp==null)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return tmp.Level + 1;
+                }
+            }
+        }
     }
 }

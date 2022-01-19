@@ -263,7 +263,7 @@ namespace Client_App.ViewModels
             if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] == "2")
             {
                 WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name +
-                    " " + Storages.Master_DB.RegNoRep1.Value + " " + Storages.Master_DB.ShortJurLicoRep1.Value + " " + Storages.Master_DB.OkpoRep1.Value;
+                    " " + Storages.Master_DB.RegNoRep.Value + " " + Storages.Master_DB.ShortJurLicoRep.Value + " " + Storages.Master_DB.OkpoRep.Value;
             }
             if(FormType=="1.0"||FormType=="2.0")
             {

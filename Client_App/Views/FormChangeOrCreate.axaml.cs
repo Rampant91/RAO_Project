@@ -197,9 +197,9 @@ namespace Client_App.Views
                             }
                             if (tmp.FormType == "2.0")
                             {
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep1));
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep1));
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep1));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
+                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
                             }
                         }
                         return;

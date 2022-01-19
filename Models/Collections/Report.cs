@@ -459,9 +459,9 @@ namespace Models.Collections
         }
         protected void CollectionChanged20(object sender, NotifyCollectionChangedEventArgs args)
         {
-            OnPropertyChanged(nameof(RegNoRep1));
-            OnPropertyChanged(nameof(OkpoRep1));
-            OnPropertyChanged(nameof(ShortJurLicoRep1));
+            OnPropertyChanged(nameof(RegNoRep));
+            OnPropertyChanged(nameof(OkpoRep));
+            OnPropertyChanged(nameof(ShortJurLicoRep));
             OnPropertyChanged(nameof(Rows20));
         }
         #endregion
