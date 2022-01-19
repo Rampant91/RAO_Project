@@ -689,8 +689,6 @@ namespace Client_App.Controls.Support.RenderDataGridRow
                     [!TextBox.TextProperty] = new Binding("Value"),
                     HorizontalContentAlignment = HorizontalAlignment.Center,
                     VerticalContentAlignment = VerticalAlignment.Center,
-                    AcceptsReturn = true,
-                    TextWrapping = TextWrapping.Wrap,
                     Background = new SolidColorBrush(new Color(0, 0, 0, 0))
                 };
 
