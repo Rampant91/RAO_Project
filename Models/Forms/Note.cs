@@ -201,5 +201,12 @@ namespace Models
             return 3;
         }
         #endregion
+
+        #region IDataGridColumn
+        public DataGridColumns GetColumnStructure()
+        {
+            return null;
+        }
+        #endregion
     }
 }
