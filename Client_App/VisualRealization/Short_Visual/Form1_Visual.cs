@@ -19,13 +19,13 @@ namespace Client_App.Short_Visual
         public static void FormF_Visual(MainWindow v,in Panel pnl0, in Panel pnlx, in Panel pnlb)
         {
             INameScope? tp = pnl0.FindNameScope();
-            Controls.DataGrid.DataGrid<Reports>? grd1 = (Controls.DataGrid.DataGrid<Reports>)Form0_Visual(tp);
+            Controls.DataGrid.DataGridReports grd1 = (Controls.DataGrid.DataGridReports)Form0_Visual(tp);
             pnl0.Children.Add(grd1);
 
             NameScope scp = new NameScope();
             scp.Register(grd1.Name, grd1);
             scp.Complete();
-            Controls.DataGrid.DataGrid<Report>? grd2 = (Controls.DataGrid.DataGrid<Report>)FormX_Visual(scp);
+            Controls.DataGrid.DataGridReport grd2 = (Controls.DataGrid.DataGridReport)FormX_Visual(scp);
             pnlx.Children.Add(grd2);
 
             Binding bd = new Binding
@@ -44,7 +44,7 @@ namespace Client_App.Short_Visual
         //Форма 10
         private static Control Form0_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGrid<Reports> grd = new Controls.DataGrid.DataGrid<Reports>
+            Controls.DataGrid.DataGridReports grd = new Controls.DataGrid.DataGridReports
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -101,7 +101,7 @@ namespace Client_App.Short_Visual
         //Форма 1X
         private static Control FormX_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGrid<Report> grd = new Controls.DataGrid.DataGrid<Report>
+            Controls.DataGrid.DataGridReport grd = new Controls.DataGrid.DataGridReport
             {
                 Name = "Form1AllDataGrid_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,

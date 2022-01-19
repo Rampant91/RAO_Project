@@ -4,14 +4,14 @@
         xmlns:Controls="using:Client_App.Controls.DataGrid"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
         MinHeight="200" MinWidth="200"
         x:Class="Client_App.Views.MainWindow"
         xmlns:Converters="using:Client_App.Converters"
         Icon="/Assets/logo.png"
         Title="Интерактивное пособие по вводу данных ver.1.1.0"
         x:Name="MainWindow"
-        Background="#D3D3D3">
+        Background="#ffffff">
 	<DockPanel>
 		<Menu Height="20" DockPanel.Dock="Top">
       <MenuItem Header="_Приложение РАО">
