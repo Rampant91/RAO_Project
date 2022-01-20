@@ -34,11 +34,8 @@
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Controls\DataGrid\CellText.axaml.cs">
-      <DependentUpon>CellText.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Controls\DataGrid\CustomCell.axaml.cs">
-      <DependentUpon>CustomCell.axaml</DependentUpon>
+    <Compile Update="Controls\DataGrid\Cell.axaml.cs">
+      <DependentUpon>Cell.axaml</DependentUpon>
     </Compile>
     <Compile Update="Controls\DataGrid\DataGrids\DataGridReport.axaml.cs">
       <DependentUpon>DataGridReport.axaml</DependentUpon>
