@@ -44,7 +44,7 @@ namespace Client_App.Short_Visual
         //Форма 10
         private static Control Form0_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGridReports grd = new Controls.DataGrid.DataGridReports
+            Controls.DataGrid.DataGridReports grd = new Controls.DataGrid.DataGridReports("", true)
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
