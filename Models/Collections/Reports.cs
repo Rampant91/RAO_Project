@@ -116,30 +116,23 @@ namespace Models.Collections
         }
 
         #region IDataGridColumn
-        public DataGridColumns GetColumnStructure(string param)
+        public DataGridColumns GetColumnStructure(string param = "")
         {
-            DataGridColumns dataGridColumns = new();
-            dataGridColumns.innertCol = new System.Collections.Generic.List<DataGridColumns>();
-
-            DataGridColumns regNoR = new();
+            DataGridColumns regNoR = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.RegNo)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             regNoR.SizeCol = 50;
-            regNoR.binding = nameof(Report.RegNoRep);
-            regNoR.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.RegNo)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
-            dataGridColumns.innertCol.Add(regNoR);
+            regNoR.Binding = nameof(Report.RegNoRep);
 
-            DataGridColumns okpoR = new();
+            DataGridColumns ShortJurLicoR = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            ShortJurLicoR.SizeCol = 50;
+            ShortJurLicoR.Binding = nameof(Report.ShortJurLicoRep);
+            regNoR += ShortJurLicoR;
+
+            DataGridColumns okpoR = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.Okpo)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             okpoR.SizeCol = 50;
-            okpoR.binding = nameof(Report.OkpoRep);
-            okpoR.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.Okpo)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
-            dataGridColumns.innertCol.Add(okpoR);
+            okpoR.Binding = nameof(Report.OkpoRep);
+            regNoR += okpoR;
 
-            DataGridColumns shortJurLicoR = new();
-            shortJurLicoR.SizeCol = 50;
-            shortJurLicoR.binding = nameof(Report.ShortJurLicoRep);
-            shortJurLicoR.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
-            dataGridColumns.innertCol.Add(shortJurLicoR);
-
-            return dataGridColumns;
+            return regNoR;
         }
         #endregion
     }
