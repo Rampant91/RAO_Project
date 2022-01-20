@@ -30,15 +30,16 @@ namespace Client_App.Long_Visual
 
         public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width, string watermark = "", bool _flag = false)
         {
-            return new CellText(textProp, false, _flag, watermark, true)
-            {
-                Width = width,
-                Margin = Thickness.Parse(thickness),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!Cell.DataContextProperty] = new Binding(textProp),
-                [Grid.ColumnProperty] = columnProp,
-            };
+            //return new CellText(textProp, false, _flag, watermark, true)
+            //{
+            //    Width = width,
+            //    Margin = Thickness.Parse(thickness),
+            //    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+            //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            //    [!Cell.DataContextProperty] = new Binding(textProp),
+            //    [Grid.ColumnProperty] = columnProp,
+            //};
+            return null;
         }
 
         public static TextBlock CreateTextBlock(string margin, int columnProp, int height, string text, double width = 0)
