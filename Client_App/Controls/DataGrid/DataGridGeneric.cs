@@ -1402,10 +1402,12 @@ namespace Client_App.Controls.DataGrid
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
-
-            CenterPanel.MinHeight = 100;
+            CenterPanel.MinHeight = 30;
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-            CenterBorder.Child=CenterPanel;
+
+            ScrollViewer CenterScrollViewer = new ScrollViewer();
+            CenterScrollViewer.Content = CenterPanel;
+            CenterBorder.Child = CenterScrollViewer;
 
             CenterStackPanel = new();
             CenterStackPanel.Orientation = Orientation.Vertical;
