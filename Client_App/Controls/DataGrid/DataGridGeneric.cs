@@ -201,7 +201,7 @@ namespace Client_App.Controls.DataGrid
                 o => o.IsReadable,
                 (o, v) => o.IsReadable = v);
 
-        private bool _IsReadable = true;
+        private bool _IsReadable = false;
         public bool IsReadable
         {
             get => _IsReadable;
@@ -337,9 +337,10 @@ namespace Client_App.Controls.DataGrid
 
         private StackPanel HeaderStackPanel { get; set; }
         private StackPanel CenterStackPanel { get; set; }
-        public DataGrid(string Name="")
+        public DataGrid(string Name = "",bool IsReadable=false)
         {
             this.Name = Name;
+            this._IsReadable = IsReadable;
         }
 
         #region SetSelectedControls
@@ -1396,11 +1397,11 @@ namespace Client_App.Controls.DataGrid
                         TextBox textBox = new TextBox()
                         {
                             [!TextBox.DataContextProperty] = new Binding(item.Binding),
-                            [!TextBox.TextProperty]=new Binding("Value")
+                            [!TextBox.TextProperty] = new Binding("Value")
                         };
                         textBox.TextAlignment = TextAlignment.Center;
                         textBox.VerticalAlignment = VerticalAlignment.Center;
-                        textBox.IsEnabled = IsReadable;
+                        textBox.IsEnabled = !IsReadable;
                         textBox.ContextMenu = new ContextMenu() { Width = 0,Height=0 };
 
                         Cell cell = new Cell();
@@ -1490,6 +1491,7 @@ namespace Client_App.Controls.DataGrid
             CenterStackPanel = new();
             CenterStackPanel.Orientation = Orientation.Vertical;
             CenterStackPanel.HorizontalAlignment = HorizontalAlignment.Left;
+            CenterStackPanel.Margin = Thickness.Parse("2,2,2,2");
 
             CenterPanel.Children.Add(CenterStackPanel);
             #endregion
