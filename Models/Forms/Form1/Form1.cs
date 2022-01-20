@@ -49,7 +49,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("код")]
+        [Attributes.Form_Property("Сведения об операции","код","2")]
         public RamAccess<string> OperationCode
         {
             get
@@ -103,7 +103,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("дата")]
+        [Attributes.Form_Property("Сведения об операции", "дата", "3")]
         public RamAccess<string> OperationDate
         {
             get
@@ -196,7 +196,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("вид")]
+        [Attributes.Form_Property("Документ","вид", "16")]
         public RamAccess<byte?> DocumentVid
         {
             get
@@ -270,7 +270,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("номер")]
+        [Attributes.Form_Property("Документ", "номер", "17")]
         public RamAccess<string> DocumentNumber
         {
             get
@@ -330,7 +330,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("дата")]
+        [Attributes.Form_Property("Документ", "дата", "18")]
         public RamAccess<string> DocumentDate
         {
             get
@@ -420,12 +420,12 @@ namespace Models.Abstracts
 
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(NumberInOrder))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationCode))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationDate))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+           // worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(NumberInOrder))
+           //     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+           // worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationCode))
+           //     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+           // worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form11,Models").GetProperty(nameof(OperationDate))
+           //     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
 
             return 3;
         }

@@ -1070,12 +1070,12 @@ namespace Models
             Column = Column + (Transpon == true ? cnt : 0);
             Row = Row+(Transpon == false ? cnt : 0);
 
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okpo))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(ShortJurLico))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(RegNo))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+           //worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(Okpo))
+           //    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+           //worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(ShortJurLico))
+           //    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
+           //worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form10,Models").GetProperty(nameof(RegNo))
+           //    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             return 3;
         }
 
