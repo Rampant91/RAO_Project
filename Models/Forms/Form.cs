@@ -173,7 +173,7 @@ namespace Models.Abstracts
         #endregion
 
         #region IDataGridColumn
-        public DataGridColumns GetColumnStructure() 
+        public DataGridColumns GetColumnStructure(string param) 
         {
             return null;
         }

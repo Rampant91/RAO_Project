@@ -203,9 +203,29 @@ namespace Models
         #endregion
 
         #region IDataGridColumn
-        public DataGridColumns GetColumnStructure()
+        public DataGridColumns GetColumnStructure(string param)
         {
-            return null;
+            DataGridColumns dataGridColumns = new();
+
+            DataGridColumns RowNumberN = new();
+            RowNumberN.SizeCol = 50;
+            RowNumberN.binding = nameof(Note.RowNumber_DB);
+            RowNumberN.name = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.RowNumber_DB)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
+            dataGridColumns.innertCol.Add(RowNumberN);
+
+            DataGridColumns GraphNumberN = new();
+            GraphNumberN.SizeCol = 50;
+            GraphNumberN.binding = nameof(Note.GraphNumber_DB);
+            GraphNumberN.name = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.GraphNumber_DB)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
+            dataGridColumns.innertCol.Add(GraphNumberN);
+
+            DataGridColumns CommentN = new();
+            CommentN.SizeCol = 50;
+            CommentN.binding = nameof(Note.Comment_DB);
+            CommentN.name = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.Comment_DB)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
+            dataGridColumns.innertCol.Add(CommentN);
+
+            return dataGridColumns;
         }
         #endregion
     }
