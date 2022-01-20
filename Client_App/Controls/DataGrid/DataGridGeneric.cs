@@ -208,7 +208,7 @@ namespace Client_App.Controls.DataGrid
             set
             {
                 SetAndRaise(IsReadableProperty, ref _IsReadable, value);
-                MakeAll();
+                Init();
             }
         }
         #endregion
@@ -227,7 +227,7 @@ namespace Client_App.Controls.DataGrid
             set
             {
                 SetAndRaise(PageSizeProperty, ref _pageSize, value);
-                UpdateCells();
+                Init();
             }
         }
         #endregion
@@ -337,10 +337,9 @@ namespace Client_App.Controls.DataGrid
 
         private StackPanel HeaderStackPanel { get; set; }
         private StackPanel CenterStackPanel { get; set; }
-        public DataGrid(string Name = "",bool IsReadable=false)
+        public DataGrid(string Name = "")
         {
             this.Name = Name;
-            this._IsReadable = IsReadable;
         }
 
         #region SetSelectedControls
@@ -859,18 +858,33 @@ namespace Client_App.Controls.DataGrid
         private void UpdateCells()
         {
             var count = 0;
+
+            var num = Convert.ToInt32(_nowPage);
+            var offset = (num-1) * (PageSize);
+            var offsetMax= num * (PageSize);
+
             if (Items != null)
             {
-                foreach (var item in Items)
+                if (Items.Count != 0)
                 {
-                    CenterStackPanel.Children[count].DataContext = item;
-                    CenterStackPanel.Children[count].IsVisible = true;
-                    count++;
+                    for (int i = offset; i < offsetMax; i++)
+                    {
+                        if (count < PageSize&&i<Items.Count)
+                        {
+                            CenterStackPanel.Children[count].DataContext = Items.Get<T>(i);
+                            CenterStackPanel.Children[count].IsVisible = true;
+                            count++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                 }
 
-                if (Items.Count < PageSize)
+                if (Items.Count < offsetMax)
                 {
-                    for (int i = Items.Count; i < PageSize; i++)
+                    for (int i = Items.Count; i < offsetMax; i++)
                     {
                         if (CenterStackPanel.Children[i].IsVisible)
                         {
@@ -1352,6 +1366,7 @@ namespace Client_App.Controls.DataGrid
             //this.AddHandler(KeyDownEvent, KeyDownEventHandler, handledEventsToo: true);
             //this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
         }
+
         private void MakeHeaderInner(List<DataGridColumns> lst)
         {
             if(lst==null)
@@ -1481,7 +1496,7 @@ namespace Client_App.Controls.DataGrid
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
             ScrollViewer CenterScrollViewer = new ScrollViewer();
-            CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             CenterScrollViewer.MaxHeight = 200;
             CenterScrollViewer.MinHeight = 30;
             CenterScrollViewer.Content = CenterPanel;

@@ -44,7 +44,7 @@ namespace Client_App.Short_Visual
         //Форма 10
         private static Control Form0_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGridReports grd = new Controls.DataGrid.DataGridReports("", true)
+            Controls.DataGrid.DataGridReports grd = new Controls.DataGrid.DataGridReports()
             {
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
@@ -52,7 +52,7 @@ namespace Client_App.Short_Visual
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd.PageSize = 8;
+            grd.PageSize = 6;
 
             grd.Name = "Form10AllDataGrid_";
 

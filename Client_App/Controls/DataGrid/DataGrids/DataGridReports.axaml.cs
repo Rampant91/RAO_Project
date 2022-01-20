@@ -32,13 +32,7 @@ namespace Client_App.Controls.DataGrid
 {
     public class DataGridReports : DataGrid<Reports>
     {
-        public DataGridReports():base()
-        {
-            InitializeComponent();
-
-            this.Init();
-        }
-        public DataGridReports(string Name, bool IsReadable) : base(Name, IsReadable)
+        public DataGridReports() : base()
         {
             InitializeComponent();
 
