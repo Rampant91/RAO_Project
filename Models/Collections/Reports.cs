@@ -116,7 +116,7 @@ namespace Models.Collections
         }
 
         #region IDataGridColumn
-        public DataGridColumns GetColumnStructure()
+        public DataGridColumns GetColumnStructure(string param)
         {
             DataGridColumns dataGridColumns = new();
             dataGridColumns.innertCol = new System.Collections.Generic.List<DataGridColumns>();
@@ -124,19 +124,19 @@ namespace Models.Collections
             DataGridColumns regNoR = new();
             regNoR.SizeCol = 50;
             regNoR.binding = nameof(Report.RegNoRep);
-            regNoR.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty("RegNo").GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
+            regNoR.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.RegNo)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
             dataGridColumns.innertCol.Add(regNoR);
 
             DataGridColumns okpoR = new();
             okpoR.SizeCol = 50;
             okpoR.binding = nameof(Report.OkpoRep);
-            okpoR.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty("Okpo").GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
+            okpoR.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.Okpo)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
             dataGridColumns.innertCol.Add(okpoR);
 
             DataGridColumns shortJurLicoR = new();
             shortJurLicoR.SizeCol = 50;
             shortJurLicoR.binding = nameof(Report.ShortJurLicoRep);
-            shortJurLicoR.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty("ShortJurLico").GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
+            shortJurLicoR.name = ((Attributes.Form_PropertyAttribute)typeof(Form10).GetProperty(nameof(Form10.ShortJurLico)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).Name;
             dataGridColumns.innertCol.Add(shortJurLicoR);
 
             return dataGridColumns;

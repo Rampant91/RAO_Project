@@ -116,21 +116,43 @@ namespace Models.Collections
             get
             {
                 RamAccess<string> tmp = null;
-                if (Rows10[1].Okpo_DB == "")
+                if (FormNum_DB == "1.0")
                 {
-                    tmp = Rows10[0].Okpo;
-                    tmp.PropertyChanged -= OkpoRepValueChanged;
-                    tmp.PropertyChanged += OkpoRepValueChanged;
-                    Rows10[1].Okpo.PropertyChanged -= OkpoRepValueChanged;
-                    Rows10[1].Okpo.PropertyChanged += OkpoRepValueChanged;
+                    if (Rows10[1].Okpo_DB == "")
+                    {
+                        tmp = Rows10[0].Okpo;
+                        tmp.PropertyChanged -= OkpoRepValueChanged;
+                        tmp.PropertyChanged += OkpoRepValueChanged;
+                        Rows10[1].Okpo.PropertyChanged -= OkpoRepValueChanged;
+                        Rows10[1].Okpo.PropertyChanged += OkpoRepValueChanged;
+                    }
+                    else
+                    {
+                        tmp = Rows10[1].Okpo;
+                        tmp.PropertyChanged -= OkpoRepValueChanged;
+                        tmp.PropertyChanged += OkpoRepValueChanged;
+                        Rows10[0].Okpo.PropertyChanged -= OkpoRepValueChanged;
+                        Rows10[0].Okpo.PropertyChanged += OkpoRepValueChanged;
+                    }
                 }
-                else
+                if (FormNum_DB == "2.0")
                 {
-                    tmp = Rows10[1].Okpo;
-                    tmp.PropertyChanged -= OkpoRepValueChanged;
-                    tmp.PropertyChanged += OkpoRepValueChanged;
-                    Rows10[0].Okpo.PropertyChanged -= OkpoRepValueChanged;
-                    Rows10[0].Okpo.PropertyChanged += OkpoRepValueChanged;
+                    if (Rows20[1].Okpo_DB == "")
+                    {
+                        tmp = Rows20[0].Okpo;
+                        tmp.PropertyChanged -= OkpoRepValueChanged;
+                        tmp.PropertyChanged += OkpoRepValueChanged;
+                        Rows20[1].Okpo.PropertyChanged -= OkpoRepValueChanged;
+                        Rows20[1].Okpo.PropertyChanged += OkpoRepValueChanged;
+                    }
+                    else
+                    {
+                        tmp = Rows20[1].Okpo;
+                        tmp.PropertyChanged -= OkpoRepValueChanged;
+                        tmp.PropertyChanged += OkpoRepValueChanged;
+                        Rows20[0].Okpo.PropertyChanged -= OkpoRepValueChanged;
+                        Rows20[0].Okpo.PropertyChanged += OkpoRepValueChanged;
+                    }
                 }
                 return tmp;
             }
@@ -203,21 +225,43 @@ namespace Models.Collections
             get
             {
                 RamAccess<string> tmp = null;
-                if (Rows10[1].Okpo_DB == "")
+                if (FormNum_DB == "1.0")
                 {
-                    tmp = Rows10[0].ShortJurLico;
-                    tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
-                    tmp.PropertyChanged += ShortJurLicoRepValueChanged;
-                    Rows10[1].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
-                    Rows10[1].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
+                    if (Rows10[1].Okpo_DB == "")
+                    {
+                        tmp = Rows10[0].ShortJurLico;
+                        tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
+                        tmp.PropertyChanged += ShortJurLicoRepValueChanged;
+                        Rows10[1].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
+                        Rows10[1].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
+                    }
+                    else
+                    {
+                        tmp = Rows10[1].ShortJurLico;
+                        tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
+                        tmp.PropertyChanged += ShortJurLicoRepValueChanged;
+                        Rows10[0].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
+                        Rows10[0].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
+                    }
                 }
-                else
+                if (FormNum_DB == "2.0")
                 {
-                    tmp = Rows10[1].ShortJurLico;
-                    tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
-                    tmp.PropertyChanged += ShortJurLicoRepValueChanged;
-                    Rows10[0].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
-                    Rows10[0].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
+                    if (Rows20[1].Okpo_DB == "")
+                    {
+                        tmp = Rows20[0].ShortJurLico;
+                        tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
+                        tmp.PropertyChanged += ShortJurLicoRepValueChanged;
+                        Rows20[1].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
+                        Rows20[1].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
+                    }
+                    else
+                    {
+                        tmp = Rows20[1].ShortJurLico;
+                        tmp.PropertyChanged -= ShortJurLicoRepValueChanged;
+                        tmp.PropertyChanged += ShortJurLicoRepValueChanged;
+                        Rows20[0].ShortJurLico.PropertyChanged -= ShortJurLicoRepValueChanged;
+                        Rows20[0].ShortJurLico.PropertyChanged += ShortJurLicoRepValueChanged;
+                    }
                 }
                 return tmp;
             }
@@ -2919,7 +2963,7 @@ namespace Models.Collections
         #endregion
 
         #region IDataGridColumn
-        public DataGridColumns GetColumnStructure()
+        public DataGridColumns GetColumnStructure(string param)
         {
             return null;
         }

@@ -8,6 +8,6 @@ namespace Models.Collections
 {
     public interface IDataGridColumn
     {
-        DataGridColumns GetColumnStructure();
+        DataGridColumns GetColumnStructure(string param = "");
     }
 }
