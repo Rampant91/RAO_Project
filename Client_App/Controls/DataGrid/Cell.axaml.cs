@@ -52,14 +52,6 @@ namespace Client_App.Controls.DataGrid
         public int Row { get; set; }
         public int Column { get; set; }
 
-        public void DataContextChangedPanel(object sender,EventArgs args)
-        {
-            if(Control is TextBox)
-            {
-
-            }
-        }
-
         Control _Control = null;
         public Control Control 
         {
@@ -74,10 +66,29 @@ namespace Client_App.Controls.DataGrid
                     _Control = value;
 
                     var t = ((Panel)((Border)Content).Child);
-                    t.DataContextChanged += DataContextChangedPanel;
                     t.Children.Add(_Control);
+
+                    if (!(Control is TextBlock))
+                    {
+                        this.PointerPressed += PointerPressedEventHandler;
+                        this.PointerMoved += PointerMovedEventHandler;
+                        this.PointerReleased += PointerReleasedEventHandler;
+                    }
                 }
             } 
+        }
+
+        public void PointerPressedEventHandler(object sender,PointerEventArgs args)
+        {
+            var t = this.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
+        }
+        public void PointerMovedEventHandler(object sender, PointerEventArgs args)
+        {
+            var t = this.Parent.Parent;
+        }
+        public void PointerReleasedEventHandler(object sender, PointerEventArgs args)
+        {
+            var t = this.Parent.Parent;
         }
 
         private void InitializeComponent()
@@ -89,7 +100,6 @@ namespace Client_App.Controls.DataGrid
                 var t = ((Panel)((Border)Content).Child);
                 t.Children.Add(Control);
             }
-
         }
     }
 }

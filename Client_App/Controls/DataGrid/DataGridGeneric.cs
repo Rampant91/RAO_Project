@@ -45,7 +45,7 @@ namespace Client_App.Controls.DataGrid
     }
     #endregion
 
-    public class DataGrid<T> : UserControl where T : class, IKey, IDataGridColumn, new()
+    public class DataGrid<T> : UserControl,IDataGrid where T : class, IKey, IDataGridColumn, new()
     {
         #region Items
         public static readonly DirectProperty<DataGrid<T>, IKeyCollection> ItemsProperty =
@@ -83,6 +83,7 @@ namespace Client_App.Controls.DataGrid
             get => Items!=null?Items.Count.ToString():"0";
             set
             {
+                SetAndRaise(ItemsCountProperty, ref _ItemsCount, Items != null ? Items.Count.ToString() : "0");
             }
         }
         #endregion
@@ -208,7 +209,14 @@ namespace Client_App.Controls.DataGrid
             set
             {
                 SetAndRaise(IsReadableProperty, ref _IsReadable, value);
-                Init();
+                
+                foreach(StackPanel item in CenterStackPanel.Children)
+                {
+                    foreach(Cell it in item.Children)
+                    {
+                        it.Control.IsEnabled = !value;
+                    }
+                }
             }
         }
         #endregion
@@ -886,13 +894,16 @@ namespace Client_App.Controls.DataGrid
                 {
                     for (int i = Items.Count; i < offsetMax; i++)
                     {
-                        if (CenterStackPanel.Children[i].IsVisible)
+                        if (CenterStackPanel.Children[i - offset].IsVisible)
                         {
-                            CenterStackPanel.Children[i].IsVisible = false;
+                            CenterStackPanel.Children[i - offset].IsVisible = false;
                         }
                     }
                 }
             }
+
+            PageCount = "0";
+            ItemsCount = "0";
         }
         #endregion
 
@@ -1417,6 +1428,7 @@ namespace Client_App.Controls.DataGrid
                         textBox.TextAlignment = TextAlignment.Center;
                         textBox.VerticalAlignment = VerticalAlignment.Center;
                         textBox.IsEnabled = !IsReadable;
+                        textBox.Height = 30;
                         textBox.ContextMenu = new ContextMenu() { Width = 0,Height=0 };
 
                         Cell cell = new Cell();
@@ -1497,8 +1509,8 @@ namespace Client_App.Controls.DataGrid
 
             ScrollViewer CenterScrollViewer = new ScrollViewer();
             CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            CenterScrollViewer.MaxHeight = 200;
-            CenterScrollViewer.MinHeight = 30;
+            CenterScrollViewer.MaxHeight = 185;
+            CenterScrollViewer.MinHeight = 185;
             CenterScrollViewer.Content = CenterPanel;
 
             CenterBorder.Child = CenterScrollViewer;
@@ -1593,7 +1605,6 @@ namespace Client_App.Controls.DataGrid
 
             #endregion
 
-
             ////pn.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
             ////pn.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
             ////pn.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
@@ -1601,5 +1612,10 @@ namespace Client_App.Controls.DataGrid
             Content = MainPanel;
         }
         #endregion
+
+        public void MethodFromCell(string param)
+        {
+
+        }
     }
 }

@@ -53,6 +53,7 @@ namespace Client_App.Short_Visual
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
             grd.PageSize = 6;
+            grd.IsReadable = true;
 
             grd.Name = "Form10AllDataGrid_";
 
