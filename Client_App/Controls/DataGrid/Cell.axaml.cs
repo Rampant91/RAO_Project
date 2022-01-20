@@ -52,6 +52,14 @@ namespace Client_App.Controls.DataGrid
         public int Row { get; set; }
         public int Column { get; set; }
 
+        public void DataContextChangedPanel(object sender,EventArgs args)
+        {
+            if(Control is TextBox)
+            {
+
+            }
+        }
+
         Control _Control = null;
         public Control Control 
         {
@@ -66,6 +74,7 @@ namespace Client_App.Controls.DataGrid
                     _Control = value;
 
                     var t = ((Panel)((Border)Content).Child);
+                    t.DataContextChanged += DataContextChangedPanel;
                     t.Children.Add(_Control);
                 }
             } 
