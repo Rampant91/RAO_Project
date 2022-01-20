@@ -5,8 +5,9 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Client_App.Controls.DataGrid.Cell"
 			 xmlns:local="clr-namespace:Client_App.Controls.DataGrid">
-    <Border BorderThickness="1" BorderBrush="{Binding $parent.BorderBrush}">
-        <Panel Background="Transparent" DataContext="{Binding $parent[StackPanel].DataContext}"></Panel>
-		
+    <Border BorderThickness="1" BorderBrush="{Binding $parent.BorderColor}">
+        <Panel Background="{Binding $parent.Background}" DataContext="{Binding $parent[StackPanel].DataContext}">
+			
+		</Panel>
     </Border>
 </UserControl>

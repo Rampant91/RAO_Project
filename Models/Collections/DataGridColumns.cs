@@ -15,14 +15,21 @@ namespace Models.Collections
         public string Binding { 
             get 
             {
-                var tmp = innertCol.FirstOrDefault();
-                if (tmp == null)
+                if (innertCol != null)
                 {
-                    return binding;
+                    var tmp = innertCol.FirstOrDefault();
+                    if (tmp == null)
+                    {
+                        return binding;
+                    }
+                    else
+                    {
+                        return tmp.Binding;
+                    }
                 }
                 else
                 {
-                    return tmp.Binding;
+                    return binding;
                 }
             }
             set 

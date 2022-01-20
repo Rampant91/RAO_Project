@@ -85,10 +85,10 @@ namespace Client_App.Long_Visual
             grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
             grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
 
-            grd.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
-                ((Form_PropertyAttribute) Type.GetType("Models.Form10,Models").GetProperty(Property)
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ));
+           //grd.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
+           //    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
+           //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+           //));
 
             grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + Property, 400));
 
@@ -124,10 +124,10 @@ namespace Client_App.Long_Visual
             }
             else
             {
-                grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
-                    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
-                        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                ));
+                //grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
+                    //((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
+                        //.GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+                //));
                 grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
             }
 
@@ -206,18 +206,18 @@ namespace Client_App.Long_Visual
             StackPanel grd = new StackPanel();
             grd.Orientation = Orientation.Horizontal;
 
-            grd.Children.Add(CreateTextBlock("5,10,0,0", 0, 30,
-                ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty("OrganUprav")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ,295));
+            //grd.Children.Add(CreateTextBlock("5,10,0,0", 0, 30,
+            //    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty("OrganUprav")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //,295));
             grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + "OrganUprav", 400));
             pnlmin.Children.Add(grd);
             StackPanel grd1 = new StackPanel();
             grd1.Orientation = Orientation.Horizontal;
-            grd1.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
-                ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty("RegNo")
-                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-            ,295));
+            //grd1.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
+            //    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty("RegNo")
+            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
+            //,295));
             grd1.Children.Add(CreateTextBox("5,0,10,20", 0, 30, BindingPrefix + "[0]." + "RegNo", 400));
             pnlmin.Children.Add(grd1);
 

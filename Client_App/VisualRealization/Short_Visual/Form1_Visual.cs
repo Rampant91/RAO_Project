@@ -101,7 +101,7 @@ namespace Client_App.Short_Visual
         //Форма 1X
         private static Control FormX_Visual(INameScope scp)
         {
-            Controls.DataGrid.DataGridReport grd = new Controls.DataGrid.DataGridReport
+            Controls.DataGrid.DataGridReport grd = new Controls.DataGrid.DataGridReport("Form1AllDataGrid_")
             {
                 Name = "Form1AllDataGrid_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,

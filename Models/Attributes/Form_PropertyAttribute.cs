@@ -15,25 +15,28 @@ namespace Models.Attributes
         {
             DataGridColumns tmp = new();
             tmp.name = Names[0];
-            if (Names[1] != null)
+            if (Names.Length > 1)
             {
-                tmp.innertCol = new System.Collections.Generic.List<DataGridColumns>() { };
-            }
-            DataGridColumns _tmp = tmp;
-            for (int i = 1; i < Names.Length; i++)
-            {
-                DataGridColumns it = new();
-                it.name = Names[i];
-                _tmp.innertCol.Add(it);
-                try
+                if (Names[1] != null)
                 {
-                    if (Names[i + 1] != null)
-                    {
-                        it.innertCol = new System.Collections.Generic.List<DataGridColumns>();
-                        _tmp = it;
-                    }
+                    tmp.innertCol = new System.Collections.Generic.List<DataGridColumns>() { };
                 }
-                catch { }
+                DataGridColumns _tmp = tmp;
+                for (int i = 1; i < Names.Length; i++)
+                {
+                    DataGridColumns it = new();
+                    it.name = Names[i];
+                    _tmp.innertCol.Add(it);
+                    try
+                    {
+                        if (Names[i + 1] != null)
+                        {
+                            it.innertCol = new System.Collections.Generic.List<DataGridColumns>();
+                            _tmp = it;
+                        }
+                    }
+                    catch { }
+                }
             }
             return tmp;
         }

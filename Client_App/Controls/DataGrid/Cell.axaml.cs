@@ -16,28 +16,70 @@ namespace Client_App.Controls.DataGrid
     public class Cell : UserControl
     {
 
+        public Cell()
+        {
+            InitializeComponent();
+        }
+
         public Cell(Control ctrl)
         {
             this.Control = ctrl;
             InitializeComponent();
         }
 
+        #region BorderColor
+        public static readonly DirectProperty<Cell, SolidColorBrush> BorderColorProperty =
+                AvaloniaProperty.RegisterDirect<Cell, SolidColorBrush>(
+        nameof(BorderColor),
+        o => o.BorderColor,
+        (o, v) => o.BorderColor = v);
+
+        private SolidColorBrush _BorderColor = null;
+
+        public SolidColorBrush BorderColor
+        {
+            get => _BorderColor;
+            set
+            {
+                if (value != null)
+                {
+                    SetAndRaise(BorderColorProperty, ref _BorderColor, value);
+                }
+            }
+        }
+        #endregion
+
         public int Row { get; set; }
         public int Column { get; set; }
 
-        public Cell()
+        Control _Control = null;
+        public Control Control 
         {
-            InitializeComponent();
-        }
+            get 
+            { 
+                return _Control;
+            }
+            set 
+            {
+                if(_Control!=value&&value!=null)
+                {
+                    _Control = value;
 
-        public Control Control { get; set; }
+                    var t = ((Panel)((Border)Content).Child);
+                    t.Children.Add(_Control);
+                }
+            } 
+        }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
 
-            var t = ((Panel) ((Border) Content).Child);
-            t.Children.Add(Control);
+            if (Control != null)
+            {
+                var t = ((Panel)((Border)Content).Child);
+                t.Children.Add(Control);
+            }
 
         }
     }

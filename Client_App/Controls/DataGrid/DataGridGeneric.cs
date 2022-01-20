@@ -64,7 +64,7 @@ namespace Client_App.Controls.DataGrid
                 if (value != null)
                 {
                     SetAndRaise(ItemsProperty, ref _items, value);
-                    UpdateAllCells();
+                    UpdateCells();
                 }
             }
         }
@@ -194,6 +194,25 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region IsReadable
+        public static readonly DirectProperty<DataGrid<T>, bool> IsReadableProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
+                nameof(IsReadable),
+                o => o.IsReadable,
+                (o, v) => o.IsReadable = v);
+
+        private bool _IsReadable = true;
+        public bool IsReadable
+        {
+            get => _IsReadable;
+            set
+            {
+                SetAndRaise(IsReadableProperty, ref _IsReadable, value);
+                MakeAll();
+            }
+        }
+        #endregion
+
         #region PageSize
         public static readonly DirectProperty<DataGrid<T>, int> PageSizeProperty =
              AvaloniaProperty.RegisterDirect<DataGrid<T>, int>(
@@ -302,16 +321,25 @@ namespace Client_App.Controls.DataGrid
             get
             {
                 var t = new T();
-                return t.GetColumnStructure();
+                string tmp = "";
+                if(Name== "Form1AllDataGrid_")
+                {
+                    tmp = "1.0";
+                }
+                if (Name == "Form2AllDataGrid_")
+                {
+                    tmp = "2.0";
+                }
+                return t.GetColumnStructure(tmp);
             }
         }
         private List<StackPanel> Rows { get; set; }
 
         private StackPanel HeaderStackPanel { get; set; }
         private StackPanel CenterStackPanel { get; set; }
-        public DataGrid()
+        public DataGrid(string Name="")
         {
-
+            this.Name = Name;
         }
 
         #region SetSelectedControls
@@ -829,48 +857,27 @@ namespace Client_App.Controls.DataGrid
 
         private void UpdateCells()
         {
-            ////UpdateAllCells();
-            //UpdateAllCells();
-            //return;
+            var count = 0;
+            if (Items != null)
+            {
+                foreach (var item in Items)
+                {
+                    CenterStackPanel.Children[count].DataContext = item;
+                    CenterStackPanel.Children[count].IsVisible = true;
+                    count++;
+                }
 
-            //NameScope scp = new();
-            //if (Name != null)
-            //{
-            //    scp.Register(Name, this);
-            //    if (Items.Count() == 0)
-            //    {
-            //        UpdateAllCells();
-            //        return;
-            //    }
-
-            //    var num = Convert.ToInt32(_nowPage);
-            //    var offset = (num - 1) * PageSize;
-            //    var its = Items as IList;
-
-            //    for (int i = offset; i < num * PageSize; i++)
-            //    {
-            //        if (i >= its.Count)
-            //        {
-            //            Rows[i - offset + 1].SCells.DataContext = null;
-            //            Rows[i - offset + 1].SCells.RowHide = true;
-            //        }
-            //        else
-            //        {
-            //            if (its[i] != Rows[i - offset + 1].SCells.DataContext)
-            //            {
-            //                Rows[i - offset + 1].SCells.DataContext = its[i];
-            //                Rows[i - offset + 1].SCells.RowHide = false;
-            //            }
-            //            else
-            //            {
-            //                Rows[i - offset + 1].SCells.RowHide = false;
-            //            }
-            //        }
-            //    }
-
-            //    SetSelectedControls();
-            //    SetSelectedItemsWithHandler();
-            //}
+                if (Items.Count < PageSize)
+                {
+                    for (int i = Items.Count; i < PageSize; i++)
+                    {
+                        if (CenterStackPanel.Children[i].IsVisible)
+                        {
+                            CenterStackPanel.Children[i].IsVisible = false;
+                        }
+                    }
+                }
+            }
         }
         #endregion
 
@@ -1340,24 +1347,92 @@ namespace Client_App.Controls.DataGrid
             MakeAll();
             MakeHeaderRows();
             MakeCenterRows();
-
             //this.DoubleTapped += DataGrid_DoubleTapped;
             //this.AddHandler(KeyDownEvent, KeyDownEventHandler, handledEventsToo: true);
             //this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
         }
+        private void MakeHeaderInner(List<DataGridColumns> lst)
+        {
+            if(lst==null)
+            {
+                return;
+            }
+            else
+            {
+                foreach(var item in lst)
+                {
+                    TextBlock textBlock = new TextBlock();
+                    textBlock.Text = item.name;
+                    textBlock.TextAlignment = TextAlignment.Center;
+                    textBlock.VerticalAlignment = VerticalAlignment.Center;
+
+                    Cell cell = new Cell();
+                    cell.Width = item.SizeCol;
+                    cell.Height = 30;
+                    cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
+                    cell.Background = new SolidColorBrush(Color.Parse("White"));
+                    cell.Control = textBlock;
+
+                    HeaderStackPanel.Children.Add(cell);
+                    //MakeHeaderInner(item.innertCol);
+                }
+            }
+        }
+
+        private void MakeCenterInner(List<DataGridColumns> lst)
+        {
+            if (lst == null)
+            {
+                return;
+            }
+            else
+            {
+                for (int i = 0; i < PageSize; i++)
+                {
+                    StackPanel Row = new();
+                    Row.Orientation = Orientation.Horizontal;
+                    foreach (var item in lst)
+                    {
+                        TextBox textBox = new TextBox()
+                        {
+                            [!TextBox.DataContextProperty] = new Binding(item.Binding),
+                            [!TextBox.TextProperty]=new Binding("Value")
+                        };
+                        textBox.TextAlignment = TextAlignment.Center;
+                        textBox.VerticalAlignment = VerticalAlignment.Center;
+                        textBox.IsEnabled = IsReadable;
+                        textBox.ContextMenu = new ContextMenu() { Width = 0,Height=0 };
+
+                        Cell cell = new Cell();
+                        cell.Width = item.SizeCol;
+                        cell.Height = 30;
+                        cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
+                        cell.Background = new SolidColorBrush(Color.Parse("White"));
+                        cell.Control = textBox;
+
+                        Row.Children.Add(cell);
+                        //MakeHeaderInner(item.innertCol);
+                    }
+                    Row.IsVisible = false;
+                    CenterStackPanel.Children.Add(Row);
+                }
+            }
+        }
+
         private void MakeHeaderRows()
         {
             var Columns = this.Columns;
-
+            MakeHeaderInner(Columns.innertCol);
         }
+
         private void MakeCenterRows()
         {
             var Columns = this.Columns;
+            MakeCenterInner(Columns.innertCol);
         }
 
         private void MakeAll()
         {
-
             #region Main_<MainStackPanel>
             Panel MainPanel = new()
             {
@@ -1380,10 +1455,10 @@ namespace Client_App.Controls.DataGrid
 
             Panel HeaderPanel = new();
             HeaderPanel.Background = new SolidColorBrush(Color.FromArgb(150,180, 154, 255));
-            HeaderPanel.Height = 50;
             HeaderBorder.Child = HeaderPanel;
 
             HeaderStackPanel = new();
+            HeaderStackPanel.Margin = Thickness.Parse("2,2,2,2");
             HeaderStackPanel.Orientation = Orientation.Horizontal;
             HeaderPanel.Children.Add(HeaderStackPanel);
             #endregion
@@ -1402,15 +1477,20 @@ namespace Client_App.Controls.DataGrid
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
-            CenterPanel.MinHeight = 30;
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
             ScrollViewer CenterScrollViewer = new ScrollViewer();
+            CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            CenterScrollViewer.MaxHeight = 200;
+            CenterScrollViewer.MinHeight = 30;
             CenterScrollViewer.Content = CenterPanel;
+
             CenterBorder.Child = CenterScrollViewer;
 
             CenterStackPanel = new();
             CenterStackPanel.Orientation = Orientation.Vertical;
+            CenterStackPanel.HorizontalAlignment = HorizontalAlignment.Left;
+
             CenterPanel.Children.Add(CenterStackPanel);
             #endregion
 

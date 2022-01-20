@@ -37,6 +37,11 @@ namespace Client_App.Controls.DataGrid
             InitializeComponent();
             this.Init();
         }
+        public DataGridReport(string Name) : base(Name)
+        {
+            InitializeComponent();
+            this.Init();
+        }
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
