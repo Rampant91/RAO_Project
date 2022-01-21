@@ -50,7 +50,4 @@
       <DependentUpon>RowNumber.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\DataGrid\Новая папка\" />
-  </ItemGroup>
 </Project>

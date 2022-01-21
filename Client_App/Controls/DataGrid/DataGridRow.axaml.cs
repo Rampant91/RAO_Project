@@ -2,10 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Layout;
 
 namespace Client_App.Controls.DataGrid
 {
-    public partial class DataGridRow : StackPanel
+    public class DataGridRow : StackPanel
     {
         #region Row
         public static readonly DirectProperty<DataGridRow, int> RowProperty =
@@ -43,7 +44,43 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        public DataGridRow() : base()
+        //#region Orientation
+        //public static readonly DirectProperty<DataGridRow, Orientation> OrientationProperty =
+        //    AvaloniaProperty.RegisterDirect<DataGridRow, Orientation>(
+        //        nameof(Orientation),
+        //        o => o.Orientation,
+        //        (o, v) => o.Orientation = v);
+
+        //private Orientation _Orientation = Orientation.Horizontal;
+        //public Orientation Orientation
+        //{
+        //    get => _Orientation;
+        //    set
+        //    {
+        //        SetAndRaise(OrientationProperty, ref _Orientation, value);
+        //    }
+        //}
+        //#endregion
+
+        //#region Children
+        //public static readonly DirectProperty<DataGridRow, Avalonia.Controls.Controls> ChildrenProperty =
+        //    AvaloniaProperty.RegisterDirect<DataGridRow, Avalonia.Controls.Controls>(
+        //        nameof(Children),
+        //        o => o.Children,
+        //        (o, v) => o.Children = v);
+
+        //private Avalonia.Controls.Controls _Children = new Avalonia.Controls.Controls();
+        //public Avalonia.Controls.Controls Children
+        //{
+        //    get => _Children;
+        //    set
+        //    {
+        //        SetAndRaise(ChildrenProperty, ref _Children, value);
+        //    }
+        //}
+        //#endregion
+
+        public DataGridRow()
         {
             InitializeComponent();
         }

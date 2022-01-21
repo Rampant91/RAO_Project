@@ -368,20 +368,20 @@ namespace Client_App.Controls.DataGrid
 
         private void SetSelectedControls_LineSingle()
         {
-            //var Row = LastPressedItem[0];
+            var Row = LastPressedItem[0];
 
-            //var tmp = Rows.Where(item=>((Cell)item.Children.FirstOrDefault()).Row != Row);
+            var tmp = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row != Row);
 
-            //foreach (StackPanel item in tmp)
-            //{
-            //    var cells = item.Children;
-            //    foreach (Cell it in cells)
-            //    {
-            //        it.Background = Background;
-            //    }
-            //}
+            foreach (DataGridRow item in tmp)
+            {
+                var cells = item.Children;
+                foreach (Cell it in cells)
+                {
+                    it.Background = Background;
+                }
+            }
 
-            //SelectedCells.Clear();
+            SelectedCells.Clear();
 
             //if (Rows[Row] != null)
             //{
@@ -639,15 +639,15 @@ namespace Client_App.Controls.DataGrid
             }
             if (paramAction == "DoublePressed")
             {
-                MousePressed(param);
+                MouseDoublePressed(param);
             }
             if (paramAction == "Released")
             {
-                MousePressed(param);
+                MouseReleased(param);
             }
             if (paramAction == "Moved")
             {
-                MousePressed(param);
+                MouseMoved(param);
             }
         }
         private void MousePressed(string param)
@@ -1312,7 +1312,7 @@ namespace Client_App.Controls.DataGrid
                         textBox.VerticalAlignment = VerticalAlignment.Center;
                         textBox.IsEnabled = !IsReadable;
                         textBox.Height = 30;
-                        textBox.ContextMenu = new ContextMenu() { Width = 0,Height=0 };
+                        textBox.ContextMenu = new ContextMenu() { Width = 0, Height=0 };
 
                         Cell cell = new Cell();
                         cell.Row = Row;
