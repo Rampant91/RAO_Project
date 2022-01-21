@@ -54,7 +54,7 @@ namespace Client_App.Controls.DataGrid
             AvaloniaProperty.RegisterDirect<Cell, int>(
                 nameof(Row),
                 o => o.Row,
-                (o, v) => o.Row = v);
+                (o, v) => o.Row = v, defaultBindingMode: Avalonia.Data.BindingMode.TwoWay);
 
         private int _Row = -1;
         public int Row

@@ -16,21 +16,20 @@ namespace Client_App.Converters
         {
             if (Value != null)
             {
-                IEnumerable? rps_coll = (IEnumerable)Value;
-                ObservableCollectionWithItemPropertyChanged<IKey>? lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
-                foreach (object? item in rps_coll)
+                IKeyCollection rps_coll = (IKeyCollection)Value;
+                try
                 {
-                    Reports? rps = (Reports)item;
+                    Reports? rps = (Reports)rps_coll.Get<Reports>(0);
                     last_item = rps;
                     if (rps != null)
                     {
-                        foreach (Report? it in rps.Report_Collection)
-                        {
-                            lst.Add(it);
-                        }
+                        return rps.Report_Collection;
                     }
                 }
-                return lst;
+                catch
+                {
+
+                }
             }
             return null;
         }
