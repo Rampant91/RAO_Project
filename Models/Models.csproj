@@ -6,6 +6,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <COMReference Include="VSLangProj2">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>1</VersionMinor>
+      <VersionMajor>7</VersionMajor>
+      <Guid>7c0c4d36-0fa7-4840-b27c-166f91bc9e57</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VSLangProj">
+      <WrapperTool>tlbimp</WrapperTool>
+      <VersionMinor>0</VersionMinor>
+      <VersionMajor>7</VersionMajor>
+      <Guid>49a1950e-3e35-4595-8cb9-920c64c44d67</Guid>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
     <PackageReference Include="FirebirdSql.EntityFrameworkCore.Firebird" Version="8.5.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.12" />
