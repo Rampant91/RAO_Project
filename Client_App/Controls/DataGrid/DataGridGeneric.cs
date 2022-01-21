@@ -89,14 +89,14 @@ namespace Client_App.Controls.DataGrid
         #endregion
 
         #region SelectedItems
-        public static readonly DirectProperty<DataGrid<T>, IKeyCollection> SelectedItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid<T>, IKeyCollection>(
+        public static readonly DirectProperty<DataGrid<T>, ObservableCollectionWithItemPropertyChanged<IKey>> SelectedItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, ObservableCollectionWithItemPropertyChanged<IKey>>(
                 nameof(SelectedItems),
                 o => o.SelectedItems,
                 (o, v) => o.SelectedItems = v);
-        private IKeyCollection _selecteditems =
+        private ObservableCollectionWithItemPropertyChanged<IKey> _selecteditems =
              new ObservableCollectionWithItemPropertyChanged<IKey>();
-        public IKeyCollection SelectedItems
+        public ObservableCollectionWithItemPropertyChanged<IKey> SelectedItems
         {
             get => _selecteditems;
             set
@@ -348,6 +348,11 @@ namespace Client_App.Controls.DataGrid
         public DataGrid(string Name = "")
         {
             this.Name = Name;
+
+            this.AddHandler(PointerPressedEvent,MousePressed,handledEventsToo:true);
+            this.AddHandler(PointerMovedEvent, MouseMoved, handledEventsToo: true);
+            this.AddHandler(PointerReleasedEvent, MouseReleased, handledEventsToo: true);
+            this.AddHandler(DoubleTappedEvent, MouseDoublePressed, handledEventsToo: true);
         }
 
         #region SetSelectedControls
@@ -378,6 +383,7 @@ namespace Client_App.Controls.DataGrid
             }
 
             SelectedCells.Clear();
+            SelectedItems.Clear();
 
             var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row);
 
@@ -385,7 +391,9 @@ namespace Client_App.Controls.DataGrid
             {
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
+                SelectedItems.Add((T)item.DataContext);
             }
+
         }
 
         private void SetSelectedControls_CellSingle()
@@ -498,214 +506,83 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        #region SetSelectedItems
-        public void SetSelectedItems()
-        {
-            var lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
-            foreach (var item in SelectedCells)
-            {
-                if (item is Cell)
-                {
-                    var ch = (Border)((Cell)item).Content;
-                    var ch2 = (Panel)ch.Child;
-                    if (ch2.DataContext != null)
-                    {
-                        lst.Add((IKey)(ch2.DataContext));
-                    }
-                }
-
-                if (item is StackPanel)
-                {
-                    if ((item as StackPanel).DataContext != null)
-                    {
-                        var ch = (IKey)((item as StackPanel).DataContext);
-                        lst.Add(ch);
-                    }
-                }
-
-            }
-            _selecteditems = lst;
-        }
-
-        private void SetSelectedItemsWithHandler()
-        {
-            var lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
-            foreach (var item in SelectedCells)
-            {
-                if (item is Cell)
-                {
-                    var ch = (Border)((Cell)item).Content;
-                    var ch2 = (Panel)ch.Child;
-                    if (ch2.DataContext != null)
-                    {
-                        try
-                        {
-                            lst.Add((IKey)(ch2.DataContext));
-                        }
-                        catch
-                        { }
-                    }
-                }
-
-                if (item is StackPanel)
-                {
-                    if ((item as StackPanel).DataContext != null)
-                    {
-                        var ch = (IKey)((item as StackPanel).DataContext);
-                        lst.Add(ch);
-                    }
-                }
-            }
-
-            SelectedItems = lst;
-        }
-        #endregion
-
-        #region FindCell
-        private int[] FindCell(PointerPoint Mainmouse)
-        {
-            //PointerPoint mouse = Mainmouse;
-
-            //var num = Convert.ToInt32(_nowPage);
-            //var offset = Rows.Offset;
-            //var Rws = Rows[1 + offset, 1];
-            //double h = 0;
-            //h = Rws.Bounds.Size.Height;
-            //int[] ret = new int[2];
-
-            //var t1 = 0;
-            //double sum_y = 0;
-            //for (var i = 1; i <= Rows.Count; i++) 
-            //{
-            //    var tp = Rows[i];
-            //    if (tp != null)
-            //    {
-            //        sum_y += tp.SCells.Bounds.Height;
-            //    }
-
-            //    if (mouse.Position.Y <= sum_y)
-            //    {
-            //        t1 = i;
-            //        break;
-            //    }
-            //}
-
-            ////var t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity) + 1 + offset;
-            //if (t1 <= Rows.Count + offset && t1 > offset)
-            //{
-            //    ret[0] = t1;
-            //    double sum = 0;
-            //    for (var i = 1; i <= Rows[t1].Count; i++)
-            //    {
-            //        var tp = Rows[t1, i];
-            //        if (tp != null)
-            //        {
-            //            sum += tp.Width;
-            //        }
-
-            //        if (mouse.Position.X <= sum)
-            //        {
-            //            ret[1] = i;
-            //            break;
-            //        }
-            //    }
-            //}
-
-            //return ret;
-            return new int[2];
-        }
-        #endregion
-
         #region DataGridPoiter
         public bool DownFlag { get; set; }
         public int[] FirstPressedItem { get; set; } = new int[2];
         public int[] LastPressedItem { get; set; } = new int[2];
-        public void MethodFromCell(string param)
+        private int[] FindMousePress(double[] mouse)
         {
-            var paramArray = param.Split(':');
-            var paramAction= paramArray[0];
+            var tmp = new int[2];
 
-            param = param.Replace(paramAction,"");
-            param = param.Remove(0,1);
-
-            if (paramAction=="Pressed")
+            var sumy = 0.0;
+            var flag = false;
+            foreach(var item in Rows)
             {
-                MousePressed(param);
-            }
-            if (paramAction == "DoublePressed")
-            {
-                MouseDoublePressed(param);
-            }
-            if (paramAction == "Released")
-            {
-                MouseReleased(param);
-            }
-            if (paramAction == "Moved")
-            {
-                MouseMoved(param);
-            }
-        }
-        private void MousePressed(string param)
-        {
-            var paramArray = param.Split(':');
-            var paramKey = paramArray[0];
-            var paramRow = Convert.ToInt32(paramArray[1]);
-            var paramColumn = Convert.ToInt32(paramArray[2]);
-
-            if (paramKey == "Left"|| paramKey == "Right")
-            {
-                FirstPressedItem[0] = paramRow;
-                LastPressedItem[0] = paramRow;
-                FirstPressedItem[1] = paramColumn;
-                LastPressedItem[1] = paramColumn;
-
-                SetSelectedControls();
-            }
-        }
-        private void MouseDoublePressed(string param)
-        {
-            var paramArray = param.Split(':');
-            var paramKey = paramArray[0];
-            var paramRow = Convert.ToInt32(paramArray[1]);
-            var paramColumn = Convert.ToInt32(paramArray[2]);
-        }
-        private void MouseReleased(string param)
-        {
-            var paramArray = param.Split(':');
-            var paramKey = paramArray[0];
-            var paramRow = Convert.ToInt32(paramArray[1]);
-            var paramColumn = Convert.ToInt32(paramArray[2]);
-
-            if (paramKey == "Left")
-            {
-                LastPressedItem[0] = paramRow;
-                LastPressedItem[1] = paramColumn;
-
-                SetSelectedControls();
-            }
-        }
-        private void MouseMoved(string param)
-        {
-            var paramArray = param.Split(':');
-            var paramKey = paramArray[0];
-            var paramRow = Convert.ToInt32(paramArray[1]);
-            var paramColumn = Convert.ToInt32(paramArray[2]);
-
-            if (paramKey == "Left")
-            {
-                if(LastPressedItem[0]!=paramRow)
+                sumy += item.Bounds.Height;
+                if(mouse[0]<sumy)
                 {
-
+                    var sumx = 0.0;
+                    foreach(Cell it in item.Children)
+                    {
+                        sumx+= it.Bounds.Width;
+                        if (mouse[1]<sumx)
+                        {
+                            tmp[0] = it.Row;
+                            tmp[1] = it.Column;
+                            flag = true;
+                        }
+                    }
+                    if(flag)
+                        break;
                 }
-                LastPressedItem[0] = paramRow;
-                LastPressedItem[1] = paramColumn;
+            }
+
+            return tmp;
+        }
+        private void MousePressed(object sender,PointerPressedEventArgs args)
+        {
+            var paramKey = args.GetPointerPoint(this).Properties.PointerUpdateKind;
+            var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
+            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+
+            if (paramKey == PointerUpdateKind.LeftButtonPressed|| paramKey == PointerUpdateKind.RightButtonPressed)
+            {
+                FirstPressedItem = paramRowColumn;
+                LastPressedItem = paramRowColumn;
 
                 SetSelectedControls();
             }
         }
+        private void MouseDoublePressed(object sender, EventArgs args)
+        {
+            //
+        }
+        private void MouseReleased(object sender, PointerReleasedEventArgs args)
+        {
+            var paramKey = args.GetPointerPoint(this).Properties.PointerUpdateKind;
+            var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
+            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
 
+            if (paramKey == PointerUpdateKind.LeftButtonReleased)
+            {
+                LastPressedItem = paramRowColumn;
 
+                SetSelectedControls();
+            }
+        }
+        private void MouseMoved(object sender, PointerEventArgs args)
+        {
+            var paramKey = args.GetPointerPoint(this).Properties;
+            var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
+            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
 
+            if (paramKey.IsLeftButtonPressed)
+            {
+                LastPressedItem = paramRowColumn;
+
+                SetSelectedControls();
+            }
+        }
         #endregion
 
         #region UpdateCells
@@ -801,7 +678,6 @@ namespace Client_App.Controls.DataGrid
             }
 
             SetSelectedControls();
-            SetSelectedItemsWithHandler();
         }
         private void ChangeSelectedCellsByKey(Key PressedKey)
         {
@@ -1293,12 +1169,12 @@ namespace Client_App.Controls.DataGrid
             }
             else
             {
-                var Row = 0;
                 Rows.Clear();
                 for (int i = 0; i < PageSize; i++)
                 {
                     var Column = 0;
                     DataGridRow RowStackPanel = new();
+                    RowStackPanel.Row = i;
                     RowStackPanel.Orientation = Orientation.Horizontal;
                     foreach (var item in lst)
                     {
@@ -1313,23 +1189,19 @@ namespace Client_App.Controls.DataGrid
                         textBox.Height = 30;
                         textBox.ContextMenu = new ContextMenu() { Width = 0, Height=0 };
 
-                        Cell cell = new Cell()
-                        {
-                            [!Cell.RowProperty] = RowStackPanel[!DataGridRow.RowProperty]
-                        };
-                        RowStackPanel.Children.Add(cell);
-                        cell.Row = Row;
+                        Cell cell = new Cell();
+                        cell.Row = i;
                         cell.Column = Column;
                         cell.Width = item.SizeCol;
                         cell.Height = 30;
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
                         cell.Control = textBox;
+                        RowStackPanel.Children.Add(cell);
 
                         Column++;
                         //MakeHeaderInner(item.innertCol);
                     }
-                    Row++;
                     RowStackPanel.IsVisible = false;
                     CenterStackPanel.Children.Add(RowStackPanel);
                     Rows.Add(RowStackPanel);
