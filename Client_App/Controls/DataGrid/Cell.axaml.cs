@@ -113,13 +113,14 @@ namespace Client_App.Controls.DataGrid
 
         public void PointerPressedEventHandler(object sender,PointerEventArgs args)
         {
-            var t = (IDataGrid)this.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
+            var ctrl = (Control)sender;
+            var t = (IDataGrid)ctrl.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
             string tmp = "";
-            if(args.GetPointerPoint(this).Properties.PointerUpdateKind==PointerUpdateKind.LeftButtonPressed)
+            if (args.GetPointerPoint(ctrl).Properties.IsLeftButtonPressed)
             {
                 tmp = "Left";
             }
-            if (args.GetPointerPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
+            if (args.GetPointerPoint(ctrl).Properties.IsRightButtonPressed)
             {
                 tmp = "Right";
             }
@@ -127,27 +128,29 @@ namespace Client_App.Controls.DataGrid
         }
         public void PointerMovedEventHandler(object sender, PointerEventArgs args)
         {
-            var t = (IDataGrid)this.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
+            var ctrl = (Control)sender;
+            var t = (IDataGrid)ctrl.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
             string tmp = "";
-            if (args.GetPointerPoint(this).Properties.IsLeftButtonPressed)
+            if (args.GetPointerPoint(ctrl).Properties.IsLeftButtonPressed)
             {
                 tmp = "Left";
             }
-            if (args.GetPointerPoint(this).Properties.IsRightButtonPressed)
+            if (args.GetPointerPoint(ctrl).Properties.IsRightButtonPressed)
             {
                 tmp = "Right";
             }
-            //t.MethodFromCell("Moved:"+tmp+":"+Row+":"+Column);
+            t.MethodFromCell("Moved:"+tmp+":"+Row+":"+Column);
         }
         public void PointerReleasedEventHandler(object sender, PointerEventArgs args)
         {
-            var t = (IDataGrid)this.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
+            var ctrl = (Control)sender;
+            var t = (IDataGrid)ctrl.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
             string tmp = "";
-            if (args.GetPointerPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            if (args.GetPointerPoint(ctrl).Properties.IsLeftButtonPressed)
             {
                 tmp = "Left";
             }
-            if (args.GetPointerPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
+            if (args.GetPointerPoint(ctrl).Properties.IsRightButtonPressed)
             {
                 tmp = "Right";
             }

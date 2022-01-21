@@ -370,27 +370,22 @@ namespace Client_App.Controls.DataGrid
         {
             var Row = LastPressedItem[0];
 
-            var tmp = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row != Row);
+            var tmp1 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row != Row);
 
-            foreach (DataGridRow item in tmp)
+            foreach (DataGridRow item in tmp1)
             {
-                var cells = item.Children;
-                foreach (Cell it in cells)
-                {
-                    it.Background = Background;
-                }
+                item.ChooseColor = (SolidColorBrush)Background;
             }
 
             SelectedCells.Clear();
 
-            //if (Rows[Row] != null)
-            //{
-            //    foreach (var item in Rows[Row].Cells)
-            //    {
-            //        item.Value.Background = ChooseColor;
-            //    }
-            //    SelectedCells.Add(Rows[Row].SCells);
-            //}
+            var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row);
+
+            foreach (DataGridRow item in tmp2)
+            {
+                item.ChooseColor = (SolidColorBrush)ChooseColor;
+                SelectedCells.Add(item);
+            }
         }
 
         private void SetSelectedControls_CellSingle()
@@ -698,6 +693,10 @@ namespace Client_App.Controls.DataGrid
 
             if (paramKey == "Left")
             {
+                if(LastPressedItem[0]!=paramRow)
+                {
+
+                }
                 LastPressedItem[0] = paramRow;
                 LastPressedItem[1] = paramColumn;
 
@@ -1314,7 +1313,11 @@ namespace Client_App.Controls.DataGrid
                         textBox.Height = 30;
                         textBox.ContextMenu = new ContextMenu() { Width = 0, Height=0 };
 
-                        Cell cell = new Cell();
+                        Cell cell = new Cell()
+                        {
+                            [!Cell.RowProperty] = RowStackPanel[!DataGridRow.RowProperty]
+                        };
+                        RowStackPanel.Children.Add(cell);
                         cell.Row = Row;
                         cell.Column = Column;
                         cell.Width = item.SizeCol;
@@ -1322,8 +1325,6 @@ namespace Client_App.Controls.DataGrid
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
                         cell.Control = textBox;
-
-                        RowStackPanel.Children.Add(cell);
 
                         Column++;
                         //MakeHeaderInner(item.innertCol);
