@@ -48,7 +48,8 @@ namespace Client_App.Short_Visual
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
-            grd.PageSize = 12;
+            grd.PageSize = 10;
+            grd.IsReadable = true;
 
             grd.Name = "Form20AllDataGrid_";
 
@@ -104,6 +105,8 @@ namespace Client_App.Short_Visual
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
+            grd.PageSize = 10;
+            grd.IsReadable = true;
 
             Binding b = new Binding
             {

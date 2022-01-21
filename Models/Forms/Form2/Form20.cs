@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
+using Models.Collections;
 
 namespace Models
 {
@@ -1107,6 +1108,12 @@ namespace Models
             return 3;
         }
 
+        #endregion
+        #region IDataGridColumn
+        public override DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
+        }
         #endregion
     }
 }

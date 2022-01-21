@@ -173,10 +173,7 @@ namespace Models.Abstracts
         #endregion
 
         #region IDataGridColumn
-        public DataGridColumns GetColumnStructure(string param) 
-        {
-            return null;
-        }
+        public abstract DataGridColumns GetColumnStructure(string param);
         #endregion
     }
 }

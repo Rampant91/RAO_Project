@@ -10,6 +10,7 @@ using System.ComponentModel;
 using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
+using Models.Collections;
 
 namespace Models
 {
@@ -1261,6 +1262,12 @@ namespace Models
             //worksheet.Cells[Row + (Transpon == false ? 20 : 0), Column + (Transpon == true ? 20 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form15,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
 
             return 21;
+        }
+        #endregion
+        #region IDataGridColumn
+        public override DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
         }
         #endregion
     }

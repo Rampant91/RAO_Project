@@ -30,25 +30,27 @@ namespace Client_App.Long_Visual
 
         public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width, string watermark = "", bool _flag = false)
         {
-            return null;
-
-                //return new CellText(textProp, false, _flag, watermark ,true)
-                //{
-                //    Width = width,
-                //    Margin = Thickness.Parse(thickness),
-                //    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
-                //    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                //    [!Cell.DataContextProperty] = new Binding(textProp),
-                //    [Grid.ColumnProperty] = columnProp,
-                //}; 
+            Cell textCell = new Cell() {
+                Width = width,
+                Margin = Thickness.Parse(thickness),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                [!Cell.DataContextProperty] = new Binding(textProp),
+                [Grid.ColumnProperty] = columnProp
+            };
+            textCell.Control = new TextBox() {
+                [!TextBox.TextProperty] = new Binding("Value")
+            };
+            return textCell;
         }
 
 
         public static TextBlock CreateTextBlock(string margin, int columnProp, int height, string text,double width=0)
         {
+            TextBlock tmp = null;
             if(width!=0)
             {
-                return new TextBlock
+                tmp=new TextBlock
                 {
                     Width = width,
                     Height = height,
@@ -59,7 +61,7 @@ namespace Client_App.Long_Visual
                     [Grid.ColumnProperty] = columnProp
                 };
             }
-            return new TextBlock
+            tmp=new TextBlock
             {
                 Height = height,
                 Margin = Thickness.Parse(margin),
@@ -68,6 +70,8 @@ namespace Client_App.Long_Visual
                 Text = text,
                 [Grid.ColumnProperty] = columnProp
             };
+
+            return tmp;
         }
 
         static StackPanel Create10Row(string Property, string BindingPrefix)
@@ -361,7 +365,7 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid<Form11> grd = new Controls.DataGrid.DataGrid<Form11>()
+            Controls.DataGrid.DataGridForm11 grd = new Controls.DataGrid.DataGridForm11()
             {
                 Name = "Form11Data_",
                 Focusable = true,
@@ -380,7 +384,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid<Form11>.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGridForm11.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -446,7 +450,7 @@ namespace Client_App.Long_Visual
 
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
-            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
+            Controls.DataGrid.DataGridNote grd1 = new Controls.DataGrid.DataGridNote()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -466,7 +470,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();

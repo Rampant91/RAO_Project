@@ -89,14 +89,14 @@ namespace Client_App.Controls.DataGrid
         #endregion
 
         #region SelectedItems
-        public static readonly DirectProperty<DataGrid<T>, ObservableCollectionWithItemPropertyChanged<IKey>> SelectedItemsProperty =
-            AvaloniaProperty.RegisterDirect<DataGrid<T>, ObservableCollectionWithItemPropertyChanged<IKey>>(
+        public static readonly DirectProperty<DataGrid<T>, IKeyCollection> SelectedItemsProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, IKeyCollection>(
                 nameof(SelectedItems),
                 o => o.SelectedItems,
                 (o, v) => o.SelectedItems = v);
-        private ObservableCollectionWithItemPropertyChanged<IKey> _selecteditems =
+        private IKeyCollection _selecteditems =
              new ObservableCollectionWithItemPropertyChanged<IKey>();
-        public ObservableCollectionWithItemPropertyChanged<IKey> SelectedItems
+        public IKeyCollection SelectedItems
         {
             get => _selecteditems;
             set
@@ -358,16 +358,22 @@ namespace Client_App.Controls.DataGrid
         #region SetSelectedControls
         private void SetSelectedControls()
         {
-            if (ChooseMode == ChooseMode.Cell)
+            if (Items != null)
             {
-                if (MultilineMode == MultilineMode.Multi) SetSelectedControls_CellMulti();
-                if (MultilineMode == MultilineMode.Single) SetSelectedControls_CellSingle();
-            }
+                if (Items.Count != 0)
+                {
+                    if (ChooseMode == ChooseMode.Cell)
+                    {
+                        if (MultilineMode == MultilineMode.Multi) SetSelectedControls_CellMulti();
+                        if (MultilineMode == MultilineMode.Single) SetSelectedControls_CellSingle();
+                    }
 
-            if (ChooseMode == ChooseMode.Line)
-            {
-                if (MultilineMode == MultilineMode.Multi) SetSelectedControls_LineMulti();
-                if (MultilineMode == MultilineMode.Single) SetSelectedControls_LineSingle();
+                    if (ChooseMode == ChooseMode.Line)
+                    {
+                        if (MultilineMode == MultilineMode.Multi) SetSelectedControls_LineMulti();
+                        if (MultilineMode == MultilineMode.Single) SetSelectedControls_LineSingle();
+                    }
+                }
             }
         }
 
@@ -383,7 +389,8 @@ namespace Client_App.Controls.DataGrid
             }
 
             SelectedCells.Clear();
-            SelectedItems.Clear();
+
+            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
 
             var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row);
 
@@ -391,9 +398,9 @@ namespace Client_App.Controls.DataGrid
             {
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
-                SelectedItems.Add((T)item.DataContext);
+                tmpSelectedItems.Add((T)item.DataContext);
             }
-
+            SelectedItems = tmpSelectedItems;
         }
 
         private void SetSelectedControls_CellSingle()
@@ -1133,49 +1140,67 @@ namespace Client_App.Controls.DataGrid
             //this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
         }
 
-        private void MakeHeaderInner(List<DataGridColumns> lst)
+        private void MakeHeaderInner(DataGridColumns ls)
         {
-            if(lst==null)
+            if(ls==null)
             {
                 return;
             }
             else
             {
-                foreach(var item in lst)
+                int Level = ls.Level;
+
+                var tre = ls.GetLevel(Level-1);
+                for (int i = Level-1; i >= 1; i--)
                 {
-                    TextBlock textBlock = new TextBlock();
-                    textBlock.Text = item.name;
-                    textBlock.TextAlignment = TextAlignment.Center;
-                    textBlock.VerticalAlignment = VerticalAlignment.Center;
+                    StackPanel HeaderRow = new StackPanel();
+                    HeaderRow.Orientation = Orientation.Horizontal;
+                    foreach (var item in tre)
+                    {
+                        TextBlock textBlock = new TextBlock();
+                        textBlock.Text = item.name.Contains("null") ?"": item.name;
+                        textBlock.TextAlignment = TextAlignment.Center;
+                        textBlock.VerticalAlignment = VerticalAlignment.Center;
 
-                    Cell cell = new Cell();
-                    cell.Width = item.SizeCol;
-                    cell.Height = 30;
-                    cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
-                    cell.Background = new SolidColorBrush(Color.Parse("White"));
-                    cell.Control = textBlock;
+                        Cell cell = new Cell();
+                        cell.Width = item.SizeCol;
+                        cell.Height = 30;
+                        cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
+                        cell.Background = new SolidColorBrush(Color.Parse("White"));
+                        cell.Control = textBlock;
 
-                    HeaderStackPanel.Children.Add(cell);
-                    //MakeHeaderInner(item.innertCol);
+                        HeaderRow.Children.Add(cell);
+                    }
+                    HeaderStackPanel.Children.Add(HeaderRow);
+                    if (i - 1 >= 1)
+                    {
+                        tre = ls.GetLevel(i - 1);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
         }
 
-        private void MakeCenterInner(List<DataGridColumns> lst)
+        private void MakeCenterInner(DataGridColumns ls)
         {
-            if (lst == null)
+            if (ls == null)
             {
                 return;
             }
             else
             {
                 Rows.Clear();
+                var lst = ls.GetLevel(1);
                 for (int i = 0; i < PageSize; i++)
                 {
                     var Column = 0;
                     DataGridRow RowStackPanel = new();
                     RowStackPanel.Row = i;
                     RowStackPanel.Orientation = Orientation.Horizontal;
+
                     foreach (var item in lst)
                     {
                         TextBox textBox = new TextBox()
@@ -1212,13 +1237,13 @@ namespace Client_App.Controls.DataGrid
         private void MakeHeaderRows()
         {
             var Columns = this.Columns;
-            MakeHeaderInner(Columns.innertCol);
+            MakeHeaderInner(Columns);
         }
 
         private void MakeCenterRows()
         {
             var Columns = this.Columns;
-            MakeCenterInner(Columns.innertCol);
+            MakeCenterInner(Columns);
         }
 
         private void MakeAll()
@@ -1249,7 +1274,7 @@ namespace Client_App.Controls.DataGrid
 
             HeaderStackPanel = new();
             HeaderStackPanel.Margin = Thickness.Parse("2,2,2,2");
-            HeaderStackPanel.Orientation = Orientation.Horizontal;
+            HeaderStackPanel.Orientation = Orientation.Vertical;
             HeaderPanel.Children.Add(HeaderStackPanel);
             #endregion
 

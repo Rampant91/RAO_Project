@@ -9,6 +9,7 @@ using System.Linq;
 using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
+using Models.Collections;
 
 namespace Models
 {
@@ -413,6 +414,12 @@ namespace Models
            //worksheet.Cells[Row + (Transpon == false ? 3 : 0), Column + (Transpon == true ? 3 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form212,Models").GetProperty(nameof(Activity)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
            //worksheet.Cells[Row + (Transpon == false ? 4 : 0), Column + (Transpon == true ? 4 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form212,Models").GetProperty(nameof(ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             return 5;
+        }
+        #endregion
+        #region IDataGridColumn
+        public override DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
         }
         #endregion
     }

@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
+using Models.Collections;
 
 namespace Models
 {
@@ -1649,6 +1650,12 @@ namespace Models
            //worksheet.Cells[Row + (Transpon == false ? 23 : 0), Column + (Transpon == true ? 23 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form16,Models").GetProperty(nameof(FcpNumber)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
 
             return 24;
+        }
+        #endregion
+        #region IDataGridColumn
+        public override DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
         }
         #endregion
     }

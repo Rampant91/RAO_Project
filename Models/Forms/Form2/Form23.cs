@@ -8,6 +8,7 @@ using System.Linq;
 using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
+using Models.Collections;
 
 namespace Models
 {
@@ -897,6 +898,12 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
             //worksheet.Cells[Row + (Transpon == false ? 10 : 0), Column + (Transpon == true ? 10 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(ExpirationDate)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             //worksheet.Cells[Row + (Transpon == false ? 11 : 0), Column + (Transpon == true ? 11: 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form23,Models").GetProperty(nameof(DocumentName)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
             return 12;
+        }
+        #endregion
+        #region IDataGridColumn
+        public override DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
         }
         #endregion
     }

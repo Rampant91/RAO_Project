@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Models.Abstracts;
 using Models.Attributes;
 using OfficeOpenXml;
+using Models.Collections;
 
 namespace Models
 {
@@ -608,6 +609,12 @@ private bool PlotCode_Validation(RamAccess<string> value)//TODO
            // worksheet.Cells[Row + (Transpon == false ? 7 : 0), Column + (Transpon == true ? 7 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Form211,Models").GetProperty(nameof(SpecificActivityOfDensePart)).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
 
             return 8;
+        }
+        #endregion
+        #region IDataGridColumn
+        public override DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
         }
         #endregion
     }

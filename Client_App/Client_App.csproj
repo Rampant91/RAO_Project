@@ -37,6 +37,12 @@
     <Compile Update="Controls\DataGrid\Cell.axaml.cs">
       <DependentUpon>Cell.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridNote.axaml.cs">
+      <DependentUpon>DataGridNote.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\DataGrid\DataGrids\DataGridForm11.axaml.cs">
+      <DependentUpon>DataGridForm11.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Controls\DataGrid\DataGrids\DataGridReport.axaml.cs">
       <DependentUpon>DataGridReport.axaml</DependentUpon>
     </Compile>

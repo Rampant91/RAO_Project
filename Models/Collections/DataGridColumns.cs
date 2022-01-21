@@ -59,11 +59,12 @@ namespace Models.Collections
                 }
                 else
                 {
+                    var t = 0;
                     foreach (var elem in innertCol) 
                     {
-                        sizeCol += elem.sizeCol;
+                        t += elem.sizeCol;
                     }
-                    return sizeCol;
+                    return t;
                 }
             
             }
@@ -74,13 +75,6 @@ namespace Models.Collections
                     if (sizeCol != value)
                     {
                         sizeCol = value;
-                    }
-                }
-                else
-                {
-                    foreach (var elem in innertCol)
-                    {
-                        elem.sizeCol=value;
                     }
                 }
             }
@@ -102,6 +96,71 @@ namespace Models.Collections
                 else
                 {
                     return tmp.Level + 1;
+                }
+            }
+        }
+
+        public void SetSizeColToAllLevels(int SizeCol)
+        {
+            if (innertCol != null)
+            {
+                foreach (var item in innertCol)
+                {
+                    item.sizeCol = SizeCol;
+                    item.SetSizeColToAllLevels(SizeCol);
+                }
+            }
+        }
+        public List<DataGridColumns> GetLevel(int Level)
+        {
+            var lstar = new List<DataGridColumns>();
+            if (this.Level == 1)
+            {
+                lstar.Add(this);
+                return lstar;
+            }
+            else
+            {
+                if (this.Level > Level)
+                {
+                    int allLevel = this.Level-1;
+                    List<DataGridColumns> lst = new List<DataGridColumns>(innertCol);
+                    while (allLevel != Level)
+                    {
+                        List<DataGridColumns> lst2 = new List<DataGridColumns>();
+                        foreach (var item in lst)
+                        {
+                            lst2.AddRange(item.innertCol);
+
+                        }
+                        lst = lst2;
+
+                        bool flag = true;
+                        foreach (var item in lst)
+                        {
+                            if (item.Level != Level)
+                            {
+                                flag = false;
+                            }
+                        }
+                        if (flag)
+                        {
+                            allLevel = Level;
+                        }
+                    }
+
+                    return lst;
+                }
+                else
+                {
+                    if (this.Level == Level)
+                    {
+                        return innertCol;
+                    }
+                    else
+                    {
+                        return lstar;
+                    }
                 }
             }
         }

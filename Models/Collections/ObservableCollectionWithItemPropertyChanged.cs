@@ -254,6 +254,11 @@ namespace Models.Collections
         {
             return this[index] as T1;
         }
+
+        public void Clear<T1>() where T1 : class, IKey
+        {
+            this.Clear();
+        }
         public List<T1> ToList<T1>()where T1:class,IKey
         {
             var lst = new List<T1>();

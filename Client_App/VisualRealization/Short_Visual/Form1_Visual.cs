@@ -64,7 +64,7 @@ namespace Client_App.Short_Visual
                 NameScope = new WeakReference<INameScope>(scp)
             };
 
-            grd.Bind(Controls.DataGrid.DataGrid<Reports>.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGridReports.ItemsProperty, b);
         
         ContextMenu? cntx = new ContextMenu();
             List<MenuItem> itms = new List<MenuItem>
@@ -111,6 +111,8 @@ namespace Client_App.Short_Visual
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
             };
+            grd.PageSize = 10;
+            grd.IsReadable = true;
 
             Binding b = new Binding
             {
@@ -119,7 +121,7 @@ namespace Client_App.Short_Visual
                 NameScope = new WeakReference<INameScope>(scp),
                 Converter = new Converters.ReportsToReport_Converter(),
             };
-            grd.Bind(Controls.DataGrid.DataGrid<Report>.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGridReport.ItemsProperty, b);
 
             ContextMenu? cntx = new ContextMenu();
             List<MenuItem> excelitems = new List<MenuItem>

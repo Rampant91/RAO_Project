@@ -17,6 +17,7 @@ namespace Models.Collections
         T1 Get<T1>(int index) where T1 : class, IKey;
         List<T1> ToList<T1>() where T1 : class, IKey;
 
+        void Clear<T1>() where T1 : class, IKey;
         IEnumerator<IKey> GetEnumerator();
         IEnumerable<IKey> GetEnumerable();
         int Count { get; }

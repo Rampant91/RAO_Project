@@ -9,6 +9,7 @@ using Models.Attributes;
 using System.Collections.Generic;
 using OfficeOpenXml;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
+using Models.Collections;
 
 namespace Models
 {
@@ -1079,6 +1080,13 @@ namespace Models
             return 3;
         }
 
+        #endregion
+
+        #region IDataGridColumn
+        public override DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
+        }
         #endregion
     }
 }
