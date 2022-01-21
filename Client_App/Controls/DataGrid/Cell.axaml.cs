@@ -100,61 +100,8 @@ namespace Client_App.Controls.DataGrid
 
                     var t = ((Panel)((Border)Content).Child);
                     t.Children.Add(_Control);
-
-                    if (!(Control is TextBlock))
-                    {
-                        this.PointerPressed += PointerPressedEventHandler;
-                        this.PointerMoved += PointerMovedEventHandler;
-                        this.PointerReleased += PointerReleasedEventHandler;
-                    }
                 }
             } 
-        }
-
-        public void PointerPressedEventHandler(object sender,PointerEventArgs args)
-        {
-            var ctrl = (Control)sender;
-            var t = (IDataGrid)ctrl.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
-            string tmp = "";
-            if (args.GetPointerPoint(ctrl).Properties.IsLeftButtonPressed)
-            {
-                tmp = "Left";
-            }
-            if (args.GetPointerPoint(ctrl).Properties.IsRightButtonPressed)
-            {
-                tmp = "Right";
-            }
-            t.MethodFromCell("Pressed:"+tmp+":"+Row+":"+Column);
-        }
-        public void PointerMovedEventHandler(object sender, PointerEventArgs args)
-        {
-            var ctrl = (Control)sender;
-            var t = (IDataGrid)ctrl.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
-            string tmp = "";
-            if (args.GetPointerPoint(ctrl).Properties.IsLeftButtonPressed)
-            {
-                tmp = "Left";
-            }
-            if (args.GetPointerPoint(ctrl).Properties.IsRightButtonPressed)
-            {
-                tmp = "Right";
-            }
-            t.MethodFromCell("Moved:"+tmp+":"+Row+":"+Column);
-        }
-        public void PointerReleasedEventHandler(object sender, PointerEventArgs args)
-        {
-            var ctrl = (Control)sender;
-            var t = (IDataGrid)ctrl.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
-            string tmp = "";
-            if (args.GetPointerPoint(ctrl).Properties.IsLeftButtonPressed)
-            {
-                tmp = "Left";
-            }
-            if (args.GetPointerPoint(ctrl).Properties.IsRightButtonPressed)
-            {
-                tmp = "Right";
-            }
-            t.MethodFromCell("Released:" + tmp + ":" + Row + ":" + Column);
         }
 
         private void InitializeComponent()

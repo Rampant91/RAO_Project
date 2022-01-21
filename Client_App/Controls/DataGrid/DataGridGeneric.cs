@@ -348,6 +348,11 @@ namespace Client_App.Controls.DataGrid
         public DataGrid(string Name = "")
         {
             this.Name = Name;
+
+            this.AddHandler(PointerPressedEvent,MousePressed,handledEventsToo:true);
+            this.AddHandler(PointerMovedEvent, MouseMoved, handledEventsToo: true);
+            this.AddHandler(PointerReleasedEvent, MouseReleased, handledEventsToo: true);
+            this.AddHandler(DoubleTappedEvent, MouseDoublePressed, handledEventsToo: true);
         }
 
         #region SetSelectedControls
@@ -561,151 +566,80 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        #region FindCell
-        private int[] FindCell(PointerPoint Mainmouse)
-        {
-            //PointerPoint mouse = Mainmouse;
-
-            //var num = Convert.ToInt32(_nowPage);
-            //var offset = Rows.Offset;
-            //var Rws = Rows[1 + offset, 1];
-            //double h = 0;
-            //h = Rws.Bounds.Size.Height;
-            //int[] ret = new int[2];
-
-            //var t1 = 0;
-            //double sum_y = 0;
-            //for (var i = 1; i <= Rows.Count; i++) 
-            //{
-            //    var tp = Rows[i];
-            //    if (tp != null)
-            //    {
-            //        sum_y += tp.SCells.Bounds.Height;
-            //    }
-
-            //    if (mouse.Position.Y <= sum_y)
-            //    {
-            //        t1 = i;
-            //        break;
-            //    }
-            //}
-
-            ////var t1 = (int)Math.Round(mouse.Position.Y / h, 0, MidpointRounding.ToNegativeInfinity) + 1 + offset;
-            //if (t1 <= Rows.Count + offset && t1 > offset)
-            //{
-            //    ret[0] = t1;
-            //    double sum = 0;
-            //    for (var i = 1; i <= Rows[t1].Count; i++)
-            //    {
-            //        var tp = Rows[t1, i];
-            //        if (tp != null)
-            //        {
-            //            sum += tp.Width;
-            //        }
-
-            //        if (mouse.Position.X <= sum)
-            //        {
-            //            ret[1] = i;
-            //            break;
-            //        }
-            //    }
-            //}
-
-            //return ret;
-            return new int[2];
-        }
-        #endregion
-
         #region DataGridPoiter
         public bool DownFlag { get; set; }
         public int[] FirstPressedItem { get; set; } = new int[2];
         public int[] LastPressedItem { get; set; } = new int[2];
-        public void MethodFromCell(string param)
+        private int[] FindMousePress(double[] mouse)
         {
-            var paramArray = param.Split(':');
-            var paramAction= paramArray[0];
+            var tmp = new int[2];
 
-            param = param.Replace(paramAction,"");
-            param = param.Remove(0,1);
-
-            if (paramAction=="Pressed")
+            var sumy = 0.0;
+            foreach(var item in Rows)
             {
-                MousePressed(param);
-            }
-            if (paramAction == "DoublePressed")
-            {
-                MouseDoublePressed(param);
-            }
-            if (paramAction == "Released")
-            {
-                MouseReleased(param);
-            }
-            if (paramAction == "Moved")
-            {
-                MouseMoved(param);
-            }
-        }
-        private void MousePressed(string param)
-        {
-            var paramArray = param.Split(':');
-            var paramKey = paramArray[0];
-            var paramRow = Convert.ToInt32(paramArray[1]);
-            var paramColumn = Convert.ToInt32(paramArray[2]);
-
-            if (paramKey == "Left"|| paramKey == "Right")
-            {
-                FirstPressedItem[0] = paramRow;
-                LastPressedItem[0] = paramRow;
-                FirstPressedItem[1] = paramColumn;
-                LastPressedItem[1] = paramColumn;
-
-                SetSelectedControls();
-            }
-        }
-        private void MouseDoublePressed(string param)
-        {
-            var paramArray = param.Split(':');
-            var paramKey = paramArray[0];
-            var paramRow = Convert.ToInt32(paramArray[1]);
-            var paramColumn = Convert.ToInt32(paramArray[2]);
-        }
-        private void MouseReleased(string param)
-        {
-            var paramArray = param.Split(':');
-            var paramKey = paramArray[0];
-            var paramRow = Convert.ToInt32(paramArray[1]);
-            var paramColumn = Convert.ToInt32(paramArray[2]);
-
-            if (paramKey == "Left")
-            {
-                LastPressedItem[0] = paramRow;
-                LastPressedItem[1] = paramColumn;
-
-                SetSelectedControls();
-            }
-        }
-        private void MouseMoved(string param)
-        {
-            var paramArray = param.Split(':');
-            var paramKey = paramArray[0];
-            var paramRow = Convert.ToInt32(paramArray[1]);
-            var paramColumn = Convert.ToInt32(paramArray[2]);
-
-            if (paramKey == "Left")
-            {
-                if(LastPressedItem[0]!=paramRow)
+                sumy += item.Bounds.Height;
+                if(mouse[0]<sumy)
                 {
-
+                    var sumx = 0.0;
+                    foreach(Cell it in item.Children)
+                    {
+                        sumx+= item.Bounds.Width;
+                        if (mouse[1]<sumx)
+                        {
+                            tmp[0] = it.Row;
+                            tmp[1] = it.Column;
+                            break;
+                        }
+                    }
                 }
-                LastPressedItem[0] = paramRow;
-                LastPressedItem[1] = paramColumn;
+            }
+
+            return tmp;
+        }
+        private void MousePressed(object sender,PointerPressedEventArgs args)
+        {
+            var paramKey = args.GetPointerPoint(this).Properties.PointerUpdateKind;
+            var paramPos = args.GetPointerPoint(CenterStackPanel).Position;
+            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+
+            if (paramKey == PointerUpdateKind.LeftButtonPressed|| paramKey == PointerUpdateKind.RightButtonPressed)
+            {
+                FirstPressedItem = paramRowColumn;
+                LastPressedItem = paramRowColumn;
 
                 SetSelectedControls();
             }
         }
+        private void MouseDoublePressed(object sender, EventArgs args)
+        {
+            //
+        }
+        private void MouseReleased(object sender, PointerReleasedEventArgs args)
+        {
+            var paramKey = args.GetPointerPoint(this).Properties.PointerUpdateKind;
+            var paramPos = args.GetPosition(this);
+            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
 
+            if (paramKey == PointerUpdateKind.LeftButtonReleased)
+            {
+                LastPressedItem = paramRowColumn;
 
+                SetSelectedControls();
+            }
+        }
+        private void MouseMoved(object sender, PointerEventArgs args)
+        {
+            var paramKey = args.GetPointerPoint(this).Properties;
+            var paramPos = args.GetPosition(this);
+            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
 
+            if (paramKey.IsLeftButtonPressed)
+            {
+                LastPressedItem = paramRowColumn;
+
+                SetSelectedControls();
+            }
+        }
         #endregion
 
         #region UpdateCells
