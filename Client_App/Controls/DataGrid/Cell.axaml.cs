@@ -49,8 +49,41 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        public int Row { get; set; }
-        public int Column { get; set; }
+        #region Row
+        public static readonly DirectProperty<Cell, int> RowProperty =
+            AvaloniaProperty.RegisterDirect<Cell, int>(
+                nameof(Row),
+                o => o.Row,
+                (o, v) => o.Row = v);
+
+        private int _Row = -1;
+        public int Row
+        {
+            get => _Row;
+            set
+            {
+                SetAndRaise(RowProperty, ref _Row, value);
+            }
+        }
+        #endregion
+
+        #region Column
+        public static readonly DirectProperty<Cell, int> ColumnProperty =
+            AvaloniaProperty.RegisterDirect<Cell, int>(
+                nameof(Column),
+                o => o.Column,
+                (o, v) => o.Column = v);
+
+        private int _Column = -1;
+        public int Column
+        {
+            get => _Column;
+            set
+            {
+                SetAndRaise(ColumnProperty, ref _Column, value);
+            }
+        }
+        #endregion
 
         Control _Control = null;
         public Control Control 
@@ -104,7 +137,7 @@ namespace Client_App.Controls.DataGrid
             {
                 tmp = "Right";
             }
-            //t.MethodFromCell("Moved:" + Row + ":" + Column);
+            //t.MethodFromCell("Moved:"+tmp+":"+Row+":"+Column);
         }
         public void PointerReleasedEventHandler(object sender, PointerEventArgs args)
         {
@@ -118,7 +151,7 @@ namespace Client_App.Controls.DataGrid
             {
                 tmp = "Right";
             }
-            t.MethodFromCell("Released:" + Row + ":" + Column);
+            t.MethodFromCell("Released:" + tmp + ":" + Row + ":" + Column);
         }
 
         private void InitializeComponent()

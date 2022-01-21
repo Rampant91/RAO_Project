@@ -341,7 +341,7 @@ namespace Client_App.Controls.DataGrid
                 return t.GetColumnStructure(tmp);
             }
         }
-        private List<StackPanel> Rows { get; set; }
+        private List<DataGridRow> Rows { get; set; } = new List<DataGridRow>();
 
         private StackPanel HeaderStackPanel { get; set; }
         private StackPanel CenterStackPanel { get; set; }
@@ -369,27 +369,28 @@ namespace Client_App.Controls.DataGrid
         private void SetSelectedControls_LineSingle()
         {
             //var Row = LastPressedItem[0];
-            //var sel = SelectedCells.ToArray();
-            //foreach (Row item in sel)
-            //    if (item.SRow != Row)
+
+            //var tmp = Rows.Where(item=>((Cell)item.Children.FirstOrDefault()).Row != Row);
+
+            //foreach (StackPanel item in tmp)
+            //{
+            //    var cells = item.Children;
+            //    foreach (Cell it in cells)
             //    {
-            //        var cells = item.Children;
-            //        foreach (Cell it in cells)
-            //        {
-            //            it.Background = Background;
-            //        }
+            //        it.Background = Background;
             //    }
+            //}
 
             //SelectedCells.Clear();
-            //if (!SelectedCells.Contains(Rows[Row] == null ? null : Rows[Row].SCells))
-            //    if (Rows[Row] != null)
+
+            //if (Rows[Row] != null)
+            //{
+            //    foreach (var item in Rows[Row].Cells)
             //    {
-            //        foreach (var item in Rows[Row].Cells)
-            //        {
-            //            item.Value.Background = ChooseColor;
-            //        }
-            //        SelectedCells.Add(Rows[Row].SCells);
+            //        item.Value.Background = ChooseColor;
             //    }
+            //    SelectedCells.Add(Rows[Row].SCells);
+            //}
         }
 
         private void SetSelectedControls_CellSingle()
@@ -476,10 +477,10 @@ namespace Client_App.Controls.DataGrid
             //                {
             //                    var lst = Rows[i].Cells;
             //                    var cnt = lst.Count();
-            //                    for (int n =2;n<=cnt;n++)
+            //                    for (int n = 2; n <= cnt; n++)
             //                    {
-            //                        Rows[i,n].Background = ChooseColor;
-            //                        SelectedCells.Add(Rows[i,n]);
+            //                        Rows[i, n].Background = ChooseColor;
+            //                        SelectedCells.Add(Rows[i, n]);
             //                    }
             //                }
             //                else
@@ -620,213 +621,92 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        #region DataGridPoiter Down/Moved/Up/DoubleTapped
+        #region DataGridPoiter
         public bool DownFlag { get; set; }
         public int[] FirstPressedItem { get; set; } = new int[2];
         public int[] LastPressedItem { get; set; } = new int[2];
-
-        public void DataGridPointerDown(object sender, PointerPressedEventArgs args)
+        public void MethodFromCell(string param)
         {
-            //var mouse = args.GetCurrentPoint((StackPanel)sender);
-            //if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonPressed ||
-            //    mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
-            //    if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
-            //    {
-            //        if (Rows.Count > 0)
-            //        {
-            //            var tmp = FindCell(mouse);
+            var paramArray = param.Split(':');
+            var paramAction= paramArray[0];
 
-            //            var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
-            //            var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
-            //            var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-            //            var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+            param = param.Replace(paramAction,"");
+            param = param.Remove(0,1);
 
-            //            if (!(maxColumn == 1 && minColumn == 1))
-            //            {
-            //                if ((!(tmp[0] >= minRow && tmp[0] <= maxRow)) || (!(tmp[1] >= minColumn && tmp[1] <= maxColumn)))
-            //                {
-            //                    FirstPressedItem = tmp;
-            //                    LastPressedItem = tmp;
-            //                    DownFlag = true;
-            //                    SetSelectedControls();
-            //                    var item = SelectedCells.FirstOrDefault();
-            //                    if (item != null)
-            //                    {
-            //                        if (item is (Cell))
-            //                        {
-            //                            var bd = (Cell)item;
-            //                            if ((!bd.IsReadOnly))
-            //                            {
-            //                                var t = ((TextBox)((Panel)((Border)bd
-            //                                    .GetLogicalChildren().First())
-            //                                    .Child)
-            //                                    .Children[0]);
-            //                                t.Focus();
-            //                            }
-            //                        }
-            //                        else
-            //                        {
-            //                            var bd = (Row)item;
-            //                            bd.Focus();
-            //                        }
-            //                    }
-            //                    SetSelectedItemsWithHandler();
-            //                }
-            //            }
-            //            else
-            //            {
-            //                if ((!(tmp[0] >= minRow && tmp[0] <= maxRow)))
-            //                {
-            //                    FirstPressedItem = tmp;
-            //                    LastPressedItem = tmp;
-            //                    DownFlag = true;
-            //                    SetSelectedControls();
-            //                    var item = SelectedCells.FirstOrDefault();
-            //                    if (item != null)
-            //                    {
-            //                        if (item is (Cell))
-            //                        {
-            //                            var bd = (Cell)item;
-            //                            if ((!bd.IsReadOnly))
-            //                            {
-            //                                var t = ((TextBox)((Panel)((Border)bd
-            //                                    .GetLogicalChildren().First())
-            //                                    .Child)
-            //                                    .Children[0]);
-            //                                t.Focus();
-            //                            }
-            //                        }
-            //                        else
-            //                        {
-            //                            var bd = (Row)item;
-            //                            bd.Focus();
-            //                        }
-            //                    }
-            //                    SetSelectedItemsWithHandler();
-            //                }
-            //            }
-            //            this.ContextMenu.Close();
-            //            this.ContextMenu.PlacementTarget = Rows[tmp[0], tmp[1]];
-            //            this.ContextMenu.Open();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        this.ContextMenu.Close();
-            //        if (Rows.Count > 0)
-            //        {
-            //            var tmp = FindCell(mouse);
-            //            FirstPressedItem = tmp;
-            //            LastPressedItem = tmp;
-
-            //            DownFlag = true;
-            //            SetSelectedControls();
-            //            var item = SelectedCells.FirstOrDefault();
-            //            if (item != null)
-            //            {
-            //                if (item is (Cell))
-            //                {
-            //                    var bd = (Cell)item;
-            //                    if ((!bd.IsReadOnly))
-            //                    {
-            //                        var t = ((TextBox)((Panel)((Border)bd
-            //                            .GetLogicalChildren().First())
-            //                            .Child)
-            //                            .Children[0]);
-            //                        t.Focus();
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                    var bd = (Row)item;
-            //                    bd.Focus();
-            //                }
-            //            }
-            //            SetSelectedItemsWithHandler();
-            //        }
-            //    }
-        }
-
-        public void DataGridPointerMoved(object sender, PointerEventArgs args)
-        {
-            var mouse = args.GetCurrentPoint((StackPanel)sender);
-            if (DownFlag)
+            if (paramAction=="Pressed")
             {
-                if (Rows.Count > 0)
-                {
-                    var tmp = FindCell(mouse);
-                    LastPressedItem = tmp;
+                MousePressed(param);
+            }
+            if (paramAction == "DoublePressed")
+            {
+                MousePressed(param);
+            }
+            if (paramAction == "Released")
+            {
+                MousePressed(param);
+            }
+            if (paramAction == "Moved")
+            {
+                MousePressed(param);
+            }
+        }
+        private void MousePressed(string param)
+        {
+            var paramArray = param.Split(':');
+            var paramKey = paramArray[0];
+            var paramRow = Convert.ToInt32(paramArray[1]);
+            var paramColumn = Convert.ToInt32(paramArray[2]);
 
-                    SetSelectedControls();
-                    SetSelectedItemsWithHandler();
-                }
+            if (paramKey == "Left"|| paramKey == "Right")
+            {
+                FirstPressedItem[0] = paramRow;
+                LastPressedItem[0] = paramRow;
+                FirstPressedItem[1] = paramColumn;
+                LastPressedItem[1] = paramColumn;
+
+                SetSelectedControls();
+            }
+        }
+        private void MouseDoublePressed(string param)
+        {
+            var paramArray = param.Split(':');
+            var paramKey = paramArray[0];
+            var paramRow = Convert.ToInt32(paramArray[1]);
+            var paramColumn = Convert.ToInt32(paramArray[2]);
+        }
+        private void MouseReleased(string param)
+        {
+            var paramArray = param.Split(':');
+            var paramKey = paramArray[0];
+            var paramRow = Convert.ToInt32(paramArray[1]);
+            var paramColumn = Convert.ToInt32(paramArray[2]);
+
+            if (paramKey == "Left")
+            {
+                LastPressedItem[0] = paramRow;
+                LastPressedItem[1] = paramColumn;
+
+                SetSelectedControls();
+            }
+        }
+        private void MouseMoved(string param)
+        {
+            var paramArray = param.Split(':');
+            var paramKey = paramArray[0];
+            var paramRow = Convert.ToInt32(paramArray[1]);
+            var paramColumn = Convert.ToInt32(paramArray[2]);
+
+            if (paramKey == "Left")
+            {
+                LastPressedItem[0] = paramRow;
+                LastPressedItem[1] = paramColumn;
+
+                SetSelectedControls();
             }
         }
 
-        public void DataGridPointerUp(object sender, PointerReleasedEventArgs args)
-        {
-            var mouse = args.GetCurrentPoint((StackPanel)sender);
-            if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased ||
-                mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
-            {
-                if (mouse.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
-                {
-                    this.ContextMenu.Open(this);
-                    if (Rows.Count > 0)
-                    {
-                        var tmp = FindCell(mouse);
 
-                        var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
-                        var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
-                        var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-                        var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
 
-                        if (!(maxColumn == 1 && minColumn == 1))
-                        {
-                            if ((!(tmp[0] >= minRow && tmp[0] <= maxRow)) || (!(tmp[1] >= minColumn && tmp[1] <= maxColumn)))
-                            {
-                                LastPressedItem = tmp;
-                                DownFlag = false;
-                                SetSelectedControls();
-                                SetSelectedItemsWithHandler();
-                            }
-                        }
-                        else
-                        {
-                            if ((!(tmp[0] >= minRow && tmp[0] <= maxRow)))
-                            {
-                                LastPressedItem = tmp;
-                                DownFlag = false;
-                                SetSelectedControls();
-                                SetSelectedItemsWithHandler();
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (Rows.Count > 0)
-                    {
-                        var tmp = FindCell(mouse);
-                        LastPressedItem = tmp;
-
-                        DownFlag = false;
-
-                        SetSelectedControls();
-                        SetSelectedItemsWithHandler();
-                    }
-                }
-            }
-        }
-
-        private void DataGrid_DoubleTapped(object? sender, RoutedEventArgs e)
-        {
-            //if (DoubleClickCommand != null)
-            //{
-            //    DownFlag = false;
-            //    DoubleClickCommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
-            //}
-        }
         #endregion
 
         #region UpdateCells
@@ -879,8 +759,8 @@ namespace Client_App.Controls.DataGrid
                     {
                         if (count < PageSize&&i<Items.Count)
                         {
-                            CenterStackPanel.Children[count].DataContext = Items.Get<T>(i);
-                            CenterStackPanel.Children[count].IsVisible = true;
+                            Rows[count].DataContext = Items.Get<T>(i);
+                            Rows[count].IsVisible = true;
                             count++;
                         }
                         else
@@ -894,9 +774,9 @@ namespace Client_App.Controls.DataGrid
                 {
                     for (int i = Items.Count; i < offsetMax; i++)
                     {
-                        if (CenterStackPanel.Children[i - offset].IsVisible)
+                        if (Rows[i - offset].IsVisible)
                         {
-                            CenterStackPanel.Children[i - offset].IsVisible = false;
+                            Rows[i - offset].IsVisible = false;
                         }
                     }
                 }
@@ -1415,10 +1295,11 @@ namespace Client_App.Controls.DataGrid
             else
             {
                 var Row = 0;
+                Rows.Clear();
                 for (int i = 0; i < PageSize; i++)
                 {
                     var Column = 0;
-                    StackPanel RowStackPanel = new();
+                    DataGridRow RowStackPanel = new();
                     RowStackPanel.Orientation = Orientation.Horizontal;
                     foreach (var item in lst)
                     {
@@ -1450,6 +1331,7 @@ namespace Client_App.Controls.DataGrid
                     Row++;
                     RowStackPanel.IsVisible = false;
                     CenterStackPanel.Children.Add(RowStackPanel);
+                    Rows.Add(RowStackPanel);
                 }
             }
         }
@@ -1619,10 +1501,5 @@ namespace Client_App.Controls.DataGrid
             Content = MainPanel;
         }
         #endregion
-
-        public void MethodFromCell(string param)
-        {
-
-        }
     }
 }
