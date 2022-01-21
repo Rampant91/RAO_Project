@@ -1308,8 +1308,8 @@ namespace Client_App.ViewModels
                                                 masterheaderlength = Form20.ExcelHeader(worksheet, 1, 1);
                                                 masterheaderlength = Form20.ExcelHeader(worksheetPrim, 1, 1);
                                             }
-                                            var t = Report.ExcelHeader(worksheet, param, 1, masterheaderlength);
-                                            Report.ExcelHeader(worksheetPrim, param, 1, masterheaderlength);
+                                            var t = Report.ExcelHeader(worksheet, param, 1, masterheaderlength+1);
+                                            Report.ExcelHeader(worksheetPrim, param, 1, masterheaderlength+1);
                                             masterheaderlength += t;
                                             if (param == "1.1")
                                             {
