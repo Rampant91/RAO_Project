@@ -9,7 +9,7 @@
         x:Class="Client_App.Views.MainWindow"
         xmlns:Converters="using:Client_App.Converters"
         Icon="/Assets/logo.png"
-        Title="Интерактивное пособие по вводу данных ver.1.1.0"
+        Title="Интерактивное пособие по вводу данных ver.1.2.0"
         x:Name="MainWindow"
         Background="#ffffff">
 	<DockPanel>
