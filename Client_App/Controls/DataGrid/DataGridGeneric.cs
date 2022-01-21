@@ -1414,10 +1414,12 @@ namespace Client_App.Controls.DataGrid
             }
             else
             {
+                var Row = 0;
                 for (int i = 0; i < PageSize; i++)
                 {
-                    StackPanel Row = new();
-                    Row.Orientation = Orientation.Horizontal;
+                    var Column = 0;
+                    StackPanel RowStackPanel = new();
+                    RowStackPanel.Orientation = Orientation.Horizontal;
                     foreach (var item in lst)
                     {
                         TextBox textBox = new TextBox()
@@ -1432,17 +1434,22 @@ namespace Client_App.Controls.DataGrid
                         textBox.ContextMenu = new ContextMenu() { Width = 0,Height=0 };
 
                         Cell cell = new Cell();
+                        cell.Row = Row;
+                        cell.Column = Column;
                         cell.Width = item.SizeCol;
                         cell.Height = 30;
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
                         cell.Control = textBox;
 
-                        Row.Children.Add(cell);
+                        RowStackPanel.Children.Add(cell);
+
+                        Column++;
                         //MakeHeaderInner(item.innertCol);
                     }
-                    Row.IsVisible = false;
-                    CenterStackPanel.Children.Add(Row);
+                    Row++;
+                    RowStackPanel.IsVisible = false;
+                    CenterStackPanel.Children.Add(RowStackPanel);
                 }
             }
         }

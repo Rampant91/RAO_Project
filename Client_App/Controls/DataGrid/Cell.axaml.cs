@@ -80,15 +80,45 @@ namespace Client_App.Controls.DataGrid
 
         public void PointerPressedEventHandler(object sender,PointerEventArgs args)
         {
-            var t = this.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
+            var t = (IDataGrid)this.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
+            string tmp = "";
+            if(args.GetPointerPoint(this).Properties.PointerUpdateKind==PointerUpdateKind.LeftButtonPressed)
+            {
+                tmp = "Left";
+            }
+            if (args.GetPointerPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
+            {
+                tmp = "Right";
+            }
+            t.MethodFromCell("Pressed:"+tmp+":"+Row+":"+Column);
         }
         public void PointerMovedEventHandler(object sender, PointerEventArgs args)
         {
-            var t = this.Parent.Parent;
+            var t = (IDataGrid)this.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
+            string tmp = "";
+            if (args.GetPointerPoint(this).Properties.IsLeftButtonPressed)
+            {
+                tmp = "Left";
+            }
+            if (args.GetPointerPoint(this).Properties.IsRightButtonPressed)
+            {
+                tmp = "Right";
+            }
+            //t.MethodFromCell("Moved:" + Row + ":" + Column);
         }
         public void PointerReleasedEventHandler(object sender, PointerEventArgs args)
         {
-            var t = this.Parent.Parent;
+            var t = (IDataGrid)this.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent;
+            string tmp = "";
+            if (args.GetPointerPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+            {
+                tmp = "Left";
+            }
+            if (args.GetPointerPoint(this).Properties.PointerUpdateKind == PointerUpdateKind.RightButtonReleased)
+            {
+                tmp = "Right";
+            }
+            t.MethodFromCell("Released:" + Row + ":" + Column);
         }
 
         private void InitializeComponent()
