@@ -405,111 +405,87 @@ namespace Client_App.Controls.DataGrid
 
         private void SetSelectedControls_CellSingle()
         {
-            //var Row = LastPressedItem[0];
-            //var Column = LastPressedItem[1];
-            //var sel = SelectedCells.ToArray();
-            //foreach (Cell item in sel)
-            //    if (item.CellRow != Row && item.CellColumn != Column)
-            //    {
-            //        item.Background = Background;
-            //    }
+            var Row = LastPressedItem[0];
+            var Column = LastPressedItem[1];
 
-            //SelectedCells.Clear();
-            //if (!SelectedCells.Contains(Rows[Row, Column]))
-            //    if (Rows[Row, Column] != null)
-            //    {
-            //        if (Column >= 2)
-            //        {
-            //            Rows[Row, Column].Background = ChooseColor;
-            //            SelectedCells.Add(Rows[Row, Column]);
-            //        }
-            //    }
+            var tmp1 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row != Row&&((Cell)item.Children.FirstOrDefault()).Column != Column);
+
+            foreach (DataGridRow item in tmp1)
+            {
+                item.ChooseColor = (SolidColorBrush)Background;
+            }
+
+            SelectedCells.Clear();
+
+            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+
+            var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row && ((Cell)item.Children.FirstOrDefault()).Column == Column);
+
+            foreach (DataGridRow item in tmp2)
+            {
+                item.ChooseColor = (SolidColorBrush)ChooseColor;
+                SelectedCells.Add(item);
+                tmpSelectedItems.Add((T)item.DataContext);
+            }
+            SelectedItems = tmpSelectedItems;
         }
 
         private void SetSelectedControls_LineMulti()
         {
-            //var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
-            //var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
-            //var sel = SelectedCells.ToArray();
+            var minRow = Math.Min(FirstPressedItem[0],LastPressedItem[0]);
+            var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
 
-            //foreach (Row item in sel)
-            //    if (!(item.SRow >= minRow && item.SRow <= maxRow))
-            //    {
-            //        var cells = item.Children;
-            //        foreach (Cell it in cells)
-            //        {
-            //            it.Background = Background;
-            //        }
-            //    }
+            var tmp1 = Rows.Where(item => !(((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow));
 
-            //SelectedCells.Clear();
-            //for (var i = minRow; i <= maxRow; i++)
-            //    if (!SelectedCells.Contains(Rows[i].SCells))
-            //        if (Rows[i] != null)
-            //        {
-            //            foreach (var item in Rows[i].Cells)
-            //            {
-            //                item.Value.Background = ChooseColor;
-            //            }
-            //            SelectedCells.Add(Rows[i].SCells);
-            //        }
+            foreach (DataGridRow item in tmp1)
+            {
+                item.ChooseColor = (SolidColorBrush)Background;
+            }
+
+            SelectedCells.Clear();
+
+            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+
+            var tmp2 = Rows.Where(item => (((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow));
+
+            foreach (DataGridRow item in tmp2)
+            {
+                item.ChooseColor = (SolidColorBrush)ChooseColor;
+                SelectedCells.Add(item);
+                tmpSelectedItems.Add((T)item.DataContext);
+            }
+            SelectedItems = tmpSelectedItems;
         }
 
         private void SetSelectedControls_CellMulti()
         {
-            //var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
-            //var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
-            //var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
-            //var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-            //var sel = SelectedCells.ToArray();
-            //foreach (Cell item in sel)
-            //{
-            //    if (!(item.CellRow >= minRow && item.CellRow <= maxRow))
-            //    {
-            //        item.Background = Background;
-            //    }
+            var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
+            var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
+            var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+            var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
 
-            //    if (!(item.CellColumn >= minColumn && item.CellColumn <= maxColumn))
-            //    {
-            //        item.Background = Background;
-            //    }
-            //}
-            //SelectedCells.Clear();
-            //for (var i = minRow; i <= maxRow; i++)
-            //{
-            //    for (var j = minColumn; j <= maxColumn; j++)
-            //    {
-            //        if (Rows[i, j] != null)
-            //        {
-            //            if (j == 1)
-            //            {
-            //                if (!Name.Contains("Note"))
-            //                {
-            //                    var lst = Rows[i].Cells;
-            //                    var cnt = lst.Count();
-            //                    for (int n = 2; n <= cnt; n++)
-            //                    {
-            //                        Rows[i, n].Background = ChooseColor;
-            //                        SelectedCells.Add(Rows[i, n]);
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                    Rows[i, j].Background = ChooseColor;
-            //                    SelectedCells.Add(Rows[i, j]);
-            //                }
-            //            }
-            //            else
-            //            {
-            //                if (j >= 2)
-            //                {
-            //                    Rows[i, j].Background = ChooseColor;
-            //                    SelectedCells.Add(Rows[i, j]);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
+            var tmp1 = Rows.Where(item => !(((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow&&
+                                            ((Cell)item.Children.FirstOrDefault()).Column >= minColumn && ((Cell)item.Children.FirstOrDefault()).Column<= maxColumn));
+
+            foreach (DataGridRow item in tmp1)
+            {
+                item.ChooseColor = (SolidColorBrush)Background;
+            }
+
+            SelectedCells.Clear();
+
+            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+
+            var tmp2 = Rows.Where(item => (((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow &&
+                                            ((Cell)item.Children.FirstOrDefault()).Column >= minColumn && ((Cell)item.Children.FirstOrDefault()).Column <= maxColumn));
+
+            foreach (DataGridRow item in tmp2)
+            {
+                item.ChooseColor = (SolidColorBrush)ChooseColor;
+                SelectedCells.Add(item);
+                tmpSelectedItems.Add((T)item.DataContext);
+            }
+            SelectedItems = tmpSelectedItems;
         }
         #endregion
 
