@@ -16,13 +16,24 @@ using Avalonia.Media;
 using Models.Collections;
 using ReactiveUI;
 using System.Reactive;
+using System.Collections;
 
 namespace Client_App.Controls.DataGrid
 {
-    public class KeyComand
+    public class KeyComand<T>
     {
-        Key Key { get; set; }
-        KeyModifiers KeyModifiers { get; set; }
-         Func { get; set; }
+        public bool IsContextCommand { get; set; }
+        public string ContextMenuText { get; set; }
+        public Key Key { get; set; }
+        public KeyModifiers KeyModifiers { get; set; }
+        public ReactiveCommand<T,Unit> Command { get; set; }
+
+        public void DoCommand(T param)
+        {
+            if(Command!=null)
+            {
+                Command.Execute(param);
+            }
+        }
     }
 }
