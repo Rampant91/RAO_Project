@@ -421,7 +421,7 @@ namespace Client_App.Controls.DataGrid
             this.AddHandler(PointerReleasedEvent, MouseReleased, handledEventsToo: true);
             this.AddHandler(DoubleTappedEvent, MouseDoublePressed, handledEventsToo: true);
 
-            this.AddHandler(KeyDownEvent, OnDataGridKeyDown,RoutingStrategies.Direct|RoutingStrategies.Bubble);
+            this.AddHandler(KeyDownEvent, OnDataGridKeyDown, handledEventsToo: true);
 
             _CommandsList.CollectionChanged += CommandListChanged;
         }
