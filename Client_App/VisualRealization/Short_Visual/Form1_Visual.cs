@@ -65,36 +65,6 @@ namespace Client_App.Short_Visual
             };
 
             grd.Bind(Controls.DataGrid.DataGridReports.ItemsProperty, b);
-        
-        ContextMenu? cntx = new ContextMenu();
-            List<MenuItem> itms = new List<MenuItem>
-            {
-                new MenuItem
-                {
-                    Header = "Добавить форму",
-                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
-                    //HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+D1"),
-                    [!MenuItem.CommandProperty] = new Binding("AddReport"),
-                    CommandParameter = "1.0",
-                },
-                new MenuItem
-                {
-                    Header = "Изменить форму",
-                    [!MenuItem.CommandProperty] = new Binding("ChangeReport"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-                },
-                new MenuItem
-                {
-                    Header = "Удалить форму",
-                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
-                    //HotKey = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
-                    [!MenuItem.CommandProperty] = new Binding("DeleteReport"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-                }
-            };
-            cntx.Items = itms;
-
-            grd.ContextMenu = cntx;
 
             return grd;
         }
@@ -123,55 +93,6 @@ namespace Client_App.Short_Visual
             };
             grd.Bind(Controls.DataGrid.DataGridReport.ItemsProperty, b);
 
-            ContextMenu? cntx = new ContextMenu();
-            List<MenuItem> excelitems = new List<MenuItem>
-            {
-                new MenuItem
-                {
-                    Header = "Для печати",
-                    //IsEnabled=false,
-                    [!MenuItem.CommandProperty] = new Binding("_Print_Excel_Export"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[3].SelectedItems"),
-                },
-                new MenuItem
-                {
-                    Header = "Для выгрузки",
-                    [!MenuItem.CommandProperty] = new Binding("_Excel_Export"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[3].SelectedItems"),
-                }
-            };
-
-
-            List<MenuItem> itms = new List<MenuItem>
-            {
-                new MenuItem
-                {
-                    Items=excelitems,
-                    Header = "Экспорт Excel",
-                },
-                new MenuItem
-                {
-                    Header = "Экспорт",
-                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+E"),
-                    [!MenuItem.CommandProperty] = new Binding("ExportForm"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-                },
-                new MenuItem
-                {
-                    Header = "Изменить форму",
-                    [!MenuItem.CommandProperty] = new Binding("ChangeForm"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-                },
-                new MenuItem
-                {
-                    Header = "Удалить форму",
-                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
-                    [!MenuItem.CommandProperty] = new Binding("DeleteForm"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-                }
-            };
-            cntx.Items = itms;
-            grd.ContextMenu = cntx;
             return grd;
         }
 
@@ -184,15 +105,6 @@ namespace Client_App.Short_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
             };
-
-            //Button btn0 = new Button();
-            //btn0.Content = ((Form_ClassAttribute)Type.GetType("Models.Form10,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
-            //btn0.Bind(Button.CommandProperty, new Binding("AddForm"));
-            //btn0.CommandParameter = "1.0";
-            //btn0.Height = 30;
-            //btn0.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            //btn0.Margin = Thickness.Parse("5,0,0,0");
-            //panel.Children.Add(btn0);
 
             Button btn1 = new Button();
             btn1.Content = ((Form_ClassAttribute)Type.GetType("Models.Form11,Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;

@@ -10,6 +10,7 @@ using Avalonia.VisualTree;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Interactivity;
 
 namespace Client_App.Controls.DataGrid
 {
