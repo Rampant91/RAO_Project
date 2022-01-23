@@ -211,14 +211,8 @@ namespace Client_App.Controls.DataGrid
             set
             {
                 SetAndRaise(IsReadableProperty, ref _IsReadable, value);
-                
-                foreach(StackPanel item in CenterStackPanel.Children)
-                {
-                    foreach(Cell it in item.Children)
-                    {
-                        it.Control.IsEnabled = !value;
-                    }
-                }
+
+                Init();
             }
         }
         #endregion
@@ -1035,16 +1029,32 @@ namespace Client_App.Controls.DataGrid
 
                     foreach (var item in lst)
                     {
-                        TextBox textBox = new TextBox()
+                        Control textBox = null;
+                        if(IsReadable)
                         {
-                            [!TextBox.DataContextProperty] = new Binding(item.Binding),
-                            [!TextBox.TextProperty] = new Binding("Value")
-                        };
-                        textBox.TextAlignment = TextAlignment.Center;
-                        textBox.VerticalAlignment = VerticalAlignment.Center;
-                        textBox.IsEnabled = !IsReadable;
-                        textBox.Height = 30;
-                        textBox.ContextMenu = new ContextMenu() { Width = 0, Height=0 };
+                            textBox = new TextBlock()
+                            {
+                                [!TextBlock.DataContextProperty] = new Binding(item.Binding),
+                                [!TextBlock.TextProperty] = new Binding("Value")
+                            };
+                            ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
+                            textBox.VerticalAlignment = VerticalAlignment.Center;
+                            ((TextBlock)textBox).Padding = new Thickness(0,5,0,5);
+                            textBox.Height = 30;
+                            textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                        }
+                        else
+                        {
+                            textBox = new TextBox()
+                            {
+                                [!TextBox.DataContextProperty] = new Binding(item.Binding),
+                                [!TextBox.TextProperty] = new Binding("Value")
+                            };
+                            ((TextBox)textBox).TextAlignment = TextAlignment.Center;
+                            textBox.VerticalAlignment = VerticalAlignment.Center;
+                            textBox.Height = 30;
+                            textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                        }
 
                         Cell cell = new Cell();
                         cell.Row = i;
@@ -1057,7 +1067,6 @@ namespace Client_App.Controls.DataGrid
                         RowStackPanel.Children.Add(cell);
 
                         Column++;
-                        //MakeHeaderInner(item.innertCol);
                     }
                     RowStackPanel.IsVisible = false;
                     CenterStackPanel.Children.Add(RowStackPanel);
