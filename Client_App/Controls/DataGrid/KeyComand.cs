@@ -20,15 +20,19 @@ using System.Collections;
 
 namespace Client_App.Controls.DataGrid
 {
-    public class KeyComand<T>
+    public class KeyComand
     {
-        public bool IsContextCommand { get; set; }
-        public string ContextMenuText { get; set; }
+        public bool IsContextMenuCommand { get; set; }
+        public bool IsDoubleTappedCommand { get; set; }
+        public string[]  ContextMenuText { get; set; }
+        public string ParamName { get; set; }
+        public string Param { get; set; }
+        public bool IsUpdateCells { get; set; }
         public Key Key { get; set; }
         public KeyModifiers KeyModifiers { get; set; }
-        public ReactiveCommand<T,Unit> Command { get; set; }
+        public ReactiveCommand<object,Unit> Command { get; set; }
 
-        public void DoCommand(T param)
+        public void DoCommand(object param)
         {
             if(Command!=null)
             {

@@ -166,9 +166,9 @@ namespace Client_App.ViewModels
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ExportForm);
 
             ChangeForm =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ChangeForm);
+                ReactiveCommand.CreateFromTask<object>(_ChangeForm);
             ChangeReport =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ChangeReport);
+                ReactiveCommand.CreateFromTask<object>(_ChangeReport);
             DeleteForm =
                 ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteForm);
             DeleteReport =
@@ -228,8 +228,8 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<Unit, Unit> ImportForm { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ExportForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeReport { get; }
+        public ReactiveCommand<object,Unit> ChangeForm { get; }
+        public ReactiveCommand<object, Unit> ChangeReport { get; }
         public ReactiveCommand<IEnumerable, Unit> DeleteForm { get; }
         public ReactiveCommand<IEnumerable, Unit> DeleteReport { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; }
@@ -808,8 +808,9 @@ namespace Client_App.ViewModels
             StaticConfiguration.DBModel.SaveChanges();
         }
 
-        private async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<IKey> param)
+        private async Task _ChangeForm(object arg)
         {
+            var param = (ObservableCollectionWithItemPropertyChanged<IKey>)arg;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
                 {
@@ -831,8 +832,9 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _ChangeReport(ObservableCollectionWithItemPropertyChanged<IKey> param)
+        private async Task _ChangeReport(object arg)
         {
+            var param = (ObservableCollectionWithItemPropertyChanged<IKey>)arg;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
                 {

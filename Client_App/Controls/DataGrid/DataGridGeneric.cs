@@ -27,6 +27,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Models.Abstracts;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using Models.DataAccess;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -209,14 +211,8 @@ namespace Client_App.Controls.DataGrid
             set
             {
                 SetAndRaise(IsReadableProperty, ref _IsReadable, value);
-                
-                foreach(StackPanel item in CenterStackPanel.Children)
-                {
-                    foreach(Cell it in item.Children)
-                    {
-                        it.Control.IsEnabled = !value;
-                    }
-                }
+
+                Init();
             }
         }
         #endregion
@@ -253,7 +249,7 @@ namespace Client_App.Controls.DataGrid
             get => (Items!=null?Items.Count / PageSize + 1:0).ToString();
             set
             {
-                SetAndRaise(PageCountProperty, ref _PageCount, (Items.Count / PageSize + 1).ToString());
+                SetAndRaise(PageCountProperty, ref _PageCount, (Items != null ? Items.Count / PageSize + 1 : 0).ToString());
             }
         }
         #endregion
@@ -324,6 +320,71 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region CommandsList
+        public static readonly DirectProperty<DataGrid<T>, ObservableCollection<KeyComand>> CommandsListProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, ObservableCollection<KeyComand>>(
+                nameof(CommandsList),
+                o => o.CommandsList,
+                (o, v) => o.CommandsList = v);
+
+        private ObservableCollection<KeyComand> _CommandsList = new ObservableCollection<KeyComand>();
+        public ObservableCollection<KeyComand> CommandsList
+        {
+            get => _CommandsList;
+            set
+            {
+                SetAndRaise(CommandsListProperty, ref _CommandsList, value);
+            }
+        }
+        private void CommandListChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            foreach (KeyComand item in args.NewItems)
+            {
+                if (item.IsContextMenuCommand)
+                {
+                    MakeContextMenu();
+                    break;
+                }
+            }
+        }
+        private object GetParamByParamName(KeyComand param)
+        {
+            if(param.ParamName=="SelectedItems")
+            {
+                return SelectedItems;
+            }
+            if (param.ParamName == "SelectedCells")
+            {
+                return SelectedCells;
+            }
+            if (param.ParamName == "FormType")
+            {
+                return SelectedCells;
+            }
+            if(param.ParamName ==null|| param.ParamName =="")
+            {
+                return param.Param;
+            }
+            return null;
+        }
+
+        private void ComandListSelectionChanged(object sender,RoutedEventArgs args)
+        {
+            if (this.ContextMenu.SelectedItem != null)
+            {
+                var selectItem = (string)((MenuItem)this.ContextMenu.SelectedItem).Header;
+                if (selectItem != null)
+                {
+                    var rt = CommandsList.Where(item => item.IsContextMenuCommand && item.ContextMenuText.Contains(selectItem));
+                    foreach (var item in rt)
+                    {
+                        item.DoCommand(GetParamByParamName(item));
+                    }
+                }
+            }
+        }
+        #endregion
+
         private DataGridColumns Columns
         {
             get
@@ -353,6 +414,10 @@ namespace Client_App.Controls.DataGrid
             this.AddHandler(PointerMovedEvent, MouseMoved, handledEventsToo: true);
             this.AddHandler(PointerReleasedEvent, MouseReleased, handledEventsToo: true);
             this.AddHandler(DoubleTappedEvent, MouseDoublePressed, handledEventsToo: true);
+
+            this.AddHandler(KeyDownEvent, OnDataGridKeyDown, handledEventsToo: true);
+
+            _CommandsList.CollectionChanged += CommandListChanged;
         }
 
         #region SetSelectedControls
@@ -538,7 +603,11 @@ namespace Client_App.Controls.DataGrid
         }
         private void MouseDoublePressed(object sender, EventArgs args)
         {
-            //
+            var commands = _CommandsList.Where(item=>item.IsDoubleTappedCommand);
+            foreach(var item in commands)
+            {
+                item.DoCommand(GetParamByParamName(item));
+            }
         }
         private void MouseReleased(object sender, PointerReleasedEventArgs args)
         {
@@ -569,38 +638,6 @@ namespace Client_App.Controls.DataGrid
         #endregion
 
         #region UpdateCells
-        private void UpdateAllCells()
-        {
-            //if (Name != null)
-            //{
-            //    NameScope scp = new();
-            //    scp.Register(Name, this);
-            //    Rows.Clear();
-
-            //    var num = Convert.ToInt32(_nowPage);
-            //    var offset = (num - 1) * PageSize;
-            //    var count = 1;
-
-            //    var its = Items as IList;
-            //    for (int i = offset; i < num * PageSize; i++)
-            //    {
-            //        var tmp = (Row)Support.RenderDataGridRow.Render.GetControl(Type, count, scp, Name);
-            //        if ((i) >= Items.Count())
-            //        {
-            //            tmp.RowHide = true;
-            //        }
-            //        else
-            //        {
-            //            tmp.DataContext = its[i];
-            //        }
-            //        Rows.Add(new CellCollection(tmp), count);
-            //        count++;
-            //    }
-
-            //    SetSelectedControls();
-            //    SetSelectedItemsWithHandler();
-            //}
-        }
 
         private void UpdateCells()
         {
@@ -650,264 +687,47 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        #region KeyDown/Up
-        bool ctrlFlag { get; set; } = false;
-        bool shiftFlag { get; set; } = false;
-        private void ChangeSelectedCellsByKeys(Key PressedKey)
+        #region KeyDown
+        private void OnDataGridKeyDown(object sender,KeyEventArgs args)
         {
-            if (shiftFlag)
+            if(args.Key==Key.Left)
             {
-                ChangeSelectedCellsByKeyWithShift(PressedKey);
+                LastPressedItem[1] += -1;
+                if(args.KeyModifiers!=KeyModifiers.Shift)
+                {
+                    FirstPressedItem = LastPressedItem;
+                }
             }
-            else
+            if (args.Key == Key.Right)
             {
-                ChangeSelectedCellsByKey(PressedKey);
+                LastPressedItem[1] += 1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
+                {
+                    FirstPressedItem = LastPressedItem;
+                }
+            }
+            if (args.Key == Key.Down)
+            {
+                LastPressedItem[0] += 1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
+                {
+                    FirstPressedItem = LastPressedItem;
+                }
+            }
+            if (args.Key == Key.Up)
+            {
+                LastPressedItem[0] += -1;
+                if (args.KeyModifiers != KeyModifiers.Shift)
+                {
+                    FirstPressedItem = LastPressedItem;
+                }
             }
 
-            SetSelectedControls();
-        }
-        private void ChangeSelectedCellsByKey(Key PressedKey)
-        {
-            //var num = Convert.ToInt32(_nowPage);
-            //if (PressedKey == Key.Left)
-            //{
-            //    var n = FirstPressedItem[1]-1;
-            //    if (n <= 1)
-            //        n = 1;
-            //    FirstPressedItem[1]=n;
-            //    LastPressedItem[0] = FirstPressedItem[0];
-            //    LastPressedItem[1] = FirstPressedItem[1];
-            //}
-            //if (PressedKey == Key.Right|| PressedKey == Key.Tab)
-            //{
-            //    var n = FirstPressedItem[1]+1;
-            //    var maxn = 0;
-            //    foreach (var column in Columns)
-            //    {
-            //        var cell =(column.Value.Cells.LastOrDefault()).Value;
-            //        if (cell is CustomCell)
-            //        {
-            //            var inner = (StackPanel)(cell as CustomCell).Control;
-            //            maxn += ((StackPanel)(cell as CustomCell).Control).Children.Count;
-            //        }
-            //        else
-            //        {
-            //            if (cell is Cell)
-            //            {
-            //                maxn++;
-            //            }
-            //        }
-            //    }
-            //    if (n >= maxn)
-            //        n = maxn;
-            //    FirstPressedItem[1] = n;
-            //    LastPressedItem[0] = FirstPressedItem[0];
-            //    LastPressedItem[1] = FirstPressedItem[1];
-            //}
-            //if (PressedKey == Key.Up)
-            //{
-            //    var n = FirstPressedItem[0]-1;
-            //    var minn = PageSize * (num-1)+1;
-            //    if (n <= minn)
-            //        n = minn;
-            //    FirstPressedItem[0] = n;
-            //    LastPressedItem[0] = FirstPressedItem[0];
-            //    LastPressedItem[1] = FirstPressedItem[1];
-            //}
-            //if (PressedKey == Key.Down)
-            //{
-            //    var n = FirstPressedItem[0]+1;
-            //    var maxn = Math.Min(PageSize*num,Items.Count());
-            //    if (n >= maxn)
-            //        n = maxn;
-            //    FirstPressedItem[0] = n;
-            //    LastPressedItem[0] = FirstPressedItem[0];
-            //    LastPressedItem[1] = FirstPressedItem[1];
-            //}
-            //if (PressedKey != Key.Tab)
-            //{
-            //    var bd = (Cell)Rows[FirstPressedItem[0], FirstPressedItem[1]];
-            //    if (bd != null)
-            //    {
-            //        if (!bd.IsReadOnly)
-            //        {
-            //            var t = ((TextBox)((Panel)((Border)bd
-            //                .GetLogicalChildren().First())
-            //                .Child)
-            //                .Children[0]);
-            //            t.Focus();
-            //            if (t.Text != null)
-            //            {
-            //                t.SelectionStart = 0;
-            //                t.SelectionEnd = t.Text.Length;
-            //            }
-            //        }
-            //    }
-            //}
-        }
-        private void ChangeSelectedCellsByKeyWithShift(Key PressedKey)
-        {
-            //var num = Convert.ToInt32(_nowPage);
-            //int[] tmp = null;
-            //tmp = LastPressedItem;
-            //if (PressedKey == Key.Left)
-            //{
-            //    var n = tmp[1] - 1;
-            //    if (n <= 1)
-            //        n = 1;
-            //    tmp[1] = n;
-            //}
-            //if (PressedKey == Key.Right)
-            //{
-            //    var n = tmp[1] + 1;
-            //    var maxn = 0;
-            //    foreach (var column in Columns)
-            //    {
-            //        var cell = (column.Value.Cells.LastOrDefault()).Value;
-            //        if (cell is CustomCell)
-            //        {
-            //            var inner = (StackPanel)(cell as CustomCell).Control;
-            //            maxn += ((StackPanel)(cell as CustomCell).Control).Children.Count;
-            //        }
-            //        else
-            //        {
-            //            if (cell is Cell)
-            //            {
-            //                maxn++;
-            //            }
-            //        }
-            //    }
-            //    if (n >= maxn)
-            //        n = maxn;
-            //    tmp[1] = n;
-            //}
-            //if (PressedKey == Key.Up)
-            //{
-            //    var n = tmp[0] - 1;
-            //    var minn = PageSize * (num - 1) + 1;
-            //    if (n <= minn)
-            //        n = minn;
-            //    tmp[0] = n;
-            //}
-            //if (PressedKey == Key.Down)
-            //{
-            //    var n = tmp[0] + 1;
-            //    var maxn = Math.Min(PageSize * num, Items.Count());
-            //    if (n >= maxn)
-            //        n = maxn;
-            //    tmp[0] = n;
-            //}
-        }
-        private void KeyDownEventHandler(object sender, KeyEventArgs args)
-        {
-            //if(args.Key==Key.LeftCtrl)
-            //{
-            //    ctrlFlag = true;
-            //}
-            //if (args.Key == Key.LeftShift)
-            //{
-            //    shiftFlag = true;
-            //}
+            var rt = CommandsList.Where(item=>item.Key==args.Key&&item.KeyModifiers==args.KeyModifiers);
 
-            //if (args.Key == Key.Left)
-            //    ChangeSelectedCellsByKeys(Key.Left);
-            //if (args.Key == Key.Right)
-            //    ChangeSelectedCellsByKeys(Key.Right);
-            //if (args.Key == Key.Tab)
-            //    ChangeSelectedCellsByKeys(Key.Tab);
-            //if (args.Key == Key.Up)
-            //    ChangeSelectedCellsByKeys(Key.Up);
-            //if (args.Key == Key.Down)
-            //    ChangeSelectedCellsByKeys(Key.Down);
-
-            //if (ctrlFlag==true)
-            //{
-            //    if (args.Key == Key.C)
-            //    {
-            //        _CopyRows(SelectedCells);
-            //        ctrlFlag = false;
-            //    }
-            //    if (args.Key == Key.V)
-            //    {
-            //        _PasteRows(SelectedCells);
-            //        ctrlFlag = false;
-            //    }
-            //    if (args.Key == Key.A) 
-            //    {
-            //        var t = this.Type;
-            //        if (CtrlACommand != null)
-            //        {
-            //            if (t == "0.0")
-            //                t = "1.0";
-            //            if (t == "0.2")
-            //                t = "2.0";
-            //            CtrlACommand.Execute(t);
-            //            ctrlFlag = false;
-            //        }
-            //    }
-            //    if (args.Key == Key.E)
-            //    {
-            //        if (CtrlECommand != null)
-            //        {
-            //            CtrlECommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
-            //            ctrlFlag = false;
-            //        }
-            //    }
-            //    if (args.Key == Key.N)
-            //    {
-            //        if (CtrlNCommand != null)
-            //        {
-            //            CtrlNCommand.Execute();
-            //            ctrlFlag = false;
-            //        }
-            //    }
-            //    if (args.Key == Key.D)
-            //    {
-            //        if (CtrlDCommand != null)
-            //        {
-            //            CtrlDCommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
-            //            ctrlFlag = false;
-            //        }
-            //    }
-            //    if (args.Key == Key.I)
-            //    {
-            //        if (CtrlICommand != null)
-            //        {
-            //            CtrlICommand.Execute(new ObservableCollectionWithItemPropertyChanged<IKey>(this.SelectedItems));
-            //            ctrlFlag = false;
-            //        }
-            //    }
-            //}
-
-            //if (args.Key == Key.Delete)
-            //{
-            //    var lst = SelectedCells.ToList();
-            //    foreach (var item in lst)
-            //    {
-            //        if (item is Cell)
-            //        {
-            //            var bd = (Cell)item;
-            //            if (!bd.IsReadOnly)
-            //            {
-            //                var t = ((TextBox)((Panel)((Border)bd
-            //                    .GetLogicalChildren().First())
-            //                    .Child)
-            //                    .Children[0]);
-            //                t.Text = "";
-            //            }
-            //        }
-            //    }
-            //}
-        }
-        private void KeyUpEventHandler(object sender, KeyEventArgs args)
-        {
-            if (args.Key == Key.LeftCtrl)
+            foreach (var item in rt)
             {
-                ctrlFlag = false;
-            }
-            if (args.Key == Key.LeftShift)
-            {
-                shiftFlag = false;
+                item.DoCommand(GetParamByParamName(item));
             }
         }
         #endregion
@@ -1115,9 +935,39 @@ namespace Client_App.Controls.DataGrid
             MakeAll();
             MakeHeaderRows();
             MakeCenterRows();
+
+            UpdateCells();
+            MakeContextMenu();
             //this.DoubleTapped += DataGrid_DoubleTapped;
             //this.AddHandler(KeyDownEvent, KeyDownEventHandler, handledEventsToo: true);
             //this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
+        }
+
+        private void MakeContextMenu()
+        {
+            var lst = CommandsList.Where(item=>item.IsContextMenuCommand).GroupBy(item=>item.ContextMenuText[0]);
+
+            ContextMenu menu = new ContextMenu();
+            List<MenuItem> lr = new List<MenuItem>();
+            foreach (var item in lst)
+            {
+                if (item.Count() == 1)
+                {
+                    lr.Add(new MenuItem { Header = item.First().ContextMenuText[0]});
+                }
+                if (item.Count() == 2)
+                {
+                    List<MenuItem> inlr = new List<MenuItem>();
+                    foreach (var it in item)
+                    {
+                        inlr.Add(new MenuItem { Header = item.First().ContextMenuText[1] });
+                    }
+                    lr.Add(new MenuItem { Header = item.Key,Items=inlr});
+                }
+            }
+            menu.Items = lr;
+            menu.Tapped += ComandListSelectionChanged;
+            this.ContextMenu = menu;
         }
 
         private void MakeHeaderInner(DataGridColumns ls)
@@ -1183,16 +1033,32 @@ namespace Client_App.Controls.DataGrid
 
                     foreach (var item in lst)
                     {
-                        TextBox textBox = new TextBox()
+                        Control textBox = null;
+                        if(IsReadable)
                         {
-                            [!TextBox.DataContextProperty] = new Binding(item.Binding),
-                            [!TextBox.TextProperty] = new Binding("Value")
-                        };
-                        textBox.TextAlignment = TextAlignment.Center;
-                        textBox.VerticalAlignment = VerticalAlignment.Center;
-                        textBox.IsEnabled = !IsReadable;
-                        textBox.Height = 30;
-                        textBox.ContextMenu = new ContextMenu() { Width = 0, Height=0 };
+                            textBox = new TextBlock()
+                            {
+                                [!TextBlock.DataContextProperty] = new Binding(item.Binding),
+                                [!TextBlock.TextProperty] = new Binding("Value")
+                            };
+                            ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
+                            textBox.VerticalAlignment = VerticalAlignment.Center;
+                            ((TextBlock)textBox).Padding = new Thickness(0,5,0,5);
+                            textBox.Height = 30;
+                            textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                        }
+                        else
+                        {
+                            textBox = new TextBox()
+                            {
+                                [!TextBox.DataContextProperty] = new Binding(item.Binding),
+                                [!TextBox.TextProperty] = new Binding("Value")
+                            };
+                            ((TextBox)textBox).TextAlignment = TextAlignment.Center;
+                            textBox.VerticalAlignment = VerticalAlignment.Center;
+                            textBox.Height = 30;
+                            textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                        }
 
                         Cell cell = new Cell();
                         cell.Row = i;
@@ -1205,7 +1071,6 @@ namespace Client_App.Controls.DataGrid
                         RowStackPanel.Children.Add(cell);
 
                         Column++;
-                        //MakeHeaderInner(item.innertCol);
                     }
                     RowStackPanel.IsVisible = false;
                     CenterStackPanel.Children.Add(RowStackPanel);

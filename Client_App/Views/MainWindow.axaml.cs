@@ -110,15 +110,42 @@ namespace Client_App.Views
         }
         private void Init()
         {
+            var dataContext = (ViewModels.MainWindowVM)this.DataContext;
+
             Panel tab10 = this.FindControl<Panel>("Forms_p1_0");
             Panel tab1X = this.FindControl<Panel>("Forms_p1_X");
             Panel tab1B = this.FindControl<Panel>("Forms_p1_B");
             Short_Visual.Form1_Visual.FormF_Visual(this,tab10, tab1X, tab1B);
 
+            #region Form10 DataGrid
+            var grd1 = (Controls.DataGrid.DataGrid<Reports>)tab10.Children[0];
+            var grd2 = (Controls.DataGrid.DataGrid<Report>)tab1X.Children[0];
+
+            #region Grd1
+            grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = true,
+                IsContextMenuCommand=true,
+                ParamName="SelectedItems",
+                ContextMenuText=new string[] { "Редактировать форму" },
+                Command=dataContext.ChangeReport
+            }) ;
+            #endregion
+            #region Grd2
+
+            #endregion
+            #endregion
+
             Panel tab20 = this.FindControl<Panel>("Forms_p2_0");
             Panel tab2X = this.FindControl<Panel>("Forms_p2_X");
             Panel tab2B = this.FindControl<Panel>("Forms_p2_B");
             Short_Visual.Form2_Visual.FormF_Visual(this,tab20, tab2X, tab2B);
+
+            #region Form20 DataGrid
+            var grd3 = (Controls.DataGrid.DataGrid<Reports>)tab20.Children[0];
+            var grd4 = (Controls.DataGrid.DataGrid<Report>)tab2X.Children[0];
+
+            #endregion
         }
 
         private void InitializeComponent()
