@@ -126,7 +126,7 @@ namespace Client_App.Views
             {
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
-                ParamName = "FormType",
+                ParamName = "1.0",
                 ContextMenuText = new string[] { "ƒобавить форму" },
                 Command = dataContext.AddReport
             });
@@ -150,7 +150,46 @@ namespace Client_App.Views
 
             #endregion
             #region Grd2
-
+            //grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            //{
+            //    IsDoubleTappedCommand = false,
+            //    IsContextMenuCommand = true,
+            //    ParamName = "1.0",
+            //    ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ печати" },
+            //    Command = dataContext.AddReport
+            //});
+            //grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            //{
+            //    IsDoubleTappedCommand = true,
+            //    IsContextMenuCommand = true,
+            //    ParamName = "SelectedItems",
+            //    ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ выгрузки" },
+            //    Command = dataContext.ChangeReport
+            //});
+            //grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            //{
+            //    IsDoubleTappedCommand = false,
+            //    IsContextMenuCommand = true,
+            //    ParamName = "SelectedItems",
+            //    ContextMenuText = new string[] { "Ёкспорт" },
+            //    Command = dataContext.DeleteReport
+            //});
+            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = true,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "»зменить форму" },
+                Command = dataContext.ChangeForm
+            });
+            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "”далить форму" },
+                Command = dataContext.DeleteForm
+            });
             #endregion
             #endregion
 

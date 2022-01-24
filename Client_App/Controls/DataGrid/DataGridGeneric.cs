@@ -365,6 +365,10 @@ namespace Client_App.Controls.DataGrid
             {
                 return param.Param;
             }
+            if (param.ParamName == "1.0" || param.ParamName == "2.0")
+            {
+                return param.ParamName;
+            }
             return null;
         }
 

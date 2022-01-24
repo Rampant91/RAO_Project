@@ -170,7 +170,7 @@ namespace Client_App.ViewModels
             ChangeReport =
                 ReactiveCommand.CreateFromTask<object>(_ChangeReport);
             DeleteForm =
-                ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteForm);
+                ReactiveCommand.CreateFromTask<object>(_DeleteForm);
             DeleteReport =
                 ReactiveCommand.CreateFromTask<object>(_DeleteReport);
 
@@ -230,7 +230,7 @@ namespace Client_App.ViewModels
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ExportForm { get; }
         public ReactiveCommand<object,Unit> ChangeForm { get; }
         public ReactiveCommand<object, Unit> ChangeReport { get; }
-        public ReactiveCommand<IEnumerable, Unit> DeleteForm { get; }
+        public ReactiveCommand<object, Unit> DeleteForm { get; }
         public ReactiveCommand<object, Unit> DeleteReport { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Print_Excel_Export { get; }
@@ -856,8 +856,9 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _DeleteForm(IEnumerable param)
+        private async Task _DeleteForm(object arg)
         {
+            var param = (IEnumerable)arg;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить отчет?", "Да", "Нет" });
@@ -876,7 +877,6 @@ namespace Client_App.ViewModels
                             }
                         }
                         t.SelectedReports = tmp;
-
                     }
 
                     await StaticConfiguration.DBModel.SaveChangesAsync();
