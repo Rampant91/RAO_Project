@@ -651,10 +651,10 @@ namespace Client_App.Long_Visual
 
             maingrid.Children.Add(topPnl2);
 
-            Controls.DataGrid.DataGrid<Form12> grd = new Controls.DataGrid.DataGrid<Form12>
+            Controls.DataGrid.DataGridForm12 grd = new Controls.DataGrid.DataGridForm12()
             {
                 Name = "Form12Data_",
-                Type = "1.2",
+                Focusable = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -670,7 +670,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd.Bind(Controls.DataGrid.DataGrid<Form12>.ItemsProperty, b);
+            grd.Bind(Controls.DataGrid.DataGridForm12.ItemsProperty, b);
 
 
             ContextMenu? cntx = new ContextMenu();
@@ -738,7 +738,7 @@ namespace Client_App.Long_Visual
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
 
-            Controls.DataGrid.DataGrid<Note> grd1 = new Controls.DataGrid.DataGrid<Note>()
+            Controls.DataGrid.DataGridNote grd1 = new Controls.DataGrid.DataGridNote()
             {
                 Name = "Form11Notes_",
                 Focusable = true,
@@ -757,7 +757,7 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            grd1.Bind(Controls.DataGrid.DataGrid<Note>.ItemsProperty, b1);
+            grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
 
             ContextMenu? cntx1 = new ContextMenu();

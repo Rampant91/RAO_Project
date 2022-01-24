@@ -207,16 +207,16 @@ namespace Models
         {
 
             DataGridColumns RowNumberN = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.RowNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            RowNumberN.SizeCol = 50;
+            RowNumberN.SizeCol = 100;
             RowNumberN.Binding = nameof(Note.RowNumber_DB);
             
             DataGridColumns GraphNumberN = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.GraphNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            GraphNumberN.SizeCol = 50;
+            GraphNumberN.SizeCol = 100;
             GraphNumberN.Binding = nameof(Note.GraphNumber_DB);
             RowNumberN += GraphNumberN;
 
             DataGridColumns CommentN = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.Comment)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            CommentN.SizeCol = 50;
+            CommentN.SizeCol = 660;
             CommentN.Binding = nameof(Note.Comment_DB);
             RowNumberN += CommentN;
 

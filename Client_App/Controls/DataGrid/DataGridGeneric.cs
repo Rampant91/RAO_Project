@@ -633,10 +633,14 @@ namespace Client_App.Controls.DataGrid
                 {
                     for (int i = Items.Count; i < offsetMax; i++)
                     {
-                        if (Rows[i - offset].IsVisible)
+                        try
                         {
-                            Rows[i - offset].IsVisible = false;
+                            if (Rows[i - offset].IsVisible)
+                            {
+                                Rows[i - offset].IsVisible = false;
+                            }
                         }
+                        catch { }
                     }
                 }
             }
