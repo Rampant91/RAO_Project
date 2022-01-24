@@ -187,6 +187,7 @@ namespace Client_App.Views
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
                 ParamName = "SelectedItems",
+                IsUpdateCells = true,
                 ContextMenuText = new string[] { "Удалить форму" },
                 Command = dataContext.DeleteForm
             });

@@ -67,6 +67,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     SetAndRaise(ItemsProperty, ref _items, value);
                     UpdateCells();
+                    SetSelectedControls();
                 }
             }
         }
@@ -383,6 +384,10 @@ namespace Client_App.Controls.DataGrid
                     foreach (var item in rt)
                     {
                         item.DoCommand(GetParamByParamName(item));
+                        if (item.IsUpdateCells)
+                        {
+                            UpdateCells();
+                        }
                     }
                 }
             }
@@ -423,7 +428,6 @@ namespace Client_App.Controls.DataGrid
 
             _CommandsList.CollectionChanged += CommandListChanged;
         }
-
         #region SetSelectedControls
         private void SetSelectedControls()
         {
