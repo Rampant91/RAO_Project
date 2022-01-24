@@ -124,12 +124,30 @@ namespace Client_App.Views
             #region Grd1
             grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
             {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "FormType",
+                ContextMenuText = new string[] { "Добавить форму" },
+                Command = dataContext.AddReport
+            });
+
+            grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
                 IsDoubleTappedCommand = true,
                 IsContextMenuCommand=true,
                 ParamName="SelectedItems",
                 ContextMenuText=new string[] { "Редактировать форму" },
                 Command=dataContext.ChangeReport
             }) ;
+            grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "Удалить форму" },
+                Command = dataContext.DeleteReport
+            });
+
             #endregion
             #region Grd2
 

@@ -156,7 +156,7 @@ namespace Client_App.ViewModels
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
-            AddReport = ReactiveCommand.CreateFromTask<string>(_AddReport);
+            AddReport = ReactiveCommand.CreateFromTask<object>(_AddReport);
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
 
             ImportForm =
@@ -172,7 +172,7 @@ namespace Client_App.ViewModels
             DeleteForm =
                 ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteForm);
             DeleteReport =
-                ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteReport);
+                ReactiveCommand.CreateFromTask<object>(_DeleteReport);
 
             Excel_Export =
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_Excel_Export);
@@ -223,7 +223,7 @@ namespace Client_App.ViewModels
 
         public ReactiveCommand<string, Unit> ChooseForm { get; }
 
-        public ReactiveCommand<string, Unit> AddReport { get; }
+        public ReactiveCommand<object, Unit> AddReport { get; }
         public ReactiveCommand<string, Unit> AddForm { get; }
 
         public ReactiveCommand<Unit, Unit> ImportForm { get; }
@@ -231,7 +231,7 @@ namespace Client_App.ViewModels
         public ReactiveCommand<object,Unit> ChangeForm { get; }
         public ReactiveCommand<object, Unit> ChangeReport { get; }
         public ReactiveCommand<IEnumerable, Unit> DeleteForm { get; }
-        public ReactiveCommand<IEnumerable, Unit> DeleteReport { get; }
+        public ReactiveCommand<object, Unit> DeleteReport { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; }
         public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Print_Excel_Export { get; }
         public ReactiveCommand<string, Unit> All_Excel_Export { get; }
@@ -281,8 +281,9 @@ namespace Client_App.ViewModels
                 int y = 10;
             }
         }
-        private async Task _AddReport(string param)
+        private async Task _AddReport(object arg)
         {
+            var param = (string)arg;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 if (param.Split('.')[1] == "0")
@@ -883,11 +884,12 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DeleteReport(IEnumerable param)
+        private async Task _DeleteReport(object arg)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить организацию?", "Да", "Нет" });
+                var param = (IEnumerable)arg;
                 if (answ == "Да")
                 {
                     if (param != null)

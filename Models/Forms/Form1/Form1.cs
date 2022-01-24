@@ -30,8 +30,6 @@ namespace Models.Abstracts
 
         public DataGridColumns GetDataGridColumn() 
         {
-            //DataGridColumns dataGridColumns = new();
-            //dataGridColumns.name = 
             return null;
         } 
 
