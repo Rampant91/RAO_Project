@@ -41,7 +41,7 @@ namespace Client_App.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
+        
         private string _FormType;
         public string FormType
         {

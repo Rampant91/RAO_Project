@@ -95,7 +95,7 @@ namespace Client_App.Views
             par.ContentHeader = "Уведомление";
             var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
             var answ = await mssg.ShowDialog(this);
-
+            
             interaction.SetOutput(answ);
         }
 
