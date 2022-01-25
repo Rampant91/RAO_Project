@@ -6,7 +6,7 @@ using Avalonia.Layout;
 
 namespace Client_App.Controls.DataGrid
 {
-    public class DataGridRow : StackPanel
+    public class DataGridRow : Grid
     {
         #region Row
         public static readonly DirectProperty<DataGridRow, int> RowProperty =
