@@ -649,10 +649,9 @@ namespace Client_App.Controls.DataGrid
                 if (paramKey == PointerUpdateKind.RightButtonPressed)
                 {
                     this.ContextMenu.Close();
-                    var cntx=this.ContextMenu;
-                    var ty = SelectedCells.FirstOrDefault().TransformedBounds.Value.Clip;
-                    cntx.PlacementRect = new Rect(ty.X,ty.Y,200,200);
-                    cntx.Open();
+                    var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == FirstPressedItem[0] && ((Cell)item).Column == FirstPressedItem[1])).FirstOrDefault();
+                    this.ContextMenu.PlacementTarget= tmp1;
+                    this.ContextMenu.Open();
                 }
                 else
                 {
