@@ -2198,9 +2198,169 @@ namespace Models
         }
         #endregion
         #region IDataGridColumn
-        public override DataGridColumns GetColumnStructure(string param)
+        public override DataGridColumns GetColumnStructure(string param = "")
         {
-            return null;
+            #region NumberInOrder (1)
+            DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            NumberInOrderR.SetSizeColToAllLevels(50);
+            NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+            #endregion
+            #region OperationCode (2)
+            DataGridColumns OperationCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.OperationCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            OperationCodeR.SetSizeColToAllLevels(50);
+            OperationCodeR.Binding = nameof(Form17.OperationCode);
+            #endregion
+            #region OperationDate (3)
+            DataGridColumns OperationDateR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.OperationDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            OperationDateR.SetSizeColToAllLevels(50);
+            OperationDateR.Binding = nameof(Form17.OperationDate);
+            #endregion
+            #region PackName (4)
+            DataGridColumns PackNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.PackName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            PackNameR.SetSizeColToAllLevels(50);
+            PackNameR.Binding = nameof(Form17.PackName);
+            #endregion
+            #region PackType (5)
+            DataGridColumns PackTypeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.PackType)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            PackTypeR.SetSizeColToAllLevels(50);
+            PackTypeR.Binding = nameof(Form17.PackType);
+            #endregion
+            #region PackFactoryNumber (6)
+            DataGridColumns PackFactoryNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.PackFactoryNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            PackFactoryNumberR.SetSizeColToAllLevels(50);
+            PackFactoryNumberR.Binding = nameof(Form17.PackFactoryNumber);
+            #endregion
+            #region PackNumber (7)
+            DataGridColumns PackNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.PackNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            PackNumberR.SetSizeColToAllLevels(50);
+            PackNumberR.Binding = nameof(Form17.PackNumber);
+            #endregion
+            #region FormingDate (8)
+            DataGridColumns FormingDateR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.FormingDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            FormingDateR.SetSizeColToAllLevels(50);
+            FormingDateR.Binding = nameof(Form17.FormingDate);
+            #endregion
+            #region PassportNumber (9)
+            DataGridColumns PassportNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.PassportNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            PassportNumberR.SetSizeColToAllLevels(50);
+            PassportNumberR.Binding = nameof(Form17.PassportNumber);
+            #endregion
+            #region Volume (10)
+            DataGridColumns VolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.Volume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            VolumeR.SetSizeColToAllLevels(50);
+            VolumeR.Binding = nameof(Form17.Volume);
+            #endregion
+            #region Mass (11)
+            DataGridColumns MassR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.Mass)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            MassR.SetSizeColToAllLevels(50);
+            MassR.Binding = nameof(Form17.Mass);
+            #endregion
+            #region Radionuclids (12)
+            DataGridColumns RadionuclidsR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.Radionuclids)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            RadionuclidsR.SetSizeColToAllLevels(50);
+            RadionuclidsR.Binding = nameof(Form17.Radionuclids);
+            #endregion
+            #region SpecificActivity (13)
+            DataGridColumns SpecificActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.SpecificActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            SpecificActivityR.SetSizeColToAllLevels(50);
+            SpecificActivityR.Binding = nameof(Form17.SpecificActivity);
+            #endregion
+            #region DocumentVid (14)
+            DataGridColumns DocumentVidR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.DocumentVid)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DocumentVidR.SetSizeColToAllLevels(50);
+            DocumentVidR.Binding = nameof(Form17.DocumentVid);
+            #endregion
+            #region DocumentNumber (15)
+            DataGridColumns DocumentNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.DocumentNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DocumentNumberR.SetSizeColToAllLevels(50);
+            DocumentNumberR.Binding = nameof(Form17.DocumentNumber);
+            #endregion
+            #region DocumentDate (16)
+            DataGridColumns DocumentDateR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.DocumentDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DocumentDateR.SetSizeColToAllLevels(50);
+            DocumentDateR.Binding = nameof(Form17.DocumentDate);
+            #endregion
+            #region ProviderOrRecieverOKPO (17)
+            DataGridColumns ProviderOrRecieverOKPOR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            ProviderOrRecieverOKPOR.SetSizeColToAllLevels(50);
+            ProviderOrRecieverOKPOR.Binding = nameof(Form17.ProviderOrRecieverOKPO);
+            #endregion
+            #region TransporterOKPO (18)
+            DataGridColumns TransporterOKPOR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.TransporterOKPO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            TransporterOKPOR.SetSizeColToAllLevels(50);
+            TransporterOKPOR.Binding = nameof(Form17.TransporterOKPO);
+            #endregion
+            #region StoragePlaceName (19)
+            DataGridColumns StoragePlaceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.StoragePlaceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StoragePlaceNameR.SetSizeColToAllLevels(50);
+            StoragePlaceNameR.Binding = nameof(Form17.StoragePlaceName);
+            #endregion
+            #region StoragePlaceCode (20)
+            DataGridColumns StoragePlaceCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.StoragePlaceCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StoragePlaceCodeR.SetSizeColToAllLevels(50);
+            StoragePlaceCodeR.Binding = nameof(Form17.StoragePlaceCode);
+            #endregion
+            #region CodeRAO (21)
+            DataGridColumns CodeRAOR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.CodeRAO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            CodeRAOR.SetSizeColToAllLevels(50);
+            CodeRAOR.Binding = nameof(Form17.CodeRAO);
+            #endregion
+            #region StatusRAO (22)
+            DataGridColumns StatusRAOR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.StatusRAO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StatusRAOR.SetSizeColToAllLevels(50);
+            StatusRAOR.Binding = nameof(Form17.StatusRAO);
+            #endregion
+            #region VolumeOutOfPack (23)
+            DataGridColumns VolumeOutOfPackR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.VolumeOutOfPack)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            VolumeOutOfPackR.SetSizeColToAllLevels(50);
+            VolumeOutOfPackR.Binding = nameof(Form17.VolumeOutOfPack);
+            #endregion
+            #region MassOutOfPack (24)
+            DataGridColumns MassOutOfPackR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.MassOutOfPack)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            MassOutOfPackR.SetSizeColToAllLevels(50);
+            MassOutOfPackR.Binding = nameof(Form17.MassOutOfPack);
+            #endregion
+            #region Quantity (25)
+            DataGridColumns QuantityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.Quantity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            QuantityR.SetSizeColToAllLevels(50);
+            QuantityR.Binding = nameof(Form17.Quantity);
+            #endregion
+            #region TritiumActivity (26)
+            DataGridColumns TritiumActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.TritiumActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            TritiumActivityR.SetSizeColToAllLevels(50);
+            TritiumActivityR.Binding = nameof(Form17.TritiumActivity);
+            #endregion
+            #region BetaGammaActivity (27)
+            DataGridColumns BetaGammaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.BetaGammaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            BetaGammaActivityR.SetSizeColToAllLevels(50);
+            BetaGammaActivityR.Binding = nameof(Form17.BetaGammaActivity);
+            #endregion
+            #region AlphaActivity (28)
+            DataGridColumns AlphaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.AlphaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            AlphaActivityR.SetSizeColToAllLevels(50);
+            AlphaActivityR.Binding = nameof(Form17.AlphaActivity);
+            #endregion
+            #region TransuraniumActivity (29)
+            DataGridColumns TransuraniumActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.TransuraniumActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            TransuraniumActivityR.SetSizeColToAllLevels(50);
+            TransuraniumActivityR.Binding = nameof(Form17.TransuraniumActivity);
+            #endregion
+            #region RefineOrSortRAOCode (30)
+            DataGridColumns RefineOrSortRAOCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.RefineOrSortRAOCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            RefineOrSortRAOCodeR.SetSizeColToAllLevels(50);
+            RefineOrSortRAOCodeR.Binding = nameof(Form17.RefineOrSortRAOCode);
+            #endregion
+            #region Subsidy (31)
+            DataGridColumns SubsidyR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.Subsidy)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            SubsidyR.SetSizeColToAllLevels(50);
+            SubsidyR.Binding = nameof(Form17.Subsidy);
+            #endregion
+            #region FcpNumber (32)
+            DataGridColumns FcpNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form17.FcpNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            FcpNumberR.SetSizeColToAllLevels(50);
+            FcpNumberR.Binding = nameof(Form17.FcpNumber);
+            #endregion
+            return NumberInOrderR;
         }
         #endregion
     }
