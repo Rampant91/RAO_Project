@@ -228,45 +228,45 @@ namespace Client_App.Views
                 panel.Children.Add(Long_Visual.Form1_Visual.Form11_Visual(this.FindNameScope()));
             }
 
-            if (_param == "1.2")
-            {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form12_Visual(this.FindNameScope()));
-            }
+            //if (_param == "1.2")
+            //{
+            //    panel.Children.Add(Long_Visual.Form1_Visual.Form12_Visual(this.FindNameScope()));
+            //}
 
-            if (_param == "1.3")
-            {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form13_Visual(this.FindNameScope()));
-            }
+            //if (_param == "1.3")
+            //{
+            //    panel.Children.Add(Long_Visual.Form1_Visual.Form13_Visual(this.FindNameScope()));
+            //}
 
-            if (_param == "1.4")
-            {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form14_Visual(this.FindNameScope()));
-            }
+            //if (_param == "1.4")
+            //{
+            //    panel.Children.Add(Long_Visual.Form1_Visual.Form14_Visual(this.FindNameScope()));
+            //}
 
-            if (_param == "1.5")
-            {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form15_Visual(this.FindNameScope()));
-            }
+            //if (_param == "1.5")
+            //{
+            //    panel.Children.Add(Long_Visual.Form1_Visual.Form15_Visual(this.FindNameScope()));
+            //}
 
-            if (_param == "1.6")
-            {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form16_Visual(this.FindNameScope()));
-            }
+            //if (_param == "1.6")
+            //{
+            //    panel.Children.Add(Long_Visual.Form1_Visual.Form16_Visual(this.FindNameScope()));
+            //}
 
-            if (_param == "1.7")
-            {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form17_Visual(this.FindNameScope()));
-            }
+            //if (_param == "1.7")
+            //{
+            //    panel.Children.Add(Long_Visual.Form1_Visual.Form17_Visual(this.FindNameScope()));
+            //}
 
-            if (_param == "1.8")
-            {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form18_Visual(this.FindNameScope()));
-            }
+            //if (_param == "1.8")
+            //{
+            //    panel.Children.Add(Long_Visual.Form1_Visual.Form18_Visual(this.FindNameScope()));
+            //}
 
-            if (_param == "1.9")
-            {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form19_Visual(this.FindNameScope()));
-            }
+            //if (_param == "1.9")
+            //{
+            //    panel.Children.Add(Long_Visual.Form1_Visual.Form19_Visual(this.FindNameScope()));
+            //}
         }
 
         private void Form2Init(in Panel panel)

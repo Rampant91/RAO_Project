@@ -67,6 +67,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     SetAndRaise(ItemsProperty, ref _items, value);
                     UpdateCells();
+                    SetSelectedControls();
                 }
             }
         }
@@ -365,20 +366,28 @@ namespace Client_App.Controls.DataGrid
             {
                 return param.Param;
             }
+            if (param.ParamName == "1.0" || param.ParamName == "2.0")
+            {
+                return param.ParamName;
+            }
             return null;
         }
 
-        private void ComandListSelectionChanged(object sender,RoutedEventArgs args)
+        private void ComandTapped(object sender,RoutedEventArgs args)
         {
-            if (this.ContextMenu.SelectedItem != null)
+            if (sender != null)
             {
-                var selectItem = (string)((MenuItem)this.ContextMenu.SelectedItem).Header;
+                var selectItem = (string)((MenuItem)sender).Header;
                 if (selectItem != null)
                 {
                     var rt = CommandsList.Where(item => item.IsContextMenuCommand && item.ContextMenuText.Contains(selectItem));
                     foreach (var item in rt)
                     {
                         item.DoCommand(GetParamByParamName(item));
+                        if (item.IsUpdateCells)
+                        {
+                            UpdateCells();
+                        }
                     }
                 }
             }
@@ -421,7 +430,6 @@ namespace Client_App.Controls.DataGrid
 
             _CommandsList.CollectionChanged += CommandListChanged;
         }
-
         #region SetSelectedControls
         private void SetSelectedControls()
         {
@@ -955,20 +963,23 @@ namespace Client_App.Controls.DataGrid
             {
                 if (item.Count() == 1)
                 {
-                    lr.Add(new MenuItem { Header = item.First().ContextMenuText[0]});
+                    var tmp = new MenuItem { Header = item.First().ContextMenuText[0] };
+                    tmp.Tapped += ComandTapped;
+                    lr.Add(tmp) ;
                 }
                 if (item.Count() == 2)
                 {
                     List<MenuItem> inlr = new List<MenuItem>();
                     foreach (var it in item)
                     {
-                        inlr.Add(new MenuItem { Header = item.First().ContextMenuText[1] });
+                        var tmp = new MenuItem { Header = it.ContextMenuText[1] };
+                        tmp.Tapped += ComandTapped;
+                        inlr.Add(tmp);
                     }
                     lr.Add(new MenuItem { Header = item.Key,Items=inlr});
                 }
             }
             menu.Items = lr;
-            menu.Tapped += ComandListSelectionChanged;
             this.ContextMenu = menu;
         }
 

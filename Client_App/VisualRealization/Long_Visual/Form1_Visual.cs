@@ -28,18 +28,24 @@ namespace Client_App.Long_Visual
             };
         }
 
-        public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width, string watermark = "", bool _flag = false)
+        public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width, INameScope scp, string watermark = "", bool _flag = false)
         {
+            Binding b = new Binding
+            {
+                Path = textProp,
+                ElementName = "ChangingPanel",
+                NameScope = new WeakReference<INameScope>(scp)
+            };
             Cell textCell = new Cell() {
                 Width = width,
                 Margin = Thickness.Parse(thickness),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                [!Cell.DataContextProperty] = new Binding(textProp),
                 [Grid.ColumnProperty] = columnProp
             };
             textCell.Control = new TextBox() {
-                [!TextBox.TextProperty] = new Binding("Value")
+                [!TextBox.DataContextProperty] = b,
+                [!TextBox.TextProperty] = new Binding("Value"),
             };
             return textCell;
         }
@@ -94,7 +100,7 @@ namespace Client_App.Long_Visual
            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
            //));
 
-            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + Property, 400));
+            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + Property, 400, null));
 
             Grid grd2 = new Grid()
             {
@@ -106,25 +112,25 @@ namespace Client_App.Long_Visual
             {
                 grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30, "Наименование обособленного подразделения"
                 ));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400, null));
             }
             else if (Property == "ShortJurLico")
             {
                 grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30, "Краткое наименование об. подразделения"
                 ));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400, null));
             }
             else if (Property == "JurLicoAddress")
             {
                 grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30, "Адрес обособленного подразделения"
                 ));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400, null));
             }
             else if (Property == "JurLicoFactAddress")
             {
                 grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30, "Фактический адрес об. подразделения"
                 ));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400, null));
             }
             else
             {
@@ -132,7 +138,7 @@ namespace Client_App.Long_Visual
                     //((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
                         //.GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
                 //));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[1]." + Property, 400, null));
             }
 
             pnl.Children.Add(grd);
@@ -214,7 +220,7 @@ namespace Client_App.Long_Visual
             //    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty("OrganUprav")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //,295));
-            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + "OrganUprav", 400));
+            grd.Children.Add(CreateTextBox("5,0,10,0", 1, 30, BindingPrefix + "[0]." + "OrganUprav", 400, scp));
             pnlmin.Children.Add(grd);
             StackPanel grd1 = new StackPanel();
             grd1.Orientation = Orientation.Horizontal;
@@ -222,7 +228,7 @@ namespace Client_App.Long_Visual
             //    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty("RegNo")
             //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
             //,295));
-            grd1.Children.Add(CreateTextBox("5,0,10,20", 0, 30, BindingPrefix + "[0]." + "RegNo", 400));
+            grd1.Children.Add(CreateTextBox("5,0,10,20", 0, 30, BindingPrefix + "[0]." + "RegNo", 400, scp));
             pnlmin.Children.Add(grd1);
 
             var pnl1 = new Panel();
@@ -320,9 +326,9 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата окончания предыдущего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "DataContext.Storage.StartPeriod", 150, scp));
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "Дата окончания настоящего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.EndPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "DataContext.Storage.EndPeriod", 150, scp));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -359,7 +365,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
@@ -564,13 +570,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "DataContext.Storage.FIOexecutor", 180, scp, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "DataContext.Storage.ExecPhone", 95, scp, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "DataContext.Storage.ExecEmail", 130, scp, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
             return vw;
         }
@@ -606,9 +612,9 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата окончания предыдущего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "DataContext.Storage.StartPeriod", 150, scp));
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "Дата окончания настоящего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.EndPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "DataContext.Storage.EndPeriod", 150, scp));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -645,7 +651,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
@@ -852,20 +858,20 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "DataContext.Storage.FIOexecutor", 180, scp,"ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "DataContext.Storage.ExecPhone", 95, scp,"Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "DataContext.Storage.ExecEmail", 130, scp, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;
         }
         public static Control Form13_Visual(INameScope scp)
         {
-            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new ScrollViewer(); vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
 
@@ -894,9 +900,9 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата окончания предыдущего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "DataContext.Storage.StartPeriod", 150, scp));
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "Дата окончания настоящего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.EndPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "DataContext.Storage.EndPeriod", 150, scp));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -933,7 +939,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
@@ -1137,19 +1143,19 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "DataContext.Storage.FIOexecutor", 180, scp, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "DataContext.Storage.ExecPhone", 95, scp, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "DataContext.Storage.ExecEmail", 130, scp, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
             return vw;
         }
         public static Control Form14_Visual(INameScope scp)
         {
-            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new ScrollViewer(); vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
 
@@ -1178,9 +1184,9 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата окончания предыдущего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "DataContext.Storage.StartPeriod", 150, scp));
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "Дата окончания настоящего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.EndPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "DataContext.Storage.EndPeriod", 150, scp));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -1217,7 +1223,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
@@ -1421,19 +1427,19 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "DataContext.Storage.FIOexecutor", 180, scp, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "DataContext.Storage.ExecPhone", 95, scp, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "DataContext.Storage.ExecEmail", 130, scp, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
             return vw;
         }
         public static Control Form15_Visual(INameScope scp)
         {
-            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new ScrollViewer(); vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
 
@@ -1462,9 +1468,9 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата окончания предыдущего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "DataContext.Storage.StartPeriod", 150, scp));
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "Дата окончания настоящего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.EndPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "DataContext.Storage.EndPeriod", 150, scp));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -1501,7 +1507,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
@@ -1705,20 +1711,20 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "DataContext.Storage.FIOexecutor", 180, scp, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "DataContext.Storage.ExecPhone", 95, scp, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "DataContext.Storage.ExecEmail", 130, scp, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;
         }
         public static Control Form16_Visual(INameScope scp)
         {
-            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new ScrollViewer(); vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
 
@@ -1747,9 +1753,9 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата окончания предыдущего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "DataContext.Storage.StartPeriod", 150, scp));
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "Дата окончания настоящего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.EndPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "DataContext.Storage.EndPeriod", 150, scp));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -1786,7 +1792,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
@@ -1990,20 +1996,20 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "DataContext.Storage.FIOexecutor", 180, scp, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "DataContext.Storage.ExecPhone", 95, scp, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "DataContext.Storage.ExecEmail", 130, scp, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;
         }
         public static Control Form17_Visual(INameScope scp)
         {
-            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new ScrollViewer(); vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
 
@@ -2032,9 +2038,9 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата окончания предыдущего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "DataContext.Storage.StartPeriod", 150, scp));
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "Дата окончания настоящего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.EndPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "DataContext.Storage.EndPeriod", 150, scp));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -2071,7 +2077,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
@@ -2275,19 +2281,19 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "DataContext.Storage.FIOexecutor", 180, scp,"ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "DataContext.Storage.ExecPhone", 95, scp, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "DataContext.Storage.ExecEmail", 130, scp,  "Электронная почта...", true));
 
             return vw;
         }
         public static Control Form18_Visual(INameScope scp)
         {
-            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new ScrollViewer(); vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
 
@@ -2316,9 +2322,9 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата окончания предыдущего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "DataContext.Storage.StartPeriod", 150, scp));
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "Дата окончания настоящего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.EndPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "DataContext.Storage.EndPeriod", 150, scp));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -2355,7 +2361,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
@@ -2559,20 +2565,20 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "DataContext.Storage.FIOexecutor", 180, scp, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "DataContext.Storage.ExecPhone", 95, scp, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "DataContext.Storage.ExecEmail", 130, scp, "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;
         }
         public static Control Form19_Visual(INameScope scp)
         {
-            ScrollViewer vw = new ScrollViewer();vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+            ScrollViewer vw = new ScrollViewer(); vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
 
@@ -2601,9 +2607,9 @@ namespace Client_App.Long_Visual
             topPnl1.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl1.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Дата окончания предыдущего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "Storage.StartPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 1, 30, "DataContext.Storage.StartPeriod", 150, scp));
             topPnl1.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "Дата окончания настоящего отчетного периода:"));
-            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "Storage.EndPeriod", 150));
+            topPnl1.Children.Add(CreateTextBox("5,0,0,0", 3, 30, "DataContext.Storage.EndPeriod", 150, scp));
             maingrid.Children.Add(topPnl1);
 
             Grid? topPnl2 = new Grid();
@@ -2640,7 +2646,7 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
             topPnl2.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Номер корректировки:"));
-            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.CorrectionNumber", 70));
+            topPnl2.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 2, 30, "CheckReport"));
             topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 3, 30, "SaveReport"));
 
@@ -2761,7 +2767,7 @@ namespace Client_App.Long_Visual
                 [!MenuItem.CommandProperty] = new Binding("AddNote"),
                 CommandParameter = "1.1*"
             };
-            //mn.SetValue(MenuItem.CommandParameterProperty,"1.1*");
+            mn.SetValue(MenuItem.CommandParameterProperty, "1.1*");
             List<MenuItem> itms1 = new List<MenuItem>
             {
                 mn,
@@ -2846,13 +2852,13 @@ namespace Client_App.Long_Visual
             topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 30, "ФИО исполнителя:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "Storage.FIOexecutor", 180, "ФИО исполнителя...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 30, "DataContext.Storage.FIOexecutor", 180, scp, "ФИО исполнителя...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 30, "Должность:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "Storage.GradeExecutor", 95, "Должность...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 30, "Телефон:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "DataContext.Storage.ExecPhone", 95, scp, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
-            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
+            topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "DataContext.Storage.ExecEmail", 130, scp , "Электронная почта...", true));
             maingrid.Children.Add(topPnl23);
 
             return vw;
