@@ -305,15 +305,16 @@ namespace Client_App.Long_Visual
             };
 
 
-            Grid gr = new Grid();
-            gr.RowDefinitions.Add(new RowDefinition { Height = GridLength.Parse("1*")});
-            gr.RowDefinitions.Add(new RowDefinition { Height = GridLength.Parse("1*")});
-
-            #region LeftRow0
+            #region Left
             StackPanel leftStP = new StackPanel()
             {
                 Orientation = Orientation.Vertical,
-                [Grid.RowProperty] = 0,
+                Spacing = 45
+            };
+
+            StackPanel leftStPT = new StackPanel()
+            {
+                Orientation = Orientation.Vertical,
                 Margin = Thickness.Parse("0,12,0,0")
 
             };
@@ -323,7 +324,7 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
             content = new StackPanel()
             {
@@ -331,21 +332,8 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
             content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
-            leftStP.Children.Add(content);
+            leftStPT.Children.Add(content);
 
-            Border brdL = new Border()
-            {
-                BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(3),
-                Padding = new Thickness(4),
-                Margin = Thickness.Parse("5,5,5,1")
-            };
-            brdL.Child = leftStP;
-            gr.Children.Add(brdL);
-            #endregion
-
-            #region LeftRow1
             content = new StackPanel()
             {
                 Orientation = Orientation.Horizontal,
@@ -353,8 +341,12 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Проверить", "5,0,0,15", 30, "CheckReport"));
+            content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+
+            leftStP.Children.Add(leftStPT);
+            leftStP.Children.Add(content);
+
             Border brdC = new Border()
             {
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
@@ -362,10 +354,9 @@ namespace Client_App.Long_Visual
                 CornerRadius = new CornerRadius(3),
                 Padding = new Thickness(4),
                 [Grid.RowProperty] = 1,
-                Margin = Thickness.Parse("5,1,5,5")
+                Margin = Thickness.Parse("5,5,5,5")
             };
-            brdC.Child = content;
-            gr.Children.Add(brdC);
+            brdC.Child = leftStP;
             #endregion
 
             #region Right
@@ -418,7 +409,7 @@ namespace Client_App.Long_Visual
             rigthStP.Children.Add(content);
             #endregion
 
-            topPnl1.Children.Add(gr);
+            topPnl1.Children.Add(brdC);
             topPnl1.Children.Add(brdR);
             maingrid.Children.Add(topPnl1);
             #endregion
