@@ -783,202 +783,6 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        #region Copy/Paste
-        private async Task _PasteRows(IEnumerable<Control> param)
-        {
-            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
-            {
-                var first = param.FirstOrDefault();
-                if (first is Cell)
-                {
-                    string? text = await clip.GetTextAsync();
-                    bool _flag = false;
-                    Cell cl = null;
-                    foreach (var item in param)
-                    {
-                        cl = (Cell)item;
-                        break;
-                    }
-
-                    if (cl != null)
-                    {
-                        int Row = cl.Row;
-                        int Column = cl.Column;
-
-                        if (text != null && text != "")
-                        {
-                            string rt = "";
-                            for (int i = 0; i < text.Length; i++)
-                            {
-                                var item = text[i];
-                                if (item == '\"')
-                                {
-                                    _flag = !_flag;
-                                }
-                                else
-                                {
-                                    if (item == '\r' || item == '\n')
-                                    {
-                                        if (item == '\r')
-                                        {
-                                            if (i + 1 < text.Length)
-                                            {
-                                                if (text[i + 1] == '\n')
-                                                {
-                                                    i++;
-                                                    if (_flag)
-                                                    {
-                                                        rt += text[i + 1];
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (!_flag)
-                                        {
-                                            foreach (var it in param)
-                                            {
-                                                var cell = (Cell)it;
-                                                if (cell.Column == Column && cell.Row == Row)
-                                                {
-                                                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                                    if (child != null)
-                                                    {
-                                                        var panel = (Panel)child.Child;
-                                                        var textbox = (TextBox)panel.Children.FirstOrDefault();
-
-                                                        if (textbox.TextWrapping == TextWrapping.Wrap)
-                                                        {
-                                                            textbox.Text = rt;
-                                                        }
-                                                        else
-                                                        {
-                                                            textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
-                                                        }
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                            rt = "";
-                                            Row++;
-                                            Column = cl.Column;
-                                        }
-                                        else
-                                        {
-                                            rt += item;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (!_flag)
-                                        {
-                                            if (item == '\t')
-                                            {
-                                                foreach (var it in param)
-                                                {
-                                                    var cell = (Cell)it;
-                                                    if (cell.Column == Column && cell.Row == Row)
-                                                    {
-                                                        var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                                        if (child != null)
-                                                        {
-                                                            var panel = (Panel)child.Child;
-                                                            var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                            if (textbox.TextWrapping == TextWrapping.Wrap)
-                                                            {
-                                                                textbox.Text = rt;
-                                                            }
-                                                            else
-                                                            {
-                                                                textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
-                                                            }
-                                                        }
-                                                        break;
-                                                    }
-                                                }
-                                                rt = "";
-                                                Column++;
-                                            }
-                                            else
-                                            {
-                                                rt += item;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            rt += item;
-                                        }
-                                    }
-                                }
-                            }
-                            foreach (var it in param)
-                            {
-                                var cell = (Cell)it;
-                                if (cell.Column == Column && cell.Row == Row)
-                                {
-                                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                    if (child != null)
-                                    {
-                                        var panel = (Panel)child.Child;
-                                        var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                        textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private async Task _CopyRows(IEnumerable<Control> param)
-        {
-            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
-            {
-                string txt = "";
-
-                var first = param.FirstOrDefault();
-                if (first is Cell)
-                {
-
-                    var ord = param.GroupBy(x => ((Cell)x).Row);
-                    foreach (var item in ord)
-                    {
-                        var t = item.OrderBy(x => ((Cell)x).Column);
-                        foreach (var it in t)
-                        {
-                            var cell = (Cell)it;
-                            var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                            if (child != null)
-                            {
-                                var panel = (Panel)child.Child;
-                                var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                if (textbox != null)
-                                {
-                                    if (textbox.Text != null)
-                                    {
-                                        if (textbox.Text.Contains("\n") || textbox.Text.Contains("\t") || textbox.Text.Contains("\r"))
-                                        {
-                                            txt += "\"" + textbox.Text + "\"";
-                                        }
-                                        else
-                                        {
-                                            txt += textbox.Text;
-                                        }
-                                    }
-                                    txt += "\t";
-                                }
-                            }
-                        }
-                        txt += "\r";
-                    }
-                }
-                await clip.ClearAsync();
-                await clip.SetTextAsync(txt);
-            }
-        }
-        #endregion
-
         #region Init
 
         public void Init()
@@ -1160,7 +964,7 @@ namespace Client_App.Controls.DataGrid
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
 
-                        if (IsReadable)
+                        if (IsReadable||item.Blocked)
                         {
                             textBox = new TextBlock()
                             {
@@ -1168,6 +972,10 @@ namespace Client_App.Controls.DataGrid
                                 [!TextBlock.TextProperty] = new Binding("Value"),
                                 
                             };
+                            if(item.Blocked)
+                            {
+                                textBox[!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty];
+                            }
                             ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
                             textBox.VerticalAlignment = VerticalAlignment.Center;
                             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;

@@ -18,6 +18,28 @@ namespace Models.Collections
         public string name;
         public List<DataGridColumns> innertCol = null;
         public DataGridColumns parent = null;
+        bool _Blocked = false;
+        public bool Blocked { 
+            get 
+            {
+                return _Blocked;
+            }
+            set
+            {
+                if (_Blocked != value)
+                {
+                    _Blocked = value;
+                    if (innertCol != null)
+                    {
+                        foreach (var item in innertCol)
+                        {
+                            item.Blocked = value;
+                        }
+                    }
+                }
+            }
+
+        }
 
         private string binding = "";
         public string Binding { 
