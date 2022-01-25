@@ -50,6 +50,25 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region ChooseColor
+        public static readonly DirectProperty<Cell, SolidColorBrush> ChooseColorProperty =
+                AvaloniaProperty.RegisterDirect<Cell, SolidColorBrush>(
+        nameof(ChooseColor),
+        o => o.ChooseColor,
+        (o, v) => o.ChooseColor = v);
+
+        private SolidColorBrush _ChooseColor = null;
+
+        public SolidColorBrush ChooseColor
+        {
+            get => _ChooseColor;
+            set
+            {
+                SetAndRaise(ChooseColorProperty, ref _ChooseColor, value);
+            }
+        }
+        #endregion
+
         #region Row
         public static readonly DirectProperty<Cell, int> RowProperty =
             AvaloniaProperty.RegisterDirect<Cell, int>(
@@ -86,8 +105,8 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        Control _Control = null;
-        public Control Control 
+        IControl _Control = null;
+        public IControl Control 
         {
             get 
             { 

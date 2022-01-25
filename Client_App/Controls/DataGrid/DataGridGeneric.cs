@@ -575,10 +575,10 @@ namespace Client_App.Controls.DataGrid
             var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
             var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
 
-            var tmp1 = Rows.Where(item => !(((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow&&
-                                            ((Cell)item.Children.FirstOrDefault()).Column >= minColumn && ((Cell)item.Children.FirstOrDefault()).Column<= maxColumn));
+            var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow)&&
+                                            (((Cell)item).Column >= minColumn && ((Cell)item).Column<= maxColumn)));
 
-            foreach (DataGridRow item in tmp1)
+            foreach (Cell item in tmp1)
             {
                 item.ChooseColor = (SolidColorBrush)Background;
             }
@@ -587,10 +587,10 @@ namespace Client_App.Controls.DataGrid
 
             ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-            var tmp2 = Rows.Where(item => (((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow &&
-                                            ((Cell)item.Children.FirstOrDefault()).Column >= minColumn && ((Cell)item.Children.FirstOrDefault()).Column <= maxColumn));
+            var tmp2 = Rows.SelectMany(x=>x.Children).Where(item=> ((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow) &&
+                                            (((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn)));
 
-            foreach (DataGridRow item in tmp2)
+            foreach (Cell item in tmp2)
             {
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
@@ -624,6 +624,7 @@ namespace Client_App.Controls.DataGrid
                             tmp[0] = it.Row;
                             tmp[1] = it.Column;
                             flag = true;
+                            break;
                         }
                     }
                     if(flag)
@@ -743,6 +744,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     FirstPressedItem = LastPressedItem;
                 }
+                SetSelectedControls();
             }
             if (args.Key == Key.Right)
             {
@@ -751,6 +753,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     FirstPressedItem = LastPressedItem;
                 }
+                SetSelectedControls();
             }
             if (args.Key == Key.Down)
             {
@@ -759,6 +762,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     FirstPressedItem = LastPressedItem;
                 }
+                SetSelectedControls();
             }
             if (args.Key == Key.Up)
             {
@@ -767,6 +771,7 @@ namespace Client_App.Controls.DataGrid
                 {
                     FirstPressedItem = LastPressedItem;
                 }
+                SetSelectedControls();
             }
 
             var rt = CommandsList.Where(item=>item.Key==args.Key&&item.KeyModifiers==args.KeyModifiers);
@@ -1023,6 +1028,7 @@ namespace Client_App.Controls.DataGrid
         int GridSplitterSize = 2;
         private void MakeHeaderInner(DataGridColumns ls)
         {
+            
             if (ls==null)
             {
                 return;
@@ -1030,7 +1036,17 @@ namespace Client_App.Controls.DataGrid
             else
             {
                 int Level = ls.Level;
-                this.Width = ls.SizeCol;
+
+                Binding bd = new Binding()
+                {
+                    Source = ls,
+                    Path = "SizeCol",
+                    Mode = BindingMode.TwoWay
+                   
+                };
+                this[!Control.WidthProperty] = bd;
+
+
                 HeadersColumns.Clear();
                 var tre = ls.GetLevel(Level-1);
                 for (int i = Level-1; i >= 1; i--)
@@ -1150,7 +1166,7 @@ namespace Client_App.Controls.DataGrid
                             {
                                 [!TextBlock.DataContextProperty] = new Binding(item.Binding),
                                 [!TextBlock.TextProperty] = new Binding("Value"),
-
+                                
                             };
                             ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
                             textBox.VerticalAlignment = VerticalAlignment.Center;
@@ -1165,6 +1181,7 @@ namespace Client_App.Controls.DataGrid
                             {
                                 [!TextBox.DataContextProperty] = new Binding(item.Binding),
                                 [!TextBox.TextProperty] = new Binding("Value"),
+                                [!TextBox.BackgroundProperty]=cell[!Cell.ChooseColorProperty]
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Center;
                             textBox.VerticalAlignment = VerticalAlignment.Center;

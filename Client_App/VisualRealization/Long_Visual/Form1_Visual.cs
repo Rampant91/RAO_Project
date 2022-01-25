@@ -9,6 +9,8 @@ using Avalonia.Media;
 using Client_App.Controls.DataGrid;
 using Models.Attributes;
 using Models;
+using Avalonia.Controls.Primitives;
+using Client_App.Converters;
 
 namespace Client_App.Long_Visual
 {
@@ -296,12 +298,20 @@ namespace Client_App.Long_Visual
             vw.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
             StackPanel maingrid = new StackPanel();
             vw.Content = maingrid;
+            Binding ind = new Binding()
+            {
+                Source = vw,
+                Path = "Offset",
+                Converter = new VectorToMargin_Converter()
+            };
 
             #region Header
+
             StackPanel? topPnl1 = new StackPanel()
             {
                 Orientation = Orientation.Horizontal,
-                Spacing = 5
+                Spacing = 5,
+                [!StackPanel.MarginProperty]=ind
             };
 
 
@@ -427,7 +437,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Data_",
                 Focusable = true,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
                 ChooseMode = ChooseMode.Cell,
@@ -514,6 +524,11 @@ namespace Client_App.Long_Visual
             topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
 
+            Panel prt = new Panel()
+            {
+                [Grid.ColumnProperty] = 4,
+                [!Control.MarginProperty] = ind
+            };
             Controls.DataGrid.DataGridNote grd1 = new Controls.DataGrid.DataGridNote()
             {
                 Name = "Form11Notes_",
@@ -527,7 +542,8 @@ namespace Client_App.Long_Visual
                 Margin = Thickness.Parse("5,0,0,0")
 
             };
-            grd1.SetValue(Grid.RowProperty, 4);
+            //grd1.SetValue(Grid.RowProperty, 4);
+            prt.Children.Add(grd1);
 
             Binding b1 = new Binding
             {
@@ -581,7 +597,7 @@ namespace Client_App.Long_Visual
 
             grd1.ContextMenu = cntx1;
 
-            maingrid.Children.Add(grd1);
+            maingrid.Children.Add(prt);
             //Grid? topPnl23 = new Grid();
             //column = new ColumnDefinition
             //{
