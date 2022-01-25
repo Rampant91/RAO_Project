@@ -6,7 +6,7 @@
              x:Class="Client_App.Controls.DataGrid.Cell"
 			 xmlns:local="clr-namespace:Client_App.Controls.DataGrid">
 	<Border BorderThickness="1" BorderBrush="{Binding $parent.BorderColor}">
-		<Panel Background="{Binding $parent[local:DataGridRow].ChooseColor, Mode=TwoWay}" DataContext="{Binding $parent[local:DataGridRow].DataContext}">
+		<Panel DataContext="{Binding $parent[local:DataGridRow].DataContext}">
 
 		</Panel>
 	</Border>

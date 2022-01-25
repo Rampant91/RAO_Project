@@ -41,6 +41,30 @@ namespace Models.Collections
 
         }
 
+        bool _ChooseLine = false;
+        public bool ChooseLine
+        {
+            get
+            {
+                return _ChooseLine;
+            }
+            set
+            {
+                if (_ChooseLine != value)
+                {
+                    _ChooseLine = value;
+                    if (innertCol != null)
+                    {
+                        foreach (var item in innertCol)
+                        {
+                            item.ChooseLine = value;
+                        }
+                    }
+                }
+            }
+
+        }
+
         private string binding = "";
         public string Binding { 
             get 

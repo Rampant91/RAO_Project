@@ -492,9 +492,9 @@ namespace Client_App.Controls.DataGrid
         {
             var Row = LastPressedItem[0];
 
-            var tmp1 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row != Row);
+            var tmp1 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row != Row);
 
-            foreach (DataGridRow item in tmp1)
+            foreach (Cell item in tmp1)
             {
                 item.ChooseColor = (SolidColorBrush)Background;
             }
@@ -503,9 +503,9 @@ namespace Client_App.Controls.DataGrid
 
             ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-            var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row);
+            var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == Row);
 
-            foreach (DataGridRow item in tmp2)
+            foreach (Cell item in tmp2)
             {
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
@@ -514,6 +514,7 @@ namespace Client_App.Controls.DataGrid
             SelectedItems = tmpSelectedItems;
         }
 
+        //Not Done
         private void SetSelectedControls_CellSingle()
         {
             var Row = LastPressedItem[0];
@@ -546,9 +547,9 @@ namespace Client_App.Controls.DataGrid
             var minRow = Math.Min(FirstPressedItem[0],LastPressedItem[0]);
             var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
 
-            var tmp1 = Rows.Where(item => !(((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow));
+            var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !(((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
 
-            foreach (DataGridRow item in tmp1)
+            foreach (Cell item in tmp1)
             {
                 item.ChooseColor = (SolidColorBrush)Background;
             }
@@ -557,9 +558,9 @@ namespace Client_App.Controls.DataGrid
 
             ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-            var tmp2 = Rows.Where(item => (((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow));
+            var tmp2 = Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
 
-            foreach (DataGridRow item in tmp2)
+            foreach (Cell item in tmp2)
             {
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
@@ -785,6 +786,11 @@ namespace Client_App.Controls.DataGrid
 
         #region Init
 
+        public void ChooseAllRow(object sender,RoutedEventArgs args)
+        {
+            SetSelectedControls_LineMulti();
+        }
+
         public void Init()
         {
             MakeAll();
@@ -963,6 +969,10 @@ namespace Client_App.Controls.DataGrid
                         cell.Height = 30;
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
+                        if (item.ChooseLine)
+                        {
+                            cell.Tapped += ChooseAllRow;
+                        }
 
                         if (IsReadable||item.Blocked)
                         {
@@ -970,7 +980,7 @@ namespace Client_App.Controls.DataGrid
                             {
                                 [!TextBlock.DataContextProperty] = new Binding(item.Binding),
                                 [!TextBlock.TextProperty] = new Binding("Value"),
-                                
+                                [!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
                             if(item.Blocked)
                             {

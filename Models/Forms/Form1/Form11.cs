@@ -1255,6 +1255,7 @@ namespace Models
             NumberInOrderR.SetSizeColToAllLevels(50);
             NumberInOrderR.Binding = nameof(Form.NumberInOrder);
             NumberInOrderR.Blocked = true;
+            NumberInOrderR.ChooseLine = true;
             #endregion
 
             #region OperationCode (2)
