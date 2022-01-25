@@ -648,10 +648,13 @@ namespace Client_App.Controls.DataGrid
                 SetSelectedControls();
                 if (paramKey == PointerUpdateKind.RightButtonPressed)
                 {
-                    this.ContextMenu.Close();
-                    var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == FirstPressedItem[0] && ((Cell)item).Column == FirstPressedItem[1])).FirstOrDefault();
-                    this.ContextMenu.PlacementTarget= tmp1;
-                    this.ContextMenu.Open();
+                    if (!(FirstPressedItem[0] == 0 && FirstPressedItem[1] == 0))
+                    {
+                        this.ContextMenu.Close();
+                        var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == FirstPressedItem[0] && ((Cell)item).Column == FirstPressedItem[1])).FirstOrDefault();
+                        this.ContextMenu.PlacementTarget = tmp1;
+                        this.ContextMenu.Open();
+                    }
                 }
                 else
                 {

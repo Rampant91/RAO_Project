@@ -75,7 +75,7 @@ namespace Client_App.Short_Visual
             Controls.DataGrid.DataGridReport grd = new Controls.DataGrid.DataGridReport("Form1AllDataGrid_")
             {
                 Name = "Form1AllDataGrid_",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
