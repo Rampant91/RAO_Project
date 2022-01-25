@@ -645,8 +645,19 @@ namespace Client_App.Controls.DataGrid
             {
                 FirstPressedItem = paramRowColumn;
                 LastPressedItem = paramRowColumn;
-
                 SetSelectedControls();
+                if (paramKey == PointerUpdateKind.RightButtonPressed)
+                {
+                    this.ContextMenu.Close();
+                    var cntx=this.ContextMenu;
+                    var ty = SelectedCells.FirstOrDefault().TransformedBounds.Value.Clip;
+                    cntx.PlacementRect = new Rect(ty.X,ty.Y,200,200);
+                    cntx.Open();
+                }
+                else
+                {
+                    this.ContextMenu.Close();
+                }
             }
         }
         private void MouseDoublePressed(object sender, EventArgs args)
@@ -743,7 +754,8 @@ namespace Client_App.Controls.DataGrid
                 LastPressedItem[1] += -1;
                 if(args.KeyModifiers!=KeyModifiers.Shift)
                 {
-                    FirstPressedItem = LastPressedItem;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
                 SetSelectedControls();
             }
@@ -752,7 +764,8 @@ namespace Client_App.Controls.DataGrid
                 LastPressedItem[1] += 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    FirstPressedItem = LastPressedItem;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
                 SetSelectedControls();
             }
@@ -761,7 +774,8 @@ namespace Client_App.Controls.DataGrid
                 LastPressedItem[0] += 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    FirstPressedItem = LastPressedItem;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
                 SetSelectedControls();
             }
@@ -770,7 +784,8 @@ namespace Client_App.Controls.DataGrid
                 LastPressedItem[0] += -1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    FirstPressedItem = LastPressedItem;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
                 SetSelectedControls();
             }
