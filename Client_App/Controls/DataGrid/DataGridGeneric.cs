@@ -410,6 +410,8 @@ namespace Client_App.Controls.DataGrid
         {
             this.Name = Name;
 
+            //this.
+
             this.AddHandler(PointerPressedEvent,MousePressed,handledEventsToo:true);
             this.AddHandler(PointerMovedEvent, MouseMoved, handledEventsToo: true);
             this.AddHandler(PointerReleasedEvent, MouseReleased, handledEventsToo: true);
@@ -983,23 +985,43 @@ namespace Client_App.Controls.DataGrid
                 var tre = ls.GetLevel(Level-1);
                 for (int i = Level-1; i >= 1; i--)
                 {
-                    StackPanel HeaderRow = new StackPanel();
-                    HeaderRow.Orientation = Orientation.Horizontal;
+                    Grid HeaderRow = new Grid();
+                    HeaderRow.MinWidth = ls.SizeCol;
+                    var GridSplitterSize = 2;
+                    var count = 0;
                     foreach (var item in tre)
                     {
-                        TextBlock textBlock = new TextBlock();
-                        textBlock.Text = item.name.Contains("null") ?"": item.name;
-                        textBlock.TextAlignment = TextAlignment.Center;
-                        textBlock.VerticalAlignment = VerticalAlignment.Center;
+                        HeaderRow.ColumnDefinitions.Add(new ColumnDefinition() { Width=GridLength.Parse((item.SizeCol- GridSplitterSize).ToString()) });
+                        HeaderRow.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Parse(GridSplitterSize.ToString()) });
 
-                        Cell cell = new Cell();
-                        cell.Width = item.SizeCol;
+                        Cell cell = new Cell() {
+                            [Grid.ColumnProperty]=count
+                        };
+                        cell.HorizontalAlignment = HorizontalAlignment.Stretch;
                         cell.Height = 30;
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
+
+                        TextBlock textBlock = new TextBlock() {
+                            [!TextBlock.HorizontalAlignmentProperty] = cell[!Cell.WidthProperty]
+                        };
+                        textBlock.Text = item.name.Contains("null") ?"": item.name;
+                        textBlock.TextAlignment = TextAlignment.Center;
+                        textBlock.VerticalAlignment = VerticalAlignment.Center;
+                        textBlock.HorizontalAlignment = HorizontalAlignment.Stretch;
+
                         cell.Control = textBlock;
 
                         HeaderRow.Children.Add(cell);
+                        HeaderRow.Children.Add(new GridSplitter() {
+                            [Grid.ColumnProperty] = count+1,
+                            ResizeDirection=GridResizeDirection.Columns,
+                            Background=new SolidColorBrush(Color.Parse("Black")),
+                            ResizeBehavior=GridResizeBehavior.PreviousAndCurrent
+                        });
+
+
+                        count +=2;
                     }
                     HeaderStackPanel.Children.Add(HeaderRow);
                     if (i - 1 >= 1)
@@ -1141,8 +1163,6 @@ namespace Client_App.Controls.DataGrid
 
             ScrollViewer CenterScrollViewer = new ScrollViewer();
             CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            CenterScrollViewer.MaxHeight = 185;
-            CenterScrollViewer.MinHeight = 185;
             CenterScrollViewer.Content = CenterPanel;
 
             CenterBorder.Child = CenterScrollViewer;
