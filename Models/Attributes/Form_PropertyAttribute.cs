@@ -26,6 +26,7 @@ namespace Models.Attributes
                 {
                     DataGridColumns it = new();
                     it.name = Names[i];
+                    it.parent = _tmp;
                     _tmp.innertCol.Add(it);
                     try
                     {

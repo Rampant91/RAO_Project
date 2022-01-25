@@ -3,13 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using Models.Collections;
+using Models.DataAccess;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
+using OfficeOpenXml;
+using System.Collections;
 
 namespace Models.Collections
 {
-    public class DataGridColumns
+    public class DataGridColumns:INotifyPropertyChanged
     {
         public string name;
         public List<DataGridColumns> innertCol = null;
+        public DataGridColumns parent = null;
 
         private string binding = "";
         public string Binding { 
@@ -48,8 +56,31 @@ namespace Models.Collections
             }
         }
 
-        int sizeCol = 0;
-        public int SizeCol
+        public string GridLength
+        {
+            get
+            {
+                return SizeCol +"*";
+            }
+            set
+            {
+                if (value != "")
+                {
+                    try
+                    {
+                        var tmp = Convert.ToDouble(value.Replace("*", ""));
+                        SizeCol = tmp;
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+        }
+
+        double sizeCol = 0;
+        public double SizeCol
         {
             get 
             {
@@ -59,10 +90,10 @@ namespace Models.Collections
                 }
                 else
                 {
-                    var t = 0;
+                    var t = 0.0;
                     foreach (var elem in innertCol) 
                     {
-                        t += elem.sizeCol;
+                        t += elem.SizeCol;
                     }
                     return t;
                 }
@@ -76,6 +107,14 @@ namespace Models.Collections
                     {
                         sizeCol = value;
                     }
+                }
+                if (parent != null)
+                {
+                    parent.OnPropertyChanged(nameof(GridLength));
+                }
+                else
+                {
+                    OnPropertyChanged(nameof(GridLength));
                 }
             }
         }
@@ -180,6 +219,7 @@ namespace Models.Collections
                         ret.innertCol = new List<DataGridColumns>();
                         foreach (var item in col2.innertCol)
                         {
+                            item.parent = ret;
                             ret.innertCol.Add(item);
                         }
                     }
@@ -195,13 +235,16 @@ namespace Models.Collections
                     {
                         foreach (var item in col1.innertCol)
                         {
+                            item.parent = ret;
                             ret.innertCol.Add(item);
                         }
                     }
                     else
                     {
+                        col1.parent = ret;
                         ret.innertCol.Add(col1);
                     }
+                    col2.parent = ret;
                     ret.innertCol.Add(col2);
                     return ret;
                 }
@@ -231,6 +274,7 @@ namespace Models.Collections
                         {
                             tr += item.ElementAt(i);
                         }
+                        tr.parent = ret;
                         ret.innertCol.Add(tr) ;
                     }
                     return ret;
@@ -245,14 +289,17 @@ namespace Models.Collections
                     {
                         foreach (var item in col1.innertCol)
                         {
+                            item.parent = ret;
                             ret.innertCol.Add(item);
                         }
                     }
                     else
                     {
+                        col1.parent = ret;
                         ret.innertCol.Add(col1);
                     }
 
+                    col2.parent = ret;
                     ret.innertCol.Add(col2);
 
                     var group = ret.innertCol.GroupBy(x => x.name);
@@ -266,11 +313,23 @@ namespace Models.Collections
                         {
                             tr += item.ElementAt(i);
                         }
+                        tr.parent = _ret;
                         _ret.innertCol.Add(tr);
                     }
                     return _ret;
                 }
             }
         }
+
+        #region INotifyPropertyChanged
+        protected void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
     }
 }

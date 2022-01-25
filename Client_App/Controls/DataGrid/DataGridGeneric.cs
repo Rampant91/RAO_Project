@@ -29,6 +29,8 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using Models.DataAccess;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Reactive.Subjects;
+using Client_App.Converters;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -218,6 +220,26 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region IsColumnResize
+        public static readonly DirectProperty<DataGrid<T>, bool> IsColumnResizeProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
+                nameof(IsColumnResize),
+                o => o.IsColumnResize,
+                (o, v) => o.IsColumnResize = v);
+
+        private bool _IsColumnResize = true;
+        public bool IsColumnResize
+        {
+            get => _IsColumnResize;
+            set
+            {
+                SetAndRaise(IsColumnResizeProperty, ref _IsColumnResize, value);
+
+                Init();
+            }
+        }
+        #endregion
+
         #region PageSize
         public static readonly DirectProperty<DataGrid<T>, int> PageSizeProperty =
              AvaloniaProperty.RegisterDirect<DataGrid<T>, int>(
@@ -394,21 +416,34 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        private DataGridColumns _Columns = null;
         private DataGridColumns Columns
         {
             get
             {
-                var t = new T();
-                string tmp = "";
-                if(Name== "Form1AllDataGrid_")
+                if(_Columns==null)
                 {
-                    tmp = "1.0";
+                    var t = new T();
+                    string tmp = "";
+                    if (Name == "Form1AllDataGrid_")
+                    {
+                        tmp = "1.0";
+                    }
+                    if (Name == "Form2AllDataGrid_")
+                    {
+                        tmp = "2.0";
+                    }
+                    _Columns = t.GetColumnStructure(tmp);
                 }
-                if (Name == "Form2AllDataGrid_")
+                return _Columns;
+            }
+            set
+            {
+                if(_Columns!=value)
                 {
-                    tmp = "2.0";
+                    _Columns = value;
+                    Init();
                 }
-                return t.GetColumnStructure(tmp);
             }
         }
         private List<DataGridRow> Rows { get; set; } = new List<DataGridRow>();
@@ -430,6 +465,7 @@ namespace Client_App.Controls.DataGrid
 
             _CommandsList.CollectionChanged += CommandListChanged;
         }
+
         #region SetSelectedControls
         private void SetSelectedControls()
         {
@@ -983,27 +1019,37 @@ namespace Client_App.Controls.DataGrid
             this.ContextMenu = menu;
         }
 
+        List<ColumnDefinition> HeadersColumns = new List<ColumnDefinition>();
+        int GridSplitterSize = 2;
         private void MakeHeaderInner(DataGridColumns ls)
         {
-            if(ls==null)
+            if (ls==null)
             {
                 return;
             }
             else
             {
                 int Level = ls.Level;
-
+                this.Width = ls.SizeCol;
+                HeadersColumns.Clear();
                 var tre = ls.GetLevel(Level-1);
                 for (int i = Level-1; i >= 1; i--)
                 {
                     Grid HeaderRow = new Grid();
-                    HeaderRow.MinWidth = ls.SizeCol;
-                    var GridSplitterSize = 2;
                     var count = 0;
                     foreach (var item in tre)
                     {
-                        HeaderRow.ColumnDefinitions.Add(new ColumnDefinition() { Width=GridLength.Parse((item.SizeCol- GridSplitterSize).ToString()) });
-                        HeaderRow.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Parse(GridSplitterSize.ToString()) });
+                        Binding b = new Binding()
+                        {
+                            Source = item,
+                            Path = "GridLength",
+                            Mode = BindingMode.TwoWay,
+                            Converter = new stringToGridLength_Converter()
+                        };
+                        var Column = new ColumnDefinition() { 
+                            [!ColumnDefinition.WidthProperty]=b
+                        };
+                        HeaderRow.ColumnDefinitions.Add(Column);
 
                         Cell cell = new Cell() {
                             [Grid.ColumnProperty]=count
@@ -1013,9 +1059,7 @@ namespace Client_App.Controls.DataGrid
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
 
-                        TextBlock textBlock = new TextBlock() {
-                            [!TextBlock.HorizontalAlignmentProperty] = cell[!Cell.WidthProperty]
-                        };
+                        TextBlock textBlock = new TextBlock();
                         textBlock.Text = item.name.Contains("null") ?"": item.name;
                         textBlock.TextAlignment = TextAlignment.Center;
                         textBlock.VerticalAlignment = VerticalAlignment.Center;
@@ -1024,15 +1068,29 @@ namespace Client_App.Controls.DataGrid
                         cell.Control = textBlock;
 
                         HeaderRow.Children.Add(cell);
-                        HeaderRow.Children.Add(new GridSplitter() {
-                            [Grid.ColumnProperty] = count+1,
-                            ResizeDirection=GridResizeDirection.Columns,
-                            Background=new SolidColorBrush(Color.Parse("Black")),
-                            ResizeBehavior=GridResizeBehavior.PreviousAndCurrent
-                        });
-
-
-                        count +=2;
+                        if (count + 1 < tre.Count * 2 - 1)
+                        {
+                            HeaderRow.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Parse(GridSplitterSize.ToString()) });
+                            if (i == 1&&IsColumnResize)
+                            {
+                                HeaderRow.Children.Add(new GridSplitter()
+                                {
+                                    [Grid.ColumnProperty] = count + 1,
+                                    ResizeDirection = GridResizeDirection.Columns,
+                                    Background = new SolidColorBrush(Color.Parse("Gray")),
+                                    ResizeBehavior = GridResizeBehavior.BasedOnAlignment
+                                });
+                            }
+                            count += 2;
+                        }
+                        else
+                        {
+                            count++;
+                        }
+                        if (i == 1)
+                        {
+                            HeadersColumns.Add(Column);
+                        }
                     }
                     HeaderStackPanel.Children.Add(HeaderRow);
                     if (i - 1 >= 1)
@@ -1060,22 +1118,43 @@ namespace Client_App.Controls.DataGrid
                 for (int i = 0; i < PageSize; i++)
                 {
                     var Column = 0;
+                    var count = 0;
                     DataGridRow RowStackPanel = new();
                     RowStackPanel.Row = i;
-                    RowStackPanel.Orientation = Orientation.Horizontal;
 
                     foreach (var item in lst)
                     {
+                        Binding b = new Binding()
+                        {
+                            Source= HeadersColumns[Column],
+                            Path=nameof(ColumnDefinition.Width)
+                        };
+                        var Columnq = new ColumnDefinition() { [!ColumnDefinition.WidthProperty]=b};
+                        RowStackPanel.ColumnDefinitions.Add(Columnq);
+
                         Control textBox = null;
-                        if(IsReadable)
+
+                        Cell cell = new Cell() {
+                            [Grid.ColumnProperty]=count
+                        };
+                        cell.HorizontalAlignment = HorizontalAlignment.Stretch;
+                        cell.Row = i;
+                        cell.Column = Column;
+                        cell.Height = 30;
+                        cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
+                        cell.Background = new SolidColorBrush(Color.Parse("White"));
+
+                        if (IsReadable)
                         {
                             textBox = new TextBlock()
                             {
                                 [!TextBlock.DataContextProperty] = new Binding(item.Binding),
-                                [!TextBlock.TextProperty] = new Binding("Value")
+                                [!TextBlock.TextProperty] = new Binding("Value"),
+
                             };
                             ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
                             textBox.VerticalAlignment = VerticalAlignment.Center;
+                            textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
                             ((TextBlock)textBox).Padding = new Thickness(0,5,0,5);
                             textBox.Height = 30;
                             textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
@@ -1085,24 +1164,26 @@ namespace Client_App.Controls.DataGrid
                             textBox = new TextBox()
                             {
                                 [!TextBox.DataContextProperty] = new Binding(item.Binding),
-                                [!TextBox.TextProperty] = new Binding("Value")
+                                [!TextBox.TextProperty] = new Binding("Value"),
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Center;
                             textBox.VerticalAlignment = VerticalAlignment.Center;
+                            textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
                             textBox.Height = 30;
                             textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
                         }
-
-                        Cell cell = new Cell();
-                        cell.Row = i;
-                        cell.Column = Column;
-                        cell.Width = item.SizeCol;
-                        cell.Height = 30;
-                        cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
-                        cell.Background = new SolidColorBrush(Color.Parse("White"));
                         cell.Control = textBox;
-                        RowStackPanel.Children.Add(cell);
 
+                        RowStackPanel.Children.Add(cell);
+                        if (count + 1 < lst.Count * 2 - 1)
+                        {
+                            RowStackPanel.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Parse(GridSplitterSize.ToString()) });
+                            count += 2;
+                        }
+                        else
+                        {
+                            count++;
+                        }
                         Column++;
                     }
                     RowStackPanel.IsVisible = false;
@@ -1180,7 +1261,6 @@ namespace Client_App.Controls.DataGrid
 
             CenterStackPanel = new();
             CenterStackPanel.Orientation = Orientation.Vertical;
-            CenterStackPanel.HorizontalAlignment = HorizontalAlignment.Left;
             CenterStackPanel.Margin = Thickness.Parse("2,2,2,2");
 
             CenterPanel.Children.Add(CenterStackPanel);
@@ -1241,7 +1321,8 @@ namespace Client_App.Controls.DataGrid
             {
                 Content = "<",
                 Width = 30,
-                Height = 30
+                Height = 30,
+                CornerRadius = CornerRadius.Parse("2,2,2,2")
             };
             btnDown.Click += NowPageDown;
             FooterStackPanel.Children.Add(btnDown);

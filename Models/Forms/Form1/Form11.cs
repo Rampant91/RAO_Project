@@ -1280,7 +1280,7 @@ namespace Models
             #region Type (5)
             DataGridColumns TypeR = ((Attributes.Form_PropertyAttribute)typeof(Form11).GetProperty(nameof(Form11.Type)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             TypeR.SetSizeColToAllLevels(130);
-            TypeR.Binding = nameof(Form1.OperationDate);
+            TypeR.Binding = nameof(Form11.Type);
             NumberInOrderR += TypeR;
             #endregion
 
