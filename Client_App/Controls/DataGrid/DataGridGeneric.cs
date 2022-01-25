@@ -492,9 +492,9 @@ namespace Client_App.Controls.DataGrid
         {
             var Row = LastPressedItem[0];
 
-            var tmp1 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row != Row);
+            var tmp1 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row != Row);
 
-            foreach (DataGridRow item in tmp1)
+            foreach (Cell item in tmp1)
             {
                 item.ChooseColor = (SolidColorBrush)Background;
             }
@@ -503,9 +503,9 @@ namespace Client_App.Controls.DataGrid
 
             ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-            var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row);
+            var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == Row);
 
-            foreach (DataGridRow item in tmp2)
+            foreach (Cell item in tmp2)
             {
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
@@ -514,6 +514,7 @@ namespace Client_App.Controls.DataGrid
             SelectedItems = tmpSelectedItems;
         }
 
+        //Not Done
         private void SetSelectedControls_CellSingle()
         {
             var Row = LastPressedItem[0];
@@ -546,9 +547,9 @@ namespace Client_App.Controls.DataGrid
             var minRow = Math.Min(FirstPressedItem[0],LastPressedItem[0]);
             var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
 
-            var tmp1 = Rows.Where(item => !(((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow));
+            var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !(((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
 
-            foreach (DataGridRow item in tmp1)
+            foreach (Cell item in tmp1)
             {
                 item.ChooseColor = (SolidColorBrush)Background;
             }
@@ -557,9 +558,9 @@ namespace Client_App.Controls.DataGrid
 
             ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-            var tmp2 = Rows.Where(item => (((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow));
+            var tmp2 = Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
 
-            foreach (DataGridRow item in tmp2)
+            foreach (Cell item in tmp2)
             {
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
@@ -575,10 +576,10 @@ namespace Client_App.Controls.DataGrid
             var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
             var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
 
-            var tmp1 = Rows.Where(item => !(((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow&&
-                                            ((Cell)item.Children.FirstOrDefault()).Column >= minColumn && ((Cell)item.Children.FirstOrDefault()).Column<= maxColumn));
+            var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow)&&
+                                            (((Cell)item).Column >= minColumn && ((Cell)item).Column<= maxColumn)));
 
-            foreach (DataGridRow item in tmp1)
+            foreach (Cell item in tmp1)
             {
                 item.ChooseColor = (SolidColorBrush)Background;
             }
@@ -587,10 +588,10 @@ namespace Client_App.Controls.DataGrid
 
             ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
 
-            var tmp2 = Rows.Where(item => (((Cell)item.Children.FirstOrDefault()).Row >= minRow && ((Cell)item.Children.FirstOrDefault()).Row <= maxRow &&
-                                            ((Cell)item.Children.FirstOrDefault()).Column >= minColumn && ((Cell)item.Children.FirstOrDefault()).Column <= maxColumn));
+            var tmp2 = Rows.SelectMany(x=>x.Children).Where(item=> ((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow) &&
+                                            (((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn)));
 
-            foreach (DataGridRow item in tmp2)
+            foreach (Cell item in tmp2)
             {
                 item.ChooseColor = (SolidColorBrush)ChooseColor;
                 SelectedCells.Add(item);
@@ -624,6 +625,7 @@ namespace Client_App.Controls.DataGrid
                             tmp[0] = it.Row;
                             tmp[1] = it.Column;
                             flag = true;
+                            break;
                         }
                     }
                     if(flag)
@@ -643,8 +645,19 @@ namespace Client_App.Controls.DataGrid
             {
                 FirstPressedItem = paramRowColumn;
                 LastPressedItem = paramRowColumn;
-
                 SetSelectedControls();
+                if (paramKey == PointerUpdateKind.RightButtonPressed)
+                {
+                    this.ContextMenu.Close();
+                    var cntx=this.ContextMenu;
+                    var ty = SelectedCells.FirstOrDefault().TransformedBounds.Value.Clip;
+                    cntx.PlacementRect = new Rect(ty.X,ty.Y,200,200);
+                    cntx.Open();
+                }
+                else
+                {
+                    this.ContextMenu.Close();
+                }
             }
         }
         private void MouseDoublePressed(object sender, EventArgs args)
@@ -741,32 +754,40 @@ namespace Client_App.Controls.DataGrid
                 LastPressedItem[1] += -1;
                 if(args.KeyModifiers!=KeyModifiers.Shift)
                 {
-                    FirstPressedItem = LastPressedItem;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
+                SetSelectedControls();
             }
             if (args.Key == Key.Right)
             {
                 LastPressedItem[1] += 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    FirstPressedItem = LastPressedItem;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
+                SetSelectedControls();
             }
             if (args.Key == Key.Down)
             {
                 LastPressedItem[0] += 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    FirstPressedItem = LastPressedItem;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
+                SetSelectedControls();
             }
             if (args.Key == Key.Up)
             {
                 LastPressedItem[0] += -1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
-                    FirstPressedItem = LastPressedItem;
+                    FirstPressedItem[0] = LastPressedItem[0];
+                    FirstPressedItem[1] = LastPressedItem[1];
                 }
+                SetSelectedControls();
             }
 
             var rt = CommandsList.Where(item=>item.Key==args.Key&&item.KeyModifiers==args.KeyModifiers);
@@ -778,203 +799,12 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
-        #region Copy/Paste
-        private async Task _PasteRows(IEnumerable<Control> param)
-        {
-            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
-            {
-                var first = param.FirstOrDefault();
-                if (first is Cell)
-                {
-                    string? text = await clip.GetTextAsync();
-                    bool _flag = false;
-                    Cell cl = null;
-                    foreach (var item in param)
-                    {
-                        cl = (Cell)item;
-                        break;
-                    }
-
-                    if (cl != null)
-                    {
-                        int Row = cl.Row;
-                        int Column = cl.Column;
-
-                        if (text != null && text != "")
-                        {
-                            string rt = "";
-                            for (int i = 0; i < text.Length; i++)
-                            {
-                                var item = text[i];
-                                if (item == '\"')
-                                {
-                                    _flag = !_flag;
-                                }
-                                else
-                                {
-                                    if (item == '\r' || item == '\n')
-                                    {
-                                        if (item == '\r')
-                                        {
-                                            if (i + 1 < text.Length)
-                                            {
-                                                if (text[i + 1] == '\n')
-                                                {
-                                                    i++;
-                                                    if (_flag)
-                                                    {
-                                                        rt += text[i + 1];
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (!_flag)
-                                        {
-                                            foreach (var it in param)
-                                            {
-                                                var cell = (Cell)it;
-                                                if (cell.Column == Column && cell.Row == Row)
-                                                {
-                                                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                                    if (child != null)
-                                                    {
-                                                        var panel = (Panel)child.Child;
-                                                        var textbox = (TextBox)panel.Children.FirstOrDefault();
-
-                                                        if (textbox.TextWrapping == TextWrapping.Wrap)
-                                                        {
-                                                            textbox.Text = rt;
-                                                        }
-                                                        else
-                                                        {
-                                                            textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
-                                                        }
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                            rt = "";
-                                            Row++;
-                                            Column = cl.Column;
-                                        }
-                                        else
-                                        {
-                                            rt += item;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (!_flag)
-                                        {
-                                            if (item == '\t')
-                                            {
-                                                foreach (var it in param)
-                                                {
-                                                    var cell = (Cell)it;
-                                                    if (cell.Column == Column && cell.Row == Row)
-                                                    {
-                                                        var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                                        if (child != null)
-                                                        {
-                                                            var panel = (Panel)child.Child;
-                                                            var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                                            if (textbox.TextWrapping == TextWrapping.Wrap)
-                                                            {
-                                                                textbox.Text = rt;
-                                                            }
-                                                            else
-                                                            {
-                                                                textbox.Text = rt.Replace("\t", "").Replace("\r", "").Replace("\n", "");
-                                                            }
-                                                        }
-                                                        break;
-                                                    }
-                                                }
-                                                rt = "";
-                                                Column++;
-                                            }
-                                            else
-                                            {
-                                                rt += item;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            rt += item;
-                                        }
-                                    }
-                                }
-                            }
-                            foreach (var it in param)
-                            {
-                                var cell = (Cell)it;
-                                if (cell.Column == Column && cell.Row == Row)
-                                {
-                                    var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                                    if (child != null)
-                                    {
-                                        var panel = (Panel)child.Child;
-                                        var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                        textbox.Text = rt.Replace("\n", "").Replace("\t", "").Replace("\r", "");
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private async Task _CopyRows(IEnumerable<Control> param)
-        {
-            if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
-            {
-                string txt = "";
-
-                var first = param.FirstOrDefault();
-                if (first is Cell)
-                {
-
-                    var ord = param.GroupBy(x => ((Cell)x).Row);
-                    foreach (var item in ord)
-                    {
-                        var t = item.OrderBy(x => ((Cell)x).Column);
-                        foreach (var it in t)
-                        {
-                            var cell = (Cell)it;
-                            var child = (Border)cell.GetLogicalChildren().FirstOrDefault();
-                            if (child != null)
-                            {
-                                var panel = (Panel)child.Child;
-                                var textbox = (TextBox)panel.Children.FirstOrDefault();
-                                if (textbox != null)
-                                {
-                                    if (textbox.Text != null)
-                                    {
-                                        if (textbox.Text.Contains("\n") || textbox.Text.Contains("\t") || textbox.Text.Contains("\r"))
-                                        {
-                                            txt += "\"" + textbox.Text + "\"";
-                                        }
-                                        else
-                                        {
-                                            txt += textbox.Text;
-                                        }
-                                    }
-                                    txt += "\t";
-                                }
-                            }
-                        }
-                        txt += "\r";
-                    }
-                }
-                await clip.ClearAsync();
-                await clip.SetTextAsync(txt);
-            }
-        }
-        #endregion
-
         #region Init
+
+        public void ChooseAllRow(object sender,RoutedEventArgs args)
+        {
+            SetSelectedControls_LineMulti();
+        }
 
         public void Init()
         {
@@ -1023,6 +853,7 @@ namespace Client_App.Controls.DataGrid
         int GridSplitterSize = 2;
         private void MakeHeaderInner(DataGridColumns ls)
         {
+            
             if (ls==null)
             {
                 return;
@@ -1030,7 +861,17 @@ namespace Client_App.Controls.DataGrid
             else
             {
                 int Level = ls.Level;
-                this.Width = ls.SizeCol;
+
+                Binding bd = new Binding()
+                {
+                    Source = ls,
+                    Path = "SizeCol",
+                    Mode = BindingMode.TwoWay
+                   
+                };
+                this[!Control.WidthProperty] = bd;
+
+
                 HeadersColumns.Clear();
                 var tre = ls.GetLevel(Level-1);
                 for (int i = Level-1; i >= 1; i--)
@@ -1143,15 +984,23 @@ namespace Client_App.Controls.DataGrid
                         cell.Height = 30;
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
+                        if (item.ChooseLine)
+                        {
+                            cell.Tapped += ChooseAllRow;
+                        }
 
-                        if (IsReadable)
+                        if (IsReadable||item.Blocked)
                         {
                             textBox = new TextBlock()
                             {
                                 [!TextBlock.DataContextProperty] = new Binding(item.Binding),
                                 [!TextBlock.TextProperty] = new Binding("Value"),
-
+                                [!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
+                            if(item.Blocked)
+                            {
+                                textBox[!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty];
+                            }
                             ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
                             textBox.VerticalAlignment = VerticalAlignment.Center;
                             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -1165,6 +1014,7 @@ namespace Client_App.Controls.DataGrid
                             {
                                 [!TextBox.DataContextProperty] = new Binding(item.Binding),
                                 [!TextBox.TextProperty] = new Binding("Value"),
+                                [!TextBox.BackgroundProperty]=cell[!Cell.ChooseColorProperty]
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Center;
                             textBox.VerticalAlignment = VerticalAlignment.Center;
