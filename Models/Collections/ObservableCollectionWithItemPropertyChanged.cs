@@ -274,7 +274,8 @@ namespace Models.Collections
         }
         public IEnumerator<IKey> GetEnumerator()
         {
-            foreach(var item in Items)
+            var lst = Items.ToList();
+            foreach(var item in lst)
             {
                 yield return item;
             }
