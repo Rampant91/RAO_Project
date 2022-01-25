@@ -1020,7 +1020,7 @@ namespace Client_App.Controls.DataGrid
         }
 
         List<ColumnDefinition> HeadersColumns = new List<ColumnDefinition>();
-        int GridSplitterSize = 1;
+        int GridSplitterSize = 2;
         private void MakeHeaderInner(DataGridColumns ls)
         {
             if (ls==null)
