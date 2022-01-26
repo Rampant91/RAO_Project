@@ -446,55 +446,6 @@ namespace Client_App.Long_Visual
             };
             grd.Bind(Controls.DataGrid.DataGridForm11.ItemsProperty, b);
 
-
-            //ContextMenu? cntx = new ContextMenu();
-            //List<MenuItem> itms = new List<MenuItem>
-            //{
-            //    new MenuItem
-            //    {
-            //        Header = "Добавить строку",
-            //        InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
-            //        [!MenuItem.CommandProperty] = new Binding("AddRow"),
-            //    },
-            //    new MenuItem
-            //    {
-            //        Header = "Добавить N строк",
-            //        InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
-            //        [!MenuItem.CommandProperty] = new Binding("DuplicateRowsx1"),
-            //    },
-            //    new MenuItem
-            //    {
-            //        Header = "Добавить N строк перед",
-            //        InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+I"),
-            //        [!MenuItem.CommandProperty] = new Binding("AddRowIn"),
-            //        [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-            //    },
-            //    new MenuItem
-            //    {
-            //        Header = "Копировать",
-            //        InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
-            //        [!MenuItem.CommandProperty] = new Binding("CopyRows"),
-            //        [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
-            //    },
-            //    new MenuItem
-            //    {
-            //        Header = "Вставить",
-            //        InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
-            //        [!MenuItem.CommandProperty] = new Binding("PasteRows"),
-            //        [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
-            //    },
-            //    new MenuItem
-            //    {
-            //        Header = "Удалить строки",
-            //        InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
-            //        [!MenuItem.CommandProperty] = new Binding("DeleteRow"),
-            //        [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-            //    }
-            //};
-            //cntx.Items = itms;
-
-            //grd.ContextMenu = cntx;
-
             maingrid.Children.Add(grd);
 
             Grid? topPnl22 = new Grid() 
@@ -533,7 +484,7 @@ namespace Client_App.Long_Visual
                 Margin = Thickness.Parse("5,0,0,0")
 
             };
-            //grd1.SetValue(Grid.RowProperty, 4);
+
             prt.Children.Add(grd1);
 
             Binding b1 = new Binding
@@ -544,106 +495,8 @@ namespace Client_App.Long_Visual
             };
             grd1.Bind(Controls.DataGrid.DataGridNote.ItemsProperty, b1);
 
-
-            ContextMenu? cntx1 = new ContextMenu();
-            var mn = new MenuItem
-            {
-                Header = "Добавить строку",
-                InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+A"),
-                [!MenuItem.CommandProperty] = new Binding("AddNote"),
-                CommandParameter = "1.1*"
-            };
-            List<MenuItem> itms1 = new List<MenuItem>
-            {
-                mn,
-                new MenuItem
-                {
-                    Header = "Добавить N строк",
-                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+N"),
-                    [!MenuItem.CommandProperty] = new Binding("DuplicateNotes"),
-                },
-                new MenuItem
-                {
-                    Header = "Копировать",
-                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+C"),
-                    [!MenuItem.CommandProperty] = new Binding("CopyRows"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
-                },
-                new MenuItem
-                {
-                    Header = "Вставить",
-                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+V"),
-                    [!MenuItem.CommandProperty] = new Binding("PasteRows"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedCells"),
-                },
-                new MenuItem
-                {
-                    Header = "Удалить строки",
-                    InputGesture = Avalonia.Input.KeyGesture.Parse("Ctrl+D"),
-                    [!MenuItem.CommandProperty] = new Binding("DeleteNote"),
-                    [!MenuItem.CommandParameterProperty] = new Binding("$parent[2].SelectedItems"),
-                }
-            };
-            cntx1.Items = itms1;
-
-            grd1.ContextMenu = cntx1;
-
             maingrid.Children.Add(prt);
-            //Grid? topPnl23 = new Grid();
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1, GridUnitType.Star)
-            //};
-            //topPnl23.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1, GridUnitType.Star)
-            //};
-            //topPnl23.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1.4, GridUnitType.Star)
-            //};
-            //topPnl23.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(2, GridUnitType.Star)
-            //};
-            //topPnl23.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1, GridUnitType.Star)
-            //};
-            //topPnl23.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1, GridUnitType.Star)
-            //};
-            //topPnl23.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1.5, GridUnitType.Star)
-            //};
-            //topPnl23.ColumnDefinitions.Add(column);
-            //column = new ColumnDefinition
-            //{
-            //    Width = new GridLength(1.4, GridUnitType.Star)
-            //};
-            //topPnl23.ColumnDefinitions.Add(column);
-            //topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            //topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            //topPnl23.SetValue(Grid.RowProperty, 5);
-            //topPnl23.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-            //topPnl23.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
-            //topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 2, 0, 30, "ФИО исполнителя:"));
-            //topPnl23.Children.Add(CreateTextBox("5,12,0,0", 3, 0, 0, 30, "DataContext.Storage.FIOexecutor", 180, scp, "ФИО исполнителя...", true));
-            //topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 0, 0, 30, "Должность:"));
-            //topPnl23.Children.Add(CreateTextBox("5,12,0,0", 1, 0, 0, 30, "DataContext.Storage.GradeExecutor", 95, scp, "Должность...", true));
-            //topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 4, 0, 30, "Телефон:"));
-            //topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 0, 0, 30, "DataContext.Storage.ExecPhone", 95, scp, "Телефон...", true));
-            //topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 0, 30, "Электронная почта:"));
-            //topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 0, 0, 30, "DataContext.Storage.ExecEmail", 130, scp, "Электронная почта...", true));
-            //maingrid.Children.Add(topPnl23);
+
             return vw;
         }
         //public static Control Form12_Visual(INameScope scp)
