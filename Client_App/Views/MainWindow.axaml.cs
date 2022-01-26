@@ -47,7 +47,6 @@ namespace Client_App.Views
         {
 
             FormChangeOrCreate frm = new FormChangeOrCreate(interaction.Input);
-            //frm.DataContext = interaction.Input;
 
             await frm.ShowDialog(this);
             interaction.SetOutput(null);

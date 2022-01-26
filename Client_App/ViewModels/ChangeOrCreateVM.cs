@@ -135,15 +135,15 @@ namespace Client_App.ViewModels
         public ReactiveCommand<Unit, Unit> CheckReport { get; protected set; }
         public ReactiveCommand<Unit, Unit> SumRow { get; protected set; }
         public ReactiveCommand<string, Unit> AddSort { get; protected set; }
-        public ReactiveCommand<string, Unit> AddNote { get; protected set; }
+        public ReactiveCommand<object, Unit> AddNote { get; protected set; }
         public ReactiveCommand<object, Unit> AddRow { get; protected set; }
-        public ReactiveCommand<IEnumerable, Unit> AddRowIn { get; protected set; }
-        public ReactiveCommand<IEnumerable, Unit> DeleteRow { get; protected set; }
-        public ReactiveCommand<Unit, Unit> DuplicateRowsx1 { get; protected set; }
-        public ReactiveCommand<Unit, Unit> DuplicateNotes { get; protected set; }
-        public ReactiveCommand<IEnumerable<Control>, Unit> CopyRows { get; protected set; }
-        public ReactiveCommand<IEnumerable<Control>, Unit> PasteRows { get; protected set; }
-        public ReactiveCommand<IEnumerable, Unit> DeleteNote { get; protected set; }
+        public ReactiveCommand<object, Unit> AddRowIn { get; protected set; }
+        public ReactiveCommand<object, Unit> DeleteRow { get; protected set; }
+        public ReactiveCommand<object, Unit> DuplicateRowsx1 { get; protected set; }
+        public ReactiveCommand<object, Unit> DuplicateNotes { get; protected set; }
+        public ReactiveCommand<object, Unit> CopyRows { get; protected set; }
+        public ReactiveCommand<object, Unit> PasteRows { get; protected set; }
+        public ReactiveCommand<object, Unit> DeleteNote { get; protected set; }
         public ReactiveCommand<Unit, Unit> PasteNotes { get; protected set; }
 
         public ChangeOrCreateVM(string param, in Report rep,Reports reps)
@@ -265,16 +265,16 @@ namespace Client_App.ViewModels
                 WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             }
             AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
-            AddRowIn = ReactiveCommand.CreateFromTask<IEnumerable>(_AddRowIn);
-            DeleteRow = ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteRow);
+            AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
+            DeleteRow = ReactiveCommand.CreateFromTask<object>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             SumRow = ReactiveCommand.Create(_SumRow);
-            PasteRows = ReactiveCommand.CreateFromTask<IEnumerable<Control>>(_PasteRows);
-            DuplicateRowsx1 = ReactiveCommand.CreateFromTask(_DuplicateRowsx1);
-            CopyRows = ReactiveCommand.CreateFromTask<IEnumerable<Control>>(_CopyRows);
-            AddNote = ReactiveCommand.CreateFromTask<string>(_AddNote);
-            DeleteNote = ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteNote);
-            DuplicateNotes = ReactiveCommand.CreateFromTask(_DuplicateNotes);
+            PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);
+            DuplicateRowsx1 = ReactiveCommand.CreateFromTask<object>(_DuplicateRowsx1);
+            CopyRows = ReactiveCommand.CreateFromTask<object>(_CopyRows);
+            AddNote = ReactiveCommand.CreateFromTask<object>(_AddNote);
+            DeleteNote = ReactiveCommand.CreateFromTask<object>(_DeleteNote);
+            DuplicateNotes = ReactiveCommand.CreateFromTask<object>(_DuplicateNotes);
             //PasteNotes = ReactiveCommand.CreateFromTask(_PasteNotes);
 
             ShowDialog = new Interaction<object,int>();
@@ -402,8 +402,9 @@ namespace Client_App.ViewModels
             Storage.Sort();
         }
 
-        private async Task _AddRowIn(IEnumerable param)
+        private async Task _AddRowIn(object _param)
         {
+            var param = (IEnumerable) _param;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
@@ -448,7 +449,7 @@ namespace Client_App.ViewModels
                 }
             }
         }
-        private async Task _AddNote(string Param)
+        private async Task _AddNote(object param)
         {
             Note? nt = new Note();
             nt.Order = GetNumberInOrder(Storage.Notes);
@@ -456,10 +457,11 @@ namespace Client_App.ViewModels
             Storage.Sort();
         }
 
-        private async Task _DeleteNote(IEnumerable param)
+        private async Task _DeleteNote(object _param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var param = (IEnumerable)_param;
                 var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
                 if (answ == "Да")
                 {
@@ -492,10 +494,11 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DeleteRow(IEnumerable param)
+        private async Task _DeleteRow(object _param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                var param = (IEnumerable)_param;
                 var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
                 if (answ == "Да")
                 {
@@ -526,10 +529,11 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _PasteRows(IEnumerable<Control> param)
+        private async Task _PasteRows(object _param)
         {
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
+                var param = (IEnumerable<Control>)_param;
                 var first = param.FirstOrDefault();
                 if (first is Cell)
                 {
@@ -672,12 +676,12 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _CopyRows(IEnumerable<Control> param)
+        private async Task _CopyRows(object _param)
         {
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
                 string txt = "";
-
+                var param = (IEnumerable<Control>)_param;
                 var first = param.FirstOrDefault();
                 if (first is Cell)
                 {
@@ -719,7 +723,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DuplicateNotes()
+        private async Task _DuplicateNotes(object param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -743,7 +747,7 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DuplicateRowsx1()
+        private async Task _DuplicateRowsx1(object param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {

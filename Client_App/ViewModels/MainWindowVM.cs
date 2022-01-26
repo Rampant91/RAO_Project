@@ -293,8 +293,6 @@ namespace Client_App.ViewModels
                     ChangeOrCreateVM frm = new(param, Local_Reports);
                     await ShowDialog.Handle(frm);
                     t.SelectedReports = tmp;
-
-
                 }
             }
         }
