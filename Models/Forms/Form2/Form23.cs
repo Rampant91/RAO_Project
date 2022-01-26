@@ -57,7 +57,9 @@ namespace Models
 
         //StoragePlaceName property
         #region  StoragePlaceName
-        public string StoragePlaceName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("наименование")]
+        public string StoragePlaceName_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Пункт хранения РАО","наименование","2")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -111,7 +113,9 @@ namespace Models
 
         //StoragePlaceCode property
         #region  StoragePlaceCode
-        public string StoragePlaceCode_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("код")]
+        public string StoragePlaceCode_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Пункт хранения РАО","код","3")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -175,7 +179,9 @@ namespace Models
 
         //ProjectVolume property
         #region  ProjectVolume
-        public string ProjectVolume_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("проектный объем, куб. м")]
+        public string ProjectVolume_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Пункт хранения РАО","проектный объем, куб. м","4")]
         public RamAccess<string> ProjectVolume
         {
             get
@@ -256,7 +262,9 @@ namespace Models
 
         //CodeRAO property
         #region  CodeRAO
-        public string CodeRAO_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("код РАО")]
+        public string CodeRAO_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Разрешено к размещению", "код РАО","5")]
         public RamAccess<string> CodeRAO
         {
             get
@@ -314,7 +322,9 @@ namespace Models
 
         //Volume property
         #region  Volume
-        public string Volume_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("объем, куб. м")]
+        public string Volume_DB { get; set; } = null;
+        [NotMapped]
+        [Attributes.Form_Property("Разрешено к размещению", "объем, куб. м","6")]
         public RamAccess<string> Volume
         {
             get
@@ -391,7 +401,9 @@ namespace Models
 
         //Mass Property
         #region  Mass
-        public string Mass_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("масса, т")]
+        public string Mass_DB { get; set; } = null;
+        [NotMapped]
+        [Attributes.Form_Property("Разрешено к размещению","масса, т","7")]
         public RamAccess<string> Mass
         {
             get
@@ -472,7 +484,9 @@ namespace Models
 
         //QuantityOZIII property
         #region  QuantityOZIII
-        public string QuantityOZIII_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("количество ОЗИИИ, шт.")]
+        public string QuantityOZIII_DB { get; set; } = null;
+        [NotMapped]
+        [Attributes.Form_Property("Разрешено к размещению","количество ОЗИИИ, шт.","8")]
         public RamAccess<string> QuantityOZIII
         {
             get
@@ -537,7 +551,9 @@ namespace Models
 
         //SummaryActivity property
         #region  SummaryActivity
-        public string SummaryActivity_DB { get; set; } = null; [NotMapped]        [Attributes.Form_Property("суммарная активность, Бк")]
+        public string SummaryActivity_DB { get; set; } = null;
+        [NotMapped]
+        [Attributes.Form_Property("Разрешено к размещению","суммарная активность, Бк","9")]
         public RamAccess<string> SummaryActivity
         {
             get
@@ -618,7 +634,9 @@ namespace Models
 
         //DocumentNumber property
         #region  DocumentNumber
-        public string DocumentNumber_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("номер")]
+        public string DocumentNumber_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Наименование и реквизиты документа на размещение РАО","номер","10")]
         public RamAccess<string> DocumentNumber
         {
             get
@@ -645,13 +663,13 @@ namespace Models
 
 
         private void DocumentNumberValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 DocumentNumber_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))//ok
@@ -666,7 +684,9 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
 
         //DocumentDate property
         #region DocumentDate 
-        public string DocumentDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("дата")]
+        public string DocumentDate_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Наименование и реквизиты документа на размещение РАО","дата","11")]
         public RamAccess<string> DocumentDate
         {
             get
@@ -738,7 +758,9 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
 
         //ExpirationDate property
         #region  ExpirationDate
-        public string ExpirationDate_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("срок действия")]
+        public string ExpirationDate_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Наименование и реквизиты документа на размещение РАО","срок действия","12")]
         public RamAccess<string> ExpirationDate
         {
             get
@@ -810,7 +832,9 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
 
         //DocumentName property
         #region  DocumentName
-        public string DocumentName_DB { get; set; } = ""; [NotMapped]        [Attributes.Form_Property("наименование документа")]
+        public string DocumentName_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Наименование и реквизиты документа на размещение РАО","наименование документа","13")]
         public RamAccess<string> DocumentName
         {
             get
@@ -901,9 +925,74 @@ private bool DocumentNumber_Validation(RamAccess<string> value)//Ready
         }
         #endregion
         #region IDataGridColumn
-        public override DataGridColumns GetColumnStructure(string param)
+        public override DataGridColumns GetColumnStructure(string param = "")
         {
-            return null;
+            #region NumberInOrder (1)
+            DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            NumberInOrderR.SetSizeColToAllLevels(50);
+            NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+            #endregion
+            #region StoragePlaceName (2)
+            DataGridColumns StoragePlaceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.StoragePlaceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StoragePlaceNameR.SetSizeColToAllLevels(50);
+            StoragePlaceNameR.Binding = nameof(Form23.StoragePlaceName);
+            #endregion
+            #region StoragePlaceCode (3)
+            DataGridColumns StoragePlaceCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.StoragePlaceCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StoragePlaceCodeR.SetSizeColToAllLevels(50);
+            StoragePlaceCodeR.Binding = nameof(Form23.StoragePlaceCode);
+            #endregion
+            #region ProjectVolume (4)
+            DataGridColumns ProjectVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.ProjectVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            ProjectVolumeR.SetSizeColToAllLevels(50);
+            ProjectVolumeR.Binding = nameof(Form23.ProjectVolume);
+            #endregion
+            #region CodeRAO (5)
+            DataGridColumns CodeRAOR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.CodeRAO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            CodeRAOR.SetSizeColToAllLevels(50);
+            CodeRAOR.Binding = nameof(Form23.CodeRAO);
+            #endregion
+            #region Volume (6)
+            DataGridColumns VolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.Volume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            VolumeR.SetSizeColToAllLevels(50);
+            VolumeR.Binding = nameof(Form23.Volume);
+            #endregion
+            #region Mass (7)
+            DataGridColumns MassR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.Mass)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            MassR.SetSizeColToAllLevels(50);
+            MassR.Binding = nameof(Form23.Mass);
+            #endregion
+            #region QuantityOZIII (8)
+            DataGridColumns QuantityOZIIIR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.QuantityOZIII)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            QuantityOZIIIR.SetSizeColToAllLevels(50);
+            QuantityOZIIIR.Binding = nameof(Form23.QuantityOZIII);
+            #endregion
+            #region SummaryActivity (9)
+            DataGridColumns SummaryActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.SummaryActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            SummaryActivityR.SetSizeColToAllLevels(50);
+            SummaryActivityR.Binding = nameof(Form23.SummaryActivity);
+            #endregion
+            #region DocumentNumber (10)
+            DataGridColumns DocumentNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.DocumentNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DocumentNumberR.SetSizeColToAllLevels(50);
+            DocumentNumberR.Binding = nameof(Form23.DocumentNumber);
+            #endregion
+            #region DocumentDate (11)
+            DataGridColumns DocumentDateR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.DocumentDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DocumentDateR.SetSizeColToAllLevels(50);
+            DocumentDateR.Binding = nameof(Form23.DocumentDate);
+            #endregion
+            #region ExpirationDate (12)
+            DataGridColumns ExpirationDateR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.ExpirationDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            ExpirationDateR.SetSizeColToAllLevels(50);
+            ExpirationDateR.Binding = nameof(Form23.ExpirationDate);
+            #endregion
+            #region DocumentName (13)
+            DataGridColumns DocumentNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form23.DocumentName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DocumentNameR.SetSizeColToAllLevels(50);
+            DocumentNameR.Binding = nameof(Form23.DocumentName);
+            #endregion
+            return NumberInOrderR;
         }
         #endregion
     }
