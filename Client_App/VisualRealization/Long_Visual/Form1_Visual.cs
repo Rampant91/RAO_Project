@@ -29,7 +29,7 @@ namespace Client_App.Long_Visual
             };
         }
 
-        public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string watermark = "", bool _flag = false)
+        public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, int colProp = -1, string watermark = "", bool _flag = false)
         {
             Cell textCell = new Cell() {
                 Width = width,
@@ -37,40 +37,81 @@ namespace Client_App.Long_Visual
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
             };
-            if (scp != null)
+            if (colProp == -1)
             {
-                Binding b = new Binding
+                if (scp != null)
                 {
-                    Path = textProp,
-                    ElementName = "ChangingPanel",
-                    NameScope = new WeakReference<INameScope>(scp)
-                };
-                textCell.Control = new TextBox()
+                    Binding b = new Binding
+                    {
+                        Path = textProp,
+                        ElementName = "ChangingPanel",
+                        NameScope = new WeakReference<INameScope>(scp)
+                    };
+                    textCell.Control = new TextBox()
+                    {
+                        [!TextBox.DataContextProperty] = b,
+                        [!TextBox.TextProperty] = new Binding("Value"),
+                    };
+                }
+                else
                 {
-                    [!TextBox.DataContextProperty] = b,
-                    [!TextBox.TextProperty] = new Binding("Value"),
-                };
+                    textCell.Control = new TextBox()
+                    {
+                        [!TextBox.DataContextProperty] = new Binding(textProp),
+                        [!TextBox.TextProperty] = new Binding("Value"),
+                    };
+                }
             }
             else 
             {
-                textCell.Control = new TextBox()
+                if (scp != null)
                 {
-                    [!TextBox.DataContextProperty] = new Binding(textProp),
-                    [!TextBox.TextProperty] = new Binding("Value"),
-                };
+                    Binding b = new Binding
+                    {
+                        Path = textProp,
+                        ElementName = "ChangingPanel",
+                        NameScope = new WeakReference<INameScope>(scp)
+                    };
+                    textCell.Control = new TextBox()
+                    {
+                        [!TextBox.DataContextProperty] = b,
+                        [!TextBox.TextProperty] = new Binding("Value"),
+                        [Grid.ColumnProperty] = colProp
+                    };
+                }
+                else
+                {
+                    textCell.Control = new TextBox()
+                    {
+                        [!TextBox.DataContextProperty] = new Binding(textProp),
+                        [!TextBox.TextProperty] = new Binding("Value"),
+                        [Grid.ColumnProperty] = colProp
+                    };
+                }
             }
             return textCell;
         }
 
 
-        public static TextBlock CreateTextBlock(string margin, int height, string text,double width=0)
+        public static TextBlock CreateTextBlock(string margin, int height, string text,double width=0, int colProp = -1)
         {
             TextBlock tmp = null;
-            if(width!=0)
+            if (colProp == -1)
             {
-                tmp=new TextBlock
+                if (width != 0)
                 {
-                    Width = width,
+                    tmp = new TextBlock
+                    {
+                        Width = width,
+                        Height = height,
+                        Margin = Thickness.Parse(margin),
+                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                        Text = text
+                    };
+                }
+                tmp = new TextBlock
+                {
                     Height = height,
                     Margin = Thickness.Parse(margin),
                     VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
@@ -78,15 +119,31 @@ namespace Client_App.Long_Visual
                     Text = text
                 };
             }
-            tmp=new TextBlock
+            else 
             {
-                Height = height,
-                Margin = Thickness.Parse(margin),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                Text = text
-            };
-
+                if (width != 0)
+                {
+                    tmp = new TextBlock
+                    {
+                        Width = width,
+                        Height = height,
+                        Margin = Thickness.Parse(margin),
+                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                        Text = text,
+                        [Grid.ColumnProperty] = colProp
+                    };
+                }
+                tmp = new TextBlock
+                {
+                    Height = height,
+                    Margin = Thickness.Parse(margin),
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                    Text = text,
+                    [Grid.ColumnProperty] = colProp
+                };
+            }
             return tmp;
         }
 
@@ -98,57 +155,60 @@ namespace Client_App.Long_Visual
                 Spacing = 30
             };
 
-            Grid grd = new Grid()
+            //Grid grd = new Grid()
+            //{
+            //    Width = 700
+            //};
+            //grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
+            //grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
+            StackPanel grd = new StackPanel()
             {
-                Width = 700
+                Orientation = Orientation.Horizontal
             };
-            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
-            grd.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
 
-           //grd.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
-           //    ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
-           //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-           //));
+            grd.Children.Add(CreateTextBlock("5,0,0,0", 30, ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0], 0, 0));
 
-            grd.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[0]." + Property, 400, null));
+            grd.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[0]." + Property, 400, null,1));
 
-            Grid grd2 = new Grid()
+            //Grid grd2 = new Grid()
+            //{
+            //    Width = 700
+            //};
+            //grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
+            //grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
+            StackPanel grd2 = new StackPanel()
             {
-                Width = 700
+                Orientation = Orientation.Horizontal
             };
-            grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(300, GridUnitType.Pixel) });
-            grd2.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(400, GridUnitType.Pixel) });
+
             if (Property == "JurLico")
             {
-                grd2.Children.Add(CreateTextBlock("5,0,0,0", 30, "Наименование обособленного подразделения"
-                ));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null));
+                grd2.Children.Add(CreateTextBlock("5,0,0,0", 30, "Наименование обособленного подразделения",
+                0, 0));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null,1));
             }
             else if (Property == "ShortJurLico")
             {
-                grd2.Children.Add(CreateTextBlock("5,0,0,0", 30, "Краткое наименование об. подразделения"
-                ));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null));
+                grd2.Children.Add(CreateTextBlock("5,0,0,0", 30, "Краткое наименование об. подразделения",
+                0, 0));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null, 1));
             }
             else if (Property == "JurLicoAddress")
             {
-                grd2.Children.Add(CreateTextBlock("5,0,0,0", 30, "Адрес обособленного подразделения"
-                ));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null));
+                grd2.Children.Add(CreateTextBlock("5,0,0,0", 30, "Адрес обособленного подразделения",
+                0, 0));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null, 1));
             }
             else if (Property == "JurLicoFactAddress")
             {
-                grd2.Children.Add(CreateTextBlock("5,0,0,0",  30, "Фактический адрес об. подразделения"
-                ));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null));
+                grd2.Children.Add(CreateTextBlock("5,0,0,0",  30, "Фактический адрес об. подразделения",
+                0, 0));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null, 1));
             }
             else
             {
-                //grd2.Children.Add(CreateTextBlock("5,0,0,0", 0, 30,
-                    //((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property)
-                        //.GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name
-                //));
-                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null));
+                grd2.Children.Add(CreateTextBlock("5,0,0,0", 30, ((Form_PropertyAttribute)Type.GetType("Models.Form10,Models").GetProperty(Property).GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0], 0, 0));
+                grd2.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[1]." + Property, 400, null, 1));
             }
 
             pnl.Children.Add(grd);
@@ -403,7 +463,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-            content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp, "ФИО исполнителя...", true));
+            content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -411,7 +471,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-            content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp, "Должность...", true));
+            content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -419,7 +479,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "Телефон...", true));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -427,7 +487,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp, "Электронная почта...", true));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
             rigthStP.Children.Add(content);
             #endregion
 
