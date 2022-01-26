@@ -136,7 +136,7 @@ namespace Client_App.ViewModels
         public ReactiveCommand<Unit, Unit> SumRow { get; protected set; }
         public ReactiveCommand<string, Unit> AddSort { get; protected set; }
         public ReactiveCommand<string, Unit> AddNote { get; protected set; }
-        public ReactiveCommand<string, Unit> AddRow { get; protected set; }
+        public ReactiveCommand<object, Unit> AddRow { get; protected set; }
         public ReactiveCommand<IEnumerable, Unit> AddRowIn { get; protected set; }
         public ReactiveCommand<IEnumerable, Unit> DeleteRow { get; protected set; }
         public ReactiveCommand<Unit, Unit> DuplicateRowsx1 { get; protected set; }
@@ -264,7 +264,7 @@ namespace Client_App.ViewModels
             {
                 WindowHeader = ((Form_ClassAttribute)Type.GetType("Models.Form" + a + ",Models").GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
             }
-            AddRow = ReactiveCommand.CreateFromTask<string>(_AddRow);
+            AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
             AddRowIn = ReactiveCommand.CreateFromTask<IEnumerable>(_AddRowIn);
             DeleteRow = ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteRow);
             CheckReport = ReactiveCommand.Create(_CheckReport);
@@ -394,7 +394,7 @@ namespace Client_App.ViewModels
             return maxNum + 1;
         }
 
-        private async Task _AddRow(string Param)
+        private async Task _AddRow(object Param)
         {
             var frm = FormCreator.Create(FormType);
             frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);

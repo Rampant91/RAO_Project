@@ -45,8 +45,9 @@ namespace Client_App.Views
 
         private async Task DoShowDialogAsync(InteractionContext<ViewModels.ChangeOrCreateVM, object> interaction)
         {
-            FormChangeOrCreate frm = new FormChangeOrCreate(interaction.Input.FormType);
-            frm.DataContext = interaction.Input;
+
+            FormChangeOrCreate frm = new FormChangeOrCreate(interaction.Input);
+            //frm.DataContext = interaction.Input;
 
             await frm.ShowDialog(this);
             interaction.SetOutput(null);

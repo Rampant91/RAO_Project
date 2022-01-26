@@ -21,10 +21,10 @@ namespace Client_App.Views
     public class FormChangeOrCreate : ReactiveWindow<ViewModels.ChangeOrCreateVM>
     {
         private readonly string _param = "";
-
-        public FormChangeOrCreate(string param)
+        public FormChangeOrCreate(ViewModels.ChangeOrCreateVM param)
         {
-            _param = param;
+            _param = param.FormType;
+            DataContext = param;
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
@@ -35,6 +35,7 @@ namespace Client_App.Views
             this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
 
             this.Closing += OnStandartClosing;
+            
             Init();
         }
         public FormChangeOrCreate()
@@ -218,14 +219,25 @@ namespace Client_App.Views
 
         private void Form1Init(in Panel panel)
         {
+            var dataContext = (ViewModels.ChangeOrCreateVM)this.DataContext;
             if (_param == "1.0")
             {
                 panel.Children.Add(Long_Visual.Form1_Visual.Form10_Visual(this.FindNameScope()));
             }
 
             if (_param == "1.1")
-            {
-                panel.Children.Add(Long_Visual.Form1_Visual.Form11_Visual(this.FindNameScope()));
+            {   
+                var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form11_Visual(this.FindNameScope());
+                var dgrd = (Controls.DataGrid.DataGridForm11)((StackPanel)grd.Content).Children[1];
+                dgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "1.0",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddRow
+                });
+                panel.Children.Add(grd);
             }
 
             //if (_param == "1.2")
