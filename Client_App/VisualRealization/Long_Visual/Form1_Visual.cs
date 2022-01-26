@@ -31,22 +31,34 @@ namespace Client_App.Long_Visual
 
         public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string watermark = "", bool _flag = false)
         {
-            Binding b = new Binding
-            {
-                Path = textProp,
-                ElementName = "ChangingPanel",
-                NameScope = new WeakReference<INameScope>(scp)
-            };
             Cell textCell = new Cell() {
                 Width = width,
                 Margin = Thickness.Parse(thickness),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
             };
-            textCell.Control = new TextBox() {
-                [!TextBox.DataContextProperty] = b,
-                [!TextBox.TextProperty] = new Binding("Value"),
-            };
+            if (scp != null)
+            {
+                Binding b = new Binding
+                {
+                    Path = textProp,
+                    ElementName = "ChangingPanel",
+                    NameScope = new WeakReference<INameScope>(scp)
+                };
+                textCell.Control = new TextBox()
+                {
+                    [!TextBox.DataContextProperty] = b,
+                    [!TextBox.TextProperty] = new Binding("Value"),
+                };
+            }
+            else 
+            {
+                textCell.Control = new TextBox()
+                {
+                    [!TextBox.DataContextProperty] = new Binding(textProp),
+                    [!TextBox.TextProperty] = new Binding("Value"),
+                };
+            }
             return textCell;
         }
 
