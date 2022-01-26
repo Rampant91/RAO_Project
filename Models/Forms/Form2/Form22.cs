@@ -577,7 +577,14 @@ namespace Models
             {
                 return true;
             }
-            if (int.Parse(value.Value) <= 0)
+            try
+            {
+                if (int.Parse(value.Value) <= 0)
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }catch
             {
                 value.AddError("Недопустимое значение");
                 return false;
