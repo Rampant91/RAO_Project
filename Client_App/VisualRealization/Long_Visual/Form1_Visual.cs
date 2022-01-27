@@ -398,7 +398,8 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                Margin = Thickness.Parse("5,0,0,0")
+                Margin = Thickness.Parse("5,0,0,0"),
+                [!DataGridForm11.FixedContentProperty]=ind
             };
             grd.SetValue(Grid.RowProperty, 2);
 
@@ -427,7 +428,6 @@ namespace Client_App.Long_Visual
             topPnl22.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl22.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
-            topPnl22.Children.Add(CreateTextBlock("5,13,0,0", 30, "Примечания:"));
             maingrid.Children.Add(topPnl22);
 
             Panel prt = new Panel()
@@ -445,7 +445,7 @@ namespace Client_App.Long_Visual
                 ChooseMode = ChooseMode.Cell,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255)),
                 MaxHeight = 700,
-                Margin = Thickness.Parse("5,0,0,0")
+                Margin = Thickness.Parse("5,5,0,0")
 
             };
 

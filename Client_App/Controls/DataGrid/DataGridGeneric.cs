@@ -259,6 +259,24 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region FixedContent
+        public static readonly DirectProperty<DataGrid<T>, Thickness> FixedContentProperty =
+             AvaloniaProperty.RegisterDirect<DataGrid<T>, Thickness>(
+                nameof(FixedContent),
+                o => o.FixedContent,
+                (o, v) => o.FixedContent = v);
+
+        private Thickness _FixedContent = Thickness.Parse("5,0,0,0");
+        public Thickness FixedContent
+        {
+            get => _FixedContent;
+            set
+            {
+                SetAndRaise(FixedContentProperty, ref _FixedContent, value);
+            }
+        }
+        #endregion
+
         #region PageCount
         public static readonly DirectProperty<DataGrid<T>, string> PageCountProperty =
             AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
@@ -384,7 +402,23 @@ namespace Client_App.Controls.DataGrid
             {
                 return SelectedCells;
             }
-            if(param.ParamName ==null|| param.ParamName =="")
+            if (param.ParamName == "SelectAll")
+            {
+                int maxRow = PageSize;
+                int maxColumn = Rows[0].Children.Count;
+                FirstPressedItem[0] = 0;
+                FirstPressedItem[1] = 0;
+                LastPressedItem[0] = maxRow;
+                LastPressedItem[1] = maxColumn;
+                SetSelectedControls();
+                ObservableCollectionWithItemPropertyChanged<IKey> lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
+                foreach (var item in Items)
+                {
+                    lst.Add(item);
+                }
+                SelectedItems = lst;
+            }
+            if (param.ParamName ==null|| param.ParamName =="")
             {
                 return param.Param;
             }
@@ -1207,10 +1241,9 @@ namespace Client_App.Controls.DataGrid
             Panel HeaderPanel = new();
             HeaderPanel.Background = new SolidColorBrush(Color.FromArgb(150,180, 154, 255));
             HeaderBorder.Child = HeaderPanel;
-            HeaderBorder.Padding = Thickness.Parse("0,0,20,0");
 
             HeaderStackPanel = new();
-            HeaderStackPanel.Margin = Thickness.Parse("2,2,2,2");
+            HeaderStackPanel.Margin = Thickness.Parse("2,2,20,2");
             HeaderStackPanel.Orientation = Orientation.Vertical;
             HeaderPanel.Children.Add(HeaderStackPanel);
             #endregion
@@ -1261,12 +1294,14 @@ namespace Client_App.Controls.DataGrid
             MiddleFooterBorder.Child = MiddleFooterStackPanel;
 
             StackPanel MiddleFooterStackPanel1 = new();
+            MiddleFooterStackPanel1[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
             MiddleFooterStackPanel1.Orientation = Orientation.Horizontal;
             MiddleFooterStackPanel1.Children.Add(new TextBlock() { Text = "Кол-во страниц:",Margin=Thickness.Parse("5,0,0,0") });
             MiddleFooterStackPanel1.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.PageCountProperty], Margin = Thickness.Parse("5,0,0,0") });
             MiddleFooterStackPanel.Children.Add(MiddleFooterStackPanel1);
 
             StackPanel MiddleFooterStackPanel2 = new();
+            MiddleFooterStackPanel2[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
             MiddleFooterStackPanel2.Orientation = Orientation.Horizontal;
             MiddleFooterStackPanel2.Children.Add(new TextBlock() { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0") });
             MiddleFooterStackPanel2.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0") });
@@ -1301,7 +1336,8 @@ namespace Client_App.Controls.DataGrid
                 Content = "<",
                 Width = 30,
                 Height = 30,
-                CornerRadius = CornerRadius.Parse("2,2,2,2")
+                CornerRadius = CornerRadius.Parse("2,2,2,2"),
+                [!Button.MarginProperty] = this[!DataGrid<T>.FixedContentProperty]
             };
             btnDown.Click += NowPageDown;
             FooterStackPanel.Children.Add(btnDown);
@@ -1310,7 +1346,7 @@ namespace Client_App.Controls.DataGrid
             {
                 [!TextBox.TextProperty] = this[!DataGrid<T>.NowPageProperty],
                 TextAlignment = TextAlignment.Center,
-                CornerRadius = CornerRadius.Parse("2,2,2,2")
+                CornerRadius = CornerRadius.Parse("2,2,2,2"),
             };
             box.Width = 30;
             box.Height = 30;
@@ -1321,7 +1357,7 @@ namespace Client_App.Controls.DataGrid
                 Content = ">",
                 Width = 30,
                 Height = 30,
-                CornerRadius = CornerRadius.Parse("2,2,2,2")
+                CornerRadius = CornerRadius.Parse("2,2,2,2"),
             };
             btnUp.Click += NowPageUp;
             FooterStackPanel.Children.Add(btnUp);
