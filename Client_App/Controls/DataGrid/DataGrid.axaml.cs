@@ -923,6 +923,8 @@ namespace Client_App.Controls.DataGrid
         #region UpdateCells
         private void UpdateAllCells()
         {
+            PageCount = "0";
+            ItemsCount = "0";
             if (Name != null)
             {
                 NameScope scp = new();
@@ -957,6 +959,8 @@ namespace Client_App.Controls.DataGrid
         private void UpdateCells()
         {
             //UpdateAllCells();
+            PageCount = "0";
+            ItemsCount = "0";
             UpdateAllCells();
             return;
 
