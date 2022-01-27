@@ -39,6 +39,7 @@ namespace Models
 
         public int Id { get; set; }
 
+        public void SetOrder(long index) { }
         public long Order { get;set; }
 
         #region RowNUmber

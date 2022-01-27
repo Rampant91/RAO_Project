@@ -8,7 +8,7 @@ using OfficeOpenXml;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : INotifyPropertyChanged,IKey
+    public abstract class Form : INotifyPropertyChanged,IKey, INumberInOrder
     {
         public int Id { get; set; }
         [NotMapped]
@@ -62,6 +62,11 @@ namespace Models.Abstracts
             {
                 return NumberInOrder_DB;
             }
+        }
+
+        public void SetOrder(long index) 
+        {
+            NumberInOrder_DB = (int)index;
         }
 
         #region NumberInOrder

@@ -73,6 +73,8 @@ namespace Models.Collections
 
         public int Id { get; set; }
 
+        public void SetOrder(long index) { }
+
         public void CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             OnPropertyChanged(nameof(Report_Collection));
