@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Models.Collections
 {
     public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollection<T>, IKey, IKeyCollection
-        where T : class,IKey
+        where T : class,IKey,INumberInOrder
     {
         /// <summary>
         /// Occurs when a property is changed within an item.
@@ -31,7 +31,7 @@ namespace Models.Collections
         }
 
         public int Id { get; set; }
-
+        public void SetOrder(long index) { }
         public ObservableCollectionWithItemPropertyChanged() : base()
         {
 
@@ -244,7 +244,12 @@ namespace Models.Collections
             foreach (var item in obj)
             {
                 item.PropertyChanged += ChildPropertyChanged;
-                Items.Insert(count,item as T);
+                var itemq = Items.Where(x=>x.Order>=item.Order);
+                foreach(var it in itemq)
+                {
+                    it.SetOrder(it.Order+1);
+                }
+                Items.Insert(count, item as T);
                 count++;
             }
             Sorted = false;

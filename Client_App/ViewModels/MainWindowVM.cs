@@ -466,6 +466,7 @@ namespace Client_App.ViewModels
                     }
                 };
                 dial.Filters = new List<FileDialogFilter>() { filter };
+
                 var answ = await dial.ShowAsync(desktop.MainWindow);
                 if (answ != null)
                 {
@@ -536,13 +537,22 @@ namespace Client_App.ViewModels
                                                        where (item.Master.Rows10[0].Okpo_DB != "") &&
                                                        (t.Master.Rows10[0].Okpo_DB != "") &&
                                                        (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
-                                                       (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB)
+                                                       (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB) &&
+                                                       (item.Master.Rows10[0].RegNo_DB != "") &&
+                                                       (t.Master.Rows10[0].RegNo_DB != "") &&
+                                                       (t.Master.Rows10[0].RegNo_DB == item.Master.Rows10[0].RegNo_DB) &&
+                                                       (t.Master.Rows10[1].RegNo_DB == item.Master.Rows10[1].RegNo_DB)
                                                        select t;
                                             var tb21 = from Reports t in Local_Reports.Reports_Collection20
                                                        where (item.Master.Rows20[0].Okpo_DB != "") &&
                                                        (t.Master.Rows20[0].Okpo_DB != "") &&
                                                        (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
-                                                       (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB)
+                                                       (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB) &&
+                                                       (item.Master.Rows20[0].RegNo_DB != "") &&
+                                                       (t.Master.Rows20[0].RegNo_DB != "") &&
+                                                       (t.Master.Rows20[0].RegNo_DB == item.Master.Rows20[0].RegNo_DB) &&
+                                                       (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB)
+
                                                        select t;
 
                                             Reports first11 = null;
@@ -561,7 +571,6 @@ namespace Client_App.ViewModels
                                             }
                                             catch
                                             {
-
                                             }
                                             if (item != null)
                                             {
@@ -687,15 +696,15 @@ namespace Client_App.ViewModels
                                                                             first11.Report_Collection.Remove(elem);
                                                                             first11.Report_Collection.Add(it);
                                                                         }
-                                                                        //if (an == "Дополнить") 
-                                                                        //{
-                                                                        //    first11.Report_Collection.Remove(elem);
+                                                                        if (an == "Дополнить")
+                                                                        {
+                                                                            first11.Report_Collection.Remove(elem);
 
-                                                                        //    it.Rows.AddRange<IKey>(0,elem.Rows.GetEnumerable());
-                                                                        //    it.Notes.AddRange<IKey>(0,elem.Notes);
+                                                                            it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
+                                                                            it.Notes.AddRange<IKey>(0, elem.Notes);
 
-                                                                        //    first11.Report_Collection.Add(it);
-                                                                        //}
+                                                                            first11.Report_Collection.Add(it);
+                                                                        }
                                                                     }
                                                                     else
                                                                     {
@@ -752,6 +761,7 @@ namespace Client_App.ViewModels
                                                             if (an == "Да")
                                                             {
                                                                 first11.Report_Collection.Add(it);
+                                                                //Local_Reports.Reports_Collection.Add(item);
                                                             }
                                                             not_in = false;
                                                             first11.Sort();
