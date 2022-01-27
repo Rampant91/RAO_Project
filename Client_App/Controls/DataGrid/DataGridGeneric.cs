@@ -953,9 +953,6 @@ namespace Client_App.Controls.DataGrid
 
             UpdateCells();
             MakeContextMenu();
-            //this.DoubleTapped += DataGrid_DoubleTapped;
-            //this.AddHandler(KeyDownEvent, KeyDownEventHandler, handledEventsToo: true);
-            //this.AddHandler(KeyUpEvent, KeyUpEventHandler, handledEventsToo: true);
         }
 
         private void MakeContextMenu()
@@ -1001,16 +998,7 @@ namespace Client_App.Controls.DataGrid
             {
                 int Level = ls.Level;
 
-                Binding bd = new Binding()
-                {
-                    Source = ls,
-                    Path = "SizeCol",
-                    Mode = BindingMode.TwoWay
-                   
-                };
-                this[!Control.WidthProperty] = bd;
-
-
+                this.Width = ls.SizeCol;
                 HeadersColumns.Clear();
                 var tre = ls.GetLevel(Level-1);
                 for (int i = Level-1; i >= 1; i--)
@@ -1219,6 +1207,7 @@ namespace Client_App.Controls.DataGrid
             Panel HeaderPanel = new();
             HeaderPanel.Background = new SolidColorBrush(Color.FromArgb(150,180, 154, 255));
             HeaderBorder.Child = HeaderPanel;
+            HeaderBorder.Padding = Thickness.Parse("0,0,20,0");
 
             HeaderStackPanel = new();
             HeaderStackPanel.Margin = Thickness.Parse("2,2,2,2");
@@ -1243,7 +1232,7 @@ namespace Client_App.Controls.DataGrid
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
             ScrollViewer CenterScrollViewer = new ScrollViewer();
-            CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
             CenterScrollViewer.Content = CenterPanel;
             CenterScrollViewer.MaxHeight = 400;
 
@@ -1338,10 +1327,6 @@ namespace Client_App.Controls.DataGrid
             FooterStackPanel.Children.Add(btnUp);
 
             #endregion
-
-            ////pn.AddHandler(PointerPressedEvent, DataGridPointerDown, handledEventsToo: true);
-            ////pn.AddHandler(PointerMovedEvent, DataGridPointerMoved, handledEventsToo: true);
-            ////pn.AddHandler(PointerReleasedEvent, DataGridPointerUp, handledEventsToo: true);
 
             Content = MainPanel;
         }
