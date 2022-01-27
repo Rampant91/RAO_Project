@@ -53,6 +53,11 @@ namespace Client_App.Long_Visual
             }
             else
             {
+                Binding b = new Binding
+                {
+                    Path = textProp,
+                    ElementName = "ChangingPanel"
+                };
                 textCell.Control = new TextBox()
                 {
                     [!TextBox.DataContextProperty] = new Binding(textProp),
@@ -61,7 +66,6 @@ namespace Client_App.Long_Visual
             }
             return textCell;
         }
-
 
         public static TextBlock CreateTextBlock(string margin, int height, string text,double width=0)
         {
