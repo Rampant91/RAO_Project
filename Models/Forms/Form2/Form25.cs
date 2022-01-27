@@ -50,8 +50,9 @@ namespace Models
 
         //StoragePlaceName property
         #region  StoragePlaceName
-        public string StoragePlaceName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("наименование, номер")]
+        public string StoragePlaceName_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Пункт хранения ОЯТ", "наименование, номер","2")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -77,13 +78,13 @@ namespace Models
         }
         //If change this change validation
         private void StoragePlaceNameValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 StoragePlaceName_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -98,7 +99,7 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         //CodeOYAT property
         #region  CodeOYAT
         public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("код ОЯТ")]
+        [Attributes.Form_Property("Наличие на конец отчетного года", "код ОЯТ","4")]
         public RamAccess<string> CodeOYAT
         {
             get
@@ -150,7 +151,7 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
         //StoragePlaceCode property
         #region  StoragePlaceCode
         public string StoragePlaceCode_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("код")]
+        [Attributes.Form_Property("Пункт хранения ОЯТ", "код","3")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -175,13 +176,13 @@ private bool StoragePlaceName_Validation(RamAccess<string> value)//Ready
             }
         }
         private void StoragePlaceCodeValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 StoragePlaceCode_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
+            }
+        }
+        private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
             if (string.IsNullOrEmpty(value.Value))
@@ -206,7 +207,7 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         //FcpNumber property
         #region  FcpNumber
         public string FcpNumber_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("номер мероприятия ФЦП")]
+        [Attributes.Form_Property("Наличие на конец отчетного года", "номер мероприятия ФЦП","5")]
         public RamAccess<string> FcpNumber
         {
             get
@@ -248,8 +249,9 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
 
         //FuelMass property
         #region  FuelMass
-        public string FuelMass_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("топлива (нетто)")]
+        public string FuelMass_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Наличие на конец отчетного года", "топлива (нетто)","6")]
         public RamAccess<string> FuelMass
         {
             get
@@ -333,7 +335,7 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         //CellMass property
         #region  CellMass
         public string CellMass_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("ОТВС(ТВЭЛ, выемной части реактора) брутто")]
+        [Attributes.Form_Property("Наличие на конец отчетного года", "ОТВС(ТВЭЛ, выемной части реактора) брутто","7")]
         public RamAccess<string> CellMass
         {
             get
@@ -420,7 +422,7 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         //Quantity property
         #region  Quantity
         public int? Quantity_DB { get; set; } = null; [NotMapped]
-        [Attributes.Form_Property("количество, шт.")]
+        [Attributes.Form_Property("Наличие на конец отчетного года", "количество, шт.","8")]
         public RamAccess<int?> Quantity
         {
             get
@@ -470,8 +472,9 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
 
         //BetaGammaActivity property
         #region  BetaGammaActivity
-        public string BetaGammaActivity_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("бета-, гамма-излучающих нуклидов")]
+        public string BetaGammaActivity_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Наличие на конец отчетного года", "бета-, гамма-излучающих нуклидов","10")]
         public RamAccess<string> BetaGammaActivity
         {
             get
@@ -562,7 +565,7 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         //AlphaActivity property
         #region  AlphaActivity
         public string AlphaActivity_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("альфа-излучающих нуклидов")]
+        [Attributes.Form_Property("Наличие на конец отчетного года", "альфа-излучающих нуклидов","9")]
         public RamAccess<string> AlphaActivity
         {
             get
@@ -688,9 +691,59 @@ private bool StoragePlaceCode_Validation(RamAccess<string> value)//TODO
         }
         #endregion
         #region IDataGridColumn
-        public override DataGridColumns GetColumnStructure(string param)
+        public override DataGridColumns GetColumnStructure(string param = "")
         {
-            return null;
+            #region NumberInOrder (1)
+            DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            NumberInOrderR.SetSizeColToAllLevels(50);
+            NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+            #endregion
+            #region StoragePlaceName (2)
+            DataGridColumns StoragePlaceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form25.StoragePlaceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StoragePlaceNameR.SetSizeColToAllLevels(50);
+            StoragePlaceNameR.Binding = nameof(Form25.StoragePlaceName);
+            #endregion
+            #region StoragePlaceCode (3)
+            DataGridColumns StoragePlaceCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form25.StoragePlaceCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StoragePlaceCodeR.SetSizeColToAllLevels(50);
+            StoragePlaceCodeR.Binding = nameof(Form25.StoragePlaceCode);
+            #endregion
+            #region CodeOYAT (4)
+            DataGridColumns CodeOYATR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form25.CodeOYAT)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            CodeOYATR.SetSizeColToAllLevels(50);
+            CodeOYATR.Binding = nameof(Form25.CodeOYAT);
+            #endregion
+            #region FcpNumber (5)
+            DataGridColumns FcpNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form25.FcpNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            FcpNumberR.SetSizeColToAllLevels(50);
+            FcpNumberR.Binding = nameof(Form25.FcpNumber);
+            #endregion
+            #region FuelMass (6)
+            DataGridColumns FuelMassR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form25.FuelMass)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            FuelMassR.SetSizeColToAllLevels(50);
+            FuelMassR.Binding = nameof(Form25.FuelMass);
+            #endregion
+            #region CellMass (7)
+            DataGridColumns CellMassR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form25.CellMass)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            CellMassR.SetSizeColToAllLevels(50);
+            CellMassR.Binding = nameof(Form25.CellMass);
+            #endregion
+            #region Quantity (8)
+            DataGridColumns QuantityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form25.Quantity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            QuantityR.SetSizeColToAllLevels(50);
+            QuantityR.Binding = nameof(Form25.Quantity);
+            #endregion
+            #region AlphaActivity (9)
+            DataGridColumns AlphaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form25.AlphaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            AlphaActivityR.SetSizeColToAllLevels(50);
+            AlphaActivityR.Binding = nameof(Form25.AlphaActivity);
+            #endregion
+            #region BetaGammaActivity (10)
+            DataGridColumns BetaGammaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form25.BetaGammaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            BetaGammaActivityR.SetSizeColToAllLevels(50);
+            BetaGammaActivityR.Binding = nameof(Form25.BetaGammaActivity);
+            #endregion
+            return NumberInOrderR;
         }
         #endregion
     }

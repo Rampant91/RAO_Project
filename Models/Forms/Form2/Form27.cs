@@ -44,7 +44,7 @@ namespace Models
         //ObservedSourceNumber property
         #region  ObservedSourceNumber
         public string ObservedSourceNumber_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Наименование, номер источника выбросов")]
+        [Attributes.Form_Property("","Наименование, номер источника выбросов","2")]
         public RamAccess<string> ObservedSourceNumber
         {
             get
@@ -92,7 +92,7 @@ namespace Models
         //RadionuclidName property
         #region  RadionuclidName
         public string RadionuclidName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Наименование радионуклида")]
+        [Attributes.Form_Property("","Наименование радионуклида","3")]
         public RamAccess<string> RadionuclidName
         {
             get
@@ -147,8 +147,9 @@ namespace Models
 
         //AllowedWasteValue property
         #region  AllowedWasteValue
-        public string AllowedWasteValue_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("разрешенный")]
+        public string AllowedWasteValue_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Выброс радионуклида в атмосферу за отчетный год, Бк", "разрешенный","4")]
         public RamAccess<string> AllowedWasteValue
         {
             get
@@ -230,8 +231,9 @@ namespace Models
 
         //FactedWasteValue property
         #region  FactedWasteValue
-        public string FactedWasteValue_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("фактический")]
+        public string FactedWasteValue_DB { get; set; } = "";
+        [NotMapped]
+        [Attributes.Form_Property("Выброс радионуклида в атмосферу за отчетный год, Бк", "фактический","5")]
         public RamAccess<string> FactedWasteValue
         {
             get
@@ -321,7 +323,7 @@ namespace Models
         //WasteOutbreakPreviousYear property
         #region  WasteOutbreakPreviousYear
         public string WasteOutbreakPreviousYear_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("фактический")]
+        [Attributes.Form_Property("Выброс радионуклида в атмосферу за предыдущий год, Бк", "фактический","6")]
         public RamAccess<string> WasteOutbreakPreviousYear
         {
             get
@@ -438,9 +440,39 @@ namespace Models
         }
         #endregion
         #region IDataGridColumn
-        public override DataGridColumns GetColumnStructure(string param)
+        public override DataGridColumns GetColumnStructure(string param = "")
         {
-            return null;
+            #region NumberInOrder (1)
+            DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            NumberInOrderR.SetSizeColToAllLevels(50);
+            NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+            #endregion
+            #region ObservedSourceNumber (2)
+            DataGridColumns ObservedSourceNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form27.ObservedSourceNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            ObservedSourceNumberR.SetSizeColToAllLevels(50);
+            ObservedSourceNumberR.Binding = nameof(Form27.ObservedSourceNumber);
+            #endregion
+            #region RadionuclidName (3)
+            DataGridColumns RadionuclidNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form27.RadionuclidName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            RadionuclidNameR.SetSizeColToAllLevels(50);
+            RadionuclidNameR.Binding = nameof(Form27.RadionuclidName);
+            #endregion
+            #region AllowedWasteValue (4)
+            DataGridColumns AllowedWasteValueR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form27.AllowedWasteValue)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            AllowedWasteValueR.SetSizeColToAllLevels(50);
+            AllowedWasteValueR.Binding = nameof(Form27.AllowedWasteValue);
+            #endregion
+            #region FactedWasteValue (5)
+            DataGridColumns FactedWasteValueR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form27.FactedWasteValue)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            FactedWasteValueR.SetSizeColToAllLevels(50);
+            FactedWasteValueR.Binding = nameof(Form27.FactedWasteValue);
+            #endregion
+            #region WasteOutbreakPreviousYear (6)
+            DataGridColumns WasteOutbreakPreviousYearR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form27.WasteOutbreakPreviousYear)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            WasteOutbreakPreviousYearR.SetSizeColToAllLevels(50);
+            WasteOutbreakPreviousYearR.Binding = nameof(Form27.WasteOutbreakPreviousYear);
+            #endregion
+            return NumberInOrderR;
         }
         #endregion
     }
