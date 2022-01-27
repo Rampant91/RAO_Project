@@ -136,7 +136,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("наименование")]
+        [Attributes.Form_Property("Пункт хранения","наименование","2")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -234,7 +234,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("код")]
+        [Attributes.Form_Property("Пункт хранения","код","3")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -341,7 +341,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("наименование")]
+        [Attributes.Form_Property("УКТ, упаковка ли иная учетная единица","наименование","4")]
         public RamAccess<string> PackName
         {
             get
@@ -444,7 +444,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("тип")]
+        [Attributes.Form_Property("УКТ, упаковка ли иная учетная единица","тип","5")]
         public RamAccess<string> PackType
         {
             get
@@ -531,7 +531,7 @@ namespace Models
         public string PackQuantity_DB { get; set; } = null;
 
         [NotMapped]
-        [Attributes.Form_Property("количество, шт.")]
+        [Attributes.Form_Property("УКТ, упаковка ли иная учетная единица","количество, шт.","6")]
         public RamAccess<string> PackQuantity
         {
             get
@@ -609,7 +609,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Код РАО")]
+        [Attributes.Form_Property("","Код РАО","7")]
         public RamAccess<string> CodeRAO
         {
             get
@@ -694,7 +694,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Статус РАО")]
+        [Attributes.Form_Property("","Статус РАО","8")]
         public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
@@ -805,7 +805,7 @@ namespace Models
             set { VolumeInPack_Hidden_Priv2 = value; }
         }
         [NotMapped]
-        [Attributes.Form_Property("РАО с упаковкой")]
+        [Attributes.Form_Property("Объем, куб. м","РАО с упаковкой","10")]
         public RamAccess<string> VolumeInPack
         {
             get
@@ -929,7 +929,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("РАО с упаковкой (брутто)")]
+        [Attributes.Form_Property("Масса, т","РАО с упаковкой (брутто)","12")]
         public RamAccess<string> MassInPack
         {
             get
@@ -1038,7 +1038,7 @@ namespace Models
 
         #region VolumeOutOfPack 
         public string VolumeOutOfPack_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("РАО без упаковки")]
+        [Attributes.Form_Property("Объем, куб. м","РАО без упаковки","9")]
         public RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
         {
             get
@@ -1126,7 +1126,7 @@ namespace Models
 
         #region MassOutOfPack
         public string MassOutOfPack_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("РАО без упаковки (нетто)")]
+        [Attributes.Form_Property("Масса, т","РАО без упаковки (нетто)","11")]
         public RamAccess<string> MassOutOfPack//SUMMARIZABLE
         {
             get
@@ -1218,7 +1218,7 @@ namespace Models
 
         #region QuantityOZIII_DB
         public string QuantityOZIII_DB { get; set; } = null;[NotMapped]
-        [Attributes.Form_Property("Количество ОЗИИИ, шт.")]
+        [Attributes.Form_Property("","Количество ОЗИИИ, шт.","13")]
         public RamAccess<string> QuantityOZIII//SUMMARIZABLE
         {
             get
@@ -1283,7 +1283,7 @@ namespace Models
 
         #region TritiumActivity
         public string TritiumActivity_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("тритий")]
+        [Attributes.Form_Property("Суммарная активность, Бк","тритий","14")]
         public RamAccess<string> TritiumActivity//SUMMARIZABLE
         {
             get
@@ -1371,7 +1371,7 @@ namespace Models
 
         #region BetaGammaActivity
         public string BetaGammaActivity_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("бета-, гамма-излучающие радионуклиды (исключая тритий)")]
+        [Attributes.Form_Property("Суммарная активность, Бк","бета-, гамма-излучающие радионуклиды (исключая тритий)","15")]
         public RamAccess<string> BetaGammaActivity//SUMMARIZABLE
         {
             get
@@ -1459,7 +1459,7 @@ namespace Models
 
         #region AlphaActivity 
         public string AlphaActivity_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("альфа-излучающие радионуклиды (исключая трансурановые)")]
+        [Attributes.Form_Property("Суммарная активность, Бк","альфа-излучающие радионуклиды (исключая трансурановые)","16")]
         public RamAccess<string> AlphaActivity//SUMMARIZABLE
         {
             get
@@ -1546,7 +1546,7 @@ namespace Models
 
         #region TransuraniumActivity 
         public string TransuraniumActivity_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("трансурановые радионуклиды")]
+        [Attributes.Form_Property("Суммарная активность, Бк","трансурановые радионуклиды","17")]
         public RamAccess<string> TransuraniumActivity//SUMMARIZABLE
         {
             get
@@ -1644,7 +1644,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Основные радионуклиды")]
+        [Attributes.Form_Property("","Основные радионуклиды","18")]
         public RamAccess<string> MainRadionuclids
         {
             get
@@ -1738,7 +1738,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Субсидия, %")]
+        [Attributes.Form_Property("","Субсидия, %","19")]
         public RamAccess<string> Subsidy
         {
             get
@@ -1826,7 +1826,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Номер мероприятия ФЦП")]
+        [Attributes.Form_Property("","Номер мероприятия ФЦП","20")]
         public RamAccess<string> FcpNumber
         {
             get
@@ -1943,9 +1943,109 @@ namespace Models
         }
         #endregion
         #region IDataGridColumn
-        public override DataGridColumns GetColumnStructure(string param)
+        public override DataGridColumns GetColumnStructure(string param = "")
         {
-            return null;
+            #region NumberInOrder (1)
+            DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            NumberInOrderR.SetSizeColToAllLevels(50);
+            NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+            #endregion
+            #region StoragePlaceName (2)
+            DataGridColumns StoragePlaceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.StoragePlaceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StoragePlaceNameR.SetSizeColToAllLevels(50);
+            StoragePlaceNameR.Binding = nameof(Form22.StoragePlaceName);
+            #endregion
+            #region StoragePlaceCode (3)
+            DataGridColumns StoragePlaceCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.StoragePlaceCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StoragePlaceCodeR.SetSizeColToAllLevels(50);
+            StoragePlaceCodeR.Binding = nameof(Form22.StoragePlaceCode);
+            #endregion
+            #region PackName (4)
+            DataGridColumns PackNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.PackName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            PackNameR.SetSizeColToAllLevels(50);
+            PackNameR.Binding = nameof(Form22.PackName);
+            #endregion
+            #region PackType (5)
+            DataGridColumns PackTypeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.PackType)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            PackTypeR.SetSizeColToAllLevels(50);
+            PackTypeR.Binding = nameof(Form22.PackType);
+            #endregion
+            #region PackQuantity (6)
+            DataGridColumns PackQuantityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.PackQuantity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            PackQuantityR.SetSizeColToAllLevels(50);
+            PackQuantityR.Binding = nameof(Form22.PackQuantity);
+            #endregion
+            #region CodeRAO (7)
+            DataGridColumns CodeRAOR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.CodeRAO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            CodeRAOR.SetSizeColToAllLevels(50);
+            CodeRAOR.Binding = nameof(Form22.CodeRAO);
+            #endregion
+            #region StatusRAO (8)
+            DataGridColumns StatusRAOR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.StatusRAO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            StatusRAOR.SetSizeColToAllLevels(50);
+            StatusRAOR.Binding = nameof(Form22.StatusRAO);
+            #endregion
+            #region VolumeOutOfPack (9)
+            DataGridColumns VolumeOutOfPackR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.VolumeOutOfPack)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            VolumeOutOfPackR.SetSizeColToAllLevels(50);
+            VolumeOutOfPackR.Binding = nameof(Form22.VolumeOutOfPack);
+            #endregion
+            #region VolumeInPack (10)
+            DataGridColumns VolumeInPackR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.VolumeInPack)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            VolumeInPackR.SetSizeColToAllLevels(50);
+            VolumeInPackR.Binding = nameof(Form22.VolumeInPack);
+            #endregion
+            #region MassOutOfPack (11)
+            DataGridColumns MassOutOfPackR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.MassOutOfPack)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            MassOutOfPackR.SetSizeColToAllLevels(50);
+            MassOutOfPackR.Binding = nameof(Form22.MassOutOfPack);
+            #endregion
+            #region MassInPack (12)
+            DataGridColumns MassInPackR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.MassInPack)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            MassInPackR.SetSizeColToAllLevels(50);
+            MassInPackR.Binding = nameof(Form22.MassInPack);
+            #endregion
+            #region QuantityOZIII (13)
+            DataGridColumns QuantityOZIIIR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.QuantityOZIII)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            QuantityOZIIIR.SetSizeColToAllLevels(50);
+            QuantityOZIIIR.Binding = nameof(Form22.QuantityOZIII);
+            #endregion
+            #region TritiumActivity (14)
+            DataGridColumns TritiumActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.TritiumActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            TritiumActivityR.SetSizeColToAllLevels(50);
+            TritiumActivityR.Binding = nameof(Form22.TritiumActivity);
+            #endregion
+            #region BetaGammaActivity (15)
+            DataGridColumns BetaGammaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.BetaGammaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            BetaGammaActivityR.SetSizeColToAllLevels(50);
+            BetaGammaActivityR.Binding = nameof(Form22.BetaGammaActivity);
+            #endregion
+            #region AlphaActivity (16)
+            DataGridColumns AlphaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.AlphaActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            AlphaActivityR.SetSizeColToAllLevels(50);
+            AlphaActivityR.Binding = nameof(Form22.AlphaActivity);
+            #endregion
+            #region TransuraniumActivity (17)
+            DataGridColumns TransuraniumActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.TransuraniumActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            TransuraniumActivityR.SetSizeColToAllLevels(50);
+            TransuraniumActivityR.Binding = nameof(Form22.TransuraniumActivity);
+            #endregion
+            #region MainRadionuclids (18)
+            DataGridColumns MainRadionuclidsR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.MainRadionuclids)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            MainRadionuclidsR.SetSizeColToAllLevels(50);
+            MainRadionuclidsR.Binding = nameof(Form22.MainRadionuclids);
+            #endregion
+            #region Subsidy (19)
+            DataGridColumns SubsidyR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.Subsidy)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            SubsidyR.SetSizeColToAllLevels(50);
+            SubsidyR.Binding = nameof(Form22.Subsidy);
+            #endregion
+            #region FcpNumber (20)
+            DataGridColumns FcpNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form22.FcpNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            FcpNumberR.SetSizeColToAllLevels(50);
+            FcpNumberR.Binding = nameof(Form22.FcpNumber);
+            #endregion
+            return NumberInOrderR;
         }
         #endregion
     }
