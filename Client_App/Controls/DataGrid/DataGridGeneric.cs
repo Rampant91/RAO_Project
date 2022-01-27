@@ -453,8 +453,11 @@ namespace Client_App.Controls.DataGrid
         public DataGrid(string Name = "")
         {
             this.Name = Name;
-
-            //this.
+            this.Focusable = true;
+            FirstPressedItem[0] = -1;
+            FirstPressedItem[1] = -1;
+            LastPressedItem[0] = -1;
+            LastPressedItem[1] = -1;
 
             this.AddHandler(PointerPressedEvent,MousePressed,handledEventsToo:true);
             this.AddHandler(PointerMovedEvent, MouseMoved, handledEventsToo: true);
@@ -492,26 +495,41 @@ namespace Client_App.Controls.DataGrid
         {
             var Row = LastPressedItem[0];
 
-            var tmp1 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row != Row);
-
-            foreach (Cell item in tmp1)
+            if (Row != -1)
             {
-                item.ChooseColor = (SolidColorBrush)Background;
+                var tmp1 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row != Row);
+
+                foreach (Cell item in tmp1)
+                {
+                    item.ChooseColor = (SolidColorBrush)Background;
+                }
+
+                SelectedCells.Clear();
+
+                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+
+                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == Row);
+
+                foreach (Cell item in tmp2)
+                {
+                    item.ChooseColor = (SolidColorBrush)ChooseColor;
+                    SelectedCells.Add(item);
+                    tmpSelectedItems.Add((T)item.DataContext);
+                }
+                SelectedItems = tmpSelectedItems;
             }
-
-            SelectedCells.Clear();
-
-            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
-
-            var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((Cell)item).Row == Row);
-
-            foreach (Cell item in tmp2)
+            else
             {
-                item.ChooseColor = (SolidColorBrush)ChooseColor;
-                SelectedCells.Add(item);
-                tmpSelectedItems.Add((T)item.DataContext);
+                var tmp1 = Rows.SelectMany(x => x.Children);
+
+                foreach (Cell item in tmp1)
+                {
+                    item.ChooseColor = (SolidColorBrush)Background;
+                }
+
+                SelectedCells.Clear();
+                SelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
             }
-            SelectedItems = tmpSelectedItems;
         }
 
         //Not Done
@@ -520,53 +538,83 @@ namespace Client_App.Controls.DataGrid
             var Row = LastPressedItem[0];
             var Column = LastPressedItem[1];
 
-            var tmp1 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row != Row&&((Cell)item.Children.FirstOrDefault()).Column != Column);
-
-            foreach (DataGridRow item in tmp1)
+            if (Row != -1 && Column != -1)
             {
-                item.ChooseColor = (SolidColorBrush)Background;
+
+                var tmp1 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row != Row && ((Cell)item.Children.FirstOrDefault()).Column != Column);
+
+                foreach (DataGridRow item in tmp1)
+                {
+                    item.ChooseColor = (SolidColorBrush)Background;
+                }
+
+                SelectedCells.Clear();
+
+                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+
+                var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row && ((Cell)item.Children.FirstOrDefault()).Column == Column);
+
+                foreach (DataGridRow item in tmp2)
+                {
+                    item.ChooseColor = (SolidColorBrush)ChooseColor;
+                    SelectedCells.Add(item);
+                    tmpSelectedItems.Add((T)item.DataContext);
+                }
+                SelectedItems = tmpSelectedItems;
             }
-
-            SelectedCells.Clear();
-
-            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
-
-            var tmp2 = Rows.Where(item => ((Cell)item.Children.FirstOrDefault()).Row == Row && ((Cell)item.Children.FirstOrDefault()).Column == Column);
-
-            foreach (DataGridRow item in tmp2)
+            else
             {
-                item.ChooseColor = (SolidColorBrush)ChooseColor;
-                SelectedCells.Add(item);
-                tmpSelectedItems.Add((T)item.DataContext);
+                var tmp1 = Rows.SelectMany(x => x.Children);
+
+                foreach (Cell item in tmp1)
+                {
+                    item.ChooseColor = (SolidColorBrush)Background;
+                }
+
+                SelectedCells.Clear();
+                SelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
             }
-            SelectedItems = tmpSelectedItems;
         }
 
         private void SetSelectedControls_LineMulti()
         {
             var minRow = Math.Min(FirstPressedItem[0],LastPressedItem[0]);
             var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
-
-            var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !(((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
-
-            foreach (Cell item in tmp1)
+            if (minRow != -1 && maxRow != -1)
             {
-                item.ChooseColor = (SolidColorBrush)Background;
+                var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !(((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
+
+                foreach (Cell item in tmp1)
+                {
+                    item.ChooseColor = (SolidColorBrush)Background;
+                }
+
+                SelectedCells.Clear();
+
+                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+
+                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
+
+                foreach (Cell item in tmp2)
+                {
+                    item.ChooseColor = (SolidColorBrush)ChooseColor;
+                    SelectedCells.Add(item);
+                    tmpSelectedItems.Add((T)item.DataContext);
+                }
+                SelectedItems = tmpSelectedItems;
             }
-
-            SelectedCells.Clear();
-
-            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
-
-            var tmp2 = Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow));
-
-            foreach (Cell item in tmp2)
+            else
             {
-                item.ChooseColor = (SolidColorBrush)ChooseColor;
-                SelectedCells.Add(item);
-                tmpSelectedItems.Add((T)item.DataContext);
+                var tmp1 = Rows.SelectMany(x => x.Children);
+
+                foreach (Cell item in tmp1)
+                {
+                    item.ChooseColor = (SolidColorBrush)Background;
+                }
+
+                SelectedCells.Clear();
+                SelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
             }
-            SelectedItems = tmpSelectedItems;
         }
 
         private void SetSelectedControls_CellMulti()
@@ -576,28 +624,43 @@ namespace Client_App.Controls.DataGrid
             var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
             var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
 
-            var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow)&&
-                                            (((Cell)item).Column >= minColumn && ((Cell)item).Column<= maxColumn)));
-
-            foreach (Cell item in tmp1)
+            if (minRow != -1 && maxRow != -1 && minColumn != -1 && maxColumn != -1)
             {
-                item.ChooseColor = (SolidColorBrush)Background;
+                var tmp1 = Rows.SelectMany(x => x.Children).Where(item => !((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow) &&
+                                                (((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn)));
+
+                foreach (Cell item in tmp1)
+                {
+                    item.ChooseColor = (SolidColorBrush)Background;
+                }
+
+                SelectedCells.Clear();
+
+                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+
+                var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow) &&
+                                                  (((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn)));
+
+                foreach (Cell item in tmp2)
+                {
+                    item.ChooseColor = (SolidColorBrush)ChooseColor;
+                    SelectedCells.Add(item);
+                    tmpSelectedItems.Add((T)item.DataContext);
+                }
+                SelectedItems = tmpSelectedItems;
             }
-
-            SelectedCells.Clear();
-
-            ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
-
-            var tmp2 = Rows.SelectMany(x=>x.Children).Where(item=> ((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow) &&
-                                            (((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn)));
-
-            foreach (Cell item in tmp2)
+            else
             {
-                item.ChooseColor = (SolidColorBrush)ChooseColor;
-                SelectedCells.Add(item);
-                tmpSelectedItems.Add((T)item.DataContext);
+                var tmp1 = Rows.SelectMany(x => x.Children);
+
+                foreach (Cell item in tmp1)
+                {
+                    item.ChooseColor = (SolidColorBrush)Background;
+                }
+
+                SelectedCells.Clear();
+                SelectedItems=new ObservableCollectionWithItemPropertyChanged<IKey>();
             }
-            SelectedItems = tmpSelectedItems;
         }
         #endregion
 
@@ -605,53 +668,113 @@ namespace Client_App.Controls.DataGrid
         public bool DownFlag { get; set; }
         public int[] FirstPressedItem { get; set; } = new int[2];
         public int[] LastPressedItem { get; set; } = new int[2];
+        private bool SetFirstPressed(int[] First)
+        {
+            if (FirstPressedItem[0] != First[0] || FirstPressedItem[1] != First[1])
+            {
+                FirstPressedItem[0] = First[0];
+                FirstPressedItem[1] = First[1];
+                return true;
+            }
+            return false;
+        }
+        private bool SetLastPressed(int[] Last)
+        {
+            if (LastPressedItem[0] != Last[0] || LastPressedItem[1] != Last[1])
+            {
+                LastPressedItem[0] = Last[0];
+                LastPressedItem[1] = Last[1];
+                return true;
+            }
+            return false;
+        }
+
         private int[] FindMousePress(double[] mouse)
         {
             var tmp = new int[2];
 
             var sumy = 0.0;
             var flag = false;
+            var doFlag = false;
             foreach(var item in Rows)
             {
                 sumy += item.Bounds.Height;
-                if(mouse[0]<sumy)
+                if(mouse[0]<=sumy)
                 {
-                    var sumx = 0.0;
-                    foreach(Cell it in item.Children)
+                    if (mouse[0] >= 0)
                     {
-                        sumx+= it.Bounds.Width;
-                        if (mouse[1]<sumx)
+                        var sumx = 0.0;
+                        foreach (Cell it in item.Children)
                         {
-                            tmp[0] = it.Row;
-                            tmp[1] = it.Column;
-                            flag = true;
-                            break;
+                            sumx += it.Bounds.Width;
+                            if (mouse[1] <= sumx)
+                            {
+                                if (mouse[1] >= 0)
+                                {
+                                    tmp[0] = it.Row;
+                                    tmp[1] = it.Column;
+                                    flag = true;
+                                    doFlag = true;
+                                    break;
+                                }
+                                else
+                                {
+                                    flag = true;
+                                    break;
+                                }
+                            }
                         }
+                        if (flag)
+                            break;
                     }
-                    if(flag)
+                    else
+                    {
                         break;
+                    }
                 }
             }
-
+            if(!doFlag)
+            {
+                tmp[0] = -1;
+                tmp[1] = -1;
+            }
             return tmp;
         }
-        private void MousePressed(object sender,PointerPressedEventArgs args)
+        private void MousePressed(object sender, PointerPressedEventArgs args)
         {
             var paramKey = args.GetPointerPoint(this).Properties.PointerUpdateKind;
             var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
-            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+            bool doSetItemFlag = false;
 
-            if (paramKey == PointerUpdateKind.LeftButtonPressed|| paramKey == PointerUpdateKind.RightButtonPressed)
+            if (paramKey == PointerUpdateKind.LeftButtonPressed || paramKey == PointerUpdateKind.RightButtonPressed)
             {
-                FirstPressedItem = paramRowColumn;
-                LastPressedItem = paramRowColumn;
-                SetSelectedControls();
+                var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
                 if (paramKey == PointerUpdateKind.RightButtonPressed)
                 {
-                    if (!(FirstPressedItem[0] == 0 && FirstPressedItem[1] == 0))
+                    var minRow = Math.Min(FirstPressedItem[0], LastPressedItem[0]);
+                    var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
+                    var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                    var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                    if (paramRowColumn[0] < minRow || paramRowColumn[0] > maxRow)
+                    {
+                        if (ChooseMode != ChooseMode.Line)
+                        {
+                            if (paramRowColumn[1] < minColumn || paramRowColumn[1] > maxColumn)
+                            {
+                                doSetItemFlag = SetFirstPressed(paramRowColumn);
+                                doSetItemFlag = doSetItemFlag|| SetLastPressed(paramRowColumn);
+                            }
+                        }
+                        else
+                        {
+                            doSetItemFlag = SetFirstPressed(paramRowColumn);
+                            doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
+                        }
+                    }
+                    if (FirstPressedItem[0] != -1)
                     {
                         this.ContextMenu.Close();
-                        var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == FirstPressedItem[0] && ((Cell)item).Column == FirstPressedItem[1])).FirstOrDefault();
+                        var tmp1 = (Cell)Rows.SelectMany(x => x.Children).Where(item => (((Cell)item).Row == paramRowColumn[0] && ((Cell)item).Column == paramRowColumn[1])).FirstOrDefault();
                         this.ContextMenu.PlacementTarget = tmp1;
                         this.ContextMenu.Open();
                     }
@@ -659,41 +782,55 @@ namespace Client_App.Controls.DataGrid
                 else
                 {
                     this.ContextMenu.Close();
+                    doSetItemFlag = SetFirstPressed(paramRowColumn);
+                    doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
+                }
+
+                if (doSetItemFlag)
+                {
+                    SetSelectedControls();
                 }
             }
         }
         private void MouseDoublePressed(object sender, EventArgs args)
         {
-            var commands = _CommandsList.Where(item=>item.IsDoubleTappedCommand);
-            foreach(var item in commands)
+            if (FirstPressedItem[0] != -1)
             {
-                item.DoCommand(GetParamByParamName(item));
+                var commands = _CommandsList.Where(item => item.IsDoubleTappedCommand);
+                foreach (var item in commands)
+                {
+                    item.DoCommand(GetParamByParamName(item));
+                }
             }
         }
         private void MouseReleased(object sender, PointerReleasedEventArgs args)
         {
             var paramKey = args.GetPointerPoint(this).Properties.PointerUpdateKind;
             var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
-            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
 
             if (paramKey == PointerUpdateKind.LeftButtonReleased)
             {
-                LastPressedItem = paramRowColumn;
-
-                SetSelectedControls();
+                var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+                if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
+                {
+                    LastPressedItem = paramRowColumn;
+                    SetSelectedControls();
+                }
             }
         }
         private void MouseMoved(object sender, PointerEventArgs args)
         {
             var paramKey = args.GetPointerPoint(this).Properties;
             var paramPos = args.GetCurrentPoint(CenterStackPanel).Position;
-            var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
 
             if (paramKey.IsLeftButtonPressed)
             {
-                LastPressedItem = paramRowColumn;
-
-                SetSelectedControls();
+                var paramRowColumn = FindMousePress(new double[] { paramPos.Y, paramPos.X });
+                if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
+                {
+                    LastPressedItem = paramRowColumn;
+                    SetSelectedControls();
+                }
             }
         }
         #endregion

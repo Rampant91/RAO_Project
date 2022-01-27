@@ -19,11 +19,18 @@ namespace Client_App.Converters
                 IKeyCollection rps_coll = (IKeyCollection)Value;
                 try
                 {
-                    Reports? rps = (Reports)rps_coll.Get<Reports>(0);
-                    last_item = rps;
-                    if (rps != null)
+                    if (rps_coll.Count != 0)
                     {
-                        return rps.Report_Collection;
+                        Reports? rps = (Reports)rps_coll.Get<Reports>(0);
+                        last_item = rps;
+                        if (rps != null)
+                        {
+                            return rps.Report_Collection;
+                        }
+                    }
+                    else
+                    {
+                        return new ObservableCollectionWithItemPropertyChanged<IKey>();
                     }
                 }
                 catch
