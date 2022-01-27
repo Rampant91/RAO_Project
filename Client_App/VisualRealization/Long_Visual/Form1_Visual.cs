@@ -96,22 +96,32 @@ namespace Client_App.Long_Visual
             #region Main
             Panel mainPanel = new Panel();
             var mainCanvas = new Canvas();
-            mainCanvas.Height = 1210;
+            mainCanvas.Height = 1220;
             mainPanel.Children.Add(mainCanvas);
             vw.Content = mainPanel;
 
             #endregion
 
             #region Header
-            Panel headerPanel = new Panel() { ZIndex=999,
-            Background=new SolidColorBrush(Color.Parse("White"))};
+            Panel headerPanel = new Panel();
             Binding b = new Binding() { 
                 Source=vw,
                 Path="Offset",
                 Converter=new VectorToMarginTop_Converter()
             };
-            headerPanel[!Panel.MarginProperty] = b;
-            mainCanvas.Children.Add(headerPanel);
+            Border brdH = new Border()
+            {
+                BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5"),
+                ZIndex = 999,
+                Background = new SolidColorBrush(Color.Parse("White"))
+            };
+            brdH[!Border.MarginProperty] = b;
+            brdH.Child = headerPanel;
+            mainCanvas.Children.Add(brdH);
 
             StackPanel headerStackPanel = new StackPanel();
             headerStackPanel.Orientation = Orientation.Vertical;
@@ -125,7 +135,7 @@ namespace Client_App.Long_Visual
                  .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0]
                 , 295));
 
-            headerOrganUprav.Children.Add(CreateTextBox("5,0,10,0", 30, BindingPrefix + "[0]." + "OrganUprav", 400, scp));
+            headerOrganUprav.Children.Add(CreateTextBox("28,0,10,0", 30, BindingPrefix + "[0]." + "OrganUprav", 400, scp));
 
             StackPanel headerRegNo = new StackPanel();
             headerRegNo.Orientation = Orientation.Horizontal;
@@ -135,7 +145,7 @@ namespace Client_App.Long_Visual
                     .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0]
                 , 295));
 
-            headerRegNo.Children.Add(CreateTextBox("263,0,10,20", 30, BindingPrefix + "[0]." + "RegNo", 400, scp));
+            headerRegNo.Children.Add(CreateTextBox("286,0,10,20", 30, BindingPrefix + "[0]." + "RegNo", 400, scp));
 
             StackPanel headerButtons = new StackPanel();
             headerButtons.Orientation = Orientation.Horizontal;
@@ -145,13 +155,22 @@ namespace Client_App.Long_Visual
             #endregion
 
             StackPanel centerStackPanel = new StackPanel();
-            centerStackPanel.SetValue(Canvas.TopProperty,130);
+            centerStackPanel.SetValue(Canvas.TopProperty,140);
             centerStackPanel.Orientation = Orientation.Vertical;
             mainCanvas.Children.Add(centerStackPanel);
 
             #region UrLico
             Panel urLicoPanel = new Panel();
-            centerStackPanel.Children.Add(urLicoPanel);
+            Border brdUr = new Border()
+            {
+                BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5")
+            };
+            brdUr.Child = urLicoPanel;
+            centerStackPanel.Children.Add(brdUr);
 
             StackPanel urLicoStackPanel = new StackPanel();
             urLicoStackPanel.Orientation = Orientation.Vertical;
@@ -168,9 +187,9 @@ namespace Client_App.Long_Visual
                 FontSize = 16,
                 Text = "Юридическое лицо",
             });
-            urLicoStackPanel.Children.Add(Create10Item("102,0,10,0", "SubjectRF", BindingPrefix, scp,0));
+            urLicoStackPanel.Children.Add(Create10Item("103,0,10,0", "SubjectRF", BindingPrefix, scp,0));
             urLicoStackPanel.Children.Add(Create10Item("83,0,10,0", "JurLico", BindingPrefix, scp,0));
-            urLicoStackPanel.Children.Add(Create10Item("5,0,10,0", "ShortJurLico", BindingPrefix, scp, 0));
+            urLicoStackPanel.Children.Add(Create10Item("119,0,10,0", "ShortJurLico", BindingPrefix, scp, 0));
             urLicoStackPanel.Children.Add(Create10Item("28,0,10,0", "JurLicoAddress", BindingPrefix, scp, 0));
             urLicoStackPanel.Children.Add(Create10Item("121,0,10,0", "JurLicoFactAddress", BindingPrefix, scp, 0));
             urLicoStackPanel.Children.Add(Create10Item("108,0,10,0", "GradeFIO", BindingPrefix, scp, 0));
@@ -189,7 +208,16 @@ namespace Client_App.Long_Visual
 
             #region ObosobPodrazd
             Panel obosobPodrazdPanel = new Panel();
-            centerStackPanel.Children.Add(obosobPodrazdPanel);
+            Border brdOb = new Border()
+            {
+                BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(3),
+                Padding = new Thickness(4),
+                Margin = Thickness.Parse("5,5,5,5")
+            };
+            brdOb.Child = obosobPodrazdPanel;
+            centerStackPanel.Children.Add(brdOb);
 
             StackPanel obosobPodrazdStackPanel = new StackPanel();
             obosobPodrazdStackPanel.Orientation = Orientation.Vertical;
@@ -206,23 +234,23 @@ namespace Client_App.Long_Visual
                 FontSize = 16,
                 Text = "Обособленное подразделение",
             });
-            obosobPodrazdStackPanel.Children.Add(Create10Item("102,0,10,0", "SubjectRF", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("83,0,10,0", "JurLico", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("5,0,10,0", "ShortJurLico", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("28,0,10,0", "JurLicoAddress", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("121,0,10,0", "JurLicoFactAddress", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("108,0,10,0", "GradeFIO", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("158,0,10,0", "Telephone", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("179,0,10,0", "Fax", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("154,0,10,0", "Email", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("246,0,10,0", "Okpo", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("241,0,10,0", "Okved", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("242,0,10,0", "Okogu", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("238,0,10,0", "Oktmo", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("254,0,10,0", "Inn", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("256,0,10,0", "Kpp", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("238,0,10,0", "Okopf", BindingPrefix, scp, 1));
-            obosobPodrazdStackPanel.Children.Add(Create10Item("248,0,10,0", "Okfs", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("139,0,10,0", "SubjectRF", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("56,0,10,0", "JurLico", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("155,0,10,0", "ShortJurLico", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("1,0,10,0", "JurLicoAddress", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("33,0,10,0", "JurLicoFactAddress", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("144,0,10,0", "GradeFIO", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("194,0,10,0", "Telephone", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("215,0,10,0", "Fax", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("190,0,10,0", "Email", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("282,0,10,0", "Okpo", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("277,0,10,0", "Okved", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("278,0,10,0", "Okogu", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("274,0,10,0", "Oktmo", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("290,0,10,0", "Inn", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("292,0,10,0", "Kpp", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("274,0,10,0", "Okopf", BindingPrefix, scp, 1));
+            obosobPodrazdStackPanel.Children.Add(Create10Item("284,0,10,0", "Okfs", BindingPrefix, scp, 1));
             #endregion
 
             return vw;
