@@ -1245,6 +1245,7 @@ namespace Client_App.Controls.DataGrid
             ScrollViewer CenterScrollViewer = new ScrollViewer();
             CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             CenterScrollViewer.Content = CenterPanel;
+            CenterScrollViewer.MaxHeight = 400;
 
             CenterBorder.Child = CenterScrollViewer;
 

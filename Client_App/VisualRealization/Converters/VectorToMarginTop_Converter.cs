@@ -11,7 +11,7 @@ using Models.DataAccess;
 
 namespace Client_App.Converters
 {
-    public class VectorToMargin_Converter : IValueConverter
+    public class VectorToMarginTop_Converter : IValueConverter
     {
         public object Convert(object Value, Type tp, object Param, CultureInfo info)
         {
@@ -21,7 +21,7 @@ namespace Client_App.Converters
                 try
                 {
                     
-                    var lg = Thickness.Parse(((int)rps.X)+",0,0,0");
+                    var lg = Thickness.Parse(("0,"+(int)rps.Y)+",0,0");
                     return lg;
                 }
                 catch
