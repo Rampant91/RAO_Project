@@ -329,8 +329,8 @@ namespace Models
         }
 
 
-       private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
-       {
+        private void ProviderOrRecieverOKPOValueChanged(object Value, PropertyChangedEventArgs args)
+        {
             if (args.PropertyName == "Value")
             {
                 string value1 = ((RamAccess<string>)Value).Value;
@@ -341,7 +341,7 @@ namespace Models
                     }
                 ProviderOrRecieverOKPO_DB = value1;
             }
-       }
+        }
         private bool ProviderOrRecieverOKPO_Validation(RamAccess<string> value)//TODO
         {
             value.ClearErrors();
