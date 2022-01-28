@@ -215,6 +215,77 @@ namespace Client_App.Views
             var grd3 = (Controls.DataGrid.DataGrid<Reports>)tab20.Children[0];
             var grd4 = (Controls.DataGrid.DataGrid<Report>)tab2X.Children[0];
 
+            #region Grd3
+            grd3.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "2.0",
+                ContextMenuText = new string[] { "ƒобавить форму" },
+                Command = dataContext.AddReport
+            });
+
+            grd3.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = true,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "–едактировать форму" },
+                Command = dataContext.ChangeReport
+            });
+            grd3.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "”далить форму" },
+                Command = dataContext.DeleteReport
+            });
+
+            #endregion
+            #region Grd4
+            //grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            //{
+            //    IsDoubleTappedCommand = false,
+            //    IsContextMenuCommand = true,
+            //    ParamName = "1.0",
+            //    ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ печати" },
+            //    Command = dataContext.AddReport
+            //});
+            //grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            //{
+            //    IsDoubleTappedCommand = true,
+            //    IsContextMenuCommand = true,
+            //    ParamName = "SelectedItems",
+            //    ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ выгрузки" },
+            //    Command = dataContext.ChangeReport
+            //});
+            //grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            //{
+            //    IsDoubleTappedCommand = false,
+            //    IsContextMenuCommand = true,
+            //    ParamName = "SelectedItems",
+            //    ContextMenuText = new string[] { "Ёкспорт" },
+            //    Command = dataContext.DeleteReport
+            //});
+            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = true,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "»зменить форму" },
+                Command = dataContext.ChangeForm
+            });
+            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                IsUpdateCells = true,
+                ContextMenuText = new string[] { "”далить форму" },
+                Command = dataContext.DeleteForm
+            });
+            #endregion
             #endregion
         }
 
