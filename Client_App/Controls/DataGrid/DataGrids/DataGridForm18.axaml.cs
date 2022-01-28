@@ -30,14 +30,14 @@ using Models.DataAccess;
 
 namespace Client_App.Controls.DataGrid
 {
-    public class DataGridForm12 : DataGrid<Form12>
+    public class DataGridForm18 : DataGrid<Form18>
     {
-        public DataGridForm12() : base()
+        public DataGridForm18() : base()
         {
             InitializeComponent();
             this.Init();
         }
-        public DataGridForm12(string Name) : base(Name)
+        public DataGridForm18(string Name) : base(Name)
         {
             InitializeComponent();
             this.Init();

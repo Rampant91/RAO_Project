@@ -328,45 +328,829 @@ namespace Client_App.Views
                 panel.Children.Add(grd);
             }
 
-            //if (_param == "1.2")
-            //{
-            //    panel.Children.Add(Long_Visual.Form1_Visual.Form12_Visual(this.FindNameScope()));
-            //}
+            if (_param == "1.2")
+            {
+                var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form12_Visual(this.FindNameScope());
 
-            //if (_param == "1.3")
-            //{
-            //    panel.Children.Add(Long_Visual.Form1_Visual.Form13_Visual(this.FindNameScope()));
-            //}
+                #region Rows Context Menu
+                var Rgrd = (Controls.DataGrid.DataGridForm12)((StackPanel)grd.Content).Children[1];
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateRowsx1
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Добавить N строк перед" },
+                    Command = dataContext.AddRowIn
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteRow
+                });
+                #endregion
 
-            //if (_param == "1.4")
-            //{
-            //    panel.Children.Add(Long_Visual.Form1_Visual.Form14_Visual(this.FindNameScope()));
-            //}
+                #region Notes Context Menu
+                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateNotes
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteNote
+                });
+                #endregion
 
-            //if (_param == "1.5")
-            //{
-            //    panel.Children.Add(Long_Visual.Form1_Visual.Form15_Visual(this.FindNameScope()));
-            //}
+                panel.Children.Add(grd);
+            }
 
-            //if (_param == "1.6")
-            //{
-            //    panel.Children.Add(Long_Visual.Form1_Visual.Form16_Visual(this.FindNameScope()));
-            //}
+            if (_param == "1.3")
+            {
+                var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form13_Visual(this.FindNameScope());
 
-            //if (_param == "1.7")
-            //{
-            //    panel.Children.Add(Long_Visual.Form1_Visual.Form17_Visual(this.FindNameScope()));
-            //}
+                #region Rows Context Menu
+                var Rgrd = (Controls.DataGrid.DataGridForm13)((StackPanel)grd.Content).Children[1];
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateRowsx1
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Добавить N строк перед" },
+                    Command = dataContext.AddRowIn
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteRow
+                });
+                #endregion
 
-            //if (_param == "1.8")
-            //{
-            //    panel.Children.Add(Long_Visual.Form1_Visual.Form18_Visual(this.FindNameScope()));
-            //}
+                #region Notes Context Menu
+                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateNotes
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteNote
+                });
+                #endregion
 
-            //if (_param == "1.9")
-            //{
-            //    panel.Children.Add(Long_Visual.Form1_Visual.Form19_Visual(this.FindNameScope()));
-            //}
+                panel.Children.Add(grd);
+            }
+
+            if (_param == "1.4")
+            {
+                var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form14_Visual(this.FindNameScope());
+
+                #region Rows Context Menu
+                var Rgrd = (Controls.DataGrid.DataGridForm14)((StackPanel)grd.Content).Children[1];
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateRowsx1
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Добавить N строк перед" },
+                    Command = dataContext.AddRowIn
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteRow
+                });
+                #endregion
+
+                #region Notes Context Menu
+                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateNotes
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteNote
+                });
+                #endregion
+
+                panel.Children.Add(grd);
+            }
+
+            if (_param == "1.5")
+            {
+                var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form15_Visual(this.FindNameScope());
+
+                #region Rows Context Menu
+                var Rgrd = (Controls.DataGrid.DataGridForm15)((StackPanel)grd.Content).Children[1];
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateRowsx1
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Добавить N строк перед" },
+                    Command = dataContext.AddRowIn
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteRow
+                });
+                #endregion
+
+                #region Notes Context Menu
+                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateNotes
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteNote
+                });
+                #endregion
+
+                panel.Children.Add(grd);
+            }
+
+            if (_param == "1.6")
+            {
+                var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form16_Visual(this.FindNameScope());
+
+                #region Rows Context Menu
+                var Rgrd = (Controls.DataGrid.DataGridForm16)((StackPanel)grd.Content).Children[1];
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateRowsx1
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Добавить N строк перед" },
+                    Command = dataContext.AddRowIn
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteRow
+                });
+                #endregion
+
+                #region Notes Context Menu
+                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateNotes
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteNote
+                });
+                #endregion
+
+                panel.Children.Add(grd);
+            }
+
+            if (_param == "1.7")
+            {
+                var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form17_Visual(this.FindNameScope());
+
+                #region Rows Context Menu
+                var Rgrd = (Controls.DataGrid.DataGridForm17)((StackPanel)grd.Content).Children[1];
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateRowsx1
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Добавить N строк перед" },
+                    Command = dataContext.AddRowIn
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteRow
+                });
+                #endregion
+
+                #region Notes Context Menu
+                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateNotes
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteNote
+                });
+                #endregion
+
+                panel.Children.Add(grd);
+            }
+
+            if (_param == "1.8")
+            {
+                var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form18_Visual(this.FindNameScope());
+
+                #region Rows Context Menu
+                var Rgrd = (Controls.DataGrid.DataGridForm18)((StackPanel)grd.Content).Children[1];
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateRowsx1
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Добавить N строк перед" },
+                    Command = dataContext.AddRowIn
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteRow
+                });
+                #endregion
+
+                #region Notes Context Menu
+                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateNotes
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteNote
+                });
+                #endregion
+
+                panel.Children.Add(grd);
+            }
+
+            if (_param == "1.9")
+            {
+                var grd = (ScrollViewer)Long_Visual.Form1_Visual.Form19_Visual(this.FindNameScope());
+
+                #region Rows Context Menu
+                var Rgrd = (Controls.DataGrid.DataGridForm19)((StackPanel)grd.Content).Children[1];
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateRowsx1
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Добавить N строк перед" },
+                    Command = dataContext.AddRowIn
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteRow
+                });
+                #endregion
+
+                #region Notes Context Menu
+                var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить строку" },
+                    Command = dataContext.AddNote
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "",
+                    ContextMenuText = new string[] { "Добавить N строк" },
+                    Command = dataContext.DuplicateNotes
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Копировать" },
+                    Command = dataContext.CopyRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedCells",
+                    ContextMenuText = new string[] { "Вставить" },
+                    Command = dataContext.PasteRows
+                });
+                Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectedItems",
+                    ContextMenuText = new string[] { "Удалить строки" },
+                    Command = dataContext.DeleteNote
+                });
+                #endregion
+
+                panel.Children.Add(grd);
+            }
         }
 
         private void Form2Init(in Panel panel)
