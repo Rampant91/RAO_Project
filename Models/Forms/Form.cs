@@ -73,7 +73,7 @@ namespace Models.Abstracts
         public int NumberInOrder_DB { get; set; } = 0;
 
         [NotMapped]
-        [Attributes.Form_Property("№ п/п")]
+        [Attributes.Form_Property("null-1","№ п/п","1")]
         public RamAccess<int> NumberInOrder
         {
             get
