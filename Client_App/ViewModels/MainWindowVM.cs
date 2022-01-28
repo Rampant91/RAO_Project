@@ -34,16 +34,13 @@ namespace Client_App.ViewModels
     {
         private DBObservable _local_Reports = new();
 
-        System.Timers.Timer tm = new System.Timers.Timer(5000);
-
         public MainWindowVM()
         {
-            //tm.Elapsed += (x, y) =>
-            //{
-            //    GC.Collect(1000, GCCollectionMode.Forced);
-            //};
-            //tm.AutoReset = true;
-            //tm.Start();
+
+        }
+
+        public void Init()
+        {
             string system = "";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -63,6 +60,7 @@ namespace Client_App.ViewModels
             {
                 File.Delete(file);
             }
+            OnStartProgressBar = 10;
 
             var a = Spravochniks.SprRadionuclids;
             var b = Spravochniks.SprTypesToRadionuclids;
@@ -99,8 +97,9 @@ namespace Client_App.ViewModels
                 var yu = dbm.Database.GetPendingMigrations();
                 dbm.Database.Migrate();
             }
-
+            OnStartProgressBar +=10;
             dbm.LoadTables();
+            OnStartProgressBar +=50;
             if (dbm.DBObservableDbSet.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
 
             foreach (var item in dbm.DBObservableDbSet)
@@ -109,7 +108,7 @@ namespace Client_App.ViewModels
                 {
                     if (it.Master_DB.FormNum_DB != "")
                     {
-                        if (it.Master_DB.Rows10.Count==0)
+                        if (it.Master_DB.Rows10.Count == 0)
                         {
                             var ty1 = (Form10)FormCreator.Create("1.0");
                             ty1.NumberInOrder_DB = 1;
@@ -132,7 +131,7 @@ namespace Client_App.ViewModels
             }
 
             dbm.SaveChanges();
-
+            OnStartProgressBar += 10;
             Local_Reports = dbm.DBObservableDbSet.Local.First();
 
             foreach (Reports item in Local_Reports.Reports_Collection)
@@ -151,6 +150,7 @@ namespace Client_App.ViewModels
             }
 
             dbm.SaveChanges();
+            OnStartProgressBar += 10;
 
             Local_Reports.PropertyChanged += Local_ReportsChanged;
 
@@ -182,13 +182,27 @@ namespace Client_App.ViewModels
             ShowDialog = new Interaction<ChangeOrCreateVM, object>();
             ShowMessage = new Interaction<string, string>();
             ShowMessageT = new Interaction<List<string>, string>();
+            OnStartProgressBar = 100;
 
         }
 
-        public Interaction<ChangeOrCreateVM, object> ShowDialog { get; }
-        public Interaction<string, string> ShowMessage { get; }
+        private double _OnStartProgressBar = 0;
+        public double OnStartProgressBar {
+            get => _OnStartProgressBar;
+            set
+            {
+                if(_OnStartProgressBar!=value)
+                {
+                    _OnStartProgressBar = value;
+                    NotifyPropertyChanged(nameof(OnStartProgressBar));
+                }
+            }
+        }
 
-        public Interaction<List<string>, string> ShowMessageT { get; }
+        public Interaction<ChangeOrCreateVM, object> ShowDialog { get; private set; }
+        public Interaction<string, string> ShowMessage { get; private set; }
+
+        public Interaction<List<string>, string> ShowMessageT { get; private set; }
 
         private IEnumerable<Reports> _selectedReports = new ObservableCollectionWithItemPropertyChanged<Reports>();
         public IEnumerable<Reports> SelectedReports
@@ -217,24 +231,24 @@ namespace Client_App.ViewModels
             }
         }
 
-        public ReactiveCommand<Unit, Unit> OpenSettings { get; }
+        public ReactiveCommand<Unit, Unit> OpenSettings { get; private set; }
 
-        public ReactiveCommand<string, Unit> AddSort { get; }
+        public ReactiveCommand<string, Unit> AddSort { get; private set; }
 
-        public ReactiveCommand<string, Unit> ChooseForm { get; }
+        public ReactiveCommand<string, Unit> ChooseForm { get; private set; }
 
-        public ReactiveCommand<object, Unit> AddReport { get; }
-        public ReactiveCommand<string, Unit> AddForm { get; }
+        public ReactiveCommand<object, Unit> AddReport { get; private set; }
+        public ReactiveCommand<string, Unit> AddForm { get; private set; }
 
-        public ReactiveCommand<Unit, Unit> ImportForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ExportForm { get; }
-        public ReactiveCommand<object,Unit> ChangeForm { get; }
-        public ReactiveCommand<object, Unit> ChangeReport { get; }
-        public ReactiveCommand<object, Unit> DeleteForm { get; }
-        public ReactiveCommand<object, Unit> DeleteReport { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Print_Excel_Export { get; }
-        public ReactiveCommand<string, Unit> All_Excel_Export { get; }
+        public ReactiveCommand<Unit, Unit> ImportForm { get; private set; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ExportForm { get; private set; }
+        public ReactiveCommand<object,Unit> ChangeForm { get; private set; }
+        public ReactiveCommand<object, Unit> ChangeReport { get; private set; }
+        public ReactiveCommand<object, Unit> DeleteForm { get; private set; }
+        public ReactiveCommand<object, Unit> DeleteReport { get; private set; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; private set; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Print_Excel_Export { get; private set; }
+        public ReactiveCommand<string, Unit> All_Excel_Export { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

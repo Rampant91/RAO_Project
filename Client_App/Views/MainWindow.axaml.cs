@@ -31,6 +31,18 @@ namespace Client_App.Views
                 if (value != null) SetAndRaise(SelectedReportsProperty, ref _selectedReports, value);
             }
         }
+
+        public MainWindow(ViewModels.MainWindowVM dataContext)
+        {
+            DataContext = dataContext;
+            InitializeComponent();
+#if DEBUG
+            this.AttachDevTools();
+#endif
+            this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
+            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
+            this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
+        }
         public MainWindow()
         {
             DataContext = new ViewModels.MainWindowVM();
