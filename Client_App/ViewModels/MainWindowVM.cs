@@ -33,17 +33,14 @@ namespace Client_App.ViewModels
     public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         private DBObservable _local_Reports = new();
-
-        System.Timers.Timer tm = new System.Timers.Timer(5000);
-
         public MainWindowVM()
         {
-            //tm.Elapsed += (x, y) =>
-            //{
-            //    GC.Collect(1000, GCCollectionMode.Forced);
-            //};
-            //tm.AutoReset = true;
-            //tm.Start();
+            
+
+        }
+        public void Init()
+        {
+            OnStartProgressBar = 0;
             string system = "";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -53,6 +50,7 @@ namespace Client_App.ViewModels
             {
                 system = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
+            OnStartProgressBar = 5;
             string path = Path.GetPathRoot(system);
             var tmp = Path.Combine(path, "RAO");
             var pty = tmp;
@@ -63,12 +61,13 @@ namespace Client_App.ViewModels
             {
                 File.Delete(file);
             }
+            OnStartProgressBar = 10;
 
             var a = Spravochniks.SprRadionuclids;
             var b = Spravochniks.SprTypesToRadionuclids;
             var i = 0;
             bool flag = false;
-
+            OnStartProgressBar = 15;
             DBModel dbm = null;
             foreach (var file in Directory.GetFiles(pty))
             {
@@ -90,6 +89,7 @@ namespace Client_App.ViewModels
                     i++;
                 }
             }
+            OnStartProgressBar = 20;
             if (!flag)
             {
                 StaticConfiguration.DBPath = Path.Combine(pty, "Local" + "_" + i + ".raodb");
@@ -99,17 +99,18 @@ namespace Client_App.ViewModels
                 var yu = dbm.Database.GetPendingMigrations();
                 dbm.Database.Migrate();
             }
-
+            OnStartProgressBar = 25;
             dbm.LoadTables();
+            OnStartProgressBar = 55;
             if (dbm.DBObservableDbSet.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
-
+            OnStartProgressBar = 60;
             foreach (var item in dbm.DBObservableDbSet)
             {
                 foreach (Reports it in item.Reports_Collection)
                 {
                     if (it.Master_DB.FormNum_DB != "")
                     {
-                        if (it.Master_DB.Rows10.Count==0)
+                        if (it.Master_DB.Rows10.Count == 0)
                         {
                             var ty1 = (Form10)FormCreator.Create("1.0");
                             ty1.NumberInOrder_DB = 1;
@@ -130,9 +131,9 @@ namespace Client_App.ViewModels
                     }
                 }
             }
-
+            OnStartProgressBar = 65;
             dbm.SaveChanges();
-
+            OnStartProgressBar = 70;
             Local_Reports = dbm.DBObservableDbSet.Local.First();
 
             foreach (Reports item in Local_Reports.Reports_Collection)
@@ -149,46 +150,59 @@ namespace Client_App.ViewModels
                 }
                 item.Sort();
             }
+            OnStartProgressBar = 75;
 
             dbm.SaveChanges();
+            OnStartProgressBar = 80;
 
             Local_Reports.PropertyChanged += Local_ReportsChanged;
 
-            AddSort = ReactiveCommand.Create<string>(_AddSort);
-
-            AddReport = ReactiveCommand.CreateFromTask<string>(_AddReport);
-            AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
-
+            AddReport = ReactiveCommand.CreateFromTask<object>(_AddReport);
+            AddForm = ReactiveCommand.CreateFromTask<object>(_AddForm);
+            OnStartProgressBar = 85;
             ImportForm =
                 ReactiveCommand.CreateFromTask(_ImportForm);
 
             ExportForm =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ExportForm);
-
+                ReactiveCommand.CreateFromTask<object>(_ExportForm);
+            OnStartProgressBar = 90;
             ChangeForm =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ChangeForm);
+                ReactiveCommand.CreateFromTask<object>(_ChangeForm);
             ChangeReport =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ChangeReport);
+                ReactiveCommand.CreateFromTask<object>(_ChangeReport);
             DeleteForm =
-                ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteForm);
+                ReactiveCommand.CreateFromTask<object> (_DeleteForm);
+            OnStartProgressBar = 95;
             DeleteReport =
-                ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteReport);
+                ReactiveCommand.CreateFromTask<object>(_DeleteReport);
 
             Excel_Export =
-                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_Excel_Export);
+                ReactiveCommand.CreateFromTask<object>(_Excel_Export);
             All_Excel_Export =
-                ReactiveCommand.CreateFromTask<string>(_All_Excel_Export);
+                ReactiveCommand.CreateFromTask<object>(_All_Excel_Export);
 
             ShowDialog = new Interaction<ChangeOrCreateVM, object>();
             ShowMessage = new Interaction<string, string>();
             ShowMessageT = new Interaction<List<string>, string>();
-
+            OnStartProgressBar = 100;
         }
+        private double _OnStartProgressBar = 0;
+        public double OnStartProgressBar
+        {
+            get => _OnStartProgressBar;
+            set
+            {
+                if (_OnStartProgressBar != value)
+                {
+                    _OnStartProgressBar = value;
+                    NotifyPropertyChanged(nameof(OnStartProgressBar));
+                }
+            }
+        }
+        public Interaction<ChangeOrCreateVM, object> ShowDialog { get; private set; }
+        public Interaction<string, string> ShowMessage { get; private set; }
 
-        public Interaction<ChangeOrCreateVM, object> ShowDialog { get; }
-        public Interaction<string, string> ShowMessage { get; }
-
-        public Interaction<List<string>, string> ShowMessageT { get; }
+        public Interaction<List<string>, string> ShowMessageT { get; private set; }
 
         private IEnumerable<Reports> _selectedReports = new ObservableCollectionWithItemPropertyChanged<Reports>();
         public IEnumerable<Reports> SelectedReports
@@ -217,24 +231,22 @@ namespace Client_App.ViewModels
             }
         }
 
-        public ReactiveCommand<Unit, Unit> OpenSettings { get; }
+        public ReactiveCommand<Unit, Unit> OpenSettings { get; private set; }
 
-        public ReactiveCommand<string, Unit> AddSort { get; }
+        public ReactiveCommand<object, Unit> ChooseForm { get; private set; }
 
-        public ReactiveCommand<string, Unit> ChooseForm { get; }
+        public ReactiveCommand<object, Unit> AddReport { get; private set; }
+        public ReactiveCommand<object, Unit> AddForm { get; private set; }
 
-        public ReactiveCommand<string, Unit> AddReport { get; }
-        public ReactiveCommand<string, Unit> AddForm { get; }
-
-        public ReactiveCommand<Unit, Unit> ImportForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ExportForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeForm { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeReport { get; }
-        public ReactiveCommand<IEnumerable, Unit> DeleteForm { get; }
-        public ReactiveCommand<IEnumerable, Unit> DeleteReport { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Print_Excel_Export { get; }
-        public ReactiveCommand<string, Unit> All_Excel_Export { get; }
+        public ReactiveCommand<Unit, Unit> ImportForm { get; private set; }
+        public ReactiveCommand<object, Unit> ExportForm { get; private set; }
+        public ReactiveCommand<object, Unit> ChangeForm { get; private set; }
+        public ReactiveCommand<object, Unit> ChangeReport { get; private set; }
+        public ReactiveCommand<object, Unit> DeleteForm { get; private set; }
+        public ReactiveCommand<object, Unit> DeleteReport { get; private set; }
+        public ReactiveCommand<object, Unit> Excel_Export { get; private set; }
+        public ReactiveCommand<object, Unit> Print_Excel_Export { get; private set; }
+        public ReactiveCommand<object, Unit> All_Excel_Export { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -243,16 +255,9 @@ namespace Client_App.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void _AddSort(string param)
+        private async Task _AddForm(object par)
         {
-            var type = param.Split('.')[0];
-            var path = param.Split('.')[1];
-
-            //FormModel_Local.Dictionary.Filters.SortPath = path;
-        }
-
-        private async Task _AddForm(string param)
-        {
+            var param = par as string;
             try
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -281,8 +286,9 @@ namespace Client_App.ViewModels
                 int y = 10;
             }
         }
-        private async Task _AddReport(string param)
+        private async Task _AddReport(object par)
         {
+            var param = par as string;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 if (param.Split('.')[1] == "0")
@@ -298,8 +304,9 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _ExportForm(ObservableCollectionWithItemPropertyChanged<IKey> param)
+        private async Task _ExportForm(object par)
         {
+            var param = par as ObservableCollectionWithItemPropertyChanged<IKey>;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
                 {
@@ -377,8 +384,8 @@ namespace Client_App.ViewModels
                                           {
                                               if (rp.Master.Rows20.Count > 0)
                                               {
-                                                  filename2 += rp.Master.RegNoRep1.Value;
-                                                  filename2 += rp.Master.OkpoRep1.Value;
+                                                  filename2 += rp.Master.RegNoRep.Value;
+                                                  filename2 += rp.Master.OkpoRep.Value;
 
                                                   filename2 += "_" + rep.CorrectionNumber_DB;
                                                   filename2 += "_" + rep.FormNum_DB;
@@ -818,9 +825,9 @@ namespace Client_App.ViewModels
                                                                     {
                                                                         var str = "Совпадение даты в " + elem.FormNum.Value + " " +
                                                                         elem.Year.Value + " " +
-                                                                        first21.Master.RegNoRep1.Value + " \n" +
-                                                                        first21.Master.ShortJurLicoRep1.Value + " " +
-                                                                        first21.Master.OkpoRep1.Value;
+                                                                        first21.Master.RegNoRep.Value + " \n" +
+                                                                        first21.Master.ShortJurLicoRep.Value + " " +
+                                                                        first21.Master.OkpoRep.Value;
                                                                         var an = await ShowMessageT.Handle(new List<string>()
                                                                         {
                                                                         str,
@@ -913,8 +920,9 @@ namespace Client_App.ViewModels
             StaticConfiguration.DBModel.SaveChanges();
         }
 
-        private async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<IKey> param)
+        private async Task _ChangeForm(object par)
         {
+            var param = par as ObservableCollectionWithItemPropertyChanged<IKey>;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
                 {
@@ -936,8 +944,9 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _ChangeReport(ObservableCollectionWithItemPropertyChanged<IKey> param)
+        private async Task _ChangeReport(object par)
         {
+            var param = par as ObservableCollectionWithItemPropertyChanged<IKey>;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
                 {
@@ -958,8 +967,9 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _DeleteForm(IEnumerable param)
+        private async Task _DeleteForm(object par)
         {
+            var param = par as IEnumerable;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить отчет?", "Да", "Нет" });
@@ -986,8 +996,9 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DeleteReport(IEnumerable param)
+        private async Task _DeleteReport(object par)
         {
+            var param = par as IEnumerable;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить организацию?", "Да", "Нет" });
@@ -1530,8 +1541,9 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _Print_Excel_Export(ObservableCollectionWithItemPropertyChanged<IKey> forms)
+        private async Task _Print_Excel_Export(object par)
         {
+            var forms = par as ObservableCollectionWithItemPropertyChanged<IKey>;
             try
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -1601,8 +1613,9 @@ namespace Client_App.ViewModels
 
             }
         }
-        private async Task _Excel_Export(ObservableCollectionWithItemPropertyChanged<IKey> forms)
+        private async Task _Excel_Export(object par)
         {
+            var forms = par as ObservableCollectionWithItemPropertyChanged<IKey>;
             try
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -1780,8 +1793,9 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _All_Excel_Export(string param)
+        private async Task _All_Excel_Export(object par)
         {
+            var param = par as string;
             try
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

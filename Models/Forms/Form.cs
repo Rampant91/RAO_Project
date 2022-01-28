@@ -8,7 +8,7 @@ using OfficeOpenXml;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : INotifyPropertyChanged,IKey, INumberInOrder
+    public abstract class Form : INotifyPropertyChanged,IKey, INumberInOrder,IDataGridColumn
     {
         public int Id { get; set; }
         [NotMapped]
@@ -174,6 +174,13 @@ namespace Models.Abstracts
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             return 0;
+        }
+        #endregion
+
+        #region IDataGridColumn
+        public virtual DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
         }
         #endregion
     }
