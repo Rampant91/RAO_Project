@@ -34,13 +34,16 @@ namespace Client_App.ViewModels
     {
         private DBObservable _local_Reports = new();
 
+        System.Timers.Timer tm = new System.Timers.Timer(5000);
+
         public MainWindowVM()
         {
-
-        }
-
-        public void Init()
-        {
+            //tm.Elapsed += (x, y) =>
+            //{
+            //    GC.Collect(1000, GCCollectionMode.Forced);
+            //};
+            //tm.AutoReset = true;
+            //tm.Start();
             string system = "";
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -60,7 +63,6 @@ namespace Client_App.ViewModels
             {
                 File.Delete(file);
             }
-            OnStartProgressBar = 10;
 
             var a = Spravochniks.SprRadionuclids;
             var b = Spravochniks.SprTypesToRadionuclids;
@@ -97,9 +99,8 @@ namespace Client_App.ViewModels
                 var yu = dbm.Database.GetPendingMigrations();
                 dbm.Database.Migrate();
             }
-            OnStartProgressBar +=10;
+
             dbm.LoadTables();
-            OnStartProgressBar +=50;
             if (dbm.DBObservableDbSet.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
 
             foreach (var item in dbm.DBObservableDbSet)
@@ -108,7 +109,7 @@ namespace Client_App.ViewModels
                 {
                     if (it.Master_DB.FormNum_DB != "")
                     {
-                        if (it.Master_DB.Rows10.Count == 0)
+                        if (it.Master_DB.Rows10.Count==0)
                         {
                             var ty1 = (Form10)FormCreator.Create("1.0");
                             ty1.NumberInOrder_DB = 1;
@@ -131,7 +132,7 @@ namespace Client_App.ViewModels
             }
 
             dbm.SaveChanges();
-            OnStartProgressBar += 10;
+
             Local_Reports = dbm.DBObservableDbSet.Local.First();
 
             foreach (Reports item in Local_Reports.Reports_Collection)
@@ -150,13 +151,12 @@ namespace Client_App.ViewModels
             }
 
             dbm.SaveChanges();
-            OnStartProgressBar += 10;
 
             Local_Reports.PropertyChanged += Local_ReportsChanged;
 
             AddSort = ReactiveCommand.Create<string>(_AddSort);
 
-            AddReport = ReactiveCommand.CreateFromTask<object>(_AddReport);
+            AddReport = ReactiveCommand.CreateFromTask<string>(_AddReport);
             AddForm = ReactiveCommand.CreateFromTask<string>(_AddForm);
 
             ImportForm =
@@ -166,13 +166,13 @@ namespace Client_App.ViewModels
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ExportForm);
 
             ChangeForm =
-                ReactiveCommand.CreateFromTask<object>(_ChangeForm);
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ChangeForm);
             ChangeReport =
-                ReactiveCommand.CreateFromTask<object>(_ChangeReport);
+                ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_ChangeReport);
             DeleteForm =
-                ReactiveCommand.CreateFromTask<object>(_DeleteForm);
+                ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteForm);
             DeleteReport =
-                ReactiveCommand.CreateFromTask<object>(_DeleteReport);
+                ReactiveCommand.CreateFromTask<IEnumerable>(_DeleteReport);
 
             Excel_Export =
                 ReactiveCommand.CreateFromTask<ObservableCollectionWithItemPropertyChanged<IKey>>(_Excel_Export);
@@ -182,27 +182,13 @@ namespace Client_App.ViewModels
             ShowDialog = new Interaction<ChangeOrCreateVM, object>();
             ShowMessage = new Interaction<string, string>();
             ShowMessageT = new Interaction<List<string>, string>();
-            OnStartProgressBar = 100;
 
         }
 
-        private double _OnStartProgressBar = 0;
-        public double OnStartProgressBar {
-            get => _OnStartProgressBar;
-            set
-            {
-                if(_OnStartProgressBar!=value)
-                {
-                    _OnStartProgressBar = value;
-                    NotifyPropertyChanged(nameof(OnStartProgressBar));
-                }
-            }
-        }
+        public Interaction<ChangeOrCreateVM, object> ShowDialog { get; }
+        public Interaction<string, string> ShowMessage { get; }
 
-        public Interaction<ChangeOrCreateVM, object> ShowDialog { get; private set; }
-        public Interaction<string, string> ShowMessage { get; private set; }
-
-        public Interaction<List<string>, string> ShowMessageT { get; private set; }
+        public Interaction<List<string>, string> ShowMessageT { get; }
 
         private IEnumerable<Reports> _selectedReports = new ObservableCollectionWithItemPropertyChanged<Reports>();
         public IEnumerable<Reports> SelectedReports
@@ -231,24 +217,24 @@ namespace Client_App.ViewModels
             }
         }
 
-        public ReactiveCommand<Unit, Unit> OpenSettings { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenSettings { get; }
 
-        public ReactiveCommand<string, Unit> AddSort { get; private set; }
+        public ReactiveCommand<string, Unit> AddSort { get; }
 
-        public ReactiveCommand<string, Unit> ChooseForm { get; private set; }
+        public ReactiveCommand<string, Unit> ChooseForm { get; }
 
-        public ReactiveCommand<object, Unit> AddReport { get; private set; }
-        public ReactiveCommand<string, Unit> AddForm { get; private set; }
+        public ReactiveCommand<string, Unit> AddReport { get; }
+        public ReactiveCommand<string, Unit> AddForm { get; }
 
-        public ReactiveCommand<Unit, Unit> ImportForm { get; private set; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ExportForm { get; private set; }
-        public ReactiveCommand<object,Unit> ChangeForm { get; private set; }
-        public ReactiveCommand<object, Unit> ChangeReport { get; private set; }
-        public ReactiveCommand<object, Unit> DeleteForm { get; private set; }
-        public ReactiveCommand<object, Unit> DeleteReport { get; private set; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; private set; }
-        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Print_Excel_Export { get; private set; }
-        public ReactiveCommand<string, Unit> All_Excel_Export { get; private set; }
+        public ReactiveCommand<Unit, Unit> ImportForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ExportForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeForm { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> ChangeReport { get; }
+        public ReactiveCommand<IEnumerable, Unit> DeleteForm { get; }
+        public ReactiveCommand<IEnumerable, Unit> DeleteReport { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Excel_Export { get; }
+        public ReactiveCommand<ObservableCollectionWithItemPropertyChanged<IKey>, Unit> Print_Excel_Export { get; }
+        public ReactiveCommand<string, Unit> All_Excel_Export { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -295,9 +281,8 @@ namespace Client_App.ViewModels
                 int y = 10;
             }
         }
-        private async Task _AddReport(object arg)
+        private async Task _AddReport(string param)
         {
-            var param = (string)arg;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 if (param.Split('.')[1] == "0")
@@ -307,6 +292,8 @@ namespace Client_App.ViewModels
                     ChangeOrCreateVM frm = new(param, Local_Reports);
                     await ShowDialog.Handle(frm);
                     t.SelectedReports = tmp;
+
+
                 }
             }
         }
@@ -390,8 +377,8 @@ namespace Client_App.ViewModels
                                           {
                                               if (rp.Master.Rows20.Count > 0)
                                               {
-                                                  filename2 += rp.Master.RegNoRep.Value;
-                                                  filename2 += rp.Master.OkpoRep.Value;
+                                                  filename2 += rp.Master.RegNoRep1.Value;
+                                                  filename2 += rp.Master.OkpoRep1.Value;
 
                                                   filename2 += "_" + rep.CorrectionNumber_DB;
                                                   filename2 += "_" + rep.FormNum_DB;
@@ -479,6 +466,7 @@ namespace Client_App.ViewModels
                     }
                 };
                 dial.Filters = new List<FileDialogFilter>() { filter };
+
                 var answ = await dial.ShowAsync(desktop.MainWindow);
                 if (answ != null)
                 {
@@ -549,13 +537,22 @@ namespace Client_App.ViewModels
                                                        where (item.Master.Rows10[0].Okpo_DB != "") &&
                                                        (t.Master.Rows10[0].Okpo_DB != "") &&
                                                        (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
-                                                       (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB)
+                                                       (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB) &&
+                                                       (item.Master.Rows10[0].RegNo_DB != "") &&
+                                                       (t.Master.Rows10[0].RegNo_DB != "") &&
+                                                       (t.Master.Rows10[0].RegNo_DB == item.Master.Rows10[0].RegNo_DB) &&
+                                                       (t.Master.Rows10[1].RegNo_DB == item.Master.Rows10[1].RegNo_DB)
                                                        select t;
                                             var tb21 = from Reports t in Local_Reports.Reports_Collection20
                                                        where (item.Master.Rows20[0].Okpo_DB != "") &&
                                                        (t.Master.Rows20[0].Okpo_DB != "") &&
                                                        (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
-                                                       (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB)
+                                                       (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB) &&
+                                                       (item.Master.Rows20[0].RegNo_DB != "") &&
+                                                       (t.Master.Rows20[0].RegNo_DB != "") &&
+                                                       (t.Master.Rows20[0].RegNo_DB == item.Master.Rows20[0].RegNo_DB) &&
+                                                       (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB)
+
                                                        select t;
 
                                             Reports first11 = null;
@@ -574,7 +571,6 @@ namespace Client_App.ViewModels
                                             }
                                             catch
                                             {
-
                                             }
                                             if (item != null)
                                             {
@@ -612,6 +608,7 @@ namespace Client_App.ViewModels
                                             }
                                             if (first11 != null)
                                             {
+                                                var not_in = false;
                                                 foreach (Report it in item.Report_Collection)
                                                 {
                                                     foreach (Note note in it.Notes)
@@ -646,7 +643,7 @@ namespace Client_App.ViewModels
                                                                 }
                                                                 catch (Exception e)
                                                                 {
-                                                                    first11.Report_Collection.Add(it);
+                                                                    //first11.Report_Collection.Add(it);
                                                                     throw e;
                                                                 }
                                                                 if (st_it > en_it)
@@ -655,8 +652,9 @@ namespace Client_App.ViewModels
                                                                     st_it = en_it;
                                                                     en_it = _e;
                                                                 }
-                                                                if (st_elem == st_it && en_elem == en_it)
+                                                                if (st_elem == st_it && en_elem == en_it && it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first11.Master.RegNoRep.Value)
                                                                 {
+                                                                    not_in = true;
                                                                     if (it.CorrectionNumber.Value < elem.CorrectionNumber.Value)
                                                                     {
                                                                         var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
@@ -674,7 +672,7 @@ namespace Client_App.ViewModels
                                                                         "OK"
                                                                         });
                                                                     }
-                                                                    else
+                                                                    else if (it.CorrectionNumber.Value == elem.CorrectionNumber.Value)
                                                                     {
                                                                         var str = "Совпадение даты в " + elem.FormNum.Value + " " +
                                                                             elem.StartPeriod.Value + "-" +
@@ -698,19 +696,39 @@ namespace Client_App.ViewModels
                                                                             first11.Report_Collection.Remove(elem);
                                                                             first11.Report_Collection.Add(it);
                                                                         }
-                                                                        //if (an == "Дополнить") 
-                                                                        //{
-                                                                        //    first11.Report_Collection.Remove(elem);
+                                                                        if (an == "Дополнить")
+                                                                        {
+                                                                            first11.Report_Collection.Remove(elem);
 
-                                                                        //    it.Rows.AddRange<IKey>(0,elem.Rows.GetEnumerable());
-                                                                        //    it.Notes.AddRange<IKey>(0,elem.Notes);
-                                                                           
-                                                                        //    first11.Report_Collection.Add(it);
-                                                                        //}
+                                                                            it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
+                                                                            it.Notes.AddRange<IKey>(0, elem.Notes);
+
+                                                                            first11.Report_Collection.Add(it);
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        var str = "Форма " +
+                                                                            elem.FormNum.Value +
+                                                                            " с предыдущим номером корректировки №" +
+                                                                            elem.CorrectionNumber.Value +
+                                                                            " будет безвозвратно удалена.\n" +
+                                                                            "Сделайте резервную копию.";
+                                                                        var an = await ShowMessageT.Handle(new List<string>() { 
+                                                                        str,
+                                                                        "Загрузить новую",
+                                                                        "Отмена"
+                                                                        });
+                                                                        if (an == "Загрузить новую")
+                                                                        {
+                                                                            first11.Report_Collection.Remove(elem);
+                                                                            first11.Report_Collection.Add(it);
+                                                                        }
                                                                     }
                                                                 }
-                                                                if (st_elem < st_it && st_it < en_elem || st_elem < en_it && en_it < en_elem)
+                                                                if ((st_elem < st_it && st_it < en_elem || st_elem < en_it && en_it < en_elem )&& it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first11.Master.RegNoRep.Value)
                                                                 {
+                                                                    not_in = true;
                                                                     var str = "Пересечение даты в " + elem.FormNum.Value + " " +
                                                                         elem.StartPeriod.Value + "-" +
                                                                         elem.EndPeriod.Value + " \n" +
@@ -731,18 +749,38 @@ namespace Client_App.ViewModels
                                                             }
                                                             catch { }
                                                         }
+                                                        if (!not_in)
+                                                        {
+                                                            var str = "Загрузить новую форму?";
+                                                            var an = await ShowMessageT.Handle(new List<string>()
+                                                                    {
+                                                                    str,
+                                                                    "Да",
+                                                                    "Нет"
+                                                                    });
+                                                            if (an == "Да")
+                                                            {
+                                                                first11.Report_Collection.Add(it);
+                                                                //Local_Reports.Reports_Collection.Add(item);
+                                                            }
+                                                            not_in = false;
+                                                            first11.Sort();
+                                                        }
                                                     }
                                                     else 
                                                     {
                                                         first11.Report_Collection.Add(it);
                                                         first11.Sort();
                                                     }
+                                                   
                                                 }
+                                                
                                             }
                                             else
                                             {
                                                 if (first21 != null)
                                                 {
+                                                    var not_in = false;
                                                     foreach (Report it in item.Report_Collection)
                                                     {
                                                         foreach (Note note in it.Notes)
@@ -752,35 +790,89 @@ namespace Client_App.ViewModels
                                                                 note.Order = GetNumberInOrder(it.Notes);
                                                             }
                                                         }
-
                                                         var lst = first21.Report_Collection.ToList<Report>();
                                                         if (lst.Count != 0)
                                                         {
                                                             foreach (var elem in lst)
                                                             {
-                                                                if (elem.Year == it.Year)
+                                                                if (elem.Year == it.Year && it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first21.Master.RegNoRep.Value)
                                                                 {
-                                                                    var str = "Совпадение даты в " + elem.FormNum.Value + " " +
-                                                                        elem.Year.Value + " " +
-                                                                        first21.Master.RegNoRep.Value + " \n" +
-                                                                        first21.Master.ShortJurLicoRep.Value + " " +
-                                                                        first21.Master.OkpoRep.Value;
-                                                                    var an = await ShowMessageT.Handle(new List<string>()
-                                                            {
-                                                                str,
-                                                                "Заменить",
-                                                                "Сохранить оба",
-                                                                "Отменить" });
-                                                                    if (an == "Сохранить оба")
+                                                                    not_in = true;
+                                                                    if (it.CorrectionNumber.Value < elem.CorrectionNumber.Value)
                                                                     {
-                                                                        first21.Report_Collection.Add(it);
+                                                                        var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
+                                                                            it.CorrectionNumber.Value + ",\n" +
+                                                                            "при текущем значении корректировки - " +
+                                                                            elem.CorrectionNumber.Value + ",\n" +
+                                                                            "в форме " + elem.FormNum.Value + ", " +
+                                                                            "с датой " + elem.Year.Value + " \n" +
+                                                                            first21.Master.RegNoRep.Value + " " +
+                                                                            first21.Master.ShortJurLicoRep.Value + " " +
+                                                                            first21.Master.OkpoRep.Value;
+                                                                        var an = await ShowMessageT.Handle(new List<string>()
+                                                                        {str,
+                                                                        "OK"
+                                                                        });
                                                                     }
-                                                                    if (an == "Заменить")
+                                                                    else if (it.CorrectionNumber.Value == elem.CorrectionNumber.Value)
                                                                     {
-                                                                        first21.Report_Collection.Remove(elem);
-                                                                        first21.Report_Collection.Add(it);
+                                                                        var str = "Совпадение даты в " + elem.FormNum.Value + " " +
+                                                                        elem.Year.Value + " " +
+                                                                        first21.Master.RegNoRep1.Value + " \n" +
+                                                                        first21.Master.ShortJurLicoRep1.Value + " " +
+                                                                        first21.Master.OkpoRep1.Value;
+                                                                        var an = await ShowMessageT.Handle(new List<string>()
+                                                                        {
+                                                                        str,
+                                                                        "Заменить",
+                                                                        "Сохранить оба",
+                                                                        "Отменить" });
+                                                                        if (an == "Сохранить оба")
+                                                                        {
+                                                                            first21.Report_Collection.Add(it);
+                                                                        }
+                                                                        if (an == "Заменить")
+                                                                        {
+                                                                            first21.Report_Collection.Remove(elem);
+                                                                            first21.Report_Collection.Add(it);
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        var str = "Форма " +
+                                                                            elem.FormNum.Value +
+                                                                            " с предыдущим номером корректировки №" +
+                                                                            elem.CorrectionNumber.Value +
+                                                                            " будет безвозвратно удалена.\n" +
+                                                                            "Сделайте резервную копию.";
+                                                                        var an = await ShowMessageT.Handle(new List<string>() {
+                                                                        str,
+                                                                        "Загрузить новую",
+                                                                        "Отмена"
+                                                                        });
+                                                                        if (an == "Загрузить новую")
+                                                                        {
+                                                                            first21.Report_Collection.Remove(elem);
+                                                                            first21.Report_Collection.Add(it);
+                                                                        }
                                                                     }
                                                                 }
+                                                                first21.Sort();
+                                                            }
+                                                            if (!not_in)
+                                                            {
+                                                                var str = "Загрузить новую форму?";
+                                                                var an = await ShowMessageT.Handle(new List<string>()
+                                                                    {
+                                                                    str,
+                                                                    "Да",
+                                                                    "Нет"
+                                                                    });
+                                                                if (an == "Да")
+                                                                {
+                                                                    first21.Report_Collection.Add(it);
+                                                                }
+                                                                not_in = false;
                                                                 first21.Sort();
                                                             }
                                                         }
@@ -821,9 +913,8 @@ namespace Client_App.ViewModels
             StaticConfiguration.DBModel.SaveChanges();
         }
 
-        private async Task _ChangeForm(object arg)
+        private async Task _ChangeForm(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
-            var param = (ObservableCollectionWithItemPropertyChanged<IKey>)arg;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
                 {
@@ -845,9 +936,8 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _ChangeReport(object arg)
+        private async Task _ChangeReport(ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
-            var param = (ObservableCollectionWithItemPropertyChanged<IKey>)arg;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 if (param != null)
                 {
@@ -868,9 +958,8 @@ namespace Client_App.ViewModels
                 }
         }
 
-        private async Task _DeleteForm(object arg)
+        private async Task _DeleteForm(IEnumerable param)
         {
-            var param = (IEnumerable)arg;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить отчет?", "Да", "Нет" });
@@ -889,6 +978,7 @@ namespace Client_App.ViewModels
                             }
                         }
                         t.SelectedReports = tmp;
+
                     }
 
                     await StaticConfiguration.DBModel.SaveChangesAsync();
@@ -896,12 +986,11 @@ namespace Client_App.ViewModels
             }
         }
 
-        private async Task _DeleteReport(object arg)
+        private async Task _DeleteReport(IEnumerable param)
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var answ = (string)await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить организацию?", "Да", "Нет" });
-                var param = (IEnumerable)arg;
                 if (answ == "Да")
                 {
                     if (param != null)

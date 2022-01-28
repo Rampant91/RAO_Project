@@ -8,7 +8,7 @@ using OfficeOpenXml;
 
 namespace Models.Abstracts
 {
-    public abstract class Form : INotifyPropertyChanged,IKey,IDataGridColumn
+    public abstract class Form : INotifyPropertyChanged,IKey, INumberInOrder
     {
         public int Id { get; set; }
         [NotMapped]
@@ -64,11 +64,16 @@ namespace Models.Abstracts
             }
         }
 
+        public void SetOrder(long index) 
+        {
+            NumberInOrder_DB = (int)index;
+        }
+
         #region NumberInOrder
         public int NumberInOrder_DB { get; set; } = 0;
 
         [NotMapped]
-        [Attributes.Form_Property("null-1","№ п/п","1")]
+        [Attributes.Form_Property("№ п/п")]
         public RamAccess<int> NumberInOrder
         {
             get
@@ -170,10 +175,6 @@ namespace Models.Abstracts
         {
             return 0;
         }
-        #endregion
-
-        #region IDataGridColumn
-        public abstract DataGridColumns GetColumnStructure(string param);
         #endregion
     }
 }

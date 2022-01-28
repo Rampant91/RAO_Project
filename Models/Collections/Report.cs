@@ -65,6 +65,8 @@ namespace Models.Collections
             Init();
         }
 
+        public void SetOrder(long index) { }
+
         public long Order
         {
             get
