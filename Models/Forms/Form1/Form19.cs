@@ -357,47 +357,47 @@ namespace Models
         {
             #region NumberInOrder (1)
             DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
+            NumberInOrderR.SetSizeColToAllLevels(88);
             NumberInOrderR.Binding = nameof(Form.NumberInOrder);
             #endregion
             #region OperationCode (2)
             DataGridColumns OperationCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form19.OperationCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            OperationCodeR.SetSizeColToAllLevels(50);
+            OperationCodeR.SetSizeColToAllLevels(88);
             OperationCodeR.Binding = nameof(Form19.OperationCode);
             #endregion
             #region OperationDate (3)
             DataGridColumns OperationDateR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form19.OperationDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            OperationDateR.SetSizeColToAllLevels(50);
+            OperationDateR.SetSizeColToAllLevels(88);
             OperationDateR.Binding = nameof(Form19.OperationDate);
             #endregion
             #region DocumentVid (4)
             DataGridColumns DocumentVidR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form19.DocumentVid)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            DocumentVidR.SetSizeColToAllLevels(50);
+            DocumentVidR.SetSizeColToAllLevels(88);
             DocumentVidR.Binding = nameof(Form19.DocumentVid);
             #endregion
             #region DocumentNumber (5)
             DataGridColumns DocumentNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form19.DocumentNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            DocumentNumberR.SetSizeColToAllLevels(50);
+            DocumentNumberR.SetSizeColToAllLevels(103);
             DocumentNumberR.Binding = nameof(Form19.DocumentNumber);
             #endregion
             #region DocumentDate (6)
             DataGridColumns DocumentDateR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form19.DocumentDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            DocumentDateR.SetSizeColToAllLevels(50);
+            DocumentDateR.SetSizeColToAllLevels(88);
             DocumentDateR.Binding = nameof(Form19.DocumentDate);
             #endregion
             #region CodeTypeAccObject (7)
             DataGridColumns CodeTypeAccObjectR = ((Attributes.Form_PropertyAttribute)typeof(Form19).GetProperty(nameof(Form19.CodeTypeAccObject)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            CodeTypeAccObjectR.SetSizeColToAllLevels(50);
+            CodeTypeAccObjectR.SetSizeColToAllLevels(163);
             CodeTypeAccObjectR.Binding = nameof(Form19.CodeTypeAccObject);
             #endregion
             #region Radionuclids (8)
             DataGridColumns RadionuclidsR = ((Attributes.Form_PropertyAttribute)typeof(Form19).GetProperty(nameof(Form19.Radionuclids)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            RadionuclidsR.SetSizeColToAllLevels(50);
+            RadionuclidsR.SetSizeColToAllLevels(125);
             RadionuclidsR.Binding = nameof(Form19.Radionuclids);
             #endregion
             #region Activity (9)
             DataGridColumns ActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form19).GetProperty(nameof(Form19.Activity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            ActivityR.SetSizeColToAllLevels(50);
+            ActivityR.SetSizeColToAllLevels(125);
             ActivityR.Binding = nameof(Form19.Activity);
             #endregion
             return NumberInOrderR;
