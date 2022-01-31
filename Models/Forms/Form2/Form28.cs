@@ -48,7 +48,7 @@ namespace Models
         #region WasteSourceName
         public string WasteSourceName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Наименование, номер выпуска сточных вод","2")]
+        [Attributes.Form_Property("null-2","Наименование, номер выпуска сточных вод","2")]
         public RamAccess<string> WasteSourceName
         {
             get
@@ -253,7 +253,7 @@ namespace Models
         //AllowedWasteRemovalVolume property
         #region AllowedWasteRemovalVolume
         public string AllowedWasteRemovalVolume_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Допустимый объем водоотведения за год, тыс. куб. м")]
+        [Attributes.Form_Property("null-3","Допустимый объем водоотведения за год, тыс. куб. м", "6")]
         public RamAccess<string> AllowedWasteRemovalVolume
         {
             get
@@ -335,7 +335,7 @@ namespace Models
         //RemovedWasteVolume property
         #region RemovedWasteVolume
         public string RemovedWasteVolume_DB { get; set; } = null; [NotMapped]
-        [Attributes.Form_Property("","Отведено за отчетный период, тыс. куб. м","7")]
+        [Attributes.Form_Property("null-4","Отведено за отчетный период, тыс. куб. м","7")]
         public RamAccess<string> RemovedWasteVolume
         {
             get
@@ -451,34 +451,40 @@ namespace Models
             NumberInOrderR.Binding = nameof(Form.NumberInOrder);
             #endregion
             #region WasteSourceName (2)
-            DataGridColumns WasteSourceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form28.WasteSourceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns WasteSourceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.WasteSourceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             WasteSourceNameR.SetSizeColToAllLevels(50);
             WasteSourceNameR.Binding = nameof(Form28.WasteSourceName);
+            NumberInOrderR += WasteSourceNameR;
             #endregion
             #region WasteRecieverName (3)
-            DataGridColumns WasteRecieverNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form28.WasteRecieverName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns WasteRecieverNameR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.WasteRecieverName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             WasteRecieverNameR.SetSizeColToAllLevels(50);
             WasteRecieverNameR.Binding = nameof(Form28.WasteRecieverName);
+            NumberInOrderR += WasteRecieverNameR;
             #endregion
             #region RecieverTypeCode (4)
-            DataGridColumns RecieverTypeCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form28.RecieverTypeCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns RecieverTypeCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.RecieverTypeCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             RecieverTypeCodeR.SetSizeColToAllLevels(50);
             RecieverTypeCodeR.Binding = nameof(Form28.RecieverTypeCode);
+            NumberInOrderR += RecieverTypeCodeR;
             #endregion
             #region PoolDistrictName (5)
-            DataGridColumns PoolDistrictNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form28.PoolDistrictName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns PoolDistrictNameR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.PoolDistrictName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             PoolDistrictNameR.SetSizeColToAllLevels(50);
             PoolDistrictNameR.Binding = nameof(Form28.PoolDistrictName);
+            NumberInOrderR += PoolDistrictNameR;
             #endregion
             #region AllowedWasteRemovalVolume (6)
-            DataGridColumns AllowedWasteRemovalVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form28.AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns AllowedWasteRemovalVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             AllowedWasteRemovalVolumeR.SetSizeColToAllLevels(50);
             AllowedWasteRemovalVolumeR.Binding = nameof(Form28.AllowedWasteRemovalVolume);
+            NumberInOrderR += AllowedWasteRemovalVolumeR;
             #endregion
             #region RemovedWasteVolume (7)
-            DataGridColumns RemovedWasteVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form28.RemovedWasteVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns RemovedWasteVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.RemovedWasteVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             RemovedWasteVolumeR.SetSizeColToAllLevels(50);
             RemovedWasteVolumeR.Binding = nameof(Form28.RemovedWasteVolume);
+            NumberInOrderR += RemovedWasteVolumeR;
             #endregion
             return NumberInOrderR;
         }

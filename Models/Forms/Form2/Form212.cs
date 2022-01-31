@@ -46,7 +46,7 @@ namespace Models
         #region  OperationCode
         public short? OperationCode_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("","Код операции","2")]
+        [Attributes.Form_Property("null-2","Код операции","2")]
         public RamAccess<short?> OperationCode
         {
             get
@@ -101,7 +101,7 @@ namespace Models
         #region 
         public short? ObjectTypeCode_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("","Код типа объектов учета","3")]
+        [Attributes.Form_Property("null-3","Код типа объектов учета","3")]
         public RamAccess<short?> ObjectTypeCode
         {
             get
@@ -303,7 +303,7 @@ namespace Models
         #region  ProviderOrRecieverOKPO
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","ОКПО поставщика/получателя","6")]
+        [Attributes.Form_Property("null-4","ОКПО поставщика/получателя","6")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -435,29 +435,34 @@ namespace Models
             NumberInOrderR.Binding = nameof(Form.NumberInOrder);
             #endregion
             #region OperationCode (2)
-            DataGridColumns OperationCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form212.OperationCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns OperationCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form212).GetProperty(nameof(Form212.OperationCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             OperationCodeR.SetSizeColToAllLevels(50);
             OperationCodeR.Binding = nameof(Form212.OperationCode);
+            NumberInOrderR += OperationCodeR;
             #endregion
             #region ObjectTypeCode (3)
-            DataGridColumns ObjectTypeCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form212.ObjectTypeCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns ObjectTypeCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form212).GetProperty(nameof(Form212.ObjectTypeCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             ObjectTypeCodeR.SetSizeColToAllLevels(50);
             ObjectTypeCodeR.Binding = nameof(Form212.ObjectTypeCode);
+            NumberInOrderR += ObjectTypeCodeR;
             #endregion
             #region Radionuclids (4)
-            DataGridColumns RadionuclidsR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form212.Radionuclids)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns RadionuclidsR = ((Attributes.Form_PropertyAttribute)typeof(Form212).GetProperty(nameof(Form212.Radionuclids)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             RadionuclidsR.SetSizeColToAllLevels(50);
             RadionuclidsR.Binding = nameof(Form212.Radionuclids);
+            NumberInOrderR += RadionuclidsR;
             #endregion
             #region Activity (5)
-            DataGridColumns ActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form212.Activity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns ActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form212).GetProperty(nameof(Form212.Activity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             ActivityR.SetSizeColToAllLevels(50);
             ActivityR.Binding = nameof(Form212.Activity);
+            NumberInOrderR += ActivityR;
             #endregion
             #region ProviderOrRecieverOKPO (6)
-            DataGridColumns ProviderOrRecieverOKPOR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form212.ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns ProviderOrRecieverOKPOR = ((Attributes.Form_PropertyAttribute)typeof(Form212).GetProperty(nameof(Form212.ProviderOrRecieverOKPO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             ProviderOrRecieverOKPOR.SetSizeColToAllLevels(50);
             ProviderOrRecieverOKPOR.Binding = nameof(Form212.ProviderOrRecieverOKPO);
+            NumberInOrderR += ProviderOrRecieverOKPOR;
             #endregion
             return NumberInOrderR;
         }
