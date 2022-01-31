@@ -41,7 +41,7 @@ namespace Models
             NameIOU_Validation(NameIOU);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(CreationDate.HasErrors ||
@@ -63,7 +63,7 @@ namespace Models
         #region PassportNumber
         public string PassportNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на изделие из обедненного урана", "номер паспорта", "4")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на изделие из обедненного урана", "номер паспорта", "4")]
         public RamAccess<string> PassportNumber
         {
             get
@@ -115,7 +115,7 @@ namespace Models
         #region NameIOU
         public string NameIOU_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на изделие из обедненного урана", "наименование", "5")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на изделие из обедненного урана", "наименование", "5")]
         public RamAccess<string> NameIOU
         {
             get
@@ -161,7 +161,7 @@ namespace Models
         #region FactoryNumber
         public string FactoryNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на изделие из обедненного урана", "номер", "6")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на изделие из обедненного урана", "номер", "6")]
         public RamAccess<string> FactoryNumber
         {
             get
@@ -207,7 +207,7 @@ namespace Models
         #region Mass
         public string Mass_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на изделие из обедненного урана", "масса обедненного урана, кг", "7")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на изделие из обедненного урана", "масса обедненного урана, кг", "7")]
         public RamAccess<string> Mass
         {
             get
@@ -292,7 +292,7 @@ namespace Models
         #region CreatorOKPO
         public string CreatorOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на изделие из обедненного урана", "код ОКПО изготовителя", "8")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на изделие из обедненного урана", "код ОКПО изготовителя", "8")]
         public RamAccess<string> CreatorOKPO
         {
             get
@@ -366,7 +366,7 @@ namespace Models
         #region CreationDate
         public string CreationDate_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на изделие из обедненного урана", "дата выпуска", "9")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на изделие из обедненного урана", "дата выпуска", "9")]
         public RamAccess<string> CreationDate
         {
             get
@@ -445,7 +445,7 @@ namespace Models
         #region SignedServicePeriod
         public string SignedServicePeriod_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на изделие из обедненного урана", "НСС, мес.", "10")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на изделие из обедненного урана", "НСС, мес.", "10")]
         public RamAccess<string> SignedServicePeriod
         {
             get
@@ -503,7 +503,7 @@ namespace Models
         #region PropertyCode
         public byte? PropertyCode_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Право собственности на ИОУ","код формы собственности", "11")]
+        [Attributes.Form_Property(true,"Право собственности на ИОУ","код формы собственности", "11")]
         public RamAccess<byte?> PropertyCode
         {
             get
@@ -556,7 +556,7 @@ namespace Models
         #region Owner
         public string Owner_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Право собственности на ИОУ", "код ОКПО правообладателя", "12")]
+        [Attributes.Form_Property(true,"Право собственности на ИОУ", "код ОКПО правообладателя", "12")]
         public RamAccess<string> Owner
         {
             get
@@ -627,7 +627,7 @@ namespace Models
         #region ProviderOrRecieverOKPO
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Код ОКПО","поставщика или получателя", "16")]
+        [Attributes.Form_Property(true,"Код ОКПО","поставщика или получателя", "16")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -712,7 +712,7 @@ namespace Models
         #region TransporterOKPO
         public string TransporterOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Код ОКПО", "перевозчика", "17")]
+        [Attributes.Form_Property(true,"Код ОКПО", "перевозчика", "17")]
         public RamAccess<string> TransporterOKPO
         {
             get
@@ -815,7 +815,7 @@ namespace Models
         #region PackName
         public string PackName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Прибор (установка), УКТ или иная упаковка","наименование", "18")]
+        [Attributes.Form_Property(true,"Прибор (установка), УКТ или иная упаковка","наименование", "18")]
         public RamAccess<string> PackName
         {
             get
@@ -866,7 +866,7 @@ namespace Models
         #region PackType
         public string PackType_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Прибор (установка), УКТ или иная упаковка", "тип", "19")]
+        [Attributes.Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "тип", "19")]
         public RamAccess<string> PackType
         {
             get
@@ -918,7 +918,7 @@ namespace Models
         #region PackNumber
         public string PackNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Прибор (установка), УКТ или иная упаковка", "номер", "20")]
+        [Attributes.Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "номер", "20")]
         public RamAccess<string> PackNumber
         {
             get

@@ -41,7 +41,7 @@ namespace Models
             MassRefined_Validation(MassRefined);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(CodeOYAT.HasErrors||
@@ -65,7 +65,7 @@ namespace Models
         //CodeOYAT property
         #region  CodeOYAT
         public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("","Код ОЯТ","2")]
+        [Attributes.Form_Property(true,"","Код ОЯТ","2")]
         public RamAccess<string> CodeOYAT
         {
             get
@@ -117,7 +117,7 @@ namespace Models
         //FcpNumber property
         #region  FcpNumber
         public string FcpNumber_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("","Номер мероприятия ФЦП","3")]
+        [Attributes.Form_Property(true,"","Номер мероприятия ФЦП","3")]
         public RamAccess<string> FcpNumber
         {
             get
@@ -160,7 +160,7 @@ namespace Models
         //MassCreated Property
         #region  MassCreated
         public string MassCreated_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Поставлено на учет в организации","масса, т","4")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","масса, т","4")]
         public RamAccess<string> MassCreated
         {
             get
@@ -245,7 +245,7 @@ namespace Models
         #region  QuantityCreated
         public string QuantityCreated_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Поставлено на учет в организации","количество, шт.","5")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество, шт.","5")]
         public RamAccess<string> QuantityCreated
         {
             get
@@ -307,7 +307,7 @@ namespace Models
         #region  MassFromAnothers
         public string MassFromAnothers_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Поставлено на учет в организации", "масса, т","6")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации", "масса, т","6")]
         public RamAccess<string> MassFromAnothers
         {
             get
@@ -391,7 +391,7 @@ namespace Models
         //QuantityFromAnothers property
         #region  QuantityFromAnothers
         public string QuantityFromAnothers_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Поставлено на учет в организации", "количество, шт.","7")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации", "количество, шт.","7")]
         public RamAccess<string> QuantityFromAnothers
         {
             get
@@ -452,7 +452,7 @@ namespace Models
         //MassFromAnothersImported Property
         #region  MassFromAnothersImported
         public string MassFromAnothersImported_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Поставлено на учет в организации", "масса, т","8")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации", "масса, т","8")]
         public RamAccess<string> MassFromAnothersImported
         {
             get
@@ -536,7 +536,7 @@ namespace Models
         //QuantityFromAnothersImported property
         #region  QuantityFromAnothersImported
         public string QuantityFromAnothersImported_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Поставлено на учет в организации","количество, шт.","9")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество, шт.","9")]
         public RamAccess<string> QuantityFromAnothersImported
         {
             get
@@ -597,7 +597,7 @@ namespace Models
         //MassAnotherReasons Property
         #region  MassAnotherReasons
         public string MassAnotherReasons_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Поставлено на учет в организации","масса, т","10")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","масса, т","10")]
         public RamAccess<string> MassAnotherReasons
         {
             get
@@ -682,7 +682,7 @@ namespace Models
         #region  QuantityAnotherReasons
         public string QuantityAnotherReasons_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Поставлено на учет в организации","количество, шт.","11")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество, шт.","11")]
         public RamAccess<string> QuantityAnotherReasons
         {
             get
@@ -744,7 +744,7 @@ namespace Models
         #region  MassTransferredToAnother
         public string MassTransferredToAnother_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Снято с учета в организации","масса, т","12")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","масса, т","12")]
         public RamAccess<string> MassTransferredToAnother
         {
             get
@@ -828,7 +828,7 @@ namespace Models
         //QuantityTransferredToAnother property
         #region  QuantityTransferredToAnother
         public string QuantityTransferredToAnother_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Снято с учета в организации","количество, шт.","13")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","количество, шт.","13")]
         public RamAccess<string> QuantityTransferredToAnother
         {
             get
@@ -889,7 +889,7 @@ namespace Models
         //MassRefined Property
         #region  MassRefined
         public string MassRefined_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Снято с учета в организации","масса, т","14")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","масса, т","14")]
         public RamAccess<string> MassRefined
         {
             get
@@ -973,7 +973,7 @@ namespace Models
         //QuantityRefined property
         #region  QuantityRefined
         public string QuantityRefined_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Снято с учета в организации","количество, шт.","15")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","количество, шт.","15")]
         public RamAccess<string> QuantityRefined
         {
             get
@@ -1034,7 +1034,7 @@ namespace Models
         //MassRemovedFromAccount Property
         #region  MassRemovedFromAccount
         public string MassRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Снято с учета в организации","масса, т","16")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","масса, т","16")]
         public RamAccess<string> MassRemovedFromAccount
         {
             get
@@ -1118,7 +1118,7 @@ namespace Models
         //QuantityRemovedFromAccount property
         #region  QuantityRemovedFromAccount
         public string QuantityRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Снято с учета в организации","количество, шт.","17")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","количество, шт.","17")]
         public RamAccess<string> QuantityRemovedFromAccount
         {
             get

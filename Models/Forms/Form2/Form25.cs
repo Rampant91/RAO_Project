@@ -34,7 +34,7 @@ namespace Models
             AlphaActivity_Validation(AlphaActivity);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(CodeOYAT.HasErrors||
@@ -52,7 +52,7 @@ namespace Models
         #region  StoragePlaceName
         public string StoragePlaceName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения ОЯТ", "наименование, номер","2")]
+        [Attributes.Form_Property(true,"Пункт хранения ОЯТ", "наименование, номер","2")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -99,7 +99,7 @@ namespace Models
         //CodeOYAT property
         #region  CodeOYAT
         public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Наличие на конец отчетного года", "код ОЯТ","4")]
+        [Attributes.Form_Property(true,"Наличие на конец отчетного года", "код ОЯТ","4")]
         public RamAccess<string> CodeOYAT
         {
             get
@@ -151,7 +151,7 @@ namespace Models
         //StoragePlaceCode property
         #region  StoragePlaceCode
         public string StoragePlaceCode_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Пункт хранения ОЯТ", "код","3")]
+        [Attributes.Form_Property(true,"Пункт хранения ОЯТ", "код","3")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -207,7 +207,7 @@ namespace Models
         //FcpNumber property
         #region  FcpNumber
         public string FcpNumber_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Наличие на конец отчетного года", "номер мероприятия ФЦП","5")]
+        [Attributes.Form_Property(true,"Наличие на конец отчетного года", "номер мероприятия ФЦП","5")]
         public RamAccess<string> FcpNumber
         {
             get
@@ -251,7 +251,7 @@ namespace Models
         #region  FuelMass
         public string FuelMass_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наличие на конец отчетного года", "топлива (нетто)","6")]
+        [Attributes.Form_Property(true,"Наличие на конец отчетного года", "топлива (нетто)","6")]
         public RamAccess<string> FuelMass
         {
             get
@@ -335,7 +335,7 @@ namespace Models
         //CellMass property
         #region  CellMass
         public string CellMass_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Наличие на конец отчетного года", "ОТВС(ТВЭЛ, выемной части реактора) брутто","7")]
+        [Attributes.Form_Property(true,"Наличие на конец отчетного года", "ОТВС(ТВЭЛ, выемной части реактора) брутто","7")]
         public RamAccess<string> CellMass
         {
             get
@@ -422,7 +422,7 @@ namespace Models
         //Quantity property
         #region  Quantity
         public int? Quantity_DB { get; set; } = null; [NotMapped]
-        [Attributes.Form_Property("Наличие на конец отчетного года", "количество, шт.","8")]
+        [Attributes.Form_Property(true,"Наличие на конец отчетного года", "количество, шт.","8")]
         public RamAccess<int?> Quantity
         {
             get
@@ -474,7 +474,7 @@ namespace Models
         #region  BetaGammaActivity
         public string BetaGammaActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наличие на конец отчетного года", "бета-, гамма-излучающих нуклидов","10")]
+        [Attributes.Form_Property(true,"Наличие на конец отчетного года", "бета-, гамма-излучающих нуклидов","10")]
         public RamAccess<string> BetaGammaActivity
         {
             get
@@ -565,7 +565,7 @@ namespace Models
         //AlphaActivity property
         #region  AlphaActivity
         public string AlphaActivity_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Наличие на конец отчетного года", "альфа-излучающих нуклидов","9")]
+        [Attributes.Form_Property(true,"Наличие на конец отчетного года", "альфа-излучающих нуклидов","9")]
         public RamAccess<string> AlphaActivity
         {
             get

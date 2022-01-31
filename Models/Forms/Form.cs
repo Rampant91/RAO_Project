@@ -17,7 +17,7 @@ namespace Models.Abstracts
         #region FormNum
         public string FormNum_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public RamAccess<string> FormNum
         {
             get
@@ -73,7 +73,7 @@ namespace Models.Abstracts
         public int NumberInOrder_DB { get; set; } = 0;
 
         [NotMapped]
-        [Attributes.Form_Property("null-1","№ п/п","1")]
+        [Attributes.Form_Property(true,"null-1","№ п/п","1")]
         public RamAccess<int> NumberInOrder
         {
             get
@@ -114,7 +114,7 @@ namespace Models.Abstracts
         #region NumberOfFields
         public int NumberOfFields_DB { get; set; } = 0;
         [NotMapped]
-        [Attributes.Form_Property("Число полей")]
+        [Attributes.Form_Property(true,"Число полей")]
         public RamAccess<int> NumberOfFields
         {
             get

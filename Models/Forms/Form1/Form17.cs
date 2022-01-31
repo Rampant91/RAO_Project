@@ -137,7 +137,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Сведения об упаковке", "наименование","4")]
+        [Attributes.Form_Property(true,"Сведения об упаковке", "наименование","4")]
         public RamAccess<string> PackName
         {
             get
@@ -205,7 +205,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Сведения об упаковке","тип","5")]
+        [Attributes.Form_Property(true,"Сведения об упаковке","тип","5")]
         public RamAccess<string> PackType
         {
             get
@@ -267,7 +267,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Сведения об упаковке","номер упаковки (идентификационный код)","7")]
+        [Attributes.Form_Property(true,"Сведения об упаковке","номер упаковки (идентификационный код)","7")]
         public RamAccess<string> PackNumber
         {
             get
@@ -329,7 +329,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Сведения об упаковке","заводской номер","6")]
+        [Attributes.Form_Property(true,"Сведения об упаковке","заводской номер","6")]
         public RamAccess<string> PackFactoryNumber
         {
             get
@@ -390,7 +390,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Сведения об упаковке","дата формирования","8")]
+        [Attributes.Form_Property(true,"Сведения об упаковке","дата формирования","8")]
         public RamAccess<string> FormingDate
         {
             get
@@ -480,7 +480,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО", "объем, куб. м","10")]
+        [Attributes.Form_Property(true,"Сведения о РАО", "объем, куб. м","10")]
         public RamAccess<string> Volume
         {
             get
@@ -576,7 +576,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","масса брутто, т","11")]
+        [Attributes.Form_Property(true,"Сведения о РАО","масса брутто, т","11")]
         public RamAccess<string> Mass
         {
             get
@@ -672,7 +672,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО", "номер паспорта","9")]
+        [Attributes.Form_Property(true,"Сведения о РАО", "номер паспорта","9")]
         public RamAccess<string> PassportNumber
         {
             get
@@ -723,7 +723,7 @@ namespace Models
         #region Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","наименование радионуклида","12")]
+        [Attributes.Form_Property(true,"Сведения о РАО","наименование радионуклида","12")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -791,7 +791,7 @@ namespace Models
         #region SpecificActivity
         public string SpecificActivity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","удельная активность, Бк/г","13")]
+        [Attributes.Form_Property(true,"Сведения о РАО","удельная активность, Бк/г","13")]
         public RamAccess<string> SpecificActivity
         {
             get
@@ -880,7 +880,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("ОКПО","поставщика или получателя","17")]
+        [Attributes.Form_Property(true,"ОКПО","поставщика или получателя","17")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -997,7 +997,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("ОКПО","перевозчика","18")]
+        [Attributes.Form_Property(true,"ОКПО","перевозчика","18")]
         public RamAccess<string> TransporterOKPO
         {
             get
@@ -1084,7 +1084,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения","наименование","19")]
+        [Attributes.Form_Property(true,"Пункт хранения","наименование","19")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -1158,7 +1158,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения","код","20")]
+        [Attributes.Form_Property(true,"Пункт хранения","код","20")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -1223,7 +1223,7 @@ namespace Models
         #region Subsidy
         public string Subsidy_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Субсидия, %","31")]
+        [Attributes.Form_Property(true,"","Субсидия, %","31")]
         public RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
@@ -1285,7 +1285,7 @@ namespace Models
         #region FcpNumber
         public string FcpNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Номер мероприятия ФЦП","32")]
+        [Attributes.Form_Property(true,"","Номер мероприятия ФЦП","32")]
         public RamAccess<string> FcpNumber
         {
             get
@@ -1326,7 +1326,7 @@ namespace Models
         #region CodeRAO
         public string CodeRAO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО", "код","21")]
+        [Attributes.Form_Property(true,"Сведения о РАО", "код","21")]
         public RamAccess<string> CodeRAO
         {
             get
@@ -1382,7 +1382,7 @@ namespace Models
         #region StatusRAO
         public string StatusRAO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","статус","22")]
+        [Attributes.Form_Property(true,"Сведения о РАО","статус","22")]
         public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
@@ -1454,7 +1454,7 @@ namespace Models
         #region VolumeOutOfPack
         public string VolumeOutOfPack_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","объем без упаковки, куб. м","23")]
+        [Attributes.Form_Property(true,"Сведения о РАО","объем без упаковки, куб. м","23")]
         public RamAccess<string> VolumeOutOfPack
         {
             get
@@ -1529,7 +1529,7 @@ namespace Models
         #region MassOutOfPack
         public string MassOutOfPack_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","масса без упаковки (нетто), т","24")]
+        [Attributes.Form_Property(true,"Сведения о РАО","масса без упаковки (нетто), т","24")]
         public RamAccess<string> MassOutOfPack
         {
             get
@@ -1605,7 +1605,7 @@ namespace Models
         #region Quantity
         public string Quantity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","количество ОЗИИИ, шт.","25")]
+        [Attributes.Form_Property(true,"Сведения о РАО","количество ОЗИИИ, шт.","25")]
         public RamAccess<string> Quantity
         {
             get
@@ -1669,7 +1669,7 @@ namespace Models
         #region TritiumActivity
         public string TritiumActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","тритий","26")]
+        [Attributes.Form_Property(true,"Сведения о РАО","тритий","26")]
         public RamAccess<string> TritiumActivity
         {
             get
@@ -1748,7 +1748,7 @@ namespace Models
         #region BetaGammaActivity
         public string BetaGammaActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","бета-, гамма-излучающие радионуклиды (исключая тритий)","27")]
+        [Attributes.Form_Property(true,"Сведения о РАО","бета-, гамма-излучающие радионуклиды (исключая тритий)","27")]
         public RamAccess<string> BetaGammaActivity
         {
             get
@@ -1827,7 +1827,7 @@ namespace Models
         #region AlphaActivity
         public string AlphaActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО", "альфа-излучающие радионуклиды (исключая трансурановые)","28")]
+        [Attributes.Form_Property(true,"Сведения о РАО", "альфа-излучающие радионуклиды (исключая трансурановые)","28")]
         public RamAccess<string> AlphaActivity
         {
             get
@@ -1906,7 +1906,7 @@ namespace Models
         #region TransuraniumActivity
         public string TransuraniumActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","трансурановые радионуклиды","29")]
+        [Attributes.Form_Property(true,"Сведения о РАО","трансурановые радионуклиды","29")]
         public RamAccess<string> TransuraniumActivity
         {
             get
@@ -1985,7 +1985,7 @@ namespace Models
         #region RefineOrSortRAOCode
         public string RefineOrSortRAOCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о РАО","Код переработки/сортировки РАО","30")]
+        [Attributes.Form_Property(true,"Сведения о РАО","Код переработки/сортировки РАО","30")]
         public RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
         {
             get

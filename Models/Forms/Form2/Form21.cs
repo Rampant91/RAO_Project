@@ -133,7 +133,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Установки переработки","наименование","2")]
+        [Attributes.Form_Property(true, "Установки переработки","наименование","2")]
         public RamAccess<string> RefineMachineName
         {
             get
@@ -212,7 +212,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Установки переработки","код","3")]
+        [Attributes.Form_Property(true, "Установки переработки", "код","3")]
         public RamAccess<byte?> MachineCode
         {
             get
@@ -322,7 +322,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Установки переработки","мощность, куб. м/год","4")]
+        [Attributes.Form_Property(true, "Установки переработки", "мощность, куб. м/год","4")]
         public RamAccess<string> MachinePower
         {
             get
@@ -475,7 +475,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Установки переработки","количество часов работы за год","5")]
+        [Attributes.Form_Property(true, "Установки переработки", "количество часов работы за год","5")]
         public RamAccess<string> NumberOfHoursPerYear
         {
             get
@@ -614,7 +614,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Поступило РАО на переработку, кондиционирование","код РАО","6")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "код РАО","6")]
         public RamAccess<string> CodeRAOIn
         {
             get
@@ -693,7 +693,7 @@ namespace Models
             }
         }
         [NotMapped]
-        [Attributes.Form_Property("Поступило РАО на переработку, кондиционирование","статус РАО","7")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "статус РАО","7")]
         public RamAccess<string> StatusRAOIn  //1 cyfer or OKPO.
         {
             get
@@ -784,7 +784,7 @@ namespace Models
         //VolumeIn property
         #region  VolumeIn
         public string VolumeIn_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("Поступило РАО на переработку, кондиционирование","куб. м","8")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "куб. м","8")]
         public RamAccess<string> VolumeIn//SUMMARIZABLE
         {
             get
@@ -880,7 +880,7 @@ namespace Models
         //MassIn Property
         #region  MassIn
         public string MassIn_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("Поступило РАО на переработку, кондиционирование","т","9")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "т","9")]
         public RamAccess<string> MassIn//SUMMARIZABLE
         {
             get
@@ -967,7 +967,7 @@ namespace Models
         //QuantityIn property
         #region  QuantityIn
         public string QuantityIn_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("Поступило РАО на переработку, кондиционирование","ОЗИИИ, шт.","10")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "ОЗИИИ, шт.","10")]
         public RamAccess<string> QuantityIn//SUMMARIZABLE
         {
             get
@@ -1038,7 +1038,7 @@ namespace Models
         //TritiumActivityIn property
         #region  TritiumActivityIn
         public string TritiumActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Поступило РАО на переработку, кондиционирование","тритий","11")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "тритий","11")]
         public RamAccess<string> TritiumActivityIn//SUMMARIZABLE
         {
             get
@@ -1125,7 +1125,7 @@ namespace Models
         //BetaGammaActivityIn property
         #region  BetaGammaActivityIn
         public string BetaGammaActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Поступило РАО на переработку, кондиционирование","бета-, гамма-излучающие радионуклиды (исключая тритий)","12")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "бета-, гамма-излучающие радионуклиды (исключая тритий)","12")]
         public RamAccess<string> BetaGammaActivityIn//SUMMARIZABLE
         {
             get
@@ -1212,7 +1212,7 @@ namespace Models
         //AlphaActivityIn property
         #region  AlphaActivityIn
         public string AlphaActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Поступило РАО на переработку, кондиционирование","альфа-излучающие радионуклиды (исключая трансурановые)","13")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "альфа-излучающие радионуклиды (исключая трансурановые)","13")]
         public RamAccess<string> AlphaActivityIn//SUMMARIZABLE
         {
             get
@@ -1299,7 +1299,7 @@ namespace Models
         //TransuraniumActivityIn property
         #region  TransuraniumActivityIn
         public string TransuraniumActivityIn_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Поступило РАО на переработку, кондиционирование","трансурановые радионуклиды","14")]
+        [Attributes.Form_Property(true, "Поступило РАО на переработку, кондиционирование", "трансурановые радионуклиды","14")]
         public RamAccess<string> TransuraniumActivityIn//SUMMARIZABLE
         {
             get
@@ -1398,7 +1398,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Образовалось РАО после переработки, кондиционирования","код РАО","15")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "код РАО","15")]
         public RamAccess<string> CodeRAOout
         {
             get
@@ -1478,7 +1478,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Образовалось РАО после переработки, кондиционирования","статус РАО","16")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "статус РАО","16")]
         public RamAccess<string> StatusRAOout  //1 cyfer or OKPO.
         {
             get
@@ -1564,7 +1564,7 @@ namespace Models
         //VolumeOut property
         #region  VolumeOut
         public string VolumeOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Образовалось РАО после переработки, кондиционирования","куб. м","17")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "куб. м","17")]
         public RamAccess<string> VolumeOut//SUMMARIZABLE
         {
             get
@@ -1652,7 +1652,7 @@ namespace Models
         //MassOut Property
         #region  MassOut
         public string MassOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Образовалось РАО после переработки, кондиционирования","т","18")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "т","18")]
         public RamAccess<string> MassOut//SUMMARIZABLE
         {
             get
@@ -1741,7 +1741,7 @@ namespace Models
         //QuantityOZIIIout property
         #region  QuantityOZIIIout
         public string QuantityOZIIIout_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Образовалось РАО после переработки, кондиционирования","ОЗИИИ, шт.","19")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт.","19")]
         public RamAccess<string> QuantityOZIIIout//SUMMARIZABLE
         {
             get
@@ -1817,7 +1817,7 @@ namespace Models
         //TritiumActivityOut property
         #region  TritiumActivityOut
         public string TritiumActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Образовалось РАО после переработки, кондиционирования","тритий","20")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "тритий","20")]
         public RamAccess<string> TritiumActivityOut//SUMMARIZABLE
         {
             get
@@ -1905,7 +1905,7 @@ namespace Models
         //BetaGammaActivityOut property
         #region  BetaGammaActivityOut
         public string BetaGammaActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Образовалось РАО после переработки, кондиционирования","бета-, гамма-излучающие (исключая тритий)","21")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие (исключая тритий)","21")]
         public RamAccess<string> BetaGammaActivityOut//SUMMARIZABLE
         {
             get
@@ -1992,7 +1992,7 @@ namespace Models
         //AlphaActivityOut property
         #region  AlphaActivityOut
         public string AlphaActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Образовалось РАО после переработки, кондиционирования","альфа-излучающие радионуклиды (исключая трансурановые)","22")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "альфа-излучающие радионуклиды (исключая трансурановые)","22")]
         public RamAccess<string> AlphaActivityOut//SUMMARIZABLE
         {
             get
@@ -2080,7 +2080,7 @@ namespace Models
         //TransuraniumActivityOut property
         #region  TransuraniumActivityOut
         public string TransuraniumActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Образовалось РАО после переработки, кондиционирования","трансурановые радионуклиды","23")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "трансурановые радионуклиды","23")]
         public RamAccess<string> TransuraniumActivityOut//SUMMARIZABLE
         {
             get

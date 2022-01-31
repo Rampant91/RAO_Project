@@ -70,7 +70,7 @@ namespace Models
         #region PassportNumber
         public string PassportNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения об отработавших закрытых источниках ионизирующего излучения", "номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ","4")]
+        [Attributes.Form_Property(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ","4")]
         public RamAccess<string> PassportNumber
         {
             get
@@ -122,7 +122,7 @@ namespace Models
         #region Type
         public string Type_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения об отработавших закрытых источниках ионизирующего излучения", "тип","5")]
+        [Attributes.Form_Property(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "тип","5")]
         public RamAccess<string> Type
         {
             get
@@ -165,7 +165,7 @@ namespace Models
         #region Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения об отработавших закрытых источниках ионизирующего излучения", "радионуклиды","6")]
+        [Attributes.Form_Property(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "радионуклиды","6")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -234,7 +234,7 @@ namespace Models
         #region FactoryNumber
         public string FactoryNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения об отработавших закрытых источниках ионизирующего излучения", "номер","7")]
+        [Attributes.Form_Property(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "номер","7")]
         public RamAccess<string> FactoryNumber
         {
             get
@@ -280,7 +280,7 @@ namespace Models
         #region Quantity
         public int? Quantity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения об отработавших закрытых источниках ионизирующего излучения", "количество, шт.","8")]
+        [Attributes.Form_Property(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "количество, шт.","8")]
         public RamAccess<int?> Quantity
         {
             get
@@ -332,7 +332,7 @@ namespace Models
         #region Activity
         public string Activity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения об отработавших закрытых источниках ионизирующего излучения", "суммарная активность, Бк","9")]
+        [Attributes.Form_Property(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "суммарная активность, Бк","9")]
         public RamAccess<string> Activity
         {
             get
@@ -415,7 +415,7 @@ namespace Models
         #region CreationDate
         public string CreationDate_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения об отработавших закрытых источниках ионизирующего излучения", "дата выпуска","10")]
+        [Attributes.Form_Property(true,"Сведения об отработавших закрытых источниках ионизирующего излучения", "дата выпуска","10")]
         public RamAccess<string> CreationDate
         {
             get
@@ -486,7 +486,7 @@ namespace Models
         #region StatusRAO
         public string StatusRAO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Статус РАО","11")]
+        [Attributes.Form_Property(true,"","Статус РАО","11")]
         public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
@@ -560,7 +560,7 @@ namespace Models
         #region ProviderOrRecieverOKPO
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Код ОКПО","поставщика или получателя","15")]
+        [Attributes.Form_Property(true,"Код ОКПО","поставщика или получателя","15")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -672,7 +672,7 @@ namespace Models
         #region TransporterOKPO
         public string TransporterOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Код ОКПО", "перевозчика","16")]
+        [Attributes.Form_Property(true,"Код ОКПО", "перевозчика","16")]
         public RamAccess<string> TransporterOKPO
         {
             get
@@ -741,7 +741,7 @@ namespace Models
         #region PackName
         public string PackName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Прибор (установка), УКТ или иная упаковка", "наименование","17")]
+        [Attributes.Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "наименование","17")]
         public RamAccess<string> PackName
         {
             get
@@ -787,7 +787,7 @@ namespace Models
         #region PackType
         public string PackType_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Прибор (установка), УКТ или иная упаковка", "тип","18")]
+        [Attributes.Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "тип","18")]
         public RamAccess<string> PackType
         {
             get
@@ -840,7 +840,7 @@ namespace Models
         #region PackNumber
         public string PackNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Прибор (установка), УКТ или иная упаковка", "заводской номер","19")]
+        [Attributes.Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "заводской номер","19")]
         public RamAccess<string> PackNumber
         {
             get
@@ -887,7 +887,7 @@ namespace Models
         #region StoragePlaceName
         public string StoragePlaceName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения", "наименование","20")]
+        [Attributes.Form_Property(true,"Пункт хранения", "наименование","20")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -941,7 +941,7 @@ namespace Models
         #region StoragePlaceCode
         public string StoragePlaceCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения", "код","21")]
+        [Attributes.Form_Property(true,"Пункт хранения", "код","21")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -995,7 +995,7 @@ namespace Models
         #region RefineOrSortRAOCode
         public string RefineOrSortRAOCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Код переработки/сортировки РАО","22")]
+        [Attributes.Form_Property(true,"","Код переработки/сортировки РАО","22")]
         public RamAccess<string> RefineOrSortRAOCode //2 cyfer code or empty.
         {
             get
@@ -1051,7 +1051,7 @@ namespace Models
         #region Subsidy
         public string Subsidy_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Субсидия, %","23")]
+        [Attributes.Form_Property(true,"","Субсидия, %","23")]
         public RamAccess<string> Subsidy // 0<number<=100 or empty.
         {
             get
@@ -1113,7 +1113,7 @@ namespace Models
         #region FcpNumber
         public string FcpNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Номер мероприятия ФЦП","24")]
+        [Attributes.Form_Property(true,"","Номер мероприятия ФЦП","24")]
         public RamAccess<string> FcpNumber
         {
             get

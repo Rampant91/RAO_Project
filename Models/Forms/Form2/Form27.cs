@@ -31,7 +31,7 @@ namespace Models
             WasteOutbreakPreviousYear_Validation(WasteOutbreakPreviousYear);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(ObservedSourceNumber.HasErrors||
@@ -44,7 +44,7 @@ namespace Models
         //ObservedSourceNumber property
         #region  ObservedSourceNumber
         public string ObservedSourceNumber_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("null-2","Наименование, номер источника выбросов","2")]
+        [Attributes.Form_Property(true,"null-2","Наименование, номер источника выбросов","2")]
         public RamAccess<string> ObservedSourceNumber
         {
             get
@@ -92,7 +92,7 @@ namespace Models
         //RadionuclidName property
         #region  RadionuclidName
         public string RadionuclidName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("null-3","Наименование радионуклида","3")]
+        [Attributes.Form_Property(true,"null-3","Наименование радионуклида","3")]
         public RamAccess<string> RadionuclidName
         {
             get
@@ -149,7 +149,7 @@ namespace Models
         #region  AllowedWasteValue
         public string AllowedWasteValue_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Выброс радионуклида в атмосферу за отчетный год, Бк", "разрешенный","4")]
+        [Attributes.Form_Property(true,"Выброс радионуклида в атмосферу за отчетный год, Бк", "разрешенный","4")]
         public RamAccess<string> AllowedWasteValue
         {
             get
@@ -233,7 +233,7 @@ namespace Models
         #region  FactedWasteValue
         public string FactedWasteValue_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Выброс радионуклида в атмосферу за отчетный год, Бк", "фактический","5")]
+        [Attributes.Form_Property(true,"Выброс радионуклида в атмосферу за отчетный год, Бк", "фактический","5")]
         public RamAccess<string> FactedWasteValue
         {
             get
@@ -323,7 +323,7 @@ namespace Models
         //WasteOutbreakPreviousYear property
         #region  WasteOutbreakPreviousYear
         public string WasteOutbreakPreviousYear_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Выброс радионуклида в атмосферу за предыдущий год, Бк", "фактический","6")]
+        [Attributes.Form_Property(true,"Выброс радионуклида в атмосферу за предыдущий год, Бк", "фактический","6")]
         public RamAccess<string> WasteOutbreakPreviousYear
         {
             get

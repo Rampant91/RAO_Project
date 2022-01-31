@@ -38,7 +38,7 @@ namespace Models
             DocumentDate_Validation(DocumentDate);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(StoragePlaceName.HasErrors||
@@ -59,7 +59,7 @@ namespace Models
         #region  StoragePlaceName
         public string StoragePlaceName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения РАО","наименование","2")]
+        [Attributes.Form_Property(true,"Пункт хранения РАО","наименование","2")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -115,7 +115,7 @@ namespace Models
         #region  StoragePlaceCode
         public string StoragePlaceCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения РАО","код","3")]
+        [Attributes.Form_Property(true,"Пункт хранения РАО","код","3")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -181,7 +181,7 @@ namespace Models
         #region  ProjectVolume
         public string ProjectVolume_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения РАО","проектный объем, куб. м","4")]
+        [Attributes.Form_Property(true,"Пункт хранения РАО","проектный объем, куб. м","4")]
         public RamAccess<string> ProjectVolume
         {
             get
@@ -264,7 +264,7 @@ namespace Models
         #region  CodeRAO
         public string CodeRAO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Разрешено к размещению", "код РАО","5")]
+        [Attributes.Form_Property(true,"Разрешено к размещению", "код РАО","5")]
         public RamAccess<string> CodeRAO
         {
             get
@@ -324,7 +324,7 @@ namespace Models
         #region  Volume
         public string Volume_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Разрешено к размещению", "объем, куб. м","6")]
+        [Attributes.Form_Property(true,"Разрешено к размещению", "объем, куб. м","6")]
         public RamAccess<string> Volume
         {
             get
@@ -403,7 +403,7 @@ namespace Models
         #region  Mass
         public string Mass_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Разрешено к размещению","масса, т","7")]
+        [Attributes.Form_Property(true,"Разрешено к размещению","масса, т","7")]
         public RamAccess<string> Mass
         {
             get
@@ -486,7 +486,7 @@ namespace Models
         #region  QuantityOZIII
         public string QuantityOZIII_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Разрешено к размещению","количество ОЗИИИ, шт.","8")]
+        [Attributes.Form_Property(true,"Разрешено к размещению","количество ОЗИИИ, шт.","8")]
         public RamAccess<string> QuantityOZIII
         {
             get
@@ -553,7 +553,7 @@ namespace Models
         #region  SummaryActivity
         public string SummaryActivity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Разрешено к размещению","суммарная активность, Бк","9")]
+        [Attributes.Form_Property(true,"Разрешено к размещению","суммарная активность, Бк","9")]
         public RamAccess<string> SummaryActivity
         {
             get
@@ -636,7 +636,7 @@ namespace Models
         #region  DocumentNumber
         public string DocumentNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наименование и реквизиты документа на размещение РАО","номер","10")]
+        [Attributes.Form_Property(true,"Наименование и реквизиты документа на размещение РАО","номер","10")]
         public RamAccess<string> DocumentNumber
         {
             get
@@ -686,7 +686,7 @@ namespace Models
         #region DocumentDate 
         public string DocumentDate_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наименование и реквизиты документа на размещение РАО","дата","11")]
+        [Attributes.Form_Property(true,"Наименование и реквизиты документа на размещение РАО","дата","11")]
         public RamAccess<string> DocumentDate
         {
             get
@@ -760,7 +760,7 @@ namespace Models
         #region  ExpirationDate
         public string ExpirationDate_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наименование и реквизиты документа на размещение РАО","срок действия","12")]
+        [Attributes.Form_Property(true,"Наименование и реквизиты документа на размещение РАО","срок действия","12")]
         public RamAccess<string> ExpirationDate
         {
             get
@@ -834,7 +834,7 @@ namespace Models
         #region  DocumentName
         public string DocumentName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Наименование и реквизиты документа на размещение РАО","наименование документа","13")]
+        [Attributes.Form_Property(true,"Наименование и реквизиты документа на размещение РАО","наименование документа","13")]
         public RamAccess<string> DocumentName
         {
             get

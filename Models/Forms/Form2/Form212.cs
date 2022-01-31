@@ -32,7 +32,7 @@ namespace Models
             ProviderOrRecieverOKPO_Validation(ProviderOrRecieverOKPO);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(Radionuclids.HasErrors||
@@ -46,7 +46,7 @@ namespace Models
         #region  OperationCode
         public short? OperationCode_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("null-2","Код операции","2")]
+        [Attributes.Form_Property(true,"null-2","Код операции","2")]
         public RamAccess<short?> OperationCode
         {
             get
@@ -101,7 +101,7 @@ namespace Models
         #region 
         public short? ObjectTypeCode_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("null-3","Код типа объектов учета","3")]
+        [Attributes.Form_Property(true,"null-3","Код типа объектов учета","3")]
         public RamAccess<short?> ObjectTypeCode
         {
             get
@@ -156,7 +156,7 @@ namespace Models
         #region  Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о радионуклидных источниках", "радионуклиды","4")]
+        [Attributes.Form_Property(true,"Сведения о радионуклидных источниках", "радионуклиды","4")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -223,7 +223,7 @@ namespace Models
         #region  Activity
         public string Activity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения о радионуклидных источниках", "активность, Бк","5")]
+        [Attributes.Form_Property(true,"Сведения о радионуклидных источниках", "активность, Бк","5")]
         public RamAccess<string> Activity
         {
             get
@@ -303,7 +303,7 @@ namespace Models
         #region  ProviderOrRecieverOKPO
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-4","ОКПО поставщика/получателя","6")]
+        [Attributes.Form_Property(true,"null-4","ОКПО поставщика/получателя","6")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get

@@ -34,7 +34,7 @@ namespace Models
             SpecificActivityOfDensePart_Validation(SpecificActivityOfDensePart);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(Radionuclids.HasErrors||
@@ -51,7 +51,7 @@ namespace Models
         #region  PlotName
         public string PlotName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1","Наименование участка","2")]
+        [Attributes.Form_Property(true,"null-1","Наименование участка","2")]
         public RamAccess<string> PlotName
         {
             get
@@ -100,7 +100,7 @@ namespace Models
         #region  PlotKadastrNumber
         public string PlotKadastrNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1","Кадастровый номер участка","3")]
+        [Attributes.Form_Property(true,"null-1","Кадастровый номер участка","3")]
         public RamAccess<string> PlotKadastrNumber
         {
             get
@@ -149,7 +149,7 @@ namespace Models
         #region  PlotCode
         public string PlotCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1","Код участка","4")]
+        [Attributes.Form_Property(true,"null-1","Код участка","4")]
         public RamAccess<string> PlotCode
         {
             get
@@ -204,7 +204,7 @@ namespace Models
         #region  InfectedArea
         public string InfectedArea_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("null-1","Площадь загрязненной территории, кв. м","5")]
+        [Attributes.Form_Property(true,"null-1","Площадь загрязненной территории, кв. м","5")]
         public RamAccess<string> InfectedArea
         {
             get
@@ -283,7 +283,7 @@ namespace Models
         #region  Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1","Наименования радионуклидов","6")]
+        [Attributes.Form_Property(true,"null-1","Наименования радионуклидов","6")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -346,7 +346,7 @@ namespace Models
         #region  SpecificActivityOfPlot
         public string SpecificActivityOfPlot_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1","Удельная активность, Бк/г","7")]
+        [Attributes.Form_Property(true,"null-1","Удельная активность, Бк/г","7")]
         public RamAccess<string> SpecificActivityOfPlot
         {
             get
@@ -429,7 +429,7 @@ namespace Models
         #region  SpecificActivityOfLiquidPart
         public string SpecificActivityOfLiquidPart_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1","Удельная активность жидкой части, Бк/г","8")]
+        [Attributes.Form_Property(true,"null-1","Удельная активность жидкой части, Бк/г","8")]
         public RamAccess<string> SpecificActivityOfLiquidPart
         {
             get
@@ -512,7 +512,7 @@ namespace Models
         #region SpecificActivityOfDensePart 
         public string SpecificActivityOfDensePart_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1","Удельная активность твердой части, Бк/г","9")]
+        [Attributes.Form_Property(true,"null-1","Удельная активность твердой части, Бк/г","9")]
         public RamAccess<string> SpecificActivityOfDensePart
         {
             get

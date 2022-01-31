@@ -15,7 +15,7 @@ namespace Models.Abstracts
 {
     public abstract class Form1 : Form
     {
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
 
         [NotMapped]
         public bool flag = false;
@@ -47,7 +47,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Сведения об операции","код","2")]
+        [Attributes.Form_Property(true,"Сведения об операции","код","2")]
         public RamAccess<string> OperationCode
         {
             get
@@ -101,7 +101,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Сведения об операции", "дата", "3")]
+        [Attributes.Form_Property(true,"Сведения об операции", "дата", "3")]
         public RamAccess<string> OperationDate
         {
             get
@@ -194,7 +194,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Документ","вид", "16")]
+        [Attributes.Form_Property(true,"Документ","вид", "16")]
         public RamAccess<byte?> DocumentVid
         {
             get
@@ -268,7 +268,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Документ", "номер", "17")]
+        [Attributes.Form_Property(true,"Документ", "номер", "17")]
         public RamAccess<string> DocumentNumber
         {
             get
@@ -328,7 +328,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Документ", "дата", "18")]
+        [Attributes.Form_Property(true,"Документ", "дата", "18")]
         public RamAccess<string> DocumentDate
         {
             get

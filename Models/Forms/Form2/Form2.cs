@@ -10,7 +10,7 @@ namespace Models.Abstracts
 {
     public abstract class Form2 : Form
     {
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public Form2()
         {
 
@@ -25,7 +25,7 @@ namespace Models.Abstracts
         public byte CorrectionNumber_DB { get; set; } = 0;
 
         [NotMapped]
-        [Attributes.Form_Property("Номер корректировки")]
+        [Attributes.Form_Property(true,"Номер корректировки")]
         public RamAccess<byte> CorrectionNumber
         {
             get

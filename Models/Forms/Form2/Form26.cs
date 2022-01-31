@@ -33,7 +33,7 @@ namespace Models
             AverageYearConcentration_Validation(AverageYearConcentration);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(ObservedSourceNumber.HasErrors||
@@ -48,7 +48,7 @@ namespace Models
         //ObservedSourceNumber property
         #region ObservedSourceNumber
         public string ObservedSourceNumber_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("null-1","Номер наблюдательной скважины","2")]
+        [Attributes.Form_Property(true,"null-1","Номер наблюдательной скважины","2")]
         public RamAccess<string> ObservedSourceNumber
         {
             get
@@ -90,7 +90,7 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         //ControlledAreaName property
         #region ControlledAreaName
         public string ControlledAreaName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("null-1", "Наименование зоны контроля","3")]
+        [Attributes.Form_Property(true,"null-1", "Наименование зоны контроля","3")]
         public RamAccess<string> ControlledAreaName
         {
             get
@@ -155,7 +155,7 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         #region SupposedWasteSource
         public string SupposedWasteSource_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1", "Предполагаемый источник поступления радиоактивных веществ","4")]
+        [Attributes.Form_Property(true,"null-1", "Предполагаемый источник поступления радиоактивных веществ","4")]
         public RamAccess<string> SupposedWasteSource
         {
             get
@@ -199,7 +199,7 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         #region DistanceToWasteSource
         public string DistanceToWasteSource_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1", "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м","5")]
+        [Attributes.Form_Property(true,"null-1", "Расстояние от источника поступления радиоактивных веществ до наблюдательной скважины, м","5")]
         public RamAccess<string> DistanceToWasteSource
         {
             get
@@ -286,7 +286,7 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         #region TestDepth
         public string TestDepth_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-1", "Глубина отбора проб, м","6")]
+        [Attributes.Form_Property(true,"null-1", "Глубина отбора проб, м","6")]
         public RamAccess<string> TestDepth
         {
             get
@@ -375,7 +375,7 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         //RadionuclidName property
         #region RadionuclidName
         public string RadionuclidName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("null-1", "Наименование радионуклида","7")]
+        [Attributes.Form_Property(true,"null-1", "Наименование радионуклида","7")]
         public RamAccess<string> RadionuclidName
         {
             get
@@ -430,7 +430,7 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         //AverageYearConcentration property
         #region AverageYearConcentration 
         public string AverageYearConcentration_DB { get; set; } = null; [NotMapped]
-        [Attributes.Form_Property("null-1", "Среднегодовое содержание радионуклида, Бк/кг","8")]
+        [Attributes.Form_Property(true,"null-1", "Среднегодовое содержание радионуклида, Бк/кг","8")]
         public RamAccess<string> AverageYearConcentration
         {
             get

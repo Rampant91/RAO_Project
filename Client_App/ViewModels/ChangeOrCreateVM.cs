@@ -638,7 +638,7 @@ namespace Client_App.ViewModels
                         {
                             try
                             {
-                                var columnNum = Convert.ToInt32(attr.Names[attr.Names.Length - 1]);
+                                var columnNum = Convert.ToInt32(attr.Number);
                                 if (columnNum >= minColumn && columnNum <= maxColumn)
                                 {
                                     var midvalue = prop.GetMethod.Invoke(item, null);
@@ -677,12 +677,19 @@ namespace Client_App.ViewModels
                     {
                         try
                         {
-                            var columnNum = Convert.ToInt32(attr.Names[attr.Names.Length - 1]);
+                            var columnNum = Convert.ToInt32(attr.Number);
                             if(columnNum>=minColumn&&columnNum<=maxColumn)
                             {
                                 var midvalue = prop.GetMethod.Invoke(item, null);
-                                var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue,null).ToString();
-                                dic[item.Order].Add(columnNum,value);
+                                var value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue,null);
+                                if (value != null)
+                                {
+                                    dic[item.Order].Add(columnNum, value.ToString());
+                                }
+                                else
+                                {
+                                    dic[item.Order].Add(columnNum, "");
+                                }
                             }
                         }
                         catch

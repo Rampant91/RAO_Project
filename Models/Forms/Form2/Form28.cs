@@ -33,7 +33,7 @@ namespace Models
             PoolDistrictName_Validation(PoolDistrictName);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(WasteSourceName.HasErrors||
@@ -48,7 +48,7 @@ namespace Models
         #region WasteSourceName
         public string WasteSourceName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-2","Наименование, номер выпуска сточных вод","2")]
+        [Attributes.Form_Property(true,"null-2","Наименование, номер выпуска сточных вод","2")]
         public RamAccess<string> WasteSourceName
         {
             get
@@ -97,7 +97,7 @@ namespace Models
         #region WasteRecieverName
         public string WasteRecieverName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Приемник отведенных вод", "наименование","3")]
+        [Attributes.Form_Property(true,"Приемник отведенных вод", "наименование","3")]
         public RamAccess<string> WasteRecieverName
         {
             get
@@ -145,7 +145,7 @@ namespace Models
         //RecieverTypeCode property
         #region RecieverTypeCode
         public string RecieverTypeCode_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Приемник отведенных вод", "код типа приемника","4")]
+        [Attributes.Form_Property(true,"Приемник отведенных вод", "код типа приемника","4")]
         public RamAccess<string> RecieverTypeCode
         {
             get
@@ -198,7 +198,7 @@ namespace Models
         //PoolDistrictName property
         #region PoolDistrictName
         public string PoolDistrictName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("Приемник отведенных вод", "наименование бассейнового округа","5")]
+        [Attributes.Form_Property(true,"Приемник отведенных вод", "наименование бассейнового округа","5")]
         public RamAccess<string> PoolDistrictName
         {
             get
@@ -253,7 +253,7 @@ namespace Models
         //AllowedWasteRemovalVolume property
         #region AllowedWasteRemovalVolume
         public string AllowedWasteRemovalVolume_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("null-3","Допустимый объем водоотведения за год, тыс. куб. м", "6")]
+        [Attributes.Form_Property(true,"null-3","Допустимый объем водоотведения за год, тыс. куб. м", "6")]
         public RamAccess<string> AllowedWasteRemovalVolume
         {
             get
@@ -335,7 +335,7 @@ namespace Models
         //RemovedWasteVolume property
         #region RemovedWasteVolume
         public string RemovedWasteVolume_DB { get; set; } = null; [NotMapped]
-        [Attributes.Form_Property("null-4","Отведено за отчетный период, тыс. куб. м","7")]
+        [Attributes.Form_Property(true,"null-4","Отведено за отчетный период, тыс. куб. м","7")]
         public RamAccess<string> RemovedWasteVolume
         {
             get

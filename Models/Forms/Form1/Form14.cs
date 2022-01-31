@@ -64,7 +64,7 @@ namespace Models
         #region PassportNumber
         public string PassportNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на открытый радионуклидный источник", "номер паспорта","4")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "номер паспорта","4")]
         public RamAccess<string> PassportNumber
         {
             get
@@ -117,7 +117,7 @@ namespace Models
         #region Name
         public string Name_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на открытый радионуклидный источник", "наименование","5")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "наименование","5")]
         public RamAccess<string> Name
         {
             get
@@ -163,7 +163,7 @@ namespace Models
         #region Sort
         public byte? Sort_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на открытый радионуклидный источник", "вид","6")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "вид","6")]
         public RamAccess<byte?> Sort
         {
             get
@@ -215,7 +215,7 @@ namespace Models
         #region Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на открытый радионуклидный источник", "радионуклиды","7")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "радионуклиды","7")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -283,7 +283,7 @@ namespace Models
         #region Activity
         public string Activity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на открытый радионуклидный источник", "активность, Бк","8")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "активность, Бк","8")]
         public RamAccess<string> Activity
         {
             get
@@ -370,7 +370,7 @@ namespace Models
         #region ActivityMeasurementDate
         public string ActivityMeasurementDate_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на открытый радионуклидный источник", "дата измерения активности","9")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "дата измерения активности","9")]
         public RamAccess<string> ActivityMeasurementDate
         {
             get
@@ -445,7 +445,7 @@ namespace Models
         #region Volume
         public string Volume_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на открытый радионуклидный источник", "объем, куб. м","10")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "объем, куб. м","10")]
         public RamAccess<string> Volume
         {
             get
@@ -535,7 +535,7 @@ namespace Models
         #region Mass
         public string Mass_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на открытый радионуклидный источник", "масса, кг","11")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "масса, кг","11")]
         public RamAccess<string> Mass
         {
             get
@@ -629,7 +629,7 @@ namespace Models
         #region AggregateState
         public byte? AggregateState_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения из паспорта на открытый радионуклидный источник", "агрегатное состояние","12")]
+        [Attributes.Form_Property(true,"Сведения из паспорта на открытый радионуклидный источник", "агрегатное состояние","12")]
         public RamAccess<byte?> AggregateState//1 2 3
         {
             get
@@ -680,7 +680,7 @@ namespace Models
         #region PropertyCode
         public byte? PropertyCode_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Право собственности на ОРИ", "код формы собственности","13")]
+        [Attributes.Form_Property(true,"Право собственности на ОРИ", "код формы собственности","13")]
         public RamAccess<byte?> PropertyCode
         {
             get
@@ -731,7 +731,7 @@ namespace Models
         #region Owner
         public string Owner_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Право собственности на ОРИ", "код ОКПО правообладателя","14")]
+        [Attributes.Form_Property(true,"Право собственности на ОРИ", "код ОКПО правообладателя","14")]
         public RamAccess<string> Owner
         {
             get
@@ -804,7 +804,7 @@ namespace Models
         #region ProviderOrRecieverOKPO
         public string ProviderOrRecieverOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Код ОКПО", "поставщика или получателя","18")]
+        [Attributes.Form_Property(true,"Код ОКПО", "поставщика или получателя","18")]
         public RamAccess<string> ProviderOrRecieverOKPO
         {
             get
@@ -921,7 +921,7 @@ namespace Models
         #region TransporterOKPO
         public string TransporterOKPO_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Код ОКПО", "перевозчика","19")]
+        [Attributes.Form_Property(true,"Код ОКПО", "перевозчика","19")]
         public RamAccess<string> TransporterOKPO
         {
             get
@@ -1003,7 +1003,7 @@ namespace Models
         #region PackName
         public string PackName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Прибор (установка), УКТ или иная упаковка", "наименование","20")]
+        [Attributes.Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "наименование","20")]
         public RamAccess<string> PackName
         {
             get
@@ -1055,7 +1055,7 @@ namespace Models
         #region PackType
         public string PackType_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Прибор (установка), УКТ или иная упаковка", "тип","21")]
+        [Attributes.Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "тип","21")]
         public RamAccess<string> PackType
         {
             get
@@ -1107,7 +1107,7 @@ namespace Models
         #region PackNumber
         public string PackNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Прибор (установка), УКТ или иная упаковка", "номер упаковки","22")]
+        [Attributes.Form_Property(true,"Прибор (установка), УКТ или иная упаковка", "номер упаковки","22")]
         public RamAccess<string> PackNumber
         {
             get

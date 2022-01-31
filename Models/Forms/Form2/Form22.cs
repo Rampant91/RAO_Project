@@ -46,7 +46,7 @@ namespace Models
             PackQuantity_Validation(PackQuantity);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(StoragePlaceName.HasErrors ||
@@ -136,7 +136,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения","наименование","2")]
+        [Attributes.Form_Property(true,"Пункт хранения","наименование","2")]
         public RamAccess<string> StoragePlaceName
         {
             get
@@ -234,7 +234,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Пункт хранения","код","3")]
+        [Attributes.Form_Property(true,"Пункт хранения","код","3")]
         public RamAccess<string> StoragePlaceCode //8 cyfer code or - .
         {
             get
@@ -341,7 +341,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("УКТ, упаковка ли иная учетная единица","наименование","4")]
+        [Attributes.Form_Property(true,"УКТ, упаковка ли иная учетная единица","наименование","4")]
         public RamAccess<string> PackName
         {
             get
@@ -444,7 +444,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("УКТ, упаковка ли иная учетная единица","тип","5")]
+        [Attributes.Form_Property(true,"УКТ, упаковка ли иная учетная единица","тип","5")]
         public RamAccess<string> PackType
         {
             get
@@ -531,7 +531,7 @@ namespace Models
         public string PackQuantity_DB { get; set; } = null;
 
         [NotMapped]
-        [Attributes.Form_Property("УКТ, упаковка ли иная учетная единица","количество, шт.","6")]
+        [Attributes.Form_Property(true,"УКТ, упаковка ли иная учетная единица","количество, шт.","6")]
         public RamAccess<string> PackQuantity
         {
             get
@@ -609,7 +609,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("","Код РАО","7")]
+        [Attributes.Form_Property(true,"","Код РАО","7")]
         public RamAccess<string> CodeRAO
         {
             get
@@ -694,7 +694,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("","Статус РАО","8")]
+        [Attributes.Form_Property(true,"","Статус РАО","8")]
         public RamAccess<string> StatusRAO  //1 cyfer or OKPO.
         {
             get
@@ -805,7 +805,7 @@ namespace Models
             set { VolumeInPack_Hidden_Priv2 = value; }
         }
         [NotMapped]
-        [Attributes.Form_Property("Объем, куб. м","РАО с упаковкой","10")]
+        [Attributes.Form_Property(true,"Объем, куб. м","РАО с упаковкой","10")]
         public RamAccess<string> VolumeInPack
         {
             get
@@ -929,7 +929,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("Масса, т","РАО с упаковкой (брутто)","12")]
+        [Attributes.Form_Property(true,"Масса, т","РАО с упаковкой (брутто)","12")]
         public RamAccess<string> MassInPack
         {
             get
@@ -1038,7 +1038,7 @@ namespace Models
 
         #region VolumeOutOfPack 
         public string VolumeOutOfPack_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("Объем, куб. м","РАО без упаковки","9")]
+        [Attributes.Form_Property(true,"Объем, куб. м","РАО без упаковки","9")]
         public RamAccess<string> VolumeOutOfPack//SUMMARIZABLE
         {
             get
@@ -1126,7 +1126,7 @@ namespace Models
 
         #region MassOutOfPack
         public string MassOutOfPack_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("Масса, т","РАО без упаковки (нетто)","11")]
+        [Attributes.Form_Property(true,"Масса, т","РАО без упаковки (нетто)","11")]
         public RamAccess<string> MassOutOfPack//SUMMARIZABLE
         {
             get
@@ -1218,7 +1218,7 @@ namespace Models
 
         #region QuantityOZIII_DB
         public string QuantityOZIII_DB { get; set; } = null;[NotMapped]
-        [Attributes.Form_Property("","Количество ОЗИИИ, шт.","13")]
+        [Attributes.Form_Property(true,"","Количество ОЗИИИ, шт.","13")]
         public RamAccess<string> QuantityOZIII//SUMMARIZABLE
         {
             get
@@ -1283,7 +1283,7 @@ namespace Models
 
         #region TritiumActivity
         public string TritiumActivity_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("Суммарная активность, Бк","тритий","14")]
+        [Attributes.Form_Property(true,"Суммарная активность, Бк","тритий","14")]
         public RamAccess<string> TritiumActivity//SUMMARIZABLE
         {
             get
@@ -1371,7 +1371,7 @@ namespace Models
 
         #region BetaGammaActivity
         public string BetaGammaActivity_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("Суммарная активность, Бк","бета-, гамма-излучающие радионуклиды (исключая тритий)","15")]
+        [Attributes.Form_Property(true,"Суммарная активность, Бк","бета-, гамма-излучающие радионуклиды (исключая тритий)","15")]
         public RamAccess<string> BetaGammaActivity//SUMMARIZABLE
         {
             get
@@ -1459,7 +1459,7 @@ namespace Models
 
         #region AlphaActivity 
         public string AlphaActivity_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("Суммарная активность, Бк","альфа-излучающие радионуклиды (исключая трансурановые)","16")]
+        [Attributes.Form_Property(true,"Суммарная активность, Бк","альфа-излучающие радионуклиды (исключая трансурановые)","16")]
         public RamAccess<string> AlphaActivity//SUMMARIZABLE
         {
             get
@@ -1546,7 +1546,7 @@ namespace Models
 
         #region TransuraniumActivity 
         public string TransuraniumActivity_DB { get; set; } = "";[NotMapped]
-        [Attributes.Form_Property("Суммарная активность, Бк","трансурановые радионуклиды","17")]
+        [Attributes.Form_Property(true,"Суммарная активность, Бк","трансурановые радионуклиды","17")]
         public RamAccess<string> TransuraniumActivity//SUMMARIZABLE
         {
             get
@@ -1644,7 +1644,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("","Основные радионуклиды","18")]
+        [Attributes.Form_Property(true,"","Основные радионуклиды","18")]
         public RamAccess<string> MainRadionuclids
         {
             get
@@ -1738,7 +1738,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("","Субсидия, %","19")]
+        [Attributes.Form_Property(true,"","Субсидия, %","19")]
         public RamAccess<string> Subsidy
         {
             get
@@ -1826,7 +1826,7 @@ namespace Models
         }
 
         [NotMapped]
-        [Attributes.Form_Property("","Номер мероприятия ФЦП","20")]
+        [Attributes.Form_Property(true,"","Номер мероприятия ФЦП","20")]
         public RamAccess<string> FcpNumber
         {
             get

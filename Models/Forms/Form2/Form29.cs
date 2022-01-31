@@ -30,7 +30,7 @@ namespace Models
             FactedActivity_Validation(FactedActivity);
         }
 
-        [Attributes.Form_Property("Форма")]
+        [Attributes.Form_Property(true,"Форма")]
         public override bool Object_Validation()
         {
             return !(WasteSourceName.HasErrors||
@@ -42,7 +42,7 @@ namespace Models
         //WasteSourceName property
         #region WasteSourceName 
         public string WasteSourceName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("null-2","Наименование, номер выпуска сточных вод","2")]
+        [Attributes.Form_Property(true,"null-2","Наименование, номер выпуска сточных вод","2")]
         public RamAccess<string> WasteSourceName
         {
             get
@@ -90,7 +90,7 @@ namespace Models
         #region RadionuclidName
         public string RadionuclidName_DB { get; set; } = ""; 
         [NotMapped]        
-        [Attributes.Form_Property("null-3","Наименование радионуклида","3")]
+        [Attributes.Form_Property(true,"null-3","Наименование радионуклида","3")]
         public RamAccess<string> RadionuclidName
         {
             get
@@ -146,7 +146,7 @@ namespace Models
         #region AllowedActivity
         public string AllowedActivity_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Активность радионуклида, Бк", "допустимая","4")]
+        [Attributes.Form_Property(true,"Активность радионуклида, Бк", "допустимая","4")]
         public RamAccess<string> AllowedActivity
         {
             get
@@ -231,7 +231,7 @@ namespace Models
         #region FactedActivity
         public string FactedActivity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Активность радионуклида, Бк", "фактическая","5")]
+        [Attributes.Form_Property(true,"Активность радионуклида, Бк", "фактическая","5")]
         public RamAccess<string> FactedActivity
         {
             get

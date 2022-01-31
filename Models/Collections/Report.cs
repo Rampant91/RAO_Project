@@ -757,7 +757,7 @@ namespace Models.Collections
         #region FormNum
         public string FormNum_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Форма")]
+        [Form_Property(true,"Форма")]
         public RamAccess<string> FormNum
         {
             get
@@ -797,7 +797,7 @@ namespace Models.Collections
         #region IsCorrection
         public bool IsCorrection_DB { get; set; } = false;
         [NotMapped]
-        [Form_Property("Корректирующий отчет")]
+        [Form_Property(true,"Корректирующий отчет")]
         public RamAccess<bool> IsCorrection
         {
             get
@@ -837,7 +837,7 @@ namespace Models.Collections
         #region CorrectionNumber
         public byte CorrectionNumber_DB { get; set; } = 0;
         [NotMapped]
-        [Form_Property("Номер корректировки")]
+        [Form_Property(true,"Номер корректировки")]
         public RamAccess<byte> CorrectionNumber
         {
             get
@@ -878,7 +878,7 @@ namespace Models.Collections
         #region FIOexecutor
         public string FIOexecutor_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Номер корректировки")]
+        [Form_Property(true,"Номер корректировки")]
         public RamAccess<string> FIOexecutor
         {
             get
@@ -919,7 +919,7 @@ namespace Models.Collections
         #region GradeExecutor
         public string GradeExecutor_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Номер корректировки")]
+        [Form_Property(true,"Номер корректировки")]
         public RamAccess<string> GradeExecutor
         {
             get
@@ -960,7 +960,7 @@ namespace Models.Collections
         #region ExecPhone
         public string ExecPhone_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Номер корректировки")]
+        [Form_Property(true,"Номер корректировки")]
         public RamAccess<string> ExecPhone
         {
             get
@@ -1001,7 +1001,7 @@ namespace Models.Collections
         #region ExecEmail
         public string ExecEmail_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Номер корректировки")]
+        [Form_Property(true,"Номер корректировки")]
         public RamAccess<string> ExecEmail
         {
             get
@@ -1042,7 +1042,7 @@ namespace Models.Collections
         #region NumberInOrder
         public string NumberInOrder_DB { get; set; }
         [NotMapped]
-        [Form_Property("Номер")]
+        [Form_Property(true,"Номер")]
         public RamAccess<string> NumberInOrder
         {
             get
@@ -1082,7 +1082,7 @@ namespace Models.Collections
         #region Comments
         public string Comments_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Комментарий")]
+        [Form_Property(true,"Комментарий")]
         public RamAccess<string> Comments
         {
             get
@@ -1121,7 +1121,7 @@ namespace Models.Collections
 
         #region Notes
 
-        [Form_Property("Примечания")]
+        [Form_Property(true,"Примечания")]
         ObservableCollectionWithItemPropertyChanged<Note> Notes_DB;
         public virtual ObservableCollectionWithItemPropertyChanged<Note> Notes
         {
@@ -1143,7 +1143,7 @@ namespace Models.Collections
 
         #region PermissionNumber_28 
         public string PermissionNumber_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Номер разрешительного документа")]
+        [Form_Property(true,"Номер разрешительного документа")]
         public RamAccess<string> PermissionNumber_28
         {
             get
@@ -1184,7 +1184,7 @@ namespace Models.Collections
 
         #region PermissionIssueDate_28
         public string PermissionIssueDate_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Дата выпуска разрешительного документа")]
+        [Form_Property(true,"Дата выпуска разрешительного документа")]
         public RamAccess<string> PermissionIssueDate_28
         {
             get
@@ -1253,7 +1253,7 @@ namespace Models.Collections
 
         #region PermissionDocumentName_28 
         public string PermissionDocumentName_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Наименование разрешительного документа")]
+        [Form_Property(true,"Наименование разрешительного документа")]
         public RamAccess<string> PermissionDocumentName_28
         {
             get
@@ -1293,7 +1293,7 @@ namespace Models.Collections
 
         #region ValidBegin_28
         public string ValidBegin_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Действует с")]
+        [Form_Property(true,"Действует с")]
         public RamAccess<string> ValidBegin_28
         {
             get
@@ -1362,7 +1362,7 @@ namespace Models.Collections
 
         #region ValidThru_28
         public string ValidThru_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Действует по")]
+        [Form_Property(true,"Действует по")]
         public RamAccess<string> ValidThru_28
         {
             get
@@ -1431,7 +1431,7 @@ namespace Models.Collections
 
         #region PermissionNumber1_28 
         public string PermissionNumber1_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Номер разрешительного документа")]
+        [Form_Property(true,"Номер разрешительного документа")]
         public RamAccess<string> PermissionNumber1_28
         {
             get
@@ -1471,7 +1471,7 @@ namespace Models.Collections
 
         #region PermissionIssueDate1_28 
         public string PermissionIssueDate1_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Дата выпуска разрешительного документа")]
+        [Form_Property(true,"Дата выпуска разрешительного документа")]
         public RamAccess<string> PermissionIssueDate1_28
         {
             get
@@ -1540,7 +1540,7 @@ namespace Models.Collections
 
         #region PermissionDocumentName1_28
         public string PermissionDocumentName1_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Наименование разрешительного документа")]
+        [Form_Property(true,"Наименование разрешительного документа")]
         public RamAccess<string> PermissionDocumentName1_28
         {
             get
@@ -1580,7 +1580,7 @@ namespace Models.Collections
 
         #region ValidBegin1_28
         public string ValidBegin1_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Действует с")]
+        [Form_Property(true,"Действует с")]
         public RamAccess<string> ValidBegin1_28
         {
             get
@@ -1649,7 +1649,7 @@ namespace Models.Collections
 
         #region ValidThru1_28 
         public string ValidThru1_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Действует по")]
+        [Form_Property(true,"Действует по")]
         public RamAccess<string> ValidThru1_28
         {
             get
@@ -1718,7 +1718,7 @@ namespace Models.Collections
 
         #region ContractNumber_28 
         public string ContractNumber_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Номер договора на передачу сточных вод")]
+        [Form_Property(true,"Номер договора на передачу сточных вод")]
         public RamAccess<string> ContractNumber_28
         {
             get
@@ -1758,7 +1758,7 @@ namespace Models.Collections
 
         #region ContractIssueDate2_28
         public string ContractIssueDate2_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Дата выпуска разрешительного документа")]
+        [Form_Property(true,"Дата выпуска разрешительного документа")]
         public RamAccess<string> ContractIssueDate2_28
         {
             get
@@ -1826,7 +1826,7 @@ namespace Models.Collections
 
         #region OrganisationReciever_28
         public string OrganisationReciever_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Организация, осуществляющая прием сточных вод")]
+        [Form_Property(true,"Организация, осуществляющая прием сточных вод")]
         public RamAccess<string> OrganisationReciever_28
         {
             get
@@ -1866,7 +1866,7 @@ namespace Models.Collections
 
         #region ValidBegin2_28
         public string ValidBegin2_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Действует с")]
+        [Form_Property(true,"Действует с")]
         public RamAccess<string> ValidBegin2_28
         {
             get
@@ -1935,7 +1935,7 @@ namespace Models.Collections
 
         #region ValidThru2_28
         public string ValidThru2_28_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Действует по")]
+        [Form_Property(true,"Действует по")]
         public RamAccess<string> ValidThru2_28
         {
             get
@@ -2004,7 +2004,7 @@ namespace Models.Collections
 
         #region  PermissionNumber27
         public string PermissionNumber27_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Номер разрешительного документа")]
+        [Form_Property(true,"Номер разрешительного документа")]
         public RamAccess<string> PermissionNumber27
         {
             get
@@ -2045,7 +2045,7 @@ namespace Models.Collections
 
         #region  PermissionIssueDate27
         public string PermissionIssueDate27_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Дата выпуска разрешительного документа")]
+        [Form_Property(true,"Дата выпуска разрешительного документа")]
         public RamAccess<string> PermissionIssueDate27
         {
             get
@@ -2114,7 +2114,7 @@ namespace Models.Collections
 
         #region  PermissionDocumentName27
         public string PermissionDocumentName27_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Наименование разрешительного документа")]
+        [Form_Property(true,"Наименование разрешительного документа")]
         public RamAccess<string> PermissionDocumentName27
         {
             get
@@ -2155,7 +2155,7 @@ namespace Models.Collections
 
         #region  ValidBegin27
         public string ValidBegin27_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Действует с")]
+        [Form_Property(true,"Действует с")]
         public RamAccess<string> ValidBegin27
         {
             get
@@ -2225,7 +2225,7 @@ namespace Models.Collections
 
         #region  ValidThru27
         public string ValidThru27_DB { get; set; } = "";[NotMapped]
-        [Form_Property("Действует по")]
+        [Form_Property(true,"Действует по")]
         public RamAccess<string> ValidThru27
         {
             get
@@ -2296,7 +2296,7 @@ namespace Models.Collections
         #region SourcesQuantity26
         public int? SourcesQuantity26_DB { get; set; } = null;
         [NotMapped]
-        [Form_Property("Количество источников, шт.")]
+        [Form_Property(true,"Количество источников, шт.")]
         public RamAccess<int?> SourcesQuantity26
         {
             get
@@ -2347,7 +2347,7 @@ namespace Models.Collections
         #region Year
         public int? Year_DB { get; set; } = null;
         [NotMapped]
-        [Form_Property("Отчетный год")]
+        [Form_Property(true,"Отчетный год")]
         public RamAccess<int?> Year
         {
             get
@@ -2405,7 +2405,7 @@ namespace Models.Collections
         #region StartPeriod
         public string StartPeriod_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Дата начала периода")]
+        [Form_Property(true,"Дата начала периода")]
         public RamAccess<string> StartPeriod
         {
             get
@@ -2475,7 +2475,7 @@ namespace Models.Collections
         #region EndPeriod
         public string EndPeriod_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Дата конца периода")]
+        [Form_Property(true,"Дата конца периода")]
         public RamAccess<string> EndPeriod
         {
             get
@@ -2555,7 +2555,7 @@ namespace Models.Collections
 
         public string ExportDate_DB { get; set; } = "";
         [NotMapped]
-        [Form_Property("Дата выгрузки")]
+        [Form_Property(true,"Дата выгрузки")]
         public RamAccess<string> ExportDate
         {
             get

@@ -36,7 +36,7 @@ namespace Models
             FcpNumber_Validation(FcpNumber);
         }
 
-        [Attributes.Form_Property("Форма")]    
+        [Attributes.Form_Property(true,"Форма")]    
         public override bool Object_Validation()
         {
             return !(IndicatorName.HasErrors||
@@ -55,7 +55,7 @@ namespace Models
         #region  IndicatorName
         public string IndicatorName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-2","Наименование показателя","2")]
+        [Attributes.Form_Property(true,"null-2","Наименование показателя","2")]
         public RamAccess<string> IndicatorName
         {
             get
@@ -112,7 +112,7 @@ namespace Models
         #region  PlotName
         public string PlotName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-3","Наименование участка","3")]
+        [Attributes.Form_Property(true,"null-3","Наименование участка","3")]
         public RamAccess<string> PlotName
         {
             get
@@ -161,7 +161,7 @@ namespace Models
         #region PlotKadastrNumber 
         public string PlotKadastrNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-4","Кадастровый номер участка","4")]
+        [Attributes.Form_Property(true,"null-4","Кадастровый номер участка","4")]
         public RamAccess<string> PlotKadastrNumber
         {
             get
@@ -210,7 +210,7 @@ namespace Models
         #region  PlotCode
         public string PlotCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-5","Код участка","5")]
+        [Attributes.Form_Property(true,"null-5","Код участка","5")]
         public RamAccess<string> PlotCode
         {
             get
@@ -265,7 +265,7 @@ namespace Models
         #region  InfectedArea
         public string InfectedArea_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("null-6","Площадь загрязненной территории, кв. м","6")]
+        [Attributes.Form_Property(true,"null-6","Площадь загрязненной территории, кв. м","6")]
         public RamAccess<string> InfectedArea
         {
             get
@@ -344,7 +344,7 @@ namespace Models
         #region  AvgGammaRaysDosePower
         public string AvgGammaRaysDosePower_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Мощность дозы гамма-излучения, мкЗв/час", "средняя","7")]
+        [Attributes.Form_Property(true,"Мощность дозы гамма-излучения, мкЗв/час", "средняя","7")]
         public RamAccess<string> AvgGammaRaysDosePower
         {
             get
@@ -426,7 +426,7 @@ namespace Models
         #region  MaxGammaRaysDosePower
         public string MaxGammaRaysDosePower_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Мощность дозы гамма-излучения, мкЗв/час", "максимальная","8")]
+        [Attributes.Form_Property(true,"Мощность дозы гамма-излучения, мкЗв/час", "максимальная","8")]
         public RamAccess<string> MaxGammaRaysDosePower
         {
             get
@@ -508,7 +508,7 @@ namespace Models
         #region  WasteDensityAlpha
         public string WasteDensityAlpha_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Плотность загрязнения (средняя), Бк/кв.м", "альфа-излучающие радионуклиды","9")]
+        [Attributes.Form_Property(true,"Плотность загрязнения (средняя), Бк/кв.м", "альфа-излучающие радионуклиды","9")]
         public RamAccess<string> WasteDensityAlpha
         {
             get
@@ -590,7 +590,7 @@ namespace Models
         #region  WasteDensityBeta
         public string WasteDensityBeta_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Плотность загрязнения (средняя), Бк/кв.м", "бета-излучающие радионуклиды","10")]
+        [Attributes.Form_Property(true,"Плотность загрязнения (средняя), Бк/кв.м", "бета-излучающие радионуклиды","10")]
         public RamAccess<string> WasteDensityBeta
         {
             get
@@ -671,7 +671,7 @@ namespace Models
         #region  FcpNumber
         public string FcpNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("null-7","Номер мероприятия ФЦП","11")]
+        [Attributes.Form_Property(true,"null-7","Номер мероприятия ФЦП","11")]
         public RamAccess<string> FcpNumber
         {
             get

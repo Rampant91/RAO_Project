@@ -40,7 +40,7 @@ namespace Models
         #region CodeTypeAccObject
         public short? CodeTypeAccObject_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("","Код типа объектов учета","7")]
+        [Attributes.Form_Property(true,"","Код типа объектов учета","7")]
         public RamAccess<short?> CodeTypeAccObject
         {
             get
@@ -91,7 +91,7 @@ namespace Models
         #region Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("Сведения о радиоактивных веществах","радионуклиды","8")]
+        [Attributes.Form_Property(true,"Сведения о радиоактивных веществах","радионуклиды","8")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -151,7 +151,7 @@ namespace Models
         #region Activity
         public string Activity_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("Сведения о радиоактивных веществах","активность, Бк","9")]
+        [Attributes.Form_Property(true,"Сведения о радиоактивных веществах","активность, Бк","9")]
         public RamAccess<string> Activity
         {
             get
