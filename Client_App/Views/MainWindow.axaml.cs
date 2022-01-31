@@ -166,30 +166,30 @@ namespace Client_App.Views
 
             #endregion
             #region Grd2
-            //grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            //{
-            //    IsDoubleTappedCommand = false,
-            //    IsContextMenuCommand = true,
-            //    ParamName = "1.0",
-            //    ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ печати" },
-            //    Command = dataContext.AddReport
-            //});
-            //grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            //{
-            //    IsDoubleTappedCommand = true,
-            //    IsContextMenuCommand = true,
-            //    ParamName = "SelectedItems",
-            //    ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ выгрузки" },
-            //    Command = dataContext.ChangeReport
-            //});
-            //grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            //{
-            //    IsDoubleTappedCommand = false,
-            //    IsContextMenuCommand = true,
-            //    ParamName = "SelectedItems",
-            //    ContextMenuText = new string[] { "Ёкспорт" },
-            //    Command = dataContext.DeleteReport
-            //});
+            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ печати" },
+                Command = dataContext.Print_Excel_Export
+            });
+            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ выгрузки" },
+                Command = dataContext.Excel_Export
+            });
+            grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "Ёкспорт" },
+                Command = dataContext.ExportForm
+            });
             grd2.CommandsList.Add(new Controls.DataGrid.KeyComand()
             {
                 IsDoubleTappedCommand = true,
@@ -254,30 +254,30 @@ namespace Client_App.Views
 
             #endregion
             #region Grd4
-            //grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            //{
-            //    IsDoubleTappedCommand = false,
-            //    IsContextMenuCommand = true,
-            //    ParamName = "1.0",
-            //    ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ печати" },
-            //    Command = dataContext.AddReport
-            //});
-            //grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            //{
-            //    IsDoubleTappedCommand = true,
-            //    IsContextMenuCommand = true,
-            //    ParamName = "SelectedItems",
-            //    ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ выгрузки" },
-            //    Command = dataContext.ChangeReport
-            //});
-            //grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            //{
-            //    IsDoubleTappedCommand = false,
-            //    IsContextMenuCommand = true,
-            //    ParamName = "SelectedItems",
-            //    ContextMenuText = new string[] { "Ёкспорт" },
-            //    Command = dataContext.DeleteReport
-            //});
+            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ печати" },
+                Command = dataContext.Print_Excel_Export
+            });
+            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "Ёкспорт Excel", "ƒл€ выгрузки" },
+                Command = dataContext.Excel_Export
+            });
+            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
+            {
+                IsDoubleTappedCommand = false,
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "Ёкспорт" },
+                Command = dataContext.ExportForm
+            });
             grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
             {
                 IsDoubleTappedCommand = true,

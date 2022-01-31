@@ -175,7 +175,8 @@ namespace Client_App.ViewModels
             OnStartProgressBar = 95;
             DeleteReport =
                 ReactiveCommand.CreateFromTask<object>(_DeleteReport);
-
+            Print_Excel_Export =
+                ReactiveCommand.CreateFromTask<object>(_Print_Excel_Export);
             Excel_Export =
                 ReactiveCommand.CreateFromTask<object>(_Excel_Export);
             All_Excel_Export =
