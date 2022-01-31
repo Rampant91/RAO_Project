@@ -938,7 +938,10 @@ namespace Client_App.ViewModels
                         var tre = (from Reports i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
 
                         ChangeOrCreateVM frm = new(rep.FormNum.Value, rep,tre);
-                        await ShowDialog.Handle(frm);
+                        try
+                        {
+                            await ShowDialog.Handle(frm);
+                        }catch(Exception e) { }
 
                         t.SelectedReports = tmp;
                     }
