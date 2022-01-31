@@ -1232,17 +1232,17 @@ namespace Models
         {
             #region NumberInOrder (1)
             DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
+            NumberInOrderR.SetSizeColToAllLevels(88);
             NumberInOrderR.Binding = nameof(Form.NumberInOrder);
             #endregion
             #region CodeOYAT (2)
             DataGridColumns CodeOYATR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form24.CodeOYAT)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            CodeOYATR.SetSizeColToAllLevels(50);
+            CodeOYATR.SetSizeColToAllLevels(88);
             CodeOYATR.Binding = nameof(Form24.CodeOYAT);
             #endregion
             #region FcpNumber (3)
             DataGridColumns FcpNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form24.FcpNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            FcpNumberR.SetSizeColToAllLevels(50);
+            FcpNumberR.SetSizeColToAllLevels(163);
             FcpNumberR.Binding = nameof(Form24.FcpNumber);
             #endregion
             #region MassCreated (4)
