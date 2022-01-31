@@ -7,8 +7,9 @@
 		Height="30"
 		WindowStartupLocation="CenterScreen"
         x:Class="Client_App.Views.OnStartProgressBar"
-        Title="Загрузка НПЗФ">
+		HasSystemDecorations="False">
 	<Panel>
-		<ProgressBar Maximum="100" Minimum="0" Height="30" Value="{Binding OnStartProgressBar}"></ProgressBar>
+		<ProgressBar  Maximum="100" Minimum="0" Height="40" Value="{Binding OnStartProgressBar}"></ProgressBar>
+		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" Text="Загрузка МПЗФ..."/>
     </Panel>
 </Window>
