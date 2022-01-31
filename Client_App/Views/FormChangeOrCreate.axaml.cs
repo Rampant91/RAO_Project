@@ -259,7 +259,7 @@ namespace Client_App.Views
                 {
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
-                    ParamName = "SelectedCells",
+                    ParamName = "Copy",
                     ContextMenuText = new string[] { "Копировать" },
                     Command = dataContext.CopyRows
                 });
@@ -267,7 +267,7 @@ namespace Client_App.Views
                 {
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
-                    ParamName = "SelectedCells",
+                    ParamName = "Paste",
                     ContextMenuText = new string[] { "Вставить" },
                     Command = dataContext.PasteRows
                 });
