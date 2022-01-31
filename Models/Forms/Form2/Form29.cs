@@ -42,7 +42,7 @@ namespace Models
         //WasteSourceName property
         #region WasteSourceName 
         public string WasteSourceName_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property("","Наименование, номер выпуска сточных вод","2")]
+        [Attributes.Form_Property("null-2","Наименование, номер выпуска сточных вод","2")]
         public RamAccess<string> WasteSourceName
         {
             get
@@ -90,7 +90,7 @@ namespace Models
         #region RadionuclidName
         public string RadionuclidName_DB { get; set; } = ""; 
         [NotMapped]        
-        [Attributes.Form_Property("","Наименование радионуклида","3")]
+        [Attributes.Form_Property("null-3","Наименование радионуклида","3")]
         public RamAccess<string> RadionuclidName
         {
             get
@@ -346,24 +346,28 @@ namespace Models
             NumberInOrderR.Binding = nameof(Form.NumberInOrder);
             #endregion
             #region WasteSourceName (2)
-            DataGridColumns WasteSourceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form29.WasteSourceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns WasteSourceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(Form29.WasteSourceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             WasteSourceNameR.SetSizeColToAllLevels(50);
             WasteSourceNameR.Binding = nameof(Form29.WasteSourceName);
+            NumberInOrderR += WasteSourceNameR;
             #endregion
             #region RadionuclidName (3)
-            DataGridColumns RadionuclidNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form29.RadionuclidName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns RadionuclidNameR = ((Attributes.Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(Form29.RadionuclidName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             RadionuclidNameR.SetSizeColToAllLevels(50);
             RadionuclidNameR.Binding = nameof(Form29.RadionuclidName);
+            NumberInOrderR += RadionuclidNameR;
             #endregion
             #region AllowedActivity (4)
-            DataGridColumns AllowedActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form29.AllowedActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns AllowedActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(Form29.AllowedActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             AllowedActivityR.SetSizeColToAllLevels(50);
             AllowedActivityR.Binding = nameof(Form29.AllowedActivity);
+            NumberInOrderR += AllowedActivityR;
             #endregion
             #region FactedActivity (5)
-            DataGridColumns FactedActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form29.FactedActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns FactedActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(Form29.FactedActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             FactedActivityR.SetSizeColToAllLevels(50);
             FactedActivityR.Binding = nameof(Form29.FactedActivity);
+            NumberInOrderR += FactedActivityR;
             #endregion
             return NumberInOrderR;
         }

@@ -402,6 +402,22 @@ namespace Client_App.Controls.DataGrid
             {
                 return SelectedCells;
             }
+            if (param.ParamName == "Copy")
+            {
+                object[] answ = new object[3];
+                answ[0] = SelectedItems;
+                answ[1] = Math.Min(FirstPressedItem[1],LastPressedItem[1]);
+                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                return answ;
+            }
+            if (param.ParamName == "Paste")
+            {
+                object[] answ = new object[3];
+                answ[0] = SelectedItems;
+                answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+                answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+                return answ;
+            }
             if (param.ParamName == "SelectAll")
             {
                 int maxRow = PageSize;
@@ -670,7 +686,7 @@ namespace Client_App.Controls.DataGrid
 
                 SelectedCells.Clear();
 
-                ObservableCollectionWithItemPropertyChanged<IKey> tmpSelectedItems = new ObservableCollectionWithItemPropertyChanged<IKey>();
+                Dictionary<long,ObservableCollectionWithItemPropertyChanged<IKey>> tmpSelectedItems = new Dictionary<long, ObservableCollectionWithItemPropertyChanged<IKey>>();
 
                 var tmp2 = Rows.SelectMany(x => x.Children).Where(item => ((((Cell)item).Row >= minRow && ((Cell)item).Row <= maxRow) &&
                                                   (((Cell)item).Column >= minColumn && ((Cell)item).Column <= maxColumn)));
@@ -679,9 +695,23 @@ namespace Client_App.Controls.DataGrid
                 {
                     item.ChooseColor = (SolidColorBrush)ChooseColor;
                     SelectedCells.Add(item);
-                    tmpSelectedItems.Add((T)item.DataContext);
+
+                    if(!tmpSelectedItems.ContainsKey(((T)item.DataContext).Order))
+                    {
+                        tmpSelectedItems.Add((((T)item.DataContext).Order),new ObservableCollectionWithItemPropertyChanged<IKey>());
+                    }
+                    tmpSelectedItems[(((T)item.DataContext).Order)].Add((T)item.DataContext);
                 }
-                SelectedItems = tmpSelectedItems;
+                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>();
+                foreach (var item in tmpSelectedItems)
+                {
+                    var value = item.Value.FirstOrDefault();
+                    if (value != null)
+                    {
+                        tmp.Add(value);
+                    }
+                }
+                SelectedItems = tmp;
             }
             else
             {

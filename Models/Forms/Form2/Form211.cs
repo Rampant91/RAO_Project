@@ -51,7 +51,7 @@ namespace Models
         #region  PlotName
         public string PlotName_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Наименование участка","2")]
+        [Attributes.Form_Property("null-1","Наименование участка","2")]
         public RamAccess<string> PlotName
         {
             get
@@ -100,7 +100,7 @@ namespace Models
         #region  PlotKadastrNumber
         public string PlotKadastrNumber_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Кадастровый номер участка","3")]
+        [Attributes.Form_Property("null-1","Кадастровый номер участка","3")]
         public RamAccess<string> PlotKadastrNumber
         {
             get
@@ -149,7 +149,7 @@ namespace Models
         #region  PlotCode
         public string PlotCode_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Код участка","4")]
+        [Attributes.Form_Property("null-1","Код участка","4")]
         public RamAccess<string> PlotCode
         {
             get
@@ -204,7 +204,7 @@ namespace Models
         #region  InfectedArea
         public string InfectedArea_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property("","Площадь загрязненной территории, кв. м","5")]
+        [Attributes.Form_Property("null-1","Площадь загрязненной территории, кв. м","5")]
         public RamAccess<string> InfectedArea
         {
             get
@@ -283,7 +283,7 @@ namespace Models
         #region  Radionuclids
         public string Radionuclids_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Наименования радионуклидов","6")]
+        [Attributes.Form_Property("null-1","Наименования радионуклидов","6")]
         public RamAccess<string> Radionuclids
         {
             get
@@ -346,7 +346,7 @@ namespace Models
         #region  SpecificActivityOfPlot
         public string SpecificActivityOfPlot_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Удельная активность, Бк/г","7")]
+        [Attributes.Form_Property("null-1","Удельная активность, Бк/г","7")]
         public RamAccess<string> SpecificActivityOfPlot
         {
             get
@@ -429,7 +429,7 @@ namespace Models
         #region  SpecificActivityOfLiquidPart
         public string SpecificActivityOfLiquidPart_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Удельная активность жидкой части, Бк/г","8")]
+        [Attributes.Form_Property("null-1","Удельная активность жидкой части, Бк/г","8")]
         public RamAccess<string> SpecificActivityOfLiquidPart
         {
             get
@@ -512,7 +512,7 @@ namespace Models
         #region SpecificActivityOfDensePart 
         public string SpecificActivityOfDensePart_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property("","Удельная активность твердой части, Бк/г","9")]
+        [Attributes.Form_Property("null-1","Удельная активность твердой части, Бк/г","9")]
         public RamAccess<string> SpecificActivityOfDensePart
         {
             get
@@ -636,44 +636,52 @@ namespace Models
             NumberInOrderR.Binding = nameof(Form.NumberInOrder);
             #endregion
             #region PlotName (2)
-            DataGridColumns PlotNameR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form211.PlotName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns PlotNameR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.PlotName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             PlotNameR.SetSizeColToAllLevels(50);
             PlotNameR.Binding = nameof(Form211.PlotName);
+            NumberInOrderR += PlotNameR;
             #endregion
             #region PlotKadastrNumber (3)
-            DataGridColumns PlotKadastrNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form211.PlotKadastrNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns PlotKadastrNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.PlotKadastrNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             PlotKadastrNumberR.SetSizeColToAllLevels(50);
             PlotKadastrNumberR.Binding = nameof(Form211.PlotKadastrNumber);
+            NumberInOrderR += PlotKadastrNumberR;
             #endregion
             #region PlotCode (4)
-            DataGridColumns PlotCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form211.PlotCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns PlotCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.PlotCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             PlotCodeR.SetSizeColToAllLevels(50);
             PlotCodeR.Binding = nameof(Form211.PlotCode);
+            NumberInOrderR += PlotCodeR;
             #endregion
             #region InfectedArea (5)
-            DataGridColumns InfectedAreaR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form211.InfectedArea)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns InfectedAreaR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.InfectedArea)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             InfectedAreaR.SetSizeColToAllLevels(50);
             InfectedAreaR.Binding = nameof(Form211.InfectedArea);
+            NumberInOrderR += InfectedAreaR;
             #endregion
             #region Radionuclids (6)
-            DataGridColumns RadionuclidsR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form211.Radionuclids)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns RadionuclidsR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.Radionuclids)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             RadionuclidsR.SetSizeColToAllLevels(50);
             RadionuclidsR.Binding = nameof(Form211.Radionuclids);
+            NumberInOrderR += RadionuclidsR;
             #endregion
             #region SpecificActivityOfPlot (7)
-            DataGridColumns SpecificActivityOfPlotR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form211.SpecificActivityOfPlot)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns SpecificActivityOfPlotR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.SpecificActivityOfPlot)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             SpecificActivityOfPlotR.SetSizeColToAllLevels(50);
             SpecificActivityOfPlotR.Binding = nameof(Form211.SpecificActivityOfPlot);
+            NumberInOrderR += SpecificActivityOfPlotR;
             #endregion
             #region SpecificActivityOfLiquidPart (8)
-            DataGridColumns SpecificActivityOfLiquidPartR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form211.SpecificActivityOfLiquidPart)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns SpecificActivityOfLiquidPartR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.SpecificActivityOfLiquidPart)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             SpecificActivityOfLiquidPartR.SetSizeColToAllLevels(50);
             SpecificActivityOfLiquidPartR.Binding = nameof(Form211.SpecificActivityOfLiquidPart);
+            NumberInOrderR += SpecificActivityOfLiquidPartR;
             #endregion
             #region SpecificActivityOfDensePart (9)
-            DataGridColumns SpecificActivityOfDensePartR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form211.SpecificActivityOfDensePart)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+            DataGridColumns SpecificActivityOfDensePartR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.SpecificActivityOfDensePart)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             SpecificActivityOfDensePartR.SetSizeColToAllLevels(50);
             SpecificActivityOfDensePartR.Binding = nameof(Form211.SpecificActivityOfDensePart);
+            NumberInOrderR += SpecificActivityOfDensePartR;
             #endregion
             return NumberInOrderR;
         }
