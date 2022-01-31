@@ -444,36 +444,36 @@ namespace Models
         {
             #region NumberInOrder (1)
             DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(50);
+            NumberInOrderR.SetSizeColToAllLevels(88);
             NumberInOrderR.Binding = nameof(Form.NumberInOrder);
             #endregion
             #region ObservedSourceNumber (2)
             DataGridColumns ObservedSourceNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(Form27.ObservedSourceNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            ObservedSourceNumberR.SetSizeColToAllLevels(50);
+            ObservedSourceNumberR.SetSizeColToAllLevels(238);
             ObservedSourceNumberR.Binding = nameof(Form27.ObservedSourceNumber);
             NumberInOrderR += ObservedSourceNumberR;
             #endregion
             #region RadionuclidName (3)
             DataGridColumns RadionuclidNameR = ((Attributes.Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(Form27.RadionuclidName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            RadionuclidNameR.SetSizeColToAllLevels(50);
+            RadionuclidNameR.SetSizeColToAllLevels(163);
             RadionuclidNameR.Binding = nameof(Form27.RadionuclidName);
             NumberInOrderR += RadionuclidNameR;
             #endregion
             #region AllowedWasteValue (4)
             DataGridColumns AllowedWasteValueR = ((Attributes.Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(Form27.AllowedWasteValue)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            AllowedWasteValueR.SetSizeColToAllLevels(50);
+            AllowedWasteValueR.SetSizeColToAllLevels(140);
             AllowedWasteValueR.Binding = nameof(Form27.AllowedWasteValue);
             NumberInOrderR += AllowedWasteValueR;
             #endregion
             #region FactedWasteValue (5)
             DataGridColumns FactedWasteValueR = ((Attributes.Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(Form27.FactedWasteValue)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            FactedWasteValueR.SetSizeColToAllLevels(50);
+            FactedWasteValueR.SetSizeColToAllLevels(140);
             FactedWasteValueR.Binding = nameof(Form27.FactedWasteValue);
             NumberInOrderR += FactedWasteValueR;
             #endregion
             #region WasteOutbreakPreviousYear (6)
             DataGridColumns WasteOutbreakPreviousYearR = ((Attributes.Form_PropertyAttribute)typeof(Form27).GetProperty(nameof(Form27.WasteOutbreakPreviousYear)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            WasteOutbreakPreviousYearR.SetSizeColToAllLevels(50);
+            WasteOutbreakPreviousYearR.SetSizeColToAllLevels(283);
             WasteOutbreakPreviousYearR.Binding = nameof(Form27.WasteOutbreakPreviousYear);
             NumberInOrderR += WasteOutbreakPreviousYearR;
             #endregion
