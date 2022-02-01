@@ -171,6 +171,11 @@ namespace Client_App.Long_Visual
                 Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl2.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl2.ColumnDefinitions.Add(column);
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl2.SetValue(Grid.RowProperty, 0);

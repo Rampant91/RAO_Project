@@ -879,6 +879,7 @@ namespace Client_App.ViewModels
                                                                         {
                                                                         str,
                                                                         "Заменить",
+                                                                        "Дополнить",
                                                                         "Сохранить оба",
                                                                         "Отменить" });
                                                                         if (an == "Сохранить оба")
@@ -888,6 +889,15 @@ namespace Client_App.ViewModels
                                                                         if (an == "Заменить")
                                                                         {
                                                                             first21.Report_Collection.Remove(elem);
+                                                                            first21.Report_Collection.Add(it);
+                                                                        }
+                                                                        if (an == "Дополнить")
+                                                                        {
+                                                                            first21.Report_Collection.Remove(elem);
+
+                                                                            it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
+                                                                            it.Notes.AddRange<IKey>(0, elem.Notes);
+
                                                                             first21.Report_Collection.Add(it);
                                                                         }
                                                                     }

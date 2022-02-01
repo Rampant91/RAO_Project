@@ -244,6 +244,7 @@ namespace Models.Collections
             foreach (var item in obj)
             {
                 item.PropertyChanged += ChildPropertyChanged;
+                item.SetOrder(count+1);
                 var itemq = Items.Where(x=>x.Order>=item.Order);
                 foreach(var it in itemq)
                 {
