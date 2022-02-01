@@ -175,8 +175,9 @@ namespace Client_App.Long_Visual
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl2.SetValue(Grid.RowProperty, 0);
 
-            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 0, 30, "CheckReport"));
-            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 1, 30, "SaveReport"));
+            topPnl2.Children.Add(CreateButton("Поменять местами", "5,12,0,0", 0, 30, "ChangeReportOrder"));
+            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 1, 30, "CheckReport"));
+            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 2, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
 

@@ -25,6 +25,7 @@ namespace Client_App.Long_Visual
                 [!Button.CommandProperty] = new Binding(commProp),
                 [Grid.ColumnProperty] = columnProp
             };
+
         }
 
         public static Cell CreateTextBox(string thickness, int columnProp, int height, string textProp, double width, string watermark = "", bool _flag = false)
@@ -173,12 +174,18 @@ namespace Client_App.Long_Visual
                 Width = new GridLength(1, GridUnitType.Star)
             };
             topPnl2.ColumnDefinitions.Add(column);
+            column = new ColumnDefinition
+            {
+                Width = new GridLength(1, GridUnitType.Star)
+            };
+            topPnl2.ColumnDefinitions.Add(column);
             topPnl2.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             topPnl2.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
             topPnl2.SetValue(Grid.RowProperty, 0);
 
-            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 0, 30, "CheckReport"));
-            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 1, 30, "SaveReport"));
+            topPnl2.Children.Add(CreateButton("Поменять местами", "5,12,0,0", 0, 30, "ChangeReportOrder"));
+            topPnl2.Children.Add(CreateButton("Проверить", "5,12,0,0", 1, 30, "CheckReport"));
+            topPnl2.Children.Add(CreateButton("Сохранить", "5,12,0,0", 2, 30, "SaveReport"));
 
             maingrid.Children.Add(topPnl2);
 

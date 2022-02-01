@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 using OfficeOpenXml;
+using System;
 
 namespace Models.Abstracts
 {
@@ -61,6 +62,13 @@ namespace Models.Abstracts
             get
             {
                 return NumberInOrder_DB;
+            }
+            set
+            {
+                if (NumberInOrder_DB != value)
+                {
+                    NumberInOrder_DB = Convert.ToInt32(value);
+                }
             }
         }
 
