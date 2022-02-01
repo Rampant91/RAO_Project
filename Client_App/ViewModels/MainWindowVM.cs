@@ -120,6 +120,10 @@ namespace Client_App.ViewModels
                             it.Master_DB.Rows20.Add(ty1);
                             it.Master_DB.Rows20.Add(ty2);
                         }
+                        it.Master_DB.Rows10.Sorted = false;
+                        it.Master_DB.Rows20.Sorted = false;
+                        it.Master_DB.Rows10.QuickSort();
+                        it.Master_DB.Rows20.QuickSort();
                     }
                 }
             }
