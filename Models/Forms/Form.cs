@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 using OfficeOpenXml;
+using System;
 
 namespace Models.Abstracts
 {

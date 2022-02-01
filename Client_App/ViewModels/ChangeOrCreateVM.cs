@@ -133,6 +133,7 @@ namespace Client_App.ViewModels
         }
 
         public ReactiveCommand<Unit, Unit> CheckReport { get; protected set; }
+        public ReactiveCommand<Unit, Unit> ChangeReportOrder { get; protected set; }
         public ReactiveCommand<Unit, Unit> SumRow { get; protected set; }
         public ReactiveCommand<string, Unit> AddSort { get; protected set; }
         public ReactiveCommand<object, Unit> AddNote { get; protected set; }
@@ -267,6 +268,7 @@ namespace Client_App.ViewModels
             AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
             AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
             DeleteRow = ReactiveCommand.CreateFromTask<object>(_DeleteRow);
+            ChangeReportOrder = ReactiveCommand.Create(_ChangeReportOrder);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             SumRow = ReactiveCommand.Create(_SumRow);
             PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);
@@ -363,6 +365,20 @@ namespace Client_App.ViewModels
         private void _CheckReport()
         {
             IsCanSaveReportEnabled = true;
+        }
+        private void _ChangeReportOrder()
+        {
+            Storage.Rows10.Sorted = false;
+            Storage.Rows20.Sorted = false;
+            var tmp = Storage.Rows10[0].Order;
+            Storage.Rows10[0].SetOrder(Storage.Rows10[1].Order);
+            Storage.Rows10[1].SetOrder(tmp);
+            Storage.Rows10.QuickSort();
+
+            tmp = Storage.Rows20[0].Order;
+            Storage.Rows20[0].SetOrder(Storage.Rows20[1].Order);
+            Storage.Rows20[1].SetOrder(tmp);
+            Storage.Rows20.QuickSort();
         }
         private void _SumRow()
         {

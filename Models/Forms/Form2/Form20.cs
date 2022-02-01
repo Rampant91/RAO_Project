@@ -167,7 +167,7 @@ namespace Models
         public string SubjectRF_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Субъект Российской Федерации")]
+        [Attributes.Form_Property(true, "Субъект Российской Федерации", "Субъект Российской Федерации")]
         public RamAccess<string> SubjectRF
         {
             get
@@ -214,7 +214,7 @@ namespace Models
         public string JurLico_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Наименование юридического лица")]
+        [Attributes.Form_Property(true, "Наименование юридического лица", "Наименование обособленного подразделения")]
         public RamAccess<string> JurLico
         {
             get
@@ -261,7 +261,7 @@ namespace Models
         public string ShortJurLico_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Сокращенное наименование юридического лица")]
+        [Attributes.Form_Property(true, "Сокращенное наименование", "Сокращенное наименование")]
         public RamAccess<string> ShortJurLico
         {
             get
@@ -308,7 +308,7 @@ namespace Models
         public string JurLicoAddress_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Адрес места нахождения юридического лица")]
+        [Attributes.Form_Property(true, "Адрес места нахождения юридического лица", "Адрес места нахождения обособленного подразделения")]
         public RamAccess<string> JurLicoAddress
         {
             get
@@ -355,7 +355,7 @@ namespace Models
         public string JurLicoFactAddress_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Фактический адрес юр. лица")]
+        [Attributes.Form_Property(true, "Фактический адрес юр. лица", "Фактический адрес обособленного подразделения")]
         public RamAccess<string> JurLicoFactAddress
         {
             get
@@ -402,7 +402,7 @@ namespace Models
         public string GradeFIO_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ФИО, должность руководителя")]
+        [Attributes.Form_Property(true,"ФИО, должность руководителя", "ФИО, должность руководителя")]
         public RamAccess<string> GradeFIO
         {
             get
@@ -449,7 +449,7 @@ namespace Models
         public string Telephone_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Телефон организации")]
+        [Attributes.Form_Property(true,"Телефон организации", "Телефон организации")]
         public RamAccess<string> Telephone
         {
             get
@@ -496,7 +496,7 @@ namespace Models
         public string Fax_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Факс организации")]
+        [Attributes.Form_Property(true,"Факс организации", "Факс организации")]
         public RamAccess<string> Fax
         {
             get
@@ -543,7 +543,7 @@ namespace Models
         public string Email_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Эл. почта организации")]
+        [Attributes.Form_Property(true,"Эл. почта организации", "Эл. почта организации")]
         public RamAccess<string> Email
         {
             get
@@ -590,7 +590,7 @@ namespace Models
         public string Okpo_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКПО")]
+        [Attributes.Form_Property(true,"ОКПО", "ОКПО")]
         public RamAccess<string> Okpo
         {
             get
@@ -657,7 +657,7 @@ namespace Models
         public string Okved_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКВЭД")]
+        [Attributes.Form_Property(true,"ОКВЭД", "ОКВЭД")]
         public RamAccess<string> Okved
         {
             get
@@ -718,7 +718,7 @@ namespace Models
         public string Okogu_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКОГУ")]
+        [Attributes.Form_Property(true,"ОКОГУ", "ОКОГУ")]
         public RamAccess<string> Okogu
         {
             get
@@ -779,7 +779,7 @@ namespace Models
         public string Oktmo_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКТМО")]
+        [Attributes.Form_Property(true,"ОКТМО", "ОКТМО")]
         public RamAccess<string> Oktmo
         {
             get
@@ -840,7 +840,7 @@ namespace Models
         public string Inn_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ИНН")]
+        [Attributes.Form_Property(true,"ИНН", "ИНН")]
         public RamAccess<string> Inn
         {
             get
@@ -901,7 +901,7 @@ namespace Models
         public string Kpp_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"КПП")]
+        [Attributes.Form_Property(true,"КПП", "КПП")]
         public RamAccess<string> Kpp
         {
             get
@@ -962,7 +962,7 @@ namespace Models
         public string Okopf_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКОПФ")]
+        [Attributes.Form_Property(true,"ОКОПФ", "ОКОПФ")]
         public RamAccess<string> Okopf
         {
             get
@@ -1023,7 +1023,7 @@ namespace Models
         public string Okfs_DB { get; set; } = "";
 
         [NotMapped]
-        [Attributes.Form_Property(true,"ОКФС")]
+        [Attributes.Form_Property(true,"ОКФС", "ОКФС")]
         public RamAccess<string> Okfs
         {
             get

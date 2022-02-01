@@ -128,6 +128,10 @@ namespace Client_App.ViewModels
                             it.Master_DB.Rows20.Add(ty1);
                             it.Master_DB.Rows20.Add(ty2);
                         }
+                        it.Master_DB.Rows10.Sorted = false;
+                        it.Master_DB.Rows20.Sorted = false;
+                        it.Master_DB.Rows10.QuickSort();
+                        it.Master_DB.Rows20.QuickSort();
                     }
                 }
             }
@@ -269,7 +273,6 @@ namespace Client_App.ViewModels
                         var y = t.SelectedReports.First() as Reports;
                         if (y.Master.FormNum_DB.Split(".")[0] == param.Split(".")[0])
                         {
-                            //y.Report_Collection.Add(rt);
                             var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
 
                             ChangeOrCreateVM frm = new(param, y);
@@ -586,14 +589,42 @@ namespace Client_App.ViewModels
                                                 {
                                                     if (item.Master_DB.Rows10[0].Id > item.Master_DB.Rows10[1].Id)
                                                     {
-                                                        item.Master_DB.Rows10[0].NumberInOrder_DB = 2;
-                                                        item.Master_DB.Rows10[1].NumberInOrder_DB = 1;
+                                                        if (item.Master_DB.Rows10[0].NumberInOrder_DB == 0)
+                                                        {
+                                                            item.Master_DB.Rows10[0].NumberInOrder_DB = 2;
+                                                        }
+                                                        if (item.Master_DB.Rows10[1].NumberInOrder_DB == 0)
+                                                        {
+                                                            if (item.Master_DB.Rows10[1].NumberInOrder_DB == 2)
+                                                            {
+                                                                item.Master_DB.Rows10[1].NumberInOrder_DB = 1;
+                                                            }
+                                                            else
+                                                            {
+                                                                item.Master_DB.Rows10[1].NumberInOrder_DB = 2;
+                                                            }
+                                                        }
+                                                        item.Master_DB.Rows10.Sorted = false;
                                                         item.Master_DB.Rows10.QuickSort();
                                                     }
                                                     else
                                                     {
-                                                        item.Master_DB.Rows10[0].NumberInOrder_DB = 1;
-                                                        item.Master_DB.Rows10[1].NumberInOrder_DB = 2;
+                                                        if (item.Master_DB.Rows10[0].NumberInOrder_DB == 0)
+                                                        {
+                                                            item.Master_DB.Rows10[0].NumberInOrder_DB = 1;
+                                                        }
+                                                        if (item.Master_DB.Rows10[1].NumberInOrder_DB == 0)
+                                                        {
+                                                            if (item.Master_DB.Rows10[1].NumberInOrder_DB == 2)
+                                                            {
+                                                                item.Master_DB.Rows10[1].NumberInOrder_DB = 1;
+                                                            }
+                                                            else
+                                                            {
+                                                                item.Master_DB.Rows10[1].NumberInOrder_DB = 2;
+                                                            }
+                                                        }
+                                                        item.Master_DB.Rows10.Sorted = false;
                                                         item.Master_DB.Rows10.QuickSort();
                                                     }
                                                 }
@@ -601,14 +632,42 @@ namespace Client_App.ViewModels
                                                 {
                                                     if (item.Master_DB.Rows20[0].Id > item.Master_DB.Rows20[1].Id)
                                                     {
-                                                        item.Master_DB.Rows20[0].NumberInOrder_DB = 2;
-                                                        item.Master_DB.Rows20[1].NumberInOrder_DB = 1;
+                                                        if (item.Master_DB.Rows20[0].NumberInOrder_DB == 0)
+                                                        {
+                                                            item.Master_DB.Rows20[0].NumberInOrder_DB = 2;
+                                                        }
+                                                        if (item.Master_DB.Rows20[1].NumberInOrder_DB == 0)
+                                                        {
+                                                            if (item.Master_DB.Rows20[1].NumberInOrder_DB == 2)
+                                                            {
+                                                                item.Master_DB.Rows20[1].NumberInOrder_DB = 1;
+                                                            }
+                                                            else
+                                                            {
+                                                                item.Master_DB.Rows20[1].NumberInOrder_DB = 2;
+                                                            }
+                                                        }
+                                                        item.Master_DB.Rows20.Sorted = false;
                                                         item.Master_DB.Rows20.QuickSort();
                                                     }
                                                     else
                                                     {
-                                                        item.Master_DB.Rows20[0].NumberInOrder_DB = 1;
-                                                        item.Master_DB.Rows20[1].NumberInOrder_DB = 2;
+                                                        if (item.Master_DB.Rows20[0].NumberInOrder_DB == 0)
+                                                        {
+                                                            item.Master_DB.Rows20[0].NumberInOrder_DB = 1;
+                                                        }
+                                                        if (item.Master_DB.Rows20[1].NumberInOrder_DB == 0)
+                                                        {
+                                                            if (item.Master_DB.Rows20[1].NumberInOrder_DB == 2)
+                                                            {
+                                                                item.Master_DB.Rows20[1].NumberInOrder_DB = 1;
+                                                            }
+                                                            else
+                                                            {
+                                                                item.Master_DB.Rows20[1].NumberInOrder_DB = 2;
+                                                            }
+                                                        }
+                                                        item.Master_DB.Rows20.Sorted = false;
                                                         item.Master_DB.Rows20.QuickSort();
                                                     }
                                                 }
