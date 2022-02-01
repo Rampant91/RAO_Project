@@ -371,13 +371,13 @@ namespace Client_App.ViewModels
             Storage.Rows10.Sorted = false;
             Storage.Rows20.Sorted = false;
             var tmp = Storage.Rows10[0].Order;
-            Storage.Rows10[0].Order= Storage.Rows10[1].Order;
-            Storage.Rows10[1].Order=tmp;
+            Storage.Rows10[0].SetOrder(Storage.Rows10[1].Order);
+            Storage.Rows10[1].SetOrder(tmp);
             Storage.Rows10.QuickSort();
 
             tmp = Storage.Rows20[0].Order;
-            Storage.Rows20[0].Order = Storage.Rows20[1].Order;
-            Storage.Rows20[1].Order = tmp;
+            Storage.Rows20[0].SetOrder(Storage.Rows20[1].Order);
+            Storage.Rows20[1].SetOrder(tmp);
             Storage.Rows20.QuickSort();
         }
         private void _SumRow()

@@ -152,6 +152,7 @@ namespace Client_App.Long_Visual
             StackPanel headerButtons = new StackPanel();
             headerButtons.Orientation = Orientation.Horizontal;
             headerStackPanel.Children.Add(headerButtons);
+            headerButtons.Children.Add(CreateButton("Поменять местами", "5,5,0,0", 30, "ChangeReportOrder"));
             headerButtons.Children.Add(CreateButton("Проверить", "5,5,0,0", 30, "CheckReport"));
             headerButtons.Children.Add(CreateButton("Сохранить", "5,5,0,0", 30, "SaveReport"));
             #endregion
