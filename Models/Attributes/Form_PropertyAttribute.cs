@@ -61,7 +61,7 @@ namespace Models.Attributes
                                 _tmp = it;
                             }
                         }
-                        catch { }
+                        catch(Exception e){ }
                     }
                 }
             }

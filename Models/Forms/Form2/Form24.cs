@@ -1228,94 +1228,99 @@ namespace Models
         }
         #endregion
         #region IDataGridColumn
+        private static DataGridColumns _DataGridColumns { get; set; } = null;
         public override DataGridColumns GetColumnStructure(string param = "")
         {
-            #region NumberInOrder (1)
-            DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            NumberInOrderR.SetSizeColToAllLevels(88);
-            NumberInOrderR.Binding = nameof(Form.NumberInOrder);
-            #endregion
-            #region CodeOYAT (2)
-            DataGridColumns CodeOYATR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.CodeOYAT)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            CodeOYATR.SetSizeColToAllLevels(88);
-            CodeOYATR.Binding = nameof(Form24.CodeOYAT);
-            #endregion
-            #region FcpNumber (3)
-            DataGridColumns FcpNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.FcpNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            FcpNumberR.SetSizeColToAllLevels(163);
-            FcpNumberR.Binding = nameof(Form24.FcpNumber);
-            #endregion
-            #region MassCreated (4)
-            DataGridColumns MassCreatedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassCreated)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            MassCreatedR.SetSizeColToAllLevels(50);
-            MassCreatedR.Binding = nameof(Form24.MassCreated);
-            #endregion
-            #region QuantityCreated (5)
-            DataGridColumns QuantityCreatedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityCreated)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            QuantityCreatedR.SetSizeColToAllLevels(50);
-            QuantityCreatedR.Binding = nameof(Form24.QuantityCreated);
-            #endregion
-            #region MassFromAnothers (6)
-            DataGridColumns MassFromAnothersR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassFromAnothers)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            MassFromAnothersR.SetSizeColToAllLevels(50);
-            MassFromAnothersR.Binding = nameof(Form24.MassFromAnothers);
-            #endregion
-            #region QuantityFromAnothers (7)
-            DataGridColumns QuantityFromAnothersR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityFromAnothers)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            QuantityFromAnothersR.SetSizeColToAllLevels(50);
-            QuantityFromAnothersR.Binding = nameof(Form24.QuantityFromAnothers);
-            #endregion
-            #region MassFromAnothersImported (8)
-            DataGridColumns MassFromAnothersImportedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassFromAnothersImported)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            MassFromAnothersImportedR.SetSizeColToAllLevels(50);
-            MassFromAnothersImportedR.Binding = nameof(Form24.MassFromAnothersImported);
-            #endregion
-            #region QuantityFromAnothersImported (9)
-            DataGridColumns QuantityFromAnothersImportedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityFromAnothersImported)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            QuantityFromAnothersImportedR.SetSizeColToAllLevels(50);
-            QuantityFromAnothersImportedR.Binding = nameof(Form24.QuantityFromAnothersImported);
-            #endregion
-            #region MassAnotherReasons (10)
-            DataGridColumns MassAnotherReasonsR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassAnotherReasons)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            MassAnotherReasonsR.SetSizeColToAllLevels(50);
-            MassAnotherReasonsR.Binding = nameof(Form24.MassAnotherReasons);
-            #endregion
-            #region QuantityAnotherReasons (11)
-            DataGridColumns QuantityAnotherReasonsR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityAnotherReasons)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            QuantityAnotherReasonsR.SetSizeColToAllLevels(50);
-            QuantityAnotherReasonsR.Binding = nameof(Form24.QuantityAnotherReasons);
-            #endregion
-            #region MassTransferredToAnother (12)
-            DataGridColumns MassTransferredToAnotherR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassTransferredToAnother)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            MassTransferredToAnotherR.SetSizeColToAllLevels(50);
-            MassTransferredToAnotherR.Binding = nameof(Form24.MassTransferredToAnother);
-            #endregion
-            #region QuantityTransferredToAnother (13)
-            DataGridColumns QuantityTransferredToAnotherR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityTransferredToAnother)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            QuantityTransferredToAnotherR.SetSizeColToAllLevels(50);
-            QuantityTransferredToAnotherR.Binding = nameof(Form24.QuantityTransferredToAnother);
-            #endregion
-            #region MassRefined (14)
-            DataGridColumns MassRefinedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassRefined)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            MassRefinedR.SetSizeColToAllLevels(50);
-            MassRefinedR.Binding = nameof(Form24.MassRefined);
-            #endregion
-            #region QuantityRefined (15)
-            DataGridColumns QuantityRefinedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityRefined)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            QuantityRefinedR.SetSizeColToAllLevels(50);
-            QuantityRefinedR.Binding = nameof(Form24.QuantityRefined);
-            #endregion
-            #region MassRemovedFromAccount (16)
-            DataGridColumns MassRemovedFromAccountR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassRemovedFromAccount)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            MassRemovedFromAccountR.SetSizeColToAllLevels(50);
-            MassRemovedFromAccountR.Binding = nameof(Form24.MassRemovedFromAccount);
-            #endregion
-            #region QuantityRemovedFromAccount (17)
-            DataGridColumns QuantityRemovedFromAccountR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityRemovedFromAccount)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            QuantityRemovedFromAccountR.SetSizeColToAllLevels(50);
-            QuantityRemovedFromAccountR.Binding = nameof(Form24.QuantityRemovedFromAccount);
-            #endregion
-            return NumberInOrderR;
+            if (_DataGridColumns == null)
+            {
+                #region NumberInOrder (1)
+                DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                NumberInOrderR.SetSizeColToAllLevels(88);
+                NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+                #endregion
+                #region CodeOYAT (2)
+                DataGridColumns CodeOYATR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.CodeOYAT)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                CodeOYATR.SetSizeColToAllLevels(88);
+                CodeOYATR.Binding = nameof(Form24.CodeOYAT);
+                #endregion
+                #region FcpNumber (3)
+                DataGridColumns FcpNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.FcpNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                FcpNumberR.SetSizeColToAllLevels(163);
+                FcpNumberR.Binding = nameof(Form24.FcpNumber);
+                #endregion
+                #region MassCreated (4)
+                DataGridColumns MassCreatedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassCreated)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                MassCreatedR.SetSizeColToAllLevels(50);
+                MassCreatedR.Binding = nameof(Form24.MassCreated);
+                #endregion
+                #region QuantityCreated (5)
+                DataGridColumns QuantityCreatedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityCreated)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                QuantityCreatedR.SetSizeColToAllLevels(50);
+                QuantityCreatedR.Binding = nameof(Form24.QuantityCreated);
+                #endregion
+                #region MassFromAnothers (6)
+                DataGridColumns MassFromAnothersR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassFromAnothers)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                MassFromAnothersR.SetSizeColToAllLevels(50);
+                MassFromAnothersR.Binding = nameof(Form24.MassFromAnothers);
+                #endregion
+                #region QuantityFromAnothers (7)
+                DataGridColumns QuantityFromAnothersR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityFromAnothers)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                QuantityFromAnothersR.SetSizeColToAllLevels(50);
+                QuantityFromAnothersR.Binding = nameof(Form24.QuantityFromAnothers);
+                #endregion
+                #region MassFromAnothersImported (8)
+                DataGridColumns MassFromAnothersImportedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassFromAnothersImported)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                MassFromAnothersImportedR.SetSizeColToAllLevels(50);
+                MassFromAnothersImportedR.Binding = nameof(Form24.MassFromAnothersImported);
+                #endregion
+                #region QuantityFromAnothersImported (9)
+                DataGridColumns QuantityFromAnothersImportedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityFromAnothersImported)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                QuantityFromAnothersImportedR.SetSizeColToAllLevels(50);
+                QuantityFromAnothersImportedR.Binding = nameof(Form24.QuantityFromAnothersImported);
+                #endregion
+                #region MassAnotherReasons (10)
+                DataGridColumns MassAnotherReasonsR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassAnotherReasons)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                MassAnotherReasonsR.SetSizeColToAllLevels(50);
+                MassAnotherReasonsR.Binding = nameof(Form24.MassAnotherReasons);
+                #endregion
+                #region QuantityAnotherReasons (11)
+                DataGridColumns QuantityAnotherReasonsR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityAnotherReasons)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                QuantityAnotherReasonsR.SetSizeColToAllLevels(50);
+                QuantityAnotherReasonsR.Binding = nameof(Form24.QuantityAnotherReasons);
+                #endregion
+                #region MassTransferredToAnother (12)
+                DataGridColumns MassTransferredToAnotherR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassTransferredToAnother)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                MassTransferredToAnotherR.SetSizeColToAllLevels(50);
+                MassTransferredToAnotherR.Binding = nameof(Form24.MassTransferredToAnother);
+                #endregion
+                #region QuantityTransferredToAnother (13)
+                DataGridColumns QuantityTransferredToAnotherR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityTransferredToAnother)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                QuantityTransferredToAnotherR.SetSizeColToAllLevels(50);
+                QuantityTransferredToAnotherR.Binding = nameof(Form24.QuantityTransferredToAnother);
+                #endregion
+                #region MassRefined (14)
+                DataGridColumns MassRefinedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassRefined)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                MassRefinedR.SetSizeColToAllLevels(50);
+                MassRefinedR.Binding = nameof(Form24.MassRefined);
+                #endregion
+                #region QuantityRefined (15)
+                DataGridColumns QuantityRefinedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityRefined)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                QuantityRefinedR.SetSizeColToAllLevels(50);
+                QuantityRefinedR.Binding = nameof(Form24.QuantityRefined);
+                #endregion
+                #region MassRemovedFromAccount (16)
+                DataGridColumns MassRemovedFromAccountR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassRemovedFromAccount)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                MassRemovedFromAccountR.SetSizeColToAllLevels(50);
+                MassRemovedFromAccountR.Binding = nameof(Form24.MassRemovedFromAccount);
+                #endregion
+                #region QuantityRemovedFromAccount (17)
+                DataGridColumns QuantityRemovedFromAccountR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityRemovedFromAccount)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                QuantityRemovedFromAccountR.SetSizeColToAllLevels(50);
+                QuantityRemovedFromAccountR.Binding = nameof(Form24.QuantityRemovedFromAccount);
+                #endregion
+                _DataGridColumns = NumberInOrderR;
+            }
+            return _DataGridColumns;
         }
         #endregion
     }

@@ -1164,7 +1164,7 @@ namespace Models
 
             #region PassportNumber (4)
             DataGridColumns PassportNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form13).GetProperty(nameof(Form13.PassportNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            PassportNumberR.SetSizeColToAllLevels(170);
+            PassportNumberR.SetSizeColToAllLevels(180);
             PassportNumberR.Binding = nameof(Form13.PassportNumber);
             NumberInOrderR += PassportNumberR;
             #endregion
@@ -1227,14 +1227,14 @@ namespace Models
 
             #region Owner (13)
             DataGridColumns OwnerR = ((Attributes.Form_PropertyAttribute)typeof(Form13).GetProperty(nameof(Form13.Owner)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            OwnerR.SetSizeColToAllLevels(140);
+            OwnerR.SetSizeColToAllLevels(180);
             OwnerR.Binding = nameof(Form13.Owner);
             NumberInOrderR += OwnerR;
             #endregion
 
             #region DocumentVid (14)
             DataGridColumns DocumentVidR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.DocumentVid)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            DocumentVidR.SetSizeColToAllLevels(88);
+            DocumentVidR.SetSizeColToAllLevels(100);
             DocumentVidR.Binding = nameof(Form1.DocumentVid);
             #endregion
 

@@ -1113,14 +1113,14 @@ namespace Models
 
             #region Mass (7)
             DataGridColumns MassR = ((Attributes.Form_PropertyAttribute)typeof(Form12).GetProperty(nameof(Form12.Mass)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            MassR.SetSizeColToAllLevels(140);
+            MassR.SetSizeColToAllLevels(175);
             MassR.Binding = nameof(Form12.Mass);
             NumberInOrderR += MassR;
             #endregion
 
             #region CreatorOKPO (8)
             DataGridColumns CreatorOKPOR = ((Attributes.Form_PropertyAttribute)typeof(Form12).GetProperty(nameof(Form12.CreatorOKPO)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            CreatorOKPOR.SetSizeColToAllLevels(100);
+            CreatorOKPOR.SetSizeColToAllLevels(150);
             CreatorOKPOR.Binding = nameof(Form12.CreatorOKPO);
             NumberInOrderR += CreatorOKPOR;
             #endregion
@@ -1141,14 +1141,14 @@ namespace Models
 
             #region PropertyCode (11)
             DataGridColumns PropertyCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form12).GetProperty(nameof(Form12.PropertyCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            PropertyCodeR.SetSizeColToAllLevels(130);
+            PropertyCodeR.SetSizeColToAllLevels(160);
             PropertyCodeR.Binding = nameof(Form12.PropertyCode);
             NumberInOrderR += PropertyCodeR;
             #endregion
 
             #region Owner (12)
             DataGridColumns OwnerR = ((Attributes.Form_PropertyAttribute)typeof(Form12).GetProperty(nameof(Form12.Owner)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-            OwnerR.SetSizeColToAllLevels(80);
+            OwnerR.SetSizeColToAllLevels(168);
             OwnerR.Binding = nameof(Form12.Owner);
             NumberInOrderR += OwnerR;
             #endregion
