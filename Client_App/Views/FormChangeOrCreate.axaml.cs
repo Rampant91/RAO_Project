@@ -237,7 +237,7 @@ namespace Client_App.Views
                     IsContextMenuCommand = true,
                     ParamName = "SelectAll",
                     ContextMenuText = new string[] { "Выделить все              Ctrl+?" },
-                    Command = dataContext.AddRow
+                    Command = null
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
