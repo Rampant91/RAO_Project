@@ -140,6 +140,25 @@ namespace Models.Collections
                 }
             }
         }
+        public async Task QuickSortAsync()
+        {
+            if (!Sorted)
+            {
+                try
+                {
+                    if (!CheckForSort())
+                    {
+                        QuickSort(0, Items.Count - 1);
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                        Sorted = true;
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+        }
 
         public bool CheckForSort()
         {
@@ -241,17 +260,21 @@ namespace Models.Collections
         public void AddRange<T1>(int index, IEnumerable<T1> obj) where T1 : class, IKey
         {
             var count = index;
+            var countObj = obj.Count();
+            var minOrder = obj.Min(x=>x.Order);
+            var lst = new List<T>(Items);
             foreach (var item in obj)
             {
                 item.PropertyChanged += ChildPropertyChanged;
-                var itemq = Items.Where(x=>x.Order>=item.Order);
-                foreach(var it in itemq)
-                {
-                    it.SetOrder(it.Order+1);
-                }
                 Items.Insert(count, item as T);
                 count++;
             }
+            var itemq = lst.Where(x => x.Order >= minOrder);
+            foreach (var it in itemq)
+            {
+                it.SetOrder(it.Order + countObj);
+            }
+
             Sorted = false;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }

@@ -8,6 +8,7 @@ using Models;
 using Models.DataAccess;
 using OfficeOpenXml;
 using System;
+using System.Threading.Tasks;
 
 namespace Models.Collections
 {
@@ -67,6 +68,10 @@ namespace Models.Collections
         public void Sort()
         {
             Report_Collection.QuickSort();
+        }
+        public async Task SortAsync()
+        {
+            await Report_Collection.QuickSortAsync();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

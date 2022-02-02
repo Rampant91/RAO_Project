@@ -130,6 +130,36 @@ namespace Models.DBRealization
             ReportsCollectionDbSet.Load();
             DBObservableDbSet.Load();
         }
+        public async Task LoadTablesAsync()
+        {
+            await notes.LoadAsync();
+            await form_10.LoadAsync();
+            await form_11.LoadAsync();
+            await form_12.LoadAsync();
+            await form_13.LoadAsync();
+            await form_14.LoadAsync();
+            await form_15.LoadAsync();
+            await form_16.LoadAsync();
+            await form_17.LoadAsync();
+            await form_18.LoadAsync();
+            await form_19.LoadAsync();
+            await form_20.LoadAsync();
+            await form_21.LoadAsync();
+            await form_22.LoadAsync();
+            await form_23.LoadAsync();
+            await form_24.LoadAsync();
+            await form_25.LoadAsync();
+            await form_26.LoadAsync();
+            await form_27.LoadAsync();
+            await form_28.LoadAsync();
+            await form_29.LoadAsync();
+            await form_210.LoadAsync();
+            await form_211.LoadAsync();
+            await form_212.LoadAsync();
+            await ReportCollectionDbSet.LoadAsync();
+            await ReportsCollectionDbSet.LoadAsync();
+            await DBObservableDbSet.LoadAsync();
+        }
 
         public void Restore()
         {

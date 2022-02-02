@@ -246,46 +246,25 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var param = (IEnumerable)_param;
+                var param = (IEnumerable<Form>)_param;
                 var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
                 if (answ == "Да")
                 {
-                    List<Models.Abstracts.Form> lst = new List<Models.Abstracts.Form>();
-                    foreach (object? item in param)
+                    var lst = new List<IKey>(Storage.Rows.GetEnumerable());
+                    var countParam = param.Count();
+                    var maxItem = param.Max(x=>x.Order);
+                    foreach (Form item in param) 
                     {
-                        lst.Add((Models.Abstracts.Form)item);
-                    }
-                    foreach (var item in lst) 
-                    {
-                        if (item != null) 
+                        if (item != null)
                         {
-                            foreach (Form it in Storage[item.FormNum_DB])
-                            {
-                                if (it.NumberInOrder_DB > item.NumberInOrder_DB)
-                                {
-                                    it.NumberInOrder.Value = it.NumberInOrder_DB - 1;
-                                }
-                            }
-                            Storage[Storage.FormNum_DB].Remove(item);
+                            Storage.Rows.Remove(item);
                         }
                     }
-                    //var grp = lst.GroupBy(x => x.NumberInOrder_DB);
-                    //foreach (var group in grp)
-                    //{
-                    //    var item = group.FirstOrDefault();
-                    //    if (item != null)
-                    //    {
-                    //        foreach (Form it in Storage[item.FormNum_DB])
-                    //        {
-                    //            if (it.NumberInOrder_DB > item.NumberInOrder_DB)
-                    //            {
-                    //                it.NumberInOrder.Value = it.NumberInOrder_DB - 1;
-                    //            }
-                    //        }
-                    //        Storage[Storage.FormNum_DB].Remove(item);
-                    //    }
-                    //}
-                    Storage.Sort();
+                    var itemQ = lst.Where(x=>x.Order>=maxItem);
+                    foreach(var item in itemQ)
+                    {
+                        item.SetOrder(item.Order-1);
+                    }
                 }
             }
         }
@@ -300,18 +279,14 @@ namespace Client_App.ViewModels
                 var t = await ShowDialog.Handle(desktop.MainWindow);
                 if (t > 0)
                 {
-                    List<Form> lst = new List<Form>();
                     var number = GetNumberInOrder(Storage.Rows);
                     for (int i = 0; i < t; i++)
                     {
                         var frm = FormCreator.Create(FormType);
                         frm.NumberInOrder_DB = number;
-                        lst.Add(frm);
+                        Storage.Rows.Add(frm);
                         number++;
                     }
-
-                    Storage.Rows.AddRange(lst);
-                    Storage.Sort();
                 }
             }
         }
@@ -327,16 +302,14 @@ namespace Client_App.ViewModels
 
                 if (t > 0)
                 {
-                    List<Note> lst = new List<Note>();
                     var r = GetNumberInOrder(Storage.Notes);
                     for (int i = 0; i < t; i++)
                     {
                         var frm = new Note();
                         frm.Order = r;
-                        lst.Add(frm);
+                        Storage.Notes.Add(frm);
                         r++;
                     }
-                    Storage.Notes.AddRange(lst);
                 }
             }
         }
@@ -466,16 +439,11 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var param = (IEnumerable)_param;
+                var param = (IEnumerable<Note>)_param;
                 var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
                 if (answ == "Да")
                 {
-                    List<Note> lst = new List<Note>();
-                    foreach (object? item in param)
-                    {
-                        lst.Add((Note)item);
-                    }
-                    foreach (var item in lst) 
+                    foreach (var item in param) 
                     {
                         if (item != null)
                         {
@@ -486,31 +454,12 @@ namespace Client_App.ViewModels
                                     it.Order = it.Order - 1;
                                 }
                             }
-                            foreach (Note nt in lst)
+                            foreach (Note nt in param)
                             {
                                 Storage.Notes.Remove((Note)nt);
                             }
                         }
                     }
-                    //var grp = lst.GroupBy(x => x.Order);
-                    //foreach (var group in grp)
-                    //{
-                    //    var item = group.FirstOrDefault();
-                    //    if (item != null)
-                    //    {
-                    //        foreach (Note it in Storage.Notes)
-                    //        {
-                    //            if (it.Order > item.Order)
-                    //            {
-                    //                it.Order = it.Order - 1;
-                    //            }
-                    //        }
-                    //        foreach (Note nt in lst)
-                    //        {
-                    //            Storage.Notes.Remove((Note)nt);
-                    //        }
-                    //    }
-                    //}
                     Storage.Sort();
                 }
             }
