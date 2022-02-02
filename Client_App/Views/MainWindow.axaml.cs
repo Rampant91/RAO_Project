@@ -136,12 +136,12 @@ namespace Client_App.Views
             #region Grd1
             grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
             {
-                Key = Avalonia.Input.Key.A,
+                Key = Avalonia.Input.Key.T,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
                 ParamName = "1.0",
-                ContextMenuText = new string[] { "Добавить форму        Ctrl+A" },
+                ContextMenuText = new string[] { "Добавить форму        Ctrl+T" },
                 Command = dataContext.AddReport
             });
 
@@ -224,12 +224,12 @@ namespace Client_App.Views
             #region Grd3
             grd3.CommandsList.Add(new Controls.DataGrid.KeyComand()
             {
-                Key = Avalonia.Input.Key.A,
+                Key = Avalonia.Input.Key.T,
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
                 ParamName = "2.0",
-                ContextMenuText = new string[] { "Добавить форму        Ctrl+A" },
+                ContextMenuText = new string[] { "Добавить форму        Ctrl+T" },
                 Command = dataContext.AddReport
             });
 

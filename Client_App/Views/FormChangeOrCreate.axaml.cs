@@ -233,20 +233,22 @@ namespace Client_App.Views
                 var Rgrd = (Controls.DataGrid.DataGridForm11)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    IsDoubleTappedCommand = false,
-                    IsContextMenuCommand = true,
-                    ParamName = "SelectAll",
-                    ContextMenuText = new string[] { "Выделить все              Ctrl+?" },
-                    Command = null
-                });
-                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
-                {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -370,8 +372,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -495,8 +507,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -620,8 +642,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -745,8 +777,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -870,8 +912,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -995,8 +1047,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1120,8 +1182,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1245,8 +1317,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1378,8 +1460,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1502,8 +1594,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1626,8 +1728,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1750,8 +1862,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1874,8 +1996,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1998,8 +2130,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2122,8 +2264,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2246,8 +2398,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2370,8 +2532,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2494,8 +2666,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2618,8 +2800,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2742,8 +2934,18 @@ namespace Client_App.Views
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все                    Ctrl+A" },
+                    Command = null
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
+                    Key = Avalonia.Input.Key.T,
+                    KeyModifiers = Avalonia.Input.KeyModifiers.Control,
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку              Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку              Ctrl+T" },
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
