@@ -695,10 +695,16 @@ namespace Client_App.Controls.DataGrid
                 {
                     item.ChooseColor = (SolidColorBrush)ChooseColor;
                     SelectedCells.Add(item);
-
-                    if(!tmpSelectedItems.ContainsKey(((T)item.DataContext).Order))
+                    if (item.DataContext is T)
                     {
-                        tmpSelectedItems.Add((((T)item.DataContext).Order),new ObservableCollectionWithItemPropertyChanged<IKey>());
+                        if (!tmpSelectedItems.ContainsKey(((T)item.DataContext).Order))
+                        {
+                            tmpSelectedItems.Add((((T)item.DataContext).Order), new ObservableCollectionWithItemPropertyChanged<IKey>());
+                        }
+                    }
+                    else
+                    {
+                        break;
                     }
                     tmpSelectedItems[(((T)item.DataContext).Order)].Add((T)item.DataContext);
                 }
