@@ -424,8 +424,8 @@ namespace Client_App.Controls.DataGrid
                 int maxColumn = Rows[0].Children.Count;
                 FirstPressedItem[0] = 0;
                 FirstPressedItem[1] = 0;
-                LastPressedItem[0] = maxRow;
-                LastPressedItem[1] = maxColumn;
+                LastPressedItem[0] = maxRow-1;
+                LastPressedItem[1] = maxColumn-1;
                 SetSelectedControls();
                 ObservableCollectionWithItemPropertyChanged<IKey> lst = new ObservableCollectionWithItemPropertyChanged<IKey>();
                 foreach (var item in Items)
