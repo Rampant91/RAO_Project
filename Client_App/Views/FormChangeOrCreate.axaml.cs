@@ -233,6 +233,14 @@ namespace Client_App.Views
                 var Rgrd = (Controls.DataGrid.DataGridForm11)((StackPanel)grd.Content).Children[1];
                 Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
+                    IsDoubleTappedCommand = false,
+                    IsContextMenuCommand = true,
+                    ParamName = "SelectAll",
+                    ContextMenuText = new string[] { "Выделить все              Ctrl+?" },
+                    Command = dataContext.AddRow
+                });
+                Rgrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
+                {
                     Key = Avalonia.Input.Key.A,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
