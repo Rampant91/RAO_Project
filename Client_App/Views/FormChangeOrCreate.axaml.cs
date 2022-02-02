@@ -31,7 +31,6 @@ namespace Client_App.Views
 #endif
             this.WhenActivated(d => d(ViewModel!.ShowDialogIn.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
-            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
 
             this.Closing += OnStandartClosing;
@@ -54,7 +53,7 @@ namespace Client_App.Views
             {
                 flag = false;
                 var tmp = this.DataContext as ViewModels.ChangeOrCreateVM;
-                Answ = tmp.ShowMessage.Handle("Сохранить?").GetAwaiter();
+                Answ = tmp.ShowMessageT.Handle(new List<string>() { "Сохранить?", "Да", "Нет" }).GetAwaiter();
                 Answ.Subscribe(x =>
                 {
                     if (x == "Да")
@@ -2993,29 +2992,6 @@ namespace Client_App.Views
             RowNumber frm = new RowNumber();
             await frm.ShowDialog(this);
             interaction.SetOutput(Convert.ToInt32(frm.Number));
-        }
-        private async Task DoShowDialogAsync(InteractionContext<string, string> interaction)
-        {
-            MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
-            List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
-            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-            {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                Name = "Да"
-            });
-            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-            {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                Name = "Нет"
-            });
-            par.ButtonDefinitions = lt;
-            par.ContentTitle = "Уведомление";
-            par.ContentHeader = "Уведомление";
-            par.ContentMessage = interaction.Input;
-            var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-            var answ = await mssg.ShowDialog(this);
-
-            interaction.SetOutput(answ);
         }
 
         private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)

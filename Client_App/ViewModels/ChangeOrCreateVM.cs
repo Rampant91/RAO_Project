@@ -622,7 +622,6 @@ namespace Client_App.ViewModels
 
         public Interaction<int, int> ShowDialogIn { get; protected set; }
         public Interaction<object, int> ShowDialog { get; protected set; }
-        public Interaction<string, string> ShowMessage { get; protected set; }
         public Interaction<List<string>, string> ShowMessageT { get; protected set; }
         public void Init()
         {
@@ -651,7 +650,6 @@ namespace Client_App.ViewModels
 
             ShowDialog = new Interaction<object,int>();
             ShowDialogIn = new Interaction<int, int>();
-            ShowMessage = new Interaction<string, string>();
             ShowMessageT = new Interaction<List<string>, string>();
             Storage.Sort();
         }
