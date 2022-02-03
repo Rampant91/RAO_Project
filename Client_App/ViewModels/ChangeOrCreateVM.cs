@@ -288,6 +288,9 @@ namespace Client_App.ViewModels
             ShowDialogIn = new Interaction<int, int>();
             ShowMessage = new Interaction<string, string>();
             ShowMessageT = new Interaction<List<string>, string>();
+
+            Storages.Master_DB.Rows10.QuickSort();
+            Storages.Master_DB.Rows20.QuickSort();
             Storage.Sort();
         }
 
@@ -375,6 +378,7 @@ namespace Client_App.ViewModels
         {
             Storage.Rows10.Sorted = false;
             Storage.Rows20.Sorted = false;
+
             var tmp = Storage.Rows10[0].Order;
             Storage.Rows10[0].Order= Storage.Rows10[1].Order;
             Storage.Rows10[1].Order=tmp;

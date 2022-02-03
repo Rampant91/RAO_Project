@@ -530,45 +530,6 @@ namespace Client_App.ViewModels
 
                                         foreach (var item in db.ReportsCollectionDbSet)
                                         {
-                                            var tb11 = from Reports t in Local_Reports.Reports_Collection10
-                                                       where (item.Master.Rows10[0].Okpo_DB != "") &&
-                                                       (t.Master.Rows10[0].Okpo_DB != "") &&
-                                                       (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
-                                                       (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB) &&
-                                                       (item.Master.Rows10[0].RegNo_DB != "") &&
-                                                       (t.Master.Rows10[0].RegNo_DB != "") &&
-                                                       (t.Master.Rows10[0].RegNo_DB == item.Master.Rows10[0].RegNo_DB) &&
-                                                       (t.Master.Rows10[1].RegNo_DB == item.Master.Rows10[1].RegNo_DB)
-                                                       select t;
-                                            var tb21 = from Reports t in Local_Reports.Reports_Collection20
-                                                       where (item.Master.Rows20[0].Okpo_DB != "") &&
-                                                       (t.Master.Rows20[0].Okpo_DB != "") &&
-                                                       (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
-                                                       (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB) &&
-                                                       (item.Master.Rows20[0].RegNo_DB != "") &&
-                                                       (t.Master.Rows20[0].RegNo_DB != "") &&
-                                                       (t.Master.Rows20[0].RegNo_DB == item.Master.Rows20[0].RegNo_DB) &&
-                                                       (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB)
-
-                                                       select t;
-
-                                            Reports first11 = null;
-                                            Reports first21 = null;
-                                            try
-                                            {
-                                                first11 = tb11.FirstOrDefault();
-                                            }
-                                            catch
-                                            {
-                                            }
-
-                                            try
-                                            {
-                                                first21 = tb21.FirstOrDefault();
-                                            }
-                                            catch
-                                            {
-                                            }
                                             if (item != null)
                                             {
                                                 if (item.Master_DB.FormNum_DB == "1.0")
@@ -614,6 +575,7 @@ namespace Client_App.ViewModels
                                                         item.Master_DB.Rows10.QuickSort();
                                                     }
                                                 }
+
                                                 if (item.Master_DB.FormNum_DB == "2.0")
                                                 {
                                                     if (item.Master_DB.Rows20[0].Id > item.Master_DB.Rows20[1].Id)
@@ -657,182 +619,48 @@ namespace Client_App.ViewModels
                                                         item.Master_DB.Rows20.QuickSort();
                                                     }
                                                 }
+                                                var tb11 = from Reports t in Local_Reports.Reports_Collection10
+                                                           where (item.Master.Rows10[0].Okpo_DB != "") &&
+                                                           (t.Master.Rows10[0].Okpo_DB != "") &&
+                                                           (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
+                                                           (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB) &&
+                                                           (item.Master.Rows10[0].RegNo_DB != "") &&
+                                                           (t.Master.Rows10[0].RegNo_DB != "") &&
+                                                           (t.Master.Rows10[0].RegNo_DB == item.Master.Rows10[0].RegNo_DB) &&
+                                                           (t.Master.Rows10[1].RegNo_DB == item.Master.Rows10[1].RegNo_DB)
+                                                           select t;
+                                                var tb21 = from Reports t in Local_Reports.Reports_Collection20
+                                                           where (item.Master.Rows20[0].Okpo_DB != "") &&
+                                                           (t.Master.Rows20[0].Okpo_DB != "") &&
+                                                           (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
+                                                           (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB) &&
+                                                           (item.Master.Rows20[0].RegNo_DB != "") &&
+                                                           (t.Master.Rows20[0].RegNo_DB != "") &&
+                                                           (t.Master.Rows20[0].RegNo_DB == item.Master.Rows20[0].RegNo_DB) &&
+                                                           (t.Master.Rows20[1].RegNo_DB == item.Master.Rows20[1].RegNo_DB)
 
-                                                item.CleanIds();
-                                            }
-                                            if (first11 != null)
-                                            {
-                                                var not_in = false;
-                                                foreach (Report it in item.Report_Collection)
+                                                           select t;
+
+                                                Reports first11 = null;
+                                                Reports first21 = null;
+                                                try
                                                 {
-                                                    foreach (Note note in it.Notes)
-                                                    {
-                                                        if (note.Order == 0)
-                                                        {
-                                                            note.Order = GetNumberInOrder(it.Notes);
-                                                        }
-                                                    }
-                                                    var lst = first11.Report_Collection.ToList<Report>();
-                                                    if (lst.Count != 0)
-                                                    {
-                                                        foreach (var elem in lst)
-                                                        {
-                                                            try
-                                                            {
-                                                                var st_elem = DateTime.Parse(elem.StartPeriod.Value);
-                                                                var en_elem = DateTime.Parse(elem.EndPeriod.Value);
-                                                                if (st_elem > en_elem)
-                                                                {
-                                                                    var _e = st_elem;
-                                                                    st_elem = en_elem;
-                                                                    en_elem = _e;
-                                                                }
-
-                                                                DateTimeOffset st_it = DateTimeOffset.Now;
-                                                                DateTimeOffset en_it = DateTimeOffset.Now;
-                                                                try
-                                                                {
-                                                                    st_it = DateTime.Parse(it.StartPeriod.Value);
-                                                                    en_it = DateTime.Parse(it.EndPeriod.Value);
-                                                                }
-                                                                catch (Exception e)
-                                                                {
-                                                                    //first11.Report_Collection.Add(it);
-                                                                    throw e;
-                                                                }
-                                                                if (st_it > en_it)
-                                                                {
-                                                                    var _e = st_it;
-                                                                    st_it = en_it;
-                                                                    en_it = _e;
-                                                                }
-                                                                if (st_elem == st_it && en_elem == en_it && it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first11.Master.RegNoRep.Value)
-                                                                {
-                                                                    not_in = true;
-                                                                    if (it.CorrectionNumber.Value < elem.CorrectionNumber.Value)
-                                                                    {
-                                                                        var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
-                                                                            it.CorrectionNumber.Value + ",\n" +
-                                                                            "при текущем значении корректировки - " +
-                                                                            elem.CorrectionNumber.Value + ",\n" +
-                                                                            "в форме " + elem.FormNum.Value + ", " +
-                                                                            "с датой " + elem.StartPeriod.Value + "-" +
-                                                                            elem.EndPeriod.Value + " \n" +
-                                                                            first11.Master.RegNoRep.Value + " " +
-                                                                            first11.Master.ShortJurLicoRep.Value + " " +
-                                                                            first11.Master.OkpoRep.Value;
-                                                                        var an = await ShowMessageT.Handle(new List<string>()
-                                                                        {str,
-                                                                        "OK"
-                                                                        });
-                                                                    }
-                                                                    else if (it.CorrectionNumber.Value == elem.CorrectionNumber.Value)
-                                                                    {
-                                                                        var str = "Совпадение даты в " + elem.FormNum.Value + " " +
-                                                                            elem.StartPeriod.Value + "-" +
-                                                                            elem.EndPeriod.Value + " \n" +
-                                                                            first11.Master.RegNoRep.Value + " " +
-                                                                            first11.Master.ShortJurLicoRep.Value + " " +
-                                                                            first11.Master.OkpoRep.Value;
-                                                                        var an = await ShowMessageT.Handle(new List<string>()
-                                                                        {
-                                                                        str,
-                                                                        "Заменить",
-                                                                        "Дополнить",
-                                                                        "Сохранить оба",
-                                                                        "Отменить" });
-                                                                        if (an == "Сохранить оба")
-                                                                        {
-                                                                            first11.Report_Collection.Add(it);
-                                                                        }
-                                                                        if (an == "Заменить")
-                                                                        {
-                                                                            first11.Report_Collection.Remove(elem);
-                                                                            first11.Report_Collection.Add(it);
-                                                                        }
-                                                                        if (an == "Дополнить")
-                                                                        {
-                                                                            first11.Report_Collection.Remove(elem);
-
-                                                                            it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
-                                                                            it.Notes.AddRange<IKey>(0, elem.Notes);
-
-                                                                            first11.Report_Collection.Add(it);
-                                                                        }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        var str = "Форма " +
-                                                                            elem.FormNum.Value +
-                                                                            " с предыдущим номером корректировки №" +
-                                                                            elem.CorrectionNumber.Value +
-                                                                            " будет безвозвратно удалена.\n" +
-                                                                            "Сделайте резервную копию.";
-                                                                        var an = await ShowMessageT.Handle(new List<string>() { 
-                                                                        str,
-                                                                        "Загрузить новую",
-                                                                        "Отмена"
-                                                                        });
-                                                                        if (an == "Загрузить новую")
-                                                                        {
-                                                                            first11.Report_Collection.Remove(elem);
-                                                                            first11.Report_Collection.Add(it);
-                                                                        }
-                                                                    }
-                                                                }
-                                                                if ((st_elem < st_it && st_it < en_elem || st_elem < en_it && en_it < en_elem )&& it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first11.Master.RegNoRep.Value)
-                                                                {
-                                                                    not_in = true;
-                                                                    var str = "Пересечение даты в " + elem.FormNum.Value + " " +
-                                                                        elem.StartPeriod.Value + "-" +
-                                                                        elem.EndPeriod.Value + " \n" +
-                                                                        first11.Master.RegNoRep.Value + " " +
-                                                                        first11.Master.ShortJurLicoRep.Value + " " +
-                                                                        first11.Master.OkpoRep.Value;
-                                                                    var an = await ShowMessageT.Handle(new List<string>()
-                                                                {
-                                                                str,
-                                                                "Сохранить оба",
-                                                                "Отменить" });
-                                                                    if (an == "Сохранить оба")
-                                                                    {
-                                                                        first11.Report_Collection.Add(it);
-                                                                    }
-                                                                }
-                                                                first11.Sort();
-                                                            }
-                                                            catch { }
-                                                        }
-                                                        if (!not_in)
-                                                        {
-                                                            var str = "Загрузить новую форму?";
-                                                            var an = await ShowMessageT.Handle(new List<string>()
-                                                                    {
-                                                                    str,
-                                                                    "Да",
-                                                                    "Нет"
-                                                                    });
-                                                            if (an == "Да")
-                                                            {
-                                                                first11.Report_Collection.Add(it);
-                                                                //Local_Reports.Reports_Collection.Add(item);
-                                                            }
-                                                            not_in = false;
-                                                            first11.Sort();
-                                                        }
-                                                    }
-                                                    else 
-                                                    {
-                                                        first11.Report_Collection.Add(it);
-                                                        first11.Sort();
-                                                    }
-                                                   
+                                                    first11 = tb11.FirstOrDefault();
                                                 }
-                                                
-                                            }
-                                            else
-                                            {
-                                                if (first21 != null)
+                                                catch
+                                                {
+                                                }
+
+                                                try
+                                                {
+                                                    first21 = tb21.FirstOrDefault();
+                                                }
+                                                catch
+                                                {
+
+                                                }
+                                                item.CleanIds();
+                                                if (first11 != null)
                                                 {
                                                     var not_in = false;
                                                     foreach (Report it in item.Report_Collection)
@@ -844,84 +672,136 @@ namespace Client_App.ViewModels
                                                                 note.Order = GetNumberInOrder(it.Notes);
                                                             }
                                                         }
-                                                        var lst = first21.Report_Collection.ToList<Report>();
+                                                        var lst = first11.Report_Collection.ToList<Report>();
                                                         if (lst.Count != 0)
                                                         {
                                                             foreach (var elem in lst)
                                                             {
-                                                                if (elem.Year == it.Year && it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first21.Master.RegNoRep.Value)
+                                                                try
                                                                 {
-                                                                    not_in = true;
-                                                                    if (it.CorrectionNumber.Value < elem.CorrectionNumber.Value)
+                                                                    var st_elem = DateTime.Parse(elem.StartPeriod.Value);
+                                                                    var en_elem = DateTime.Parse(elem.EndPeriod.Value);
+                                                                    if (st_elem > en_elem)
                                                                     {
-                                                                        var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
-                                                                            it.CorrectionNumber.Value + ",\n" +
-                                                                            "при текущем значении корректировки - " +
-                                                                            elem.CorrectionNumber.Value + ",\n" +
-                                                                            "в форме " + elem.FormNum.Value + ", " +
-                                                                            "с датой " + elem.Year.Value + " \n" +
-                                                                            first21.Master.RegNoRep.Value + " " +
-                                                                            first21.Master.ShortJurLicoRep.Value + " " +
-                                                                            first21.Master.OkpoRep.Value;
-                                                                        var an = await ShowMessageT.Handle(new List<string>()
+                                                                        var _e = st_elem;
+                                                                        st_elem = en_elem;
+                                                                        en_elem = _e;
+                                                                    }
+
+                                                                    DateTimeOffset st_it = DateTimeOffset.Now;
+                                                                    DateTimeOffset en_it = DateTimeOffset.Now;
+                                                                    try
+                                                                    {
+                                                                        st_it = DateTime.Parse(it.StartPeriod.Value);
+                                                                        en_it = DateTime.Parse(it.EndPeriod.Value);
+                                                                    }
+                                                                    catch (Exception e)
+                                                                    {
+                                                                        //first11.Report_Collection.Add(it);
+                                                                        throw e;
+                                                                    }
+                                                                    if (st_it > en_it)
+                                                                    {
+                                                                        var _e = st_it;
+                                                                        st_it = en_it;
+                                                                        en_it = _e;
+                                                                    }
+                                                                    if (st_elem == st_it && en_elem == en_it && it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first11.Master.RegNoRep.Value)
+                                                                    {
+                                                                        not_in = true;
+                                                                        if (it.CorrectionNumber.Value < elem.CorrectionNumber.Value)
+                                                                        {
+                                                                            var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
+                                                                                it.CorrectionNumber.Value + ",\n" +
+                                                                                "при текущем значении корректировки - " +
+                                                                                elem.CorrectionNumber.Value + ",\n" +
+                                                                                "в форме " + elem.FormNum.Value + ", " +
+                                                                                "с датой " + elem.StartPeriod.Value + "-" +
+                                                                                elem.EndPeriod.Value + " \n" +
+                                                                                first11.Master.RegNoRep.Value + " " +
+                                                                                first11.Master.ShortJurLicoRep.Value + " " +
+                                                                                first11.Master.OkpoRep.Value;
+                                                                            var an = await ShowMessageT.Handle(new List<string>()
                                                                         {str,
                                                                         "OK"
                                                                         });
-                                                                    }
-                                                                    else if (it.CorrectionNumber.Value == elem.CorrectionNumber.Value)
-                                                                    {
-                                                                        var str = "Совпадение даты в " + elem.FormNum.Value + " " +
-                                                                        elem.Year.Value + " " +
-                                                                        first21.Master.RegNoRep1.Value + " \n" +
-                                                                        first21.Master.ShortJurLicoRep1.Value + " " +
-                                                                        first21.Master.OkpoRep1.Value;
-                                                                        var an = await ShowMessageT.Handle(new List<string>()
+                                                                        }
+                                                                        else if (it.CorrectionNumber.Value == elem.CorrectionNumber.Value)
+                                                                        {
+                                                                            var str = "Совпадение даты в " + elem.FormNum.Value + " " +
+                                                                                elem.StartPeriod.Value + "-" +
+                                                                                elem.EndPeriod.Value + " \n" +
+                                                                                first11.Master.RegNoRep.Value + " " +
+                                                                                first11.Master.ShortJurLicoRep.Value + " " +
+                                                                                first11.Master.OkpoRep.Value;
+                                                                            var an = await ShowMessageT.Handle(new List<string>()
                                                                         {
                                                                         str,
                                                                         "Заменить",
                                                                         "Дополнить",
                                                                         "Сохранить оба",
                                                                         "Отменить" });
-                                                                        if (an == "Сохранить оба")
-                                                                        {
-                                                                            first21.Report_Collection.Add(it);
-                                                                        }
-                                                                        if (an == "Заменить")
-                                                                        {
-                                                                            first21.Report_Collection.Remove(elem);
-                                                                            first21.Report_Collection.Add(it);
-                                                                        }
-                                                                        if (an == "Дополнить")
-                                                                        {
-                                                                            first21.Report_Collection.Remove(elem);
+                                                                            if (an == "Сохранить оба")
+                                                                            {
+                                                                                first11.Report_Collection.Add(it);
+                                                                            }
+                                                                            if (an == "Заменить")
+                                                                            {
+                                                                                first11.Report_Collection.Remove(elem);
+                                                                                first11.Report_Collection.Add(it);
+                                                                            }
+                                                                            if (an == "Дополнить")
+                                                                            {
+                                                                                first11.Report_Collection.Remove(elem);
 
-                                                                            it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
-                                                                            it.Notes.AddRange<IKey>(0, elem.Notes);
+                                                                                it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
+                                                                                it.Notes.AddRange<IKey>(0, elem.Notes);
 
-                                                                            first21.Report_Collection.Add(it);
+                                                                                first11.Report_Collection.Add(it);
+                                                                            }
                                                                         }
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        var str = "Форма " +
-                                                                            elem.FormNum.Value +
-                                                                            " с предыдущим номером корректировки №" +
-                                                                            elem.CorrectionNumber.Value +
-                                                                            " будет безвозвратно удалена.\n" +
-                                                                            "Сделайте резервную копию.";
-                                                                        var an = await ShowMessageT.Handle(new List<string>() {
+                                                                        else
+                                                                        {
+                                                                            var str = "Форма " +
+                                                                                elem.FormNum.Value +
+                                                                                " с предыдущим номером корректировки №" +
+                                                                                elem.CorrectionNumber.Value +
+                                                                                " будет безвозвратно удалена.\n" +
+                                                                                "Сделайте резервную копию.";
+                                                                            var an = await ShowMessageT.Handle(new List<string>() {
                                                                         str,
                                                                         "Загрузить новую",
                                                                         "Отмена"
                                                                         });
-                                                                        if (an == "Загрузить новую")
-                                                                        {
-                                                                            first21.Report_Collection.Remove(elem);
-                                                                            first21.Report_Collection.Add(it);
+                                                                            if (an == "Загрузить новую")
+                                                                            {
+                                                                                first11.Report_Collection.Remove(elem);
+                                                                                first11.Report_Collection.Add(it);
+                                                                            }
                                                                         }
                                                                     }
+                                                                    if ((st_elem < st_it && st_it < en_elem || st_elem < en_it && en_it < en_elem) && it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first11.Master.RegNoRep.Value)
+                                                                    {
+                                                                        not_in = true;
+                                                                        var str = "Пересечение даты в " + elem.FormNum.Value + " " +
+                                                                            elem.StartPeriod.Value + "-" +
+                                                                            elem.EndPeriod.Value + " \n" +
+                                                                            first11.Master.RegNoRep.Value + " " +
+                                                                            first11.Master.ShortJurLicoRep.Value + " " +
+                                                                            first11.Master.OkpoRep.Value;
+                                                                        var an = await ShowMessageT.Handle(new List<string>()
+                                                                {
+                                                                str,
+                                                                "Сохранить оба",
+                                                                "Отменить" });
+                                                                        if (an == "Сохранить оба")
+                                                                        {
+                                                                            first11.Report_Collection.Add(it);
+                                                                        }
+                                                                    }
+                                                                    first11.Sort();
                                                                 }
-                                                                first21.Sort();
+                                                                catch { }
                                                             }
                                                             if (!not_in)
                                                             {
@@ -934,32 +814,153 @@ namespace Client_App.ViewModels
                                                                     });
                                                                 if (an == "Да")
                                                                 {
-                                                                    first21.Report_Collection.Add(it);
+                                                                    first11.Report_Collection.Add(it);
+                                                                    //Local_Reports.Reports_Collection.Add(item);
                                                                 }
                                                                 not_in = false;
-                                                                first21.Sort();
+                                                                first11.Sort();
                                                             }
                                                         }
-                                                        else 
+                                                        else
                                                         {
-                                                            first21.Report_Collection.Add(it);
-                                                            first21.Sort();
+                                                            first11.Report_Collection.Add(it);
+                                                            first11.Sort();
                                                         }
+
                                                     }
+
                                                 }
                                                 else
                                                 {
-                                                    foreach (Report form in item.Report_Collection)
+                                                    if (first21 != null)
                                                     {
-                                                        foreach (Note note in form.Notes)
+                                                        var not_in = false;
+                                                        foreach (Report it in item.Report_Collection)
                                                         {
-                                                            if (note.Order == 0)
+                                                            foreach (Note note in it.Notes)
                                                             {
-                                                                note.Order = GetNumberInOrder(form.Notes);
+                                                                if (note.Order == 0)
+                                                                {
+                                                                    note.Order = GetNumberInOrder(it.Notes);
+                                                                }
+                                                            }
+                                                            var lst = first21.Report_Collection.ToList<Report>();
+                                                            if (lst.Count != 0)
+                                                            {
+                                                                foreach (var elem in lst)
+                                                                {
+                                                                    if (elem.Year == it.Year && it.FormNum.Value == elem.FormNum.Value && item.Master.RegNoRep.Value == first21.Master.RegNoRep.Value)
+                                                                    {
+                                                                        not_in = true;
+                                                                        if (it.CorrectionNumber.Value < elem.CorrectionNumber.Value)
+                                                                        {
+                                                                            var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
+                                                                                it.CorrectionNumber.Value + ",\n" +
+                                                                                "при текущем значении корректировки - " +
+                                                                                elem.CorrectionNumber.Value + ",\n" +
+                                                                                "в форме " + elem.FormNum.Value + ", " +
+                                                                                "с датой " + elem.Year.Value + " \n" +
+                                                                                first21.Master.RegNoRep.Value + " " +
+                                                                                first21.Master.ShortJurLicoRep.Value + " " +
+                                                                                first21.Master.OkpoRep.Value;
+                                                                            var an = await ShowMessageT.Handle(new List<string>()
+                                                                        {str,
+                                                                        "OK"
+                                                                        });
+                                                                        }
+                                                                        else if (it.CorrectionNumber.Value == elem.CorrectionNumber.Value)
+                                                                        {
+                                                                            var str = "Совпадение даты в " + elem.FormNum.Value + " " +
+                                                                            elem.Year.Value + " " +
+                                                                            first21.Master.RegNoRep1.Value + " \n" +
+                                                                            first21.Master.ShortJurLicoRep1.Value + " " +
+                                                                            first21.Master.OkpoRep1.Value;
+                                                                            var an = await ShowMessageT.Handle(new List<string>()
+                                                                        {
+                                                                        str,
+                                                                        "Заменить",
+                                                                        "Дополнить",
+                                                                        "Сохранить оба",
+                                                                        "Отменить" });
+                                                                            if (an == "Сохранить оба")
+                                                                            {
+                                                                                first21.Report_Collection.Add(it);
+                                                                            }
+                                                                            if (an == "Заменить")
+                                                                            {
+                                                                                first21.Report_Collection.Remove(elem);
+                                                                                first21.Report_Collection.Add(it);
+                                                                            }
+                                                                            if (an == "Дополнить")
+                                                                            {
+                                                                                first21.Report_Collection.Remove(elem);
+
+                                                                                it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
+                                                                                it.Notes.AddRange<IKey>(0, elem.Notes);
+
+                                                                                first21.Report_Collection.Add(it);
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            var str = "Форма " +
+                                                                                elem.FormNum.Value +
+                                                                                " с предыдущим номером корректировки №" +
+                                                                                elem.CorrectionNumber.Value +
+                                                                                " будет безвозвратно удалена.\n" +
+                                                                                "Сделайте резервную копию.";
+                                                                            var an = await ShowMessageT.Handle(new List<string>() {
+                                                                        str,
+                                                                        "Загрузить новую",
+                                                                        "Отмена"
+                                                                        });
+                                                                            if (an == "Загрузить новую")
+                                                                            {
+                                                                                first21.Report_Collection.Remove(elem);
+                                                                                first21.Report_Collection.Add(it);
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    first21.Sort();
+                                                                }
+                                                                if (!not_in)
+                                                                {
+                                                                    var str = "Загрузить новую форму?";
+                                                                    var an = await ShowMessageT.Handle(new List<string>()
+                                                                    {
+                                                                    str,
+                                                                    "Да",
+                                                                    "Нет"
+                                                                    });
+                                                                    if (an == "Да")
+                                                                    {
+                                                                        first21.Report_Collection.Add(it);
+                                                                    }
+                                                                    not_in = false;
+                                                                    first21.Sort();
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                first21.Report_Collection.Add(it);
+                                                                first21.Sort();
                                                             }
                                                         }
                                                     }
-                                                    Local_Reports.Reports_Collection.Add(item);
+                                                    else
+                                                    {
+                                                        foreach (Report form in item.Report_Collection)
+                                                        {
+                                                            foreach (Note note in form.Notes)
+                                                            {
+                                                                if (note.Order == 0)
+                                                                {
+                                                                    note.Order = GetNumberInOrder(form.Notes);
+                                                                }
+                                                            }
+                                                        }
+                                                        Local_Reports.Reports_Collection.Add(item);
+                                                    }
                                                 }
                                             }
                                         }
