@@ -836,7 +836,6 @@ namespace Client_App.ViewModels
                 {
                     var obj = param.First();
                     OpenFolderDialog dial = new OpenFolderDialog();
-
                     var res = await dial.ShowAsync(desktop.MainWindow);
                     if (res != null)
                     {
@@ -859,20 +858,7 @@ namespace Client_App.ViewModels
                             var rt = findReports.FirstOrDefault();
                             if (rt != null)
                             {
-                                string system = "";
-                                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                                {
-                                    system = Environment.GetFolderPath(Environment.SpecialFolder.System);
-                                }
-                                else
-                                {
-                                    system = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                                }
-                                string path = Path.GetPathRoot(system);
-                                var tmp = Path.Combine(path, "RAO");
-                                tmp = Path.Combine(tmp, "temp");
-                                Directory.CreateDirectory(tmp);
-                                tmp = Path.Combine(tmp, filename + "_exp" + ".raodb");
+                                var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), filename + "_exp" + ".raodb");
 
                                 var tsk = new Task(() =>
                                 {
@@ -882,14 +868,7 @@ namespace Client_App.ViewModels
                                         Reports rp = new Reports();
                                         rp.Master = rt.Master;
                                         rp.Report_Collection.Add(rep);
-                                        if (File.Exists(tmp))
-                                        {
-                                            db.Database.Migrate();
-                                        }
-                                        else
-                                        {
-                                            db.Database.Migrate();
-                                        }
+                                        db.Database.MigrateAsync();
                                         db.ReportsCollectionDbSet.Add(rp);
                                         db.SaveChanges();
 
@@ -939,8 +918,6 @@ namespace Client_App.ViewModels
                                 {
                                     try
                                     {
-                                        //var sourceFile = new FileInfo(tmp);
-                                        //sourceFile.CopyTo(res, true);
                                         using (var inputFile = new FileStream(
                                                 tmp,
                                                 FileMode.Open,
