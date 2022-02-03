@@ -14,7 +14,7 @@ namespace Client_App.Views
 {
     public class MainWindow : ReactiveWindow<ViewModels.MainWindowVM>
     {
-
+        #region SelectedReports
         public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
             AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<IKey>>(
                 nameof(SelectedReports),
@@ -31,30 +31,35 @@ namespace Client_App.Views
                 if (value != null) SetAndRaise(SelectedReportsProperty, ref _selectedReports, value);
             }
         }
+        #endregion
 
+        #region Contructures
         public MainWindow(ViewModels.MainWindowVM dataContext)
         {
             DataContext = dataContext;
-            InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
-            this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
-            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
-            this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
+            Init();
         }
         public MainWindow()
         {
             DataContext = new ViewModels.MainWindowVM();
+            Init();
+        }
+        private void Init()
+        {
             InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
 #endif
             this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
-            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
-            this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
+            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsyncT)));
         }
+        private void InitializeComponent()
+        {
+            AvaloniaXamlLoader.Load(this);
+        }
+        #endregion
 
+        #region ShowDialog
         private async Task DoShowDialogAsync(InteractionContext<ViewModels.ChangeOrCreateVM, object> interaction)
         {
 
@@ -62,29 +67,6 @@ namespace Client_App.Views
 
             await frm.ShowDialog(this);
             interaction.SetOutput(null);
-        }
-        private async Task DoShowDialogAsync(InteractionContext<string, string> interaction)
-        {
-            MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
-            List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
-            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-            {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                Name = "Да"
-            });
-            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-            {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                Name = "Нет"
-            });
-            par.ButtonDefinitions = lt;
-            par.ContentTitle = "Уведомление";
-            par.ContentHeader = "Уведомление";
-            par.ContentMessage = interaction.Input;
-            var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-            var answ = await mssg.ShowDialog(this);
-
-            interaction.SetOutput(answ);
         }
 
         private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
@@ -110,24 +92,29 @@ namespace Client_App.Views
             
             interaction.SetOutput(answ);
         }
+        #endregion
 
+        #region Events
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-            Init();
+            ShowInit();
         }
         protected override void OnClosing(CancelEventArgs e)
         {
             base.OnClosing(e);
         }
-        private void Init()
+        #endregion
+
+        #region ShowInit
+        private void ShowInit()
         {
             var dataContext = (ViewModels.MainWindowVM)this.DataContext;
 
             Panel tab10 = this.FindControl<Panel>("Forms_p1_0");
             Panel tab1X = this.FindControl<Panel>("Forms_p1_X");
             Panel tab1B = this.FindControl<Panel>("Forms_p1_B");
-            Short_Visual.Form1_Visual.FormF_Visual(this,tab10, tab1X, tab1B);
+            Short_Visual.Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
 
             #region Form10 DataGrid
             var grd1 = (Controls.DataGrid.DataGrid<Reports>)tab10.Children[0];
@@ -148,11 +135,11 @@ namespace Client_App.Views
             grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
             {
                 IsDoubleTappedCommand = true,
-                IsContextMenuCommand=true,
-                ParamName="SelectedItems",
-                ContextMenuText=new string[] { "Редактировать форму" },
-                Command=dataContext.ChangeReport
-            }) ;
+                IsContextMenuCommand = true,
+                ParamName = "SelectedItems",
+                ContextMenuText = new string[] { "Редактировать форму" },
+                Command = dataContext.ChangeReport
+            });
             grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
             {
                 Key = Avalonia.Input.Key.D,
@@ -215,7 +202,7 @@ namespace Client_App.Views
             Panel tab20 = this.FindControl<Panel>("Forms_p2_0");
             Panel tab2X = this.FindControl<Panel>("Forms_p2_X");
             Panel tab2B = this.FindControl<Panel>("Forms_p2_B");
-            Short_Visual.Form2_Visual.FormF_Visual(this,tab20, tab2X, tab2B);
+            Short_Visual.Form2_Visual.FormF_Visual(this, tab20, tab2X, tab2B);
 
             #region Form20 DataGrid
             var grd3 = (Controls.DataGrid.DataGrid<Reports>)tab20.Children[0];
@@ -300,10 +287,6 @@ namespace Client_App.Views
             #endregion
             #endregion
         }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        #endregion
     }
 }

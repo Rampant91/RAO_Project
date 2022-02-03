@@ -11,6 +11,7 @@ using Models.DataAccess;
 using OfficeOpenXml;
 using System.Collections.Generic;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace Models.Collections
 {
@@ -2865,6 +2866,32 @@ namespace Models.Collections
             Rows212.QuickSort();
 
             Notes.QuickSort();
+        }
+        public async Task SortAsync()
+        {
+            await Rows11.QuickSortAsync();
+            await Rows12.QuickSortAsync();
+            await Rows13.QuickSortAsync();
+            await Rows14.QuickSortAsync();
+            await Rows15.QuickSortAsync();
+            await Rows16.QuickSortAsync();
+            await Rows17.QuickSortAsync();
+            await Rows18.QuickSortAsync();
+            await Rows19.QuickSortAsync();
+            await Rows21.QuickSortAsync();
+            await Rows22.QuickSortAsync();
+            await Rows23.QuickSortAsync();
+            await Rows24.QuickSortAsync();
+            await Rows25.QuickSortAsync();
+            await Rows26.QuickSortAsync();
+            await Rows27.QuickSortAsync();
+            await Rows28.QuickSortAsync();
+            await Rows29.QuickSortAsync();
+            await Rows210.QuickSortAsync();
+            await Rows211.QuickSortAsync();
+            await Rows212.QuickSortAsync();
+
+            await Notes.QuickSortAsync();
         }
         private void NotesValueChanged(object Value, PropertyChangedEventArgs args)
         {

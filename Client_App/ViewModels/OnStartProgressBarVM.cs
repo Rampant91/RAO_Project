@@ -62,7 +62,7 @@ namespace Client_App.ViewModels
         {
             VMDataContext = new MainWindowVM();
             VMDataContext.PropertyChanged += OnVMPropertyChanged;
-            VMDataContext.Init();
+            await VMDataContext.Init();
         }
         public void OnVMPropertyChanged(object sender,PropertyChangedEventArgs args)
         {

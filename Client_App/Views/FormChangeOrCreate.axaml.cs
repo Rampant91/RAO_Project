@@ -31,7 +31,6 @@ namespace Client_App.Views
 #endif
             this.WhenActivated(d => d(ViewModel!.ShowDialogIn.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowDialog.RegisterHandler(DoShowDialogAsync)));
-            this.WhenActivated(d => d(ViewModel!.ShowMessage.RegisterHandler(DoShowDialogAsync)));
             this.WhenActivated(d => d(ViewModel!.ShowMessageT.RegisterHandler(DoShowDialogAsyncT)));
 
             this.Closing += OnStandartClosing;
@@ -54,7 +53,7 @@ namespace Client_App.Views
             {
                 flag = false;
                 var tmp = this.DataContext as ViewModels.ChangeOrCreateVM;
-                Answ = tmp.ShowMessage.Handle("Сохранить?").GetAwaiter();
+                Answ = tmp.ShowMessageT.Handle(new List<string>() { "Сохранить?", "Да", "Нет" }).GetAwaiter();
                 Answ.Subscribe(x =>
                 {
                     if (x == "Да")
@@ -78,92 +77,8 @@ namespace Client_App.Views
                         {
                             if (item.Id == 0)
                             {
-                                if (tmp.FormType == "1.1")
-                                {
-                                    
-                                    tmp.Storage.Rows11.Remove((Form11)item);
-                                }
-                                if (tmp.FormType == "1.2")
-                                {
-                                    tmp.Storage.Rows12.Remove((Form12)item);
-                                }
-                                if (tmp.FormType == "1.3")
-                                {
-                                    tmp.Storage.Rows13.Remove((Form13)item);
-                                }
-                                if (tmp.FormType == "1.4")
-                                {
-                                    tmp.Storage.Rows14.Remove((Form14)item);
-                                }
-                                if (tmp.FormType == "1.5")
-                                {
-                                    tmp.Storage.Rows15.Remove((Form15)item);
-                                }
-                                if (tmp.FormType == "1.6")
-                                {
-                                    tmp.Storage.Rows16.Remove((Form16)item);
-                                }
-                                if (tmp.FormType == "1.7")
-                                {
-                                    tmp.Storage.Rows17.Remove((Form17)item);
-                                }
-                                if (tmp.FormType == "1.8")
-                                {
-                                    tmp.Storage.Rows18.Remove((Form18)item);
-                                }
-                                if (tmp.FormType == "1.9")
-                                {
-                                    tmp.Storage.Rows19.Remove((Form19)item);
-                                }
+                                tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
 
-                                if (tmp.FormType == "2.1")
-                                {
-                                    tmp.Storage.Rows21.Remove((Form21)item);
-                                }
-                                if (tmp.FormType == "2.2")
-                                {
-                                    tmp.Storage.Rows22.Remove((Form22)item);
-                                }
-                                if (tmp.FormType == "2.3")
-                                {
-                                    tmp.Storage.Rows23.Remove((Form23)item);
-                                }
-                                if (tmp.FormType == "2.4")
-                                {
-                                    tmp.Storage.Rows24.Remove((Form24)item);
-                                }
-                                if (tmp.FormType == "2.5")
-                                {
-                                    tmp.Storage.Rows25.Remove((Form25)item);
-                                }
-                                if (tmp.FormType == "2.6")
-                                {
-                                    tmp.Storage.Rows26.Remove((Form26)item);
-                                }
-                                if (tmp.FormType == "2.7")
-                                {
-                                    tmp.Storage.Rows27.Remove((Form27)item);
-                                }
-                                if (tmp.FormType == "2.8")
-                                {
-                                    tmp.Storage.Rows28.Remove((Form28)item);
-                                }
-                                if (tmp.FormType == "2.9")
-                                {
-                                    tmp.Storage.Rows29.Remove((Form29)item);
-                                }
-                                if (tmp.FormType == "2.10")
-                                {
-                                    tmp.Storage.Rows210.Remove((Form210)item);
-                                }
-                                if (tmp.FormType == "2.11")
-                                {
-                                    tmp.Storage.Rows211.Remove((Form211)item);
-                                }
-                                if (tmp.FormType == "2.12")
-                                {
-                                    tmp.Storage.Rows212.Remove((Form212)item);
-                                }
                             }
                         }
                         var lstnote = tmp.Storage.Notes.ToList<Note>();
@@ -3077,29 +2992,6 @@ namespace Client_App.Views
             RowNumber frm = new RowNumber();
             await frm.ShowDialog(this);
             interaction.SetOutput(Convert.ToInt32(frm.Number));
-        }
-        private async Task DoShowDialogAsync(InteractionContext<string, string> interaction)
-        {
-            MessageBox.Avalonia.DTO.MessageBoxCustomParams par = new MessageBox.Avalonia.DTO.MessageBoxCustomParams();
-            List<MessageBox.Avalonia.Models.ButtonDefinition> lt = new List<MessageBox.Avalonia.Models.ButtonDefinition>();
-            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-            {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                Name = "Да"
-            });
-            lt.Add(new MessageBox.Avalonia.Models.ButtonDefinition
-            {
-                Type = MessageBox.Avalonia.Enums.ButtonType.Default,
-                Name = "Нет"
-            });
-            par.ButtonDefinitions = lt;
-            par.ContentTitle = "Уведомление";
-            par.ContentHeader = "Уведомление";
-            par.ContentMessage = interaction.Input;
-            var mssg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-            var answ = await mssg.ShowDialog(this);
-
-            interaction.SetOutput(answ);
         }
 
         private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
