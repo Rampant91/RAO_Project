@@ -1905,7 +1905,7 @@ namespace Models
         //BetaGammaActivityOut property
         #region  BetaGammaActivityOut
         public string BetaGammaActivityOut_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие (исключая тритий)","21")]
+        [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "бета-, гамма-излучающие радионуклиды (исключая тритий)","21")]
         public RamAccess<string> BetaGammaActivityOut//SUMMARIZABLE
         {
             get
@@ -2275,7 +2275,7 @@ namespace Models
 
                 #region NumberOfHoursPerYear (5)
                 DataGridColumns NumberOfHoursPerYearR = ((Attributes.Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(Form21.NumberOfHoursPerYear)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                NumberOfHoursPerYearR.SetSizeColToAllLevels(163);
+                NumberOfHoursPerYearR.SetSizeColToAllLevels(190);
                 NumberOfHoursPerYearR.Binding = nameof(Form21.NumberOfHoursPerYear);
                 NumberInOrderR += NumberOfHoursPerYearR;
                 #endregion
@@ -2324,21 +2324,21 @@ namespace Models
 
                 #region BetaGammaActivityIn (12)
                 DataGridColumns BetaGammaActivityInR = ((Attributes.Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(Form21.BetaGammaActivityIn)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                BetaGammaActivityInR.SetSizeColToAllLevels(275);
+                BetaGammaActivityInR.SetSizeColToAllLevels(350);
                 BetaGammaActivityInR.Binding = nameof(Form21.BetaGammaActivityIn);
                 NumberInOrderR += BetaGammaActivityInR;
                 #endregion
 
                 #region AlphaActivity (13)
                 DataGridColumns AlphaActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(Form21.AlphaActivityIn)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                AlphaActivityR.SetSizeColToAllLevels(283);
+                AlphaActivityR.SetSizeColToAllLevels(365);
                 AlphaActivityR.Binding = nameof(Form21.AlphaActivityIn);
                 NumberInOrderR += AlphaActivityR;
                 #endregion
 
                 #region TransuraniumActivity (14)
                 DataGridColumns TransuraniumActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(Form21.TransuraniumActivityIn)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                TransuraniumActivityR.SetSizeColToAllLevels(163);
+                TransuraniumActivityR.SetSizeColToAllLevels(200);
                 TransuraniumActivityR.Binding = nameof(Form21.TransuraniumActivityIn);
                 NumberInOrderR += TransuraniumActivityR;
                 #endregion
@@ -2387,14 +2387,14 @@ namespace Models
 
                 #region BetaGammaActivityOut (21)
                 DataGridColumns BetaGammaActivityOutR = ((Attributes.Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(Form21.BetaGammaActivityOut)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                BetaGammaActivityOutR.SetSizeColToAllLevels(275);
+                BetaGammaActivityOutR.SetSizeColToAllLevels(365);
                 BetaGammaActivityOutR.Binding = nameof(Form21.BetaGammaActivityOut);
                 NumberInOrderR += BetaGammaActivityOutR;
                 #endregion
 
                 #region AlphaActivityOut (22)
                 DataGridColumns AlphaActivityOutR = ((Attributes.Form_PropertyAttribute)typeof(Form21).GetProperty(nameof(Form21.AlphaActivityOut)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                AlphaActivityOutR.SetSizeColToAllLevels(283);
+                AlphaActivityOutR.SetSizeColToAllLevels(365);
                 AlphaActivityOutR.Binding = nameof(Form21.AlphaActivityOut);
                 NumberInOrderR += AlphaActivityOutR;
                 #endregion

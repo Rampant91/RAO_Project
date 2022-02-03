@@ -711,7 +711,7 @@ namespace Models
                 DataGridColumns StoragePlaceCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form25).GetProperty(nameof(Form25.StoragePlaceCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
                 StoragePlaceCodeR.SetSizeColToAllLevels(88);
                 StoragePlaceCodeR.Binding = nameof(Form25.StoragePlaceCode);
-                NumberInOrderR += StoragePlaceNameR;
+                NumberInOrderR += StoragePlaceCodeR;
                 #endregion
                 #region CodeOYAT (4)
                 DataGridColumns CodeOYATR = ((Attributes.Form_PropertyAttribute)typeof(Form25).GetProperty(nameof(Form25.CodeOYAT)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
@@ -733,13 +733,13 @@ namespace Models
                 #endregion
                 #region CellMass (7)
                 DataGridColumns CellMassR = ((Attributes.Form_PropertyAttribute)typeof(Form25).GetProperty(nameof(Form25.CellMass)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                CellMassR.SetSizeColToAllLevels(2308);
+                CellMassR.SetSizeColToAllLevels(288);
                 CellMassR.Binding = nameof(Form25.CellMass);
                 NumberInOrderR += CellMassR;
                 #endregion
                 #region Quantity (8)
                 DataGridColumns QuantityR = ((Attributes.Form_PropertyAttribute)typeof(Form25).GetProperty(nameof(Form25.Quantity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                QuantityR.SetSizeColToAllLevels(88);
+                QuantityR.SetSizeColToAllLevels(100);
                 QuantityR.Binding = nameof(Form25.Quantity);
                 NumberInOrderR += QuantityR;
                 #endregion

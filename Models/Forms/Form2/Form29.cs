@@ -350,25 +350,25 @@ namespace Models
                 #endregion
                 #region WasteSourceName (2)
                 DataGridColumns WasteSourceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(Form29.WasteSourceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                WasteSourceNameR.SetSizeColToAllLevels(238);
+                WasteSourceNameR.SetSizeColToAllLevels(268);
                 WasteSourceNameR.Binding = nameof(Form29.WasteSourceName);
                 NumberInOrderR += WasteSourceNameR;
                 #endregion
                 #region RadionuclidName (3)
                 DataGridColumns RadionuclidNameR = ((Attributes.Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(Form29.RadionuclidName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                RadionuclidNameR.SetSizeColToAllLevels(163);
+                RadionuclidNameR.SetSizeColToAllLevels(183);
                 RadionuclidNameR.Binding = nameof(Form29.RadionuclidName);
                 NumberInOrderR += RadionuclidNameR;
                 #endregion
                 #region AllowedActivity (4)
                 DataGridColumns AllowedActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(Form29.AllowedActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                AllowedActivityR.SetSizeColToAllLevels(88);
+                AllowedActivityR.SetSizeColToAllLevels(94);
                 AllowedActivityR.Binding = nameof(Form29.AllowedActivity);
                 NumberInOrderR += AllowedActivityR;
                 #endregion
                 #region FactedActivity (5)
                 DataGridColumns FactedActivityR = ((Attributes.Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(Form29.FactedActivity)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                FactedActivityR.SetSizeColToAllLevels(88);
+                FactedActivityR.SetSizeColToAllLevels(94);
                 FactedActivityR.Binding = nameof(Form29.FactedActivity);
                 NumberInOrderR += FactedActivityR;
                 #endregion

@@ -646,7 +646,7 @@ namespace Models
                 #endregion
                 #region PlotKadastrNumber (3)
                 DataGridColumns PlotKadastrNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.PlotKadastrNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                PlotKadastrNumberR.SetSizeColToAllLevels(163);
+                PlotKadastrNumberR.SetSizeColToAllLevels(173);
                 PlotKadastrNumberR.Binding = nameof(Form211.PlotKadastrNumber);
                 NumberInOrderR += PlotKadastrNumberR;
                 #endregion
@@ -658,31 +658,31 @@ namespace Models
                 #endregion
                 #region InfectedArea (5)
                 DataGridColumns InfectedAreaR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.InfectedArea)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                InfectedAreaR.SetSizeColToAllLevels(238);
+                InfectedAreaR.SetSizeColToAllLevels(248);
                 InfectedAreaR.Binding = nameof(Form211.InfectedArea);
                 NumberInOrderR += InfectedAreaR;
                 #endregion
                 #region Radionuclids (6)
                 DataGridColumns RadionuclidsR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.Radionuclids)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                RadionuclidsR.SetSizeColToAllLevels(163);
+                RadionuclidsR.SetSizeColToAllLevels(188);
                 RadionuclidsR.Binding = nameof(Form211.Radionuclids);
                 NumberInOrderR += RadionuclidsR;
                 #endregion
                 #region SpecificActivityOfPlot (7)
                 DataGridColumns SpecificActivityOfPlotR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.SpecificActivityOfPlot)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                SpecificActivityOfPlotR.SetSizeColToAllLevels(125);
+                SpecificActivityOfPlotR.SetSizeColToAllLevels(155);
                 SpecificActivityOfPlotR.Binding = nameof(Form211.SpecificActivityOfPlot);
                 NumberInOrderR += SpecificActivityOfPlotR;
                 #endregion
                 #region SpecificActivityOfLiquidPart (8)
                 DataGridColumns SpecificActivityOfLiquidPartR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.SpecificActivityOfLiquidPart)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                SpecificActivityOfLiquidPartR.SetSizeColToAllLevels(88);
+                SpecificActivityOfLiquidPartR.SetSizeColToAllLevels(236);
                 SpecificActivityOfLiquidPartR.Binding = nameof(Form211.SpecificActivityOfLiquidPart);
                 NumberInOrderR += SpecificActivityOfLiquidPartR;
                 #endregion
                 #region SpecificActivityOfDensePart (9)
                 DataGridColumns SpecificActivityOfDensePartR = ((Attributes.Form_PropertyAttribute)typeof(Form211).GetProperty(nameof(Form211.SpecificActivityOfDensePart)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                SpecificActivityOfDensePartR.SetSizeColToAllLevels(125);
+                SpecificActivityOfDensePartR.SetSizeColToAllLevels(246);
                 SpecificActivityOfDensePartR.Binding = nameof(Form211.SpecificActivityOfDensePart);
                 NumberInOrderR += SpecificActivityOfDensePartR;
                 #endregion
