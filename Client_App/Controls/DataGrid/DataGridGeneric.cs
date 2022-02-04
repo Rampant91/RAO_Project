@@ -1219,6 +1219,11 @@ namespace Client_App.Controls.DataGrid
                             textBox.Height = 30;
                             textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
                         }
+                        if (item.TextW) 
+                        {
+                            ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
+                            ((TextBox)textBox).AcceptsReturn = true;
+                        }
                         cell.Control = textBox;
 
                         RowStackPanel.Children.Add(cell);
