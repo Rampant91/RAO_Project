@@ -117,7 +117,7 @@ namespace Models
         //FcpNumber property
         #region  FcpNumber
         public string FcpNumber_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"null-3","Номер мероприятия ФЦП","3")]
+        [Attributes.Form_Property(true, "null-3","Номер мероприятия ФЦП","3")]
         public RamAccess<string> FcpNumber
         {
             get
@@ -160,7 +160,7 @@ namespace Models
         //MassCreated Property
         #region  MassCreated
         public string MassCreated_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации","масса, т","4")]
+        [Attributes.Form_Property(true, "Поставлено на учет в организации", "масса образованного, т","4")]
         public RamAccess<string> MassCreated
         {
             get
@@ -245,7 +245,7 @@ namespace Models
         #region  QuantityCreated
         public string QuantityCreated_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество, шт.","5")]
+        [Attributes.Form_Property(true, "Поставлено на учет в организации", "количество образованного, шт.","5")]
         public RamAccess<string> QuantityCreated
         {
             get
@@ -307,7 +307,7 @@ namespace Models
         #region  MassFromAnothers
         public string MassFromAnothers_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации", "масса, т","6")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации", "масса поступивших от сторонних, т","6")]
         public RamAccess<string> MassFromAnothers
         {
             get
@@ -391,7 +391,7 @@ namespace Models
         //QuantityFromAnothers property
         #region  QuantityFromAnothers
         public string QuantityFromAnothers_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации", "количество, шт.","7")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации", "количество поступиших от сторонних, шт.","7")]
         public RamAccess<string> QuantityFromAnothers
         {
             get
@@ -452,7 +452,7 @@ namespace Models
         //MassFromAnothersImported Property
         #region  MassFromAnothersImported
         public string MassFromAnothersImported_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации", "масса, т","8")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации", "масса импортированных от сторонних, т","8")]
         public RamAccess<string> MassFromAnothersImported
         {
             get
@@ -536,7 +536,7 @@ namespace Models
         //QuantityFromAnothersImported property
         #region  QuantityFromAnothersImported
         public string QuantityFromAnothersImported_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество, шт.","9")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество импортированных от сторонних, шт.","9")]
         public RamAccess<string> QuantityFromAnothersImported
         {
             get
@@ -597,7 +597,7 @@ namespace Models
         //MassAnotherReasons Property
         #region  MassAnotherReasons
         public string MassAnotherReasons_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации","масса, т","10")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","масса учтенных по другим причинам, т","10")]
         public RamAccess<string> MassAnotherReasons
         {
             get
@@ -682,7 +682,7 @@ namespace Models
         #region  QuantityAnotherReasons
         public string QuantityAnotherReasons_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество, шт.","11")]
+        [Attributes.Form_Property(true,"Поставлено на учет в организации","количество учтенных по другим причинам, шт.","11")]
         public RamAccess<string> QuantityAnotherReasons
         {
             get
@@ -744,7 +744,7 @@ namespace Models
         #region  MassTransferredToAnother
         public string MassTransferredToAnother_DB { get; set; } = "";
         [NotMapped]
-        [Attributes.Form_Property(true,"Снято с учета в организации","масса, т","12")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","масса переданных сторонним, т","12")]
         public RamAccess<string> MassTransferredToAnother
         {
             get
@@ -828,7 +828,7 @@ namespace Models
         //QuantityTransferredToAnother property
         #region  QuantityTransferredToAnother
         public string QuantityTransferredToAnother_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Снято с учета в организации","количество, шт.","13")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","количество переданных сторонним, шт.","13")]
         public RamAccess<string> QuantityTransferredToAnother
         {
             get
@@ -889,7 +889,7 @@ namespace Models
         //MassRefined Property
         #region  MassRefined
         public string MassRefined_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Снято с учета в организации","масса, т","14")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","масса переработанных, т","14")]
         public RamAccess<string> MassRefined
         {
             get
@@ -973,7 +973,7 @@ namespace Models
         //QuantityRefined property
         #region  QuantityRefined
         public string QuantityRefined_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Снято с учета в организации","количество, шт.","15")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","количество переработанных, шт.","15")]
         public RamAccess<string> QuantityRefined
         {
             get
@@ -1034,7 +1034,7 @@ namespace Models
         //MassRemovedFromAccount Property
         #region  MassRemovedFromAccount
         public string MassRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Снято с учета в организации","масса, т","16")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","масса снятых с учета, т","16")]
         public RamAccess<string> MassRemovedFromAccount
         {
             get
@@ -1118,7 +1118,7 @@ namespace Models
         //QuantityRemovedFromAccount property
         #region  QuantityRemovedFromAccount
         public string QuantityRemovedFromAccount_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"Снято с учета в организации","количество, шт.","17")]
+        [Attributes.Form_Property(true,"Снято с учета в организации","количество снятых с учета, шт.","17")]
         public RamAccess<string> QuantityRemovedFromAccount
         {
             get
@@ -1234,107 +1234,216 @@ namespace Models
             if (_DataGridColumns == null)
             {
                 #region NumberInOrder (1)
-                DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                //DataGridColumns insert = new DataGridColumns(); insert.name = ".kj";
+                //DataGridColumns insert2 = new DataGridColumns(); insert2.name = "po["; insert2.parent = insert;
+                //insert.innertCol = new List<DataGridColumns> { insert2 };
+                var NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                //insert.parent = NumberInOrderR;
+                //List<DataGridColumns> child = NumberInOrderR.innertCol;
+                //child[0].parent = insert.innertCol[0];
+                //insert.innertCol[0].innertCol = child;
+                //NumberInOrderR.innertCol = new List<DataGridColumns> { insert };
                 NumberInOrderR.SetSizeColToAllLevels(88);
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
                 #endregion
                 #region CodeOYAT (2)
+                //insert = new DataGridColumns(); insert.name = "gfh";
+                //insert2 = new DataGridColumns(); insert2.name = "yiu"; insert2.parent = insert;
+                //insert.innertCol = new List<DataGridColumns> { insert2 };
                 DataGridColumns CodeOYATR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.CodeOYAT)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                //insert.parent = CodeOYATR;
+                //child = CodeOYATR.innertCol;
+                //child[0].parent = insert.innertCol[0];
+                //insert.innertCol[0].innertCol = child;
+                //CodeOYATR.innertCol = new List<DataGridColumns> { insert };
                 CodeOYATR.SetSizeColToAllLevels(88);
                 CodeOYATR.Binding = nameof(Form24.CodeOYAT);
                 NumberInOrderR += CodeOYATR;
                 #endregion
                 #region FcpNumber (3)
+                //insert = new DataGridColumns(); insert.name = "nmm";
+                //insert2 = new DataGridColumns(); insert2.name = "dsgf"; insert2.parent = insert;
+                //insert.innertCol = new List<DataGridColumns> { insert2 };
                 DataGridColumns FcpNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.FcpNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                //insert.parent = FcpNumberR;
+                //child = FcpNumberR.innertCol;
+                //child[0].parent = insert.innertCol[0];
+                //insert.innertCol[0].innertCol = child;
+                //FcpNumberR.innertCol = new List<DataGridColumns> { insert };
                 FcpNumberR.SetSizeColToAllLevels(163);
                 FcpNumberR.Binding = nameof(Form24.FcpNumber);
                 NumberInOrderR += FcpNumberR;
                 #endregion
                 #region MassCreated (4)
+                //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
                 DataGridColumns MassCreatedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassCreated)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                MassCreatedR.SetSizeColToAllLevels(50);
+                //insert.parent = MassCreatedR;
+                //List<DataGridColumns> child = MassCreatedR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //MassCreatedR.innertCol = new List<DataGridColumns> { insert };
+                MassCreatedR.SetSizeColToAllLevels(250);
                 MassCreatedR.Binding = nameof(Form24.MassCreated);
                 NumberInOrderR += MassCreatedR;
                 #endregion
                 #region QuantityCreated (5)
+                //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
                 DataGridColumns QuantityCreatedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityCreated)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                QuantityCreatedR.SetSizeColToAllLevels(50);
+                //insert.parent = QuantityCreatedR;
+                //child = QuantityCreatedR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //QuantityCreatedR.innertCol = new List<DataGridColumns> { insert };
+                QuantityCreatedR.SetSizeColToAllLevels(250);
                 QuantityCreatedR.Binding = nameof(Form24.QuantityCreated);
                 NumberInOrderR += QuantityCreatedR;
                 #endregion
                 #region MassFromAnothers (6)
+                //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
                 DataGridColumns MassFromAnothersR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassFromAnothers)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                MassFromAnothersR.SetSizeColToAllLevels(50);
+                //insert.parent = MassFromAnothersR;
+                //child = MassFromAnothersR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //MassFromAnothersR.innertCol = new List<DataGridColumns> { insert };
+                MassFromAnothersR.SetSizeColToAllLevels(250);
                 MassFromAnothersR.Binding = nameof(Form24.MassFromAnothers);
                 NumberInOrderR += MassFromAnothersR;
                 #endregion
                 #region QuantityFromAnothers (7)
+                //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
                 DataGridColumns QuantityFromAnothersR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityFromAnothers)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                QuantityFromAnothersR.SetSizeColToAllLevels(50);
+                //insert.parent = QuantityFromAnothersR;
+                //child = QuantityFromAnothersR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //QuantityFromAnothersR.innertCol = new List<DataGridColumns> { insert };
+                QuantityFromAnothersR.SetSizeColToAllLevels(250);
                 QuantityFromAnothersR.Binding = nameof(Form24.QuantityFromAnothers);
                 NumberInOrderR += QuantityFromAnothersR;
                 #endregion
                 #region MassFromAnothersImported (8)
+                //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
                 DataGridColumns MassFromAnothersImportedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassFromAnothersImported)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                MassFromAnothersImportedR.SetSizeColToAllLevels(50);
+                //insert.parent = MassFromAnothersImportedR;
+                //child = MassFromAnothersImportedR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //MassFromAnothersImportedR.innertCol = new List<DataGridColumns> { insert };
+                MassFromAnothersImportedR.SetSizeColToAllLevels(250);
                 MassFromAnothersImportedR.Binding = nameof(Form24.MassFromAnothersImported);
                 NumberInOrderR += MassFromAnothersImportedR;
                 #endregion
                 #region QuantityFromAnothersImported (9)
+                //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
                 DataGridColumns QuantityFromAnothersImportedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityFromAnothersImported)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                QuantityFromAnothersImportedR.SetSizeColToAllLevels(50);
+                //insert.parent = QuantityFromAnothersImportedR;
+                //child = QuantityFromAnothersImportedR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //QuantityFromAnothersImportedR.innertCol = new List<DataGridColumns> { insert };
+                QuantityFromAnothersImportedR.SetSizeColToAllLevels(300);
                 QuantityFromAnothersImportedR.Binding = nameof(Form24.QuantityFromAnothersImported);
                 NumberInOrderR += QuantityFromAnothersImportedR;
                 #endregion
                 #region MassAnotherReasons (10)
+                //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
                 DataGridColumns MassAnotherReasonsR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassAnotherReasons)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                MassAnotherReasonsR.SetSizeColToAllLevels(50);
+                //insert.parent = MassAnotherReasonsR;
+                //child = MassAnotherReasonsR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //MassAnotherReasonsR.innertCol = new List<DataGridColumns> { insert };
+                MassAnotherReasonsR.SetSizeColToAllLevels(250);
                 MassAnotherReasonsR.Binding = nameof(Form24.MassAnotherReasons);
                 NumberInOrderR += MassAnotherReasonsR;
                 #endregion
                 #region QuantityAnotherReasons (11)
+                //insert = new DataGridColumns(); insert.name = "Поставлено на учет в организации";
                 DataGridColumns QuantityAnotherReasonsR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityAnotherReasons)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                QuantityAnotherReasonsR.SetSizeColToAllLevels(50);
+                //insert.parent = QuantityAnotherReasonsR;
+                //child = QuantityAnotherReasonsR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //QuantityAnotherReasonsR.innertCol = new List<DataGridColumns> { insert };
+                QuantityAnotherReasonsR.SetSizeColToAllLevels(300);
                 QuantityAnotherReasonsR.Binding = nameof(Form24.QuantityAnotherReasons);
                 NumberInOrderR += QuantityAnotherReasonsR;
                 #endregion
                 #region MassTransferredToAnother (12)
+                //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
                 DataGridColumns MassTransferredToAnotherR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassTransferredToAnother)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                MassTransferredToAnotherR.SetSizeColToAllLevels(50);
+                //insert.parent = MassTransferredToAnotherR;
+                //child = MassTransferredToAnotherR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //MassTransferredToAnotherR.innertCol = new List<DataGridColumns> { insert };
+                MassTransferredToAnotherR.SetSizeColToAllLevels(250);
                 MassTransferredToAnotherR.Binding = nameof(Form24.MassTransferredToAnother);
                 NumberInOrderR += MassTransferredToAnotherR;
                 #endregion
                 #region QuantityTransferredToAnother (13)
+                //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
                 DataGridColumns QuantityTransferredToAnotherR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityTransferredToAnother)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                QuantityTransferredToAnotherR.SetSizeColToAllLevels(50);
+                //insert.parent = QuantityTransferredToAnotherR;
+                //child = QuantityTransferredToAnotherR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //QuantityTransferredToAnotherR.innertCol = new List<DataGridColumns> { insert };
+                QuantityTransferredToAnotherR.SetSizeColToAllLevels(250);
                 QuantityTransferredToAnotherR.Binding = nameof(Form24.QuantityTransferredToAnother);
                 NumberInOrderR += QuantityTransferredToAnotherR;
                 #endregion
                 #region MassRefined (14)
+                //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
                 DataGridColumns MassRefinedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassRefined)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                MassRefinedR.SetSizeColToAllLevels(50);
+                //insert.parent = MassRefinedR;
+                //child = MassRefinedR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //MassRefinedR.innertCol = new List<DataGridColumns> { insert };
+                MassRefinedR.SetSizeColToAllLevels(250);
                 MassRefinedR.Binding = nameof(Form24.MassRefined);
                 NumberInOrderR += MassRefinedR;
                 #endregion
                 #region QuantityRefined (15)
+                //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
                 DataGridColumns QuantityRefinedR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityRefined)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                QuantityRefinedR.SetSizeColToAllLevels(50);
+                //insert.parent = QuantityRefinedR;
+                //child = QuantityRefinedR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //QuantityRefinedR.innertCol = new List<DataGridColumns> { insert };
+                QuantityRefinedR.SetSizeColToAllLevels(250);
                 QuantityRefinedR.Binding = nameof(Form24.QuantityRefined);
                 NumberInOrderR += QuantityRefinedR;
                 #endregion
                 #region MassRemovedFromAccount (16)
+                //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
                 DataGridColumns MassRemovedFromAccountR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.MassRemovedFromAccount)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                MassRemovedFromAccountR.SetSizeColToAllLevels(50);
+                //insert.parent = MassRemovedFromAccountR;
+                //child = MassRemovedFromAccountR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //MassRemovedFromAccountR.innertCol = new List<DataGridColumns> { insert };
+                MassRemovedFromAccountR.SetSizeColToAllLevels(250);
                 MassRemovedFromAccountR.Binding = nameof(Form24.MassRemovedFromAccount);
                 NumberInOrderR += MassRemovedFromAccountR;
                 #endregion
                 #region QuantityRemovedFromAccount (17)
+                //insert = new DataGridColumns(); insert.name = "Снято с учета в организации";
                 DataGridColumns QuantityRemovedFromAccountR = ((Attributes.Form_PropertyAttribute)typeof(Form24).GetProperty(nameof(Form24.QuantityRemovedFromAccount)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
-                QuantityRemovedFromAccountR.SetSizeColToAllLevels(50);
+                //insert.parent = QuantityRemovedFromAccountR;
+                //child = QuantityRemovedFromAccountR.innertCol;
+                //child[0].parent = insert;
+                //insert.innertCol = child;
+                //QuantityRemovedFromAccountR.innertCol = new List<DataGridColumns> { insert };
+                QuantityRemovedFromAccountR.SetSizeColToAllLevels(250);
                 QuantityRemovedFromAccountR.Binding = nameof(Form24.QuantityRemovedFromAccount);
                 NumberInOrderR += QuantityRemovedFromAccountR;
                 #endregion
                 _DataGridColumns = NumberInOrderR;
+                //_DataGridColumns = MassCreatedR;
             }
             return _DataGridColumns;
         }
