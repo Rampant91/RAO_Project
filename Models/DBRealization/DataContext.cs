@@ -32,7 +32,6 @@ namespace Models.DBRealization
             base.OnConfiguring(optionsBuilder);
             var lt = RedDataBaseCreation.GetConnectionString(_path);
             optionsBuilder.UseFirebird(lt);
-            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

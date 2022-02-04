@@ -66,7 +66,7 @@ namespace Models.DBRealization
             }
 #endif
             Console.WriteLine(_path);
-            return new FbConnection(new FbConnectionStringBuilder
+            string connstring= new FbConnectionStringBuilder
             {
 
                 Database = _path,
@@ -77,7 +77,9 @@ namespace Models.DBRealization
                 Pooling = false,
                 ConnectionLifeTime = 15,
                 ClientLibrary = Path.GetFullPath(pth)
-            }.ToString());
+            }.ToString();
+
+            return new FbConnection(connstring);
         }
     }
 }
