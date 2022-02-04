@@ -65,7 +65,7 @@ namespace Models
         //CodeOYAT property
         #region  CodeOYAT
         public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"null-2","Код ОЯТ","2")]
+        [Attributes.Form_Property(true,"null-2", "null-2_1","Код ОЯТ","2")]
         public RamAccess<string> CodeOYAT
         {
             get
@@ -1237,6 +1237,7 @@ namespace Models
                 #region NumberInOrder (1)
                 DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
                 NumberInOrderR.SetSizeColToAllLevels(88);
+                
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
                 #endregion
                 #region CodeOYAT (2)
