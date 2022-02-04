@@ -127,7 +127,7 @@ namespace Models.Collections
 
 
         bool textW = false;
-        public bool TextW
+        public bool IsTextWrapping
         {
             get { return textW; }
             set 

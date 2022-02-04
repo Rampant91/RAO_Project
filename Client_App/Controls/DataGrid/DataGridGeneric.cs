@@ -1218,7 +1218,7 @@ namespace Client_App.Controls.DataGrid
                             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
                             //textBox.Height = 30;
                             textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
-                            if (item.TextW)
+                            if (item.IsTextWrapping)
                             {
                                 ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
                                 ((TextBox)textBox).AcceptsReturn = true;

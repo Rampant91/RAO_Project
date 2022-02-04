@@ -219,7 +219,7 @@ namespace Models
             DataGridColumns CommentN = ((Attributes.Form_PropertyAttribute)typeof(Note).GetProperty(nameof(Note.Comment)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
             CommentN.SizeCol = 660;
             CommentN.Binding = nameof(Note.Comment);
-            CommentN.TextW = true;
+            CommentN.IsTextWrapping = true;
             RowNumberN += CommentN;
 
             return RowNumberN;
