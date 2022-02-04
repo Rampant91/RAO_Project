@@ -65,7 +65,7 @@ namespace Models
         //CodeOYAT property
         #region  CodeOYAT
         public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"null-2", "null-2_1","Код ОЯТ","2")]
+        [Attributes.Form_Property(true,"null-2","Код ОЯТ","2")]
         public RamAccess<string> CodeOYAT
         {
             get
