@@ -222,12 +222,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -357,12 +357,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -492,12 +492,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -627,12 +627,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -762,12 +762,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -897,12 +897,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1032,12 +1032,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1167,12 +1167,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1302,12 +1302,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1445,12 +1445,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1579,12 +1579,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1713,12 +1713,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1847,12 +1847,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -1981,12 +1981,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2115,12 +2115,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2249,12 +2249,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2383,12 +2383,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2517,12 +2517,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2651,12 +2651,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2785,12 +2785,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
@@ -2919,12 +2919,12 @@ namespace Client_App.Views
                 var Ngrd = (Controls.DataGrid.DataGridNote)((Panel)((StackPanel)grd.Content).Children[3]).Children[0];
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()
                 {
-                    Key = Avalonia.Input.Key.A,
+                    Key = Avalonia.Input.Key.T,
                     KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = new string[] { "Добавить строку          Ctrl+A" },
+                    ContextMenuText = new string[] { "Добавить строку          Ctrl+T" },
                     Command = dataContext.AddNote
                 });
                 Ngrd.CommandsList.Add(new Controls.DataGrid.KeyComand()

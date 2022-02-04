@@ -1153,6 +1153,7 @@ namespace Client_App.Controls.DataGrid
             {
                 Rows.Clear();
                 var lst = ls.GetLevel(1);
+
                 for (int i = 0; i < PageSize; i++)
                 {
                     var Column = 0;
@@ -1178,7 +1179,6 @@ namespace Client_App.Controls.DataGrid
                         cell.HorizontalAlignment = HorizontalAlignment.Stretch;
                         cell.Row = i;
                         cell.Column = Column;
-                        cell.Height = 30;
                         cell.BorderColor = new SolidColorBrush(Color.Parse("Gray"));
                         cell.Background = new SolidColorBrush(Color.Parse("White"));
                         if (item.ChooseLine)
@@ -1214,10 +1214,20 @@ namespace Client_App.Controls.DataGrid
                                 [!TextBox.BackgroundProperty]=cell[!Cell.ChooseColorProperty]
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Center;
-                            textBox.VerticalAlignment = VerticalAlignment.Center;
+                            textBox.VerticalAlignment = VerticalAlignment.Stretch;
                             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                            textBox.Height = 30;
+                            //textBox.Height = 30;
                             textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
+                            if (item.IsTextWrapping)
+                            {
+                                ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
+                                ((TextBox)textBox).AcceptsReturn = true;
+                            }
+                            else
+                            {
+                                ((TextBox)textBox).HorizontalContentAlignment = HorizontalAlignment.Center;
+                                ((TextBox)textBox).VerticalContentAlignment = VerticalAlignment.Center;
+                            }
                         }
                         cell.Control = textBox;
 

@@ -717,7 +717,7 @@ namespace Client_App.ViewModels
                 if(item=='\"')
                 {
                     txt += item;
-                    comaFlag = true;
+                    comaFlag = !comaFlag;
                 }
                 else
                 {

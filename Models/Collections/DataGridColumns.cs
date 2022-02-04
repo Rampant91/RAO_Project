@@ -125,6 +125,17 @@ namespace Models.Collections
             }
         }
 
+
+        bool textW = false;
+        public bool IsTextWrapping
+        {
+            get { return textW; }
+            set 
+            {
+                if (textW != value) textW = value;
+            }
+        }
+
         double sizeCol = 0;
         public double SizeCol
         {

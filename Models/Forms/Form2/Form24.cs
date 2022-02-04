@@ -65,7 +65,7 @@ namespace Models
         //CodeOYAT property
         #region  CodeOYAT
         public string CodeOYAT_DB { get; set; } = ""; [NotMapped]
-        [Attributes.Form_Property(true,"null-2","Код ОЯТ","2")]
+        [Attributes.Form_Property(true,"null-2", "null-2_1","Код ОЯТ","2")]
         public RamAccess<string> CodeOYAT
         {
             get
@@ -1227,6 +1227,7 @@ namespace Models
             return 16;
         }
         #endregion
+
         #region IDataGridColumn
         private static DataGridColumns _DataGridColumns { get; set; } = null;
         public override DataGridColumns GetColumnStructure(string param = "")
@@ -1244,6 +1245,7 @@ namespace Models
                 //insert.innertCol[0].innertCol = child;
                 //NumberInOrderR.innertCol = new List<DataGridColumns> { insert };
                 NumberInOrderR.SetSizeColToAllLevels(88);
+                
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
                 #endregion
                 #region CodeOYAT (2)
