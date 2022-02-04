@@ -131,8 +131,6 @@ namespace Client_App.ViewModels
 
                     dbm = StaticConfiguration.DBModel;
 
-                    var rt = dbm.Database.GetAppliedMigrations();
-                    var yu = dbm.Database.GetPendingMigrations();
                     await dbm.Database.MigrateAsync();
                     flag = true;
                     break;
