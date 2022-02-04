@@ -1223,6 +1223,11 @@ namespace Client_App.Controls.DataGrid
                                 ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
                                 ((TextBox)textBox).AcceptsReturn = true;
                             }
+                            else
+                            {
+                                ((TextBox)textBox).HorizontalContentAlignment = HorizontalAlignment.Center;
+                                ((TextBox)textBox).VerticalContentAlignment = VerticalAlignment.Center;
+                            }
                         }
                         cell.Control = textBox;
 
