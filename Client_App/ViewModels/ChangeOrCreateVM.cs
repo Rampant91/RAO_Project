@@ -152,6 +152,26 @@ namespace Client_App.ViewModels
             Storage = rep;
             Storages = reps;
             FormType = param;
+
+            if (param == "1.0")
+            {
+                var ty1 = (Form10)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form10)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows10.Add(ty1);
+                Storage.Rows10.Add(ty2);
+            }
+            if (param == "2.0")
+            {
+                var ty1 = (Form20)FormCreator.Create(param);
+                ty1.NumberInOrder_DB = 1;
+                var ty2 = (Form20)FormCreator.Create(param);
+                ty2.NumberInOrder_DB = 2;
+                Storage.Rows20.Add(ty1);
+                Storage.Rows20.Add(ty2);
+            }
+
             Init();
         }
         public ChangeOrCreateVM(string param, in Reports reps)
