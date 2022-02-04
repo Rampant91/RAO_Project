@@ -330,7 +330,7 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Суммировать", "5,12,0,0", 30, "SumRow"));
+            content.Children.Add(CreateButton("Суммировать", "65,0,0,15", 30, "SumRow"));
             content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
 
@@ -536,7 +536,7 @@ namespace Client_App.Long_Visual
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
-            content.Children.Add(CreateButton("Суммировать", "5,12,0,0", 30, "SumRow"));
+            content.Children.Add(CreateButton("Суммировать", "65,0,0,15", 30, "SumRow"));
             content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
 
