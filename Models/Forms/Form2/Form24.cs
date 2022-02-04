@@ -1227,6 +1227,7 @@ namespace Models
             return 16;
         }
         #endregion
+
         #region IDataGridColumn
         private static DataGridColumns _DataGridColumns { get; set; } = null;
         public override DataGridColumns GetColumnStructure(string param = "")
