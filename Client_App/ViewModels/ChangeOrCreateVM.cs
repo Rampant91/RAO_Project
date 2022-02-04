@@ -153,25 +153,6 @@ namespace Client_App.ViewModels
             Storages = reps;
             FormType = param;
 
-            if (param == "1.0")
-            {
-                var ty1 = (Form10)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form10)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows10.Add(ty1);
-                Storage.Rows10.Add(ty2);
-            }
-            if (param == "2.0")
-            {
-                var ty1 = (Form20)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form20)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows20.Add(ty1);
-                Storage.Rows20.Add(ty2);
-            }
-
             Init();
         }
         public ChangeOrCreateVM(string param, in Reports reps)
@@ -309,8 +290,8 @@ namespace Client_App.ViewModels
             ShowMessage = new Interaction<string, string>();
             ShowMessageT = new Interaction<List<string>, string>();
 
-            Storages.Master_DB.Rows10.QuickSort();
-            Storages.Master_DB.Rows20.QuickSort();
+            Storage.Rows10.QuickSort();
+            Storage.Rows20.QuickSort();
             Storage.Sort();
         }
 
