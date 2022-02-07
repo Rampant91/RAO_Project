@@ -131,7 +131,7 @@ namespace Client_App.ViewModels
 
                     dbm = StaticConfiguration.DBModel;
 
-                    await dbm.Database.MigrateAsync();
+                    //await dbm.Database.MigrateAsync();
                     flag = true;
                     break;
                 }
@@ -147,7 +147,7 @@ namespace Client_App.ViewModels
                 dbm = StaticConfiguration.DBModel;
                 var rt = dbm.Database.GetAppliedMigrations();
                 var yu = dbm.Database.GetPendingMigrations();
-                await dbm.Database.MigrateAsync();
+                //await dbm.Database.MigrateAsync();
             }
         }
         private async Task ProcessDataBaseFillEmpty(DataContext dbm)
@@ -260,13 +260,14 @@ namespace Client_App.ViewModels
 
             OnStartProgressBar = 25;
             var dbm = StaticConfiguration.DBModel;
-            await dbm.LoadTablesAsync();
-
+            //await dbm.LoadTablesAsync();
+            var reps = DBUse.GetData10Main();
             OnStartProgressBar = 55;
-            await ProcessDataBaseFillEmpty(dbm);
+            //await ProcessDataBaseFillEmpty(dbm);
 
             OnStartProgressBar = 70;
-            Local_Reports = dbm.DBObservableDbSet.Local.First();
+            //Local_Reports = dbm.DBObservableDbSet.Local.First();
+            Local_Reports = new DBObservable() { Reports_Collection = reps };
             await ProcessDataBaseFillNullOrder();
 
             OnStartProgressBar = 75;
