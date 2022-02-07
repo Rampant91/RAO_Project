@@ -825,19 +825,42 @@ namespace Client_App.Controls.DataGrid
                     var maxRow = Math.Max(FirstPressedItem[0], LastPressedItem[0]);
                     var minColumn = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
                     var maxColumn = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
-                    if (paramRowColumn[0] < minRow || paramRowColumn[0] > maxRow)
+                    if (paramRowColumn[0] <= minRow || paramRowColumn[0] >= maxRow)
                     {
                         if (ChooseMode != ChooseMode.Line)
                         {
-                            if (paramRowColumn[1] < minColumn || paramRowColumn[1] > maxColumn)
+                            if (paramRowColumn[0] == minRow || paramRowColumn[0] == maxRow)
+                            {
+                                if (paramRowColumn[1] < minColumn || paramRowColumn[1] > maxColumn)
+                                {
+                                    doSetItemFlag = SetFirstPressed(paramRowColumn);
+                                    if (doSetItemFlag)
+                                    {
+                                        LastPressedItem[0] = FirstPressedItem[0];
+                                        LastPressedItem[1] = FirstPressedItem[1];
+                                    }
+                                    doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
+                                }
+                            }
+                            else
                             {
                                 doSetItemFlag = SetFirstPressed(paramRowColumn);
-                                doSetItemFlag = doSetItemFlag|| SetLastPressed(paramRowColumn);
+                                if (doSetItemFlag)
+                                {
+                                    LastPressedItem[0] = FirstPressedItem[0];
+                                    LastPressedItem[1] = FirstPressedItem[1];
+                                }
+                                doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
                             }
                         }
                         else
                         {
                             doSetItemFlag = SetFirstPressed(paramRowColumn);
+                            if (doSetItemFlag)
+                            {
+                                LastPressedItem[0] = FirstPressedItem[0];
+                                LastPressedItem[1] = FirstPressedItem[1];
+                            }
                             doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
                         }
                     }
@@ -853,12 +876,37 @@ namespace Client_App.Controls.DataGrid
                 {
                     this.ContextMenu.Close();
                     doSetItemFlag = SetFirstPressed(paramRowColumn);
+                    if (doSetItemFlag)
+                    {
+                        LastPressedItem[0] = FirstPressedItem[0];
+                        LastPressedItem[1] = FirstPressedItem[1];
+                    }
                     doSetItemFlag = doSetItemFlag || SetLastPressed(paramRowColumn);
                 }
 
                 if (doSetItemFlag)
                 {
                     SetSelectedControls();
+                    if(paramKey == PointerUpdateKind.LeftButtonPressed)
+                    {
+                        Cell item = (Cell)SelectedCells.FirstOrDefault();
+                        if (item != null)
+                        {
+                            if (item.Control is TextBox)
+                            {
+                                var ctrl = (TextBox)item.Control;
+                                ctrl.Focus();
+                                ctrl.SelectAll();
+                                var num = 0;
+                                if (ctrl.Text != null)
+                                {
+                                    num = ctrl.Text.Length;
+                                }
+                                ctrl.CaretIndex = num - 1;
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -960,43 +1008,107 @@ namespace Client_App.Controls.DataGrid
         {
             if(args.Key==Key.Left)
             {
-                LastPressedItem[1] += -1;
+                LastPressedItem[1] = LastPressedItem[1]==1? LastPressedItem[1]: LastPressedItem[1]-1;
                 if(args.KeyModifiers!=KeyModifiers.Shift)
                 {
                     FirstPressedItem[0] = LastPressedItem[0];
                     FirstPressedItem[1] = LastPressedItem[1];
                 }
                 SetSelectedControls();
+                Cell item = (Cell)SelectedCells.FirstOrDefault();
+                if (item != null)
+                {
+                    if (item.Control is TextBox)
+                    {
+                        var ctrl = (TextBox)item.Control;
+                        ctrl.Focus();
+                        ctrl.SelectAll();
+                        var num = 0;
+                        if (ctrl.Text != null)
+                        {
+                            num = ctrl.Text.Length;
+                        }
+                        ctrl.CaretIndex = num - 1;
+                    }
+                }
             }
             if (args.Key == Key.Right)
             {
-                LastPressedItem[1] += 1;
+                LastPressedItem[1] = LastPressedItem[1] == Rows[0].Children.Count-1 ? LastPressedItem[1] : LastPressedItem[1] + 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
                     FirstPressedItem[0] = LastPressedItem[0];
                     FirstPressedItem[1] = LastPressedItem[1];
                 }
                 SetSelectedControls();
+                Cell item = (Cell)SelectedCells.FirstOrDefault();
+                if (item != null)
+                {
+                    if (item.Control is TextBox)
+                    {
+                        var ctrl = (TextBox)item.Control;
+                        ctrl.Focus();
+                        ctrl.SelectAll();
+                        var num = 0;
+                        if (ctrl.Text != null)
+                        {
+                            num = ctrl.Text.Length;
+                        }
+                        ctrl.CaretIndex = num - 1;
+                    }
+                }
             }
             if (args.Key == Key.Down)
             {
-                LastPressedItem[0] += 1;
+                LastPressedItem[0] = LastPressedItem[0] == Rows.Count-1||LastPressedItem[0] == Items.Count-1 ? LastPressedItem[0] : LastPressedItem[0] + 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
                     FirstPressedItem[0] = LastPressedItem[0];
                     FirstPressedItem[1] = LastPressedItem[1];
                 }
                 SetSelectedControls();
+                Cell item = (Cell)SelectedCells.FirstOrDefault();
+                if (item != null)
+                {
+                    if (item.Control is TextBox)
+                    {
+                        var ctrl = (TextBox)item.Control;
+                        ctrl.Focus();
+                        ctrl.SelectAll();
+                        var num = 0;
+                        if(ctrl.Text!=null)
+                        {
+                            num = ctrl.Text.Length;
+                        }
+                        ctrl.CaretIndex = num - 1;
+                    }
+                }
             }
             if (args.Key == Key.Up)
             {
-                LastPressedItem[0] += -1;
+                LastPressedItem[0] = LastPressedItem[0] == 0 ? LastPressedItem[0] : LastPressedItem[0] - 1;
                 if (args.KeyModifiers != KeyModifiers.Shift)
                 {
                     FirstPressedItem[0] = LastPressedItem[0];
                     FirstPressedItem[1] = LastPressedItem[1];
                 }
                 SetSelectedControls();
+                Cell item = (Cell)SelectedCells.FirstOrDefault();
+                if (item != null)
+                {
+                    if (item.Control is TextBox)
+                    {
+                        var ctrl = (TextBox)item.Control;
+                        ctrl.Focus();
+                        ctrl.SelectAll();
+                        var num = 0;
+                        if (ctrl.Text != null)
+                        {
+                            num = ctrl.Text.Length;
+                        }
+                        ctrl.CaretIndex = num - 1;
+                    }
+                }
             }
 
             var rt = CommandsList.Where(item=>item.Key==args.Key&&item.KeyModifiers==args.KeyModifiers);
@@ -1213,10 +1325,9 @@ namespace Client_App.Controls.DataGrid
                                 [!TextBox.TextProperty] = new Binding("Value"),
                                 [!TextBox.BackgroundProperty]=cell[!Cell.ChooseColorProperty]
                             };
-                            ((TextBox)textBox).TextAlignment = TextAlignment.Center;
+                            ((TextBox)textBox).TextAlignment = TextAlignment.Left;
                             textBox.VerticalAlignment = VerticalAlignment.Stretch;
                             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                            //textBox.Height = 30;
                             textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
                             if (item.IsTextWrapping)
                             {

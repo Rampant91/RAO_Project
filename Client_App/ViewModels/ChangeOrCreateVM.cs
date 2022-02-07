@@ -246,12 +246,12 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var param = (IEnumerable<Form>)_param;
+                var param = (IEnumerable<IKey>)_param;
                 var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить строчку?", "Да", "Нет" });
                 if (answ == "Да")
                 {
                     var lst = new List<IKey>(Storage.Rows.GetEnumerable());
-                    var countParam = param.Count();
+                    var countParam = param;
                     var maxItem = param.Max(x=>x.Order);
                     foreach (Form item in param) 
                     {
@@ -439,11 +439,11 @@ namespace Client_App.ViewModels
         {
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var param = (IEnumerable<Note>)_param;
+                var param = (IEnumerable)_param;
                 var answ = await ShowMessageT.Handle(new List<string>() { "Вы действительно хотите удалить комментарий?", "Да", "Нет" });
                 if (answ == "Да")
                 {
-                    foreach (var item in param) 
+                    foreach (Note item in param) 
                     {
                         if (item != null)
                         {
