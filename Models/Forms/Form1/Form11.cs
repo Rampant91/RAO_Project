@@ -804,6 +804,10 @@ namespace Models
                 //    value.AddError("Заполните примечание");
                 return true;
             }
+            if (value.Value.Equals("Минобороны"))
+            {
+                return true;
+            }
             if (OKSM.Contains(value.Value.ToUpper()))
             {
                 return true;
