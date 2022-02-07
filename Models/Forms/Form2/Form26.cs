@@ -552,6 +552,8 @@ private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
                 DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
                 NumberInOrderR.SetSizeColToAllLevels(88);
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+                NumberInOrderR.Blocked = true;
+                NumberInOrderR.ChooseLine = true;
                 #endregion
                 #region ObservedSourceNumber (2)
                 DataGridColumns ObservedSourceNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.ObservedSourceNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();

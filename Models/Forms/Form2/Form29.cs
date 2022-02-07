@@ -347,6 +347,8 @@ namespace Models
                 DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
                 NumberInOrderR.SetSizeColToAllLevels(88);
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+                NumberInOrderR.Blocked = true;
+                NumberInOrderR.ChooseLine = true;
                 #endregion
                 #region WasteSourceName (2)
                 DataGridColumns WasteSourceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form29).GetProperty(nameof(Form29.WasteSourceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
