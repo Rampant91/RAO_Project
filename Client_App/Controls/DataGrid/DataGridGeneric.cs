@@ -1124,7 +1124,9 @@ namespace Client_App.Controls.DataGrid
 
         public void ChooseAllRow(object sender,RoutedEventArgs args)
         {
-            SetSelectedControls_LineMulti();
+            FirstPressedItem[1] = 0;
+            LastPressedItem[1] = Rows[0].Children.Count;
+            SetSelectedControls();
         }
 
         public void Init()
