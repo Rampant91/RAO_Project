@@ -72,6 +72,17 @@ namespace Spravochniki
                 new Tuple<byte?, string>(19,""),
                 new Tuple<byte?, string>(null,"")
             };
+        public static List<Tuple<string,string>> SprTypesToRadionuclidsFor11
+        {
+            get
+            {
+                return SprTypesToRadionuclidsIn11Task.Result;
+            }
+            private set
+            {
+
+            }
+        }
         public static List<Tuple<string, string>> SprTypesToRadionuclids
         {
             get
@@ -89,7 +100,7 @@ namespace Spravochniki
             get
             {
                 var tmp = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")),
-                    "data","Spravochniki","RadionuclidsActivities.csv");
+                    "data", "Spravochniki", "RadionuclidsActivities.csv");
                 return ReadCsvAsync(tmp);
             }
         }
@@ -101,8 +112,20 @@ namespace Spravochniki
                     Path.GetFullPath(
                         Path.Combine(
                             AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data");
-                tmp = Path.Combine(tmp,"Spravochniki","TypeToRadionuclids.csv");
+                tmp = Path.Combine(tmp, "Spravochniki", "TypeToRadionuclids.csv");
                 return ReadCsvAsync1(tmp);
+            }
+        }
+        private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsIn11Task
+        {
+            get
+            {
+                var tmp = Path.Combine(
+                    Path.GetFullPath(
+                        Path.Combine(
+                            AppContext.BaseDirectory, "..\\..\\..\\..\\")), "data");
+                tmp = Path.Combine(tmp, "Spravochniki", "TypeToNuclids.csv");
+                return ReadCsvAsync11(tmp);
             }
         }
 #else
@@ -124,6 +147,15 @@ namespace Spravochniki
                 return ReadCsvAsync1(tmp);
             }
         }
+        private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsIn11Task
+        {
+            get
+            {
+                var tmp = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory),
+                    "data", "Spravochniki", "TypeToNuclids.csv");
+                return ReadCsvAsync11(tmp);
+            }
+        }
 #endif
 
         private static Task<List<Tuple<string, long, long>>> ReadCsvAsync(string path)
@@ -134,6 +166,11 @@ namespace Spravochniki
         private static Task<List<Tuple<string, string>>> ReadCsvAsync1(string path)
         {
             return Task.Run(() => ReadCsv1(path));
+        }
+
+        private static Task<List<Tuple<string, string>>> ReadCsvAsync11(string path)
+        {
+            return Task.Run(() => ReadCsvFor11(path));
         }
 
         private static List<Tuple<string, long, long>> ReadCsv(string path)
@@ -157,9 +194,22 @@ namespace Spravochniki
             string[] rows = File.ReadAllLines(path);
             for (int k = 1; k < rows.Count(); k++)
             {
-                var tmp = rows[k].Split(";",2);
+                var tmp = rows[k].Split(";", 2);
                 string i1 = tmp[0];
                 string i2 = tmp[1];
+                res.Add(new Tuple<string, string>(i1, i2));
+            }
+            return res;
+        }
+        private static List<Tuple<string, string>> ReadCsvFor11(string path)
+        {
+            var res = new List<Tuple<string, string>>();
+            string[] rows = File.ReadAllLines(path);
+            for (int k = 3; k < rows.Count(); k++)
+            {
+                var tmp = rows[k].Split(";", 7);
+                string i1 = tmp[1];
+                string i2 = tmp[5];
                 res.Add(new Tuple<string, string>(i1, i2));
             }
             return res;
