@@ -11,6 +11,7 @@ using System.Reactive;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Models.DataAccess;
 using Avalonia.LogicalTree;
 using Client_App.Controls.DataGrid;
 using Models.DBRealization;
@@ -322,6 +323,7 @@ namespace Client_App.ViewModels
             object[] param = _param as object[];
             IKeyCollection collection = param[0] as IKeyCollection;
             int minColumn = Convert.ToInt32(param[1]) + 1;
+            if (minColumn == 1) minColumn++;
             int maxColumn = Convert.ToInt32(param[2]) + 1;
 
             string txt = "";
@@ -395,6 +397,7 @@ namespace Client_App.ViewModels
             object[] param = _param as object[];
             IKeyCollection collection = param[0] as IKeyCollection;
             int minColumn = Convert.ToInt32(param[1]) + 1;
+            if (minColumn == 1) minColumn++;
             int maxColumn = Convert.ToInt32(param[2]) + 1;
 
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
@@ -419,7 +422,21 @@ namespace Client_App.ViewModels
                                 if (columnNum >= minColumn && columnNum <= maxColumn)
                                 {
                                     var midvalue = prop.GetMethod.Invoke(item, null);
-                                    midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
+                                    if (midvalue is RamAccess<int?>)
+                                    {
+                                        if ((midvalue as RamAccess<int?>).Value == null)
+                                            midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
+                                        else
+                                            midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { Int32.Parse(columnsText[columnNum - minColumn]) });
+                                    }
+                                    else if (midvalue is RamAccess<short>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
+                                    else if (midvalue is RamAccess<int>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { Int32.Parse(columnsText[columnNum - minColumn]) });
+                                    else if (midvalue is RamAccess<string>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
+                                    else
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
                                 }
                             }
                             catch
@@ -721,7 +738,7 @@ namespace Client_App.ViewModels
                 }
                 else
                 {
-                    if(item=='\n')
+                    if((item=='\n'))//||(item=='\t'))
                     {
                         if (!comaFlag)
                         {
