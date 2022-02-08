@@ -103,7 +103,16 @@ namespace Test
             //var rep = DBUse.GetData10Main();
 
             var t = new EssanceMethods.APIFactory<Report>();
-            t.Post(new Report());
+            var tre=t.Post(new Report());
+
+            var t2 = new EssanceMethods.APIFactory(typeof(Report));
+            var tre2 = t.Post(new Report());
+
+            var t3 = new EssanceMethods.APIFactory<Report>();
+            var tre3 = await t.PostAsync(new Report());
+
+            var t4 = new EssanceMethods.APIFactory(typeof(Report));
+            var tre4 = await t.PostAsync(new Report());
 
             Console.ReadKey();
 
