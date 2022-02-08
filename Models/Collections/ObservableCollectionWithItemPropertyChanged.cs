@@ -261,7 +261,15 @@ namespace Models.Collections
         {
             var count = index;
             var countObj = obj.Count();
-            var minOrder = obj.Min(x=>x.Order);
+            long minOrder = 0;
+
+            try
+            {
+                minOrder = obj.Min(x => x.Order);
+            }
+            catch (Exception ex)
+            { }
+
             var lst = new List<T>(Items);
             foreach (var item in obj)
             {
