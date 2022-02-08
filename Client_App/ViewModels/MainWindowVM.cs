@@ -580,11 +580,26 @@ namespace Client_App.ViewModels
                 {
                     foreach (Report elem in first11.Report_Collection)
                     {
-                        var st_elem = DateTime.Parse(elem.StartPeriod_DB)>DateTime.Parse(elem.EndPeriod_DB)? DateTime.Parse(elem.StartPeriod_DB): DateTime.Parse(elem.EndPeriod_DB);
-                        var en_elem = DateTime.Parse(elem.StartPeriod_DB) < DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.StartPeriod_DB) : DateTime.Parse(elem.EndPeriod_DB);
+                        DateTimeOffset st_elem = DateTimeOffset.Now;
+                        DateTimeOffset en_elem = DateTimeOffset.Now;
+                        try
+                        {
+                            st_elem = DateTime.Parse(elem.StartPeriod_DB) > DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.StartPeriod_DB) : DateTime.Parse(elem.EndPeriod_DB);
+                            en_elem = DateTime.Parse(elem.StartPeriod_DB) < DateTime.Parse(elem.EndPeriod_DB) ? DateTime.Parse(elem.StartPeriod_DB) : DateTime.Parse(elem.EndPeriod_DB);
+                        }
+                        catch (Exception ex)
+                        { }
 
-                        var st_it = DateTime.Parse(it.StartPeriod_DB) > DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.StartPeriod_DB) : DateTime.Parse(it.EndPeriod_DB);
-                        var en_it = DateTime.Parse(it.StartPeriod_DB) < DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.StartPeriod_DB) : DateTime.Parse(it.EndPeriod_DB);
+                        DateTimeOffset st_it = DateTimeOffset.Now;
+                        DateTimeOffset en_it = DateTimeOffset.Now;
+                        try
+                        {
+                            st_it = DateTime.Parse(it.StartPeriod_DB) > DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.StartPeriod_DB) : DateTime.Parse(it.EndPeriod_DB);
+                            en_it = DateTime.Parse(it.StartPeriod_DB) < DateTime.Parse(it.EndPeriod_DB) ? DateTime.Parse(it.StartPeriod_DB) : DateTime.Parse(it.EndPeriod_DB);
+                        }
+                        catch (Exception e)
+                        {
+                        }
 
                         if (st_elem == st_it && en_elem == en_it && it.FormNum_DB == elem.FormNum_DB)
                         {
