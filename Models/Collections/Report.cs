@@ -2928,24 +2928,24 @@ namespace Models.Collections
 
         public static int ExcelHeader(ExcelWorksheet worksheet, string FormNum, int Row, int Column, bool Transpon = true)
         {
-            //if (FormNum.Split('.')[0] == "1")
-            //{
-            //    worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
-            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            //    worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(StartPeriod))
-            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            //    worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(EndPeriod))
-            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            //    return 3;
-            //}
-            //if (FormNum.Split('.')[0] == "2")
-            //{
-            //    worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
-            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            //    worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(Year))
-            //        .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Name;
-            //    return 2;
-            //}
+            if (FormNum.Split('.')[0] == "1")
+            {
+                worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+                worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(StartPeriod))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+                worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(EndPeriod))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+                return 3;
+            }
+            if (FormNum.Split('.')[0] == "2")
+            {
+                worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(CorrectionNumber))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+                worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)System.Type.GetType("Models.Collections.Report,Models").GetProperty(nameof(Year))
+                    .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[0];
+                return 2;
+            }
             return 0;
         }
 
