@@ -423,25 +423,26 @@ namespace Client_App.ViewModels
                                 {
                                     var midvalue = prop.GetMethod.Invoke(item, null);
                                     if (midvalue is RamAccess<int?>)
-                                    {
-                                        if ((midvalue as RamAccess<int?>).Value == null)
-                                            midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { null });
-                                        else
-                                            midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { Int32.Parse(columnsText[columnNum - minColumn]) });
-                                    }
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
+                                    else if (midvalue is RamAccess<float?>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { float.Parse(columnsText[columnNum - minColumn]) });
                                     else if (midvalue is RamAccess<short>)
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
+                                    else if (midvalue is RamAccess<short?>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { short.Parse(columnsText[columnNum - minColumn]) });
                                     else if (midvalue is RamAccess<int>)
-                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { Int32.Parse(columnsText[columnNum - minColumn]) });
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { int.Parse(columnsText[columnNum - minColumn]) });
                                     else if (midvalue is RamAccess<string>)
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
+                                    else if(midvalue is RamAccess<byte?>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { byte.Parse(columnsText[columnNum - minColumn]) });
                                     else
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
                                 }
                             }
-                            catch
+                            catch(Exception e)
                             {
-
+                                int k = 8;
                             }
                         }
                     }
