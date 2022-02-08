@@ -418,12 +418,13 @@ namespace Models.Abstracts
 
         public static int ExcelHeader(ExcelWorksheet worksheet, int Row, int Column, bool Transpon = true)
         {
-            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form,Models").GetProperty(nameof(NumberInOrder))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form1,Models").GetProperty(nameof(OperationCode))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
-            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Form_PropertyAttribute)Type.GetType("Models.Form1,Models").GetProperty(nameof(OperationDate))
-                .GetCustomAttributes(typeof(Form_PropertyAttribute), false).First()).Names[1];
+          
+            worksheet.Cells[Row + (Transpon == false ? 0 : 0), Column + (Transpon == true ? 0 : 0)].Value = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder))
+                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (Transpon == false ? 1 : 0), Column + (Transpon == true ? 1 : 0)].Value = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationCode))
+                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];
+            worksheet.Cells[Row + (Transpon == false ? 2 : 0), Column + (Transpon == true ? 2 : 0)].Value = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form1.OperationDate))
+                .GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), false).First()).Names[1];
 
             return 3;
         }
