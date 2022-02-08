@@ -1247,6 +1247,8 @@ namespace Models
                 NumberInOrderR.SetSizeColToAllLevels(88);
                 
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+                NumberInOrderR.Blocked = true;
+                NumberInOrderR.ChooseLine = true;
                 #endregion
                 #region CodeOYAT (2)
                 //insert = new DataGridColumns(); insert.name = "gfh";

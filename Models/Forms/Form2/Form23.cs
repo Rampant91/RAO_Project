@@ -934,6 +934,8 @@ namespace Models
                 DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
                 NumberInOrderR.SetSizeColToAllLevels(88);
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+                NumberInOrderR.Blocked = true;
+                NumberInOrderR.ChooseLine = true;
                 #endregion
                 #region StoragePlaceName (2)
                 DataGridColumns StoragePlaceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form23).GetProperty(nameof(Form23.StoragePlaceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();

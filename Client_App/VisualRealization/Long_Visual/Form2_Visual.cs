@@ -1359,6 +1359,15 @@ namespace Client_App.Long_Visual
             content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
             content.Children.Add(CreateButton("Проверить", "85,0,0,15", 30, "CheckReport"));
             content.Children.Add(CreateButton("Сохранить", "5,0,0,15", 30, "SaveReport"));
+            leftStPT.Children.Add(content);
+
+            content = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            content.Children.Add(CreateTextBlock("5,13,0,0", 30, "Количество наблюдательных скважин, принадлежащих организации:"));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.SourcesQuantity26", 100, scp));
 
             leftStP.Children.Add(leftStPT);
             leftStP.Children.Add(content);

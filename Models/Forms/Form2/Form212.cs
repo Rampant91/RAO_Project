@@ -436,6 +436,8 @@ namespace Models
                 DataGridColumns NumberInOrderR = ((Attributes.Form_PropertyAttribute)typeof(Form).GetProperty(nameof(Form.NumberInOrder)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
                 NumberInOrderR.SetSizeColToAllLevels(88);
                 NumberInOrderR.Binding = nameof(Form.NumberInOrder);
+                NumberInOrderR.Blocked = true;
+                NumberInOrderR.ChooseLine = true;
                 #endregion
                 #region OperationCode (2)
                 DataGridColumns OperationCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form212).GetProperty(nameof(Form212.OperationCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
