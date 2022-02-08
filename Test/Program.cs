@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Models.DBRealization.DBAPIFactory;
 
 namespace Test
 {
@@ -95,11 +96,14 @@ namespace Test
         }
         static async Task Main(string[] args)
         {
-            var systemDirectory = await GetSystemDirectory();
-            var raoDirectory = await ProcessRaoDirectory(systemDirectory);
-            await ProcessDataBaseCreate(raoDirectory);
+            //var systemDirectory = await GetSystemDirectory();
+            //var raoDirectory = await ProcessRaoDirectory(systemDirectory);
+            //await ProcessDataBaseCreate(raoDirectory);
 
-            var rep = DBUse.GetData10Main();
+            //var rep = DBUse.GetData10Main();
+
+            var t = new EssanceMethods.APIFactory<Report>();
+            t.Post(new Report());
 
             Console.ReadKey();
 
