@@ -47,7 +47,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Сведения об операции","код","2")]
+        [Attributes.Form_Property(true, "Сведения об операции","код","2")]
         public RamAccess<string> OperationCode
         {
             get
@@ -101,7 +101,7 @@ namespace Models.Abstracts
         }
 
         [NotMapped]
-        [Attributes.Form_Property(true,"Сведения об операции", "дата", "3")]
+        [Attributes.Form_Property(true, "Сведения об операции", "дата", "3")]
         public RamAccess<string> OperationDate
         {
             get

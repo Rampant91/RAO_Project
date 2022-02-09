@@ -84,6 +84,36 @@ namespace Models.Attributes
                     }
                 }
             }
+            if (prev_data != null)
+            {
+                DataGridColumns _tmp = new();
+                if (prev_data.Level > tmp.Level)
+                {
+                    if (prev_data.Level - 2 == tmp.Level)
+                    {
+                        var new_tmp = new DataGridColumns();
+                        new_tmp.name = "null-n";
+                        new_tmp.innertCol = new System.Collections.Generic.List<DataGridColumns>() { };
+                        new_tmp.innertCol.Add(tmp);
+
+                        _tmp.name = prev_data.name;
+                        _tmp.innertCol = new System.Collections.Generic.List<DataGridColumns>() { };
+                        _tmp.innertCol.Add(new_tmp);
+
+                    }
+                    else
+                    {
+                        _tmp.name = prev_data.name;
+                        _tmp.innertCol = new System.Collections.Generic.List<DataGridColumns>() { };
+                        _tmp.innertCol.Add(tmp);
+                    }
+                }
+                else
+                {
+                    _tmp = tmp;
+                }
+                return _tmp;
+            }
             return tmp;
         }
     }
