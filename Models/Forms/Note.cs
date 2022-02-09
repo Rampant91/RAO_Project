@@ -45,7 +45,7 @@ namespace Models
         #region RowNUmber
         public string? RowNumber_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property(false, "№ строки", "2")]
+        [Attributes.Form_Property(false, "№ строки", "1")]
         #nullable enable
         public RamAccess<string?> RowNumber
         {
@@ -87,7 +87,7 @@ namespace Models
         #region GraphNumber
         public string? GraphNumber_DB { get; set; } = null;
         [NotMapped]
-        [Attributes.Form_Property(false, "№ графы", "1")]
+        [Attributes.Form_Property(false, "№ графы", "2")]
         #nullable enable
         public RamAccess<string?> GraphNumber
         {

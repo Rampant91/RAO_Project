@@ -397,8 +397,13 @@ namespace Client_App.ViewModels
             object[] param = _param as object[];
             IKeyCollection collection = param[0] as IKeyCollection;
             int minColumn = Convert.ToInt32(param[1]) + 1;
-            if (minColumn == 1) minColumn++;
             int maxColumn = Convert.ToInt32(param[2]) + 1;
+            if ((param[0] is Form1) || (param[0] is Form2))
+            {
+                if (minColumn == 1) minColumn++;
+            }
+            if (param[0] is Note)
+            { }
 
             if (Avalonia.Application.Current.Clipboard is Avalonia.Input.Platform.IClipboard clip)
             {
