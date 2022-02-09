@@ -47,7 +47,16 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(obj))
                 {
-                    //DoSomething
+                    if ((obj as Report).Id == 0)
+                    {
+                        using (var db = new DBModel(StaticConfiguration.DBPath))
+                        {
+                            db.Database.Migrate();
+                            db.ReportCollectionDbSet.Add(obj as Report);
+                            db.SaveChanges();
+                            return obj;
+                        }
+                    }
                 }
                 return null;
             }
@@ -71,8 +80,8 @@ namespace Models.DBRealization.DBAPIFactory
                     {
                         db.Database.Migrate();
                         Report _rep = obj as Report;
-                        var rep = db.ReportCollectionDbSet.Where(x => x.Id == _rep.Id).FirstOrDefault();
-                        db.ReportCollectionDbSet.Update(rep);
+                        db.ReportCollectionDbSet.Update(_rep);
+                        db.SaveChanges();
                     }
                     return true;
                 }
@@ -87,6 +96,7 @@ namespace Models.DBRealization.DBAPIFactory
                         db.Database.Migrate();
                         var rep = db.ReportCollectionDbSet.Where(x => x.Id == ID).FirstOrDefault();
                         db.ReportCollectionDbSet.Remove(rep);
+                        db.SaveChanges();
                     }
                     return true;
                 }
