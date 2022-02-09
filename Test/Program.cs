@@ -96,23 +96,26 @@ namespace Test
         }
         static async Task Main(string[] args)
         {
-            //var systemDirectory = await GetSystemDirectory();
-            //var raoDirectory = await ProcessRaoDirectory(systemDirectory);
-            //await ProcessDataBaseCreate(raoDirectory);
+            var systemDirectory = await GetSystemDirectory();
+            var raoDirectory = await ProcessRaoDirectory(systemDirectory);
+            await ProcessDataBaseCreate(raoDirectory);
 
-            //var rep = DBUse.GetData10Main();
+            //var rep = DBUse.GetDataForm(10);
 
             var t = new EssanceMethods.APIFactory<Report>();
-            var tre=t.Post(new Report());
+            var tre = t.Get(10);
 
-            var t2 = new EssanceMethods.APIFactory(typeof(Report));
-            var tre2 = t.Post(new Report());
+            //var t2 = new EssanceMethods.APIFactory(typeof(Report));
+            //var tre2 = t.Post(new Report());
 
-            var t3 = new EssanceMethods.APIFactory<Report>();
-            var tre3 = await t.PostAsync(new Report());
+            //var t3 = new EssanceMethods.APIFactory<Report>();
+            //var tre3 = await t.PostAsync(new Report());
 
-            var t4 = new EssanceMethods.APIFactory(typeof(Report));
-            var tre4 = await t.PostAsync(new Report());
+            //var t4 = new EssanceMethods.APIFactory(typeof(Report));
+            //var tre4 = await t.PostAsync(new Report());
+
+            //var t = new EssanceMethods.APIFactory<Reports>();
+            //var tre = t.Post(new Reports());
 
             Console.ReadKey();
 

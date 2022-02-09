@@ -26,7 +26,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 using System.Collections;
 using FirebirdSql.Data.FirebirdClient;
-
+using Models.DBRealization.DBAPIFactory;
 
 namespace Client_App.ViewModels
 {
@@ -974,8 +974,10 @@ namespace Client_App.ViewModels
                         var t = desktop.MainWindow as MainWindow;
                         var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
                         var rep = (Report)obj;
+                        var rEssance = new EssanceMethods.APIFactory<Report>();
+                        var _rep = rEssance.Get(rep.Id);
                         var tre = (from Reports i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
-                        ChangeOrCreateVM frm = new(rep.FormNum.Value, rep, tre);
+                        ChangeOrCreateVM frm = new(rep.FormNum.Value, _rep, tre);
                         await ShowDialog.Handle(frm);
 
                         t.SelectedReports = tmp;
