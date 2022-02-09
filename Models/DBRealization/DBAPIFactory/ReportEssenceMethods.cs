@@ -109,7 +109,16 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(obj))
                 {
-                    //DoSomething
+                    if ((obj as Report).Id == 0)
+                    {
+                        using (var db = new DBModel(StaticConfiguration.DBPath))
+                        {
+                            await db.Database.MigrateAsync();
+                            await db.ReportCollectionDbSet.AddAsync(obj as Report);
+                            await db.SaveChangesAsync();
+                            return obj;
+                        }
+                    }
                 }
                 return null;
             }
@@ -140,9 +149,10 @@ namespace Models.DBRealization.DBAPIFactory
                 {
                     using (var db = new DBModel(StaticConfiguration.DBPath))
                     {
-                        db.Database.Migrate();
+                        await db.Database.MigrateAsync();
                         var rep = await db.ReportCollectionDbSet.Where(x => x.Id == ID).FirstOrDefaultAsync();
                         db.ReportCollectionDbSet.Remove(rep);
+                        await db.SaveChangesAsync();
                     }
                     return true;
                 }
