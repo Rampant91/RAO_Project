@@ -21,6 +21,10 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 return Get<T>(ID);
             }
+            List<T> GetAll()
+            {
+                return GetAll<T>();
+            }
             bool Update(T obj)
             {
                 return Update<T>(obj);
@@ -40,6 +44,10 @@ namespace Models.DBRealization.DBAPIFactory
             async Task<T> GetAsync(int ID)
             {
                 return await GetAsync<T>(ID);
+            }
+            async Task<List<T>> GetAllAsync()
+            {
+                return await GetAllAsync<T>();
             }
             async Task<bool> UpdateAsync(T obj)
             {

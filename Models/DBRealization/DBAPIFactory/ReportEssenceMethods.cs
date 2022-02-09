@@ -81,6 +81,14 @@ namespace Models.DBRealization.DBAPIFactory
                 }
                 return null;
             }
+            List<T> IEssenceMethods.GetAll<T>() where T : class
+            {
+                if (CheckType(typeof(T)))
+                {
+                    //DoSomething
+                }
+                return null;
+            }
             bool IEssenceMethods.Update<T>(T obj) where T : class
             {
                 if (CheckType(obj))
@@ -152,6 +160,19 @@ namespace Models.DBRealization.DBAPIFactory
                 }
                 return null;
             }
+            async Task<List<T>> IEssenceMethods.GetAllAsync<T>() where T : class
+            {
+                if (CheckType(typeof(T)))
+                {
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        await db.Database.MigrateAsync();
+                        return await db.ReportCollectionDbSet.Select(x => x as T).ToListAsync();
+                    }
+                }
+                return null;
+            }
+
             async Task<bool> IEssenceMethods.UpdateAsync<T>(T obj) where T : class
             {
                 if (CheckType(obj))

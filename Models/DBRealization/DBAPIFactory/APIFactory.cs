@@ -39,6 +39,10 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 return GetObjectByType().Get(ID);
             }
+            public List<T> GetAll()
+            {
+                return GetObjectByType().GetAll();
+            }
             public bool Update(T obj)
             {
                 return GetObjectByType().Update(obj);
@@ -58,6 +62,10 @@ namespace Models.DBRealization.DBAPIFactory
             public async Task<T> GetAsync(int ID)
             {
                 return await GetObjectByType().GetAsync(ID);
+            }
+            public async Task<List<T>> GetAllAsync()
+            {
+                return await GetObjectByType().GetAllAsync();
             }
             public async Task<bool> UpdateAsync(T obj)
             {
@@ -106,6 +114,10 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 return GetObjectByType<T>().Get(ID);
             }
+            public List<T> GetAll<T>() where T : class
+            {
+                return GetObjectByType<T>().GetAll();
+            }
             public bool Update<T>(T obj) where T : class
             {
                 return GetObjectByType<T>().Update(obj);
@@ -125,6 +137,10 @@ namespace Models.DBRealization.DBAPIFactory
             public async Task<T> GetAsync<T>(int ID) where T : class
             {
                 return await GetObjectByType<T>().GetAsync(ID);
+            }
+            public async Task<List<T>> GetAllAsync<T>() where T : class
+            {
+                return await GetObjectByType<T>().GetAllAsync();
             }
             public async Task<bool> UpdateAsync<T>(T obj) where T : class
             {

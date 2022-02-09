@@ -10,7 +10,7 @@ using Client_App.Views;
 using Avalonia.Interactivity;
 using System.Windows;
 using Models.Collections;
-
+using Client_App.Converters;
 namespace Client_App.Short_Visual
 {
     public class Form1_Visual
@@ -59,9 +59,10 @@ namespace Client_App.Short_Visual
 
             Binding b = new Binding
             {
-                Path = "DataContext.Local_Reports.Reports_Collection10",
+                Path = "DataContext.Local_Reports",
                 ElementName = "MainWindow",
-                NameScope = new WeakReference<INameScope>(scp)
+                NameScope = new WeakReference<INameScope>(scp),
+                Converter=new ReportsToReports10_Converter()
             };
 
             grd.Bind(Controls.DataGrid.DataGridReports.ItemsProperty, b);

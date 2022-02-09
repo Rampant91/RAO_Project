@@ -31,6 +31,7 @@ using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using System.Reactive.Linq;
 using Avalonia.Media;
+using Models.DBRealization.DBAPIFactory;
 
 namespace Client_App.ViewModels
 {
@@ -80,19 +81,6 @@ namespace Client_App.ViewModels
                 {
                     _Storages = value;
                     NotifyPropertyChanged("Storages");
-                }
-            }
-        }
-        private DBObservable _DBO;
-        public DBObservable DBO
-        {
-            get => _DBO;
-            set
-            {
-                if (_DBO != value)
-                {
-                    _DBO = value;
-                    NotifyPropertyChanged("DBO");
                 }
             }
         }
@@ -558,37 +546,7 @@ namespace Client_App.ViewModels
             FormType = param;
             Init();
         }
-        public ChangeOrCreateVM(string param, in DBObservable reps)
-        {
-            Storage = new Report()
-            {
-                FormNum_DB = param
-            };
-
-            if (param == "1.0")
-            {
-                var ty1 = (Form10)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form10)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows10.Add(ty1);
-                Storage.Rows10.Add(ty2);
-            }
-            if (param == "2.0")
-            {
-                var ty1 = (Form20)FormCreator.Create(param);
-                ty1.NumberInOrder_DB = 1;
-                var ty2 = (Form20)FormCreator.Create(param);
-                ty2.NumberInOrder_DB = 2;
-                Storage.Rows20.Add(ty1);
-                Storage.Rows20.Add(ty2);
-            }
-
-            FormType = param;
-            DBO = reps;
-            Init();
-        }
-
+      
         public Interaction<int, int> ShowDialogIn { get; protected set; }
         public Interaction<object, int> ShowDialog { get; protected set; }
         public Interaction<List<string>, string> ShowMessageT { get; protected set; }
@@ -647,54 +605,38 @@ namespace Client_App.ViewModels
             return _isCanSaveReportEnabled;
         }
 
-        public void SaveReport()
+        public async void SaveReport()
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                if (DBO != null)
+                if (Storages.Id == 0)
                 {
-                    var tmp = new Reports();
-                    tmp.Master = Storage;
-                    if (tmp.Master.Rows10.Count != 0)
+                    if (FormType == "1.0" && FormType == "2.0")
                     {
-                        tmp.Master.Rows10[1].OrganUprav.Value = tmp.Master.Rows10[0].OrganUprav.Value;
-                        tmp.Master.Rows10[1].RegNo.Value = tmp.Master.Rows10[0].RegNo.Value;
+                        Storages.Master_DB = Storage;
+                        await new EssanceMethods.APIFactory<Reports>().PostAsync(Storages);
                     }
-                    if (tmp.Master.Rows20.Count != 0)
-                    {
-                        tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
-                        tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
-                    }
-
-                    DBO.Reports_Collection.Add(tmp);
-                    DBO = null;
-                    Storages = null;
                 }
                 else
                 {
-                    if (Storages != null)
+                    if (FormType != "1.0" && FormType != "2.0")
                     {
-                        if (FormType != "1.0" && FormType != "2.0")
+                        if (!Storages.Report_Collection.Contains(Storage))
                         {
-                            if (!Storages.Report_Collection.Contains(Storage))
-                            {
-                                Storages.Report_Collection.Add(Storage);
-                            }
+                            Storages.Report_Collection.Add(Storage);
+                            await new EssanceMethods.APIFactory<Reports>().UpdateAsync(Storages);
+                        }
+                        else
+                        {
+                            await new EssanceMethods.APIFactory<Report>().UpdateAsync(Storage);
                         }
                     }
                     else
                     {
-
+                        await new EssanceMethods.APIFactory<Report>().UpdateAsync(Storage);
                     }
                 }
-                if (Storages != null)
-                {
-                    Storages.Report_Collection.QuickSort();
-                }
-                
-  
-                var dbm = StaticConfiguration.DBModel;
-                dbm.SaveChanges();
+
                 IsCanSaveReportEnabled = false;
             }
         }

@@ -19,6 +19,5 @@ namespace Models.DBRealization
                 _dbPath = value;
             }
         }
-        public static DBModel DBModel;
     }
 }

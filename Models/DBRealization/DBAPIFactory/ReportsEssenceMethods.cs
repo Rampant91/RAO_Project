@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Models.DBRealization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Models.DBRealization.DBAPIFactory
 {
@@ -57,6 +59,14 @@ namespace Models.DBRealization.DBAPIFactory
                 }
                 return null;
             }
+            List<T> IEssenceMethods.GetAll<T>() where T : class
+            {
+                if (CheckType(typeof(T)))
+                {
+                    //DoSomething
+                }
+                return null;
+            }
             bool IEssenceMethods.Update<T>(T obj) where T : class
             {
                 if (CheckType(obj))
@@ -91,6 +101,22 @@ namespace Models.DBRealization.DBAPIFactory
                 if (CheckType(typeof(T)))
                 {
                     //DoSomething
+                }
+                return null;
+            }
+            async Task<List<T>> IEssenceMethods.GetAllAsync<T>() where T : class
+            {
+                if (CheckType(typeof(T)))
+                {
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        await db.Database.MigrateAsync();
+                        return await db.ReportsCollectionDbSet
+                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                            .Include(x => x.Report_Collection)
+                            .Select(x => x as T).ToListAsync();
+                    }
                 }
                 return null;
             }

@@ -27,14 +27,15 @@ using System.Runtime.InteropServices;
 using System.Collections;
 using FirebirdSql.Data.FirebirdClient;
 using Models.DBRealization.DBAPIFactory;
+using System.Collections.Specialized;
 
 namespace Client_App.ViewModels
 {
     public class MainWindowVM : BaseVM, INotifyPropertyChanged
     {
         #region Local_Reports
-        private DBObservable _local_Reports = new();
-        public DBObservable Local_Reports
+        private ObservableCollectionWithItemPropertyChanged<Reports> _local_Reports = new();
+        public ObservableCollectionWithItemPropertyChanged<Reports> Local_Reports
         {
             get => _local_Reports;
             set
@@ -42,7 +43,7 @@ namespace Client_App.ViewModels
                 if (_local_Reports != value)
                 {
                     _local_Reports = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Local_Reports));
                 }
             }
         }
@@ -89,7 +90,6 @@ namespace Client_App.ViewModels
                 throw new Exception(ErrorMessages.Error3[0]);
             }
         }
-
         private async Task<string> GetSystemDirectory()
         {
             try
@@ -121,18 +121,16 @@ namespace Client_App.ViewModels
         {
             var i = 0;
             bool flag = false;
-            DBModel dbm = null;
             foreach (var file in Directory.GetFiles(tempDirectory))
             {
                 try
                 {
                     StaticConfiguration.DBPath = file;
-                    StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
-
-                    dbm = StaticConfiguration.DBModel;
-
-                    //await dbm.Database.MigrateAsync();
-                    flag = true;
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        await db.Database.MigrateAsync();
+                        flag = true;
+                    }
                     break;
                 }
                 catch (Exception e)
@@ -143,65 +141,11 @@ namespace Client_App.ViewModels
             if (!flag)
             {
                 StaticConfiguration.DBPath = Path.Combine(tempDirectory, "Local" + "_" + i + ".raodb");
-                StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
-                dbm = StaticConfiguration.DBModel;
-                var rt = dbm.Database.GetAppliedMigrations();
-                var yu = dbm.Database.GetPendingMigrations();
-                //await dbm.Database.MigrateAsync();
-            }
-        }
-        private async Task ProcessDataBaseFillEmpty(DataContext dbm)
-        {
-            if (dbm.DBObservableDbSet.Count() == 0) dbm.DBObservableDbSet.Add(new DBObservable());
-            foreach (var item in dbm.DBObservableDbSet)
-            {
-                foreach (Reports it in item.Reports_Collection)
+                using (var db = new DBModel(StaticConfiguration.DBPath))
                 {
-                    if (it.Master_DB.FormNum_DB != "")
-                    {
-                        if (it.Master_DB.Rows10.Count == 0)
-                        {
-                            var ty1 = (Form10)FormCreator.Create("1.0");
-                            ty1.NumberInOrder_DB = 1;
-                            var ty2 = (Form10)FormCreator.Create("1.0");
-                            ty2.NumberInOrder_DB = 2;
-                            it.Master_DB.Rows10.Add(ty1);
-                            it.Master_DB.Rows10.Add(ty2);
-                        }
-                        if (it.Master_DB.Rows20.Count == 0)
-                        {
-                            var ty1 = (Form20)FormCreator.Create("2.0");
-                            ty1.NumberInOrder_DB = 1;
-                            var ty2 = (Form20)FormCreator.Create("2.0");
-                            ty2.NumberInOrder_DB = 2;
-                            it.Master_DB.Rows20.Add(ty1);
-                            it.Master_DB.Rows20.Add(ty2);
-                        }
-                        it.Master_DB.Rows10.Sorted = false;
-                        it.Master_DB.Rows20.Sorted = false;
-                        await it.Master_DB.Rows10.QuickSortAsync();
-                        await it.Master_DB.Rows20.QuickSortAsync();
-                    }
+                    await db.Database.MigrateAsync();
                 }
             }
-        }
-        private async Task ProcessDataBaseFillNullOrder()
-        {
-            foreach (Reports item in Local_Reports.Reports_Collection)
-            {
-                foreach (Report it in item.Report_Collection)
-                {
-                    foreach (Note _i in it.Notes)
-                    {
-                        if (_i.Order == 0)
-                        {
-                            _i.Order = GetNumberInOrder(it.Notes);
-                        }
-                    }
-                }
-                await item.SortAsync();
-            }
-            await Local_Reports.Reports_Collection.QuickSortAsync();
         }
         private async Task PropertiesInit()
         {
@@ -259,27 +203,16 @@ namespace Client_App.ViewModels
             await ProcessDataBaseCreate(raoDirectory);
 
             OnStartProgressBar = 25;
-            var dbm = StaticConfiguration.DBModel;
-            //await dbm.LoadTablesAsync();
-            var reps = DBUse.GetData10Main();
-            OnStartProgressBar = 55;
-            //await ProcessDataBaseFillEmpty(dbm);
-
-            OnStartProgressBar = 70;
-            //Local_Reports = dbm.DBObservableDbSet.Local.First();
-            Local_Reports = new DBObservable() { Reports_Collection = reps };
-            await ProcessDataBaseFillNullOrder();
-
-            OnStartProgressBar = 75;
-            dbm.SaveChanges();
-            Local_Reports.PropertyChanged += Local_ReportsChanged;
+            var api = new EssanceMethods.APIFactory<Reports>();
+            Local_Reports = new ObservableCollectionWithItemPropertyChanged<Reports>(await api.GetAllAsync());
+            Local_Reports.CollectionChanged += Local_ReportsChanged;
 
             OnStartProgressBar = 80;
             await PropertiesInit();
 
             OnStartProgressBar = 100;
         }
-        private void Local_ReportsChanged(object sender, PropertyChangedEventArgs e)
+        private void Local_ReportsChanged(object sender,  NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Local_Reports");
         }
@@ -317,7 +250,8 @@ namespace Client_App.ViewModels
                 {
                     var t = desktop.MainWindow as MainWindow;
                     var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-                    ChangeOrCreateVM frm = new(param, Local_Reports);
+                    Reports rp = new Reports();
+                    ChangeOrCreateVM frm = new(param, rp);
                     await ShowDialog.Handle(frm);
                     t.SelectedReports = tmp;
                 }
@@ -428,8 +362,8 @@ namespace Client_App.ViewModels
         {
             try
             {
-                var tb11 = from Reports t in Local_Reports.Reports_Collection10
-                           where (item.Master.Rows10[0].Okpo_DB != "") &&
+                var tb11 = from Reports t in Local_Reports
+                           where t.Master_DB.FormNum_DB=="1.0"&&(item.Master.Rows10[0].Okpo_DB != "") &&
                            (t.Master.Rows10[0].Okpo_DB != "") &&
                            (t.Master.Rows10[0].Okpo_DB == item.Master.Rows10[0].Okpo_DB) &&
                            (t.Master.Rows10[1].Okpo_DB == item.Master.Rows10[1].Okpo_DB) &&
@@ -449,8 +383,8 @@ namespace Client_App.ViewModels
         {
             try
             {
-                var tb21 = from Reports t in Local_Reports.Reports_Collection20
-                           where (item.Master.Rows20[0].Okpo_DB != "") &&
+                var tb21 = from Reports t in Local_Reports
+                           where t.Master_DB.FormNum_DB == "2.0" && (item.Master.Rows20[0].Okpo_DB != "") &&
                            (t.Master.Rows20[0].Okpo_DB != "") &&
                            (t.Master.Rows20[0].Okpo_DB == item.Master.Rows20[0].Okpo_DB) &&
                            (t.Master.Rows20[1].Okpo_DB == item.Master.Rows20[1].Okpo_DB) &&
@@ -830,13 +764,13 @@ namespace Client_App.ViewModels
                             }
                             if (first21 == null && first11 == null)
                             {
-                                Local_Reports.Reports_Collection.Add(item);
+                                await new EssanceMethods.APIFactory<Reports>().PostAsync(item);
+                                Local_Reports.Add(item);
                             }
                         }
                     }
                 }
             }
-            StaticConfiguration.DBModel.SaveChanges();
         }
         #endregion
 
@@ -866,7 +800,7 @@ namespace Client_App.ViewModels
                                            "_" + dt.Second;
                             var rep = (Report)obj;
                             rep.ExportDate.Value = dt.Day + "." + dt.Month + "." + dt.Year;
-                            var findReports = from Reports t in Local_Reports.Reports_Collection
+                            var findReports = from Reports t in Local_Reports
                                               where t.Report_Collection.Contains(rep)
                                               select t;
                             var rt = findReports.FirstOrDefault();
@@ -976,7 +910,7 @@ namespace Client_App.ViewModels
                         var rep = (Report)obj;
                         var rEssance = new EssanceMethods.APIFactory<Report>();
                         var _rep = rEssance.Get(rep.Id);
-                        var tre = (from Reports i in Local_Reports.Reports_Collection where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
+                        var tre = (from Reports i in Local_Reports where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
                         ChangeOrCreateVM frm = new(rep.FormNum.Value, _rep, tre);
                         await ShowDialog.Handle(frm);
 
@@ -1030,9 +964,9 @@ namespace Client_App.ViewModels
                                 y.Report_Collection.Remove((Report)item);
                             }
                         }
+                        await new EssanceMethods.APIFactory<Reports>().UpdateAsync(y);
                         t.SelectedReports = tmp;
                     }
-                    await StaticConfiguration.DBModel.SaveChangesAsync();
                 }
             }
         }
@@ -1049,10 +983,11 @@ namespace Client_App.ViewModels
                 if (answ == "Да")
                 {
                     if (param != null)
-                        foreach (var item in param)
-                            Local_Reports.Reports_Collection.Remove((Reports)item);
-
-                    await StaticConfiguration.DBModel.SaveChangesAsync();
+                        foreach (Reports item in param)
+                        {
+                            Local_Reports.Remove(item);
+                            await new EssanceMethods.APIFactory<Reports>().DeleteAsync(item.Id);
+                        }
                 }
             }
         }
@@ -1362,7 +1297,7 @@ namespace Client_App.ViewModels
                                         excelPackage.Workbook.Properties.Title = "Report";
                                         excelPackage.Workbook.Properties.Created = DateTime.Now;
 
-                                        if (Local_Reports.Reports_Collection.Count > 0)
+                                        if (Local_Reports.Count > 0)
                                         {
                                             ExcelWorksheet worksheet =
                                                 excelPackage.Workbook.Worksheets.Add("Отчеты " + param);
@@ -1472,7 +1407,7 @@ namespace Client_App.ViewModels
 
                                             var tyu = 2;
                                             var lst = new List<Report>();
-                                            foreach (Reports item in Local_Reports.Reports_Collection)
+                                            foreach (Reports item in Local_Reports)
                                             {
                                                 lst.AddRange(item.Report_Collection);
                                             }
@@ -1501,7 +1436,7 @@ namespace Client_App.ViewModels
             foreach (Report item in forms)
             {
 
-                var findReports = from Reports t in Local_Reports.Reports_Collection
+                var findReports = from Reports t in Local_Reports
                                   where t.Report_Collection.Contains(item)
                                   select t;
                 var reps = findReports.FirstOrDefault();
@@ -1549,7 +1484,7 @@ namespace Client_App.ViewModels
             foreach (Report item in forms)
             {
 
-                var findReports = from Reports t in Local_Reports.Reports_Collection
+                var findReports = from Reports t in Local_Reports
                                   where t.Report_Collection.Contains(item)
                                   select t;
                 var reps = findReports.FirstOrDefault();
@@ -1686,7 +1621,7 @@ namespace Client_App.ViewModels
         }
         private void _Excel_Print_Titul_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = from Reports t in Local_Reports.Reports_Collection
+            var findReports = from Reports t in Local_Reports
                               where t.Report_Collection.Contains(form)
                               select t;
             var reps = findReports.FirstOrDefault();
@@ -1785,7 +1720,7 @@ namespace Client_App.ViewModels
         }
         private void _Excel_Print_SubMain_Export(string param, ExcelWorksheet worksheet, Report form)
         {
-            var findReports = from Reports t in Local_Reports.Reports_Collection
+            var findReports = from Reports t in Local_Reports
                               where t.Report_Collection.Contains(form)
                               select t;
             var reps = findReports.FirstOrDefault();

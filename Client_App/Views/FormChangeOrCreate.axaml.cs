@@ -64,54 +64,54 @@ namespace Client_App.Views
                     }
                     if (x == "Нет")
                     {
-                        flag = true;
-                        var dbm = StaticConfiguration.DBModel;
-                        dbm.Restore();
-                        dbm.LoadTables();
-                        dbm.SaveChanges();
+                        //flag = true;
+                        //var dbm = StaticConfiguration.DBModel;
+                        //dbm.Restore();
+                        //dbm.LoadTables();
+                        //dbm.SaveChanges();
 
-                        var lst=tmp.Storage[tmp.FormType];
+                        //var lst=tmp.Storage[tmp.FormType];
 
-                        //tmp.Storage.Rows11.GetEnumerator();
-                        foreach(Form item in lst)
-                        {
-                            if (item.Id == 0)
-                            {
-                                tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
+                        ////tmp.Storage.Rows11.GetEnumerator();
+                        //foreach(Form item in lst)
+                        //{
+                        //    if (item.Id == 0)
+                        //    {
+                        //        tmp.Storage[tmp.Storage.FormNum_DB].Remove(item);
 
-                            }
-                        }
-                        var lstnote = tmp.Storage.Notes.ToList<Note>();
-                        foreach (var item in lstnote)
-                        {
-                            if (item.Id == 0)
-                            {
-                                tmp.Storage.Notes.Remove(item);
-                            }
-                        }
-                        if (tmp.FormType != "1.0" && tmp.FormType != "2.0")
-                        {
-                            if (tmp.FormType.Split('.')[0] == "1")
-                            {
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
-                            }
-                            if (tmp.FormType.Split('.')[0] == "2")
-                            {
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
-                            }
-                        }
-                        else
-                        {
-                            if (tmp.FormType == "1.0"|| tmp.FormType == "2.0")
-                            {
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
-                                tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
-                            }
-                        }
+                        //    }
+                        //}
+                        //var lstnote = tmp.Storage.Notes.ToList<Note>();
+                        //foreach (var item in lstnote)
+                        //{
+                        //    if (item.Id == 0)
+                        //    {
+                        //        tmp.Storage.Notes.Remove(item);
+                        //    }
+                        //}
+                        //if (tmp.FormType != "1.0" && tmp.FormType != "2.0")
+                        //{
+                        //    if (tmp.FormType.Split('.')[0] == "1")
+                        //    {
+                        //        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.StartPeriod));
+                        //        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.EndPeriod));
+                        //        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                        //    }
+                        //    if (tmp.FormType.Split('.')[0] == "2")
+                        //    {
+                        //        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.Year));
+                        //        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.CorrectionNumber));
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    if (tmp.FormType == "1.0"|| tmp.FormType == "2.0")
+                        //    {
+                        //        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
+                        //        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
+                        //        tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.OkpoRep));
+                        //    }
+                        //}
                         return;
                     }
                 });
