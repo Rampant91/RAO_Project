@@ -54,9 +54,18 @@ namespace Models.Abstracts
             {
                 if (!OperationCode_Hidden_Priv)
                 {
-                    var tmp = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
-                    tmp.PropertyChanged += OperationCodeValueChanged;
-                    return tmp;
+                    if (Dictionary.ContainsKey(nameof(OperationCode)))
+                    {
+                        ((RamAccess<string>)Dictionary[nameof(OperationCode)]).Value = OperationCode_DB;
+                        return (RamAccess<string>)Dictionary[nameof(OperationCode)];
+                    }
+                    else
+                    {
+                        var rm = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
+                        rm.PropertyChanged += OperationCodeValueChanged;
+                        Dictionary.Add(nameof(OperationCode), rm);
+                        return (RamAccess<string>)Dictionary[nameof(OperationCode)];
+                    }
                 }
                 else
                 {

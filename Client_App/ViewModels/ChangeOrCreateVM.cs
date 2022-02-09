@@ -436,6 +436,8 @@ namespace Client_App.ViewModels
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
                                     else if(midvalue is RamAccess<byte?>)
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { byte.Parse(columnsText[columnNum - minColumn]) });
+                                    else if (midvalue is RamAccess<bool>)
+                                        midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { bool.Parse(columnsText[columnNum - minColumn]) });
                                     else
                                         midvalue.GetType().GetProperty("Value").SetMethod.Invoke(midvalue, new object[] { columnsText[columnNum - minColumn] });
                                 }

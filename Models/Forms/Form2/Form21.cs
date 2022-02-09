@@ -1651,7 +1651,8 @@ namespace Models
 
         //MassOut Property
         #region  MassOut
-        public string MassOut_DB { get; set; } = ""; [NotMapped]
+        public string MassOut_DB { get; set; } = "";
+        [NotMapped]
         [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "т","18")]
         public RamAccess<string> MassOut//SUMMARIZABLE
         {
@@ -1740,7 +1741,8 @@ namespace Models
 
         //QuantityOZIIIout property
         #region  QuantityOZIIIout
-        public string QuantityOZIIIout_DB { get; set; } = ""; [NotMapped]
+        public string QuantityOZIIIout_DB { get; set; } = "";
+        [NotMapped]
         [Attributes.Form_Property(true, "Образовалось РАО после переработки, кондиционирования", "ОЗИИИ, шт.","19")]
         public RamAccess<string> QuantityOZIIIout//SUMMARIZABLE
         {

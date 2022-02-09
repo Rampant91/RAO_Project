@@ -74,13 +74,13 @@ namespace Models
         }
         //If change this change validation
         private void ObservedSourceNumberValueChanged(object Value, PropertyChangedEventArgs args)
-{
-if (args.PropertyName == "Value")
-{
+        {
+            if (args.PropertyName == "Value")
+            {
                 ObservedSourceNumber_DB = ((RamAccess<string>)Value).Value;
-}
-}
-private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
+            }
+        }
+        private bool ObservedSourceNumber_Validation(RamAccess<string> value)//Ready
         {
             value.ClearErrors(); return true;
         }
