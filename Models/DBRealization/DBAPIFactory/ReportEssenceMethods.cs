@@ -67,7 +67,16 @@ namespace Models.DBRealization.DBAPIFactory
                     using (var db = new DBModel(StaticConfiguration.DBPath))
                     {
                         db.Database.Migrate();
-                        return db.ReportCollectionDbSet.Where(x => x.Id == ID).FirstOrDefault() as T;
+                        return db.ReportCollectionDbSet.Where(x => x.Id == ID)
+                            .Include(x => x.Rows10).Include(x => x.Rows11).Include(x => x.Rows12).Include(x => x.Rows13)
+                            .Include(x => x.Rows14).Include(x => x.Rows15).Include(x => x.Rows16).Include(x => x.Rows17)
+                            .Include(x => x.Rows18).Include(x => x.Rows19)
+                            .Include(x => x.Rows20).Include(x => x.Rows21).Include(x => x.Rows22).Include(x => x.Rows23)
+                            .Include(x => x.Rows24).Include(x => x.Rows25).Include(x => x.Rows26).Include(x => x.Rows27)
+                            .Include(x => x.Rows28).Include(x => x.Rows29).Include(x => x.Rows210).Include(x => x.Rows211)
+                            .Include(x => x.Rows212)
+                            .Include(x => x.Notes)
+                            .FirstOrDefault() as T;
                     }
                 }
                 return null;
@@ -129,7 +138,16 @@ namespace Models.DBRealization.DBAPIFactory
                     using (var db = new DBModel(StaticConfiguration.DBPath))
                     {
                         await db.Database.MigrateAsync();
-                        return await db.ReportCollectionDbSet.Where(x => x.Id == ID).FirstOrDefaultAsync() as T;
+                        return await db.ReportCollectionDbSet.Where(x => x.Id == ID)
+                            .Include(x => x.Rows10).Include(x => x.Rows11).Include(x => x.Rows12).Include(x => x.Rows13)
+                            .Include(x => x.Rows14).Include(x => x.Rows15).Include(x => x.Rows16).Include(x => x.Rows17)
+                            .Include(x => x.Rows18).Include(x => x.Rows19)
+                            .Include(x => x.Rows20).Include(x => x.Rows21).Include(x => x.Rows22).Include(x => x.Rows23)
+                            .Include(x => x.Rows24).Include(x => x.Rows25).Include(x => x.Rows26).Include(x => x.Rows27)
+                            .Include(x => x.Rows28).Include(x => x.Rows29).Include(x => x.Rows210).Include(x => x.Rows211)
+                            .Include(x => x.Rows212)
+                            .Include(x => x.Notes)
+                            .FirstOrDefaultAsync() as T;
                     }
                 }
                 return null;
