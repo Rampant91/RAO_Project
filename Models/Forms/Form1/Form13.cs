@@ -86,6 +86,7 @@ namespace Models
             set
             {
                 PassportNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PassportNumber));
             }
         }
         private void PassportNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -138,6 +139,7 @@ namespace Models
             set
             {
                 Type_DB = value.Value;
+                OnPropertyChanged(nameof(Type));
             }
         }
         private void TypeValueChanged(object Value, PropertyChangedEventArgs args)
@@ -158,8 +160,11 @@ namespace Models
             var a = from item in Spravochniks.SprTypesToRadionuclids where item.Item1 == value.Value select item.Item2;
             if (a.Count() == 1)
             {
-                _autoRN = true;
-                Radionuclids.Value = a.First();
+                if (string.IsNullOrEmpty(Radionuclids.Value))
+                {
+                    _autoRN = true;
+                    Radionuclids.Value = a.First();
+                }
             }
             return true;
         }
@@ -189,6 +194,7 @@ namespace Models
             set
             {
                 Radionuclids_DB = value.Value;
+                OnPropertyChanged(nameof(Radionuclids));
             }
         }//If change this change validation
 
@@ -261,6 +267,7 @@ namespace Models
             set
             {
                 FactoryNumber_DB = value.Value;
+                OnPropertyChanged(nameof(FactoryNumber));
             }
         }
         private void FactoryNumberValueChanged(object Value, PropertyChangedEventArgs args)
@@ -306,6 +313,7 @@ namespace Models
             set
             {
                 Activity_DB = value.Value;
+                OnPropertyChanged(nameof(Activity));
             }
         }
         private void ActivityValueChanged(object Value, PropertyChangedEventArgs args)
@@ -394,6 +402,7 @@ namespace Models
             set
             {
                 CreationDate_DB = value.Value;
+                OnPropertyChanged(nameof(CreationDate));
             }
         }//If change this change validation
 
@@ -470,6 +479,7 @@ namespace Models
             set
             {
                 CreatorOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(CreatorOKPO));
             }
         }//If change this change validation
 
@@ -542,6 +552,7 @@ namespace Models
             set
             {
                 AggregateState_DB = value.Value;
+                OnPropertyChanged(nameof(AggregateState));
             }
         }
         private void AggregateStateValueChanged(object Value, PropertyChangedEventArgs args)
@@ -592,6 +603,7 @@ namespace Models
             set
             {
                 PropertyCode_DB = value.Value;
+                OnPropertyChanged(nameof(PropertyCode));
             }
         }
         private void PropertyCodeValueChanged(object Value, PropertyChangedEventArgs args)
@@ -642,6 +654,7 @@ namespace Models
             set
             {
                 Owner_DB = value.Value;
+                OnPropertyChanged(nameof(Owner));
             }
         }//if change this change validation
 
@@ -830,6 +843,7 @@ namespace Models
             set
             {
                 TransporterOKPO_DB = value.Value;
+                OnPropertyChanged(nameof(TransporterOKPO));
             }
         }
         private void TransporterOKPOValueChanged(object Value, PropertyChangedEventArgs args)
@@ -909,6 +923,7 @@ namespace Models
             set
             {
                 PackName_DB = value.Value;
+                OnPropertyChanged(nameof(PackName));
             }
         }
         private void PackNameValueChanged(object Value, PropertyChangedEventArgs args)
@@ -960,6 +975,7 @@ namespace Models
             set
             {
                 PackType_DB = value.Value;
+                OnPropertyChanged(nameof(PackType));
             }
         }//If change this change validation
 
@@ -1012,6 +1028,7 @@ namespace Models
             set
             {
                 PackNumber_DB = value.Value;
+                OnPropertyChanged(nameof(PackNumber));
             }
         }//If change this change validation
 

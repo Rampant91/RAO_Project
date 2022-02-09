@@ -127,9 +127,18 @@ namespace Models
         {
             get
             {
-                var tmp = new RamAccess<string>(Type_Validation, Type_DB);
-                tmp.PropertyChanged += TypeValueChanged;
-                return tmp;
+                if (Dictionary.ContainsKey(nameof(Type)))
+                {
+                    ((RamAccess<string>)Dictionary[nameof(Type)]).Value = Type_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Type)];
+                }
+                else
+                {
+                    var rm = new RamAccess<string>(Type_Validation, Type_DB);
+                    rm.PropertyChanged += TypeValueChanged;
+                    Dictionary.Add(nameof(Type), rm);
+                    return (RamAccess<string>)Dictionary[nameof(Type)];
+                }
             }
             set
             {
@@ -155,8 +164,11 @@ namespace Models
             var a = from item in Spravochniks.SprTypesToRadionuclids where item.Item1 == value.Value select item.Item2;
             if (a.Count() == 1)
             {
-                _autoRN = true;
-                Radionuclids.Value = a.First();
+                if (string.IsNullOrEmpty(Radionuclids.Value))
+                {
+                    _autoRN = true;
+                    Radionuclids.Value = a.First();
+                }
             }
             return true;
         }

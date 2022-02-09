@@ -161,8 +161,11 @@ namespace Models
             var a = from item in Spravochniks.SprTypesToRadionuclids where item.Item1 == value.Value select item.Item2;
             if (a.Count() == 1)
             {
-                _autoRN = true;
-                Radionuclids.Value = a.First();
+                if (string.IsNullOrEmpty(Radionuclids.Value))
+                {
+                    _autoRN = true;
+                    Radionuclids.Value = a.First();
+                }
             }
             return true;
         }
