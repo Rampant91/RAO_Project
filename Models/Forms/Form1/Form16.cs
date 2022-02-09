@@ -1744,19 +1744,19 @@ namespace Models
                 NumberInOrderR += ActivityMeasurementDateR;
                 #endregion
                 #region DocumentVid (15)
-                DataGridColumns DocumentVidR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form16.DocumentVid)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns DocumentVidR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form16.DocumentVid)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 DocumentVidR.SetSizeColToAllLevels(88);
                 DocumentVidR.Binding = nameof(Form16.DocumentVid);
                 NumberInOrderR += DocumentVidR;
                 #endregion
                 #region DocumentNumber (16)
-                DataGridColumns DocumentNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form16.DocumentNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns DocumentNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form16.DocumentNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 DocumentNumberR.SetSizeColToAllLevels(103);
                 DocumentNumberR.Binding = nameof(Form16.DocumentNumber);
                 NumberInOrderR += DocumentNumberR;
                 #endregion
                 #region DocumentDate (17)
-                DataGridColumns DocumentDateR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form16.DocumentDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns DocumentDateR = ((Attributes.Form_PropertyAttribute)typeof(Form1).GetProperty(nameof(Form16.DocumentDate)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 DocumentDateR.SetSizeColToAllLevels(88);
                 DocumentDateR.Binding = nameof(Form16.DocumentDate);
                 NumberInOrderR += DocumentDateR;

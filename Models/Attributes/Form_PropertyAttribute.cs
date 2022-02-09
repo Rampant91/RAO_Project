@@ -31,7 +31,7 @@ namespace Models.Attributes
             }
         }
 
-        public DataGridColumns GetDataColumnStructureD()
+        public DataGridColumns GetDataColumnStructureD(DataGridColumns prev_data = null)
         {
             DataGridColumns tmp = new();
             tmp.name = Names[0];
@@ -52,6 +52,25 @@ namespace Models.Attributes
                         DataGridColumns it = new();
                         it.name = Names[i];
                         it.parent = _tmp;
+
+                        try
+                        {
+                            if (Names[i] == Names[Names.Count()-1])
+                            {
+                                if (prev_data != null)
+                                {
+                                    var inner = prev_data.innertCol[prev_data.innertCol.Count() - 1];
+                                    while (inner.innertCol != null)
+                                    {
+                                        inner = inner.innertCol[inner.innertCol.Count()-1];
+                                    }
+                                    var current_num = Convert.ToInt32(inner.name);
+                                    it.name = Convert.ToString(current_num+1);
+                                }
+                            }
+                        }
+                        catch (Exception e) { }
+
                         _tmp.innertCol.Add(it);
                         try
                         {
