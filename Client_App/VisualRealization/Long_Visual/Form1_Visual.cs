@@ -462,6 +462,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Notes_",
                 Focusable = true,
+                Comment = "Комментарии",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -674,6 +675,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Notes_",
                 Focusable = true,
+                Comment = "Комментарии",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -886,6 +888,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Notes_",
                 Focusable = true,
+                Comment = "Комментарии",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1098,6 +1101,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Notes_",
                 Focusable = true,
+                Comment = "Комментарии",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1310,6 +1314,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Notes_",
                 Focusable = true,
+                Comment = "Комментарии",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1522,6 +1527,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Notes_",
                 Focusable = true,
+                Comment = "Комментарии",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1735,6 +1741,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Notes_",
                 Focusable = true,
+                Comment = "Комментарии",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1947,6 +1954,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Notes_",
                 Focusable = true,
+                Comment = "Комментарии",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -2160,6 +2168,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Notes_",
                 Focusable = true,
+                Comment = "Комментарии",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,

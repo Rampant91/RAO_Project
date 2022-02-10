@@ -1428,27 +1428,20 @@ namespace Client_App.Controls.DataGrid
             HeaderStackPanel = new();
             HeaderStackPanel.Margin = Thickness.Parse("2,2,20,2");
             HeaderStackPanel.Orientation = Orientation.Vertical;
-            HeaderPanel.Children.Add(HeaderStackPanel);
+
+            
 
             if (Comment != null && Comment != "")
             {
-                StackPanel HeaderStackPanel = new();
-                HeaderStackPanel.Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255));
-                HeaderStackPanel.Orientation = Orientation.Vertical;
-                HeaderBorder.Child = HeaderStackPanel;
-                StackPanel HeaderStackPanel1 = new();
-                HeaderStackPanel1[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
-                HeaderStackPanel1.Orientation = Orientation.Horizontal;
-                HeaderStackPanel1.Children.Add(new TextBlock() { Text = "Кол-во страниц:", Margin = Thickness.Parse("5,0,0,0") });
-                HeaderStackPanel1.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.PageCountProperty], Margin = Thickness.Parse("5,0,0,0") });
-                HeaderStackPanel.Children.Add(HeaderStackPanel1);
+                StackPanel HeaderStackPanel1 = new() { Orientation = Orientation.Vertical};
+                HeaderPanel.Children.Add(HeaderStackPanel1);
                 StackPanel HeaderStackPanel2 = new();
                 HeaderStackPanel2[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
                 HeaderStackPanel2.Orientation = Orientation.Horizontal;
-                HeaderStackPanel2.Children.Add(new TextBlock() { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0") });
-                HeaderStackPanel2.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0") });
+                HeaderStackPanel2.Children.Add(new TextBlock() { Text = Comment, Margin = Thickness.Parse("5,5,0,5") });
                 HeaderStackPanel.Children.Add(HeaderStackPanel2);
             }
+            HeaderPanel.Children.Add(HeaderStackPanel);
             #endregion
 
             #region Center
