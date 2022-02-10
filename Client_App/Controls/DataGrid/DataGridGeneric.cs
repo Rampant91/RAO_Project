@@ -1429,6 +1429,7 @@ namespace Client_App.Controls.DataGrid
             HeaderStackPanel.Margin = Thickness.Parse("2,2,20,2");
             HeaderStackPanel.Orientation = Orientation.Vertical;
             HeaderPanel.Children.Add(HeaderStackPanel);
+
             if (Comment != null && Comment != "")
             {
                 StackPanel HeaderStackPanel = new();
@@ -1440,6 +1441,13 @@ namespace Client_App.Controls.DataGrid
                 HeaderStackPanel1.Orientation = Orientation.Horizontal;
                 HeaderStackPanel1.Children.Add(new TextBlock() { Text = "Кол-во страниц:", Margin = Thickness.Parse("5,0,0,0") });
                 HeaderStackPanel1.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.PageCountProperty], Margin = Thickness.Parse("5,0,0,0") });
+                HeaderStackPanel.Children.Add(HeaderStackPanel1);
+                StackPanel HeaderStackPanel2 = new();
+                HeaderStackPanel2[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
+                HeaderStackPanel2.Orientation = Orientation.Horizontal;
+                HeaderStackPanel2.Children.Add(new TextBlock() { Text = "Кол-во строчек:", Margin = Thickness.Parse("5,0,0,0") });
+                HeaderStackPanel2.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.ItemsCountProperty], Margin = Thickness.Parse("5,0,0,0") });
+                HeaderStackPanel.Children.Add(HeaderStackPanel2);
             }
             #endregion
 
