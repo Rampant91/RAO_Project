@@ -47,7 +47,16 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(obj))
                 {
-                    //DoSomething
+                    if ((obj as Reports).Id == 0)
+                    {
+                        using (var db = new DBModel(StaticConfiguration.DBPath))
+                        {
+                            db.Database.Migrate();
+                            db.ReportsCollectionDbSet.Add(obj as Reports);
+                            db.SaveChanges();
+                            return obj;
+                        }
+                    }
                 }
                 return null;
             }
@@ -55,7 +64,13 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(typeof(T)))
                 {
-                    //DoSomething
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        db.Database.Migrate();
+                        return db.ReportsCollectionDbSet.Where(x => x.Id == ID)
+                            .Include(x => x.Master_DB)
+                            .FirstOrDefault() as T;
+                    }
                 }
                 return null;
             }
@@ -63,7 +78,15 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(typeof(T)))
                 {
-                    //DoSomething
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        db.Database.Migrate();
+                        return db.ReportsCollectionDbSet
+                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                            .Include(x => x.Report_Collection)
+                            .Select(x => x as T).ToList();
+                    }
                 }
                 return null;
             }
@@ -86,7 +109,13 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(typeof(T)))
                 {
-                    //DoSomething
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        db.Database.Migrate();
+                        var rep = db.ReportsCollectionDbSet.Where(x => x.Id == ID).FirstOrDefault();
+                        db.ReportsCollectionDbSet.Remove(rep);
+                        db.SaveChanges();
+                    }
                     return true;
                 }
                 return false;
@@ -98,7 +127,16 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(obj))
                 {
-                    //DoSomething
+                    if ((obj as Reports).Id == 0)
+                    {
+                        using (var db = new DBModel(StaticConfiguration.DBPath))
+                        {
+                            await db.Database.MigrateAsync();
+                            await db.ReportsCollectionDbSet.AddAsync(obj as Reports);
+                            await db.SaveChangesAsync();
+                            return obj;
+                        }
+                    }
                 }
                 return null;
             }
@@ -106,7 +144,13 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(typeof(T)))
                 {
-                    //DoSomething
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        await db.Database.MigrateAsync();
+                        return await db.ReportsCollectionDbSet.Where(x => x.Id == ID)
+                            .Include(x => x.Master_DB)
+                            .FirstOrDefaultAsync() as T;
+                    }
                 }
                 return null;
             }
@@ -133,8 +177,7 @@ namespace Models.DBRealization.DBAPIFactory
                     using (var db = new DBModel(StaticConfiguration.DBPath))
                     {
                         await db.Database.MigrateAsync();
-                        Reports _rep = obj as Reports;
-                        db.ReportsCollectionDbSet.Update(_rep);
+                        db.ReportsCollectionDbSet.Update(obj as Reports);
                         await db.SaveChangesAsync();
                     }
                     return true;
@@ -145,7 +188,13 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(typeof(T)))
                 {
-                    //DoSomething
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        await db.Database.MigrateAsync();
+                        var rep = await db.ReportsCollectionDbSet.Where(x => x.Id == ID).FirstOrDefaultAsync();
+                        db.ReportsCollectionDbSet.Remove(rep);
+                        await db.SaveChangesAsync();
+                    }
                     return true;
                 }
                 return false;

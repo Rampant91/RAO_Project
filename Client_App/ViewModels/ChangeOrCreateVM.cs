@@ -131,19 +131,19 @@ namespace Client_App.ViewModels
 
         #region ChangeReportOrder
         public ReactiveCommand<Unit, Unit> ChangeReportOrder { get; protected set; }
-        private void _ChangeReportOrder()
+        private async Task _ChangeReportOrder()
         {
             Storage.Rows10.Sorted = false;
             Storage.Rows20.Sorted = false;
             var tmp = Storage.Rows10[0].Order;
             Storage.Rows10[0].SetOrder(Storage.Rows10[1].Order);
             Storage.Rows10[1].SetOrder(tmp);
-            Storage.Rows10.QuickSort();
+            await Storage.Rows10.QuickSortAsync();
 
             tmp = Storage.Rows20[0].Order;
             Storage.Rows20[0].SetOrder(Storage.Rows20[1].Order);
             Storage.Rows20[1].SetOrder(tmp);
-            Storage.Rows20.QuickSort();
+            await Storage.Rows20.QuickSortAsync();
         }
         #endregion
 
@@ -167,7 +167,7 @@ namespace Client_App.ViewModels
             Note? nt = new Note();
             nt.Order = GetNumberInOrder(Storage.Notes);
             Storage.Notes.Add(nt);
-            Storage.Sort();
+            await Storage.SortAsync();
         }
         #endregion
 
@@ -178,7 +178,7 @@ namespace Client_App.ViewModels
             var frm = FormCreator.Create(FormType);
             frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
             Storage[Storage.FormNum_DB].Add(frm);
-            Storage.Sort();
+            await Storage.SortAsync();
         }
         #endregion
 
@@ -468,7 +468,7 @@ namespace Client_App.ViewModels
                             }
                         }
                     }
-                    Storage.Sort();
+                    await Storage.SortAsync();
                 }
             }
         }
@@ -565,7 +565,7 @@ namespace Client_App.ViewModels
             AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
             AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
             DeleteRow = ReactiveCommand.CreateFromTask<object>(_DeleteRow);
-            ChangeReportOrder = ReactiveCommand.Create(_ChangeReportOrder);
+            ChangeReportOrder = ReactiveCommand.CreateFromTask(_ChangeReportOrder);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             SumRow = ReactiveCommand.Create(_SumRow);
             PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);

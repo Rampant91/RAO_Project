@@ -424,7 +424,7 @@ namespace Client_App.ViewModels
                         }
                     }
                     item.Master_DB.Rows10.Sorted = false;
-                    item.Master_DB.Rows10.QuickSort();
+                    await item.Master_DB.Rows10.QuickSortAsync();
                 }
                 else
                 {
@@ -444,7 +444,7 @@ namespace Client_App.ViewModels
                         }
                     }
                     item.Master_DB.Rows10.Sorted = false;
-                    item.Master_DB.Rows10.QuickSort();
+                    await item.Master_DB.Rows10.QuickSortAsync();
                 }
             }
             if (item.Master_DB.FormNum_DB == "2.0")
@@ -467,7 +467,7 @@ namespace Client_App.ViewModels
                         }
                     }
                     item.Master_DB.Rows20.Sorted = false;
-                    item.Master_DB.Rows20.QuickSort();
+                    await item.Master_DB.Rows20.QuickSortAsync();
                 }
                 else
                 {
@@ -487,7 +487,7 @@ namespace Client_App.ViewModels
                         }
                     }
                     item.Master_DB.Rows20.Sorted = false;
-                    item.Master_DB.Rows20.QuickSort();
+                    await item.Master_DB.Rows20.QuickSortAsync();
                 }
             }
         }
@@ -504,6 +504,27 @@ namespace Client_App.ViewModels
                 }
             }
         }
+
+        private async Task ChechAanswer(string an, Reports first, Report elem = null, Report it = null) 
+        {
+            if (an == "Сохранить оба" || an == "Да")
+            {
+                first.Report_Collection.Add(it);
+            }
+            if (an == "Заменить" || an == "Загрузить новую")
+            {
+                first.Report_Collection.Remove(elem);
+                first.Report_Collection.Add(it);
+            }
+            if (an == "Дополнить")
+            {
+                first.Report_Collection.Remove(elem);
+                it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
+                it.Notes.AddRange<IKey>(0, elem.Notes);
+                first.Report_Collection.Add(it);
+            }
+        }
+
         private async Task ProcessIfHasReports11(Reports first11, Reports item)
         {
             var not_in = false;
@@ -565,24 +586,7 @@ namespace Client_App.ViewModels
                                     "Сохранить оба",
                                     "Отменить" 
                                 });
-                                if (an == "Сохранить оба")
-                                {
-                                    first11.Report_Collection.Add(it);
-                                }
-                                if (an == "Заменить")
-                                {
-                                    first11.Report_Collection.Remove(elem);
-                                    first11.Report_Collection.Add(it);
-                                }
-                                if (an == "Дополнить")
-                                {
-                                    first11.Report_Collection.Remove(elem);
-
-                                    it.Rows.AddRange<IKey>(0, elem.Rows.GetEnumerable());
-                                    it.Notes.AddRange<IKey>(0, elem.Notes);
-
-                                    first11.Report_Collection.Add(it);
-                                }
+                                await ChechAanswer(an, first11, elem, it);
                             }
                             else
                             {
@@ -596,11 +600,7 @@ namespace Client_App.ViewModels
                                     "Загрузить новую",
                                     "Отмена"
                                 });
-                                if (an == "Загрузить новую")
-                                {
-                                    first11.Report_Collection.Remove(elem);
-                                    first11.Report_Collection.Add(it);
-                                }
+                                await ChechAanswer(an, first11, elem, it);
                             }
                         }
                         if ((st_elem < st_it && st_it < en_elem || st_elem < en_it && en_it < en_elem) && it.FormNum.Value == elem.FormNum.Value)
@@ -616,10 +616,7 @@ namespace Client_App.ViewModels
                                 "Сохранить оба",
                                 "Отменить" 
                             });
-                            if (an == "Сохранить оба")
-                            {
-                                first11.Report_Collection.Add(it);
-                            }
+                            await ChechAanswer(an, first11, elem, it);
                         }
                     }
                     if (!not_in)
@@ -629,10 +626,7 @@ namespace Client_App.ViewModels
                             "Да",
                             "Нет"
                         });
-                        if (an == "Да")
-                        {
-                            first11.Report_Collection.Add(it);
-                        }
+                        await ChechAanswer(an, first11, null, it);
                     }
                 }
                 else
@@ -679,15 +673,7 @@ namespace Client_App.ViewModels
                                     "Сохранить оба",
                                     "Отменить" 
                                 });
-                                if (an == "Сохранить оба")
-                                {
-                                    first21.Report_Collection.Add(it);
-                                }
-                                if (an == "Заменить")
-                                {
-                                    first21.Report_Collection.Remove(elem);
-                                    first21.Report_Collection.Add(it);
-                                }
+                                await ChechAanswer(an, first21, elem, it);
                             }
                             else
                             {
@@ -702,11 +688,7 @@ namespace Client_App.ViewModels
                                                                         "Загрузить новую",
                                                                         "Отмена"
                                                                         });
-                                if (an == "Загрузить новую")
-                                {
-                                    first21.Report_Collection.Remove(elem);
-                                    first21.Report_Collection.Add(it);
-                                }
+                                await ChechAanswer(an, first21, elem, it);
                             }
                         }
                     }
@@ -717,10 +699,7 @@ namespace Client_App.ViewModels
                             "Да",
                             "Нет"
                         });
-                        if (an == "Да")
-                        {
-                            first21.Report_Collection.Add(it);
-                        }
+                        await ChechAanswer(an, first21, null, it);
                         not_in = false;
                     }
                 }
@@ -808,7 +787,7 @@ namespace Client_App.ViewModels
                             {
                                 var tmp = Path.Combine(await GetTempDirectory(await GetSystemDirectory()), filename + "_exp" + ".raodb");
 
-                                var tsk = new Task(() =>
+                                var tsk = new Task(async () =>
                                 {
                                     DBModel db = new DBModel(tmp);
                                     try
@@ -816,9 +795,10 @@ namespace Client_App.ViewModels
                                         Reports rp = new Reports();
                                         rp.Master = rt.Master;
                                         rp.Report_Collection.Add(rep);
-                                        db.Database.MigrateAsync();
-                                        db.ReportsCollectionDbSet.Add(rp);
-                                        db.SaveChanges();
+
+                                        await db.Database.MigrateAsync();
+                                        await db.ReportsCollectionDbSet.AddAsync(rp);
+                                        await db.SaveChangesAsync();
 
                                         string filename2 = "";
                                         if (rp.Master_DB.FormNum_DB == "1.0")
@@ -848,11 +828,11 @@ namespace Client_App.ViewModels
 
 
                                         var t = db.Database.GetDbConnection() as FbConnection;
-                                        t.Close();
-                                        t.Dispose();
+                                        await t.CloseAsync();
+                                        await t.DisposeAsync();
 
-                                        db.Database.CloseConnection();
-                                        db.Dispose();
+                                        await db.Database.CloseConnectionAsync();
+                                        await db.DisposeAsync();
 
                                     }
                                     catch (Exception e)
@@ -909,7 +889,7 @@ namespace Client_App.ViewModels
                         var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
                         var rep = (Report)obj;
                         var rEssance = new EssanceMethods.APIFactory<Report>();
-                        var _rep = rEssance.Get(rep.Id);
+                        var _rep = await rEssance.GetAsync(rep.Id);
                         var tre = (from Reports i in Local_Reports where i.Report_Collection.Contains(rep) select i).FirstOrDefault();
                         ChangeOrCreateVM frm = new(rep.FormNum.Value, _rep, tre);
                         await ShowDialog.Handle(frm);
