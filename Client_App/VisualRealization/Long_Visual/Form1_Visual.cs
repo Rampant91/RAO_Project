@@ -413,6 +413,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form11Data_",
                 Focusable = true,
+                Sum = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,

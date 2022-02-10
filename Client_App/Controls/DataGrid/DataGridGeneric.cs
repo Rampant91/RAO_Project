@@ -31,6 +31,8 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Reactive.Subjects;
 using Client_App.Converters;
+using Client_App.ViewModels;
+using Models.Attributes;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -106,7 +108,11 @@ namespace Client_App.Controls.DataGrid
             get => _selecteditems;
             set
             {
-                if (value != null) SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
+                if (value != null)
+                {
+                    SetAndRaise(SelectedItemsProperty, ref _selecteditems, value);
+                    if (Sum) SumColumn = "0";
+                }
             }
         }
         #endregion
@@ -171,6 +177,110 @@ namespace Client_App.Controls.DataGrid
                     Init();
                 }
             }
+        }
+        #endregion
+
+        #region Sum
+        public static readonly DirectProperty<DataGrid<T>, bool> SumProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
+                nameof(Sum),
+                o => o.Sum,
+                (o, v) => o.Sum = v);
+
+        private bool _Sum = false;
+        public bool Sum
+        {
+            get => _Sum;
+            set
+            {
+                SetAndRaise(SumProperty, ref _Sum, value);
+                Init();
+            }
+        }
+        #endregion
+
+        #region SumColumn
+        public static readonly DirectProperty<DataGrid<T>, string> SumColumnProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
+                nameof(SumColumn),
+                o => o.SumColumn,
+                (o, v) => o.SumColumn = v);
+
+        private string _SumColumn = "0";
+        public string SumColumn
+        {
+            get => _SumColumn;
+            set
+            {
+                var s = GetSum();
+                SetAndRaise(SumColumnProperty, ref _SumColumn, s);
+            }
+        }
+
+        public string GetSum() 
+        {
+            object[] answ = new object[3];
+            answ[0] = SelectedItems;
+            answ[1] = Math.Min(FirstPressedItem[1], LastPressedItem[1]);
+            answ[2] = Math.Max(FirstPressedItem[1], LastPressedItem[1]);
+            IKeyCollection collection = answ[0] as IKeyCollection;
+            int minColumn = Convert.ToInt32(answ[1]) + 1;
+            int maxColumn = Convert.ToInt32(answ[2]) + 1;
+            string s = "0";
+            if (minColumn == maxColumn)
+            {
+                if ((answ[0] is Form1) || (answ[0] is Form2))
+                {
+                    if (minColumn == 1) minColumn++;
+                }
+                if (answ[0] is Note)
+                { }
+
+                Dictionary<long, Dictionary<int, string>> dic = new Dictionary<long, Dictionary<int, string>>();
+                int _s = 0;
+                foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
+                {
+                    dic.Add(item.Order, new Dictionary<int, string>());
+                    var props = item.GetType().GetProperties();
+                    foreach (var prop in props)
+                    {
+                        var attr = (Form_PropertyAttribute)prop.GetCustomAttributes(typeof(Form_PropertyAttribute), false).FirstOrDefault();
+                        if (attr != null)
+                        {
+                            try
+                            {
+                                var columnNum = Convert.ToInt32(attr.Number);
+                                if (columnNum >= minColumn && columnNum <= maxColumn)
+                                {
+                                    var midvalue = prop.GetMethod.Invoke(item, null);
+                                    var _value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
+                                    if (_value != null && _value != "")
+                                    {
+                                        try
+                                        {
+                                            _s += Convert.ToInt32(_value);
+                                        }
+                                        catch 
+                                        {
+                                            return s;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        dic[item.Order].Add(columnNum, "");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+                    }
+                }
+                s = _s.ToString();
+            }
+            return s;
         }
         #endregion
 
@@ -1489,6 +1599,15 @@ namespace Client_App.Controls.DataGrid
             MiddleFooterStackPanel.Orientation = Orientation.Vertical;
             MiddleFooterBorder.Child = MiddleFooterStackPanel;
 
+            if (Sum) 
+            {
+                StackPanel MiddleFooterStackPanelS = new();
+                MiddleFooterStackPanelS[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
+                MiddleFooterStackPanelS.Orientation = Orientation.Horizontal;
+                MiddleFooterStackPanelS.Children.Add(new TextBlock() { Text = "Сумма:", Margin = Thickness.Parse("5,0,0,0") });
+                MiddleFooterStackPanelS.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.SumColumnProperty], Margin = Thickness.Parse("5,0,0,0") });
+                MiddleFooterStackPanel.Children.Add(MiddleFooterStackPanelS);
+            }
             StackPanel MiddleFooterStackPanel1 = new();
             MiddleFooterStackPanel1[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
             MiddleFooterStackPanel1.Orientation = Orientation.Horizontal;

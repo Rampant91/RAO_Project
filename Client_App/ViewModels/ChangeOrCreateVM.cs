@@ -70,6 +70,7 @@ namespace Client_App.ViewModels
                 }
             }
         }
+
         private Reports _Storages;
         public Reports Storages
         {
