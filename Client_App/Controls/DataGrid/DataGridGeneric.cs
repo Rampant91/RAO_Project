@@ -150,6 +150,30 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region Comment
+        public static readonly DirectProperty<DataGrid<T>, string> CommentProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
+                nameof(Comment),
+                o => o.Comment,
+                (o, v) => o.Comment = v);
+        private string _Comment = "";
+        public string Comment
+        {
+            get
+            {
+                return _Comment;
+            }
+            set
+            {
+                if (value != null && value != _Comment)
+                {
+                    SetAndRaise(CommentProperty, ref _Comment, value);
+                    Init();
+                }
+            }
+        }
+        #endregion
+
         #region ChooseMode
         public static readonly StyledProperty<ChooseMode> ChooseModeProperty =
             AvaloniaProperty.Register<DataGrid<T>, ChooseMode>(nameof(ChooseMode));
