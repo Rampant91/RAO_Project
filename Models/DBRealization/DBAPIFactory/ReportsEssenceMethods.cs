@@ -71,7 +71,13 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(obj))
                 {
-                    //DoSomething
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        db.Database.Migrate();
+                        Reports _rep = obj as Reports;
+                        db.ReportsCollectionDbSet.Update(_rep);
+                        db.SaveChanges();
+                    }
                     return true;
                 }
                 return false;
@@ -124,7 +130,13 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(obj))
                 {
-                    //DoSomething
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        await db.Database.MigrateAsync();
+                        Reports _rep = obj as Reports;
+                        db.ReportsCollectionDbSet.Update(_rep);
+                        await db.SaveChangesAsync();
+                    }
                     return true;
                 }
                 return false;

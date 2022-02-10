@@ -177,7 +177,13 @@ namespace Models.DBRealization.DBAPIFactory
             {
                 if (CheckType(obj))
                 {
-                    //DoSomething
+                    using (var db = new DBModel(StaticConfiguration.DBPath))
+                    {
+                        await db.Database.MigrateAsync();
+                        Report _rep = obj as Report;
+                        db.ReportCollectionDbSet.Update(_rep);
+                        await db.SaveChangesAsync();
+                    }
                     return true;
                 }
                 return false;
