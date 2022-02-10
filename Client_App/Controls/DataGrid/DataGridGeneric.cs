@@ -236,11 +236,10 @@ namespace Client_App.Controls.DataGrid
                 if (answ[0] is Note)
                 { }
 
-                Dictionary<long, Dictionary<int, string>> dic = new Dictionary<long, Dictionary<int, string>>();
+
                 int _s = 0;
                 foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
                 {
-                    dic.Add(item.Order, new Dictionary<int, string>());
                     var props = item.GetType().GetProperties();
                     foreach (var prop in props)
                     {
@@ -262,12 +261,9 @@ namespace Client_App.Controls.DataGrid
                                         }
                                         catch 
                                         {
-                                            return s;
+                                            Panel p = this.FindControl<Panel>("TEST");
+                                            p.Height = 0;
                                         }
-                                    }
-                                    else
-                                    {
-                                        dic[item.Order].Add(columnNum, "");
                                     }
                                 }
                             }
@@ -1602,6 +1598,7 @@ namespace Client_App.Controls.DataGrid
             if (Sum) 
             {
                 StackPanel MiddleFooterStackPanelS = new();
+                MiddleFooterStackPanelS.Name = "SumColumn";
                 MiddleFooterStackPanelS[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
                 MiddleFooterStackPanelS.Orientation = Orientation.Horizontal;
                 MiddleFooterStackPanelS.Children.Add(new TextBlock() { Text = "Сумма:", Margin = Thickness.Parse("5,0,0,0") });
