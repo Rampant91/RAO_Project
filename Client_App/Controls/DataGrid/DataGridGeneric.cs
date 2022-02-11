@@ -921,8 +921,18 @@ namespace Client_App.Controls.DataGrid
                             {
                                 if (mouse[1] >= 0)
                                 {
-                                    tmp[0] = it.Row;
-                                    tmp[1] = it.Column;
+                                    //tmp[0] = it.Row;
+                                    //tmp[1] = it.Column;
+                                    if (LastPressedItem[1] == 22 && FirstPressedItem[1] != 22)
+                                    {
+                                        tmp[1] = it.Column - 1;
+                                        tmp[0] = it.Row;
+                                    }
+                                    else
+                                    {
+                                        tmp[0] = it.Row;
+                                        tmp[1] = it.Column;
+                                    }
                                     flag = true;
                                     doFlag = true;
                                     break;
