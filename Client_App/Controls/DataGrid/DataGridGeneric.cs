@@ -227,7 +227,7 @@ namespace Client_App.Controls.DataGrid
             int minColumn = Convert.ToInt32(answ[1]) + 1;
             int maxColumn = Convert.ToInt32(answ[2]) + 1;
             string s = "0";
-            int _s = 0;
+            Double _s = 0;
             if (minColumn == maxColumn)
             {
                 if ((answ[0] is Form1) || (answ[0] is Form2))
@@ -255,7 +255,7 @@ namespace Client_App.Controls.DataGrid
                                     {
                                         try
                                         {
-                                            _s += Convert.ToInt32(_value);
+                                            _s += Convert.ToDouble(_value);
                                             var s2 = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
                                             s2.Children[0].IsVisible = true;
                                             s2.Children[1].IsVisible = true;
