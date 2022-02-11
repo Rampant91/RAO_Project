@@ -227,6 +227,7 @@ namespace Client_App.Controls.DataGrid
             int minColumn = Convert.ToInt32(answ[1]) + 1;
             int maxColumn = Convert.ToInt32(answ[2]) + 1;
             string s = "0";
+            int _s = 0;
             if (minColumn == maxColumn)
             {
                 if ((answ[0] is Form1) || (answ[0] is Form2))
@@ -235,9 +236,6 @@ namespace Client_App.Controls.DataGrid
                 }
                 if (answ[0] is Note)
                 { }
-
-
-                int _s = 0;
                 foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
                 {
                     var props = item.GetType().GetProperties();
@@ -258,11 +256,16 @@ namespace Client_App.Controls.DataGrid
                                         try
                                         {
                                             _s += Convert.ToInt32(_value);
+                                            var s2 = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
+                                            s2.Children[0].IsVisible = true;
+                                            s2.Children[1].IsVisible = true;
                                         }
                                         catch 
                                         {
-                                            Panel p = this.FindControl<Panel>("TEST");
-                                            p.Height = 0;
+                                            var s1 = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
+                                            s1.Children[0].IsVisible = false;
+                                            s1.Children[1].IsVisible = false;
+                                            return null;
                                         }
                                     }
                                 }
@@ -274,8 +277,15 @@ namespace Client_App.Controls.DataGrid
                         }
                     }
                 }
-                s = _s.ToString();
             }
+            else
+            {
+                var s3 = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
+                s3.Children[0].IsVisible = false;
+                s3.Children[1].IsVisible = false;
+                return null;
+            }
+            s = _s.ToString();
             return s;
         }
         #endregion
@@ -1601,8 +1611,8 @@ namespace Client_App.Controls.DataGrid
                 MiddleFooterStackPanelS.Name = "SumColumn";
                 MiddleFooterStackPanelS[!StackPanel.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
                 MiddleFooterStackPanelS.Orientation = Orientation.Horizontal;
-                MiddleFooterStackPanelS.Children.Add(new TextBlock() { Text = "Сумма:", Margin = Thickness.Parse("5,0,0,0") });
-                MiddleFooterStackPanelS.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.SumColumnProperty], Margin = Thickness.Parse("5,0,0,0") });
+                MiddleFooterStackPanelS.Children.Add(new TextBlock() { Text = "Сумма:", Margin = Thickness.Parse("5,0,0,0"), IsVisible = false });
+                MiddleFooterStackPanelS.Children.Add(new TextBlock() { [!TextBox.TextProperty] = this[!DataGrid<T>.SumColumnProperty], Margin = Thickness.Parse("5,0,0,0"), IsVisible = false});
                 MiddleFooterStackPanel.Children.Add(MiddleFooterStackPanelS);
             }
             StackPanel MiddleFooterStackPanel1 = new();
