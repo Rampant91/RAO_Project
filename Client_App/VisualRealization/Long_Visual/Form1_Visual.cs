@@ -627,6 +627,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form12Data_",
                 Focusable = true,
+                Sum = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -840,6 +841,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form13Data_",
                 Focusable = true,
+                Sum = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1053,6 +1055,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form14Data_",
                 Focusable = true,
+                Sum = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1266,6 +1269,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form15Data_",
                 Focusable = true,
+                Sum = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1479,6 +1483,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form16Data_",
                 Focusable = true,
+                Sum = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1693,6 +1698,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form17Data_",
                 Focusable = true,
+                Sum = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -1906,6 +1912,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form18Data_",
                 Focusable = true,
+                Sum = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
@@ -2120,6 +2127,7 @@ namespace Client_App.Long_Visual
             {
                 Name = "Form12Data_",
                 Focusable = true,
+                Sum = true,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
                 MultilineMode = MultilineMode.Multi,
