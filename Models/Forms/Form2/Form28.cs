@@ -456,37 +456,37 @@ namespace Models
                 NumberInOrderR.ChooseLine = true;
                 #endregion
                 #region WasteSourceName (2)
-                DataGridColumns WasteSourceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.WasteSourceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns WasteSourceNameR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.WasteSourceName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 WasteSourceNameR.SetSizeColToAllLevels(258);
                 WasteSourceNameR.Binding = nameof(Form28.WasteSourceName);
                 NumberInOrderR += WasteSourceNameR;
                 #endregion
                 #region WasteRecieverName (3)
-                DataGridColumns WasteRecieverNameR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.WasteRecieverName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns WasteRecieverNameR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.WasteRecieverName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 WasteRecieverNameR.SetSizeColToAllLevels(238);
                 WasteRecieverNameR.Binding = nameof(Form28.WasteRecieverName);
                 NumberInOrderR += WasteRecieverNameR;
                 #endregion
                 #region RecieverTypeCode (4)
-                DataGridColumns RecieverTypeCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.RecieverTypeCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns RecieverTypeCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.RecieverTypeCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 RecieverTypeCodeR.SetSizeColToAllLevels(200);
                 RecieverTypeCodeR.Binding = nameof(Form28.RecieverTypeCode);
                 NumberInOrderR += RecieverTypeCodeR;
                 #endregion
                 #region PoolDistrictName (5)
-                DataGridColumns PoolDistrictNameR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.PoolDistrictName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns PoolDistrictNameR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.PoolDistrictName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 PoolDistrictNameR.SetSizeColToAllLevels(313);
                 PoolDistrictNameR.Binding = nameof(Form28.PoolDistrictName);
                 NumberInOrderR += PoolDistrictNameR;
                 #endregion
                 #region AllowedWasteRemovalVolume (6)
-                DataGridColumns AllowedWasteRemovalVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns AllowedWasteRemovalVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.AllowedWasteRemovalVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 AllowedWasteRemovalVolumeR.SetSizeColToAllLevels(313);
                 AllowedWasteRemovalVolumeR.Binding = nameof(Form28.AllowedWasteRemovalVolume);
                 NumberInOrderR += AllowedWasteRemovalVolumeR;
                 #endregion
                 #region RemovedWasteVolume (7)
-                DataGridColumns RemovedWasteVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.RemovedWasteVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns RemovedWasteVolumeR = ((Attributes.Form_PropertyAttribute)typeof(Form28).GetProperty(nameof(Form28.RemovedWasteVolume)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 RemovedWasteVolumeR.SetSizeColToAllLevels(258);
                 RemovedWasteVolumeR.Binding = nameof(Form28.RemovedWasteVolume);
                 NumberInOrderR += RemovedWasteVolumeR;

@@ -765,61 +765,61 @@ namespace Models
                 NumberInOrderR.ChooseLine = true;
                 #endregion
                 #region IndicatorName (2)
-                DataGridColumns IndicatorNameR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.IndicatorName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns IndicatorNameR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.IndicatorName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 IndicatorNameR.SetSizeColToAllLevels(163);
                 IndicatorNameR.Binding = nameof(Form210.IndicatorName);
                 NumberInOrderR += IndicatorNameR;
                 #endregion
                 #region PlotName (3)
-                DataGridColumns PlotNameR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.PlotName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns PlotNameR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.PlotName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 PlotNameR.SetSizeColToAllLevels(163);
                 PlotNameR.Binding = nameof(Form210.PlotName);
                 NumberInOrderR += PlotNameR;
                 #endregion
                 #region PlotKadastrNumber (4)
-                DataGridColumns PlotKadastrNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.PlotKadastrNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns PlotKadastrNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.PlotKadastrNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 PlotKadastrNumberR.SetSizeColToAllLevels(173);
                 PlotKadastrNumberR.Binding = nameof(Form210.PlotKadastrNumber);
                 NumberInOrderR += PlotKadastrNumberR;
                 #endregion
                 #region PlotCode (5)
-                DataGridColumns PlotCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.PlotCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns PlotCodeR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.PlotCode)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 PlotCodeR.SetSizeColToAllLevels(88);
                 PlotCodeR.Binding = nameof(Form210.PlotCode);
                 NumberInOrderR += PlotCodeR;
                 #endregion
                 #region InfectedArea (6)
-                DataGridColumns InfectedAreaR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.InfectedArea)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns InfectedAreaR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.InfectedArea)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 InfectedAreaR.SetSizeColToAllLevels(248);
                 InfectedAreaR.Binding = nameof(Form210.InfectedArea);
                 NumberInOrderR += InfectedAreaR;
                 #endregion
                 #region AvgGammaRaysDosePower (7)
-                DataGridColumns AvgGammaRaysDosePowerR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.AvgGammaRaysDosePower)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns AvgGammaRaysDosePowerR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.AvgGammaRaysDosePower)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 AvgGammaRaysDosePowerR.SetSizeColToAllLevels(113);
                 AvgGammaRaysDosePowerR.Binding = nameof(Form210.AvgGammaRaysDosePower);
                 NumberInOrderR += AvgGammaRaysDosePowerR;
                 #endregion
                 #region MaxGammaRaysDosePower (8)
-                DataGridColumns MaxGammaRaysDosePowerR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.MaxGammaRaysDosePower)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns MaxGammaRaysDosePowerR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.MaxGammaRaysDosePower)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 MaxGammaRaysDosePowerR.SetSizeColToAllLevels(143);
                 MaxGammaRaysDosePowerR.Binding = nameof(Form210.MaxGammaRaysDosePower);
                 NumberInOrderR += MaxGammaRaysDosePowerR;
                 #endregion
                 #region WasteDensityAlpha (9)
-                DataGridColumns WasteDensityAlphaR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.WasteDensityAlpha)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns WasteDensityAlphaR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.WasteDensityAlpha)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 WasteDensityAlphaR.SetSizeColToAllLevels(212);
                 WasteDensityAlphaR.Binding = nameof(Form210.WasteDensityAlpha);
                 NumberInOrderR += WasteDensityAlphaR;
                 #endregion
                 #region WasteDensityBeta (10)
-                DataGridColumns WasteDensityBetaR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.WasteDensityBeta)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns WasteDensityBetaR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.WasteDensityBeta)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 WasteDensityBetaR.SetSizeColToAllLevels(204);
                 WasteDensityBetaR.Binding = nameof(Form210.WasteDensityBeta);
                 NumberInOrderR += WasteDensityBetaR;
                 #endregion
                 #region FcpNumber (11)
-                DataGridColumns FcpNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.FcpNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns FcpNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form210).GetProperty(nameof(Form210.FcpNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 FcpNumberR.SetSizeColToAllLevels(163);
                 FcpNumberR.Binding = nameof(Form210.FcpNumber);
                 NumberInOrderR += FcpNumberR;
