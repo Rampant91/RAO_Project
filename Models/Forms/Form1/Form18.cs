@@ -1864,6 +1864,10 @@ namespace Models
                 value.AddError("Поле не заполнено");
                 return false;
             }
+            if (value.Value == "прим.")
+            {
+                return true;
+            }
             var tmp = value.Value;
             Regex b1 = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
             if (b1.IsMatch(tmp))
