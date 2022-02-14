@@ -2435,11 +2435,11 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-                if (b.IsMatch(tmp))
-                {
-                    tmp = tmp.Insert(6, "20");
-                }
+                //Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                //if (b.IsMatch(tmp))
+                //{
+                //    tmp = tmp.Insert(6, "20");
+                //}
                 StartPeriod_DB = tmp;
             }
         }
@@ -2452,17 +2452,17 @@ namespace Models.Collections
                 return false;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(tmp))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
+            //Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            //if (b.IsMatch(tmp))
+            //{
+            //    tmp = tmp.Insert(6, "20");
+            //}
+            //Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            //if (!a.IsMatch(tmp))
+            //{
+            //    value.AddError("Недопустимое значение");
+            //    return false;
+            //}
             try { DateTimeOffset.Parse(tmp); }
             catch (Exception)
             {
@@ -2505,11 +2505,11 @@ namespace Models.Collections
             if (args.PropertyName == "Value")
             {
                 var tmp = ((RamAccess<string>)Value).Value;
-                Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-                if (b.IsMatch(tmp))
-                {
-                    tmp = tmp.Insert(6, "20");
-                }
+                //Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+                //if (b.IsMatch(tmp))
+                //{
+                //    tmp = tmp.Insert(6, "20");
+                //}
                 EndPeriod_DB = tmp;
             }
         }
@@ -2522,17 +2522,17 @@ namespace Models.Collections
                 return false;
             }
             var tmp = value.Value;
-            Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-            if (b.IsMatch(tmp))
-            {
-                tmp = tmp.Insert(6, "20");
-            }
-            Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
-            if (!a.IsMatch(tmp))
-            {
-                value.AddError("Недопустимое значение");
-                return false;
-            }
+            //Regex b = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
+            //if (b.IsMatch(tmp))
+            //{
+            //    tmp = tmp.Insert(6, "20");
+            //}
+            //Regex a = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$");
+            //if (!a.IsMatch(tmp))
+            //{
+            //    value.AddError("Недопустимое значение");
+            //    return false;
+            //}
             try
             {
                 var end = DateTimeOffset.Parse(tmp);
