@@ -2345,7 +2345,7 @@ namespace Client_App.Long_Visual
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 5, 30, "Storage.ExecPhone", 95, "Телефон...", true));
             topPnl23.Children.Add(CreateTextBlock("5,13,0,0", 6, 30, "Электронная почта:"));
             topPnl23.Children.Add(CreateTextBox("5,12,0,0", 7, 30, "Storage.ExecEmail", 130, "Электронная почта...", true));
-
+            maingrid.Children.Add(topPnl23);
             return vw;
         }
         public static Control Form18_Visual(INameScope scp)
