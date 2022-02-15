@@ -538,7 +538,11 @@ namespace Client_App.ViewModels
                         var ty = (from Report t in reps.Report_Collection where t.FormNum_DB == param && t.Year_DB != null orderby t.Year_DB select t.Year_DB).LastOrDefault();
 
                         FormType = param;
-                        Storage.Year.Value = ty + 1;
+                        if (ty != null)
+                        {
+                            int ty_int = Convert.ToInt32(ty) + 1;
+                            Storage.Year.Value = Convert.ToString(ty_int);
+                        }
                     }
                     catch
                     {
