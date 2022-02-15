@@ -94,9 +94,10 @@ namespace Models.Collections
                     }
                     else
                     {
-                        if (Year_DB != null && Year_DB != 0)
+                        var year = Convert.ToInt32(Year_DB);
+                        if (Year_DB != null && year != 0)
                         {
-                            frm += (int)(1.0 / Year_DB * 10000000);
+                            frm += (int)(1.0 / year * 10000000);
                         }
                         return Convert.ToInt32(frm);
                     }
@@ -1036,6 +1037,18 @@ namespace Models.Collections
         private bool ExecEmail_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            Regex regex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            var tmp = value.Value;
+            if (!regex.IsMatch(tmp)) 
+            {
+                value.AddError("Недопустимое значение");
+                return false;  
+            }
             return true;
         }
         #endregion
@@ -2346,24 +2359,24 @@ namespace Models.Collections
         #endregion
 
         #region Year
-        public int? Year_DB { get; set; } = null;
+        public string Year_DB { get; set; } = null;
         [NotMapped]
         [Form_Property(true,"Отчетный год")]
-        public RamAccess<int?> Year
+        public RamAccess<string> Year
         {
             get
             {
                 if (Dictionary.ContainsKey(nameof(Year)))
                 {
-                    ((RamAccess<int?>)Dictionary[nameof(Year)]).Value = Year_DB;
-                    return (RamAccess<int?>)Dictionary[nameof(Year)];
+                    ((RamAccess<string>)Dictionary[nameof(Year)]).Value = Year_DB;
+                    return (RamAccess<string>)Dictionary[nameof(Year)];
                 }
                 else
                 {
-                    var rm = new RamAccess<int?>(Year_Validation, Year_DB);
+                    var rm = new RamAccess<string>(Year_Validation, Year_DB);
                     rm.PropertyChanged += YearValueChanged;
                     Dictionary.Add(nameof(Year), rm);
-                    return (RamAccess<int?>)Dictionary[nameof(Year)];
+                    return (RamAccess<string>)Dictionary[nameof(Year)];
                 }
             }
             set
@@ -2376,15 +2389,11 @@ namespace Models.Collections
         {
             if (args.PropertyName == "Value")
             {
-                var k = ((RamAccess<int?>)Value).Value;
-                if (k != null)
-                {
-                    if ((k >= 0) && (k < 100)) k += 2000;
-                    Year_DB = k;
-                }
+                var k = ((RamAccess<string>)Value).Value;
+                Year_DB = k;
             }
         }
-        private bool Year_Validation(RamAccess<int?> value)
+        private bool Year_Validation(RamAccess<string> value)
         {
             value.ClearErrors();
             if (value.Value == null)
@@ -2392,9 +2401,16 @@ namespace Models.Collections
                 value.AddError("Поле не заполнено");
                 return false;
             }
-            int k = (int)value.Value;
-            if ((k >= 0) && (k < 100)) k += 2000;
-            if ((k < 2010) || (k > 2060))
+            try 
+            {
+                var k = Convert.ToInt32(value.Value);
+                if ((k < 2010) || (k > 2060))
+                {
+                    value.AddError("Недопустимое значение");
+                    return false;
+                }
+            }
+            catch (Exception)
             {
                 value.AddError("Недопустимое значение");
                 return false;
