@@ -29,7 +29,7 @@ namespace Client_App.Long_Visual
             };
         }
 
-        public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string watermark = "", bool _flag = false)
+        public static Cell CreateTextBox(string thickness, int height, string textProp, double width, INameScope scp, string _flag = "")
         {
             Cell textCell = new Cell()
             {
@@ -44,11 +44,32 @@ namespace Client_App.Long_Visual
                 ElementName = "ChangingPanel",
                 NameScope = new WeakReference<INameScope>(scp)
             };
-            textCell.Control = new TextBox()
+            if (_flag == "")
             {
-                [!TextBox.DataContextProperty] = b,
-                [!TextBox.TextProperty] = new Binding("Value"),
-            };
+                textCell.Control = new TextBox()
+                {
+                    [!TextBox.DataContextProperty] = b,
+                    [!TextBox.TextProperty] = new Binding("Value")
+                };
+            }
+            if(_flag == "phone")
+            { 
+                textCell.Control = new MaskedTextBox()
+                {
+                    [!MaskedTextBox.DataContextProperty] = b,
+                    [!MaskedTextBox.TextProperty] = new Binding("Value"),
+                };
+                ((MaskedTextBox)textCell.Control).Mask = "+7 (000) 000-00-00";
+            }
+            if (_flag == "date")
+            {
+                textCell.Control = new MaskedTextBox()
+                {
+                    [!MaskedTextBox.DataContextProperty] = b,
+                    [!MaskedTextBox.TextProperty] = new Binding("Value"),
+                };
+                ((MaskedTextBox)textCell.Control).Mask = "99/99/9999";
+            }
             return textCell;
         }
 
@@ -317,7 +338,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -325,7 +346,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -391,7 +412,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -531,7 +552,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -539,7 +560,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -605,7 +626,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -745,7 +766,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -753,7 +774,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -819,7 +840,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -959,7 +980,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -967,7 +988,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1033,7 +1054,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -1173,7 +1194,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1181,7 +1202,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1247,7 +1268,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -1387,7 +1408,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1395,7 +1416,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1461,7 +1482,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -1602,7 +1623,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1610,7 +1631,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1676,7 +1697,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -1816,7 +1837,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1824,7 +1845,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -1890,7 +1911,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()
@@ -2031,7 +2052,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания предыдущего отчетного периода:"));
-            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.StartPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -2039,7 +2060,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Дата окончания настоящего отчетного периода:"));
-            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp));
+            content.Children.Add(CreateTextBox("17,0,0,0", 30, "DataContext.Storage.EndPeriod", 150, scp, "date"));
             leftStPT.Children.Add(content);
 
             content = new StackPanel()
@@ -2105,7 +2126,7 @@ namespace Client_App.Long_Visual
                 Orientation = Orientation.Horizontal
             };
             content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp));
+            content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, "phone"));
             rigthStP.Children.Add(content);
 
             content = new StackPanel()

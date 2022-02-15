@@ -70,10 +70,10 @@ namespace Client_App.Views
                         dbm.LoadTables();
                         dbm.SaveChanges();
 
-                        var lst=tmp.Storage[tmp.FormType];
+                        var lst = tmp.Storage[tmp.FormType];
 
                         //tmp.Storage.Rows11.GetEnumerator();
-                        foreach(Form item in lst)
+                        foreach (Form item in lst)
                         {
                             if (item.Id == 0)
                             {
@@ -105,7 +105,7 @@ namespace Client_App.Views
                         }
                         else
                         {
-                            if (tmp.FormType == "1.0"|| tmp.FormType == "2.0")
+                            if (tmp.FormType == "1.0" || tmp.FormType == "2.0")
                             {
                                 tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.RegNoRep));
                                 tmp.Storage.OnPropertyChanged(nameof(tmp.Storage.ShortJurLicoRep));
