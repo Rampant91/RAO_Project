@@ -556,43 +556,43 @@ namespace Models
                 NumberInOrderR.ChooseLine = true;
                 #endregion
                 #region ObservedSourceNumber (2)
-                DataGridColumns ObservedSourceNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.ObservedSourceNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns ObservedSourceNumberR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.ObservedSourceNumber)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 ObservedSourceNumberR.SetSizeColToAllLevels(204);
                 ObservedSourceNumberR.Binding = nameof(Form26.ObservedSourceNumber);
                 NumberInOrderR += ObservedSourceNumberR;
                 #endregion
                 #region ControlledAreaName (3)
-                DataGridColumns ControlledAreaNameR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.ControlledAreaName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns ControlledAreaNameR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.ControlledAreaName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 ControlledAreaNameR.SetSizeColToAllLevels(196);
                 ControlledAreaNameR.Binding = nameof(Form26.ControlledAreaName);
                 NumberInOrderR += ControlledAreaNameR;
                 #endregion
                 #region SupposedWasteSource (4)
-                DataGridColumns SupposedWasteSourceR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.SupposedWasteSource)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns SupposedWasteSourceR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.SupposedWasteSource)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 SupposedWasteSourceR.SetSizeColToAllLevels(438);
                 SupposedWasteSourceR.Binding = nameof(Form26.SupposedWasteSource);
                 NumberInOrderR += SupposedWasteSourceR;
                 #endregion
                 #region DistanceToWasteSource (5)
-                DataGridColumns DistanceToWasteSourceR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.DistanceToWasteSource)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns DistanceToWasteSourceR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.DistanceToWasteSource)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 DistanceToWasteSourceR.SetSizeColToAllLevels(637);
                 DistanceToWasteSourceR.Binding = nameof(Form26.DistanceToWasteSource);
                 NumberInOrderR += DistanceToWasteSourceR;
                 #endregion
                 #region TestDepth (6)
-                DataGridColumns TestDepthR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.TestDepth)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns TestDepthR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.TestDepth)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 TestDepthR.SetSizeColToAllLevels(180);
                 TestDepthR.Binding = nameof(Form26.TestDepth);
                 NumberInOrderR += TestDepthR;
                 #endregion
                 #region RadionuclidName (7)
-                DataGridColumns RadionuclidNameR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.RadionuclidName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns RadionuclidNameR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.RadionuclidName)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 RadionuclidNameR.SetSizeColToAllLevels(230);
                 RadionuclidNameR.Binding = nameof(Form26.RadionuclidName);
                 NumberInOrderR += RadionuclidNameR;
                 #endregion
                 #region AverageYearConcentration (8)
-                DataGridColumns AverageYearConcentrationR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.AverageYearConcentration)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD();
+                DataGridColumns AverageYearConcentrationR = ((Attributes.Form_PropertyAttribute)typeof(Form26).GetProperty(nameof(Form26.AverageYearConcentration)).GetCustomAttributes(typeof(Attributes.Form_PropertyAttribute), true).FirstOrDefault()).GetDataColumnStructureD(NumberInOrderR);
                 AverageYearConcentrationR.SetSizeColToAllLevels(333);
                 AverageYearConcentrationR.Binding = nameof(Form26.AverageYearConcentration);
                 NumberInOrderR += AverageYearConcentrationR;
