@@ -622,7 +622,8 @@ namespace Client_App.ViewModels
                             {
                                 var str = "Совпадение даты в " + elem.FormNum_DB + " " +
                                     elem.StartPeriod_DB + "-" +
-                                    elem.EndPeriod_DB + " \n" +
+                                    elem.EndPeriod_DB + " .\n" +
+                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
                                     first11.Master.RegNoRep.Value + " " +
                                     first11.Master.ShortJurLicoRep.Value + " " +
                                     first11.Master.OkpoRep.Value;
@@ -691,7 +692,14 @@ namespace Client_App.ViewModels
                     }
                     if (!not_in)
                     {
-                        var str = "Загрузить новую форму?";
+                        var str = "Загрузить новую форму?\n" +
+                            "Номер формы - " + it.FormNum_DB + "\n" +
+                            "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                            "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
+                            "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
+                            "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
+                            "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
+                            "ОКПО - " + first11.Master.OkpoRep.Value + "\n";
                         var an = await ShowMessage.Handle(new List<string>(){str,
                             "Да",
                             "Нет"
@@ -737,7 +745,8 @@ namespace Client_App.ViewModels
                             else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB)
                             {
                                 var str = "Совпадение даты в " + elem.FormNum_DB + " " +
-                                elem.Year_DB + " " +
+                                elem.Year_DB + " .\n" +
+                                "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
                                 first21.Master.RegNoRep.Value + " \n" +
                                 first21.Master.ShortJurLicoRep.Value + " " +
                                 first21.Master.OkpoRep.Value;
@@ -779,7 +788,13 @@ namespace Client_App.ViewModels
                     }
                     if (!not_in)
                     {
-                        var str = "Загрузить новую форму?";
+                        var str = "Загрузить новую форму? \n" +
+                            "Номер формы - " + it.FormNum_DB + "\n" +
+                            "Отчетный год - " + it.Year_DB + "\n" +
+                            "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                            "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
+                            "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
+                            "ОКПО - " + first21.Master.OkpoRep.Value + "\n";
                         var an = await ShowMessage.Handle(new List<string>(){str,
                             "Да",
                             "Нет"
