@@ -1566,8 +1566,7 @@ namespace Client_App.Controls.DataGrid
                 Margin=Thickness.Parse("0,5,0,0"),
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
-                CornerRadius = CornerRadius.Parse("2,2,2,2"),
-                MinHeight = 35
+                CornerRadius = CornerRadius.Parse("2,2,2,2")
             };
             MainStackPanel.Children.Add(CenterBorder);
 
@@ -1576,27 +1575,19 @@ namespace Client_App.Controls.DataGrid
                 HorizontalAlignment = HorizontalAlignment.Stretch
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-            CenterPanel.MaxHeight = 250;
 
-            Canvas TCanvas = new() {  };
-            Panel TPanel = new() { Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255)) , MaxHeight = 250 };
-            ScrollBar TScroll = new() { HorizontalAlignment = HorizontalAlignment.Right, ZIndex = 999, MaxHeight = 250 };
-            TPanel.Children.Add(TScroll);
-            TCanvas.Children.Add(TPanel);
+            ScrollViewer CenterScrollViewer = new ScrollViewer();
+            CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            CenterScrollViewer.Content = CenterPanel;
+            CenterScrollViewer.MaxHeight = 250;
 
-            //ScrollViewer CenterScrollViewer = new ScrollViewer();
-            //CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            //CenterScrollViewer.Content = CenterPanel;
-            //CenterScrollViewer.MaxHeight = 250;
-
-            CenterBorder.Child = CenterPanel;
+            CenterBorder.Child = CenterScrollViewer;
 
             CenterStackPanel = new();
             CenterStackPanel.Orientation = Orientation.Vertical;
             CenterStackPanel.Margin = Thickness.Parse("2,2,2,2");
 
-            TPanel.Children.Add(CenterStackPanel);
-            CenterPanel.Children.Add(TCanvas);
+            CenterPanel.Children.Add(CenterStackPanel);
             #endregion
 
             #region MiddleFooter
