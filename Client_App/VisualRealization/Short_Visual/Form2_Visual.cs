@@ -37,7 +37,7 @@ namespace Client_App.Short_Visual
             pnlb.Children.Add(grd3);
         }
 
-        //Форма 10
+        //Форма 20
         private static Control Form0_Visual(INameScope scp)
         {
             Controls.DataGrid.DataGridReports grd = new Controls.DataGrid.DataGridReports
@@ -65,14 +65,15 @@ namespace Client_App.Short_Visual
             return grd;
         }
 
-        //Форма 1X
+        //Форма 2X
         private static Control FormX_Visual(INameScope scp)
         {
             Controls.DataGrid.DataGridReport grd = new Controls.DataGrid.DataGridReport("Form2AllDataGrid_")
             {
                 Name = "Form2AllDataGrid_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom,
+                MinHeight = 0,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))
