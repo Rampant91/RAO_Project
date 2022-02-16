@@ -1465,7 +1465,7 @@ namespace Client_App.Controls.DataGrid
                             {
                                 [!TextBox.DataContextProperty] = new Binding(item.Binding),
                                 [!TextBox.TextProperty] = new Binding("Value"),
-                                [!TextBox.BackgroundProperty]=cell[!Cell.ChooseColorProperty]
+                                [!TextBox.BackgroundProperty]=cell[!Cell.ChooseColorProperty],
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Left;
                             textBox.VerticalAlignment = VerticalAlignment.Stretch;
@@ -1482,6 +1482,7 @@ namespace Client_App.Controls.DataGrid
                                 ((TextBox)textBox).VerticalContentAlignment = VerticalAlignment.Center;
                             }
                         }
+                        textBox.Width = item.SizeCol - 6;
                         cell.Control = textBox;
 
                         RowStackPanel.Children.Add(cell);
@@ -1561,6 +1562,8 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Center
+
+            #region Рамка
             Border CenterBorder = new()
             {
                 Margin=Thickness.Parse("0,5,0,0"),
@@ -1569,25 +1572,31 @@ namespace Client_App.Controls.DataGrid
                 CornerRadius = CornerRadius.Parse("2,2,2,2")
             };
             MainStackPanel.Children.Add(CenterBorder);
+            #endregion
 
+            #region Панель с данными
             Panel CenterPanel = new()
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                ZIndex = 0
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-
-            ScrollViewer CenterScrollViewer = new ScrollViewer();
-            CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            CenterScrollViewer.Content = CenterPanel;
-            CenterScrollViewer.MaxHeight = 250;
-
-            CenterBorder.Child = CenterScrollViewer;
-
             CenterStackPanel = new();
             CenterStackPanel.Orientation = Orientation.Vertical;
             CenterStackPanel.Margin = Thickness.Parse("2,2,2,2");
-
             CenterPanel.Children.Add(CenterStackPanel);
+            #endregion
+
+
+            Canvas TCanvas = new() 
+            { 
+                Margin = Thickness.Parse("1,1,1,1"),
+                MaxHeight = 250
+            };
+            TCanvas.Children.Add(CenterPanel);
+            Panel TPanel = new() { };
+            TPanel.Children.Add(TCanvas);
+            CenterBorder.Child = TPanel;
             #endregion
 
             #region MiddleFooter
