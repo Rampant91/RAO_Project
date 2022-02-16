@@ -606,16 +606,16 @@ namespace Client_App.ViewModels
                             not_in = true;
                             if (it.CorrectionNumber_DB < elem.CorrectionNumber_DB)
                             {
-                                var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
+                                var str = " Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
                                     it.CorrectionNumber_DB + ",\n" +
                                     "при текущем значении корректировки - " +
-                                    elem.CorrectionNumber_DB + ",\n" +
-                                    "в форме " + elem.FormNum_DB + ", " +
-                                    "с датой " + elem.StartPeriod_DB + "-" +
-                                    elem.EndPeriod_DB + " \n" +
-                                    first11.Master.RegNoRep.Value + " " +
-                                    first11.Master.ShortJurLicoRep.Value + " " +
-                                    first11.Master.OkpoRep.Value;
+                                    elem.CorrectionNumber_DB + ".\n" +
+                                    "Номер формы - " + it.FormNum_DB + "\n" +
+                                    "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
+                                    "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
+                                    "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
+                                    "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
+                                    "ОКПО - " + first11.Master.OkpoRep.Value;
                                 var an = await ShowMessage.Handle(new List<string>(){str,"OK"});
                             }
                             else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB)
@@ -654,11 +654,16 @@ namespace Client_App.ViewModels
                             }
                             else
                             {
-                                var str = "Форма " +
-                                    elem.FormNum_DB +
-                                    " с предыдущим номером корректировки №" +
-                                    elem.CorrectionNumber_DB +
-                                    " будет безвозвратно удалена.\n" +
+                                var str = "Загрузить новую форму? \n" +
+                                    "Номер формы - " + it.FormNum_DB + "\n" +
+                                    "Начало отчетного периода - " + it.StartPeriod_DB + "\n" +
+                                    "Конец отчетного периода - " + it.EndPeriod_DB + "\n" +
+                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                    "Регистрационный номер - " + first11.Master.RegNoRep.Value + "\n" +
+                                    "Сокращенное наименование - " + first11.Master.ShortJurLicoRep.Value + "\n" +
+                                    "ОКПО - " + first11.Master.OkpoRep.Value + "\n" +
+                                    "Форма с предыдущим номером корректировки №" +
+                                    elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                     "Сделайте резервную копию.";
                                 var an = await ShowMessage.Handle(new List<string>() {str,
                                     "Загрузить новую",
@@ -731,15 +736,15 @@ namespace Client_App.ViewModels
                             not_in = true;
                             if (it.CorrectionNumber_DB < elem.CorrectionNumber_DB)
                             {
-                                var str = "Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
+                                var str = " Вы пытаетесь загрузить форму с наименьщим номером корректировки - " +
                                     it.CorrectionNumber_DB + ",\n" +
                                     "при текущем значении корректировки - " +
-                                    elem.CorrectionNumber_DB + ",\n" +
-                                    "в форме " + elem.FormNum_DB + ", " +
-                                    "с датой " + elem.Year_DB + " \n" +
-                                    first21.Master.RegNoRep.Value + " " +
-                                    first21.Master.ShortJurLicoRep.Value + " " +
-                                    first21.Master.OkpoRep.Value;
+                                    elem.CorrectionNumber_DB + ".\n" +
+                                    "Номер формы - " + it.FormNum_DB + "\n" +
+                                    "Отчетный год - " + it.Year_DB + "\n" +
+                                    "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
+                                    "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
+                                    "ОКПО - " + first21.Master.OkpoRep.Value;
                                 var an = await ShowMessage.Handle(new List<string>(){str,"OK"});
                             }
                             else if (it.CorrectionNumber_DB == elem.CorrectionNumber_DB)
@@ -767,11 +772,15 @@ namespace Client_App.ViewModels
                             }
                             else
                             {
-                                var str = "Форма " +
-                                    elem.FormNum_DB +
-                                    " с предыдущим номером корректировки №" +
-                                    elem.CorrectionNumber_DB +
-                                    " будет безвозвратно удалена.\n" +
+                                var str = "Загрузить новую форму? \n" +
+                                    "Номер формы - " + it.FormNum_DB + "\n" +
+                                    "Отчетный год - " + it.Year_DB + "\n" +
+                                    "Номер корректировки -" + it.CorrectionNumber_DB + "\n" +
+                                    "Регистрационный номер - " + first21.Master.RegNoRep.Value + "\n" +
+                                    "Сокращенное наименование - " + first21.Master.ShortJurLicoRep.Value + "\n" +
+                                    "ОКПО - " + first21.Master.OkpoRep.Value + "\n" +
+                                    "Форма с предыдущим номером корректировки №" +
+                                    elem.CorrectionNumber_DB + " будет безвозвратно удалена.\n" +
                                     "Сделайте резервную копию.";
                                 var an = await ShowMessage.Handle(new List<string>() {
                                                                         str,
