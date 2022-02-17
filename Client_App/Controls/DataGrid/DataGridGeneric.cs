@@ -1566,12 +1566,10 @@ namespace Client_App.Controls.DataGrid
             #region Рамка
             Border CenterBorder = new()
             {
-                Margin=Thickness.Parse("0,5,0,0"),
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
                 CornerRadius = CornerRadius.Parse("2,2,2,2")
             };
-            MainStackPanel.Children.Add(CenterBorder);
             #endregion
 
             #region Панель с данными
@@ -1588,15 +1586,48 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
 
-            Canvas TCanvas = new() 
-            { 
-                Margin = Thickness.Parse("1,1,1,1"),
-                MaxHeight = 250
-            };
-            TCanvas.Children.Add(CenterPanel);
-            Panel TPanel = new() { };
-            TPanel.Children.Add(TCanvas);
-            CenterBorder.Child = TPanel;
+            if (Sum)
+            {
+
+                CenterBorder.Child = CenterPanel;
+                CenterBorder.ZIndex = 999;
+
+                Canvas TCanvas = new()
+                {
+                };
+                TCanvas.Children.Add(CenterBorder);
+
+                Panel NPanel = new() { ZIndex = 999 };
+                ScrollBar TScroll = new() { HorizontalAlignment = HorizontalAlignment.Right, Height = 220, Minimum = 0, Maximum = 100 };
+                NPanel.Children.Add(TScroll);
+                TCanvas.Children.Add(NPanel);
+
+                Panel TPanel = new() { Height = 220 };
+                TPanel.Children.Add(TCanvas);
+                TScroll.Visibility = ScrollBarVisibility.Visible;
+                Binding b = new Binding()
+                {
+                    Source = TScroll,
+                    Path = "TScroll.Value",
+                    Converter = new VectorToMarginBot_Converter()
+                };
+                NPanel[!Panel.MarginProperty] = b;
+                NPanel.Width = 870;
+                MainStackPanel.Children.Add(TPanel);
+
+            }
+            else 
+            {
+                ScrollViewer CenterScrollViewer = new ScrollViewer();
+                CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                CenterScrollViewer.Content = CenterPanel;
+                CenterScrollViewer.MaxHeight = 250;
+
+                CenterBorder.Child = CenterScrollViewer;
+
+                MainStackPanel.Children.Add(CenterBorder);
+            }
+
             #endregion
 
             #region MiddleFooter
