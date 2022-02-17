@@ -1478,8 +1478,7 @@ namespace Client_App.Controls.DataGrid
                             }
                             else
                             {
-                                ((TextBox)textBox).HorizontalContentAlignment = HorizontalAlignment.Center;
-                                ((TextBox)textBox).VerticalContentAlignment = VerticalAlignment.Center;
+
                             }
                         }
                         textBox.Width = item.SizeCol - 6;
@@ -1530,6 +1529,7 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Header
+
             Border HeaderBorder = new()
             {
                 BorderThickness = Thickness.Parse("1"),
@@ -1543,7 +1543,14 @@ namespace Client_App.Controls.DataGrid
             HeaderBorder.Child = HeaderPanel;
 
             HeaderStackPanel = new();
-            HeaderStackPanel.Margin = Thickness.Parse("2,2,20,2");
+            if (!Sum)
+            {
+                HeaderStackPanel.Margin = Thickness.Parse("2,2,20,2");
+            }
+            else
+            {
+                HeaderStackPanel.Margin = Thickness.Parse("20,2,20,2");
+            }
             HeaderStackPanel.Orientation = Orientation.Vertical;
 
             
@@ -1563,60 +1570,22 @@ namespace Client_App.Controls.DataGrid
 
             #region Center
 
-            #region Рамка
             Border CenterBorder = new()
             {
+                Margin = Thickness.Parse("0,5,0,0"),
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
                 CornerRadius = CornerRadius.Parse("2,2,2,2")
             };
-            #endregion
+            MainStackPanel.Children.Add(CenterBorder);
 
-            #region Панель с данными
             Panel CenterPanel = new()
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                ZIndex = 0
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-            CenterStackPanel = new();
-            CenterStackPanel.Orientation = Orientation.Vertical;
-            CenterStackPanel.Margin = Thickness.Parse("2,2,2,2");
-            CenterPanel.Children.Add(CenterStackPanel);
-            #endregion
 
-
-            if (Sum)
-            {
-
-                CenterBorder.Child = CenterPanel;
-                CenterBorder.ZIndex = 999;
-
-                Canvas TCanvas = new()
-                {
-                };
-                TCanvas.Children.Add(CenterBorder);
-
-                Panel NPanel = new() { ZIndex = 999 };
-                ScrollBar TScroll = new() { HorizontalAlignment = HorizontalAlignment.Right, Height = 220, Minimum = 0, Maximum = 100 };
-                NPanel.Children.Add(TScroll);
-                TCanvas.Children.Add(NPanel);
-
-                Panel TPanel = new() { Height = 220 };
-                TPanel.Children.Add(TCanvas);
-                TScroll.Visibility = ScrollBarVisibility.Visible;
-                Binding b = new Binding()
-                {
-                    Source = TScroll,
-                    Path = "TScroll.Value",
-                    Converter = new VectorToMarginBot_Converter()
-                };
-                NPanel[!Panel.MarginProperty] = b;
-                NPanel.Width = 870;
-                MainStackPanel.Children.Add(TPanel);
-
-            }
-            else 
+            if (!Sum)
             {
                 ScrollViewer CenterScrollViewer = new ScrollViewer();
                 CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
@@ -1624,9 +1593,49 @@ namespace Client_App.Controls.DataGrid
                 CenterScrollViewer.MaxHeight = 250;
 
                 CenterBorder.Child = CenterScrollViewer;
-
-                MainStackPanel.Children.Add(CenterBorder);
             }
+            else
+            {
+                Panel pnl = new Panel();
+                pnl.Height = 300;
+                Canvas CenterScrollViewer = new Canvas();
+                //CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+
+                ScrollBar bar = new ScrollBar() {ZIndex=999,Height=296,HorizontalAlignment=HorizontalAlignment.Right};
+                bar[!ScrollBar.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
+                CenterScrollViewer.Children.Add(bar);
+
+                Binding b = new Binding() {
+                    Source = bar,
+                    Path = nameof(bar.Value),
+                    Mode = BindingMode.TwoWay
+                };
+
+                ScrollViewer CenterScrollViewer2 = new ScrollViewer();
+                CenterScrollViewer2.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                CenterScrollViewer2.Content = CenterPanel;
+                CenterScrollViewer2.Height = 300;
+                bar[!ScrollBar.MaximumProperty]= CenterScrollViewer2[!ScrollViewer.VerticalScrollBarMaximumProperty];
+
+                CenterScrollViewer2[!ScrollViewer.VerticalScrollBarValueProperty] = b;
+                CenterScrollViewer.Children.Add(CenterScrollViewer2);
+
+                pnl.Children.Add(CenterScrollViewer);
+                CenterBorder.Child = pnl;
+            }
+
+            CenterStackPanel = new();
+            CenterStackPanel.Orientation = Orientation.Vertical;
+            if (!Sum)
+            {
+                CenterStackPanel.Margin = Thickness.Parse("2,2,2,2");
+            }
+            else
+            {
+                CenterStackPanel.Margin = Thickness.Parse("20,2,20,2");
+            }
+
+            CenterPanel.Children.Add(CenterStackPanel);
 
             #endregion
 
