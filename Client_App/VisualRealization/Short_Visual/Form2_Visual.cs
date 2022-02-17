@@ -72,8 +72,7 @@ namespace Client_App.Short_Visual
             {
                 Name = "Form2AllDataGrid_",
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom,
-                MinHeight = 0,
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
                 MultilineMode = Controls.DataGrid.MultilineMode.Single,
                 ChooseMode = Controls.DataGrid.ChooseMode.Line,
                 ChooseColor = new SolidColorBrush(new Color(150, 135, 209, 255))

@@ -1572,14 +1572,15 @@ namespace Client_App.Controls.DataGrid
 
             Panel CenterPanel = new()
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Height=286
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
             ScrollViewer CenterScrollViewer = new ScrollViewer();
             CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
             CenterScrollViewer.Content = CenterPanel;
-            CenterScrollViewer.MaxHeight = 250;
+            CenterScrollViewer.MaxHeight = 350;
 
             CenterBorder.Child = CenterScrollViewer;
 
