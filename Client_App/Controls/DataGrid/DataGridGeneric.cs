@@ -1422,7 +1422,7 @@ namespace Client_App.Controls.DataGrid
                             Source= HeadersColumns[Column],
                             Path=nameof(ColumnDefinition.Width)
                         };
-                        var Columnq = new ColumnDefinition() { [!ColumnDefinition.WidthProperty]=b};
+                        var Columnq = new ColumnDefinition() { [!ColumnDefinition.WidthProperty]=b };
                         RowStackPanel.ColumnDefinitions.Add(Columnq);
 
                         Control textBox = null;
@@ -1476,12 +1476,9 @@ namespace Client_App.Controls.DataGrid
                                 ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
                                 ((TextBox)textBox).AcceptsReturn = true;
                             }
-                            else
-                            {
-
-                            }
                         }
                         textBox.Width = item.SizeCol - 6;
+
                         cell.Control = textBox;
 
                         RowStackPanel.Children.Add(cell);
@@ -1598,12 +1595,11 @@ namespace Client_App.Controls.DataGrid
             {
                 Panel pnl = new Panel();
                 pnl.Height = 300;
-                Canvas CenterScrollViewer = new Canvas();
-                //CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                Canvas CenterCanvas = new Canvas();
 
                 ScrollBar bar = new ScrollBar() {ZIndex=999,Height=296,HorizontalAlignment=HorizontalAlignment.Right};
                 bar[!ScrollBar.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
-                CenterScrollViewer.Children.Add(bar);
+                CenterCanvas.Children.Add(bar);
 
                 Binding b = new Binding() {
                     Source = bar,
@@ -1611,17 +1607,26 @@ namespace Client_App.Controls.DataGrid
                     Mode = BindingMode.TwoWay
                 };
 
-                ScrollViewer CenterScrollViewer2 = new ScrollViewer();
-                CenterScrollViewer2.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-                CenterScrollViewer2.Content = CenterPanel;
-                CenterScrollViewer2.Height = 300;
-                bar[!ScrollBar.MaximumProperty]= CenterScrollViewer2[!ScrollViewer.VerticalScrollBarMaximumProperty];
+                ScrollViewer CenterScrollViewer = new ScrollViewer();
+                CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                CenterScrollViewer.Content = CenterPanel;
+                CenterScrollViewer.Height = 300;
+                bar[!ScrollBar.MaximumProperty] = CenterScrollViewer[!ScrollViewer.VerticalScrollBarMaximumProperty];
 
-                CenterScrollViewer2[!ScrollViewer.VerticalScrollBarValueProperty] = b;
-                CenterScrollViewer.Children.Add(CenterScrollViewer2);
+                CenterScrollViewer[!ScrollViewer.VerticalScrollBarValueProperty] = b;
+                CenterCanvas.Children.Add(CenterScrollViewer);
 
-                pnl.Children.Add(CenterScrollViewer);
+                pnl.Children.Add(CenterCanvas);
                 CenterBorder.Child = pnl;
+
+                double w = 0;
+                int i = 0;
+                foreach (DataGridRow cl in CenterStackPanel.Children) 
+                {
+                    w += cl.ColumnDefinitions[i].Width.Value;
+                    i++;
+                }
+                CenterPanel.Width = w;
             }
 
             CenterStackPanel = new();
