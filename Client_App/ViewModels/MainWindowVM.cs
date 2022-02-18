@@ -1347,6 +1347,18 @@ namespace Client_App.ViewModels
         private async Task _All_Excel_Export(object par)
         {
             var param = par as string;
+            var find_rep = 0;
+            foreach (Reports reps in Local_Reports.Reports_Collection) 
+            {
+                foreach (Report rep in reps.Report_Collection)
+                {
+                    if (rep.FormNum_DB == param)
+                    {
+                        find_rep += 1;
+                    }
+                }
+            }
+            if (find_rep == 0) return;
             try
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
