@@ -1477,7 +1477,6 @@ namespace Client_App.Controls.DataGrid
                                 ((TextBox)textBox).AcceptsReturn = true;
                             }
                         }
-                        textBox.Width = item.SizeCol - 6;
 
                         cell.Control = textBox;
 
@@ -1621,11 +1620,12 @@ namespace Client_App.Controls.DataGrid
 
                 double w = 0;
                 int i = 0;
-                foreach (DataGridRow cl in CenterStackPanel.Children) 
+                var RDef = ((DataGridRow)CenterStackPanel.Children.FirstOrDefault()).ColumnDefinitions;
+                foreach (var r in RDef)
                 {
-                    w += cl.ColumnDefinitions[i].Width.Value;
-                    i++;
+                    w += r.Width.Value-1;
                 }
+
                 CenterPanel.Width = w;
             }
 
