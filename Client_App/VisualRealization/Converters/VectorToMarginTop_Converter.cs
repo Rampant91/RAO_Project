@@ -8,6 +8,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Globalization;
 using Models.DataAccess;
+using System;
 
 namespace Client_App.Converters
 {
@@ -17,16 +18,32 @@ namespace Client_App.Converters
         {
             if (Value != null)
             {
-                Vector rps = (Vector)Value;
-                try
+                if (Value is Vector)
                 {
-                    
-                    var lg = Thickness.Parse(("0,"+(int)rps.Y)+",0,0");
-                    return lg;
-                }
-                catch
-                {
+                    Vector rps = (Vector)Value;
+                    try
+                    {
+                        var ty = (int)rps.Y;
+                        var lg = Thickness.Parse(("0," + ty) + ",0,0");
+                        return lg;
+                    }
+                    catch
+                    {
 
+                    }
+                }
+                if (Value is double)
+                {
+                    try
+                    {
+                        int ty = System.Convert.ToInt32(Value);
+                        var lg = Thickness.Parse(("0," + ty) + ",0,0");
+                        return lg;
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
             return null;

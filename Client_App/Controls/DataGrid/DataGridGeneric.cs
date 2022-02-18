@@ -1422,7 +1422,7 @@ namespace Client_App.Controls.DataGrid
                             Source= HeadersColumns[Column],
                             Path=nameof(ColumnDefinition.Width)
                         };
-                        var Columnq = new ColumnDefinition() { [!ColumnDefinition.WidthProperty]=b};
+                        var Columnq = new ColumnDefinition() { [!ColumnDefinition.WidthProperty]=b };
                         RowStackPanel.ColumnDefinitions.Add(Columnq);
 
                         Control textBox = null;
@@ -1465,7 +1465,7 @@ namespace Client_App.Controls.DataGrid
                             {
                                 [!TextBox.DataContextProperty] = new Binding(item.Binding),
                                 [!TextBox.TextProperty] = new Binding("Value"),
-                                [!TextBox.BackgroundProperty]=cell[!Cell.ChooseColorProperty]
+                                [!TextBox.BackgroundProperty]=cell[!Cell.ChooseColorProperty],
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Left;
                             textBox.VerticalAlignment = VerticalAlignment.Stretch;
@@ -1476,12 +1476,8 @@ namespace Client_App.Controls.DataGrid
                                 ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
                                 ((TextBox)textBox).AcceptsReturn = true;
                             }
-                            else
-                            {
-                                ((TextBox)textBox).HorizontalContentAlignment = HorizontalAlignment.Center;
-                                ((TextBox)textBox).VerticalContentAlignment = VerticalAlignment.Center;
-                            }
                         }
+
                         cell.Control = textBox;
 
                         RowStackPanel.Children.Add(cell);
@@ -1529,6 +1525,7 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Header
+
             Border HeaderBorder = new()
             {
                 BorderThickness = Thickness.Parse("1"),
@@ -1542,7 +1539,14 @@ namespace Client_App.Controls.DataGrid
             HeaderBorder.Child = HeaderPanel;
 
             HeaderStackPanel = new();
-            HeaderStackPanel.Margin = Thickness.Parse("2,2,20,2");
+            if (!Sum)
+            {
+                HeaderStackPanel.Margin = Thickness.Parse("2,2,20,2");
+            }
+            else
+            {
+                HeaderStackPanel.Margin = Thickness.Parse("20,2,20,2");
+            }
             HeaderStackPanel.Orientation = Orientation.Vertical;
 
             
@@ -1561,9 +1565,10 @@ namespace Client_App.Controls.DataGrid
             #endregion
 
             #region Center
+
             Border CenterBorder = new()
             {
-                Margin=Thickness.Parse("0,5,0,0"),
+                Margin = Thickness.Parse("0,5,0,0"),
                 BorderThickness = Thickness.Parse("1"),
                 BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
                 CornerRadius = CornerRadius.Parse("2,2,2,2")
@@ -1576,18 +1581,67 @@ namespace Client_App.Controls.DataGrid
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
-            ScrollViewer CenterScrollViewer = new ScrollViewer();
-            CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            CenterScrollViewer.Content = CenterPanel;
-            CenterScrollViewer.MaxHeight = 250;
+            if (!Sum)
+            {
+                ScrollViewer CenterScrollViewer = new ScrollViewer();
+                CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                CenterScrollViewer.Content = CenterPanel;
+                CenterScrollViewer.MaxHeight = 250;
 
-            CenterBorder.Child = CenterScrollViewer;
+                CenterBorder.Child = CenterScrollViewer;
+            }
+            else
+            {
+                Panel pnl = new Panel();
+                pnl.Height = 300;
+                Canvas CenterCanvas = new Canvas();
+
+                ScrollBar bar = new ScrollBar() {ZIndex=999,Height=296,HorizontalAlignment=HorizontalAlignment.Right};
+                bar[!ScrollBar.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
+                CenterCanvas.Children.Add(bar);
+
+                Binding b = new Binding() {
+                    Source = bar,
+                    Path = nameof(bar.Value),
+                    Mode = BindingMode.TwoWay
+                };
+
+                ScrollViewer CenterScrollViewer = new ScrollViewer();
+                CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                CenterScrollViewer.Content = CenterPanel;
+                CenterScrollViewer.Height = 300;
+                bar[!ScrollBar.MaximumProperty] = CenterScrollViewer[!ScrollViewer.VerticalScrollBarMaximumProperty];
+
+                CenterScrollViewer[!ScrollViewer.VerticalScrollBarValueProperty] = b;
+                CenterCanvas.Children.Add(CenterScrollViewer);
+
+                pnl.Children.Add(CenterCanvas);
+                CenterBorder.Child = pnl;
+
+                double w = 0;
+                int i = 0;
+                var RDef = ((DataGridRow)CenterStackPanel.Children.FirstOrDefault()).ColumnDefinitions;
+                foreach (var r in RDef)
+                {
+                    w += r.Width.Value-1;
+                }
+
+                CenterPanel.Width = w;
+            }
 
             CenterStackPanel = new();
             CenterStackPanel.Orientation = Orientation.Vertical;
-            CenterStackPanel.Margin = Thickness.Parse("2,2,2,2");
+            if (!Sum)
+            {
+                CenterStackPanel.Margin = Thickness.Parse("2,2,2,2");
+            }
+            else
+            {
+                CenterStackPanel.Margin = Thickness.Parse("20,2,20,2");
+            }
 
             CenterPanel.Children.Add(CenterStackPanel);
+
             #endregion
 
             #region MiddleFooter
