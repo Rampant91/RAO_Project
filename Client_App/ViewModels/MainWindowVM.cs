@@ -291,14 +291,11 @@ namespace Client_App.ViewModels
             var param = par as string;
             if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                if (param.Split('.')[1] == "0")
-                {
-                    var t = desktop.MainWindow as MainWindow;
-                    var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
-                    ChangeOrCreateVM frm = new(param, Local_Reports);
-                    await ShowDialog.Handle(frm);
-                    t.SelectedReports = tmp;
-                }
+                var t = desktop.MainWindow as MainWindow;
+                var tmp = new ObservableCollectionWithItemPropertyChanged<IKey>(t.SelectedReports);
+                ChangeOrCreateVM frm = new(param, Local_Reports);
+                await ShowDialog.Handle(frm);
+                t.SelectedReports = tmp;
                 await Local_Reports.Reports_Collection.QuickSortAsync();
             }
         }

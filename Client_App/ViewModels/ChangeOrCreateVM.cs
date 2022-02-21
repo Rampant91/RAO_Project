@@ -651,6 +651,7 @@ namespace Client_App.ViewModels
             Storage.Sort();
         }
 
+        #region IsCanSaveReportEnabled
         private bool _isCanSaveReportEnabled = false;
 
         private bool IsCanSaveReportEnabled
@@ -670,6 +671,8 @@ namespace Client_App.ViewModels
         }
 
         [DependsOn(nameof(IsCanSaveReportEnabled))]
+        #endregion
+
         private bool CanSaveReport(object parameter)
         {
             return _isCanSaveReportEnabled;
@@ -727,14 +730,14 @@ namespace Client_App.ViewModels
             }
         }
 
-        public void _AddRow10()
-        {
-            Form10? frm = new Form10(); Storage.Rows10.Add(frm); Storage.LastAddedForm = Report.Forms.Form10;
-        }
-        public void _AddRow20()
-        {
-            Form20? frm = new Form20(); Storage.Rows20.Add(frm); Storage.LastAddedForm = Report.Forms.Form20;
-        }
+        //public void _AddRow10()
+        //{
+        //    Form10? frm = new Form10(); Storage.Rows10.Add(frm); Storage.LastAddedForm = Report.Forms.Form10;
+        //}
+        //public void _AddRow20()
+        //{
+        //    Form20? frm = new Form20(); Storage.Rows20.Add(frm); Storage.LastAddedForm = Report.Forms.Form20;
+        //}
 
         int GetNumberInOrder(IKeyCollection lst)
         {
@@ -751,7 +754,8 @@ namespace Client_App.ViewModels
 
             return maxNum + 1;
         }
-      
+
+        #region ParseInnerText
         private string[] ParseInnerTextRows(string Text)
         {
             List<string> lst = new List<string>();
@@ -834,5 +838,6 @@ namespace Client_App.ViewModels
 
             return lst.ToArray();
         }
+        #endregion
     }
 }

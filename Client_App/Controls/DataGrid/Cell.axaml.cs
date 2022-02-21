@@ -105,6 +105,7 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region Control
         IControl _Control = null;
         public IControl Control 
         {
@@ -123,6 +124,7 @@ namespace Client_App.Controls.DataGrid
                 }
             } 
         }
+        #endregion
 
         private void InitializeComponent()
         {

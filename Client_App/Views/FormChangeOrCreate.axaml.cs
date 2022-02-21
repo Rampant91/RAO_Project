@@ -132,6 +132,7 @@ namespace Client_App.Views
             }
         }
 
+        #region Init
         private void Form1Init(in Panel panel)
         {
             var dataContext = (ViewModels.ChangeOrCreateVM)this.DataContext;
@@ -2979,7 +2980,9 @@ namespace Client_App.Views
             Form1Init(panel);
             Form2Init(panel);
         }
+        #endregion
 
+        #region DoShowDialog
         private async Task DoShowDialogAsync(InteractionContext<int, int> interaction)
         {
             RowNumberIn frm = new RowNumberIn(interaction.Input);
@@ -3017,6 +3020,7 @@ namespace Client_App.Views
 
             interaction.SetOutput(answ);
         }
+        #endregion
 
         private void InitializeComponent()
         {

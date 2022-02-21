@@ -226,16 +226,9 @@ namespace Client_App.Controls.DataGrid
             IKeyCollection collection = answ[0] as IKeyCollection;
             int minColumn = Convert.ToInt32(answ[1]) + 1;
             int maxColumn = Convert.ToInt32(answ[2]) + 1;
-            string s = "0";
-            Double _s = 0;
+            Double _s = 0.0;
             if (minColumn == maxColumn)
             {
-                if ((answ[0] is Form1) || (answ[0] is Form2))
-                {
-                    if (minColumn == 1) minColumn++;
-                }
-                if (answ[0] is Note)
-                { }
                 foreach (IKey item in collection.GetEnumerable().OrderBy(x => x.Order))
                 {
                     var props = item.GetType().GetProperties();
@@ -251,20 +244,20 @@ namespace Client_App.Controls.DataGrid
                                 {
                                     var midvalue = prop.GetMethod.Invoke(item, null);
                                     var _value = midvalue.GetType().GetProperty("Value").GetMethod.Invoke(midvalue, null);
-                                    if (_value != null && _value != "")
+                                    if (_value != null && _value != " ")
                                     {
                                         try
                                         {
                                             _s += Convert.ToDouble(_value);
-                                            var s2 = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
-                                            s2.Children[0].IsVisible = true;
-                                            s2.Children[1].IsVisible = true;
+                                            var stackPanel = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
+                                            stackPanel.Children[0].IsVisible = true;
+                                            stackPanel.Children[1].IsVisible = true;
                                         }
                                         catch 
                                         {
-                                            var s1 = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
-                                            s1.Children[0].IsVisible = false;
-                                            s1.Children[1].IsVisible = false;
+                                            var stackPanel = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
+                                            stackPanel.Children[0].IsVisible = false;
+                                            stackPanel.Children[1].IsVisible = false;
                                             return null;
                                         }
                                     }
@@ -280,13 +273,12 @@ namespace Client_App.Controls.DataGrid
             }
             else
             {
-                var s3 = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
-                s3.Children[0].IsVisible = false;
-                s3.Children[1].IsVisible = false;
+                var stackPanel = (StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[2]).Child).Children[0];
+                stackPanel.Children[0].IsVisible = false;
+                stackPanel.Children[1].IsVisible = false;
                 return null;
             }
-            s = _s.ToString();
-            return s;
+            return _s.ToString();
         }
         #endregion
 
