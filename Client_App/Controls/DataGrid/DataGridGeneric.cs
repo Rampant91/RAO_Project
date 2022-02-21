@@ -1577,16 +1577,16 @@ namespace Client_App.Controls.DataGrid
 
             Panel CenterPanel = new()
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Height=286
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
-
             if (!Sum)
             {
                 ScrollViewer CenterScrollViewer = new ScrollViewer();
                 CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                 CenterScrollViewer.Content = CenterPanel;
-                CenterScrollViewer.MaxHeight = 250;
+                CenterScrollViewer.MaxHeight = 286;
 
                 CenterBorder.Child = CenterScrollViewer;
             }
@@ -1609,7 +1609,7 @@ namespace Client_App.Controls.DataGrid
                 ScrollViewer CenterScrollViewer = new ScrollViewer();
                 CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                 CenterScrollViewer.Content = CenterPanel;
-                CenterScrollViewer.Height = 300;
+                CenterScrollViewer.Height = 350;
                 bar[!ScrollBar.MaximumProperty] = CenterScrollViewer[!ScrollViewer.VerticalScrollBarMaximumProperty];
 
                 CenterScrollViewer[!ScrollViewer.VerticalScrollBarValueProperty] = b;
@@ -1625,7 +1625,6 @@ namespace Client_App.Controls.DataGrid
                 {
                     w += r.Width.Value-1;
                 }
-
                 CenterPanel.Width = w;
             }
 
