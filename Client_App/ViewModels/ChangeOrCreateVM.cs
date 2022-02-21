@@ -42,7 +42,8 @@ namespace Client_App.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
+        #region FormType
         private string _FormType;
         public string FormType
         {
@@ -56,7 +57,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
+        #region Storage
         private Report _Storage;
         public Report Storage
         {
@@ -70,7 +73,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
+        #region Storages
         private Reports _Storages;
         public Reports Storages
         {
@@ -84,6 +89,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
+
+        #region DBO
         private DBObservable _DBO;
         public DBObservable DBO
         {
@@ -97,7 +105,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
+        #region Storage10
         private Form10 _Storage10;
         public Form10 Storage10
         {
@@ -115,7 +125,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
+        #region Storage20
         private Form20 _Storage20;
         public Form20 Storage20
         {
@@ -133,6 +145,7 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
         #region CheckReport
         public ReactiveCommand<Unit, Unit> CheckReport { get; protected set; }
