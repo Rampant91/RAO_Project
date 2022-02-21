@@ -1585,7 +1585,7 @@ namespace Client_App.Controls.DataGrid
                 ScrollViewer CenterScrollViewer = new ScrollViewer();
                 CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                 CenterScrollViewer.Content = CenterPanel;
-                CenterScrollViewer.MaxHeight = 350;
+                CenterScrollViewer.MaxHeight = 240;
 
                 CenterBorder.Child = CenterScrollViewer;
             }
@@ -1596,7 +1596,7 @@ namespace Client_App.Controls.DataGrid
                 pnl.Height = h;
                 Canvas CenterCanvas = new Canvas();
 
-                ScrollBar bar = new ScrollBar() {ZIndex=999,Height=296,HorizontalAlignment=HorizontalAlignment.Right};
+                ScrollBar bar = new ScrollBar() {ZIndex=999,Height=h,HorizontalAlignment=HorizontalAlignment.Right};
                 bar[!ScrollBar.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
                 CenterCanvas.Children.Add(bar);
 
