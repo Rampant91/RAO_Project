@@ -1572,8 +1572,7 @@ namespace Client_App.Controls.DataGrid
 
             Panel CenterPanel = new()
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Height=286
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
