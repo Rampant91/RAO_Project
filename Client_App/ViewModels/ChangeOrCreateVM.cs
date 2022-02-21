@@ -609,34 +609,36 @@ namespace Client_App.ViewModels
         {
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                if (Storages.Id == 0)
+                if (IsCanSaveReportEnabled)
                 {
-                    if (FormType == "1.0" && FormType == "2.0")
+                    if (Storages.Id == 0)
                     {
-                        Storages.Master_DB = Storage;
-                        await new EssanceMethods.APIFactory<Reports>().PostAsync(Storages);
-                    }
-                }
-                else
-                {
-                    if (FormType != "1.0" && FormType != "2.0")
-                    {
-                        if (!Storages.Report_Collection.Contains(Storage))
+                        if (FormType == "1.0" || FormType == "2.0")
                         {
-                            Storages.Report_Collection.Add(Storage);
-                            await new EssanceMethods.APIFactory<Reports>().UpdateAsync(Storages);
+                            Storages.Master_DB = Storage;
+                            await new EssanceMethods.APIFactory<Reports>().PostAsync(Storages);
+                        }
+                    }
+                    else
+                    {
+                        if (FormType != "1.0" && FormType != "2.0")
+                        {
+                            if (Storages.Report_Collection.Where(x=>x.Id==Storage.Id).Count()==0)
+                            {
+                                Storages.Report_Collection.Add(Storage);
+                                await new EssanceMethods.APIFactory<Reports>().UpdateAsync(Storages);
+                            }
+                            else
+                            {
+                                await new EssanceMethods.APIFactory<Report>().UpdateAsync(Storage);
+                            }
                         }
                         else
                         {
                             await new EssanceMethods.APIFactory<Report>().UpdateAsync(Storage);
                         }
                     }
-                    else
-                    {
-                        await new EssanceMethods.APIFactory<Report>().UpdateAsync(Storage);
-                    }
                 }
-
                 IsCanSaveReportEnabled = false;
             }
         }
