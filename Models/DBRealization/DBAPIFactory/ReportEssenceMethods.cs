@@ -67,15 +67,20 @@ namespace Models.DBRealization.DBAPIFactory
                     using (var db = new DBModel(StaticConfiguration.DBPath))
                     {
                         db.Database.Migrate();
-                        return db.ReportCollectionDbSet.Where(x => x.Id == ID)
-                            .Include(x => x.Rows10).Include(x => x.Rows11).Include(x => x.Rows12).Include(x => x.Rows13)
-                            .Include(x => x.Rows14).Include(x => x.Rows15).Include(x => x.Rows16).Include(x => x.Rows17)
-                            .Include(x => x.Rows18).Include(x => x.Rows19)
-                            .Include(x => x.Rows20).Include(x => x.Rows21).Include(x => x.Rows22).Include(x => x.Rows23)
-                            .Include(x => x.Rows24).Include(x => x.Rows25).Include(x => x.Rows26).Include(x => x.Rows27)
-                            .Include(x => x.Rows28).Include(x => x.Rows29).Include(x => x.Rows210).Include(x => x.Rows211)
-                            .Include(x => x.Rows212)
-                            .Include(x => x.Notes)
+                        return db.ReportCollectionDbSet.Where(x => x.Id == ID).OrderBy(x=>x.Order)
+                            .Include(x => x.Rows10).Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows14.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows15.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows20.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows24.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows25.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows26.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows27.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows28.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows29.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Notes.OrderBy(x => x.Order))
                             .FirstOrDefault() as T;
                     }
                 }
@@ -147,19 +152,19 @@ namespace Models.DBRealization.DBAPIFactory
                     {
                         await db.Database.MigrateAsync();
                         var tmp= await db.ReportCollectionDbSet.Where(x => x.Id == ID)
-                            .Include(x => x.Rows10).Include(x => x.Rows11)
-                            .Include(x => x.Rows12).Include(x => x.Rows13)
-                            .Include(x => x.Rows14).Include(x => x.Rows15)
-                            .Include(x => x.Rows16).Include(x => x.Rows17)
-                            .Include(x => x.Rows18).Include(x => x.Rows19)
-                            .Include(x => x.Rows20).Include(x => x.Rows21)
-                            .Include(x => x.Rows22).Include(x => x.Rows23)
-                            .Include(x => x.Rows24).Include(x => x.Rows25)
-                            .Include(x => x.Rows26).Include(x => x.Rows27)
-                            .Include(x => x.Rows28).Include(x => x.Rows29)
-                            .Include(x => x.Rows210).Include(x => x.Rows211)
-                            .Include(x => x.Rows212)
-                            .Include(x => x.Notes)
+                            .Include(x => x.Rows10).Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows14.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows15.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows20.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows24.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows25.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows26.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows27.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows28.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows29.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB)).Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+                            .Include(x => x.Notes.OrderBy(x => x.Order))
                             .FirstOrDefaultAsync() as T;
                         return tmp;
                     }
@@ -173,7 +178,7 @@ namespace Models.DBRealization.DBAPIFactory
                     using (var db = new DBModel(StaticConfiguration.DBPath))
                     {
                         await db.Database.MigrateAsync();
-                        return await db.ReportCollectionDbSet.Select(x => x as T).ToListAsync();
+                        return await db.ReportCollectionDbSet.OrderBy(x=>Convert.ToInt64(x.NumberInOrder_DB)).Select(x => x as T).ToListAsync();
                     }
                 }
                 return null;

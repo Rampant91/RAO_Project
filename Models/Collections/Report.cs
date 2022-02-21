@@ -68,6 +68,9 @@ namespace Models.Collections
 
         public void SetOrder(long index) { }
 
+        [NotMapped]
+        public long Order_DB { get; set; }
+        [NotMapped]
         public long Order
         {
             get
@@ -90,6 +93,7 @@ namespace Models.Collections
                         {
                             frm += "000000000";
                         }
+                         Order_DB = Convert.ToInt64(frm);
                         return Convert.ToInt64(frm);
                     }
                     else
@@ -98,11 +102,13 @@ namespace Models.Collections
                         {
                             frm += (int)(1.0 / Year_DB * 10000000);
                         }
+                        Order_DB = Convert.ToInt64(frm);
                         return Convert.ToInt32(frm);
                     }
                 }
                 catch
                 {
+                    Order_DB = 0;
                     return 0;
                 }
 

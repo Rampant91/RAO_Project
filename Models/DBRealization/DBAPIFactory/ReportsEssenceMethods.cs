@@ -161,11 +161,12 @@ namespace Models.DBRealization.DBAPIFactory
                     using (var db = new DBModel(StaticConfiguration.DBPath))
                     {
                         await db.Database.MigrateAsync();
-                        return await db.ReportsCollectionDbSet
+                        var tmp = await db.ReportsCollectionDbSet
                             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
                             .Include(x => x.Report_Collection)
                             .Select(x => x as T).ToListAsync();
+                        return tmp;
                     }
                 }
                 return null;
