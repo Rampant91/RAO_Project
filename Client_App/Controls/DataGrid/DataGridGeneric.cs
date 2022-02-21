@@ -1577,10 +1577,12 @@ namespace Client_App.Controls.DataGrid
 
             Panel CenterPanel = new()
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Height=286
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 
+<<<<<<< HEAD
             if (!Sum)
             {
                 ScrollViewer CenterScrollViewer = new ScrollViewer();
@@ -1625,6 +1627,12 @@ namespace Client_App.Controls.DataGrid
                 {
                     w += r.Width.Value-1;
                 }
+=======
+            ScrollViewer CenterScrollViewer = new ScrollViewer();
+            CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            CenterScrollViewer.Content = CenterPanel;
+            CenterScrollViewer.MaxHeight = 350;
+>>>>>>> kastetbro.ver1.2.task
 
                 CenterPanel.Width = w;
             }
