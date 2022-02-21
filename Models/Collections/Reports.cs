@@ -20,7 +20,17 @@ namespace Models.Collections
         {
             get
             {
-                throw new NotImplementedException();
+                try
+                {
+                    var num_str = Master_DB.RegNoRep.Value[..5];
+                    var num_int = Convert.ToInt64(num_str);
+                    return num_int;
+                }
+                catch 
+                {
+                    return 0;
+                }
+                //throw new NotImplementedException();
             }
         }
         public Reports()
@@ -29,7 +39,6 @@ namespace Models.Collections
         }
         private void Init()
         {
-
             Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>();
             Report_Collection.CollectionChanged += CollectionChanged;
         }
@@ -112,15 +121,16 @@ namespace Models.Collections
         }
         //Property Changed
 
+        #region IExcel
         public int ExcelRow(ExcelWorksheet worksheet,int Row, int Column, bool Tanspon = true)
         {
             throw new System.NotImplementedException();
         }
-
         public int ExcelHeader(ExcelWorksheet worksheet, int Row,int Column,bool Transpon=true)
         {
             throw new System.NotImplementedException();
         }
+        #endregion
 
         #region IDataGridColumn
         public DataGridColumns GetColumnStructure(string param = "")

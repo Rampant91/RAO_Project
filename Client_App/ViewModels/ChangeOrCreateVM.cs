@@ -42,7 +42,8 @@ namespace Client_App.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
+        #region FormType
         private string _FormType;
         public string FormType
         {
@@ -56,7 +57,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
+        #region Storage
         private Report _Storage;
         public Report Storage
         {
@@ -70,7 +73,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
+        #region Storages
         private Reports _Storages;
         public Reports Storages
         {
@@ -84,6 +89,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
+
+        #region DBO
         private DBObservable _DBO;
         public DBObservable DBO
         {
@@ -97,7 +105,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
+        #region Storage10
         private Form10 _Storage10;
         public Form10 Storage10
         {
@@ -115,7 +125,9 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
+        #region Storage20
         private Form20 _Storage20;
         public Form20 Storage20
         {
@@ -133,6 +145,7 @@ namespace Client_App.ViewModels
                 }
             }
         }
+        #endregion
 
         #region CheckReport
         public ReactiveCommand<Unit, Unit> CheckReport { get; protected set; }
@@ -144,19 +157,19 @@ namespace Client_App.ViewModels
 
         #region ChangeReportOrder
         public ReactiveCommand<Unit, Unit> ChangeReportOrder { get; protected set; }
-        private void _ChangeReportOrder()
+        private async Task _ChangeReportOrder()
         {
             Storage.Rows10.Sorted = false;
             Storage.Rows20.Sorted = false;
             var tmp = Storage.Rows10[0].Order;
             Storage.Rows10[0].SetOrder(Storage.Rows10[1].Order);
             Storage.Rows10[1].SetOrder(tmp);
-            Storage.Rows10.QuickSort();
+            await Storage.Rows10.QuickSortAsync();
 
             tmp = Storage.Rows20[0].Order;
             Storage.Rows20[0].SetOrder(Storage.Rows20[1].Order);
             Storage.Rows20[1].SetOrder(tmp);
-            Storage.Rows20.QuickSort();
+            await Storage.Rows20.QuickSortAsync();
         }
         #endregion
 
@@ -180,7 +193,7 @@ namespace Client_App.ViewModels
             Note? nt = new Note();
             nt.Order = GetNumberInOrder(Storage.Notes);
             Storage.Notes.Add(nt);
-            Storage.Sort();
+            await Storage.SortAsync();
         }
         #endregion
 
@@ -191,7 +204,7 @@ namespace Client_App.ViewModels
             var frm = FormCreator.Create(FormType);
             frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
             Storage[Storage.FormNum_DB].Add(frm);
-            Storage.Sort();
+            await Storage.SortAsync();
         }
         #endregion
 
@@ -235,7 +248,7 @@ namespace Client_App.ViewModels
                             number_cell++;
                         }
                         Storage[Storage.FormNum_DB].AddRange(_lst);
-                        Storage.Sort();
+                        await Storage.SortAsync();
                     }
                 }
             }
@@ -491,7 +504,7 @@ namespace Client_App.ViewModels
                             }
                         }
                     }
-                    Storage.Sort();
+                    await Storage.SortAsync();
                 }
             }
         }
@@ -622,7 +635,7 @@ namespace Client_App.ViewModels
             AddRow = ReactiveCommand.CreateFromTask<object>(_AddRow);
             AddRowIn = ReactiveCommand.CreateFromTask<object>(_AddRowIn);
             DeleteRow = ReactiveCommand.CreateFromTask<object>(_DeleteRow);
-            ChangeReportOrder = ReactiveCommand.Create(_ChangeReportOrder);
+            ChangeReportOrder = ReactiveCommand.CreateFromTask(_ChangeReportOrder);
             CheckReport = ReactiveCommand.Create(_CheckReport);
             SumRow = ReactiveCommand.Create(_SumRow);
             PasteRows = ReactiveCommand.CreateFromTask<object>(_PasteRows);
@@ -781,7 +794,6 @@ namespace Client_App.ViewModels
 
             return lst.ToArray();
         }
-
         private string[] ParseInnerTextColumn(string Text)
         {
             List<string> lst = new List<string>();
