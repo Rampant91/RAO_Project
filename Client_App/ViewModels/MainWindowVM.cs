@@ -299,6 +299,7 @@ namespace Client_App.ViewModels
                     await ShowDialog.Handle(frm);
                     t.SelectedReports = tmp;
                 }
+                await Local_Reports.Reports_Collection.QuickSortAsync();
             }
         }
         #endregion
@@ -1030,6 +1031,7 @@ namespace Client_App.ViewModels
 
                     await StaticConfiguration.DBModel.SaveChangesAsync();
                 }
+                await Local_Reports.Reports_Collection.QuickSortAsync();
             }
         }
         #endregion
