@@ -598,6 +598,7 @@ namespace Client_App.Controls.DataGrid
         }
         #endregion
 
+        #region Columns
         private DataGridColumns _Columns = null;
         private DataGridColumns Columns
         {
@@ -628,6 +629,8 @@ namespace Client_App.Controls.DataGrid
                 }
             }
         }
+        #endregion
+
         private List<DataGridRow> Rows { get; set; } = new List<DataGridRow>();
 
         private StackPanel HeaderStackPanel { get; set; }

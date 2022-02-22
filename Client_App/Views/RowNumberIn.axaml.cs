@@ -19,6 +19,7 @@ namespace Client_App.Views
 {
     public class RowNumberIn : ReactiveWindow<ViewModels.ChangeOrCreateVM>,INotifyPropertyChanged
     {
+        #region Number1
         public static readonly DirectProperty<RowNumberIn, string> NumberProperty1 =
                      AvaloniaProperty.RegisterDirect<RowNumberIn, string>(
                 nameof(Number1),
@@ -50,7 +51,9 @@ namespace Client_App.Views
                 }
             }
         }
+        #endregion
 
+        #region Number2
         public static readonly DirectProperty<RowNumberIn, string> NumberProperty2 =
              AvaloniaProperty.RegisterDirect<RowNumberIn, string>(
         nameof(Number2),
@@ -82,6 +85,9 @@ namespace Client_App.Views
                 }
             }
         }
+        #endregion
+
+        #region Constracture
         public RowNumberIn()
         {
             InitializeComponent();
@@ -98,6 +104,7 @@ namespace Client_App.Views
             this.AttachDevTools();
 #endif
         }
+        #endregion
 
         bool flag = false;
         protected override void OnClosing(CancelEventArgs e)

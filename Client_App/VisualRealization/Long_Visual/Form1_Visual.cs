@@ -88,14 +88,17 @@ namespace Client_App.Long_Visual
                     Text = text
                 };
             }
-            tmp = new TextBlock
+            else
             {
-                Height = height,
-                Margin = Thickness.Parse(margin),
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                Text = text
-            };
+                tmp = new TextBlock
+                {
+                    Height = height,
+                    Margin = Thickness.Parse(margin),
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                    Text = text
+                };
+            }
             return tmp;
         }
 

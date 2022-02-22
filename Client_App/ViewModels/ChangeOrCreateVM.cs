@@ -510,7 +510,7 @@ namespace Client_App.ViewModels
         }
         #endregion
 
-
+        #region Constacture
         public ChangeOrCreateVM(string param, in Report rep,Reports reps)
         {
             Storage = rep;
@@ -616,10 +616,14 @@ namespace Client_App.ViewModels
             DBO = reps;
             Init();
         }
+        #endregion
 
+        #region Interaction
         public Interaction<int, int> ShowDialogIn { get; protected set; }
         public Interaction<object, int> ShowDialog { get; protected set; }
         public Interaction<List<string>, string> ShowMessageT { get; protected set; }
+        #endregion
+
         public void Init()
         {
             string a = FormType.Replace(".", "");

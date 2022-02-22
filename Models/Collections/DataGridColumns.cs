@@ -18,6 +18,8 @@ namespace Models.Collections
         public string name;
         public List<DataGridColumns> innertCol = null;
         public DataGridColumns parent = null;
+
+        #region Blocked
         bool _Blocked = false;
         public bool Blocked { 
             get 
@@ -40,7 +42,9 @@ namespace Models.Collections
             }
 
         }
+        #endregion
 
+        #region ChooseLine
         bool _ChooseLine = false;
         public bool ChooseLine
         {
@@ -64,7 +68,9 @@ namespace Models.Collections
             }
 
         }
+        #endregion
 
+        #region Binding
         private string binding = "";
         public string Binding { 
             get 
@@ -101,6 +107,7 @@ namespace Models.Collections
                 }
             }
         }
+        #endregion
 
         public string GridLength
         {
@@ -136,6 +143,7 @@ namespace Models.Collections
             }
         }
 
+        #region SizeCol
         double sizeCol = 0;
         public double SizeCol
         {
@@ -175,6 +183,7 @@ namespace Models.Collections
                 }
             }
         }
+        #endregion
 
         public int Level
         {
