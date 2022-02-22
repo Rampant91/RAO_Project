@@ -20,7 +20,9 @@ namespace Models.Collections
         {
             get
             {
-                throw new NotImplementedException();
+                var num_str = Master_DB.RegNoRep.Value[..5];
+                var num_int = Convert.ToInt64(num_str);
+                return num_int;
             }
         }
         public Reports()
