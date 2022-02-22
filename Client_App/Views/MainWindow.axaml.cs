@@ -9,6 +9,7 @@ using Avalonia.Data;
 using Models.Collections;
 using System.Threading.Tasks;
 using ReactiveUI;
+using Client_App.Controls.DataGrid;
 
 namespace Client_App.Views
 {
@@ -107,19 +108,8 @@ namespace Client_App.Views
         #endregion
 
         #region ShowInit
-        private void ShowInit()
+        public static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal, ViewModels.MainWindowVM dataContext)
         {
-            var dataContext = (ViewModels.MainWindowVM)this.DataContext;
-
-            Panel tab10 = this.FindControl<Panel>("Forms_p1_0");
-            Panel tab1X = this.FindControl<Panel>("Forms_p1_X");
-            Panel tab1B = this.FindControl<Panel>("Forms_p1_B");
-            Short_Visual.Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
-
-            #region Form10 DataGrid
-            var grd1 = (Controls.DataGrid.DataGrid<Reports>)tab10.Children[0];
-            var grd2 = (Controls.DataGrid.DataGrid<Report>)tab1X.Children[0];
-
             #region Grd1
             grd1.CommandsList.Add(new Controls.DataGrid.KeyComand()
             {
@@ -127,7 +117,7 @@ namespace Client_App.Views
                 KeyModifiers = Avalonia.Input.KeyModifiers.Control,
                 IsDoubleTappedCommand = false,
                 IsContextMenuCommand = true,
-                ParamName = "1.0",
+                ParamName = paramVal,
                 ContextMenuText = new string[] { "Добавить форму        Ctrl+T" },
                 Command = dataContext.AddReport
             });
@@ -197,6 +187,21 @@ namespace Client_App.Views
                 Command = dataContext.DeleteForm
             });
             #endregion
+        }
+        private void ShowInit()
+        {
+            var dataContext = (ViewModels.MainWindowVM)this.DataContext;
+
+            Panel tab10 = this.FindControl<Panel>("Forms_p1_0");
+            Panel tab1X = this.FindControl<Panel>("Forms_p1_X");
+            Panel tab1B = this.FindControl<Panel>("Forms_p1_B");
+            Short_Visual.Form1_Visual.FormF_Visual(this, tab10, tab1X, tab1B);
+
+            #region Form10 DataGrid
+            var grd1 = (Controls.DataGrid.DataGrid<Reports>)tab10.Children[0];
+            var grd2 = (Controls.DataGrid.DataGrid<Report>)tab1X.Children[0];
+
+            SetCommandList(grd1, grd2, "1.0", dataContext);
             #endregion
 
             Panel tab20 = this.FindControl<Panel>("Forms_p2_0");
@@ -208,83 +213,7 @@ namespace Client_App.Views
             var grd3 = (Controls.DataGrid.DataGrid<Reports>)tab20.Children[0];
             var grd4 = (Controls.DataGrid.DataGrid<Report>)tab2X.Children[0];
 
-            #region Grd3
-            grd3.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            {
-                Key = Avalonia.Input.Key.T,
-                KeyModifiers = Avalonia.Input.KeyModifiers.Control,
-                IsDoubleTappedCommand = false,
-                IsContextMenuCommand = true,
-                ParamName = "2.0",
-                ContextMenuText = new string[] { "Добавить форму        Ctrl+T" },
-                Command = dataContext.AddReport
-            });
-
-            grd3.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            {
-                IsDoubleTappedCommand = true,
-                IsContextMenuCommand = true,
-                ParamName = "SelectedItems",
-                ContextMenuText = new string[] { "Редактировать форму" },
-                Command = dataContext.ChangeReport
-            });
-            grd3.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            {
-                Key = Avalonia.Input.Key.D,
-                KeyModifiers = Avalonia.Input.KeyModifiers.Control,
-                IsDoubleTappedCommand = false,
-                IsContextMenuCommand = true,
-                ParamName = "SelectedItems",
-                ContextMenuText = new string[] { "Удалить форму           Ctrl+D" },
-                Command = dataContext.DeleteReport
-            });
-
-            #endregion
-            #region Grd4
-            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            {
-                IsDoubleTappedCommand = false,
-                IsContextMenuCommand = true,
-                ParamName = "SelectedItems",
-                ContextMenuText = new string[] { "Экспорт Excel", "Для печати" },
-                Command = dataContext.Print_Excel_Export
-            });
-            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            {
-                IsDoubleTappedCommand = false,
-                IsContextMenuCommand = true,
-                ParamName = "SelectedItems",
-                ContextMenuText = new string[] { "Экспорт Excel", "Для выгрузки" },
-                Command = dataContext.Excel_Export
-            });
-            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            {
-                IsDoubleTappedCommand = false,
-                IsContextMenuCommand = true,
-                ParamName = "SelectedItems",
-                ContextMenuText = new string[] { "Экспорт" },
-                Command = dataContext.ExportForm
-            });
-            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            {
-                IsDoubleTappedCommand = true,
-                IsContextMenuCommand = true,
-                ParamName = "SelectedItems",
-                ContextMenuText = new string[] { "Изменить форму" },
-                Command = dataContext.ChangeForm
-            });
-            grd4.CommandsList.Add(new Controls.DataGrid.KeyComand()
-            {
-                Key = Avalonia.Input.Key.D,
-                KeyModifiers = Avalonia.Input.KeyModifiers.Control,
-                IsDoubleTappedCommand = false,
-                IsContextMenuCommand = true,
-                ParamName = "SelectedItems",
-                IsUpdateCells = true,
-                ContextMenuText = new string[] { "Удалить форму           Ctrl+D" },
-                Command = dataContext.DeleteForm
-            });
-            #endregion
+            SetCommandList(grd3, grd4, "2.0", dataContext);
             #endregion
         }
         #endregion
