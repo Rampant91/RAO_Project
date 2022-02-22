@@ -50,7 +50,7 @@ namespace Client_App.Short_Visual
             };
             grd.PageSize = 10;
             grd.IsReadable = true;
-
+            (((((grd.Content as Panel).Children[0] as StackPanel).Children[1] as Border).Child as ScrollViewer).Content as Panel).Height = 286;
             grd.Name = "Form20AllDataGrid_";
 
             Binding b = new Binding
@@ -79,7 +79,7 @@ namespace Client_App.Short_Visual
             };
             grd.PageSize = 10;
             grd.IsReadable = true;
-
+            ((((grd.Content as Panel).Children[0] as StackPanel).Children[1] as Border).Child as ScrollViewer).MaxHeight = 175;
             Binding b = new Binding
             {
                 Path = "SelectedItems",

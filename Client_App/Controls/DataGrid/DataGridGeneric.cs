@@ -1572,8 +1572,7 @@ namespace Client_App.Controls.DataGrid
 
             Panel CenterPanel = new()
             {
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Height=286
+                HorizontalAlignment = HorizontalAlignment.Stretch
             };
             CenterPanel.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
             if (!Sum)
@@ -1588,10 +1587,11 @@ namespace Client_App.Controls.DataGrid
             else
             {
                 Panel pnl = new Panel();
-                pnl.Height = 300;
+                int h = 325;
+                pnl.Height = h;
                 Canvas CenterCanvas = new Canvas();
 
-                ScrollBar bar = new ScrollBar() {ZIndex=999,Height=296,HorizontalAlignment=HorizontalAlignment.Right};
+                ScrollBar bar = new ScrollBar() {ZIndex=999,Height=h,HorizontalAlignment=HorizontalAlignment.Right};
                 bar[!ScrollBar.MarginProperty] = this[!DataGrid<T>.FixedContentProperty];
                 CenterCanvas.Children.Add(bar);
 
@@ -1604,7 +1604,7 @@ namespace Client_App.Controls.DataGrid
                 ScrollViewer CenterScrollViewer = new ScrollViewer();
                 CenterScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                 CenterScrollViewer.Content = CenterPanel;
-                CenterScrollViewer.Height = 350;
+                CenterScrollViewer.Height = h;
                 bar[!ScrollBar.MaximumProperty] = CenterScrollViewer[!ScrollViewer.VerticalScrollBarMaximumProperty];
 
                 CenterScrollViewer[!ScrollViewer.VerticalScrollBarValueProperty] = b;
