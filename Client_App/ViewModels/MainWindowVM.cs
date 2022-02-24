@@ -1244,7 +1244,7 @@ namespace Client_App.ViewModels
                                     }
                                 }
 
-                                item.ExcelRow(worksheet, count, yu);
+                                item.ExcelRow(worksheet, count, yu+1);
                                 count++;
                             }
                         }
