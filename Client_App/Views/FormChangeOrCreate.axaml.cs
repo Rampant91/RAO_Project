@@ -64,7 +64,7 @@ namespace Client_App.Views
                     }
                     if (x == "Нет")
                     {
-                        //flag = true;
+                        flag = true;
                         //var dbm = StaticConfiguration.DBModel;
                         //dbm.Restore();
                         //dbm.LoadTables();
