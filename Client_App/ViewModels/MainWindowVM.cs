@@ -486,7 +486,7 @@ namespace Client_App.ViewModels
                                 var tmp = Path.Combine(path, "RAO");
                                 tmp = Path.Combine(tmp, "temp");
                                 Directory.CreateDirectory(tmp);
-                                tmp = Path.Combine(tmp, Path.GetFileNameWithoutExtension(res)) + "_imp_1" + ".raodb";
+                                tmp = Path.Combine(tmp, "TEMP_imp_1" + ".raodb");
 
                                 while (true)
                                 {
@@ -497,7 +497,7 @@ namespace Client_App.ViewModels
                                         tmp = "";
                                         tmp = Path.Combine(path, "RAO");
                                         tmp = Path.Combine(tmp, "temp");
-                                        tmp = Path.Combine(tmp, Path.GetFileNameWithoutExtension(res) + "_imp_" + (num + 1) + ".raodb");
+                                        tmp = Path.Combine(tmp, "TEMP_imp_" + (num + 1) + ".raodb");
                                     }
                                     else
                                     {
