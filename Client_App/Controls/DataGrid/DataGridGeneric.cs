@@ -33,6 +33,7 @@ using System.Reactive.Subjects;
 using Client_App.Converters;
 using Client_App.ViewModels;
 using Models.Attributes;
+using System.Text.RegularExpressions;
 
 namespace Client_App.Controls.DataGrid
 {
@@ -174,6 +175,28 @@ namespace Client_App.Controls.DataGrid
                 if (value != null && value != _Comment)
                 {
                     SetAndRaise(CommentProperty, ref _Comment, value);
+                    Init();
+                }
+            }
+        }
+        #endregion
+
+        #region Search
+        public static readonly DirectProperty<DataGrid<T>, bool> SearchProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, bool>(
+                nameof(Search),
+                o => o.Search,
+                (o, v) => o.Search = v);
+
+        private bool _Search = false;
+        public bool Search
+        {
+            get => _Search;
+            set
+            {
+                if (value != null)
+                {
+                    SetAndRaise(SearchProperty, ref _Search, value);
                     Init();
                 }
             }
@@ -626,6 +649,30 @@ namespace Client_App.Controls.DataGrid
                 {
                     _Columns = value;
                     Init();
+                }
+            }
+        }
+        #endregion
+
+        #region SearchText
+        public static readonly DirectProperty<DataGrid<T>, string> SearchTextProperty =
+            AvaloniaProperty.RegisterDirect<DataGrid<T>, string>(
+                nameof(SearchText),
+                o => o.SearchText,
+                (o, v) => o.SearchText = v);
+        private string _SearchText = "";
+        public string SearchText
+        {
+            get
+            {
+                return _SearchText;
+            }
+            set
+            {
+                if (value != null && value != _SearchText)
+                {
+                    SetAndRaise(SearchTextProperty, ref _SearchText, value);
+                    UpdateCells();
                 }
             }
         }
@@ -1089,7 +1136,6 @@ namespace Client_App.Controls.DataGrid
         #endregion
 
         #region UpdateCells
-
         private void UpdateCells()
         {
             var count = 0;
@@ -1107,7 +1153,37 @@ namespace Client_App.Controls.DataGrid
                         if (count < PageSize&&i<Items.Count)
                         {
                             Rows[count].DataContext = Items.Get<T>(i);
-                            Rows[count].IsVisible = true;
+                            if (Search==true)
+                            {
+                                var rowsText = ((Reports)Rows[count].DataContext).Master_DB.OkpoRep.Value + 
+                                    ((Reports)Rows[count].DataContext).Master_DB.ShortJurLicoRep.Value + 
+                                    ((Reports)Rows[count].DataContext).Master_DB.RegNoRep.Value;
+                                rowsText = rowsText.ToLower();
+                                rowsText = Regex.Replace(rowsText, "[-.?!)(,: ]", "");
+                                var searchText = ((TextBox)((StackPanel)((StackPanel)((Border)((StackPanel)((Panel)this.Content).Children[0]).Children[0]).Child).Children[0]).Children[0]).Text;
+                                if (searchText != null)
+                                {
+                                    searchText = searchText.ToLower();
+                                    searchText = Regex.Replace(searchText, "[-.?!)(,: ]", "");
+                                    if (rowsText.Contains(searchText))
+                                    {
+                                        Rows[count].IsVisible = true;
+                                    }
+                                    else
+                                    {
+                                        Rows[count].IsVisible = false;
+                                    }
+                                }
+                                else
+                                {
+                                    Rows[count].IsVisible = true;
+                                }
+
+                            }
+                            else
+                            {
+                                Rows[count].IsVisible = true;
+                            }
                             count++;
                         }
                         else
@@ -1414,16 +1490,17 @@ namespace Client_App.Controls.DataGrid
                     {
                         Binding b = new Binding()
                         {
-                            Source= HeadersColumns[Column],
-                            Path=nameof(ColumnDefinition.Width)
+                            Source = HeadersColumns[Column],
+                            Path = nameof(ColumnDefinition.Width)
                         };
-                        var Columnq = new ColumnDefinition() { [!ColumnDefinition.WidthProperty]=b };
+                        var Columnq = new ColumnDefinition() { [!ColumnDefinition.WidthProperty] = b };
                         RowStackPanel.ColumnDefinitions.Add(Columnq);
 
                         Control textBox = null;
 
-                        Cell cell = new Cell() {
-                            [Grid.ColumnProperty]=count
+                        Cell cell = new Cell()
+                        {
+                            [Grid.ColumnProperty] = count
                         };
                         cell.HorizontalAlignment = HorizontalAlignment.Stretch;
                         cell.Row = i;
@@ -1435,7 +1512,7 @@ namespace Client_App.Controls.DataGrid
                             cell.Tapped += ChooseAllRow;
                         }
 
-                        if (IsReadable||item.Blocked)
+                        if (IsReadable || item.Blocked)
                         {
                             textBox = new TextBlock()
                             {
@@ -1443,14 +1520,14 @@ namespace Client_App.Controls.DataGrid
                                 [!TextBlock.TextProperty] = new Binding("Value"),
                                 [!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
-                            if(item.Blocked)
+                            if (item.Blocked)
                             {
                                 textBox[!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty];
                             }
                             ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
                             textBox.VerticalAlignment = VerticalAlignment.Center;
                             textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                            ((TextBlock)textBox).Padding = new Thickness(0,5,0,5);
+                            ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
                             textBox.Height = 30;
                             textBox.ContextMenu = new ContextMenu() { Width = 0, Height = 0 };
                         }
@@ -1460,7 +1537,7 @@ namespace Client_App.Controls.DataGrid
                             {
                                 [!TextBox.DataContextProperty] = new Binding(item.Binding),
                                 [!TextBox.TextProperty] = new Binding("Value"),
-                                [!TextBox.BackgroundProperty]=cell[!Cell.ChooseColorProperty],
+                                [!TextBox.BackgroundProperty] = cell[!Cell.ChooseColorProperty],
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Left;
                             textBox.VerticalAlignment = VerticalAlignment.Stretch;
@@ -1487,6 +1564,7 @@ namespace Client_App.Controls.DataGrid
                         }
                         Column++;
                     }
+
                     RowStackPanel.IsVisible = false;
                     CenterStackPanel.Children.Add(RowStackPanel);
                     Rows.Add(RowStackPanel);
@@ -1517,6 +1595,37 @@ namespace Client_App.Controls.DataGrid
             StackPanel MainStackPanel = new StackPanel();
             MainStackPanel.Orientation = Orientation.Vertical;
             MainPanel.Children.Add(MainStackPanel);
+            #endregion
+
+            #region Search
+            if(Search)
+            {
+                Border HeaderSearchBorder = new()
+                {
+                    Margin = Thickness.Parse("0,0,0,5"),
+                    BorderThickness = Thickness.Parse("1"),
+                    BorderBrush = new SolidColorBrush(Color.Parse("Gray")),
+                    CornerRadius = CornerRadius.Parse("2,2,2,2")
+                };
+                MainStackPanel.Children.Add(HeaderSearchBorder);
+
+                StackPanel HeaderSearchStackPanel = new();
+                HeaderSearchStackPanel.Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255));
+                HeaderSearchStackPanel.Orientation = Orientation.Vertical;
+                HeaderSearchBorder.Child = HeaderSearchStackPanel;
+
+                StackPanel HeaderSearchSP = new();
+                TextBox SearchTextBox = new TextBox() 
+                {
+                    Name = "SearchText",
+                    Watermark = "Поиск...",
+                    Margin = Thickness.Parse("1,1,1,1")
+                };
+                SearchTextBox[!TextBox.TextProperty] = this[!DataGrid<T>.SearchTextProperty];
+                HeaderSearchSP.Children.Add(SearchTextBox);
+                HeaderSearchStackPanel.Children.Add(HeaderSearchSP);
+
+            }
             #endregion
 
             #region Header
@@ -1633,9 +1742,7 @@ namespace Client_App.Controls.DataGrid
             {
                 CenterStackPanel.Margin = Thickness.Parse("20,2,20,2");
             }
-
             CenterPanel.Children.Add(CenterStackPanel);
-
             #endregion
 
             #region MiddleFooter
