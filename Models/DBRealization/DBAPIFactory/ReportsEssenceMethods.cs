@@ -192,9 +192,12 @@ namespace Models.DBRealization.DBAPIFactory
                     using (var db = new DBModel(StaticConfiguration.DBPath))
                     {
                         await db.Database.MigrateAsync();
-                        var rep = await db.ReportsCollectionDbSet.Where(x => x.Id == ID).FirstOrDefaultAsync();
-                        db.ReportsCollectionDbSet.Remove(rep);
-                        await db.SaveChangesAsync();
+                        var reps = await db.ReportsCollectionDbSet.Where(x => x.Id == ID).FirstOrDefaultAsync();
+                        if (reps != null)
+                        {
+                            db.ReportsCollectionDbSet.Remove(reps);
+                            await db.SaveChangesAsync();
+                        }  
                     }
                     return true;
                 }

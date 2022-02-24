@@ -925,6 +925,8 @@ namespace Client_App.ViewModels
                         t.SelectedReports = tmp;
                     }
                 }
+            var api = new EssanceMethods.APIFactory<Reports>();
+            Local_Reports = new ObservableCollectionWithItemPropertyChanged<Reports>(await api.GetAllAsync());
         }
         #endregion
 
@@ -948,11 +950,12 @@ namespace Client_App.ViewModels
                             foreach (var item in param)
                             {
                                 await new EssanceMethods.APIFactory<Report>().DeleteAsync(((Report)item).Id);
-                                y.Report_Collection.Remove((Report)item);
                             }
                         }
                         t.SelectedReports = tmp;
                     }
+                    var api = new EssanceMethods.APIFactory<Reports>();
+                    Local_Reports = new ObservableCollectionWithItemPropertyChanged<Reports>(await api.GetAllAsync());
                 }
             }
         }
@@ -971,9 +974,15 @@ namespace Client_App.ViewModels
                     if (param != null)
                         foreach (Reports item in param)
                         {
-                            Local_Reports.Remove(item);
+
+                            foreach (var rep in item.Report_Collection)
+                            {
+                                await new EssanceMethods.APIFactory<Report>().DeleteAsync(rep.Id);
+                            }
+                            Local_Reports = new ObservableCollectionWithItemPropertyChanged<Reports>(await new EssanceMethods.APIFactory<Reports>().GetAllAsync());
                             await new EssanceMethods.APIFactory<Reports>().DeleteAsync(item.Id);
                         }
+                    Local_Reports = new ObservableCollectionWithItemPropertyChanged<Reports>(await new EssanceMethods.APIFactory<Reports>().GetAllAsync());
                 }
             }
         }

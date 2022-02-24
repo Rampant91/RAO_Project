@@ -207,8 +207,11 @@ namespace Models.DBRealization.DBAPIFactory
                     {
                         await db.Database.MigrateAsync();
                         var rep = await db.ReportCollectionDbSet.Where(x => x.Id == ID).FirstOrDefaultAsync();
-                        db.ReportCollectionDbSet.Remove(rep);
-                        await db.SaveChangesAsync();
+                        if (rep != null)
+                        {
+                            db.ReportCollectionDbSet.Remove(rep);
+                            await db.SaveChangesAsync();
+                        }
                     }
                     return true;
                 }
